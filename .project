@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>pentaho-big-data-plugin</name>
+	<name>pentaho-hadoop-shims</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -15,11 +15,4 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.apache.ivyde.eclipse.ivynature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>src-mapred</name>
-			<type>2</type>
-			<location>/Users/jordan/dev/pentaho/big-data-plugin/shims/common/src-mapred</location>
-		</link>
-	</linkedResources>
 </projectDescription>
