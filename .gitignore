@@ -1,6 +1,14 @@
 bin/
 dist/
-lib/
+api/lib/
+cdh3u4/lib/
+cdh4/lib/
+cdh412/lib/
+cdh413/lib/
+cdh42/lib/
+hadoop-20/lib/
+mapr/lib/
+mapr21/lib/
 lib-provided/
 stage-pmr/
 test-lib/

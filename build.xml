@@ -1,269 +1,121 @@
 <!--===========================================================================
-  This is the build file for the Pentaho Big Data Project
+  This is the build file for the collection of Shims modules to provide support
+  for multiple versions of Hadoop on the same set of compiled bits.
   
-  This build file will use the subfloor.xml file as the default build
-  process and should only override the tasks that need to differ from
-  the common build file.
-  
-  See subfloor.xml for more details
+  See ../build-res/subfloor.xml for more details
 ============================================================================-->
-<project name="Pentaho Big Data Plugin" basedir="." default="dist"
-	xmlns:ivy="antlib:org.apache.ivy.ant" >
-	
-	<description>
-	  This build file is used to create the Pentaho Big Data Plugin project
-		and works with the subfloor.xml file.
-	</description>
+<project name="pentaho-hadoop-shims" basedir="." default="build-all">
 
-	<!-- Import the common_build.xml file which contains all the default tasks -->	
-	<import file="build-res/subfloor-pkg.xml"/>
+  <description>
+    This builds all modules within this directory (specifically as declared by ${modules}).
+  </description>
 
-  <property name="stage.pmr.dir" value="${basedir}/stage-pmr"/>
-  <property name="pmr.archive.name" value="pentaho-mapreduce-libraries"/>
-  
-  <property name="resolve.shims.dir" value="${bin.dir}/shims"/>
-  <property name="stage.shims.dir" value="${stage.dir}/${ivy.artifact.id}/hadoop-configurations"/>
-  
-  <property name="prepared.src.dir" value="${bin.dir}/prepared-src"/>
-  
-	<property name="pdi-with-plugin"
-					value="pdi-ce-big-data"
-					description="Name of the pdi distribution with Big Data plugin"/>
+  <!-- Import the common_build.xml file which contains all the default tasks -->    
+  <import file="build-res/subfloor-pkg.xml"/>
 
-	<property name="plugin.destination" location="kettle-dist" />
-	
-	<property name="samples.dir" value="${basedir}/samples" />
-	
-	<property name="package-samples.artifact.ivyfile"
-	            value="package-samples-ivy.xml"
-	            description="The ivy file defining dependencies of the package" />
-    <property name="package-samples.artifact.pomfile"
-                value="package-samples-pom.xml"
-                description="The Maven pom file defining dependencies of the package" />
-  
-  <!--
-    AS STATED ABOVE, THE ONLY TASKS THAT SHOULD EXIST IN THIS BUILD FILE ARE
-    THE TASKS THAT NEED TO DIFFER FROM THE DEFAULT IMPLEMENTATION OF THE TASKS
-    FOUND IN subfloor.xml.
-  --> 
+  <!-- These are the modules this script should build -->
+  <property name="modules" value="api,hive-jdbc,hadoop-20,cdh42,hdp12,mapr21" />
+  <!-- Every non-api shim module. These will be compiled/resolved after api. -->
+  <property name="shim-non-api-modules" value="hive-jdbc,hadoop-20,cdh42,hdp12,mapr21" />
 
-  <target name="resolve" depends="subfloor.resolve,resolve-pmr"/>
+  <!-- Publish shims locally or publicly? -->
+  <property name="shims.publish-local"
+            value="true"
+            description="Whether to publish plugins locally during the build process. CI should override this"/>
+	    
+  <target name="init" depends="install-antcontrib" />
 
-  <target name="clean-pmr">
-    <delete dir="${stage.pmr.dir}"/>
-  </target>
-
-  <target name="resolve-pmr" depends="install-ivy">
-    <delete dir="${stage.pmr.dir}/lib"/>
-    <ivy:resolve file="${ivyfile}" conf="default" />
-    <ivy:retrieve conf="pmr" pattern="${stage.pmr.dir}/lib/[module]-[revision](-[classifier]).[ext]" symlink="true" />
-  </target>
-  
-  <target name="resolve-hadoop-shims" depends="install-ivy">
-    <delete dir="${resolve.shims.dir}"/>
-    <ivy:resolve file="${ivyfile}" conf="shim" />
-    <ivy:retrieve conf="shim" pattern="${resolve.shims.dir}/[module]-[revision](-[classifier]).[ext]" symlink="true" />
-  </target>
-
-	<target name="dist-noresolve" depends="jar,package" description="Builds and packages the application" />
-	<target name="dist" depends="build-shims,resolve,jar,package" description="Builds and packages the application" />
-
-  <target name="clean-all" depends="subfloor.clean-all,clean-pmr,clean-all-shims" />
-
-	<target name="clean-dist">
-		<delete dir="${dist.dir}" />
-		<delete dir="${stage.dir}" />
-		<delete dir="${platform.unzip.dir}" />
-	</target>
-
-  <target name="clean-all-shims" description="Clean all shim projects">
-    <ant antfile="shims/build.xml" inheritall="false" target="clean-all" />
-  </target>
-
-  <!-- Build all the shim modules -->
-  <target name="build-shims" description="Build all shim projects (dist and publish-local)">
-    <ant antfile="shims/build.xml" inheritall="false">
-      <target name="build-all" />
+  <!-- Build all modules in the correct order and publish them locally -->
+  <target name="build-all" depends="install-antcontrib,init">
+	<condition property="publish.target" value="publish-local" else="publish">
+	  <equals arg1="${shims.publish-local}" arg2="true" />
+	</condition>
+    <ant antfile="build.xml" dir="api" inheritall="false">
+      <target name="clean-all" />
+      <target name="resolve" />
+      <target name="${publish.target}" />
     </ant>
+    <for list="${shim-non-api-modules}" param="module" trim="true">
+      <sequential>
+        <ant antfile="build.xml" dir="@{module}" inheritall="false">
+          <target name="clean-all" />
+          <target name="resolve" />
+          <target name="dist" />
+          <target name="${publish.target}" />
+        </ant>
+      </sequential>
+    </for>
   </target>
 
-  <!-- Publish all the shim modules -->
-  <target name="publish-shims" description="Publishes all shim projects. build-shims should be called previous to this.">
-    <ant antfile="shims/build.xml" target="publish" inheritall="false"/>
+  <!-- Runs "clean-all" on the modules defined in the property "modules" -->
+  <target name="clean-all" depends="init">
+    <for list="${modules}" param="module" trim="true">
+      <sequential>
+        <ant antfile="build.xml" dir="@{module}" inheritall="false" target="clean-all" />
+      </sequential>
+    </for>
   </target>
 
-  <!-- Test all the shim modules -->
-  <target name="test-shims" description="Tests all shim projects. build-shims should be called previous to this.">
-    <ant antfile="shims/build.xml" target="test" inheritall="false"/>
+  <!-- Clean all the modules defined in the property "modules" -->
+  <target name="clean" depends="init">
+    <for list="${modules}" param="module" trim="true">
+      <sequential>
+        <ant antfile="build.xml" dir="@{module}" inheritall="false" target="clean" />
+      </sequential>
+    </for>
   </target>
 
-  <!-- Generate code coverage for the shim modules -->
-  <target name="cobertura-shims" description="Run cobertura on all shim projects. build-shims should be called previous to this.">
-    <ant antfile="shims/build.xml" target="cobertura" inheritall="false"/>
+  <!-- Clean all the modules defined in the property "modules" -->
+  <target name="jar" depends="init">
+    <for list="${modules}" param="module" trim="true">
+      <sequential>
+        <ant antfile="build.xml" dir="@{module}" inheritall="false">
+          <target name="jar" />
+        </ant>
+      </sequential>
+    </for>
   </target>
-
-  <!-- Perform cobertura shim coverage in addition to our coverage -->
-  <target name="cobertura" depends="cobertura-shims,subfloor.cobertura" />
-
-  <target name="assemble.init">
-    <mkdir dir="${stage.dir}" />
-    <mkdir dir="${stage.dir}/${ivy.artifact.id}" />
-  </target>
-
-  <!-- Assemble the Hadoop Shim zips by first resolving them then extracting them
-       into the package stage directory at hadoop-configurations/.
-    -->
-  <target name="assemble-hadoop-shims" depends="resolve-hadoop-shims">
-    <delete dir="${stage.shims.dir}"/>
-    <!-- <mkdir dir="${stage.shims.dir}"/> -->
-    <unzip dest="${stage.shims.dir}">
-      <fileset dir="${resolve.shims.dir}">
-        <include name="*.zip"/>
-      </fileset>
-    </unzip>
+	
+  <!-- All following targets are wrappers for all modules -->
+  <target name="resolve" depends="init">
+    <for list="${modules}" param="module" trim="true">
+      <sequential>
+        <ant antfile="build.xml" dir="@{module}" inheritall="false" target="resolve" />
+      </sequential>
+    </for>
   </target>
   
-  <!-- Assemble all libraries required for Pentaho MapReduce into the ${pmr.archive.name}.zip file in the staging directory -->
-  <target name="assemble-pmr-libraries">
-    <!-- Archive must contain a top level lib/ directory -->
-    <zip destfile="${stage.dir}/${ivy.artifact.id}/${pmr.archive.name}.zip">
-      <zipfileset dir="${stage.pmr.dir}/lib" prefix="lib"/>
-    </zip>
-  </target>
-	
-	  <target name="assemble.copy-libs" depends="assemble-pmr-libraries,assemble-hadoop-shims">
-	    <copy todir="${stage.dir}/${ivy.artifact.id}/lib">
-	      <fileset dir="${lib.dir}">
-			<exclude name="kettle-*.jar" />
-			<exclude name="pentaho-xul-*.jar" />
-			<exclude name="metro-*.jar" />
-			<exclude name="log4j-*.jar" />
-			<exclude name="jface*.jar" />
-			<exclude name="hadoop-*.jar" />
-			<exclude name="hbase-*.jar" />
-			<exclude name="zookeeper-*.jar" />
-			<exclude name="jug-*.jar" />
-			<exclude name="commons-codec*.jar" />
-			<exclude name="commons-io*.jar" />
-			<exclude name="commons-lang*.jar" />
-			<exclude name="commons-logging*.jar" />
-			<exclude name="commons-vfs*.jar" />
-			<exclude name="pentaho-vfs-browser*.jar" />
-			<exclude name="scannotation*.jar" />
-			<exclude name="dom4j*.jar" />	      	
-			<exclude name="jface*.jar" />	      	
-			<exclude name="x86*.jar" />	      	
-          </fileset>
-	    </copy>
-	    <copy todir="${stage.dir}/${ivy.artifact.id}">
-	      <fileset file="${dist.dir}/${ivy.artifact.id}-${project.revision}.jar" />
-	    </copy>
-	  </target>
-
-	<!-- this target builds a kettle release that includes the plugin -->
-	<target name="kettle-w-plugin-dist">
-    <property name="pdi-dist-root" value="${bin.dir}/kettle-dist/${kettle-distrib-with-plugin-name}"/>
-    <delete dir="${bin.dir}/kettle-dist" />
-    <!-- Unzip PDI CE -->
-		<untar compression="gzip" dest="${pdi-dist-root}" src="${kettle.dist.dir}/${kettle-distrib-artifact-name}.tar.gz"/>
-    <!-- Unzip plugin -->
-		<unzip src="${dist.dir}/${package.basename}.zip" dest="${pdi-dist-root}/data-integration/plugins"/>
-    <!-- Unzip samples -->
-    <unzip src="${dist.dir}/${ivy.artifact.id}-samples-${project.revision}.zip" dest="${pdi-dist-root}/data-integration/samples" />
-
-    <tar destfile="${dist.dir}/${kettle-distrib-with-plugin-name}.tar.gz" longfile="gnu" compression="gzip">
-      <tarfileset dir="${bin.dir}/kettle-dist" mode="755" excludes="docs/api/** docs/api-core/** **/Thumbs.db">
-        <include name="**/*.sh" />
-        <include name="**/JavaApplicationStub" />
-      </tarfileset>
-      <tarfileset dir="${bin.dir}/kettle-dist" excludes="docs/api/** docs/api-core/** **/Thumbs.db">
-        <exclude name="**/*.sh" />
-        <exclude name="**/JavaApplicationStub" />
-      </tarfileset>
-    </tar>
-    <!-- Zip up new PDI CE with Pentaho Big Data Plugin and Samples -->
-		<zip destfile="${dist.dir}/${kettle-distrib-with-plugin-name}.zip">
-			<zipfileset dir="${bin.dir}/kettle-dist" filemode="755">
-        <include name="**/*.sh" />
-        <include name="**/JavaApplicationStub" />
-      </zipfileset>
-      <zipfileset dir="${bin.dir}/kettle-dist">
-        <exclude name="**/*.sh" />
-        <exclude name="**/JavaApplicationStub" />
-      </zipfileset>
-		</zip>
-	</target>
-	
-	<target name="install-plugin" depends="jar,package" description="Build the plugin and extract it into ${kettle.dist.dir}/plugins">
-		<!-- Install the plugin -->
-		<delete dir="${kettle.dist.dir}/plugins/pentaho-big-data-plugin"/>
-		<unzip dest="${kettle.dist.dir}/plugins">
-			<fileset file="${dist.dir}/${package.basename}.zip"/>
-		</unzip>
-
-		<!-- Install samples -->
-		<delete dir="${kettle.dist.dir}/samples/job/hadoop"/>
-		<unzip dest="${kettle.dist.dir}/samples">
-			<fileset file="${dist.dir}/${ivy.artifact.id}-samples-${project.revision}.zip"/>
-		</unzip>
-	</target>
-	
-	<target name="publish-local-nojar" depends="install-ivy,subfloor.publish-local-nojar">
-	  <ivy:resolve file="${package.artifact.ivyfile}" />
-	  <ivy:publish resolver="local" pubrevision="${project.revision}" overwrite="true" forcedeliver="true">
-		<artifacts pattern="${dist.dir}/[artifact]-[revision].[ext]" />
-	  </ivy:publish>
-	  <ivy:resolve file="${package-samples.artifact.ivyfile}" />
-	  <ivy:publish resolver="local" pubrevision="${project.revision}" overwrite="true" forcedeliver="true">
-	    <artifacts pattern="${dist.dir}/[artifact]-[revision].[ext]" />
-	  </ivy:publish>
-	</target>
-	
-	<target name="publish-nojar" depends="subfloor-pkg.publish-nojar">
-      <antcall target="maven-publish-artifact">
-        <param name="publish.pomFile" value="${package-samples.artifact.pomfile}" />
-        <param name="publish.file" value="${dist.dir}/${ivy.artifact.id}-samples-${project.revision}.zip" />
-      </antcall>
-    </target>
-
-  <!-- Publish shims at the same time as publishing ourself -->
-  <target name="publish" depends="publish-shims,subfloor.publish" />
-
-	<target name="create-package-pom"
-	          depends="install-ivy,subfloor-pkg.create-package-pom"
-	          description="Creates a POM file based on the ivy dependencies for a separate package">
-      <ivy:makepom ivyfile="${package-samples.artifact.ivyfile}" pomfile="${package-samples.artifact.pomfile}" />
-      <replace file="${package-samples.artifact.pomfile}" token="jar" value="zip" />
-    </target>
-	
-	<target name="package" depends="subfloor-pkg.package">
-		<zip destfile="${dist.dir}/${ivy.artifact.id}-samples-${project.revision}.zip" basedir="${samples.dir}" />
-	</target>
-
-  <!-- Override compile.pre and compile.compile so we can inject ${project.version} into PluginPropertiesUtil -->
-  <target name="compile.pre">
-    <!-- Update the @VERSION@ string in PluginPropertiesUtil -->
-    <echo>Replacing @VERSION@ in ${src.dir}/org/pentaho/hadoop/PluginPropertiesUtil.java</echo>
-    <copy todir="${prepared.src.dir}/org/pentaho/hadoop" file="${src.dir}/org/pentaho/hadoop/PluginPropertiesUtil.java" />
-    <replace file="${prepared.src.dir}/org/pentaho/hadoop/PluginPropertiesUtil.java" token="@VERSION@" value="${project.revision}" />
+  <target name="test" depends="init">
+    <for list="${modules}" param="module" trim="true">
+      <sequential>
+        <ant antfile="build.xml" dir="@{module}" inheritall="false" target="test" />
+      </sequential>
+    </for>
   </target>
 
-  <!-- Build the prepared source after the normal source so we can replace the non-instrumented classes -->
-  <target name="compile.compile" depends="subfloor.compile.compile">
-    <echo>Building prepared source</echo>
-    <delete file="${classes.dir}/org/pentaho/hadoop/PluginPropertiesUtil.class"/>
-    <javac destdir="${classes.dir}"
-           includeAntRuntime="false"
-           debug="${javac.debug}"
-           deprecation="${javac.deprecation}"
-           fork="true"
-           memorymaximumsize="${javac.maxmemory}"
-           source="${javac.source}"
-           target="${javac.target}">
-      <classpath>
-        <path refid="classpath" />
-      </classpath>
-      <src path="${prepared.src.dir}" />
-    </javac>
+  <target name="cobertura" depends="init">
+    <for list="${modules}" param="module" trim="true">
+      <sequential>
+        <ant antfile="build.xml" dir="@{module}" inheritall="false" target="cobertura" />
+      </sequential>
+    </for>
   </target>
+
+  <target name="publish-local" depends="init">
+    <for list="${modules}" param="module" trim="true">
+      <sequential>
+        <ant antfile="build.xml" dir="@{module}" inheritall="false" target="publish-local" />
+      </sequential>
+    </for>
+  </target>
+
+  <target name="publish" depends="init">
+    <for list="${modules}" param="module" trim="true">
+      <sequential>
+        <ant antfile="build.xml" dir="@{module}" inheritall="false" target="publish" />
+      </sequential>
+    </for>
+  </target>
+
+  <target name="dist" depends="init, build-all"/>    
 </project>
