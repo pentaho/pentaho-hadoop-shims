@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="shims/|api/|cdh3u4/|cdh4/|cdh412/|cdh413/|cdh42/|common/|hdp12/|mapr/" kind="src" path=""/>
+	<classpathentry excluding="shims/|api/|cdh3u4/|cdh4/|cdh412/|cdh413/|cdh42/|common/|hdp12/|mapr/|mapr21/" kind="src" path=""/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
