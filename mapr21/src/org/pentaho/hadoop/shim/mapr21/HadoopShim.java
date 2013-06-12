@@ -38,6 +38,10 @@ public class HadoopShim extends CommonHadoopShim {
   protected static final String MFS_SCHEME = "maprfs://";
   protected static final String[] EMPTY_CONNECTION_INFO = new String[2];
 
+  static {
+    JDBC_DRIVER_MAP.put("hive2",org.apache.hive.jdbc.HiveDriver.class); 
+  }
+  
   @Override
   public String[] getNamenodeConnectionInfo(Configuration c) {
     return EMPTY_CONNECTION_INFO;
