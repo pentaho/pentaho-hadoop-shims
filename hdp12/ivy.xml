@@ -22,6 +22,7 @@
     <dependency conf="provided->default" org="pentaho-kettle" name="kettle-engine" rev="${dependency.kettle.revision}" changing="true"/>
 
     <dependency org="pentaho" name="pentaho-hdfs-vfs" rev="${dependency.pentaho-hdfs-vfs.revision}" transitive="false" changing="true"/>
+    <dependency org="pentaho" name="pentaho-hadoop-snappy" rev="${dependency.pentaho-hadoop-snappy.revision}" changing="true"/>
     
     <dependency conf="provided->default" org="com.thoughtworks.xstream" name="xstream" rev="${dependency.xstream.revision}" transitive="false"/>
     <dependency conf="provided->default" org="log4j" name="log4j" rev="1.2.14" />
@@ -31,9 +32,36 @@
     <dependency conf="test->default" org="org.safehaus.jug" name="jug-lgpl" rev="2.0.0" />
     <dependency conf="test->default" org="pentaho" name="pentaho-hadoop-shims-api-test" rev="${project.revision}" changing="true"/>
 
+    <dependency conf="client->default" org="net.java.dev.jets3t" name="jets3t" rev="${dependency.jets3t.revision}" transitive="false" />
+    <dependency conf="client->default" org="commons-net" name="commons-net" rev="${dependency.commons-net.revision}" transitive="false" />
+
+    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-core" rev="${dependency.hadoop.revision}" >
+      <exclude name="hadoop-core" />
+      <exclude name="a.*" matcher="regexp" />
+      <exclude name="commons-beanutils.*" matcher="regexp" />
+      <exclude name="commons-collections" />
+      <exclude name="commons-digester" />
+      <exclude name="commons-io" />
+      <exclude name="commons-lang" />
+      <exclude name="commons-math" />
+      <exclude name="core" />
+      <exclude name="ja.*" matcher="regexp" />
+      <exclude name="jersey.*" matcher="regexp" />
+      <exclude name="jettison" />
+      <exclude name="jetty.*" matcher="regexp" />
+      <exclude name="js.*" matcher="regexp" />
+      <exclude name="junit" />
+      <exclude name="s.*" matcher="regexp" />
+    </dependency>
+
+    <dependency org="org.apache.thrift" name="libthrift" rev="${dependency.thrift.revision}" transitive="false" />
+    <dependency org="org.apache.thrift" name="libfb303" rev="${dependency.thrift.revision}" transitive="false" />
+
     <!-- Exclude log4j from default libraries - it's brought in transitively through many of the Hadoop dependencies and should not be included -->
     <exclude org="log4j" module="log4j" conf="default" />
     <!-- Exclude antlr. Hive brings in a version that's not compatible with Pig. -->
     <exclude org="org.antlr" conf="default" />
+
+    <exclude org="junit" module="junit" conf="client" />
   </dependencies>
 </ivy-module>
