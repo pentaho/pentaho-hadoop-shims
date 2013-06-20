@@ -1,0 +1,7 @@
+<!--Thu May 30 10:40:32 2013-->
+  <configuration>
+    <property>
+      <name>hbase.rpc.engine</name>
+      <value>org.apache.hadoop.hbase.ipc.SecureRpcEngine</value>
+    </property>
+  </configuration>
