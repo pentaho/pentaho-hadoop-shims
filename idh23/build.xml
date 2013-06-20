@@ -1,0 +1,25 @@
+<!--===========================================================================
+  This is the build file for the IDH23 Shim modules.
+  
+  See ../build-res/subfloor.xml for more details
+============================================================================-->
+<project name="pentaho-hadoop-shims-idh23" basedir="." default="dist"
+  xmlns:ivy="antlib:org.apache.ivy.ant" >
+  
+  <description>
+    This build file is used to create the IDH2.3 Shim module for the Big Data plugin
+    and is based off Subfloor (../build-res/subfloor.xml)
+  </description>
+
+  <import file="../common-shims-build.xml"/>
+
+  <target name="clean-jars" depends="subfloor.clean-jars" >
+    <delete dir="${lib.provided.dir}"/>
+  </target>
+
+  <target name="resolve" depends="subfloor.resolve">
+    <copy todir="lib" >
+      <fileset dir="lib-dist" />
+    </copy>
+  </target>
+</project>
