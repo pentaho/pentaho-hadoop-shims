@@ -22,6 +22,8 @@
     <dependency conf="provided->default" org="pentaho-kettle" name="kettle-engine" rev="${dependency.kettle.revision}" changing="true"/>
 
     <dependency conf="provided->default" org="log4j" name="log4j" rev="1.2.14" />
+    <dependency conf="provided->default" org="com.thoughtworks.xstream" name="xstream" rev="${dependency.xstream.revision}" transitive="false"/>
+    <dependency conf="provided->default" org="commons-vfs" name="commons-vfs" rev="20091118-pentaho"/>
     <!-- <dependency conf="provided->default" org="commons-lang" name="commons-lang" rev="${dependency.commons-lang.revision}" transitive="false" />-->
 
     <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-core" rev="${dependency.hadoop.revision}" >
