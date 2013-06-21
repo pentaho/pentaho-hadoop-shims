@@ -33,7 +33,11 @@
     <dependency conf="default" org="pentaho" name="pentaho-hdfs-vfs" rev="${dependency.pentaho-hdfs-vfs.revision}" transitive="false" changing="true"/>
     <dependency conf="default" org="pentaho" name="pentaho-hadoop-snappy" rev="${dependency.pentaho-hadoop-snappy.revision}" changing="true"/>
 
-    <dependency conf="pmr->default" org="org.apache.hbase" name="hbase" rev="${dependency.apache-hbase.revision}" transitive="false"/>
+    <!-- NOTE: This has been changed for 1.3.3 because the MapR HBase 0.94.5 JAR is not compatible at this time. Pentaho has published a working
+         version of this JAR and resolves that JAR instead (see build.properties) -->
+    <dependency conf="pmr->default" org="org.apache.hbase" name="hbase" rev="${dependency.apache-hbase.revision}" transitive="false">
+      <artifact name="hbase" ext="jar"/>
+    </dependency>
     <dependency conf="pmr->default" org="org.apache.zookeeper" name="zookeeper" rev="${dependency.apache-zookeeper.revision}" transitive="false"/>
 
     <dependency org="pentaho" name="pentaho-hadoop-shims-api" rev="${project.revision}" changing="true"/>
