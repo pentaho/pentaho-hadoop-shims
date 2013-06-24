@@ -34,6 +34,7 @@
       <exclude name="commons-lang" />
       <exclude name="commons-math" />
       <exclude name="core" />
+      <exclude name="hadoop-core" />
       <exclude name="ja.*" matcher="regexp" />
       <exclude name="jetty.*" matcher="regexp" />
       <exclude name="jsp.*" matcher="regexp" />
@@ -42,8 +43,6 @@
     </dependency>
 
     <dependency conf="client->default" org="com.google.guava" name="guava" rev="${dependency.guava.revision}" transitive="false" />
-
-    <dependency conf="pmr->default" org="org.apache.zookeeper" name="zookeeper" rev="${dependency.apache-zookeeper.revision}" transitive="false"/>
 
     <dependency org="pentaho" name="pentaho-hdfs-vfs" rev="${dependency.pentaho-hdfs-vfs.revision}" transitive="false" changing="true"/>
     
@@ -60,7 +59,6 @@
     <dependency org="org.apache.thrift" name="libfb303" rev="${dependency.apache-thrift.revision}" transitive="false" />
     
     <dependency org="org.apache.sqoop" name="sqoop" rev="${dependency.apache-sqoop.revision}" changing="true" transitive="false"/>
-    <dependency org="org.apache.pig" name="pig" rev="${dependency.pig.revision}" transitive="false" />
     <dependency org="org.aspectj" name="aspectjrt" rev="${dependency.aspectjrt.revision}"/>
     <dependency org="com.google.protobuf" name="protobuf-java" rev="${dependency.protobuf.revision}" transitive="false"/>
 
