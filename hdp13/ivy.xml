@@ -46,6 +46,16 @@
       <exclude name="s.*" matcher="regexp" />
     </dependency>
 
+    <!-- Resolving HDP Pig is messy, the core JAR is provided, some other Pig dependencies need to be added or excluded -->
+    <dependency conf="pmr->default" org="org.apache.pig" name="pig" rev="${dependency.pig.revision}" transitive="true">
+      <exclude org="com.google.guava" />
+      <exclude org="jline" />
+      <exclude org="org.apache.pig" />
+      <exclude org="org.codehaus.jackson" />
+      <exclude org="org.slf4j" />
+    </dependency>
+    <dependency conf="pmr->default" org="com.google.protobuf" name="protobuf-java" rev="${protobuf-java.version}" transitive="false" />
+
     <dependency org="org.apache.thrift" name="libthrift" rev="${dependency.thrift.revision}" transitive="false" />
     <dependency org="org.apache.thrift" name="libfb303" rev="${dependency.thrift.revision}" transitive="false" />
     
