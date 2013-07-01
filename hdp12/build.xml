@@ -13,12 +13,13 @@
 
   <import file="../common-shims-build.xml"/>
 	
-  <target name="clean-jars" >
-	<delete dir="${lib.provided.dir}"/>
+  <target name="clean-jars" depends="subfloor.clean-jars" >
+    <delete dir="${lib.provided.dir}"/>
   </target>
 
-  <!-- We need to keep the JARs in lib (they're checked in as they're not available 
-       in a repository for use by Ivy) so a clean-all should just do a clean -->
-  
-  <target name="clean-all" depends="clean" />
+  <target name="resolve" depends="subfloor.resolve">
+    <copy todir="lib" >
+      <fileset dir="lib-dist" />
+    </copy>
+  </target>
 </project>
