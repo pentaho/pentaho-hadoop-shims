@@ -45,6 +45,7 @@ public class ConfigurationProxy extends org.apache.hadoop.mapred.JobConf impleme
   public ConfigurationProxy() {
     super();
     addResource("hdfs-site.xml");
+    addResource("hbase-site.xml");
   }
   
   /*
