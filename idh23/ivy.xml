@@ -59,11 +59,11 @@
     <dependency org="org.apache.sqoop" name="sqoop" rev="${dependency.apache-sqoop.revision}" changing="true" transitive="false"/>
     <dependency org="org.aspectj" name="aspectjrt" rev="${dependency.aspectjrt.revision}"/>
     <dependency org="com.google.protobuf" name="protobuf-java" rev="${dependency.protobuf.revision}" transitive="false"/>
-
+    <dependency org="com.thoughtworks.xstream" name="xstream" rev="${dependency.xstream.revision}" transitive="false"/>
+    
     <dependency conf="test->default" org="junit" name="junit" rev="4.5"/>
     <dependency conf="test->default" org="org.safehaus.jug" name="jug-lgpl" rev="2.0.0" />
     <dependency conf="test->default" org="pentaho" name="pentaho-hadoop-shims-api-test" rev="${project.revision}" changing="true"/>
-    <dependency conf="test->default" org="com.thoughtworks.xstream" name="xstream" rev="${dependency.xstream.revision}" transitive="false"/>
 
     <!-- Exclude log4j from default libraries - it's brought in transitively through many of the Hadoop dependencies and should not be included -->
     <exclude org="log4j" module="log4j" conf="default" />
