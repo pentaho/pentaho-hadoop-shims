@@ -72,6 +72,6 @@
     <!-- Exclude antlr. Hive brings in a version that's not compatible with Pig. -->
     <exclude org="org.antlr" conf="default" />
 
-    <exclude org="junit" module="junit" conf="client" />
+    <exclude org="junit" conf="default,zip,client,provided,pmr"/>
   </dependencies>
 </ivy-module>

@@ -60,5 +60,6 @@
     <exclude org="log4j" module="log4j" conf="default" />
     <!-- Exclude antlr. Hive brings in a version that's not compatible with Pig. -->
     <exclude org="org.antlr" conf="default" />
+    <exclude org="junit" conf="default,zip,client,provided,pmr"/>
   </dependencies>
 </ivy-module>
