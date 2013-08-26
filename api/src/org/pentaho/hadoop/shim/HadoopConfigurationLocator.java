@@ -111,6 +111,8 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
    * {@link FileProvider} implementations.
    */
   private HadoopConfigurationFileSystemManager fsm;
+  
+  private DefaultFileSystemManager defaultFsm;
 
   /**
    * Initialize this factory with a directory of where to look for cluster
@@ -138,6 +140,7 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
       throw new NullPointerException(
           DefaultFileSystemManager.class.getSimpleName() + " is required");
     }
+    this.defaultFsm = fsm;
     this.fsm = new HadoopConfigurationFileSystemManager(this, fsm);
     findHadoopConfigurations(baseDir, activeLocator);
     this.activeLocator = activeLocator;
@@ -305,6 +308,9 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
     for (String path : paths) {
       try {
         FileObject file = root.resolveFile(path.trim());
+        if (!file.exists()) {
+          file = defaultFsm.resolveFile(path.trim());
+        }
         if (FileType.FOLDER.equals(file.getType())) {
           // Add directories with a trailing / so the URL ClassLoader interprets
           // them as directories
