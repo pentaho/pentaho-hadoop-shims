@@ -220,12 +220,6 @@ public class DriverProxyInvocationChain {
                 o = (Void)null;
               }
               else {
-                StringBuffer sb = new StringBuffer("Intercepted ");
-                sb.append(method.getDeclaringClass().getName());
-                sb.append(".");
-                sb.append(methodName);
-                sb.append(" with MethodNotSupported");
-                System.err.println(sb);
                 throw cause;
               }
             }
@@ -369,12 +363,6 @@ public class DriverProxyInvocationChain {
                 return getIdentifierQuoteString();
               }
               else {
-                StringBuffer sb = new StringBuffer("Intercepted ");
-                sb.append(method.getDeclaringClass().getName());
-                sb.append(".");
-                sb.append(methodName);
-                sb.append(" with MethodNotSupported");
-                System.err.println(sb);
                 throw cause;
               }
             }
@@ -480,25 +468,69 @@ public class DriverProxyInvocationChain {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
       // try to invoke the method as-is
       try {
-        Object o = method.invoke(t, args);
-        if(o instanceof ResultSet) {
-          ResultSet r = (ResultSet)o;
-          
-          return (ResultSet)Proxy.newProxyInstance(r.getClass().getClassLoader(),
-              new Class[] { ResultSet.class }, new ResultSetInvocationHandler(r));
-        }
-        else if(o instanceof ResultSetMetaData) {
-          ResultSetMetaData r = (ResultSetMetaData)o;
-          
-          return (ResultSetMetaData)Proxy.newProxyInstance(r.getClass().getClassLoader(),
-              new Class[] { ResultSetMetaData.class }, new ResultSetMetaDataInvocationHandler(r));
+        return getProxiedObject(method.invoke(t, args));
+      }
+      catch(InvocationTargetException ite) {
+        Throwable cause = ite.getCause();
+      
+        if(cause instanceof SQLException) {
+          if(cause.getMessage().equals("Method not supported")) {
+            String methodName = method.getName();
+            // Intercept PreparedStatement.getMetaData() to see if it throws an exception
+            if("getMetaData".equals(method.getName()) && (args == null || args.length==0)) {
+              return getProxiedObject(getMetaData());
+            }              
+            else {
+              throw cause;
+            }
+          }
+          else throw cause;
         }
         else {
-          return o;
+          throw cause;
         }
       }
-      catch(Throwable t) {
-        throw (t instanceof InvocationTargetException) ? t.getCause() : t;
+    }
+    
+    /**
+     *  Returns the result set meta data.  If a result set was not created by running an execute or executeQuery then a null is returned.
+     *
+     *  @return null is returned if the result set is null
+     *  @throws SQLException if an error occurs while getting metadata
+     * @see java.sql.PreparedStatement#getMetaData()
+     */
+
+    public ResultSetMetaData getMetaData() {
+      ResultSetMetaData rsmd = null;
+      if(t instanceof Statement) {
+        try {
+          ResultSet resultSet = ((Statement)t).getResultSet();
+          rsmd = (resultSet == null ? null : resultSet.getMetaData());
+        }
+        catch(SQLException se) {
+          rsmd = null;
+        }
+      }
+      return rsmd;
+    }
+    
+    private Object getProxiedObject(Object o) {
+      if(o == null) return null;
+      
+      if(o instanceof ResultSet) {
+        ResultSet r = (ResultSet)o;
+        
+        return (ResultSet)Proxy.newProxyInstance(r.getClass().getClassLoader(),
+            new Class[] { ResultSet.class }, new ResultSetInvocationHandler(r));
+      }
+      else if(o instanceof ResultSetMetaData) {
+        ResultSetMetaData r = (ResultSetMetaData)o;
+        
+        return (ResultSetMetaData)Proxy.newProxyInstance(r.getClass().getClassLoader(),
+            new Class[] { ResultSetMetaData.class }, new ResultSetMetaDataInvocationHandler(r));
+      }
+      else {
+        return o;
       }
     }
   }
@@ -636,12 +668,6 @@ public class DriverProxyInvocationChain {
                 return isSigned((Integer)args[0]);
               }
               else {
-                StringBuffer sb = new StringBuffer("Intercepted ");
-                sb.append(method.getDeclaringClass().getName());
-                sb.append(".");
-                sb.append(methodName);
-                sb.append(" with MethodNotSupported");
-                System.err.println(sb);
                 throw cause;
               }
             }
