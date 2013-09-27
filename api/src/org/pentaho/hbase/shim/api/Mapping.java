@@ -514,7 +514,7 @@ public class Mapping {
 
   public boolean readRep(Repository rep, ObjectId id_step)
       throws KettleException {
-    if (Const.isEmpty(rep.getStepAttributeString(id_step, 0, "key"))) {
+    if (Const.isEmpty(rep.getStepAttributeString(id_step, 0, "key_type"))) {
       return false; // No mapping information in the repository
     }
 
