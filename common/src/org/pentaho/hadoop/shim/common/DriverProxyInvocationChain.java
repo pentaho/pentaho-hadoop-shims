@@ -339,6 +339,13 @@ public class DriverProxyInvocationChain {
               (String)args[0],(String)args[1],(String)args[2],(String[])args[3]);
         }
       
+        // Need to intercept getIdentifierQuoteString() before trying the driver version, as our "fixed"
+        // drivers return a single quote when it should be empty.
+        String methodName = method.getName();
+        if("getIdentifierQuoteString".equals(methodName)) {
+          return getIdentifierQuoteString();
+        }
+        
         // try to invoke the method as-is
         Object o = method.invoke(t, args);
         if(o instanceof ResultSet) {
@@ -354,23 +361,7 @@ public class DriverProxyInvocationChain {
       catch(Throwable t) {
         if(t instanceof InvocationTargetException) {
           Throwable cause = t.getCause();
-        
-          if(cause instanceof SQLException) {
-            if(cause.getMessage().equals("Method not supported")) {
-              // Intercept unsupported methods and inject some default code
-              String methodName = method.getName();
-              if("getIdentifierQuoteString".equals(methodName)) {
-                return getIdentifierQuoteString();
-              }
-              else {
-                throw cause;
-              }
-            }
-            else throw cause;
-          }
-          else {
-            throw cause;
-          }
+          throw cause;
         }
         else {
           throw t;
@@ -385,7 +376,7 @@ public class DriverProxyInvocationChain {
      * @throws SQLException if any SQL error occurs
      */
     public String getIdentifierQuoteString() throws SQLException {
-      return "'";
+      return "";
     }
     
     /**
