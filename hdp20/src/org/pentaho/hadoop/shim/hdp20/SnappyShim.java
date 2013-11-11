@@ -20,25 +20,29 @@
 *
 ******************************************************************************/
 
-package org.pentaho.hbase.shim.common;
+package org.pentaho.hadoop.shim.hdp20;
 
-import org.pentaho.hadoop.shim.ShimVersion;
-import org.pentaho.hbase.shim.spi.HBaseConnection;
-import org.pentaho.hbase.shim.spi.HBaseShim;
+import org.apache.hadoop.io.compress.SnappyCodec;
+import org.pentaho.hadoop.shim.common.CommonSnappyShim;
 
-/**
- * Concrete implementation of HBaseShim suitable for use with Apache HBase 0.90.x.
- * 
- * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
- */
-public class CommonHBaseShim extends HBaseShim {
-  
-  @Override
-  public ShimVersion getVersion() {
-    return new ShimVersion(1, 0);
-  }
-
-  public HBaseConnection getHBaseConnection() {
-    return new CommonHBaseConnection();
+public class SnappyShim extends CommonSnappyShim {
+  /**
+   * Tests whether hadoop-snappy (not to be confused with other java-based
+   * snappy implementations such as jsnappy or snappy-java) plus the 
+   * native snappy libraries are available.
+   * 
+   * @return true if hadoop-snappy is available on the classpath
+   */
+  public boolean isHadoopSnappyAvailable() {
+    ClassLoader cl = Thread.currentThread().getContextClassLoader();
+    Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+    try {
+      return SnappyCodec.isNativeCodeLoaded();
+    } catch (Throwable t) {
+      return false;
+    } finally {
+      Thread.currentThread().setContextClassLoader(cl);
+    }
   }
 }
+

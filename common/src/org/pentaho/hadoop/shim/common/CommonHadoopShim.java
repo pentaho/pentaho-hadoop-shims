@@ -1,24 +1,24 @@
 /*******************************************************************************
- *
- * Pentaho Big Data
- *
- * Copyright (C) 2002-2012 by Pentaho : http://www.pentaho.com
- *
- *******************************************************************************
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- ******************************************************************************/
+*
+* Pentaho Big Data
+*
+* Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
+*
+*******************************************************************************
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with
+* the License. You may obtain a copy of the License at
+*
+*    http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+******************************************************************************/
 
 package org.pentaho.hadoop.shim.common;
 
@@ -34,7 +34,7 @@ import org.apache.hadoop.hive.jdbc.HiveDriver;
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapred.JobClient;
 import org.apache.hadoop.mapred.JobConf;
-import org.apache.hadoop.mapred.JobTracker;
+import org.apache.hadoop.net.NetUtils;
 import org.apache.hadoop.util.VersionInfo;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.i18n.BaseMessages;
@@ -62,9 +62,12 @@ public class CommonHadoopShim implements HadoopShim {
   private DistributedCacheUtil dcUtil;
   
   @SuppressWarnings("serial")
-  protected static Map<String,Class<? extends Driver>> JDBC_DRIVER_MAP = new HashMap<String,Class<? extends Driver>>() {{
+  protected static Map<String, Class<? extends Driver>> JDBC_DRIVER_MAP =
+      new HashMap<String, Class<? extends Driver>>() {
+        {
     put("hive",org.apache.hadoop.hive.jdbc.HiveDriver.class);
-  }};
+        }
+      };
   
   @Override
   public ShimVersion getVersion() {
@@ -99,8 +102,7 @@ public class CommonHadoopShim implements HadoopShim {
         Driver newInstance = clazz.newInstance();
         Driver driverProxy = DriverProxyInvocationChain.getProxy(Driver.class, newInstance);
         return driverProxy;
-      }
-      else {
+      } else {
         throw new Exception("JDBC driver of type '"+driverType+"' not supported");
       }
       
@@ -146,7 +148,8 @@ public class CommonHadoopShim implements HadoopShim {
   @Override
   public DistributedCacheUtil getDistributedCacheUtil() throws ConfigurationException {
     if (dcUtil == null) {
-      throw new ConfigurationException(BaseMessages.getString(CommonHadoopShim.class, "CommonHadoopShim.DistributedCacheUtilMissing"));
+      throw new ConfigurationException( BaseMessages.getString( CommonHadoopShim.class,
+          "CommonHadoopShim.DistributedCacheUtilMissing" ) );
     }
     return dcUtil;
   }
@@ -168,11 +171,16 @@ public class CommonHadoopShim implements HadoopShim {
   public String[] getJobtrackerConnectionInfo(Configuration c) {
     String[] result = new String[2];
     if (!"local".equals(c.get("mapred.job.tracker", "local"))) {
-      InetSocketAddress jobtracker = JobTracker.getAddress(ShimUtils.asConfiguration(c));
+      InetSocketAddress jobtracker = getJobTrackerAddress( c );
       result[0] = jobtracker.getHostName();
       result[1] = String.valueOf(jobtracker.getPort());
     }
     return result;
+  }
+
+  public static InetSocketAddress getJobTrackerAddress( Configuration conf ) {
+    String jobTrackerStr = conf.get( "mapred.job.tracker", "localhost:8012" );
+    return NetUtils.createSocketAddr( jobTrackerStr );
   }
   
   @Override

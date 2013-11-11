@@ -20,25 +20,23 @@
 *
 ******************************************************************************/
 
-package org.pentaho.hbase.shim.common;
+package org.pentaho.hadoop.shim.hdp20;
 
-import org.pentaho.hadoop.shim.ShimVersion;
-import org.pentaho.hbase.shim.spi.HBaseConnection;
-import org.pentaho.hbase.shim.spi.HBaseShim;
+import org.pentaho.hadoop.shim.common.CommonHadoopShim;
 
-/**
- * Concrete implementation of HBaseShim suitable for use with Apache HBase 0.90.x.
- * 
- * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
- */
-public class CommonHBaseShim extends HBaseShim {
+public class HadoopShim extends CommonHadoopShim {
+  
+  static {
+    JDBC_DRIVER_MAP.put("hive2",org.apache.hive.jdbc.HiveDriver.class); 
+  }
   
   @Override
-  public ShimVersion getVersion() {
-    return new ShimVersion(1, 0);
+  protected String getDefaultNamenodePort() {
+    return "8020";
   }
-
-  public HBaseConnection getHBaseConnection() {
-    return new CommonHBaseConnection();
+  
+  @Override
+  protected String getDefaultJobtrackerPort() {
+    return "8021";
   }
 }

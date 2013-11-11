@@ -1,28 +1,30 @@
 /*******************************************************************************
- *
- * Pentaho Big Data
- *
- * Copyright (C) 2002-2012 by Pentaho : http://www.pentaho.com
- *
- *******************************************************************************
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- ******************************************************************************/
+*
+* Pentaho Big Data
+*
+* Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
+*
+*******************************************************************************
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with
+* the License. You may obtain a copy of the License at
+*
+*    http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+******************************************************************************/
 
 package org.pentaho.hbase.mapred;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,16 +38,15 @@ import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.hbase.util.Writables;
-
+import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.util.StringUtils;
 
 
 /**
  * Iterate over an HBase table data, return (Text, RowResult) pairs.
  * 
- * A complete copy (with some mods) rather than a subclass of TableRecordReaderImpl 
- * because getStartRow() is package protected (surely an oversight since setStartRow
- * is public).
+ * A complete copy (with some mods) rather than a subclass of TableRecordReaderImpl because getStartRow() is package
+ * protected (surely an oversight since setStartRow is public).
  */
 public class PentahoTableRecordReaderImpl {
   static final Log LOG = LogFactory.getLog(PentahoTableRecordReaderImpl.class);
@@ -81,17 +82,15 @@ public class PentahoTableRecordReaderImpl {
         scan.setCacheBlocks(false);
         //this.scanner = this.htable.getScanner(scan);
       } else {
-        LOG.debug("TIFB.restart, firstRow: " +
-            Bytes.toStringBinary(firstRow) + ", endRow: " +
-            Bytes.toStringBinary(endRow));
+        LOG.debug( "TIFB.restart, firstRow: " + Bytes.toStringBinary( firstRow ) + ", endRow: "
+            + Bytes.toStringBinary( endRow ) );
         scan = new Scan(firstRow, endRow);
         // scan.addColumns(trrInputColumns);
         configureScanWithInputColumns(scan, trrInputColumns);
         // this.scanner = this.htable.getScanner(scan);
       }
     } else {
-      LOG.debug("TIFB.restart, firstRow: " +
-          Bytes.toStringBinary(firstRow) + ", no endRow");
+      LOG.debug( "TIFB.restart, firstRow: " + Bytes.toStringBinary( firstRow ) + ", no endRow" );
 
       scan = new Scan(firstRow);
       // scan.addColumns(trrInputColumns);
@@ -106,8 +105,8 @@ public class PentahoTableRecordReaderImpl {
     
     if (timeStamp != null) {
       scan.setTimeStamp(timeStamp.longValue());
-    } else if (timeStampStart != null && timeStampEnd != null && 
-        (timeStampEnd.longValue() - timeStampStart.longValue() > 0L)) {
+    } else if ( timeStampStart != null && timeStampEnd != null
+        && ( timeStampEnd.longValue() - timeStampStart.longValue() > 0L ) ) {
       scan.setTimeRange(timeStampStart.longValue(), timeStampEnd.longValue());
     }
     
@@ -117,8 +116,10 @@ public class PentahoTableRecordReaderImpl {
   /**
    * Map old family:column format onto non-deprecated API calls on Scan. 
    * 
-   * @param scan the scan object to set the columns on
-   * @param inputColumns input columns in old-style family:column format
+   * @param scan
+   *          the scan object to set the columns on
+   * @param inputColumns
+   *          input columns in old-style family:column format
    */
   protected static void configureScanWithInputColumns(Scan scan, byte[][] inputColumns) {
     for (byte[] familyAndQualifier : inputColumns) {
@@ -157,22 +158,26 @@ public class PentahoTableRecordReaderImpl {
   byte[] getStartRow() {
     return this.startRow;
   }
+
   /**
-   * @param htable the {@link HTable} to scan.
+   * @param htable
+   *          the {@link HTable} to scan.
    */
   public void setHTable(HTable htable) {
     this.htable = htable;
   }
 
   /**
-   * @param inputColumns the columns to be placed in {@link Result}.
+   * @param inputColumns
+   *          the columns to be placed in {@link Result}.
    */
   public void setInputColumns(final byte [][] inputColumns) {
     this.trrInputColumns = inputColumns;
   }
 
   /**
-   * @param startRow the first row in the split
+   * @param startRow
+   *          the first row in the split
    */
   public void setStartRow(final byte [] startRow) {
     this.startRow = startRow;
@@ -180,14 +185,16 @@ public class PentahoTableRecordReaderImpl {
 
   /**
    *
-   * @param endRow the last row in the split
+   * @param endRow
+   *          the last row in the split
    */
   public void setEndRow(final byte [] endRow) {
     this.endRow = endRow;
   }
 
   /**
-   * @param rowFilter the {@link Filter} to be used.
+   * @param rowFilter
+   *          the {@link Filter} to be used.
    */
   public void setRowFilter(Filter rowFilter) {
     this.trrRowFilter = rowFilter;
@@ -227,13 +234,14 @@ public class PentahoTableRecordReaderImpl {
   }
 
   /**
-   * @param key HStoreKey as input key.
-   * @param value MapWritable as input value
+   * @param key
+   *          HStoreKey as input key.
+   * @param value
+   *          MapWritable as input value
    * @return true if there was more data
    * @throws IOException
    */
-  public boolean next(ImmutableBytesWritable key, Result value)
-  throws IOException {
+  public boolean next( ImmutableBytesWritable key, Result value ) throws IOException {
     Result result;
     try {
       result = this.scanner.next();
@@ -247,7 +255,29 @@ public class PentahoTableRecordReaderImpl {
     if (result != null && result.size() > 0) {
       key.set(result.getRow());
       lastRow = key.get();
-      Writables.copyWritable(result, value);
+      // Some versions of HBase have removed the Writable interface from Result
+      // and added a copyFrom() method. Check for this here, and call the appropriate
+      // class and method
+      if ( result instanceof Writable && value instanceof Writable ) {
+        Writables.copyWritable( (Writable) result, (Writable) value );
+      } else {
+
+        try {
+          Method m = result.getClass().getMethod( "copyFrom", Result.class );
+          m.invoke( result, value );
+        } catch ( NoSuchMethodException e ) {
+          throw new IOException( e );
+        } catch ( SecurityException e ) {
+          throw new IOException( e );
+        } catch ( IllegalAccessException e ) {
+          throw new IOException( e );
+        } catch ( IllegalArgumentException e ) {
+          throw new IOException( e );
+        } catch ( InvocationTargetException e ) {
+          throw new IOException( e );
+        }
+
+      }
       return true;
     }
     return false;
