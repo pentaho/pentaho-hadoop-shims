@@ -14,9 +14,9 @@
   <import file="build-res/subfloor-pkg.xml"/>
 
   <!-- These are the modules this script should build -->
-  <property name="modules" value="api,hive-jdbc,hadoop-20,cdh3u4,cdh4,cdh412,cdh413,cdh42,hdp12,hdp13,idh23,mapr,mapr21" />
+  <property name="modules" value="api,hive-jdbc,hadoop-20,cdh3u4,cdh4,cdh412,cdh413,cdh42,hdp12,hdp13,hdp20,idh23,mapr,mapr21,mapr212,mapr213" />
   <!-- Every non-api shim module. These will be compiled/resolved after api. -->
-  <property name="shim-non-api-modules" value="hive-jdbc,hadoop-20,cdh3u4,cdh4,cdh412,cdh413,cdh42,hdp12,hdp13,idh23,mapr,mapr21" />
+  <property name="shim-non-api-modules" value="hive-jdbc,hadoop-20,cdh3u4,cdh4,cdh412,cdh413,cdh42,hdp12,hdp13,hdp20,idh23,mapr,mapr21,mapr212,mapr213" />
 
   <!-- Publish shims locally or publicly? -->
   <property name="shims.publish-local"
