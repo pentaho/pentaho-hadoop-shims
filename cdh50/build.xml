@@ -1,0 +1,31 @@
+<!--===========================================================================
+  This is the build file for the CDH4 Shim modules.
+  
+  See ../build-res/subfloor.xml for more details
+============================================================================-->
+<project name="pentaho-hadoop-shims-cdh50" basedir="." default="dist"
+  xmlns:ivy="antlib:org.apache.ivy.ant" >
+  
+  <description>
+    This build file is used to create the CDH5.0 Shim module for the Big Data plugin
+    and is based off Subfloor (../build-res/subfloor.xml)
+  </description>
+
+  <import file="../common-shims-build.xml"/>
+
+  <target name="resolve" depends="subfloor.resolve">
+    <mkdir dir="lib/client/mr1"/>
+    <move todir="lib/client/mr1">
+      <fileset dir="lib/client">
+        <include name="**/hadoop*mr1*.jar"/>
+      </fileset>
+    </move>
+    <mkdir dir="lib/client/mr2"/>
+    <move todir="lib/client/mr2">
+      <fileset dir="lib/client">
+        <include name="**/hadoop-mapreduce-client-*.jar"/>
+        <include name="**/hadoop-yarn-*.jar"/>
+      </fileset>
+    </move>
+  </target>
+</project>
