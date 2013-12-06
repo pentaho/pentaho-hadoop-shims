@@ -23,8 +23,8 @@
 package org.pentaho.hadoop.shim.common.mapred;
 
 import java.io.IOException;
-import java.util.List;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapred.Counters;
 import org.apache.hadoop.mapred.JobID;
 import org.apache.hadoop.mapred.JobStatus; 
@@ -147,6 +147,18 @@ public class MockRunningJob implements RunningJob {
   }
 
   public org.apache.hadoop.mapred.TaskCompletionEventList getTaskCompletionEventList(int arg0) {
+    return null;
+  }
+  
+  public boolean isRetired() throws java.io.IOException {
+    return false;
+  }
+
+  public Configuration getConfiguration() {
+    return null;
+  }
+
+  public String getHistoryUrl() throws IOException {
     return null;
   }
 }

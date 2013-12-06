@@ -37,6 +37,6 @@ public class HadoopShim extends CommonHadoopShim {
   
   @Override
   protected String getDefaultJobtrackerPort() {
-    return "8021";
+    return "50300";
   }
 }
