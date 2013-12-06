@@ -87,6 +87,6 @@ public class ShimRegistrationTest {
   public void hbaseShimRegistered() {
     ServiceLoader<HBaseShim> l = ServiceLoader.load(HBaseShim.class);
     HBaseShim s = l.iterator().next();
-    assertTrue(CommonHBaseShim.class.isAssignableFrom(s.getClass()));
+    assertTrue(org.pentaho.hbase.shim.hdp20.HBaseShimImpl.class.isAssignableFrom(s.getClass()));
   }
 }
