@@ -28,11 +28,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.ServiceLoader;
+import java.util.Set;
 
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSelectInfo;
@@ -44,6 +46,7 @@ import org.apache.log4j.Logger;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.hadoop.shim.api.ActiveHadoopConfigurationLocator;
 import org.pentaho.hadoop.shim.api.Required;
+import org.pentaho.hadoop.shim.api.ShimProperties;
 import org.pentaho.hadoop.shim.spi.HadoopConfigurationProvider;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 import org.pentaho.hadoop.shim.spi.PentahoHadoopShim;
@@ -62,6 +65,8 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
   private static final String CONFIG_PROPERTIES_FILE = "config.properties";
 
   private static final String CONFIG_PROPERTY_IGNORE_CLASSES = "ignore.classes";
+  
+  private static final String SHIM_IGNORE_FOLDERS = "ignore.folders";
 
   private static final String CONFIG_PROPERTY_CLASSPATH = "classpath";
 
@@ -200,16 +205,7 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
     }
   }
 
-  /**
-   * Find all jar files in the path provided.
-   * 
-   * @param path Path to search for jar files within
-   * @param maxdepth Maximum traversal depth (1-based)
-   * @return All jars found within {@code path} in at most {@code maxdepth}
-   *         subdirectories.
-   * @throws FileSystemException
-   */
-  private List<URL> findJarsIn(FileObject path, final int maxdepth)
+  private List<URL> findJarsIn(FileObject path, final int maxdepth, final Set<String> paths)
       throws FileSystemException {
     FileObject[] jars = path.findFiles(new FileSelector() {
       @Override
@@ -219,6 +215,11 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
 
       @Override
       public boolean traverseDescendents(FileSelectInfo info) throws Exception {
+        for (String path : paths) {
+          if (info.getFile().getURL().toString().endsWith( path )) {
+            return false;
+          }
+        }
         return info.getDepth() <= maxdepth;
       }
     });
@@ -229,6 +230,16 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
     }
     return jarUrls;
   }
+  
+  /**
+   * Find all jar files in the path provided.
+   * 
+   * @param path Path to search for jar files within
+   * @param maxdepth Maximum traversal depth (1-based)
+   * @return All jars found within {@code path} in at most {@code maxdepth}
+   *         subdirectories.
+   * @throws FileSystemException
+   */
 
   private void checkInitialized() {
     if (!initialized) {
@@ -268,14 +279,15 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
    *           configuration located at {@code root}
    */
   protected ClassLoader createConfigurationLoader(FileObject root,
-      ClassLoader parent, List<URL> classpathUrls, String... ignoredClasses)
+      ClassLoader parent, List<URL> classpathUrls, ShimProperties configurationProperties, String... ignoredClasses)
       throws ConfigurationException {
     try {
       if (root == null || !FileType.FOLDER.equals(root.getType())) {
         throw new IllegalArgumentException("root must be a folder: " + root);
       }
+      
       // Find all jar files in the configuration, at most 2 folders deep
-      List<URL> jars = findJarsIn(root, 3);
+      List<URL> jars = findJarsIn( root, 3, configurationProperties.getConfigSet( SHIM_IGNORE_FOLDERS ) );
 
       // Add the root of the configuration
       jars.add(0, new URL(root.getURL().toExternalForm() + "/"));
@@ -316,7 +328,7 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
           // them as directories
           urls.add(new URL(file.getURL().toExternalForm() + "/"));
           // Also add all jars within this directory
-          urls.addAll(findJarsIn(file, 1));
+          urls.addAll(findJarsIn(file, 1, new HashSet<String>()));
         } else {
           urls.add(file.getURL());
         }
@@ -337,7 +349,7 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
    * @throws ConfigurationException Error when loading the Hadoop configuration.
    */
   protected HadoopConfiguration loadHadoopConfiguration(FileObject folder) throws ConfigurationException {
-    Properties configurationProperties = new Properties();
+    ShimProperties configurationProperties = new ShimProperties();
     try {
       FileObject configFile = folder.getChild(CONFIG_PROPERTIES_FILE);
       if (configFile != null) {
@@ -364,7 +376,7 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
       // can find the same
       // API classes we're using
       ClassLoader cl = createConfigurationLoader(folder, getClass()
-          .getClassLoader(), classpathElements, ignoredClasses);
+          .getClassLoader(), classpathElements, configurationProperties, ignoredClasses);
 
       // Treat the Hadoop shim special. It is absolutely required for a Hadoop configuration.
       HadoopShim hadoopShim = null;

@@ -39,21 +39,16 @@ import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileType;
 import org.apache.commons.vfs.VFS;
 import org.apache.commons.vfs.impl.DefaultFileSystemManager;
-import org.apache.log4j.Appender;
 import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.spi.ErrorHandler;
-import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.varia.NullAppender;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.pentaho.hadoop.shim.api.ShimProperties;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 import org.pentaho.hadoop.shim.spi.MockHadoopShim;
 
@@ -242,7 +237,7 @@ public class HadoopConfigurationLocatorTest {
   @Test(expected = ConfigurationException.class)
   public void createConfigurationLoader_null_root() throws ConfigurationException {
     HadoopConfigurationLocator locator = new HadoopConfigurationLocator();
-    locator.createConfigurationLoader(null, null, null);
+    locator.createConfigurationLoader(null, null, null, new ShimProperties());
   }
 
   @Test(expected = ConfigurationException.class)
@@ -252,7 +247,7 @@ public class HadoopConfigurationLocatorTest {
     FileObject buildProperties = VFS.getManager().resolveFile("ram:///test.file");
     buildProperties.createFile();
     assertEquals(FileType.FILE, buildProperties.getType());
-    locator.createConfigurationLoader(buildProperties, null, null);
+    locator.createConfigurationLoader(buildProperties, null, null, new ShimProperties());
   }
 
   @Test
@@ -260,7 +255,7 @@ public class HadoopConfigurationLocatorTest {
     HadoopConfigurationLocator locator = new HadoopConfigurationLocator();
 
     FileObject root = VFS.getManager().resolveFile(HADOOP_CONFIGURATIONS_PATH + "/a");
-    ClassLoader cl = locator.createConfigurationLoader(root, getClass().getClassLoader(), null);
+    ClassLoader cl = locator.createConfigurationLoader(root, getClass().getClassLoader(), null, new ShimProperties());
     
     assertNotNull(cl.getResource("config.properties"));
   }
