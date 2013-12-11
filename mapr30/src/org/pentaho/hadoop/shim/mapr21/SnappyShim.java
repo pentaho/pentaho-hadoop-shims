@@ -27,6 +27,10 @@ import org.apache.hadoop.io.compress.SnappyCodec;
 import org.pentaho.hadoop.shim.common.CommonSnappyShim;
 
 public class SnappyShim extends CommonSnappyShim {
+
+  public SnappyShim() {
+    System.setProperty("mapr.library.flatclass", "");
+  }
   /**
    * Tests whether hadoop-snappy (not to be confused with other java-based
    * snappy implementations such as jsnappy or snappy-java) plus the 
