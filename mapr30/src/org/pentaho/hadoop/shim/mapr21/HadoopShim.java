@@ -30,7 +30,6 @@ import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.common.CommonHadoopShim;
 import org.pentaho.hadoop.shim.common.DistributedCacheUtilImpl;
 import org.pentaho.hdfs.vfs.MapRFileProvider;
-import org.pentaho.hdfs.vfs.MapRFileSystem;
 
 public class HadoopShim extends CommonHadoopShim {
 
@@ -40,6 +39,10 @@ public class HadoopShim extends CommonHadoopShim {
 
   static {
     JDBC_DRIVER_MAP.put("hive2",org.apache.hive.jdbc.HiveDriver.class); 
+  }
+
+  public HadoopShim() {
+    System.setProperty("mapr.library.flatclass", "");
   }
   
   @Override
@@ -89,6 +92,6 @@ public class HadoopShim extends CommonHadoopShim {
   @Override
   public void onLoad(HadoopConfiguration config, HadoopConfigurationFileSystemManager fsm) throws Exception {
     fsm.addProvider(config, MapRFileProvider.SCHEME, config.getIdentifier(), new MapRFileProvider());
-    setDistributedCacheUtil(new DistributedCacheUtilImpl(config));
+    setDistributedCacheUtil(new MapR3DistributedCacheUtilImpl(config));
   }
 }

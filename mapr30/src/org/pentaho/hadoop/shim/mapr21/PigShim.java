@@ -26,6 +26,9 @@ import org.pentaho.hadoop.shim.common.CommonPigShim;
 
 public class PigShim extends CommonPigShim {
   
+  public PigShim() {
+    System.setProperty("mapr.library.flatclass", "");
+  }
   @Override
   public boolean isLocalExecutionSupported() {
     // Local execution is not supported in MapR
