@@ -23,6 +23,7 @@
 package org.pentaho.hadoop.shim.common;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -82,6 +83,8 @@ public class DriverProxyInvocationChain {
   /** The hive2 statement class. */
   protected static Class<? extends Statement> hive2StatementClass = null;
   
+  protected static ClassLoader driverProxyClassLoader = null;
+  
   /**
    * Gets the proxy.
    *
@@ -90,21 +93,24 @@ public class DriverProxyInvocationChain {
    * @return the proxy
    */
   public static Driver getProxy(Class<? extends Driver> intf, final Driver obj) {
+    driverProxyClassLoader = obj.getClass().getClassLoader();
     if(!initialized) {
       init();
     }
-      return (Driver) Proxy.newProxyInstance(obj.getClass().getClassLoader(),
-                        new Class[] { intf }, new DriverInvocationHandler(obj));
+    
+    return (Driver) Proxy.newProxyInstance(driverProxyClassLoader, new Class[] { intf }, new DriverInvocationHandler(obj));
   }
   
   /**
-   * Inits the.
+   * Initializes the Driver proxy chain
    */
+  @SuppressWarnings( { "unchecked" } )
   protected static void init() {
     
     // Get all the Hive 1 and Hive 2 classes we'll need to call methods on later. 
     
-    ClassLoader cl = Thread.currentThread().getContextClassLoader();
+    ClassLoader cl = driverProxyClassLoader;
+    
     try {
       hive1DbMetaDataClass = (Class<? extends DatabaseMetaData>) Class.forName("org.apache.hadoop.hive.jdbc.HiveDatabaseMetaData", false, cl);
       hive1ResultSetClass = (Class<? extends ResultSet>) Class.forName("org.apache.hadoop.hive.jdbc.HiveQueryResultSet", false, cl);
@@ -115,7 +121,7 @@ public class DriverProxyInvocationChain {
     try {
       hive2DbMetaDataClass = (Class<? extends DatabaseMetaData>) Class.forName("org.apache.hive.jdbc.HiveDatabaseMetaData", false, cl);
       hive2ResultSetClass = (Class<? extends ResultSet>) Class.forName("org.apache.hive.jdbc.HiveQueryResultSet", false, cl);
-      hive2ClientClass = Class.forName("org.apache.hive.service.cli.thrift.TCLIService.Iface", false, cl);
+      hive2ClientClass = Class.forName("org.apache.hive.service.cli.thrift.TCLIService$Iface", false, cl);
       hive2StatementClass = (Class<? extends Statement>) Class.forName("org.apache.hive.jdbc.HiveStatement", false, cl);
     } catch(ClassNotFoundException cnfe) {}
     
@@ -239,7 +245,7 @@ public class DriverProxyInvocationChain {
         
         // Intercept the DatabaseMetaData object so we can proxy that too
         return (DatabaseMetaData)Proxy.newProxyInstance(dbmd.getClass().getClassLoader(),
-            new Class[] { DatabaseMetaData.class }, new DatabaseMetaDataInvocationHandler(dbmd));
+            new Class[] { DatabaseMetaData.class }, new DatabaseMetaDataInvocationHandler(dbmd, this));
       }
       else if(o instanceof PreparedStatement) {
         PreparedStatement st = (PreparedStatement)o;
@@ -301,14 +307,18 @@ public class DriverProxyInvocationChain {
     
    /** The "real" database metadata object. */
    DatabaseMetaData t;
+   
+   /** The connection proxy associated with the DatabaseMetaData object */
+   ConnectionInvocationHandler c;
     
     /**
      * Instantiates a new database meta data invocation handler.
      *
      * @param t the database metadata object to proxy
      */
-    public DatabaseMetaDataInvocationHandler(DatabaseMetaData t) {
+    public DatabaseMetaDataInvocationHandler(DatabaseMetaData t, ConnectionInvocationHandler c) {
       this.t = t;
+      this.c = c;
     }
 
     /**
@@ -324,25 +334,30 @@ public class DriverProxyInvocationChain {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
       
       try {
+        String methodName = method.getName();
+        if( "getTables".equals(methodName) ) {
         
-        // For Hive/Impala drivers, we need to intercept the getTables method even though it doesn't
-        // throw an exception, because the ResultSet is empty. The temp fix is to try an execute a 
-        // HiveQL query of "show tables". This only returns one (differently-named) column containing
-        // the table/view name, vs. getTables() which returns much metadata. C'est la vie.
-        
-        if(hive1DbMetaDataClass != null && hive1DbMetaDataClass.isAssignableFrom(t.getClass())) {
-          return getTables(t,hive1DbMetaDataClass,hive1StatementClass,hive1ClientClass,
-              (String)args[0],(String)args[1],(String)args[2],(String[])args[3]);
+          // For Hive/Impala drivers, we need to intercept the getTables method even though it doesn't
+          // throw an exception, because the ResultSet is empty. The temp fix is to try an execute a 
+          // HiveQL query of "show tables". This only returns one (differently-named) column containing
+          // the table/view name, vs. getTables() which returns much metadata. C'est la vie.
+          
+          if(hive1DbMetaDataClass != null && hive1DbMetaDataClass.isAssignableFrom(t.getClass())) {
+            return getTables(t,hive1DbMetaDataClass,hive1StatementClass,hive1ClientClass,
+                (String)args[0],(String)args[1],(String)args[2],(String[])args[3]);
+          }
+          if(hive2DbMetaDataClass != null && hive2DbMetaDataClass.isAssignableFrom(t.getClass())) {
+            return getTables(t,hive2DbMetaDataClass,hive2StatementClass,hive2ClientClass,
+                (String)args[0],(String)args[1],(String)args[2],(String[])args[3]);
+          }
         }
-        if(hive2DbMetaDataClass != null && hive2DbMetaDataClass.isAssignableFrom(t.getClass())) {
-          return getTables(t,hive2DbMetaDataClass,hive2StatementClass,hive2ClientClass,
-              (String)args[0],(String)args[1],(String)args[2],(String[])args[3]);
+        // Return the connection 
+        else if( "getConnection".equals(methodName) ) {
+          return c;
         }
-      
         // Need to intercept getIdentifierQuoteString() before trying the driver version, as our "fixed"
         // drivers return a single quote when it should be empty.
-        String methodName = method.getName();
-        if("getIdentifierQuoteString".equals(methodName)) {
+        else if("getIdentifierQuoteString".equals(methodName)) {
           return getIdentifierQuoteString();
         }
         
@@ -410,15 +425,48 @@ public class DriverProxyInvocationChain {
       
       // If we're looking for tables, execute "show tables" query instead
       if(tables) {
-        Method getClient = dbMetadataClass.getDeclaredMethod("getClient");
-        Constructor<? extends Statement> hiveStatementCtor = (Constructor<? extends Statement>) statementClass.getDeclaredConstructor(clientClass);
-        Statement showTables = hiveStatementCtor.newInstance(clientClass.cast(getClient.invoke(originalObject)));
-        showTables.executeQuery("show tables");
-        ResultSet rs = showTables.getResultSet();
-        return rs;
+        Statement showTables = null;
+        
+        // If we have a valid Connection, create and proxy the show tables statement
+        if(c != null) {
+          Statement st = c.createStatement(c.connection, null);
+          showTables = (Statement)Proxy.newProxyInstance(st.getClass().getClassLoader(),
+            new Class[] { Statement.class }, new CaptureResultSetInvocationHandler<Statement>(st));
+        }
+        else {
+          Object client;
+          Constructor<? extends Statement> hiveStatementCtor = (Constructor<? extends Statement>) statementClass.getDeclaredConstructor(clientClass);
+          
+          // Try reflection and private member access first
+          try {
+            Field clientField = dbMetadataClass.getDeclaredField( "client" );
+            client = clientField.get( originalObject );
+            showTables = hiveStatementCtor.newInstance(clientClass.cast(client));
+          }
+          catch(Exception e) {
+            showTables = null;
+          }
+          
+          if( showTables == null ) {
+            try {
+              Method getClient = dbMetadataClass.getDeclaredMethod("getClient");
+              client = getClient.invoke(originalObject);
+              showTables = hiveStatementCtor.newInstance(clientClass.cast(client));
+            }
+            catch (Exception e) {
+              showTables = null;
+            }
+          }
+        }
+        // If we found a way to call "show tables", do it
+        if(showTables != null) {
+          ResultSet rs = showTables.executeQuery("show tables");
+          return rs;
+        }
+        else throw new Exception("Cannot execute SHOW TABLES query");
       }
       else {
-        Method getTables = dbMetadataClass.getDeclaredMethod("getTables");
+        Method getTables = dbMetadataClass.getDeclaredMethod("getTables", String.class, String.class, String.class, String[].class);
         ResultSet rs = (ResultSet)getTables.invoke(originalObject, catalog, schemaPattern, tableNamePattern, types);
         return rs;
       }
@@ -432,7 +480,7 @@ public class DriverProxyInvocationChain {
    *
    * @param <T> the generic type of object whose methods return ResultSet objects
    */
-  private static class CaptureResultSetInvocationHandler<T> implements InvocationHandler {
+  private static class CaptureResultSetInvocationHandler<T extends Statement> implements InvocationHandler {
     
     /** The object whose methods return ResultSet objects. */
     T t;
@@ -468,7 +516,7 @@ public class DriverProxyInvocationChain {
           if(cause.getMessage().equals("Method not supported")) {
             String methodName = method.getName();
             // Intercept PreparedStatement.getMetaData() to see if it throws an exception
-            if("getMetaData".equals(method.getName()) && (args == null || args.length==0)) {
+            if("getMetaData".equals(methodName) && (args == null || args.length==0)) {
               return getProxiedObject(getMetaData());
             }              
             else {
@@ -511,8 +559,9 @@ public class DriverProxyInvocationChain {
       if(o instanceof ResultSet) {
         ResultSet r = (ResultSet)o;
         
+        
         return (ResultSet)Proxy.newProxyInstance(r.getClass().getClassLoader(),
-            new Class[] { ResultSet.class }, new ResultSetInvocationHandler(r));
+            new Class[] { ResultSet.class }, new ResultSetInvocationHandler(r, t));
       }
       else if(o instanceof ResultSetMetaData) {
         ResultSetMetaData r = (ResultSetMetaData)o;
@@ -535,6 +584,7 @@ public class DriverProxyInvocationChain {
 
     /** The "real" ResultSet object . */
     ResultSet rs;
+    Statement st;
     
     /**
      * Instantiates a new result set invocation handler.
@@ -543,6 +593,16 @@ public class DriverProxyInvocationChain {
      */
     public ResultSetInvocationHandler(ResultSet r) {
       rs = r;
+    }
+    
+    /**
+     * Instantiates a new result set invocation handler.
+     *
+     * @param r the r
+     */
+    public ResultSetInvocationHandler(ResultSet r, Statement s) {
+      rs = r;
+      st = s;
     }
 
     /**
@@ -558,9 +618,15 @@ public class DriverProxyInvocationChain {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
       
       try {
+        String methodName = method.getName();
+        
         // Intercept the getString(String) method to implement the hack for "show tables" vs. getTables()
-        if("getString".equals(method.getName()) && args != null && args.length==1 && args[0] instanceof String) {
+        if("getString".equals(methodName) && args != null && args.length==1 && args[0] instanceof String) {
           return getString((String)args[0]);
+        }
+        // Return TYPE_FORWARD_ONLY (scrollability is not really supported)
+        else if("getType".equals(methodName)) {
+          return ResultSet.TYPE_FORWARD_ONLY;
         }
         else {
           Object o = method.invoke(rs,args);
@@ -576,10 +642,36 @@ public class DriverProxyInvocationChain {
         }
       }
       catch(Throwable t) {
-        throw (t instanceof InvocationTargetException) ? t.getCause() : t;
+        
+        if(t instanceof InvocationTargetException) {
+          Throwable cause = t.getCause();
+        
+          if(cause instanceof SQLException) {
+            if(cause.getMessage().equals("Method not supported")) {
+              String methodName = method.getName();
+              if("getStatement".equals(methodName)) {
+                return getStatement();
+              }
+              else {
+                throw cause;
+              }
+            }
+            else throw cause;
+          }
+          else {
+            throw cause;
+          }
+        }
+        else {
+          throw t;
+        }
       }
     }
     
+    private Statement getStatement() {
+      return st;
+    }
+
     /**
      * Gets the string value from the current row at the column with the specified name.
      *
