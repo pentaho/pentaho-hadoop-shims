@@ -376,153 +376,157 @@ public class CommonHBaseConnection extends HBaseConnection {
     checkSourceScan();
 
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
-    Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
+    try {
+      Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
 
-    if ( m_sourceScan.getFilter() == null ) {
-      // create a new FilterList
-      FilterList fl = new FilterList( matchAny ? FilterList.Operator.MUST_PASS_ONE : FilterList.Operator.MUST_PASS_ALL );
-      m_sourceScan.setFilter( fl );
-    }
+      if ( m_sourceScan.getFilter() == null ) {
+        // create a new FilterList
+        FilterList fl =
+            new FilterList( matchAny ? FilterList.Operator.MUST_PASS_ONE : FilterList.Operator.MUST_PASS_ALL );
+        m_sourceScan.setFilter( fl );
+      }
 
-    FilterList fl = (FilterList) m_sourceScan.getFilter();
+      FilterList fl = (FilterList) m_sourceScan.getFilter();
 
-    CompareFilter.CompareOp comp = null;
-    byte[] family = m_bytesUtil.toBytes( columnMeta.getColumnFamily() );
-    byte[] qualifier = m_bytesUtil.toBytes( columnMeta.getColumnName() );
-    ColumnFilter.ComparisonType op = cf.getComparisonOperator();
+      CompareFilter.CompareOp comp = null;
+      byte[] family = m_bytesUtil.toBytes( columnMeta.getColumnFamily() );
+      byte[] qualifier = m_bytesUtil.toBytes( columnMeta.getColumnName() );
+      ColumnFilter.ComparisonType op = cf.getComparisonOperator();
 
-    switch ( op ) {
-      case EQUAL:
-        comp = CompareFilter.CompareOp.EQUAL;
-        break;
-      case NOT_EQUAL:
-        comp = CompareFilter.CompareOp.NOT_EQUAL;
-        break;
-      case GREATER_THAN:
-        comp = CompareFilter.CompareOp.GREATER;
-        break;
-      case GREATER_THAN_OR_EQUAL:
-        comp = CompareFilter.CompareOp.GREATER_OR_EQUAL;
-        break;
-      case LESS_THAN:
-        comp = CompareFilter.CompareOp.LESS;
-        break;
-      case LESS_THAN_OR_EQUAL:
-        comp = CompareFilter.CompareOp.LESS_OR_EQUAL;
-        break;
-      default:
-        comp = null;
-        break;
-    }
+      switch ( op ) {
+        case EQUAL:
+          comp = CompareFilter.CompareOp.EQUAL;
+          break;
+        case NOT_EQUAL:
+          comp = CompareFilter.CompareOp.NOT_EQUAL;
+          break;
+        case GREATER_THAN:
+          comp = CompareFilter.CompareOp.GREATER;
+          break;
+        case GREATER_THAN_OR_EQUAL:
+          comp = CompareFilter.CompareOp.GREATER_OR_EQUAL;
+          break;
+        case LESS_THAN:
+          comp = CompareFilter.CompareOp.LESS;
+          break;
+        case LESS_THAN_OR_EQUAL:
+          comp = CompareFilter.CompareOp.LESS_OR_EQUAL;
+          break;
+        default:
+          comp = null;
+          break;
+      }
 
-    String comparisonString = cf.getConstant().trim();
-    comparisonString = vars.environmentSubstitute( comparisonString );
+      String comparisonString = cf.getConstant().trim();
+      comparisonString = vars.environmentSubstitute( comparisonString );
 
-    Class<?> comparatorClass = getByteArrayComparableClass();
-    Object comparator = comparatorClass.newInstance();
+      Class<?> comparatorClass = getByteArrayComparableClass();
+      Object comparator = null;
 
-    if ( comp != null ) {
+      if ( comp != null ) {
 
-      // do the numeric comparison stuff
-      if ( columnMeta.isNumeric() ) {
+        // do the numeric comparison stuff
+        if ( columnMeta.isNumeric() ) {
 
-        // Double/Float or Long/Integer
-        DecimalFormat df = new DecimalFormat();
-        String formatS = vars.environmentSubstitute( cf.getFormat() );
-        if ( !isEmpty( formatS ) ) {
-          df.applyPattern( formatS );
-        }
-
-        Number num = df.parse( comparisonString );
-
-        if ( columnMeta.isInteger() ) {
-          if ( !columnMeta.getIsLongOrDouble() ) {
-            comparator = m_bytesUtil.toBytes( num.intValue() );
-          } else {
-            comparator = m_bytesUtil.toBytes( num.longValue() );
+          // Double/Float or Long/Integer
+          DecimalFormat df = new DecimalFormat();
+          String formatS = vars.environmentSubstitute( cf.getFormat() );
+          if ( !isEmpty( formatS ) ) {
+            df.applyPattern( formatS );
           }
-        } else {
-          if ( !columnMeta.getIsLongOrDouble() ) {
-            comparator = m_bytesUtil.toBytes( num.floatValue() );
-          } else {
-            comparator = m_bytesUtil.toBytes( num.doubleValue() );
-          }
-        }
 
-        if ( cf.getSignedComparison() ) {
-          // custom comparator for signed comparison, specific to each shim due to HBase API changes
-          Class<?> deserializedNumericComparatorClass = getDeserializedNumericComparatorClass();
-          comparatorClass = deserializedNumericComparatorClass;
-          if ( columnMeta.isInteger() ) {
+          Number num = df.parse( comparisonString );
+
+          if ( cf.getSignedComparison() ) {
+            // custom comparator for signed comparison, specific to each shim due to HBase API changes
+            Class<?> deserializedNumericComparatorClass = getDeserializedNumericComparatorClass();
+            if ( columnMeta.isInteger() ) {
+              Constructor ctor =
+                  deserializedNumericComparatorClass.getConstructor( boolean.class, boolean.class, long.class );
+              if ( columnMeta.getIsLongOrDouble() ) {
+                comparator = ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), num.longValue() );
+              } else {
+                comparator =
+                    ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), (long) num.intValue() );
+              }
+            } else {
+              Constructor ctor =
+                  deserializedNumericComparatorClass.getConstructor( boolean.class, boolean.class, double.class );
+              if ( columnMeta.getIsLongOrDouble() ) {
+                comparator =
+                    ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), num.doubleValue() );
+              } else {
+                comparator =
+                    ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), (double) num.floatValue() );
+              }
+            }
+          } else if ( columnMeta.isInteger() ) {
+            comparatorClass = byte[].class;
+            if ( !columnMeta.getIsLongOrDouble() ) {
+              comparator = m_bytesUtil.toBytes( num.intValue() );
+            } else {
+              comparator = m_bytesUtil.toBytes( num.longValue() );
+            }
+          } else {
+            if ( !columnMeta.getIsLongOrDouble() ) {
+              comparator = m_bytesUtil.toBytes( num.floatValue() );
+            } else {
+              comparator = m_bytesUtil.toBytes( num.doubleValue() );
+            }
+          }
+        } else if ( columnMeta.isDate() ) {
+          SimpleDateFormat sdf = new SimpleDateFormat();
+          String formatS = vars.environmentSubstitute( cf.getFormat() );
+          if ( !isEmpty( formatS ) ) {
+            sdf.applyPattern( formatS );
+          }
+          Date d = sdf.parse( comparisonString );
+
+          long dateAsMillis = d.getTime();
+          if ( !cf.getSignedComparison() ) {
+            comparator = m_bytesUtil.toBytes( dateAsMillis );
+          } else {
+            // custom comparator for signed comparison
+            Class<?> deserializedNumericComparatorClass = getDeserializedNumericComparatorClass();
             Constructor ctor =
                 deserializedNumericComparatorClass.getConstructor( boolean.class, boolean.class, long.class );
-            if ( columnMeta.getIsLongOrDouble() ) {
-              comparator = ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), num.longValue() );
-            } else {
-              comparator =
-                  ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), (long) num.intValue() );
-            }
-          } else {
-            Constructor ctor =
-                deserializedNumericComparatorClass.getConstructor( boolean.class, boolean.class, double.class );
-            if ( columnMeta.getIsLongOrDouble() ) {
-              comparator = ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), num.doubleValue() );
-            } else {
-              comparator =
-                  ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), (double) num.floatValue() );
-            }
+            comparator = ctor.newInstance( true, true, dateAsMillis );
           }
-        }
-      } else if ( columnMeta.isDate() ) {
-        SimpleDateFormat sdf = new SimpleDateFormat();
-        String formatS = vars.environmentSubstitute( cf.getFormat() );
-        if ( !isEmpty( formatS ) ) {
-          sdf.applyPattern( formatS );
-        }
-        Date d = sdf.parse( comparisonString );
+        } else if ( columnMeta.isBoolean() ) {
 
-        long dateAsMillis = d.getTime();
-        if ( !cf.getSignedComparison() ) {
-          comparator = m_bytesUtil.toBytes( dateAsMillis );
-        } else {
-          // custom comparator for signed comparison
-          Class<?> deserializedNumericComparatorClass = getDeserializedNumericComparatorClass();
-          Constructor ctor =
-              deserializedNumericComparatorClass.getConstructor( boolean.class, boolean.class, long.class );
-          comparator = ctor.newInstance( true, true, dateAsMillis );
+          // temporarily encode it so that we can use the utility routine in
+          // HBaseValueMeta
+          byte[] tempEncoded = m_bytesUtil.toBytes( comparisonString );
+          Boolean decodedB = HBaseValueMeta.decodeBoolFromString( tempEncoded, m_bytesUtil );
+          // skip if we can't parse the comparison value
+          if ( decodedB == null ) {
+            return;
+          }
+
+          Class<?> deserializedBooleanComparatorClass = getDeserializedBooleanComparatorClass();
+          Constructor ctor = deserializedBooleanComparatorClass.getConstructor( boolean.class );
+          comparator = ctor.newInstance( decodedB.booleanValue() );
         }
-      } else if ( columnMeta.isBoolean() ) {
-
-        // temporarily encode it so that we can use the utility routine in
-        // HBaseValueMeta
-        byte[] tempEncoded = m_bytesUtil.toBytes( comparisonString );
-        Boolean decodedB = HBaseValueMeta.decodeBoolFromString( tempEncoded, m_bytesUtil );
-        // skip if we can't parse the comparison value
-        if ( decodedB == null ) {
-          return;
-        }
-
-        Class<?> deserializedBooleanComparatorClass = getDeserializedBooleanComparatorClass();
-        Constructor ctor = deserializedBooleanComparatorClass.getConstructor( boolean.class );
-        comparator = ctor.newInstance( decodedB.booleanValue() );
-      }
-    } else {
-
-      comp = CompareFilter.CompareOp.EQUAL;
-      if ( cf.getComparisonOperator() == ColumnFilter.ComparisonType.SUBSTRING ) {
-        comparator = new SubstringComparator( comparisonString );
       } else {
-        comparator = new RegexStringComparator( comparisonString );
+        comp = CompareFilter.CompareOp.EQUAL;
+        if ( cf.getComparisonOperator() == ColumnFilter.ComparisonType.SUBSTRING ) {
+          comparator = new SubstringComparator( comparisonString );
+        } else {
+          comparator = new RegexStringComparator( comparisonString );
+        }
       }
-    }
-    Constructor<SingleColumnValueFilter> scvfCtor =
-        SingleColumnValueFilter.class.getConstructor( byte[].class, byte[].class, CompareFilter.CompareOp.class,
-            comparatorClass );
-    SingleColumnValueFilter scf = scvfCtor.newInstance( family, qualifier, comp, comparator );
-    scf.setFilterIfMissing( true );
-    fl.addFilter( scf );
 
-    Thread.currentThread().setContextClassLoader( cl );
+      if ( comparator != null ) {
+        Constructor<SingleColumnValueFilter> scvfCtor =
+            SingleColumnValueFilter.class.getConstructor( byte[].class, byte[].class, CompareFilter.CompareOp.class,
+                comparatorClass );
+        SingleColumnValueFilter scf = scvfCtor.newInstance( family, qualifier, comp, comparator );
+        scf.setFilterIfMissing( true );
+        fl.addFilter( scf );
+      }
+    } finally {
+      Thread.currentThread().setContextClassLoader( cl );
+    }
   }
 
   // TODO - Override this method if necessary! Older HBase versions use WritableByteArrayComparable
@@ -549,14 +553,14 @@ public class CommonHBaseConnection extends HBaseConnection {
   // Older HBase versions extend WritableByteArrayComparable
   // Newer ones (0.95+) extend ByteArrayComparable
   public Class<?> getDeserializedNumericComparatorClass() throws ClassNotFoundException {
-    return Class.forName( "org.apache.hbase.shim.common.DeserializedNumericComparator" );
+    return Class.forName( "org.pentaho.hbase.shim.common.DeserializedNumericComparator" );
   }
 
   // TODO - Override this method to return the specified class for each shim.
   // Older HBase versions extend WritableByteArrayComparable
   // Newer ones (0.95+) extend ByteArrayComparable
   public Class<?> getDeserializedBooleanComparatorClass() throws ClassNotFoundException {
-    return Class.forName( "org.apache.hbase.shim.common.DeserializedBooleanComparator" );
+    return Class.forName( "org.pentaho.hbase.shim.common.DeserializedBooleanComparator" );
   }
 
   protected void checkResultSet() throws Exception {
