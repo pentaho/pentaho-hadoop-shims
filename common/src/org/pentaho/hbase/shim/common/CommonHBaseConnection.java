@@ -1,24 +1,24 @@
 /*******************************************************************************
-*
-* Pentaho Big Data
-*
-* Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
-*
-*******************************************************************************
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with
-* the License. You may obtain a copy of the License at
-*
-*    http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-******************************************************************************/
+ *
+ * Pentaho Big Data
+ *
+ * Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
+ *
+ *******************************************************************************
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ ******************************************************************************/
 
 package org.pentaho.hbase.shim.common;
 
@@ -81,63 +81,63 @@ public class CommonHBaseConnection extends HBaseConnection {
   public CommonHBaseConnection() {
     try {
       getBytesUtil();
-    } catch (Exception ex) {
-      throw new RuntimeException(ex);
+    } catch ( Exception ex ) {
+      throw new RuntimeException( ex );
     }
   }
 
   @Override
   public void configureConnection( Properties connProps, List<String> logMessages ) throws Exception {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
-    Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+    Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
     try {
-      String defaultConfig = connProps.getProperty(DEFAULTS_KEY);
-      String siteConfig = connProps.getProperty(SITE_KEY);
-      String zookeeperQuorum = connProps.getProperty(ZOOKEEPER_QUORUM_KEY);
-      String zookeeperPort = connProps.getProperty(ZOOKEEPER_PORT_KEY);
+      String defaultConfig = connProps.getProperty( DEFAULTS_KEY );
+      String siteConfig = connProps.getProperty( SITE_KEY );
+      String zookeeperQuorum = connProps.getProperty( ZOOKEEPER_QUORUM_KEY );
+      String zookeeperPort = connProps.getProperty( ZOOKEEPER_PORT_KEY );
 
       m_config = new Configuration();
       try {
-        if (!isEmpty(defaultConfig)) {
-          m_config.addResource(stringToURL(defaultConfig));
+        if ( !isEmpty( defaultConfig ) ) {
+          m_config.addResource( stringToURL( defaultConfig ) );
         } else {
-          m_config.addResource("hbase-default.xml");
+          m_config.addResource( "hbase-default.xml" );
         }
 
-        if (!isEmpty(siteConfig)) {
-          m_config.addResource(stringToURL(siteConfig));
+        if ( !isEmpty( siteConfig ) ) {
+          m_config.addResource( stringToURL( siteConfig ) );
         } else {
-          m_config.addResource("hbase-site.xml");
+          m_config.addResource( "hbase-site.xml" );
         }
-      } catch (MalformedURLException e) {
-        throw new IllegalArgumentException(BaseMessages.getString(PKG,
-            "CommonHBaseConnection.Error.MalformedConfigURL"));
+      } catch ( MalformedURLException e ) {
+        throw new IllegalArgumentException( BaseMessages.getString( PKG,
+            "CommonHBaseConnection.Error.MalformedConfigURL" ) );
       }
 
-      if (!isEmpty(zookeeperQuorum)) {
-        m_config.set(ZOOKEEPER_QUORUM_KEY, zookeeperQuorum);
+      if ( !isEmpty( zookeeperQuorum ) ) {
+        m_config.set( ZOOKEEPER_QUORUM_KEY, zookeeperQuorum );
       }
 
-      if (!isEmpty(zookeeperPort)) {
+      if ( !isEmpty( zookeeperPort ) ) {
         try {
-          int port = Integer.parseInt(zookeeperPort);
-          m_config.setInt(ZOOKEEPER_PORT_KEY, port);
-        } catch (NumberFormatException e) {
-          if (logMessages != null) {
+          int port = Integer.parseInt( zookeeperPort );
+          m_config.setInt( ZOOKEEPER_PORT_KEY, port );
+        } catch ( NumberFormatException e ) {
+          if ( logMessages != null ) {
             logMessages.add( BaseMessages.getString( PKG, "CommonHBaseConnection.Error.UnableToParseZookeeperPort" ) );
           }
         }
       }
 
-      m_admin = new org.apache.hadoop.hbase.client.HBaseAdmin(m_config);
+      m_admin = new org.apache.hadoop.hbase.client.HBaseAdmin( m_config );
     } finally {
-      Thread.currentThread().setContextClassLoader(cl);
+      Thread.currentThread().setContextClassLoader( cl );
     }
   }
 
   @Override
   public HBaseBytesUtilShim getBytesUtil() throws Exception {
-    if (m_bytesUtil == null) {
+    if ( m_bytesUtil == null ) {
       m_bytesUtil = new CommonHBaseBytesUtil();
     }
 
@@ -145,7 +145,7 @@ public class CommonHBaseConnection extends HBaseConnection {
   }
 
   protected void checkConfiguration() throws Exception {
-    if (m_admin == null) {
+    if ( m_admin == null ) {
       throw new Exception( BaseMessages.getString( PKG, "CommonHBaseConnection.Error.ConnectionHasNotBeenConfigured" ) );
     }
   }
@@ -154,11 +154,11 @@ public class CommonHBaseConnection extends HBaseConnection {
   public void checkHBaseAvailable() throws Exception {
     checkConfiguration();
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
-    Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+    Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
     try {
-      org.apache.hadoop.hbase.client.HBaseAdmin.checkHBaseAvailable(m_config);
+      org.apache.hadoop.hbase.client.HBaseAdmin.checkHBaseAvailable( m_config );
     } finally {
-      Thread.currentThread().setContextClassLoader(cl);
+      Thread.currentThread().setContextClassLoader( cl );
     }
   }
 
@@ -168,78 +168,78 @@ public class CommonHBaseConnection extends HBaseConnection {
 
     HTableDescriptor[] tables = m_admin.listTables();
     List<String> tableNames = new ArrayList<String>();
-    for (HTableDescriptor h : tables) {
-      tableNames.add(h.getNameAsString());
+    for ( HTableDescriptor h : tables ) {
+      tableNames.add( h.getNameAsString() );
     }
 
     return tableNames;
   }
 
   @Override
-  public boolean tableExists(String tableName) throws Exception {
+  public boolean tableExists( String tableName ) throws Exception {
     checkConfiguration();
 
-    return m_admin.tableExists(tableName);
+    return m_admin.tableExists( tableName );
   }
 
   @Override
-  public void disableTable(String tableName) throws Exception {
+  public void disableTable( String tableName ) throws Exception {
     checkConfiguration();
 
-    m_admin.disableTable(tableName);
+    m_admin.disableTable( tableName );
   }
 
   @Override
-  public void enableTable(String tableName) throws Exception {
+  public void enableTable( String tableName ) throws Exception {
     checkConfiguration();
 
-    m_admin.enableTable(tableName);
+    m_admin.enableTable( tableName );
   }
 
   @Override
-  public boolean isTableDisabled(String tableName) throws Exception {
+  public boolean isTableDisabled( String tableName ) throws Exception {
     checkConfiguration();
 
-    return m_admin.isTableDisabled(tableName);
+    return m_admin.isTableDisabled( tableName );
   }
 
   @Override
-  public boolean isTableAvailable(String tableName) throws Exception {
+  public boolean isTableAvailable( String tableName ) throws Exception {
     checkConfiguration();
 
-    return m_admin.isTableAvailable(tableName);
+    return m_admin.isTableAvailable( tableName );
   }
 
   @Override
-  public void deleteTable(String tableName) throws Exception {
+  public void deleteTable( String tableName ) throws Exception {
     checkConfiguration();
 
-    m_admin.deleteTable(tableName);
+    m_admin.deleteTable( tableName );
   }
 
   @Override
-  public List<String> getTableFamiles(String tableName) throws Exception {
+  public List<String> getTableFamiles( String tableName ) throws Exception {
     checkConfiguration();
 
     HTableDescriptor descriptor = m_admin.getTableDescriptor( m_bytesUtil.toBytes( tableName ) );
     Collection<HColumnDescriptor> families = descriptor.getFamilies();
     List<String> famList = new ArrayList<String>();
-    for (HColumnDescriptor h : families) {
-      famList.add(h.getNameAsString());
+    for ( HColumnDescriptor h : families ) {
+      famList.add( h.getNameAsString() );
     }
 
     return famList;
   }
 
   protected void configureColumnDescriptor( HColumnDescriptor h, Properties p ) throws Exception {
-    if (p != null) {
+    if ( p != null ) {
       // optional column family creation properties
       Set<Object> keys = p.keySet();
-      for (Object key : keys) {
-        String value = p.getProperty(key.toString());
-        if (key.toString().equals(COL_DESCRIPTOR_MAX_VERSIONS_KEY)) {
-          h.setMaxVersions(Integer.parseInt(value));
-        } else if (key.toString().equals(COL_DESCRIPTOR_COMPRESSION_KEY)) {
+      for ( Object key : keys ) {
+        String value = p.getProperty( key.toString() );
+        if ( key.toString().equals( COL_DESCRIPTOR_MAX_VERSIONS_KEY ) ) {
+          h.setMaxVersions( Integer.parseInt( value ) );
+        } else if ( key.toString().equals( COL_DESCRIPTOR_COMPRESSION_KEY ) ) {
           // Look up Compression.Algorithm.valueOf() method via reflection, as the API has changed
           // between Hadoop 1 and 2.
           // Also, valueOf() will throw an IllegalArgumentException if the value is not a legitimate algorithm name
@@ -250,42 +250,42 @@ public class CommonHBaseConnection extends HBaseConnection {
           // use reflection here to set the Compression Algorithm for the HColumnDescriptor
           Method setCompressionType = h.getClass().getMethod( "setCompressionType", compressionAlgorithmClass );
           setCompressionType.invoke( h, valueOf.invoke( null, value ) );
-        } else if (key.toString().equals(COL_DESCRIPTOR_IN_MEMORY_KEY)) {
+        } else if ( key.toString().equals( COL_DESCRIPTOR_IN_MEMORY_KEY ) ) {
           boolean result =
               ( value.toLowerCase().equals( "Y" ) || value.toLowerCase().equals( "yes" ) || value.toLowerCase().equals(
                   "true" ) );
-          h.setInMemory(result);
+          h.setInMemory( result );
         } else if ( key.toString().equals( COL_DESCRIPTOR_BLOCK_CACHE_ENABLED_KEY ) ) {
           boolean result =
               ( value.toLowerCase().equals( "Y" ) || value.toLowerCase().equals( "yes" ) || value.toLowerCase().equals(
                   "true" ) );
-          h.setBlockCacheEnabled(result);
-        } else if (key.toString().equals(COL_DESCRIPTOR_BLOCK_SIZE_KEY)) {
-          h.setBlocksize(Integer.parseInt(value));
-        } else if (key.toString().equals(COL_DESCRIPTOR_TIME_TO_LIVE_KEY)) {
-          h.setTimeToLive(Integer.parseInt(value));
-        } else if (key.toString().equals(COL_DESCRIPTOR_BLOOM_FILTER_KEY)) {
+          h.setBlockCacheEnabled( result );
+        } else if ( key.toString().equals( COL_DESCRIPTOR_BLOCK_SIZE_KEY ) ) {
+          h.setBlocksize( Integer.parseInt( value ) );
+        } else if ( key.toString().equals( COL_DESCRIPTOR_TIME_TO_LIVE_KEY ) ) {
+          h.setTimeToLive( Integer.parseInt( value ) );
+        } else if ( key.toString().equals( COL_DESCRIPTOR_BLOOM_FILTER_KEY ) ) {
           // Again, need to use reflection to get the BloomType class to call valueOf and then setBloomFilterType
           Class<?> bloomTypeClass = getBloomTypeClass();
           Method valueOf = bloomTypeClass.getMethod( "valueOf", String.class );
 
           Method setBloomFilterType = h.getClass().getMethod( "setBloomFilterType" );
           setBloomFilterType.invoke( h, valueOf.invoke( null, value ) );
-        } else if (key.toString().equals(COL_DESCRIPTOR_SCOPE_KEY)) {
-          h.setScope(Integer.parseInt(value));
+        } else if ( key.toString().equals( COL_DESCRIPTOR_SCOPE_KEY ) ) {
+          h.setScope( Integer.parseInt( value ) );
         }
       }
     }
   }
 
   protected void checkSourceTable() throws Exception {
-    if (m_sourceTable == null) {
+    if ( m_sourceTable == null ) {
       throw new Exception( BaseMessages.getString( PKG, "CommonHBaseConnection.Error.NoSourceTable" ) );
     }
   }
 
   protected void checkSourceScan() throws Exception {
-    if (m_sourceScan == null) {
+    if ( m_sourceScan == null ) {
       throw new Exception( BaseMessages.getString( PKG, "CommonHBaseConnection.Error.NoSourceScan" ) );
     }
   }
@@ -294,34 +294,34 @@ public class CommonHBaseConnection extends HBaseConnection {
   public void createTable( String tableName, List<String> colFamilyNames, Properties creationProps ) throws Exception {
     checkConfiguration();
 
-    HTableDescriptor tableDescription = new HTableDescriptor(tableName);
+    HTableDescriptor tableDescription = new HTableDescriptor( tableName );
 
-    for (String familyName : colFamilyNames) {
-      HColumnDescriptor c = new HColumnDescriptor(familyName);
-      configureColumnDescriptor(c, creationProps);
-      tableDescription.addFamily(c);
+    for ( String familyName : colFamilyNames ) {
+      HColumnDescriptor c = new HColumnDescriptor( familyName );
+      configureColumnDescriptor( c, creationProps );
+      tableDescription.addFamily( c );
     }
 
-    m_admin.createTable(tableDescription);
+    m_admin.createTable( tableDescription );
   }
 
   @Override
-  public void newSourceTable(String tableName) throws Exception {
+  public void newSourceTable( String tableName ) throws Exception {
     checkConfiguration();
 
     closeSourceTable();
-    m_sourceTable = new HTable(m_config, tableName);
+    m_sourceTable = new HTable( m_config, tableName );
   }
 
   @Override
-  public boolean sourceTableRowExists(byte[] rowKey) throws Exception {
+  public boolean sourceTableRowExists( byte[] rowKey ) throws Exception {
 
     checkConfiguration();
     checkSourceTable();
-    Get g = new Get(rowKey);
-    Result r = m_sourceTable.get(g);
+    Get g = new Get( rowKey );
+    Result r = m_sourceTable.get( g );
 
-    return (!r.isEmpty());
+    return ( !r.isEmpty() );
   }
 
   @Override
@@ -331,18 +331,18 @@ public class CommonHBaseConnection extends HBaseConnection {
     checkSourceTable();
     closeSourceResultSet();
 
-    if (keyLowerBound != null) {
-      if (keyUpperBound != null) {
-        m_sourceScan = new Scan(keyLowerBound, keyUpperBound);
+    if ( keyLowerBound != null ) {
+      if ( keyUpperBound != null ) {
+        m_sourceScan = new Scan( keyLowerBound, keyUpperBound );
       } else {
-        m_sourceScan = new Scan(keyLowerBound);
+        m_sourceScan = new Scan( keyLowerBound );
       }
     } else {
       m_sourceScan = new Scan();
     }
 
-    if (cacheSize > 0) {
-      m_sourceScan.setCaching(cacheSize);
+    if ( cacheSize > 0 ) {
+      m_sourceScan.setCaching( cacheSize );
     }
   }
 
@@ -376,87 +376,74 @@ public class CommonHBaseConnection extends HBaseConnection {
     checkSourceScan();
 
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
-    Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+    try {
+    Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
 
-    if (m_sourceScan.getFilter() == null) {
+    if ( m_sourceScan.getFilter() == null ) {
       // create a new FilterList
-      FilterList fl = new FilterList( matchAny ? FilterList.Operator.MUST_PASS_ONE : FilterList.Operator.MUST_PASS_ALL );
-      m_sourceScan.setFilter(fl);
+        FilterList fl =
+            new FilterList( matchAny ? FilterList.Operator.MUST_PASS_ONE : FilterList.Operator.MUST_PASS_ALL );
+      m_sourceScan.setFilter( fl );
     }
 
     FilterList fl = (FilterList) m_sourceScan.getFilter();
 
     CompareFilter.CompareOp comp = null;
-    byte[] family = m_bytesUtil.toBytes(columnMeta.getColumnFamily());
-    byte[] qualifier = m_bytesUtil.toBytes(columnMeta.getColumnName());
+    byte[] family = m_bytesUtil.toBytes( columnMeta.getColumnFamily() );
+    byte[] qualifier = m_bytesUtil.toBytes( columnMeta.getColumnName() );
     ColumnFilter.ComparisonType op = cf.getComparisonOperator();
 
-    switch (op) {
-    case EQUAL:
-      comp = CompareFilter.CompareOp.EQUAL;
-      break;
-    case NOT_EQUAL:
-      comp = CompareFilter.CompareOp.NOT_EQUAL;
-      break;
-    case GREATER_THAN:
-      comp = CompareFilter.CompareOp.GREATER;
-      break;
-    case GREATER_THAN_OR_EQUAL:
-      comp = CompareFilter.CompareOp.GREATER_OR_EQUAL;
-      break;
-    case LESS_THAN:
-      comp = CompareFilter.CompareOp.LESS;
-      break;
-    case LESS_THAN_OR_EQUAL:
-      comp = CompareFilter.CompareOp.LESS_OR_EQUAL;
+    switch ( op ) {
+      case EQUAL:
+        comp = CompareFilter.CompareOp.EQUAL;
+        break;
+      case NOT_EQUAL:
+        comp = CompareFilter.CompareOp.NOT_EQUAL;
+        break;
+      case GREATER_THAN:
+        comp = CompareFilter.CompareOp.GREATER;
+        break;
+      case GREATER_THAN_OR_EQUAL:
+        comp = CompareFilter.CompareOp.GREATER_OR_EQUAL;
+        break;
+      case LESS_THAN:
+        comp = CompareFilter.CompareOp.LESS;
+        break;
+      case LESS_THAN_OR_EQUAL:
+        comp = CompareFilter.CompareOp.LESS_OR_EQUAL;
         break;
       default:
         comp = null;
-      break;
+        break;
     }
 
     String comparisonString = cf.getConstant().trim();
-    comparisonString = vars.environmentSubstitute(comparisonString);
+    comparisonString = vars.environmentSubstitute( comparisonString );
 
     Class<?> comparatorClass = getByteArrayComparableClass();
-    Object comparator = comparatorClass.newInstance();
+      Object comparator = null;
 
-    if (comp != null) {
+    if ( comp != null ) {
 
       // do the numeric comparison stuff
-      if (columnMeta.isNumeric()) {
+      if ( columnMeta.isNumeric() ) {
 
         // Double/Float or Long/Integer
         DecimalFormat df = new DecimalFormat();
-        String formatS = vars.environmentSubstitute(cf.getFormat());
-        if (!isEmpty(formatS)) {
-          df.applyPattern(formatS);
+        String formatS = vars.environmentSubstitute( cf.getFormat() );
+        if ( !isEmpty( formatS ) ) {
+          df.applyPattern( formatS );
         }
 
-        Number num = df.parse(comparisonString);
-
-        if (columnMeta.isInteger()) {
-          if (!columnMeta.getIsLongOrDouble()) {
-            comparator = m_bytesUtil.toBytes( num.intValue() );
-          } else {
-            comparator = m_bytesUtil.toBytes( num.longValue() );
-          }
-        } else {
-          if (!columnMeta.getIsLongOrDouble()) {
-            comparator = m_bytesUtil.toBytes( num.floatValue() );
-          } else {
-            comparator = m_bytesUtil.toBytes( num.doubleValue() );
-          }
-        }
+        Number num = df.parse( comparisonString );
 
         if ( cf.getSignedComparison() ) {
           // custom comparator for signed comparison, specific to each shim due to HBase API changes
           Class<?> deserializedNumericComparatorClass = getDeserializedNumericComparatorClass();
-          comparatorClass = deserializedNumericComparatorClass;
-          if (columnMeta.isInteger()) {
+          if ( columnMeta.isInteger() ) {
             Constructor ctor =
                 deserializedNumericComparatorClass.getConstructor( boolean.class, boolean.class, long.class );
-            if (columnMeta.getIsLongOrDouble()) {
+            if ( columnMeta.getIsLongOrDouble() ) {
               comparator = ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), num.longValue() );
             } else {
               comparator =
@@ -465,24 +452,38 @@ public class CommonHBaseConnection extends HBaseConnection {
           } else {
             Constructor ctor =
                 deserializedNumericComparatorClass.getConstructor( boolean.class, boolean.class, double.class );
-            if (columnMeta.getIsLongOrDouble()) {
-              comparator = ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), num.doubleValue() );
+            if ( columnMeta.getIsLongOrDouble() ) {
+                comparator =
+                    ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), num.doubleValue() );
             } else {
               comparator =
                   ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), (double) num.floatValue() );
             }
           }
+          } else if ( columnMeta.isInteger() ) {
+            comparatorClass = byte[].class;
+            if ( !columnMeta.getIsLongOrDouble() ) {
+              comparator = m_bytesUtil.toBytes( num.intValue() );
+            } else {
+              comparator = m_bytesUtil.toBytes( num.longValue() );
+            }
+          } else {
+            if ( !columnMeta.getIsLongOrDouble() ) {
+              comparator = m_bytesUtil.toBytes( num.floatValue() );
+            } else {
+              comparator = m_bytesUtil.toBytes( num.doubleValue() );
+            }
         }
-      } else if (columnMeta.isDate()) {
+      } else if ( columnMeta.isDate() ) {
         SimpleDateFormat sdf = new SimpleDateFormat();
-        String formatS = vars.environmentSubstitute(cf.getFormat());
-        if (!isEmpty(formatS)) {
-          sdf.applyPattern(formatS);
+        String formatS = vars.environmentSubstitute( cf.getFormat() );
+        if ( !isEmpty( formatS ) ) {
+          sdf.applyPattern( formatS );
         }
-        Date d = sdf.parse(comparisonString);
+        Date d = sdf.parse( comparisonString );
 
         long dateAsMillis = d.getTime();
-        if (!cf.getSignedComparison()) {
+        if ( !cf.getSignedComparison() ) {
           comparator = m_bytesUtil.toBytes( dateAsMillis );
         } else {
           // custom comparator for signed comparison
@@ -491,14 +492,14 @@ public class CommonHBaseConnection extends HBaseConnection {
               deserializedNumericComparatorClass.getConstructor( boolean.class, boolean.class, long.class );
           comparator = ctor.newInstance( true, true, dateAsMillis );
         }
-      } else if (columnMeta.isBoolean()) {
+      } else if ( columnMeta.isBoolean() ) {
 
         // temporarily encode it so that we can use the utility routine in
         // HBaseValueMeta
-        byte[] tempEncoded = m_bytesUtil.toBytes(comparisonString);
+        byte[] tempEncoded = m_bytesUtil.toBytes( comparisonString );
         Boolean decodedB = HBaseValueMeta.decodeBoolFromString( tempEncoded, m_bytesUtil );
         // skip if we can't parse the comparison value
-        if (decodedB == null) {
+        if ( decodedB == null ) {
           return;
         }
 
@@ -507,22 +508,25 @@ public class CommonHBaseConnection extends HBaseConnection {
         comparator = ctor.newInstance( decodedB.booleanValue() );
       }
     } else {
-
       comp = CompareFilter.CompareOp.EQUAL;
-      if (cf.getComparisonOperator() == ColumnFilter.ComparisonType.SUBSTRING) {
-        comparator = new SubstringComparator(comparisonString);
+      if ( cf.getComparisonOperator() == ColumnFilter.ComparisonType.SUBSTRING ) {
+        comparator = new SubstringComparator( comparisonString );
       } else {
-        comparator = new RegexStringComparator(comparisonString);
+        comparator = new RegexStringComparator( comparisonString );
       }
     }
+
+      if ( comparator != null ) {
     Constructor<SingleColumnValueFilter> scvfCtor =
         SingleColumnValueFilter.class.getConstructor( byte[].class, byte[].class, CompareFilter.CompareOp.class,
             comparatorClass );
     SingleColumnValueFilter scf = scvfCtor.newInstance( family, qualifier, comp, comparator );
-      scf.setFilterIfMissing(true);
-      fl.addFilter(scf);
-
-    Thread.currentThread().setContextClassLoader(cl);
+    scf.setFilterIfMissing( true );
+    fl.addFilter( scf );
+      }
+    } finally {
+    Thread.currentThread().setContextClassLoader( cl );
+  }
   }
 
   // TODO - Override this method if necessary! Older HBase versions use WritableByteArrayComparable
@@ -549,24 +553,24 @@ public class CommonHBaseConnection extends HBaseConnection {
   // Older HBase versions extend WritableByteArrayComparable
   // Newer ones (0.95+) extend ByteArrayComparable
   public Class<?> getDeserializedNumericComparatorClass() throws ClassNotFoundException {
-    return Class.forName( "org.apache.hbase.shim.common.DeserializedNumericComparator" );
+    return Class.forName( "org.pentaho.hbase.shim.common.DeserializedNumericComparator" );
   }
 
   // TODO - Override this method to return the specified class for each shim.
   // Older HBase versions extend WritableByteArrayComparable
   // Newer ones (0.95+) extend ByteArrayComparable
   public Class<?> getDeserializedBooleanComparatorClass() throws ClassNotFoundException {
-    return Class.forName( "org.apache.hbase.shim.common.DeserializedBooleanComparator" );
+    return Class.forName( "org.pentaho.hbase.shim.common.DeserializedBooleanComparator" );
   }
 
   protected void checkResultSet() throws Exception {
-    if (m_resultSet == null) {
+    if ( m_resultSet == null ) {
       throw new Exception( BaseMessages.getString( PKG, "CommonHBaseConnection.Error.NoCurrentResultSet" ) );
     }
   }
 
   protected void checkForCurrentResultSetRow() throws Exception {
-    if (m_currentResultSetRow == null) {
+    if ( m_currentResultSetRow == null ) {
       throw new Exception( BaseMessages.getString( PKG, "CommonHBaseConnection.Error." ) );
     }
   }
@@ -577,13 +581,13 @@ public class CommonHBaseConnection extends HBaseConnection {
     checkSourceTable();
     checkSourceScan();
 
-    if (m_sourceScan.getFilter() != null) {
-      if (((FilterList) m_sourceScan.getFilter()).getFilters().size() == 0) {
-        m_sourceScan.setFilter(null);
+    if ( m_sourceScan.getFilter() != null ) {
+      if ( ( (FilterList) m_sourceScan.getFilter() ).getFilters().size() == 0 ) {
+        m_sourceScan.setFilter( null );
       }
     }
 
-    m_resultSet = m_sourceTable.getScanner(m_sourceScan);
+    m_resultSet = m_sourceTable.getScanner( m_sourceScan );
   }
 
   @Override
@@ -592,21 +596,21 @@ public class CommonHBaseConnection extends HBaseConnection {
 
     m_currentResultSetRow = m_resultSet.next();
 
-    return (m_currentResultSetRow != null);
+    return ( m_currentResultSetRow != null );
   }
 
   @Override
-  public boolean checkForHBaseRow(Object rowToCheck) {
-    return (rowToCheck instanceof Result);
+  public boolean checkForHBaseRow( Object rowToCheck ) {
+    return ( rowToCheck instanceof Result );
   }
 
   @Override
-  public byte[] getRowKey(Object aRow) throws Exception {
-    if (!checkForHBaseRow(aRow)) {
+  public byte[] getRowKey( Object aRow ) throws Exception {
+    if ( !checkForHBaseRow( aRow ) ) {
       throw new Exception( BaseMessages.getString( PKG, "CommonHBaseConnection.Error.ObjectIsNotAnHBaseRow" ) );
     }
 
-    return ((Result) aRow).getRow();
+    return ( (Result) aRow ).getRow();
   }
 
   @Override
@@ -616,14 +620,14 @@ public class CommonHBaseConnection extends HBaseConnection {
     checkResultSet();
     checkForCurrentResultSetRow();
 
-    return getRowKey(m_currentResultSetRow);
+    return getRowKey( m_currentResultSetRow );
   }
 
   @Override
   public byte[] getRowColumnLatest( Object aRow, String colFamilyName, String colName, boolean colNameIsBinary )
     throws Exception {
 
-    if (!checkForHBaseRow(aRow)) {
+    if ( !checkForHBaseRow( aRow ) ) {
       throw new Exception( BaseMessages.getString( PKG, "CommonHBaseConnection.Error.ObjectIsNotAnHBaseRow" ) );
     }
 
@@ -647,11 +651,11 @@ public class CommonHBaseConnection extends HBaseConnection {
   @Override
   public NavigableMap<byte[], byte[]> getRowFamilyMap( Object aRow, String familyName ) throws Exception {
 
-    if (!checkForHBaseRow(aRow)) {
+    if ( !checkForHBaseRow( aRow ) ) {
       throw new Exception( BaseMessages.getString( PKG, "CommonHBaseConnection.Error.ObjectIsNotAnHBaseRow" ) );
     }
 
-    return ((Result) aRow).getFamilyMap(m_bytesUtil.toBytes(familyName));
+    return ( (Result) aRow ).getFamilyMap( m_bytesUtil.toBytes( familyName ) );
   }
 
   @Override
@@ -660,37 +664,37 @@ public class CommonHBaseConnection extends HBaseConnection {
     checkResultSet();
     checkForCurrentResultSetRow();
 
-    return getRowFamilyMap(m_currentResultSetRow, familyName);
+    return getRowFamilyMap( m_currentResultSetRow, familyName );
   }
 
   @Override
   public NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> getRowMap( Object aRow )
     throws Exception {
-    if (!checkForHBaseRow(aRow)) {
+    if ( !checkForHBaseRow( aRow ) ) {
       throw new Exception( BaseMessages.getString( PKG, "CommonHBaseConnection.Error.ObjectIsNotAnHBaseRow" ) );
     }
 
-    return ((Result) aRow).getMap();
+    return ( (Result) aRow ).getMap();
   }
 
   @Override
   public NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> getResultSetCurrentRowMap()
-      throws Exception {
+    throws Exception {
     checkSourceScan();
     checkResultSet();
     checkForCurrentResultSetRow();
 
-    return getRowMap(m_currentResultSetRow);
+    return getRowMap( m_currentResultSetRow );
   }
 
   protected void checkTargetTable() throws Exception {
-    if (m_targetTable == null) {
+    if ( m_targetTable == null ) {
       throw new Exception( BaseMessages.getString( PKG, "CommonHBaseConnection.Error.NoTargetTable" ) );
     }
   }
 
   protected void checkTargetPut() throws Exception {
-    if (m_currentTargetPut == null) {
+    if ( m_currentTargetPut == null ) {
       throw new Exception( BaseMessages.getString( PKG, "CommonHBaseConnection.Error.NoTargetPut" ) );
     }
   }
@@ -700,16 +704,16 @@ public class CommonHBaseConnection extends HBaseConnection {
     checkConfiguration();
     closeTargetTable();
 
-    m_targetTable = new HTable(m_config, tableName);
+    m_targetTable = new HTable( m_config, tableName );
 
-    if (props != null) {
+    if ( props != null ) {
       Set<Object> keys = props.keySet();
-      for (Object key : keys) {
-        String value = props.getProperty(key.toString());
+      for ( Object key : keys ) {
+        String value = props.getProperty( key.toString() );
 
-        if (key.toString().equals(HTABLE_WRITE_BUFFER_SIZE_KEY)) {
-          m_targetTable.setWriteBufferSize(Long.parseLong(value));
-          m_targetTable.setAutoFlush(false);
+        if ( key.toString().equals( HTABLE_WRITE_BUFFER_SIZE_KEY ) ) {
+          m_targetTable.setWriteBufferSize( Long.parseLong( value ) );
+          m_targetTable.setAutoFlush( false );
         }
       }
     }
@@ -726,8 +730,8 @@ public class CommonHBaseConnection extends HBaseConnection {
   public void newTargetTablePut( byte[] key, boolean writeToWAL ) throws Exception {
     checkTargetTable();
 
-    m_currentTargetPut = new Put(key);
-    m_currentTargetPut.setWriteToWAL(writeToWAL);
+    m_currentTargetPut = new Put( key );
+    m_currentTargetPut.setWriteToWAL( writeToWAL );
   }
 
   @Override
@@ -736,16 +740,16 @@ public class CommonHBaseConnection extends HBaseConnection {
     checkTargetTable();
     checkTargetPut();
 
-    m_targetTable.put(m_currentTargetPut);
+    m_targetTable.put( m_currentTargetPut );
   }
 
   @Override
-  public void executeTargetTableDelete(byte[] rowKey) throws Exception {
+  public void executeTargetTableDelete( byte[] rowKey ) throws Exception {
     checkConfiguration();
     checkTargetTable();
 
-    Delete d = new Delete(rowKey);
-    m_targetTable.delete(d);
+    Delete d = new Delete( rowKey );
+    m_targetTable.delete( d );
   }
 
   @Override
@@ -771,8 +775,8 @@ public class CommonHBaseConnection extends HBaseConnection {
   public void closeTargetTable() throws Exception {
     checkConfiguration();
 
-    if (m_targetTable != null) {
-      if (!m_targetTable.isAutoFlush()) {
+    if ( m_targetTable != null ) {
+      if ( !m_targetTable.isAutoFlush() ) {
         flushCommitsTargetTable();
       }
       m_targetTable.close();
@@ -785,7 +789,7 @@ public class CommonHBaseConnection extends HBaseConnection {
     checkConfiguration();
 
     // An open result set?
-    if (m_resultSet != null) {
+    if ( m_resultSet != null ) {
       m_resultSet.close();
       m_resultSet = null;
       m_currentResultSetRow = null;
@@ -797,14 +801,14 @@ public class CommonHBaseConnection extends HBaseConnection {
     checkConfiguration();
     closeSourceResultSet();
 
-    if (m_sourceTable != null) {
+    if ( m_sourceTable != null ) {
       m_sourceTable.close();
       m_sourceTable = null;
     }
   }
 
   @Override
-  public boolean isImmutableBytesWritable(Object o) {
+  public boolean isImmutableBytesWritable( Object o ) {
     // For this to work the context class loader must be able to load
     // ImmutableBytesWritable.class from the same CL as o.getClass() was loaded
     // from
