@@ -146,6 +146,18 @@ public class ShimPropertiesTest {
   }
 
   @Test
+  public void testGetConfigListReplaceWith2ShimConfig() {
+    List<String> rootConfig = new ArrayList<String>( Arrays.asList( "one", "b", "iii" ) );
+    List<String> shimConfig = new ArrayList<String>( Arrays.asList( "1", "two", "tres" ) );
+    List<String> shimConfig2 = new ArrayList<String>( Arrays.asList( "3", "cee", "p", "o" ) );
+    shimProperties.setProperty( "propName", join( ",", rootConfig ) );
+    shimProperties.setProperty( "mr1.propName", join( ",", shimConfig ) );
+    shimProperties.setProperty( "hbase.propName", join( ",", shimConfig2 ) );
+    shimProperties.setProperty( ShimProperties.SHIM_CP_CONFIG, "mr1,hbase" );
+    assertEquals( shimConfig2, shimProperties.getConfigList( "propName", ListOverrideType.REPLACE ) );
+  }
+
+  @Test
   public void testGetConfigListReplaceWithNoRootConfig() {
     List<String> shimConfig = new ArrayList<String>( Arrays.asList( "1", "two", "tres" ) );
     shimProperties.setProperty( "mr1.propName", join( ",", shimConfig ) );
@@ -172,6 +184,21 @@ public class ShimPropertiesTest {
     shimProperties.setProperty( "propName", join( ",", rootConfig ) );
     shimProperties.setProperty( "mr1.propName", join( ",", shimConfig ) );
     shimProperties.setProperty( ShimProperties.SHIM_CP_CONFIG, "mr1" );
+    assertEquals( combinedList, shimProperties.getConfigList( "propName", ListOverrideType.APPEND ) );
+  }
+
+  @Test
+  public void testGetConfigListAppendWith2ShimConfig() {
+    List<String> rootConfig = new ArrayList<String>( Arrays.asList( "one", "b", "iii" ) );
+    List<String> shimConfig = new ArrayList<String>( Arrays.asList( "1", "two", "tres" ) );
+    List<String> shimConfig2 = new ArrayList<String>( Arrays.asList( "3", "cee", "p", "o" ) );
+    List<String> combinedList = new ArrayList<String>( rootConfig );
+    combinedList.addAll( shimConfig );
+    combinedList.addAll( shimConfig2 );
+    shimProperties.setProperty( "propName", join( ",", rootConfig ) );
+    shimProperties.setProperty( "mr1.propName", join( ",", shimConfig ) );
+    shimProperties.setProperty( "hbase.propName", join( ",", shimConfig2 ) );
+    shimProperties.setProperty( ShimProperties.SHIM_CP_CONFIG, "mr1,hbase" );
     assertEquals( combinedList, shimProperties.getConfigList( "propName", ListOverrideType.APPEND ) );
   }
 
@@ -206,6 +233,21 @@ public class ShimPropertiesTest {
   }
 
   @Test
+  public void testGetConfigListPrependWith2ShimConfig() {
+    List<String> rootConfig = new ArrayList<String>( Arrays.asList( "one", "b", "iii" ) );
+    List<String> shimConfig = new ArrayList<String>( Arrays.asList( "1", "two", "tres" ) );
+    List<String> shimConfig2 = new ArrayList<String>( Arrays.asList( "3", "cee", "p", "o" ) );
+    List<String> combinedList = new ArrayList<String>( shimConfig2 );
+    combinedList.addAll( shimConfig );
+    combinedList.addAll( rootConfig );
+    shimProperties.setProperty( "propName", join( ",", rootConfig ) );
+    shimProperties.setProperty( "mr1.propName", join( ",", shimConfig ) );
+    shimProperties.setProperty( "hbase.propName", join( ",", shimConfig2 ) );
+    shimProperties.setProperty( ShimProperties.SHIM_CP_CONFIG, "mr1,hbase" );
+    assertEquals( combinedList, shimProperties.getConfigList( "propName", ListOverrideType.PREPEND ) );
+  }
+
+  @Test
   public void testGetConfigListPrependWithNoRootConfig() {
     List<String> shimConfig = new ArrayList<String>( Arrays.asList( "1", "two", "tres" ) );
     shimProperties.setProperty( "mr1.propName", join( ",", shimConfig ) );
@@ -224,5 +266,28 @@ public class ShimPropertiesTest {
     shimProperties.setProperty( "mr1.propName", join( ",", shimConfig ) );
     shimProperties.setProperty( ShimProperties.SHIM_CP_CONFIG, "mr1" );
     assertEquals( combinedList, shimProperties.getConfigList( "propName" ) );
+  }
+  
+  @Test
+  public void testGetPrefixedPropertiesNoShimConfig() {
+    shimProperties.setProperty( "java.system.flatclass", "false" );
+    assertEquals( "false", shimProperties.getPrefixedProperties( "java.system" ).get( "flatclass" ) );
+  }
+  
+  @Test
+  public void testGetPrefixedPropertiesShimConfig() {
+    shimProperties.setProperty( "java.system.flatclass", "false" );
+    shimProperties.setProperty( "mr1.java.system.flatclass", "true" );
+    shimProperties.setProperty( ShimProperties.SHIM_CP_CONFIG, "mr1" );
+    assertEquals( "true", shimProperties.getPrefixedProperties( "java.system" ).get( "flatclass" ) );
+  }
+  
+  @Test
+  public void testGetPrefixedProperties2ShimConfig() {
+    shimProperties.setProperty( "java.system.flatclass", "false" );
+    shimProperties.setProperty( "mr1.java.system.flatclass", "true" );
+    shimProperties.setProperty( "hbase.java.system.flatclass", "green" );
+    shimProperties.setProperty( ShimProperties.SHIM_CP_CONFIG, "mr1,hbase" );
+    assertEquals( "green", shimProperties.getPrefixedProperties( "java.system" ).get( "flatclass" ) );
   }
 }
