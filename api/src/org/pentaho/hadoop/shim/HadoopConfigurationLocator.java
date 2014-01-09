@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSelectInfo;
@@ -66,7 +67,7 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
 
   private static final String CONFIG_PROPERTY_IGNORE_CLASSES = "ignore.classes";
   
-  private static final String SHIM_IGNORE_FOLDERS = "ignore.folders";
+  private static final String SHIM_CLASSPATH_IGNORE = "classpath.ignore";
 
   private static final String CONFIG_PROPERTY_CLASSPATH = "classpath";
 
@@ -210,6 +211,11 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
     FileObject[] jars = path.findFiles(new FileSelector() {
       @Override
       public boolean includeFile(FileSelectInfo info) throws Exception {
+        for (String path : paths) {
+          if (info.getFile().getURL().toString().endsWith( path )) {
+            return false;
+          }
+        }
         return info.getFile().getName().getBaseName().endsWith(JAR_EXTENSION);
       }
 
@@ -287,7 +293,7 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
       }
       
       // Find all jar files in the configuration, at most 2 folders deep
-      List<URL> jars = findJarsIn( root, 3, configurationProperties.getConfigSet( SHIM_IGNORE_FOLDERS ) );
+      List<URL> jars = findJarsIn( root, 3, configurationProperties.getConfigSet( SHIM_CLASSPATH_IGNORE ) );
 
       // Add the root of the configuration
       jars.add(0, new URL(root.getURL().toExternalForm() + "/"));
@@ -357,6 +363,10 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
       }
     } catch (Exception ex) {
       throw new ConfigurationException(BaseMessages.getString(PKG, "Error.UnableToLoadConfigurationProperties", CONFIG_PROPERTIES_FILE));
+    }
+    
+    for ( Entry<String, String> entry : configurationProperties.getPrefixedProperties( "java.system" ).entrySet() ) {
+      System.setProperty( entry.getKey(), entry.getValue() );
     }
 
     try {
