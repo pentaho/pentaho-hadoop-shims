@@ -24,8 +24,10 @@ package org.pentaho.hadoop.shim.api;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -46,13 +48,23 @@ public class ShimProperties extends Properties {
     REPLACE, OVERLAY
   }
 
-  private String getShimConfigProperty( String property ) {
-    String shimConfigProperty = null;
-    String shimClasspathConfig = getProperty( SHIM_CP_CONFIG );
-    if ( shimClasspathConfig != null ) {
-      shimConfigProperty = getProperty( shimClasspathConfig + "." + property );
+  private List<String> getShimConfigs() {
+    List<String> shimConfigs = new ArrayList<String>();
+    String shimCurrentConfig = getProperty( SHIM_CP_CONFIG );
+    if ( shimCurrentConfig != null ) {
+      for ( String config : shimCurrentConfig.trim().split( "," ) ) {
+        shimConfigs.add( config.trim() );
+      }
     }
-    return shimConfigProperty;
+    return shimConfigs;
+  }
+
+  private List<String> getShimConfigProperties( String property ) {
+    List<String> shimConfigProperties = new ArrayList<String>();
+    for ( String config : getShimConfigs() ) {
+      shimConfigProperties.add( getProperty( config + "." + property ) );
+    }
+    return shimConfigProperties;
   }
 
   /**
@@ -76,35 +88,38 @@ public class ShimProperties extends Properties {
    * @return the list
    */
   public List<String> getConfigList( String property, ListOverrideType listOverrideType ) {
-    List<String> rootProperty = new ArrayList<String>();
-    String shimConfigValues = getShimConfigProperty( property );
+    List<String> shimConfigValues = getShimConfigProperties( property );
+    List<String> shimProperties = new ArrayList<String>();
 
-    if ( listOverrideType != ListOverrideType.REPLACE || shimConfigValues == null ) {
-      String globalValues = getProperty( property );
-      if ( globalValues != null && globalValues.trim().length() > 0 ) {
-        rootProperty = new ArrayList<String>( Arrays.asList( globalValues.split( "," ) ) );
+    String globalValues = getProperty( property );
+    if ( globalValues != null && globalValues.trim().length() > 0 ) {
+      shimProperties.addAll( Arrays.asList( globalValues.split( "," ) ) );
+    }
+
+    for ( String shimConfigValue : shimConfigValues ) {
+      if ( shimConfigValue != null ) {
+        List<String> shimProperty = new ArrayList<String>();
+        if ( shimConfigValue.trim().length() > 0 ) {
+          for ( String prop : shimConfigValue.trim().split( "," ) ) {
+            shimProperty.add( prop.trim() );
+          }
+        }
+        switch ( listOverrideType ) {
+          case APPEND:
+            shimProperties.addAll( shimProperty );
+            break;
+          case PREPEND:
+            shimProperty.addAll( shimProperties );
+            shimProperties = shimProperty;
+            break;
+          case REPLACE:
+            shimProperties = shimProperty;
+            break;
+        }
       }
     }
 
-    List<String> shimProperty = new ArrayList<String>();
-    if ( shimConfigValues != null && shimConfigValues.trim().length() > 0 ) {
-      shimProperty = new ArrayList<String>( Arrays.asList( shimConfigValues.split( "," ) ) );
-    }
-
-    if ( rootProperty != null && ( listOverrideType != ListOverrideType.REPLACE || shimConfigValues == null ) ) {
-      switch ( listOverrideType ) {
-        case APPEND:
-          rootProperty.addAll( shimProperty );
-          return rootProperty;
-        case PREPEND:
-          shimProperty.addAll( rootProperty );
-          return shimProperty;
-        case REPLACE:
-          return rootProperty;
-      }
-    }
-
-    return shimProperty;
+    return shimProperties;
   }
 
   /**
@@ -128,24 +143,57 @@ public class ShimProperties extends Properties {
    * @return the list
    */
   public Set<String> getConfigSet( String property, SetOverrideType overrideType ) {
-    Set<String> result = new HashSet<String>();
-    String shimConfigValues = getShimConfigProperty( property );
+    List<String> shimConfigValues = getShimConfigProperties( property );
+    Set<String> shimProperties = new HashSet<String>();
 
-    if ( overrideType == SetOverrideType.OVERLAY || shimConfigValues == null ) {
-      String globalValues = getProperty( property );
-      if ( globalValues != null && globalValues.trim().length() > 0 ) {
-        for ( String folder : globalValues.split( "," ) ) {
-          result.add( folder );
+    String globalValues = getProperty( property );
+    if ( globalValues != null && globalValues.trim().length() > 0 ) {
+      shimProperties.addAll( Arrays.asList( globalValues.split( "," ) ) );
+    }
+
+    for ( String shimConfigValue : shimConfigValues ) {
+      if ( shimConfigValue != null ) {
+        Set<String> shimProperty = new HashSet<String>();
+        if ( shimConfigValue.trim().length() > 0 ) {
+          for ( String prop : shimConfigValue.trim().split( "," ) ) {
+            shimProperty.add( prop.trim() );
+          }
+        }
+        switch ( overrideType ) {
+          case OVERLAY:
+            shimProperties.addAll( shimProperty );
+            break;
+          case REPLACE:
+            shimProperties = shimProperty;
+            break;
         }
       }
     }
 
-    if ( shimConfigValues != null && shimConfigValues.trim().length() > 0 ) {
-      for ( String folder : shimConfigValues.split( "," ) ) {
-        result.add( folder );
+    return shimProperties;
+  }
+
+  /**
+   * Returns a map of key -> value of all shim properties with the given prefix (the prefix is removed)
+   * 
+   * @param prefix
+   *          the prefix to look for
+   * @return a map of key -> value of all shim properties with the given prefix (the prefix is removed)
+   */
+  public Map<String, String> getPrefixedProperties( String prefix ) {
+    List<String> propertyPrefixes = new ArrayList<String>();
+    propertyPrefixes.add( prefix + "." );
+    for ( String shimConfig : getShimConfigs() ) {
+      propertyPrefixes.add( shimConfig + "." + prefix.trim() + "." );
+    }
+    Map<String, String> prefixedProperties = new HashMap<String, String>();
+    for ( String currentPrefix : propertyPrefixes ) {
+      for ( String propertyName : stringPropertyNames() ) {
+        if ( propertyName.startsWith( currentPrefix ) ) {
+          prefixedProperties.put( propertyName.substring( currentPrefix.length() ), getProperty( propertyName ) );
+        }
       }
     }
-
-    return result;
+    return prefixedProperties;
   }
 }
