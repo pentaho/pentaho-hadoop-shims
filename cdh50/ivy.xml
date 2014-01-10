@@ -28,6 +28,14 @@
     <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-client" rev="${dependency.hadoop.revision}"/>
     <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-core" rev="${dependency.hadoop.mr1.revision}" transitive="false"/>
 
+    <!-- 
+      This patch gets us around bugs like MAPREDUCE-5665 where MapReduce jobs submitted from a Windows client to YARN
+      fail because of client-side attributes used during cluster-side execution.
+     -->
+    <dependency org="pentaho" name="hadoop2-windows-patch" rev="${dependency.hadoop2-windows-patch.revision}" transitive="false">
+      <artifact name="hadoop2-windows-patch" ext="jar"/>
+    </dependency> 
+
     <dependency conf="pmr->default" org="org.apache.hbase" name="hbase-client" rev="${dependency.apache-hbase.revision}" transitive="false"/>
     <dependency conf="pmr->default" org="org.apache.hbase" name="hbase-hadoop-compat" rev="${dependency.apache-hbase.revision}" transitive="false"/>
     <dependency conf="pmr->default" org="org.apache.hbase" name="hbase-common" rev="${dependency.apache-hbase.revision}" transitive="false"/>
