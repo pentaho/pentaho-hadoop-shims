@@ -51,6 +51,14 @@
     <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-jobclient" rev="${dependency.hadoop.revision}" />
     <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-shuffle" rev="${dependency.hadoop.revision}" />
 
+    <!-- 
+      This patch gets us around bugs like MAPREDUCE-5665 where MapReduce jobs submitted from a Windows client to YARN
+      fail because of client-side attributes used during cluster-side execution.
+     -->
+    <dependency org="pentaho" name="hadoop2-windows-patch" rev="${dependency.hadoop2-windows-patch.revision}" transitive="false">
+      <artifact name="hadoop2-windows-patch" ext="jar"/>
+    </dependency>
+    
     <!-- Resolving HDP Pig is messy, the core JAR is provided, some other Pig dependencies need to be added or excluded
     <dependency conf="pmr->default" org="org.apache.pig" name="pig" rev="${dependency.pig.revision}" transitive="true">
       <exclude org="com.google.guava" />
