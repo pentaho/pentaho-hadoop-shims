@@ -21,11 +21,11 @@ public class HBaseConnectionImpl extends CommonHBaseConnection {
 
   @Override
   public Class<?> getDeserializedNumericComparatorClass() throws ClassNotFoundException {
-    return Class.forName( "org.apache.hbase.shim.cdh50.DeserializedNumericComparator" );
+    return Class.forName( "org.pentaho.hbase.shim.cdh50.DeserializedNumericComparator" );
   }
 
   @Override
   public Class<?> getDeserializedBooleanComparatorClass() throws ClassNotFoundException {
-    return Class.forName( "org.apache.hbase.shim.cdh50.DeserializedBooleanComparator" );
+    return Class.forName( "org.pentaho.hbase.shim.cdh50.DeserializedBooleanComparator" );
   }
 }
