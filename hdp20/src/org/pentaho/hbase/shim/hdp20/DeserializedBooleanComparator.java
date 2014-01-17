@@ -22,8 +22,12 @@
 
 package org.pentaho.hbase.shim.hdp20;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInput;
+import java.io.DataInputStream;
 import java.io.DataOutput;
+import java.io.DataOutputStream;
 import java.io.IOException;
 
 import org.apache.hadoop.hbase.filter.ByteArrayComparable;
@@ -93,7 +97,7 @@ public class DeserializedBooleanComparator extends ByteArrayComparable {
   }
 
   public int compareTo( byte[] value, int offset, int length ) {
-    return compareTo( value );
+    return compareTo( Bytes.copy( value, offset, length ) );
   }
 
   public static Boolean decodeBoolFromString( byte[] rawEncoded ) {
@@ -159,7 +163,29 @@ public class DeserializedBooleanComparator extends ByteArrayComparable {
 
   @Override
   public byte[] toByteArray() {
-    return super.getValue();
+    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+    DataOutputStream output = new DataOutputStream( byteArrayOutputStream );
+    try {
+      write( output );
+      output.close();
+      byteArrayOutputStream.close();
+      return byteArrayOutputStream.toByteArray();
+    } catch ( IOException e ) {
+      throw new RuntimeException( "Unable to serialize to byte array.", e );
+    }
   }
-
+  
+  /**
+   * Needed for hbase-0.95+
+   * @throws IOException 
+   */
+  public static ByteArrayComparable parseFrom(final byte [] pbBytes) {
+    DataInput in = new DataInputStream( new ByteArrayInputStream( pbBytes ) );
+    try {
+      boolean m_value = new Boolean( in.readBoolean() );
+      return new DeserializedBooleanComparator( m_value );
+    } catch ( IOException e ) {
+      throw new RuntimeException( "Unable to deserialize byte array", e );
+    }
+  }
 }
