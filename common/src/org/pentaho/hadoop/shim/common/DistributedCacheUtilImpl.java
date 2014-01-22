@@ -312,7 +312,24 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.Dis
       throws IOException {
 
     // TODO Replace this with a Hadoop shim if we end up having version-specific implementations scattered around
-    if (VersionInfo.getVersion().contains("0.21")) {
+    
+    // Save off the classloader, to make sure the version info can be loaded successfully from the hadoop-common JAR
+    ClassLoader cl = Thread.currentThread().getContextClassLoader();
+    Thread.currentThread().setContextClassLoader( VersionInfo.class.getClassLoader() );
+    
+    // Get the version string or set to a default value
+    String version;
+    try {
+      version = VersionInfo.getVersion();
+    }
+    catch(Throwable t) {
+      version = "unknown";
+    }
+    
+    // Restore the original classloader
+    Thread.currentThread().setContextClassLoader( cl);
+    
+    if (!version.contains("0.20")) {
       DistributedCache.addFileToClassPath(file, conf);
     } else {
       String classpath = conf.get("mapred.job.classpath.files");

@@ -364,7 +364,7 @@ public class DistributedCacheUtilImplTest {
 
       fs.mkdirs(dest);
       assertTrue(fs.exists(dest));
-      assertTrue(fs.getFileStatus(dest).isDir());
+      assertTrue(fs.getFileStatus(dest).isDirectory());
       try {
         ch.stageForCache(source, fs, dest, false);
       } catch (KettleFileException ex) {
@@ -391,7 +391,7 @@ public class DistributedCacheUtilImplTest {
 
       fs.mkdirs(dest);
       assertTrue(fs.exists(dest));
-      assertTrue(fs.getFileStatus(dest).isDir());
+      assertTrue(fs.getFileStatus(dest).isDirectory());
 
       stageForCacheTester(ch, source, fs, root, dest, 6, 6);
     } finally {
@@ -407,7 +407,7 @@ public class DistributedCacheUtilImplTest {
     List<Path> files = Arrays.asList(new Path("a"), new Path("b"), new Path("c"));
 
     ch.addCachedFilesToClasspath(files, conf);
-
+   
     assertEquals("yes", conf.get("mapred.create.symlink"));
 
     for (Path file : files) {
@@ -509,7 +509,7 @@ public class DistributedCacheUtilImplTest {
 
     FileObject bigDataPluginDir = createTestFolderWithContent(DistributedCacheUtilImpl.PENTAHO_BIG_DATA_PLUGIN_FOLDER_NAME);
     String pluginName = "additional-plugin";
-    FileObject pluginDir = createTestFolderWithContent(pluginName);
+    createTestFolderWithContent(pluginName);
     Path root = new Path("bin/test/installKettleEnvironment");
     try {
       ch.installKettleEnvironment(pmrArchive, fs, root, bigDataPluginDir, "bin/test/" + pluginName);
