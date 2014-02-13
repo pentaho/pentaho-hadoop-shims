@@ -1,0 +1,209 @@
+<Schema name="jdbc-hive1-1table">
+  <Dimension name="Coffee bar">
+    <Hierarchy hasAll="true">
+      <Table name="store"/>
+      <Level name="Coffee bar" uniqueMembers="false" column="coffee_bar" type="Numeric">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="First opened date">
+    <Hierarchy hasAll="true">
+      <Table name="store"/>
+      <Level name="First opened date" uniqueMembers="false" column="first_opened_date" type="String">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="Florist">
+    <Hierarchy hasAll="true">
+      <Table name="store"/>
+      <Level name="Florist" uniqueMembers="false" column="florist" type="Numeric">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="Frozen sqft">
+    <Hierarchy hasAll="true">
+      <Table name="store"/>
+      <Level name="Frozen sqft" uniqueMembers="false" column="frozen_sqft" type="Numeric">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="Grocery sqft">
+    <Hierarchy hasAll="true">
+      <Table name="store"/>
+      <Level name="Grocery sqft" uniqueMembers="false" column="grocery_sqft" type="Numeric">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="Last remodel date">
+    <Hierarchy hasAll="true">
+      <Table name="store"/>
+      <Level name="Last remodel date" uniqueMembers="false" column="last_remodel_date" type="String">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="Meat sqft">
+    <Hierarchy hasAll="true">
+      <Table name="store"/>
+      <Level name="Meat sqft" uniqueMembers="false" column="meat_sqft" type="Numeric">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="Prepared food">
+    <Hierarchy hasAll="true">
+      <Table name="store"/>
+      <Level name="Prepared food" uniqueMembers="false" column="prepared_food" type="Numeric">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="Region id">
+    <Hierarchy hasAll="true">
+      <Table name="store"/>
+      <Level name="Region id" uniqueMembers="false" column="region_id" type="Numeric">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="Salad bar">
+    <Hierarchy hasAll="true">
+      <Table name="store"/>
+      <Level name="Salad bar" uniqueMembers="false" column="salad_bar" type="Numeric">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="Store city">
+    <Hierarchy hasAll="true">
+      <Table name="store"/>
+      <Level name="Store city" uniqueMembers="false" column="store_city" type="String">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="Store country">
+    <Hierarchy hasAll="true">
+      <Table name="store"/>
+      <Level name="Store country" uniqueMembers="false" column="store_country" type="String">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="Store fax">
+    <Hierarchy hasAll="true">
+      <Table name="store"/>
+      <Level name="Store fax" uniqueMembers="false" column="store_fax" type="String">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="Store id">
+    <Hierarchy hasAll="true">
+      <Table name="store"/>
+      <Level name="Store id" uniqueMembers="false" column="store_id" type="Numeric">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="Store manager">
+    <Hierarchy hasAll="true">
+      <Table name="store"/>
+      <Level name="Store manager" uniqueMembers="false" column="store_manager" type="String">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="Store name">
+    <Hierarchy hasAll="true">
+      <Table name="store"/>
+      <Level name="Store name" uniqueMembers="false" column="store_name" type="String">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="Store number">
+    <Hierarchy hasAll="true">
+      <Table name="store"/>
+      <Level name="Store number" uniqueMembers="false" column="store_number" type="Numeric">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="Store phone">
+    <Hierarchy hasAll="true">
+      <Table name="store"/>
+      <Level name="Store phone" uniqueMembers="false" column="store_phone" type="String">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="Store postal code">
+    <Hierarchy hasAll="true">
+      <Table name="store"/>
+      <Level name="Store postal code" uniqueMembers="false" column="store_postal_code" type="String">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="Store sqft">
+    <Hierarchy hasAll="true">
+      <Table name="store"/>
+      <Level name="Store sqft" uniqueMembers="false" column="store_sqft" type="Numeric">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="Store state">
+    <Hierarchy hasAll="true">
+      <Table name="store"/>
+      <Level name="Store state" uniqueMembers="false" column="store_state" type="String">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="Store street address">
+    <Hierarchy hasAll="true">
+      <Table name="store"/>
+      <Level name="Store street address" uniqueMembers="false" column="store_street_address" type="String">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="Store type">
+    <Hierarchy hasAll="true">
+      <Table name="store"/>
+      <Level name="Store type" uniqueMembers="false" column="store_type" type="String">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="Video store">
+    <Hierarchy hasAll="true">
+      <Table name="store"/>
+      <Level name="Video store" uniqueMembers="false" column="video_store" type="Numeric">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Cube name="jdbc-hive1-1table">
+    <Table name="store"/>
+    <DimensionUsage name="Coffee bar" source="Coffee bar"/>
+    <DimensionUsage name="First opened date" source="First opened date"/>
+    <DimensionUsage name="Florist" source="Florist"/>
+    <DimensionUsage name="Frozen sqft" source="Frozen sqft"/>
+    <DimensionUsage name="Grocery sqft" source="Grocery sqft"/>
+    <DimensionUsage name="Last remodel date" source="Last remodel date"/>
+    <DimensionUsage name="Meat sqft" source="Meat sqft"/>
+    <DimensionUsage name="Prepared food" source="Prepared food"/>
+    <DimensionUsage name="Region id" source="Region id"/>
+    <DimensionUsage name="Salad bar" source="Salad bar"/>
+    <DimensionUsage name="Store city" source="Store city"/>
+    <DimensionUsage name="Store country" source="Store country"/>
+    <DimensionUsage name="Store fax" source="Store fax"/>
+    <DimensionUsage name="Store id" source="Store id"/>
+    <DimensionUsage name="Store manager" source="Store manager"/>
+    <DimensionUsage name="Store name" source="Store name"/>
+    <DimensionUsage name="Store number" source="Store number"/>
+    <DimensionUsage name="Store phone" source="Store phone"/>
+    <DimensionUsage name="Store postal code" source="Store postal code"/>
+    <DimensionUsage name="Store sqft" source="Store sqft"/>
+    <DimensionUsage name="Store state" source="Store state"/>
+    <DimensionUsage name="Store street address" source="Store street address"/>
+    <DimensionUsage name="Store type" source="Store type"/>
+    <DimensionUsage name="Video store" source="Video store"/>
+    <Measure name="Coffee bar" column="coffee_bar" aggregator="sum" formatString="&#x23;"/>
+    <Measure name="Florist" column="florist" aggregator="sum" formatString="&#x23;"/>
+    <Measure name="Frozen sqft" column="frozen_sqft" aggregator="sum" formatString="&#x23;"/>
+    <Measure name="Grocery sqft" column="grocery_sqft" aggregator="sum" formatString="&#x23;"/>
+    <Measure name="Meat sqft" column="meat_sqft" aggregator="sum" formatString="&#x23;"/>
+    <Measure name="Prepared food" column="prepared_food" aggregator="sum" formatString="&#x23;"/>
+    <Measure name="Region id" column="region_id" aggregator="sum" formatString="&#x23;"/>
+    <Measure name="Salad bar" column="salad_bar" aggregator="sum" formatString="&#x23;"/>
+    <Measure name="Store id" column="store_id" aggregator="sum" formatString="&#x23;"/>
+    <Measure name="Store number" column="store_number" aggregator="sum" formatString="&#x23;"/>
+    <Measure name="Store sqft" column="store_sqft" aggregator="sum" formatString="&#x23;"/>
+    <Measure name="Video store" column="video_store" aggregator="sum" formatString="&#x23;"/>
+  </Cube>
+</Schema>
