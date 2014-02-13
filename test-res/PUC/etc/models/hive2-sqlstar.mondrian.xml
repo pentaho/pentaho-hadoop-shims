@@ -1,0 +1,322 @@
+<Schema name="jdbc-hive2-sqlstar">
+  <Dimension name="coffee_bar">
+    <Hierarchy hasAll="true">
+    <View alias="FACT">
+        <SQL dialect="generic">
+         <![CDATA[select s.*, if97.units_ordered from store s join inventory_fact_1997 if97 on s.store_id= if97.store_id]]>
+        </SQL>
+    </View>
+      <Level name="coffee_bar" uniqueMembers="false" column="coffee_bar" type="Numeric">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="first_opened_date">
+    <Hierarchy hasAll="true">
+    <View alias="FACT">
+        <SQL dialect="generic">
+         <![CDATA[select s.*, if97.units_ordered from store s join inventory_fact_1997 if97 on s.store_id= if97.store_id]]>
+        </SQL>
+    </View>
+      <Level name="first_opened_date" uniqueMembers="false" column="first_opened_date" type="String">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="florist">
+    <Hierarchy hasAll="true">
+    <View alias="FACT">
+        <SQL dialect="generic">
+         <![CDATA[select s.*, if97.units_ordered from store s join inventory_fact_1997 if97 on s.store_id= if97.store_id]]>
+        </SQL>
+    </View>
+      <Level name="florist" uniqueMembers="false" column="florist" type="Numeric">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="frozen_sqft">
+    <Hierarchy hasAll="true">
+    <View alias="FACT">
+        <SQL dialect="generic">
+         <![CDATA[select s.*, if97.units_ordered from store s join inventory_fact_1997 if97 on s.store_id= if97.store_id]]>
+        </SQL>
+    </View>
+      <Level name="frozen_sqft" uniqueMembers="false" column="frozen_sqft" type="Numeric">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="grocery_sqft">
+    <Hierarchy hasAll="true">
+    <View alias="FACT">
+        <SQL dialect="generic">
+         <![CDATA[select s.*, if97.units_ordered from store s join inventory_fact_1997 if97 on s.store_id= if97.store_id]]>
+        </SQL>
+    </View>
+      <Level name="grocery_sqft" uniqueMembers="false" column="grocery_sqft" type="Numeric">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="last_remodel_date">
+    <Hierarchy hasAll="true">
+    <View alias="FACT">
+        <SQL dialect="generic">
+         <![CDATA[select s.*, if97.units_ordered from store s join inventory_fact_1997 if97 on s.store_id= if97.store_id]]>
+        </SQL>
+    </View>
+      <Level name="last_remodel_date" uniqueMembers="false" column="last_remodel_date" type="String">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="meat_sqft">
+    <Hierarchy hasAll="true">
+    <View alias="FACT">
+        <SQL dialect="generic">
+         <![CDATA[select s.*, if97.units_ordered from store s join inventory_fact_1997 if97 on s.store_id= if97.store_id]]>
+        </SQL>
+    </View>
+      <Level name="meat_sqft" uniqueMembers="false" column="meat_sqft" type="Numeric">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="prepared_food">
+    <Hierarchy hasAll="true">
+    <View alias="FACT">
+        <SQL dialect="generic">
+         <![CDATA[select s.*, if97.units_ordered from store s join inventory_fact_1997 if97 on s.store_id= if97.store_id]]>
+        </SQL>
+    </View>
+      <Level name="prepared_food" uniqueMembers="false" column="prepared_food" type="Numeric">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="region_id">
+    <Hierarchy hasAll="true">
+    <View alias="FACT">
+        <SQL dialect="generic">
+         <![CDATA[select s.*, if97.units_ordered from store s join inventory_fact_1997 if97 on s.store_id= if97.store_id]]>
+        </SQL>
+    </View>
+      <Level name="region_id" uniqueMembers="false" column="region_id" type="Numeric">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="salad_bar">
+    <Hierarchy hasAll="true">
+    <View alias="FACT">
+        <SQL dialect="generic">
+         <![CDATA[select s.*, if97.units_ordered from store s join inventory_fact_1997 if97 on s.store_id= if97.store_id]]>
+        </SQL>
+    </View>
+      <Level name="salad_bar" uniqueMembers="false" column="salad_bar" type="Numeric">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="store_city">
+    <Hierarchy hasAll="true">
+    <View alias="FACT">
+        <SQL dialect="generic">
+         <![CDATA[select s.*, if97.units_ordered from store s join inventory_fact_1997 if97 on s.store_id= if97.store_id]]>
+        </SQL>
+    </View>
+      <Level name="store_city" uniqueMembers="false" column="store_city" type="String">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="store_country">
+    <Hierarchy hasAll="true">
+    <View alias="FACT">
+        <SQL dialect="generic">
+         <![CDATA[select s.*, if97.units_ordered from store s join inventory_fact_1997 if97 on s.store_id= if97.store_id]]>
+        </SQL>
+    </View>
+      <Level name="store_country" uniqueMembers="false" column="store_country" type="String">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="store_fax">
+    <Hierarchy hasAll="true">
+    <View alias="FACT">
+        <SQL dialect="generic">
+         <![CDATA[select s.*, if97.units_ordered from store s join inventory_fact_1997 if97 on s.store_id= if97.store_id]]>
+        </SQL>
+    </View>
+      <Level name="store_fax" uniqueMembers="false" column="store_fax" type="String">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="store_id">
+    <Hierarchy hasAll="true">
+    <View alias="FACT">
+        <SQL dialect="generic">
+         <![CDATA[select s.*, if97.units_ordered from store s join inventory_fact_1997 if97 on s.store_id= if97.store_id]]>
+        </SQL>
+    </View>
+      <Level name="store_id" uniqueMembers="false" column="store_id" type="Numeric">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="store_manager">
+    <Hierarchy hasAll="true">
+    <View alias="FACT">
+        <SQL dialect="generic">
+         <![CDATA[select s.*, if97.units_ordered from store s join inventory_fact_1997 if97 on s.store_id= if97.store_id]]>
+        </SQL>
+    </View>
+      <Level name="store_manager" uniqueMembers="false" column="store_manager" type="String">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="store_name">
+    <Hierarchy hasAll="true">
+    <View alias="FACT">
+        <SQL dialect="generic">
+         <![CDATA[select s.*, if97.units_ordered from store s join inventory_fact_1997 if97 on s.store_id= if97.store_id]]>
+        </SQL>
+    </View>
+      <Level name="store_name" uniqueMembers="false" column="store_name" type="String">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="store_number">
+    <Hierarchy hasAll="true">
+    <View alias="FACT">
+        <SQL dialect="generic">
+         <![CDATA[select s.*, if97.units_ordered from store s join inventory_fact_1997 if97 on s.store_id= if97.store_id]]>
+        </SQL>
+    </View>
+      <Level name="store_number" uniqueMembers="false" column="store_number" type="Numeric">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="store_phone">
+    <Hierarchy hasAll="true">
+    <View alias="FACT">
+        <SQL dialect="generic">
+         <![CDATA[select s.*, if97.units_ordered from store s join inventory_fact_1997 if97 on s.store_id= if97.store_id]]>
+        </SQL>
+    </View>
+      <Level name="store_phone" uniqueMembers="false" column="store_phone" type="String">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="store_postal_code">
+    <Hierarchy hasAll="true">
+    <View alias="FACT">
+        <SQL dialect="generic">
+         <![CDATA[select s.*, if97.units_ordered from store s join inventory_fact_1997 if97 on s.store_id= if97.store_id]]>
+        </SQL>
+    </View>
+      <Level name="store_postal_code" uniqueMembers="false" column="store_postal_code" type="String">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="store_sqft">
+    <Hierarchy hasAll="true">
+    <View alias="FACT">
+        <SQL dialect="generic">
+         <![CDATA[select s.*, if97.units_ordered from store s join inventory_fact_1997 if97 on s.store_id= if97.store_id]]>
+        </SQL>
+    </View>
+      <Level name="store_sqft" uniqueMembers="false" column="store_sqft" type="Numeric">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="store_state">
+    <Hierarchy hasAll="true">
+    <View alias="FACT">
+        <SQL dialect="generic">
+         <![CDATA[select s.*, if97.units_ordered from store s join inventory_fact_1997 if97 on s.store_id= if97.store_id]]>
+        </SQL>
+    </View>
+      <Level name="store_state" uniqueMembers="false" column="store_state" type="String">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="store_street_address">
+    <Hierarchy hasAll="true">
+    <View alias="FACT">
+        <SQL dialect="generic">
+         <![CDATA[select s.*, if97.units_ordered from store s join inventory_fact_1997 if97 on s.store_id= if97.store_id]]>
+        </SQL>
+    </View>
+      <Level name="store_street_address" uniqueMembers="false" column="store_street_address" type="String">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="store_type">
+    <Hierarchy hasAll="true">
+    <View alias="FACT">
+        <SQL dialect="generic">
+         <![CDATA[select s.*, if97.units_ordered from store s join inventory_fact_1997 if97 on s.store_id= if97.store_id]]>
+        </SQL>
+    </View>
+      <Level name="store_type" uniqueMembers="false" column="store_type" type="String">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="units_ordered">
+    <Hierarchy hasAll="true">
+    <View alias="FACT">
+        <SQL dialect="generic">
+         <![CDATA[select s.*, if97.units_ordered from store s join inventory_fact_1997 if97 on s.store_id= if97.store_id]]>
+        </SQL>
+    </View>
+      <Level name="units_ordered" uniqueMembers="false" column="units_ordered" type="Numeric">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension name="video_store">
+    <Hierarchy hasAll="true">
+    <View alias="FACT">
+        <SQL dialect="generic">
+         <![CDATA[select s.*, if97.units_ordered from store s join inventory_fact_1997 if97 on s.store_id= if97.store_id]]>
+        </SQL>
+    </View>
+      <Level name="video_store" uniqueMembers="false" column="video_store" type="Numeric">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Cube name="jdbc-hive2-sqlstar">
+    <View alias="FACT">
+        <SQL dialect="generic">
+         <![CDATA[select s.*, if97.units_ordered from store s join inventory_fact_1997 if97 on s.store_id= if97.store_id]]>
+        </SQL>
+    </View>
+    <DimensionUsage name="coffee_bar" source="coffee_bar"/>
+    <DimensionUsage name="first_opened_date" source="first_opened_date"/>
+    <DimensionUsage name="florist" source="florist"/>
+    <DimensionUsage name="frozen_sqft" source="frozen_sqft"/>
+    <DimensionUsage name="grocery_sqft" source="grocery_sqft"/>
+    <DimensionUsage name="last_remodel_date" source="last_remodel_date"/>
+    <DimensionUsage name="meat_sqft" source="meat_sqft"/>
+    <DimensionUsage name="prepared_food" source="prepared_food"/>
+    <DimensionUsage name="region_id" source="region_id"/>
+    <DimensionUsage name="salad_bar" source="salad_bar"/>
+    <DimensionUsage name="store_city" source="store_city"/>
+    <DimensionUsage name="store_country" source="store_country"/>
+    <DimensionUsage name="store_fax" source="store_fax"/>
+    <DimensionUsage name="store_id" source="store_id"/>
+    <DimensionUsage name="store_manager" source="store_manager"/>
+    <DimensionUsage name="store_name" source="store_name"/>
+    <DimensionUsage name="store_number" source="store_number"/>
+    <DimensionUsage name="store_phone" source="store_phone"/>
+    <DimensionUsage name="store_postal_code" source="store_postal_code"/>
+    <DimensionUsage name="store_sqft" source="store_sqft"/>
+    <DimensionUsage name="store_state" source="store_state"/>
+    <DimensionUsage name="store_street_address" source="store_street_address"/>
+    <DimensionUsage name="store_type" source="store_type"/>
+    <DimensionUsage name="units_ordered" source="units_ordered"/>
+    <DimensionUsage name="video_store" source="video_store"/>
+    <Measure name="coffee_bar" column="coffee_bar" aggregator="sum" formatString="&#x23;"/>
+    <Measure name="florist" column="florist" aggregator="sum" formatString="&#x23;"/>
+    <Measure name="frozen_sqft" column="frozen_sqft" aggregator="sum" formatString="&#x23;"/>
+    <Measure name="grocery_sqft" column="grocery_sqft" aggregator="sum" formatString="&#x23;"/>
+    <Measure name="meat_sqft" column="meat_sqft" aggregator="sum" formatString="&#x23;"/>
+    <Measure name="prepared_food" column="prepared_food" aggregator="sum" formatString="&#x23;"/>
+    <Measure name="region_id" column="region_id" aggregator="sum" formatString="&#x23;"/>
+    <Measure name="salad_bar" column="salad_bar" aggregator="sum" formatString="&#x23;"/>
+    <Measure name="store_id" column="store_id" aggregator="sum" formatString="&#x23;"/>
+    <Measure name="store_number" column="store_number" aggregator="sum" formatString="&#x23;"/>
+    <Measure name="store_sqft" column="store_sqft" aggregator="sum" formatString="&#x23;"/>
+    <Measure name="units_ordered" column="units_ordered" aggregator="sum" formatString="&#x23;"/>
+    <Measure name="video_store" column="video_store" aggregator="sum" formatString="&#x23;"/>
+  </Cube>
+</Schema>
