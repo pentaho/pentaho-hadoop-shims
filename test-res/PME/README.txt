@@ -1,12 +1,8 @@
 The artifacts contained herein have dummy values for database hostnames, etc. 
-This file contains helpful scripts and procedures to automatically set properties to desired values.
+This file contains helpful scripts and templates to automatically set properties to desired values.
 ------------------------------------
 
+Set your properties in ../PDI/SuperJobParameters.properties, then run the groovy script:
+groovy gen_model.groovy
 
-Linux sed command to set your database hostname for a metdata model (here it is set to my.database.hostname.org):
-sed -i "s/my.hostname.com/my.database.hostname.org/g" *
-
-Mac OS X sed command to set your database hostname for a metdata model (here it is set to my.database.hostname.org):
-sed -i '' "s/my.hostname.com/my.database.hostname.org/g" *
-
-Alternatively (or on an OS like Windows with no sed alternative), the model can be loaded into PME as-is and you can simply change the Connection properties manually.
+This will create a metadata model from the template with your connection information filled in.
