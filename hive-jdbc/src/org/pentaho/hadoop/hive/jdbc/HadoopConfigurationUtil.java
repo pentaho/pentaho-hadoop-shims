@@ -29,13 +29,13 @@ import java.lang.reflect.Method;
  * 
  */
 public class HadoopConfigurationUtil {
-  private static final String HADOOP_CONFIGURATION_BOOTSTRAP = "HadoopConfigurationBootstrap";
+  private static final String HADOOP_SPOON_PLUGIN = "HadoopSpoonPlugin";
 
   private static final String CLASS_PLUGIN_REGISTRY = "org.pentaho.di.core.plugins.PluginRegistry";
 
   private static final String CLASS_PLUGIN_INTERFACE = "org.pentaho.di.core.plugins.PluginInterface";
 
-  private static final String CLASS_KETTLE_LIFECYCLE_PLUGIN_TYPE = "org.pentaho.di.core.plugins.KettleLifecyclePluginType";
+  private static final String CLASS_LIFECYCLE_PLUGIN_TYPE = "org.pentaho.di.core.plugins.LifecyclePluginType";
 
   private static final String CLASS_HADOOP_CONFIGURATION_BOOTSTRAP = "org.pentaho.di.core.hadoop.HadoopConfigurationBootstrap";
 
@@ -77,9 +77,9 @@ public class HadoopConfigurationUtil {
     }
 
     try {
-      Class<?> kettleLifecyclePluginTypeClass = Class.forName(CLASS_KETTLE_LIFECYCLE_PLUGIN_TYPE);
+      Class<?> kettleLifecyclePluginTypeClass = Class.forName(CLASS_LIFECYCLE_PLUGIN_TYPE);
       Object hadoopConfigurationBootstrap = findPluginById.invoke(pluginRegistry, kettleLifecyclePluginTypeClass,
-          HADOOP_CONFIGURATION_BOOTSTRAP);
+          HADOOP_SPOON_PLUGIN);
       return (ClassLoader) getClassLoader.invoke(pluginRegistry, hadoopConfigurationBootstrap);
     } catch (Exception ex) {
       throw new Exception("Unable to locate Big Data Plugin", ex);
