@@ -329,17 +329,13 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.Dis
     // Restore the original classloader
     Thread.currentThread().setContextClassLoader( cl);
     
-    if (!version.contains("0.20")) {
-      DistributedCache.addFileToClassPath(file, conf);
-    } else {
-      String classpath = conf.get("mapred.job.classpath.files");
-      conf.set("mapred.job.classpath.files", classpath == null ? file.toString()
-          : classpath + getClusterPathSeparator() + file.toString());
-      FileSystem fs = FileSystem.get(conf);
-      URI uri = fs.makeQualified(file).toUri();
+    String classpath = conf.get("mapred.job.classpath.files");
+    conf.set("mapred.job.classpath.files", classpath == null ? file.toString()
+        : classpath + getClusterPathSeparator() + file.toString());
+    FileSystem fs = FileSystem.get(conf);
+    URI uri = fs.makeQualified(file).toUri();
 
-      DistributedCache.addCacheFile(uri, conf);
-    }
+    DistributedCache.addCacheFile(uri, conf);
   }
 
   /**
