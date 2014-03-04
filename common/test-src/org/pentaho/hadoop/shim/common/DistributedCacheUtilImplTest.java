@@ -364,7 +364,7 @@ public class DistributedCacheUtilImplTest {
 
       fs.mkdirs(dest);
       assertTrue(fs.exists(dest));
-      assertTrue(fs.getFileStatus(dest).isDirectory());
+      assertTrue(fs.getFileStatus(dest).isDir());
       try {
         ch.stageForCache(source, fs, dest, false);
       } catch (KettleFileException ex) {
@@ -391,7 +391,7 @@ public class DistributedCacheUtilImplTest {
 
       fs.mkdirs(dest);
       assertTrue(fs.exists(dest));
-      assertTrue(fs.getFileStatus(dest).isDirectory());
+      assertTrue(fs.getFileStatus(dest).isDir());
 
       stageForCacheTester(ch, source, fs, root, dest, 6, 6);
     } finally {

@@ -56,7 +56,7 @@ public class ShimRegistrationTest {
   public void pigShimRegistered() {
     ServiceLoader<org.pentaho.hadoop.shim.spi.PigShim> l = ServiceLoader.load(org.pentaho.hadoop.shim.spi.PigShim.class);
     org.pentaho.hadoop.shim.spi.PigShim s = l.iterator().next();
-    assertTrue(org.pentaho.hadoop.shim.mapr21.PigShim.class.isAssignableFrom(s.getClass()));
+    assertTrue(org.pentaho.hadoop.shim.mapr31.PigShim.class.isAssignableFrom(s.getClass()));
   }
 
   /**
@@ -76,7 +76,7 @@ public class ShimRegistrationTest {
   public void snappyShimRegistered() {
     ServiceLoader<SnappyShim> l = ServiceLoader.load(SnappyShim.class);
     SnappyShim s = l.iterator().next();
-    assertTrue(org.pentaho.hadoop.shim.mapr21.SnappyShim.class.isAssignableFrom(s.getClass()));
+    assertTrue(org.pentaho.hadoop.shim.mapr31.SnappyShim.class.isAssignableFrom(s.getClass()));
   }
 
   /**

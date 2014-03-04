@@ -26,7 +26,12 @@
     <dependency conf="default" org="org.apache.thrift" name="libthrift" rev="${dependency.thrift.revision}" changing="false"/>
     
     <dependency conf="default" org="org.apache.sqoop" name="sqoop" rev="${dependency.apache-sqoop.revision}"  changing="false" transitive="false"/>
-    <dependency conf="default" org="org.apache.pig" name="pig-withouthadoop" rev="${dependency.pig.revision}" transitive="false" />
+
+    <dependency conf="default" org="org.apache.pig" name="pig-withouthadoop" rev="${dependency.pig.revision}" changing="false" transitive="false" />
+    <!-- MapR Pig needs extra client-side JARs -->
+    <dependency org="dk.brics.automaton" name="automaton" rev="1.11-8" changing="false" transitive="false"/>
+    <dependency conf="default" org="com.mapr.fs" name="libprotodefs" rev="1.0.3-mapr-3.1.0" changing="false" transitive="false" />
+
     <dependency conf="default" org="pentaho" name="pentaho-hdfs-vfs" rev="${dependency.pentaho-hdfs-vfs.revision}" transitive="false" changing="true"/>
     <dependency conf="default" org="pentaho" name="pentaho-hadoop-snappy" rev="${dependency.pentaho-hadoop-snappy.revision}" changing="true"/>
 

@@ -20,7 +20,7 @@
 *
 ******************************************************************************/
 
-package src.org.pentaho.hadoop.shim.mapr31;
+package org.pentaho.hadoop.shim.mapr31;
 
 import java.util.List;
 

@@ -19,6 +19,7 @@
       </dual>
       <resolver ref="public" />
       <ibiblio name="java-net-maven2" root="http://download.java.net/maven/2/" m2compatible="true" />
+      <!--<ibiblio name="mapr-hive" root="http://repository.mapr.com/maven/" m2compatible="true" />-->
     </chain>
   </resolvers>
   <caches lockStrategy="artifact-lock" resolutionCacheDir="${ivy.default.ivy.user.dir}/resol-cache${env.EXECUTOR_NUMBER}" />
