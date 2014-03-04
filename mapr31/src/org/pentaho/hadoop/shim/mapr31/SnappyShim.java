@@ -20,7 +20,7 @@
 *
 ******************************************************************************/
 
-package src.org.pentaho.hadoop.shim.mapr31;
+package org.pentaho.hadoop.shim.mapr31;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.compress.SnappyCodec;
