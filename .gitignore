@@ -9,6 +9,10 @@ cdh42/lib/
 hadoop-20/lib/
 mapr/lib/
 mapr21/lib/
+mapr212/lib/
+mapr213/lib/
+mapr30/lib/
+mapr31/lib/
 lib-provided/
 stage-pmr/
 test-lib/
