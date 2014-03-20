@@ -18,7 +18,7 @@
     <type>MONETDB</type>
     <access>Native</access>
     <database>pentaho-instaview</database>
-    <port>50006</port>
+    <port>50000</port>
     <username>monetdb</username>
     <password>Encrypted 2be98afc86aa7f2e4cb14a17edb86abd8</password>
     <servername/>
@@ -29,7 +29,7 @@
       <attribute><code>EXTRA_OPTION_INFOBRIGHT.characterEncoding</code><attribute>UTF-8</attribute></attribute>
       <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
       <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
-      <attribute><code>PORT_NUMBER</code><attribute>50006</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>50000</attribute></attribute>
       <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>Y</attribute></attribute>
       <attribute><code>SUPPORTS_TIMESTAMP_DATA_TYPE</code><attribute>Y</attribute></attribute>
     </attributes>
@@ -61,13 +61,34 @@
       <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
     </attributes>
   </connection>
+  <connection>
+    <name>SqoopMySQL</name>
+    <server>&#x24;&#x7b;namenode.host&#x7d;</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>test</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted 2be98afc86aa7f2e4bb18bd63c99dbdde</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>PRESERVE_RESERVED_WORD_CASE</code><attribute>N</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_TIMESTAMP_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
     <slaveservers>
-         <slaveserver><name>di_server</name><hostname>localhost</hostname><port>9080</port><webAppName>pentaho-di</webAppName><username>joe</username><password>Encrypted 2be98afc86aa7f2e4bb18bd63c99dbdde</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
-         <slaveserver><name>di server</name><hostname>localhost</hostname><port>9080</port><webAppName>pentaho-di</webAppName><username>joe</username><password>Encrypted 2be98afc86aa7f2e4bb18bd63c99dbdde</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
-         <slaveserver><name>slave_1</name><hostname>localhost</hostname><port>8082</port><webAppName/><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
-         <slaveserver><name>Carte</name><hostname>localhost</hostname><port>9991</port><webAppName/><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
-         <slaveserver><name>master</name><hostname>localhost</hostname><port>8081</port><webAppName/><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>Y</master></slaveserver>
-         <slaveserver><name>slave_2</name><hostname>localhost</hostname><port>8083</port><webAppName/><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
     </slaveservers>
 <job-log-table><connection/>
 <schema/>
@@ -129,9 +150,8 @@
     <namenodePort>&#x24;&#x7b;HDFSPort&#x7d;</namenodePort>
     <jobtrackerHost>&#x24;&#x7b;JobTrackerHost&#x7d;</jobtrackerHost>
     <jobtrackerPort>&#x24;&#x7b;JobTrackerPort&#x7d;</jobtrackerPort>
-    <database>RDBMS</database>
-    <mode>ADVANCED_LIST</mode>
-    <connect>jdbc&#x3a;mysql&#x3a;&#x2f;&#x2f;bad-cdh440-cent-nn&#x3a;3306&#x2f;test&#x3f;defaultFetchSize&#x3d;500&#x26;useCursorFetch&#x3d;true</connect>
+    <mode>QUICK_SETUP</mode>
+    <connect>jdbc&#x3a;mysql&#x3a;&#x2f;&#x2f;&#x24;&#x7b;HDFSHost&#x7d;&#x3a;3306&#x2f;test&#x3f;defaultFetchSize&#x3d;500&#x26;useCursorFetch&#x3d;true</connect>
     <username>root</username>
     <password>Encrypted 2be98afc86aa7f2e4bb18bd63c99dbdde</password>
     <table>aggregatehdfs</table>
