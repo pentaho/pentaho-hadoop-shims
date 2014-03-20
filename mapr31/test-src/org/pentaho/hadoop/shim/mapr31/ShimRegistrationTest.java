@@ -28,10 +28,8 @@ import java.util.ServiceLoader;
 
 import org.junit.Test;
 import org.pentaho.hadoop.shim.common.CommonSqoopShim;
-import org.pentaho.hadoop.shim.mapr31.HadoopShim;
 import org.pentaho.hadoop.shim.spi.SqoopShim;
 import org.pentaho.hadoop.shim.spi.SnappyShim;
-import org.pentaho.hbase.shim.common.CommonHBaseShim;
 import org.pentaho.hbase.shim.spi.HBaseShim;
 
 /**
@@ -86,6 +84,6 @@ public class ShimRegistrationTest {
   public void hbaseShimRegistered() {
     ServiceLoader<HBaseShim> l = ServiceLoader.load(HBaseShim.class);
     HBaseShim s = l.iterator().next();
-    assertTrue(CommonHBaseShim.class.isAssignableFrom(s.getClass()));
+    assertTrue(org.pentaho.hbase.shim.mapr31.MapRHBaseShim.class.isAssignableFrom(s.getClass()));
   }
 }
