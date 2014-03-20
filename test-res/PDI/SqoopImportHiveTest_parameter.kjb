@@ -139,11 +139,11 @@
     <jobtrackerPort>&#x24;&#x7b;JobTrackerPort&#x7d;</jobtrackerPort>
     <database>RDBMS</database>
     <mode>ADVANCED_LIST</mode>
-    <connect>jdbc&#x3a;mysql&#x3a;&#x2f;&#x2f;bad-cdh440-cent-nn&#x3a;3306&#x2f;test&#x3f;defaultFetchSize&#x3d;500&#x26;useCursorFetch&#x3d;true</connect>
+    <connect>jdbc&#x3a;mysql&#x3a;&#x2f;&#x2f;&#x24;&#x7b;HDFSHost&#x7d;&#x3a;3306&#x2f;test&#x3f;defaultFetchSize&#x3d;500&#x26;useCursorFetch&#x3d;true</connect>
     <username>root</username>
     <password>Encrypted 2be98afc86aa7f2e4bb18bd63c99dbdde</password>
     <table>aggregate_hive</table>
-    <commandLine>--split-by client_ip --hive-import --hive-overwrite --hive-table hivesqooptest3 --connect jdbc&#x3a;mysql&#x3a;&#x2f;&#x2f;bad-cdh412-cent-nn&#x3a;3306&#x2f;test&#x3f;defaultFetchSize&#x3d;500&#x26;useCursorFetch&#x3d;true --username root --password password --table aggregate_hive</commandLine>
+    <commandLine>--split-by client_ip --hive-import --hive-overwrite --hive-table hivesqooptest3 --connect jdbc&#x3a;mysql&#x3a;&#x2f;&#x2f;&#x24;&#x7b;HDFSHost&#x7d;&#x3a;3306&#x2f;test&#x3f;defaultFetchSize&#x3d;500&#x26;useCursorFetch&#x3d;true --username root --password password --table aggregate_hive</commandLine>
     <jobEntryName>Sqoop Import</jobEntryName>
     <blockingPollingInterval>300</blockingPollingInterval>
     <blockingExecution>true</blockingExecution>

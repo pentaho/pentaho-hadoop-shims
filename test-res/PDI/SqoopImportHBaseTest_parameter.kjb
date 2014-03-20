@@ -116,11 +116,11 @@
     <jobtrackerPort>&#x24;&#x7b;JobTrackerPort&#x7d;</jobtrackerPort>
     <database>RDBMS</database>
     <mode>QUICK_SETUP</mode>
-    <connect>jdbc&#x3a;mysql&#x3a;&#x2f;&#x2f;bad-cdh440-cent-nn&#x3a;3306&#x2f;test&#x3f;defaultFetchSize&#x3d;500&#x26;useCursorFetch&#x3d;true</connect>
+    <connect>jdbc&#x3a;mysql&#x3a;&#x2f;&#x2f;&#x24;&#x7b;HDFSHost&#x7d;&#x3a;3306&#x2f;test&#x3f;defaultFetchSize&#x3d;500&#x26;useCursorFetch&#x3d;true</connect>
     <username>root</username>
     <password>Encrypted 2be98afc86aa7f2e4bb18bd63c99dbdde</password>
     <table>aggregate_hbase</table>
-    <commandLine>--split-by client_ip --column-family client_ip --hbase-create-table --hbase-table hbasesqooptest --connect jdbc&#x3a;mysql&#x3a;&#x2f;&#x2f;bad-qa-apahad&#x3a;3306&#x2f;test --username root --password password --table aggregatehdfs</commandLine>
+    <commandLine>--split-by client_ip --column-family client_ip --hbase-create-table --hbase-table hbasesqooptest --connect jdbc&#x3a;mysql&#x3a;&#x2f;&#x2f;&#x24;&#x7b;HDFSHost&#x7d;&#x3a;3306&#x2f;test --username root --password password --table aggregatehdfs</commandLine>
     <jobEntryName>Sqoop Import</jobEntryName>
     <blockingPollingInterval>300</blockingPollingInterval>
     <blockingExecution>true</blockingExecution>
