@@ -1,0 +1,1 @@
+To set up to run the Super Job in PDI, set the properties in SuperJobParameters.properties and job.properties to point at your Hadoop cluster.  The former is for PDI, PME, and PUC test artifact generation, the latter is for the Oozie job which is run during the Super Job suite.
