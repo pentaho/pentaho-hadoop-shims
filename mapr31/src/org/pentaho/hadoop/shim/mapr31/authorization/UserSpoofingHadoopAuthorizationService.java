@@ -13,6 +13,7 @@ import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
 import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.mapr31.MapR3DistributedCacheUtilImpl;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
+import org.pentaho.hadoop.shim.spi.PigShim;
 import org.pentaho.hdfs.vfs.HadoopFileSystem;
 import org.pentaho.hdfs.vfs.MapRFileProvider;
 import org.pentaho.hdfs.vfs.MapRFileSystem;
@@ -21,7 +22,11 @@ public class UserSpoofingHadoopAuthorizationService extends NoOpHadoopAuthorizat
     HadoopAuthorizationService {
   protected static final String HDFS_PROXY_USER = "pentaho.hdfs.proxy.user";
   protected static final String MR_PROXY_USER = "pentaho.mapreduce.proxy.user";
+  protected static final String PIG_PROXY_USER = "pentaho.pig.proxy.user";
+
   private final UserSpoofingHadoopAuthorizationCallable userSpoofingHadoopAuthorizationCallable;
+  private final HadoopShim hadoopShim;
+  private final PigShim pigShim;
   private boolean isRoot;
 
   public UserSpoofingHadoopAuthorizationService(
@@ -29,11 +34,7 @@ public class UserSpoofingHadoopAuthorizationService extends NoOpHadoopAuthorizat
     throws AuthenticationConsumptionException {
     this.userSpoofingHadoopAuthorizationCallable = userSpoofingHadoopAuthorizationCallable;
     isRoot = this.userSpoofingHadoopAuthorizationCallable.call().getUserCreds().getIsRoot();
-  }
-
-  @Override
-  public HadoopShim getHadoopShim() {
-    return UserSpoofingInvocationHandler.forObject( new org.pentaho.hadoop.shim.mapr31.HadoopShim() {
+    hadoopShim = UserSpoofingInvocationHandler.forObject( new org.pentaho.hadoop.shim.mapr31.HadoopShim() {
 
       public String getFileSystemGetUser( Configuration conf ) {
         return conf.get( HDFS_PROXY_USER );
@@ -80,5 +81,18 @@ public class UserSpoofingHadoopAuthorizationService extends NoOpHadoopAuthorizat
         setDistributedCacheUtil( new MapR3DistributedCacheUtilImpl( config ) );
       }
     }, new HashSet<Class<?>>() );
+    pigShim =
+        UserSpoofingInvocationHandler.forObject( super.getPigShim(), new HashSet<Class<?>>(), hadoopShim
+            .createConfiguration().get( PIG_PROXY_USER ), isRoot );
+  }
+
+  @Override
+  public HadoopShim getHadoopShim() {
+    return hadoopShim;
+  }
+
+  @Override
+  public PigShim getPigShim() {
+    return pigShim;
   }
 }

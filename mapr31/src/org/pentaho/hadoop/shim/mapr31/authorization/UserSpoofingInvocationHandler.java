@@ -114,11 +114,13 @@ public class UserSpoofingInvocationHandler<T> implements InvocationHandler {
   public Object invoke( Object proxy, final Method method, final Object[] args ) throws Throwable {
     PrivilegedExceptionAction<Object> action = new PrivilegedExceptionAction<Object>() {
 
+      @SuppressWarnings( "unchecked" )
       @Override
       public Object run() throws Exception {
         Object result = method.invoke( delegate, args );
         if ( result != null ) {
-          for ( Class<?> iface : result.getClass().getInterfaces() ) {
+          for ( Class<?> iface : (Class<?>[]) ClassUtils.getAllInterfaces( result.getClass() ).toArray(
+              new Class<?>[] {} ) ) {
             if ( interfacesToDelegate.contains( iface ) ) {
               result =
                   forObject( result, interfacesToDelegate, UserGroupInformation.getCurrentUser().getUserName(), isRoot );
@@ -128,10 +130,10 @@ public class UserSpoofingInvocationHandler<T> implements InvocationHandler {
         }
         return result;
       }
-      
+
       @Override
       public String toString() {
-        return delegate.getClass().getCanonicalName() + "." + method.toString(); 
+        return delegate.getClass().getCanonicalName() + "." + method.toString();
       }
     };
     String impersonateUser = null;
