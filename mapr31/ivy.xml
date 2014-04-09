@@ -46,10 +46,12 @@
     <dependency org="log4j" name="log4j" rev="1.2.14" />
     <dependency org="commons-lang" name="commons-lang" rev="${dependency.commons-lang.revision}" transitive="false"/>
 
-    <dependency org="org.apache.hadoop" name="hadoop-core" rev="${dependency.hadoop.revision}" transitive="true">
+    <dependency org="org.apache.hadoop" name="hadoop-core" rev="${dependency.hadoop.revision}" transitive="true" conf="default">
       <exclude org="junit"/>
       <exclude org="ant"/>
     </dependency>
+    <dependency conf="default" org="com.mapr.fs" name="libprotodefs" rev="${dependency.hadoop.revision}" transitive="false"/>
+    <dependency conf="default" org="net.sf.flexjson" name="flexjson" rev="2.1" transitive="false"/>
     
     <dependency conf="test->default" org="junit" name="junit" rev="4.5"/>
     <dependency conf="test->default" org="org.safehaus.jug" name="jug-lgpl" rev="2.0.0" />

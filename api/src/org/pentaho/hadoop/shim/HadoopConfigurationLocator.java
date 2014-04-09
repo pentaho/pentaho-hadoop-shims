@@ -409,7 +409,7 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
       String name = configurationProperties.getProperty(CONFIG_PROPERTY_NAME,
           id);
 
-      HadoopConfiguration config = new HadoopConfiguration(folder, id, name, hadoopShim, shims.toArray(EMPTY_SHIM_ARRAY));
+      HadoopConfiguration config = new HadoopConfiguration(configurationProperties, folder, id, name, hadoopShim, shims.toArray(EMPTY_SHIM_ARRAY));
 
       // Register native libraries after everything else has been loaded successfully
       registerNativeLibraryPaths(configurationProperties.getProperty(CONFIG_PROPERTY_LIBRARY_PATH));

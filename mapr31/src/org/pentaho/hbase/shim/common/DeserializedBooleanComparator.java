@@ -54,18 +54,22 @@ public class DeserializedBooleanComparator extends WritableByteArrayComparable {
     m_value = value;
   }
   
+  @Override
   public byte[] getValue() {
     return Bytes.toBytes(m_value.booleanValue());
   }
   
+  @Override
   public void readFields(DataInput in) throws IOException {
     m_value = new Boolean(in.readBoolean());
   }
   
+  @Override
   public void write(DataOutput out) throws IOException {
     out.writeBoolean(m_value.booleanValue());
   }
   
+  @Override
   public int compareTo(byte[] value) {
     
     Boolean decodedValue = decodeBoolFromString(value);
@@ -92,6 +96,7 @@ public class DeserializedBooleanComparator extends WritableByteArrayComparable {
     return 0;
   }
   
+  @Override
   public int compareTo(byte[] value, int offset, int length) {
     return compareTo(value);
   }

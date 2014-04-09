@@ -67,6 +67,7 @@ public class DeserializedNumericComparator extends WritableByteArrayComparable {
     m_doubleValue = value;
   }
   
+  @Override
   public byte[] getValue() {
     if (m_isInteger) {
       return Bytes.toBytes(m_longValue);
@@ -118,6 +119,7 @@ public class DeserializedNumericComparator extends WritableByteArrayComparable {
     return d.compareTo(compV);        
   }
   
+  @Override
   public int compareTo(byte[] value, int offset, int length) {
     return compareTo(value);
   }
