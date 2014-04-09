@@ -24,6 +24,7 @@ package org.pentaho.hadoop.shim;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.commons.vfs.FileObject;
 import org.pentaho.di.i18n.BaseMessages;
@@ -53,6 +54,8 @@ public class HadoopConfiguration {
   private HadoopShim hadoopShim;
   
   private List<PentahoHadoopShim> availableShims;
+  
+  private Properties configProperties;
 
   /**
    * Create a new Hadoop configuration with the provided shims. Only
@@ -65,7 +68,12 @@ public class HadoopConfiguration {
    * @throws NullPointerException when {@code identifier}, {@code name}.
    * @throws NullPointerException when {@code identifier}, {@code name}, or {@code hadoopShim} are {@code null}
    */
-  public HadoopConfiguration(FileObject location, String identifier, String name, HadoopShim hadoopShim, PentahoHadoopShim... shims) {
+  public HadoopConfiguration( FileObject location, String identifier, String name, HadoopShim hadoopShim,
+      PentahoHadoopShim... shims ) {
+    this( new Properties(), location, identifier, name, hadoopShim, shims );
+  }
+  
+  public HadoopConfiguration( Properties configProperties, FileObject location, String identifier, String name, HadoopShim hadoopShim, PentahoHadoopShim... shims) {
     if (location == null || identifier == null || name == null || hadoopShim == null) {
       throw new NullPointerException();
     }
@@ -73,6 +81,7 @@ public class HadoopConfiguration {
     this.identifier = identifier;
     this.name = name;
     this.hadoopShim = hadoopShim;
+    this.configProperties = configProperties;
     
     // Register all provided shims
     availableShims = new ArrayList<PentahoHadoopShim>();
@@ -85,6 +94,10 @@ public class HadoopConfiguration {
       }
       availableShims.add(shim);
     }
+  }
+  
+  public Properties getConfigProperties() {
+    return configProperties;
   }
 
   /**
@@ -182,5 +195,9 @@ public class HadoopConfiguration {
   @Override
   public String toString() {
     return getIdentifier();
+  }
+  
+  public List<PentahoHadoopShim> getAvailableShims() {
+    return availableShims;
   }
 }

@@ -38,6 +38,7 @@ public class SnappyShim extends CommonSnappyShim {
    * 
    * @return true if hadoop-snappy is available on the classpath
    */
+  @Override
   public boolean isHadoopSnappyAvailable() {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader(getClass().getClassLoader());

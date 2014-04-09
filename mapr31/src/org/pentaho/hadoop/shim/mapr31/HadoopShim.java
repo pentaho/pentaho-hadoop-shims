@@ -28,11 +28,11 @@ import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
 import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.common.CommonHadoopShim;
-import org.pentaho.hadoop.shim.common.DistributedCacheUtilImpl;
 import org.pentaho.hdfs.vfs.MapRFileProvider;
 
 public class HadoopShim extends CommonHadoopShim {
-
+  protected static final String SUPER_USER = "authentication.superuser.provider";
+  protected static final String PROVIDER_LIST = "authentication.provider.list";
   protected static final String DEFAULT_CLUSTER = "/";
   protected static final String MFS_SCHEME = "maprfs://";
   protected static final String[] EMPTY_CONNECTION_INFO = new String[2];
@@ -90,8 +90,8 @@ public class HadoopShim extends CommonHadoopShim {
   }
 
   @Override
-  public void onLoad(HadoopConfiguration config, HadoopConfigurationFileSystemManager fsm) throws Exception {
-    fsm.addProvider(config, MapRFileProvider.SCHEME, config.getIdentifier(), new MapRFileProvider());
-    setDistributedCacheUtil(new MapR3DistributedCacheUtilImpl(config));
+  public void onLoad( HadoopConfiguration config, HadoopConfigurationFileSystemManager fsm ) throws Exception {
+    fsm.addProvider( config, MapRFileProvider.SCHEME, config.getIdentifier(), new MapRFileProvider() );
+    setDistributedCacheUtil( new MapR3DistributedCacheUtilImpl( config ) );
   }
 }

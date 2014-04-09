@@ -23,6 +23,7 @@
 package org.pentaho.hbase.shim.mapr31;
 
 import org.pentaho.hadoop.shim.ShimVersion;
+import org.pentaho.hbase.shim.mapr31.wrapper.HBaseShimInterface;
 import org.pentaho.hbase.shim.spi.HBaseConnection;
 import org.pentaho.hbase.shim.spi.HBaseShim;
 
@@ -31,13 +32,14 @@ import org.pentaho.hbase.shim.spi.HBaseShim;
  * 
  * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
  */
-public class MapRHBaseShim extends HBaseShim {
+public class MapRHBaseShim extends HBaseShim implements HBaseShimInterface {
 
   @Override
   public ShimVersion getVersion() {
     return new ShimVersion( 1, 0 );
   }
 
+  @Override
   public HBaseConnection getHBaseConnection() {
     System.setProperty("mapr.library.flatclass", "");
     return new MapRHBaseConnection();
