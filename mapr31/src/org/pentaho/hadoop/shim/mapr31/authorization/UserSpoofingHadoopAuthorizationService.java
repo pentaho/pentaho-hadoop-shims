@@ -12,9 +12,11 @@ import org.apache.commons.vfs.FileSystem;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemOptions;
 import org.pentaho.di.core.auth.core.AuthenticationConsumptionException;
+import org.pentaho.hadoop.shim.ConfigurationException;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
 import org.pentaho.hadoop.shim.api.Configuration;
+import org.pentaho.hadoop.shim.api.DistributedCacheUtil;
 import org.pentaho.hadoop.shim.mapr31.MapR3DistributedCacheUtilImpl;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 import org.pentaho.hadoop.shim.spi.PentahoHadoopShim;
@@ -35,6 +37,7 @@ public class UserSpoofingHadoopAuthorizationService extends NoOpHadoopAuthorizat
   protected static final String PIG_PROXY_USER = "pentaho.pig.proxy.user";
   protected static final String SQOOP_PROXY_USER = "pentaho.sqoop.proxy.user";
   protected static final String OOZIE_PROXY_USER = "pentaho.oozie.proxy.user";
+  protected static final String PMR_STAGE_PROXY_USER = "pentaho.pmr.staging.proxy.user";
 
   private final Map<Class<?>, String> userMap;
   private final Map<Class<?>, Set<Class<?>>> delegateMap;
@@ -66,6 +69,11 @@ public class UserSpoofingHadoopAuthorizationService extends NoOpHadoopAuthorizat
       @SuppressWarnings( "unused" )
       public String submitJobGetUser( Configuration conf ) {
         return conf.get( MR_PROXY_USER );
+      }
+      
+      @SuppressWarnings( "unused" )
+      public String getDistributedCacheUtilGetUser() throws ConfigurationException {
+        return createConfiguration().get( PMR_STAGE_PROXY_USER );
       }
 
       @Override
@@ -102,7 +110,7 @@ public class UserSpoofingHadoopAuthorizationService extends NoOpHadoopAuthorizat
         } );
         setDistributedCacheUtil( new MapR3DistributedCacheUtilImpl( config ) );
       }
-    }, new HashSet<Class<?>>() );
+    }, new HashSet<Class<?>>( Arrays.<Class<?>> asList( DistributedCacheUtil.class ) ) );
     oozieClientFactory =
         KerberosInvocationHandler.forObject( userSpoofingHadoopAuthorizationCallable.getLoginContext(),
             new OozieClientFactoryImpl( hadoopShim.createConfiguration().get( OOZIE_PROXY_USER ) ),
