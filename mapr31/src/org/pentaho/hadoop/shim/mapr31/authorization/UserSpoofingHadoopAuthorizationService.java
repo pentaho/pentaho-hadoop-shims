@@ -1,6 +1,10 @@
 package org.pentaho.hadoop.shim.mapr31.authorization;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 import org.apache.commons.vfs.FileName;
@@ -13,28 +17,47 @@ import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
 import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.mapr31.MapR3DistributedCacheUtilImpl;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
+import org.pentaho.hadoop.shim.spi.PentahoHadoopShim;
 import org.pentaho.hadoop.shim.spi.PigShim;
+import org.pentaho.hadoop.shim.spi.SqoopShim;
 import org.pentaho.hdfs.vfs.HadoopFileSystem;
 import org.pentaho.hdfs.vfs.MapRFileProvider;
 import org.pentaho.hdfs.vfs.MapRFileSystem;
+import org.pentaho.oozie.shim.api.OozieClient;
+import org.pentaho.oozie.shim.api.OozieClientFactory;
+import org.pentaho.oozie.shim.api.OozieJob;
+import org.pentaho.oozie.shim.mapr31.OozieClientFactoryImpl;
 
 public class UserSpoofingHadoopAuthorizationService extends NoOpHadoopAuthorizationService implements
     HadoopAuthorizationService {
   protected static final String HDFS_PROXY_USER = "pentaho.hdfs.proxy.user";
   protected static final String MR_PROXY_USER = "pentaho.mapreduce.proxy.user";
   protected static final String PIG_PROXY_USER = "pentaho.pig.proxy.user";
+  protected static final String SQOOP_PROXY_USER = "pentaho.sqoop.proxy.user";
+  protected static final String OOZIE_PROXY_USER = "pentaho.oozie.proxy.user";
 
+  private final Map<Class<?>, String> userMap;
+  private final Map<Class<?>, Set<Class<?>>> delegateMap;
+  private final Map<Class<?>, PentahoHadoopShim> shimMap;
   private final UserSpoofingHadoopAuthorizationCallable userSpoofingHadoopAuthorizationCallable;
   private final HadoopShim hadoopShim;
-  private final PigShim pigShim;
+  private final OozieClientFactory oozieClientFactory;
   private boolean isRoot;
 
   public UserSpoofingHadoopAuthorizationService(
-      UserSpoofingHadoopAuthorizationCallable userSpoofingHadoopAuthorizationCallable )
+      final UserSpoofingHadoopAuthorizationCallable userSpoofingHadoopAuthorizationCallable )
     throws AuthenticationConsumptionException {
     this.userSpoofingHadoopAuthorizationCallable = userSpoofingHadoopAuthorizationCallable;
     isRoot = this.userSpoofingHadoopAuthorizationCallable.call().getUserCreds().getIsRoot();
-    hadoopShim = UserSpoofingInvocationHandler.forObject( new org.pentaho.hadoop.shim.mapr31.HadoopShim() {
+    userMap = new HashMap<Class<?>, String>();
+    userMap.put( PigShim.class, PIG_PROXY_USER );
+    userMap.put( SqoopShim.class, SQOOP_PROXY_USER );
+    userMap.put( OozieClientFactory.class, OOZIE_PROXY_USER );
+    shimMap = new HashMap<Class<?>, PentahoHadoopShim>();
+    delegateMap = new HashMap<Class<?>, Set<Class<?>>>();
+    Set<Class<?>> oozieSet = new HashSet<Class<?>>( Arrays.<Class<?>> asList( OozieClient.class, OozieJob.class ) );
+    delegateMap.put( OozieClientFactory.class, oozieSet );
+    hadoopShim = UserSpoofingMaprInvocationHandler.forObject( new org.pentaho.hadoop.shim.mapr31.HadoopShim() {
 
       public String getFileSystemGetUser( Configuration conf ) {
         return conf.get( HDFS_PROXY_USER );
@@ -64,7 +87,7 @@ public class UserSpoofingHadoopAuthorizationService extends NoOpHadoopAuthorizat
                   }
                 };
                 try {
-                  return UserSpoofingInvocationHandler.forObject( callable, new HashSet<Class<?>>(),
+                  return UserSpoofingMaprInvocationHandler.forObject( callable, new HashSet<Class<?>>(),
                       getFileSystemGetUser( createConfiguration() ), isRoot );
                 } catch ( AuthenticationConsumptionException e ) {
                   throw new FileSystemException( e.getCause() );
@@ -76,23 +99,36 @@ public class UserSpoofingHadoopAuthorizationService extends NoOpHadoopAuthorizat
               }
             };
           }
-
         } );
         setDistributedCacheUtil( new MapR3DistributedCacheUtilImpl( config ) );
       }
     }, new HashSet<Class<?>>() );
-    pigShim =
-        UserSpoofingInvocationHandler.forObject( super.getPigShim(), new HashSet<Class<?>>(), hadoopShim
-            .createConfiguration().get( PIG_PROXY_USER ), isRoot );
+    oozieClientFactory =
+        KerberosInvocationHandler.forObject( userSpoofingHadoopAuthorizationCallable.getLoginContext(),
+            new OozieClientFactoryImpl( hadoopShim.createConfiguration().get( OOZIE_PROXY_USER ) ),
+            new HashSet<Class<?>>( Arrays.<Class<?>> asList( OozieClientFactory.class, OozieClient.class,
+                OozieJob.class ) ) );
+    shimMap.put( HadoopShim.class, hadoopShim );
+    shimMap.put( OozieClientFactory.class, oozieClientFactory );
   }
 
   @Override
-  public HadoopShim getHadoopShim() {
-    return hadoopShim;
-  }
-
-  @Override
-  public PigShim getPigShim() {
-    return pigShim;
+  public synchronized <T extends PentahoHadoopShim> T getShim( Class<T> clazz ) {
+    @SuppressWarnings( "unchecked" )
+    T result = (T) shimMap.get( clazz );
+    if ( result == null ) {
+      String shimUser = userMap.get( clazz );
+      if ( shimUser != null ) {
+        shimUser = hadoopShim.createConfiguration().get( shimUser );
+      }
+      Set<Class<?>> delegateSet = delegateMap.get( clazz );
+      if ( delegateSet == null ) {
+        delegateSet = new HashSet<Class<?>>();
+      }
+      result =
+          UserSpoofingMaprInvocationHandler.forObject( super.getShim( clazz ), new HashSet<Class<?>>( delegateSet ),
+              shimUser, isRoot );
+    }
+    return result;
   }
 }

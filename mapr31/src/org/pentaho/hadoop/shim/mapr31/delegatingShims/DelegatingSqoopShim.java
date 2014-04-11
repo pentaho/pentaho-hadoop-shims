@@ -11,7 +11,7 @@ public class DelegatingSqoopShim implements SqoopShim, HasHadoopAuthorizationSer
   
   @Override
   public void setHadoopAuthorizationService( HadoopAuthorizationService hadoopAuthorizationService ) {
-    delegate = hadoopAuthorizationService.getSqoopShim();
+    delegate = hadoopAuthorizationService.getShim( SqoopShim.class );
   }
 
   @Override

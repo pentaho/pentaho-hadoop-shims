@@ -17,7 +17,7 @@ public class DelegatingHBaseShim extends HBaseShim implements HasHadoopAuthoriza
 
   @Override
   public void setHadoopAuthorizationService( HadoopAuthorizationService hadoopAuthorizationService ) {
-    delegate = hadoopAuthorizationService.getHBaseShimInterface();
+    delegate = hadoopAuthorizationService.getShim( HBaseShimInterface.class );
   }
 
   @Override

@@ -55,6 +55,7 @@ import org.pentaho.hadoop.shim.spi.PigShim;
 import org.pentaho.hadoop.shim.spi.SnappyShim;
 import org.pentaho.hadoop.shim.spi.SqoopShim;
 import org.pentaho.hbase.shim.spi.HBaseShim;
+import org.pentaho.oozie.shim.api.OozieClientFactory;
 
 /**
  * A file-based Hadoop configuration provider that knows how to load Hadoop 
@@ -91,7 +92,8 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
     HBaseShim.class,
     PigShim.class,
     SnappyShim.class,
-    SqoopShim.class
+    SqoopShim.class,
+    OozieClientFactory.class
   };
 
   private static final PentahoHadoopShim[] EMPTY_SHIM_ARRAY = new PentahoHadoopShim[0];
@@ -494,21 +496,19 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
     return p;
   }
 
+  @Override
   public List<HadoopConfiguration> getConfigurations() {
     checkInitialized();
-    List<HadoopConfiguration> configs = new ArrayList<HadoopConfiguration>();
-    for (Map.Entry<String, HadoopConfiguration> entry : configurations
-        .entrySet()) {
-      configs.add(entry.getValue());
-    }
-    return configs;
+    return new ArrayList<HadoopConfiguration>( configurations.values() );
   }
 
+  @Override
   public boolean hasConfiguration(String id) {
     checkInitialized();
     return configurations.containsKey(id);
   }
 
+  @Override
   public HadoopConfiguration getConfiguration(String id)
       throws ConfigurationException {
     checkInitialized();

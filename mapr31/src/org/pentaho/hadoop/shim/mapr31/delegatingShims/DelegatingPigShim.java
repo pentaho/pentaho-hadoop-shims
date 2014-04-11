@@ -15,7 +15,7 @@ public class DelegatingPigShim implements PigShim, HasHadoopAuthorizationService
   
   @Override
   public void setHadoopAuthorizationService( HadoopAuthorizationService hadoopAuthorizationService ) {
-    delegate = hadoopAuthorizationService.getPigShim();
+    delegate = hadoopAuthorizationService.getShim( PigShim.class );
   }
 
   @Override

@@ -13,7 +13,7 @@ public class DelegatingSnappyShim implements SnappyShim, HasHadoopAuthorizationS
 
   @Override
   public void setHadoopAuthorizationService( HadoopAuthorizationService hadoopAuthorizationService ) {
-    delegate = hadoopAuthorizationService.getSnappyShim();
+    delegate = hadoopAuthorizationService.getShim( SnappyShim.class );
   }
 
   @Override

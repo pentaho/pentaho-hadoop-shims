@@ -9,30 +9,34 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.Callable;
+
+import javax.security.auth.Subject;
+import javax.security.auth.login.LoginContext;
 
 import org.apache.commons.lang.ClassUtils;
 import org.apache.hadoop.security.UserGroupInformation;
-import org.apache.log4j.Logger;
-import org.pentaho.di.core.auth.core.AuthenticationConsumptionException;
 
-public class UserSpoofingInvocationHandler<T> implements InvocationHandler {
-  private static final Logger logger = Logger.getLogger( UserSpoofingInvocationHandler.class );
+public class KerberosInvocationHandler<T> implements InvocationHandler {
+//  private static final Logger logger = Logger.getLogger( UserSpoofingKerberosInvocationHandler.class );
+  private final LoginContext loginContext;
   private final T delegate;
   private final Set<Class<?>> interfacesToDelegate;
   private final Set<Method> methodsWithoutGetUser;
   private final String user;
   private final boolean isRoot;
 
-  public UserSpoofingInvocationHandler( T delegate ) {
-    this( delegate, new HashSet<Class<?>>(), null, false );
+  public KerberosInvocationHandler( LoginContext loginContext, T delegate ) {
+    this( loginContext, delegate, new HashSet<Class<?>>(), null, false );
   }
 
-  public UserSpoofingInvocationHandler( T delegate, Set<Class<?>> interfacesToDelegate ) {
-    this( delegate, interfacesToDelegate, null, false );
+  public KerberosInvocationHandler( LoginContext loginContext, T delegate,
+      Set<Class<?>> interfacesToDelegate ) {
+    this( loginContext, delegate, interfacesToDelegate, null, false );
   }
 
-  public UserSpoofingInvocationHandler( T delegate, Set<Class<?>> interfacesToDelegate, String user, boolean isRoot ) {
+  public KerberosInvocationHandler( LoginContext loginContext, T delegate,
+      Set<Class<?>> interfacesToDelegate, String user, boolean isRoot ) {
+    this.loginContext = loginContext;
     this.delegate = delegate;
     this.interfacesToDelegate = interfacesToDelegate;
     this.user = user;
@@ -40,35 +44,16 @@ public class UserSpoofingInvocationHandler<T> implements InvocationHandler {
     this.isRoot = isRoot;
   }
 
-  public static <T> T forObject( T delegate, Set<Class<?>> interfacesToDelegate ) {
-    return forObject( delegate, interfacesToDelegate, null, false );
+  public static <T> T forObject( LoginContext loginContext, T delegate, Set<Class<?>> interfacesToDelegate ) {
+    return forObject( loginContext, delegate, interfacesToDelegate, null, false );
   }
 
   @SuppressWarnings( "unchecked" )
-  public static <T> T forObject( T delegate, Set<Class<?>> interfacesToDelegate, String user, boolean isRoot ) {
+  public static <T> T forObject( LoginContext loginContext, T delegate, Set<Class<?>> interfacesToDelegate,
+      String user, boolean isRoot ) {
     return (T) Proxy.newProxyInstance( delegate.getClass().getClassLoader(), (Class<?>[]) ClassUtils.getAllInterfaces(
-        delegate.getClass() ).toArray( new Class<?>[] {} ), new UserSpoofingInvocationHandler<Object>( delegate,
-        interfacesToDelegate, user, isRoot ) );
-  }
-
-  public static <T> T forObject( final Callable<T> delegateCallable, Set<Class<?>> interfacesToDelegate, String user,
-      boolean isRoot ) throws AuthenticationConsumptionException {
-    T delegate;
-    try {
-      delegate = runAsUser( new PrivilegedExceptionAction<T>() {
-
-        @Override
-        public T run() throws Exception {
-          return delegateCallable.call();
-        }
-      }, user, isRoot );
-    } catch ( Throwable e ) {
-      if ( !( e instanceof Exception ) ) {
-        e = new Exception( e );
-      }
-      throw new AuthenticationConsumptionException( (Exception) e );
-    }
-    return forObject( delegate, interfacesToDelegate, user, isRoot );
+        delegate.getClass() ).toArray( new Class<?>[] {} ), new KerberosInvocationHandler<Object>(
+        loginContext, delegate, interfacesToDelegate, user, isRoot ) );
   }
 
   private Method getMethodForUserName( Method originalMethod ) {
@@ -82,20 +67,12 @@ public class UserSpoofingInvocationHandler<T> implements InvocationHandler {
     return null;
   }
 
-  private static <T> T runAsUser( PrivilegedExceptionAction<T> action, String user, boolean isRoot ) throws Throwable {
+  private <RunType> RunType runAsUser( PrivilegedExceptionAction<RunType> action, String user, boolean isRoot )
+    throws Throwable {
     ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
     try {
-      Thread.currentThread().setContextClassLoader( UserSpoofingInvocationHandler.class.getClassLoader() );
-      UserGroupInformation userToImpersonate = UserGroupInformation.getLoginUser();
-      if ( user != null && !user.equals( userToImpersonate.getUserName() ) ) {
-        if ( !isRoot ) {
-          logger
-              .warn( "In MapR, only the root user (usually mapr) can impersonate other users, attempted to impersonate "
-                  + user + " from " + userToImpersonate.getUserName() + " for " + action );
-        }
-        userToImpersonate = UserGroupInformation.createProxyUser( user, userToImpersonate );
-      }
-      return userToImpersonate.doAs( action );
+      Thread.currentThread().setContextClassLoader( KerberosInvocationHandler.class.getClassLoader() );
+      return Subject.doAs( loginContext.getSubject(), action );
     } catch ( Exception e ) {
       Throwable actualException = e;
       if ( actualException instanceof UndeclaredThrowableException ) {
@@ -123,7 +100,8 @@ public class UserSpoofingInvocationHandler<T> implements InvocationHandler {
               new Class<?>[] {} ) ) {
             if ( interfacesToDelegate.contains( iface ) ) {
               result =
-                  forObject( result, interfacesToDelegate, UserGroupInformation.getCurrentUser().getUserName(), isRoot );
+                  forObject( loginContext, result, interfacesToDelegate, UserGroupInformation.getCurrentUser()
+                      .getUserName(), isRoot );
               break;
             }
           }
