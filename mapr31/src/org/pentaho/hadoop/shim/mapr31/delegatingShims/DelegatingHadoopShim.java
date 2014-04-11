@@ -29,7 +29,7 @@ public class DelegatingHadoopShim implements HadoopShim, HasHadoopAuthorizationS
 
   @Override
   public void setHadoopAuthorizationService( HadoopAuthorizationService hadoopAuthorizationService ) throws Exception {
-    delegate = hadoopAuthorizationService.getHadoopShim();
+    delegate = hadoopAuthorizationService.getShim( HadoopShim.class );
   }
 
   @Override

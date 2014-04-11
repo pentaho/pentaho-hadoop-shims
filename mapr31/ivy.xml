@@ -24,6 +24,8 @@
     <dependency conf="default" org="org.apache.hive" name="hive-metastore" rev="${dependency.apache-hive-jdbc.revision}" changing="false"/>
     <dependency conf="default" org="org.apache.thrift" name="libfb303" rev="${dependency.thrift.revision}" changing="false"/>
     <dependency conf="default" org="org.apache.thrift" name="libthrift" rev="${dependency.thrift.revision}" changing="false"/>
+    <dependency conf="default" org="org.apache.oozie" name="oozie-core" rev="${dependency.apache-oozie.revision}" changing="true" transitive="false"/>
+    <dependency conf="default" org="org.apache.oozie" name="oozie-client" rev="${dependency.apache-oozie.revision}" changing="true" transitive="false"/>
     
     <dependency conf="default" org="org.apache.sqoop" name="sqoop" rev="${dependency.apache-sqoop.revision}"  changing="false" transitive="false"/>
 

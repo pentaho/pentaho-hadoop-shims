@@ -40,7 +40,7 @@ public class MapRSuperUserKerberosConsumer implements
   private final KerberosUtil kerberosUtil;
 
   public MapRSuperUserKerberosConsumer( Void client ) {
-    System.setProperty("mapr.library.flatclass", "");
+    System.setProperty( "mapr.library.flatclass", "" );
     this.kerberosUtil = new KerberosUtil();
   }
 
@@ -49,10 +49,30 @@ public class MapRSuperUserKerberosConsumer implements
     throws AuthenticationConsumptionException {
     UserSpoofingHadoopAuthorizationCallable userSpoofingHadoopAuthorizationCallable =
         new UserSpoofingHadoopAuthorizationCallable() {
+          private LoginContext loginContext = createLoginContext();
 
           @Override
           public TicketAndKey call() throws AuthenticationConsumptionException {
+            System.setProperty( "hadoop.login", "hadoop_default" );
+            try {
+              return Subject.doAs( loginContext.getSubject(), new PrivilegedExceptionAction<TicketAndKey>() {
 
+                @Override
+                public TicketAndKey run() throws Exception {
+                  return new MapRLoginHttpsClient().getMapRCredentialsViaKerberos( 1209600000L );
+                }
+              } );
+            } catch ( PrivilegedActionException e ) {
+              throw new AuthenticationConsumptionException( e );
+            }
+          }
+
+          @Override
+          public LoginContext getLoginContext() {
+            return loginContext;
+          }
+
+          private LoginContext createLoginContext() throws AuthenticationConsumptionException {
             System.setProperty( "hadoop.login", "hadoop_default" );
             final LoginContext loginContext;
             try {
@@ -69,23 +89,11 @@ public class MapRSuperUserKerberosConsumer implements
                     kerberosUtil.getLoginContextFromUsernamePassword( authenticationProvider.getPrincipal(),
                         authenticationProvider.getPassword() );
               }
-            } catch ( LoginException e ) {
-              throw new AuthenticationConsumptionException( e );
-            }
-            try {
               loginContext.login();
-              return Subject.doAs( loginContext.getSubject(), new PrivilegedExceptionAction<TicketAndKey>() {
-
-                @Override
-                public TicketAndKey run() throws Exception {
-                  return new MapRLoginHttpsClient().getMapRCredentialsViaKerberos( 1209600000L );
-                }
-              } );
             } catch ( LoginException e ) {
               throw new AuthenticationConsumptionException( e );
-            } catch ( PrivilegedActionException e ) {
-              throw new AuthenticationConsumptionException( e );
             }
+            return loginContext;
           }
         };
     return new UserSpoofingHadoopAuthorizationService( userSpoofingHadoopAuthorizationCallable );
