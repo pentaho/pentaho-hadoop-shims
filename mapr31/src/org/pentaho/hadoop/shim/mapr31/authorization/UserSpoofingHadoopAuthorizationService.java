@@ -11,17 +11,25 @@ import org.apache.commons.vfs.FileName;
 import org.apache.commons.vfs.FileSystem;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemOptions;
+import org.pentaho.di.core.auth.AuthenticationPersistenceManager;
 import org.pentaho.di.core.auth.core.AuthenticationConsumptionException;
+import org.pentaho.di.core.auth.core.AuthenticationFactoryException;
+import org.pentaho.di.core.auth.core.AuthenticationManager;
+import org.pentaho.di.core.auth.core.AuthenticationPerformer;
 import org.pentaho.hadoop.shim.ConfigurationException;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
 import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.api.DistributedCacheUtil;
 import org.pentaho.hadoop.shim.mapr31.MapR3DistributedCacheUtilImpl;
+import org.pentaho.hadoop.shim.mapr31.authentication.PropertyAuthenticationProviderParser;
+import org.pentaho.hadoop.shim.mapr31.delegatingShims.DelegatingHadoopShim;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 import org.pentaho.hadoop.shim.spi.PentahoHadoopShim;
 import org.pentaho.hadoop.shim.spi.PigShim;
 import org.pentaho.hadoop.shim.spi.SqoopShim;
+import org.pentaho.hbase.shim.mapr31.authentication.HBaseKerberosConsumer;
+import org.pentaho.hbase.shim.mapr31.wrapper.HBaseShimInterface;
 import org.pentaho.hdfs.vfs.HadoopFileSystem;
 import org.pentaho.hdfs.vfs.MapRFileProvider;
 import org.pentaho.hdfs.vfs.MapRFileSystem;
@@ -37,6 +45,7 @@ public class UserSpoofingHadoopAuthorizationService extends NoOpHadoopAuthorizat
   protected static final String PIG_PROXY_USER = "pentaho.pig.proxy.user";
   protected static final String SQOOP_PROXY_USER = "pentaho.sqoop.proxy.user";
   protected static final String OOZIE_PROXY_USER = "pentaho.oozie.proxy.user";
+  protected static final String HBASE_PROVIDER = "pentaho.hbase.auth.provider";
   protected static final String PMR_STAGE_PROXY_USER = "pentaho.pmr.staging.proxy.user";
 
   private final Map<Class<?>, String> userMap;
@@ -45,6 +54,7 @@ public class UserSpoofingHadoopAuthorizationService extends NoOpHadoopAuthorizat
   private final UserSpoofingHadoopAuthorizationCallable userSpoofingHadoopAuthorizationCallable;
   private final HadoopShim hadoopShim;
   private final OozieClientFactory oozieClientFactory;
+  private final HBaseShimInterface hBaseShimInterface;
   private boolean isRoot;
 
   public UserSpoofingHadoopAuthorizationService(
@@ -70,7 +80,7 @@ public class UserSpoofingHadoopAuthorizationService extends NoOpHadoopAuthorizat
       public String submitJobGetUser( Configuration conf ) {
         return conf.get( MR_PROXY_USER );
       }
-      
+
       @SuppressWarnings( "unused" )
       public String getDistributedCacheUtilGetUser() throws ConfigurationException {
         return createConfiguration().get( PMR_STAGE_PROXY_USER );
@@ -116,8 +126,27 @@ public class UserSpoofingHadoopAuthorizationService extends NoOpHadoopAuthorizat
             new OozieClientFactoryImpl( hadoopShim.createConfiguration().get( OOZIE_PROXY_USER ) ),
             new HashSet<Class<?>>( Arrays.<Class<?>> asList( OozieClientFactory.class, OozieClient.class,
                 OozieJob.class ) ) );
+    AuthenticationManager manager = AuthenticationPersistenceManager.getAuthenticationManager();
+    try {
+      manager.registerConsumerClass( HBaseKerberosConsumer.class );
+    } catch ( AuthenticationFactoryException e ) {
+      throw new AuthenticationConsumptionException( e );
+    }
+    new PropertyAuthenticationProviderParser( userSpoofingHadoopAuthorizationCallable.getConfigProperties(), manager )
+        .process( DelegatingHadoopShim.PROVIDER_LIST );
+    AuthenticationPerformer<HBaseShimInterface, Void> performer =
+        manager.getAuthenticationPerformer( HBaseShimInterface.class, Void.class, hadoopShim.createConfiguration().get(
+            HBASE_PROVIDER ) );
+    if ( performer != null ) {
+      hBaseShimInterface = performer.perform( null );
+    } else {
+      throw new AuthenticationConsumptionException( "Unable to find authentication performer for id "
+          + hadoopShim.createConfiguration().get( HBASE_PROVIDER ) + " (specified as " + HBASE_PROVIDER
+          + " in core-site.xml)", null );
+    }
     shimMap.put( HadoopShim.class, hadoopShim );
     shimMap.put( OozieClientFactory.class, oozieClientFactory );
+    shimMap.put( HBaseShimInterface.class, hBaseShimInterface );
   }
 
   @Override

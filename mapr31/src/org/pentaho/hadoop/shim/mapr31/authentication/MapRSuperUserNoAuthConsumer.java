@@ -1,5 +1,7 @@
 package org.pentaho.hadoop.shim.mapr31.authentication;
 
+import java.util.Properties;
+
 import org.pentaho.di.core.auth.AuthenticationConsumerPlugin;
 import org.pentaho.di.core.auth.AuthenticationConsumerType;
 import org.pentaho.di.core.auth.NoAuthenticationAuthenticationProvider;
@@ -24,7 +26,7 @@ public class MapRSuperUserNoAuthConsumer implements
     }
   }
 
-  public MapRSuperUserNoAuthConsumer( Void client ) {
+  public MapRSuperUserNoAuthConsumer( Properties props ) {
     // Noop
   }
 

@@ -14,61 +14,31 @@ import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
 
 import org.apache.commons.lang.ClassUtils;
-import org.apache.hadoop.security.UserGroupInformation;
 
 public class KerberosInvocationHandler<T> implements InvocationHandler {
-//  private static final Logger logger = Logger.getLogger( UserSpoofingKerberosInvocationHandler.class );
+  // private static final Logger logger = Logger.getLogger( UserSpoofingKerberosInvocationHandler.class );
   private final LoginContext loginContext;
   private final T delegate;
   private final Set<Class<?>> interfacesToDelegate;
-  private final Set<Method> methodsWithoutGetUser;
-  private final String user;
-  private final boolean isRoot;
 
   public KerberosInvocationHandler( LoginContext loginContext, T delegate ) {
-    this( loginContext, delegate, new HashSet<Class<?>>(), null, false );
+    this( loginContext, delegate, new HashSet<Class<?>>() );
   }
 
-  public KerberosInvocationHandler( LoginContext loginContext, T delegate,
-      Set<Class<?>> interfacesToDelegate ) {
-    this( loginContext, delegate, interfacesToDelegate, null, false );
-  }
-
-  public KerberosInvocationHandler( LoginContext loginContext, T delegate,
-      Set<Class<?>> interfacesToDelegate, String user, boolean isRoot ) {
+  public KerberosInvocationHandler( LoginContext loginContext, T delegate, Set<Class<?>> interfacesToDelegate ) {
     this.loginContext = loginContext;
     this.delegate = delegate;
     this.interfacesToDelegate = interfacesToDelegate;
-    this.user = user;
-    this.methodsWithoutGetUser = new HashSet<Method>();
-    this.isRoot = isRoot;
-  }
-
-  public static <T> T forObject( LoginContext loginContext, T delegate, Set<Class<?>> interfacesToDelegate ) {
-    return forObject( loginContext, delegate, interfacesToDelegate, null, false );
   }
 
   @SuppressWarnings( "unchecked" )
-  public static <T> T forObject( LoginContext loginContext, T delegate, Set<Class<?>> interfacesToDelegate,
-      String user, boolean isRoot ) {
+  public static <T> T forObject( LoginContext loginContext, T delegate, Set<Class<?>> interfacesToDelegate ) {
     return (T) Proxy.newProxyInstance( delegate.getClass().getClassLoader(), (Class<?>[]) ClassUtils.getAllInterfaces(
-        delegate.getClass() ).toArray( new Class<?>[] {} ), new KerberosInvocationHandler<Object>(
-        loginContext, delegate, interfacesToDelegate, user, isRoot ) );
+        delegate.getClass() ).toArray( new Class<?>[] {} ), new KerberosInvocationHandler<Object>( loginContext,
+        delegate, interfacesToDelegate ) );
   }
 
-  private Method getMethodForUserName( Method originalMethod ) {
-    if ( !methodsWithoutGetUser.contains( originalMethod ) ) {
-      try {
-        return delegate.getClass().getMethod( originalMethod.getName() + "GetUser", originalMethod.getParameterTypes() );
-      } catch ( Exception e ) {
-        methodsWithoutGetUser.add( originalMethod );
-      }
-    }
-    return null;
-  }
-
-  private <RunType> RunType runAsUser( PrivilegedExceptionAction<RunType> action, String user, boolean isRoot )
-    throws Throwable {
+  private <RunType> RunType runAsUser( PrivilegedExceptionAction<RunType> action ) throws Throwable {
     ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
     try {
       Thread.currentThread().setContextClassLoader( KerberosInvocationHandler.class.getClassLoader() );
@@ -99,9 +69,7 @@ public class KerberosInvocationHandler<T> implements InvocationHandler {
           for ( Class<?> iface : (Class<?>[]) ClassUtils.getAllInterfaces( result.getClass() ).toArray(
               new Class<?>[] {} ) ) {
             if ( interfacesToDelegate.contains( iface ) ) {
-              result =
-                  forObject( loginContext, result, interfacesToDelegate, UserGroupInformation.getCurrentUser()
-                      .getUserName(), isRoot );
+              result = forObject( loginContext, result, interfacesToDelegate );
               break;
             }
           }
@@ -114,20 +82,8 @@ public class KerberosInvocationHandler<T> implements InvocationHandler {
         return delegate.getClass().getCanonicalName() + "." + method.toString();
       }
     };
-    String impersonateUser = null;
-    if ( user == null ) {
-      Method methodForUsername = getMethodForUserName( method );
-      if ( methodForUsername != null ) {
-        String username = (String) methodForUsername.invoke( delegate, args );
-        if ( username != null && username.length() > 0 ) {
-          impersonateUser = username;
-        }
-      }
-    } else {
-      impersonateUser = user;
-    }
     try {
-      return runAsUser( action, impersonateUser, isRoot );
+      return runAsUser( action );
     } catch ( Exception e ) {
       if ( e instanceof InvocationTargetException ) {
         throw e.getCause();

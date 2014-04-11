@@ -5,8 +5,9 @@ import java.util.Properties;
 import java.util.concurrent.Callable;
 
 import org.pentaho.hbase.shim.common.CommonHBaseConnection;
+import org.pentaho.hbase.shim.mapr31.wrapper.HBaseConnectionInterface;
 
-public class MapRHBaseConnection extends CommonHBaseConnection {
+public class MapRHBaseConnection extends CommonHBaseConnection implements HBaseConnectionInterface {
 
   protected <T> T doWithContextClassLoader( Callable<T> callable ) throws Exception {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();

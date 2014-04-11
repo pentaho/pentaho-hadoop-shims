@@ -1,6 +1,7 @@
 package org.pentaho.hadoop.shim.mapr31.authorization;
 
 import java.net.URLClassLoader;
+import java.util.Properties;
 
 import org.pentaho.di.core.auth.AuthenticationConsumerPluginType;
 import org.pentaho.di.core.auth.AuthenticationPersistenceManager;
@@ -28,13 +29,13 @@ public class AuthenticatingHadoopShim extends DelegatingHadoopShim {
     }
     AuthenticationManager manager = AuthenticationPersistenceManager.getAuthenticationManager();
     new PropertyAuthenticationProviderParser( config.getConfigProperties(), manager ).process( PROVIDER_LIST );
-    AuthenticationPerformer<HadoopAuthorizationService, Void> performer =
-        manager.getAuthenticationPerformer( HadoopAuthorizationService.class, Void.class, provider );
+    AuthenticationPerformer<HadoopAuthorizationService, Properties> performer =
+        manager.getAuthenticationPerformer( HadoopAuthorizationService.class, Properties.class, provider );
     if ( performer == null ) {
       throw new RuntimeException( "Unable to find relevant provider for MapR super user (id of "
           + config.getConfigProperties().getProperty( SUPER_USER ) );
     } else {
-      HadoopAuthorizationService hadoopAuthorizationService = performer.perform( null );
+      HadoopAuthorizationService hadoopAuthorizationService = performer.perform( config.getConfigProperties() );
       if ( hadoopAuthorizationService == null ) {
         throw new RuntimeException( "Unable to get HadoopAuthorizationService for provider "
             + config.getConfigProperties().getProperty( SUPER_USER ) );
@@ -48,6 +49,7 @@ public class AuthenticatingHadoopShim extends DelegatingHadoopShim {
         }
       }
     }
+    System.setProperty( "mapr.library.flatclass", "" );
     super.onLoad( config, fsm );
   }
 }
