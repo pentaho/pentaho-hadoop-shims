@@ -294,13 +294,15 @@
     </copy>
   </target>
 
-  <!-- override assemble to copy common package resources into the staging directory -->
-  <target name="assemble" depends="subfloor-pkg.assemble">
+  <target name="common-assemble">
     <!-- Copy common package resources over as well -->
     <copy todir="${approot.stage.dir}" overwrite="true">
       <fileset dir="${package.common.resdir}" />
     </copy>
   </target>
+
+  <!-- override assemble to copy common package resources into the staging directory -->
+  <target name="assemble" depends="common-assemble,subfloor-pkg.assemble"/>
   
   <!-- Publish the mapred jar as well -->
   <target name="publish-local-nojar.post">

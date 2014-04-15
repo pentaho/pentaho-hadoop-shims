@@ -8,4 +8,8 @@
 <name>pentaho.hbase.auth.provider</name>
 <value>mapr-kerberos</value>
 </property>
+<property>
+<name>pentaho.hive2.auth.provider</name>
+<value>mapr-kerberos</value>
+</property>
 </configuration>
