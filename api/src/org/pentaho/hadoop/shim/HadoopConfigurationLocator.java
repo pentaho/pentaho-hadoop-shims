@@ -182,24 +182,11 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
           return info.getDepth() == 0;
         }
       })) {
-        try {
-          // Only load the specified configuration (ID should match the basename, we allow case-insensitivity)
-          if(f.getName().getBaseName().equalsIgnoreCase(activeLocator.getActiveConfigurationId())) {
-            HadoopConfiguration config = loadHadoopConfiguration(f);
-            if (config != null) {
-              configurations.put(config.getIdentifier(), config);
-            }
-          }
-        } catch (ConfigurationException ex) {
-          // Log the error and continue loading additional configurations. A single
-          // configuration could error out for many reasons. At least one Hadoop
-          // configuration we ship with will fail (MapR) if the client libraries
-          // are not installed so this is to prevent at least that case from
-          // taking down the configuration locator.
-          logger.warn(BaseMessages.getString(PKG, "Error.UnableToLoadConfigurationFrom.WithDebugDisclaimer", f.getURL()));
-          // Log the stacktrace if debug logging is enabled
-          if (logger.isDebugEnabled()) {
-            logger.debug(BaseMessages.getString(PKG, "Error.UnableToLoadConfigurationFrom", f.getURL()), ex);
+        // Only load the specified configuration (ID should match the basename, we allow case-insensitivity)
+        if(f.getName().getBaseName().equalsIgnoreCase(activeLocator.getActiveConfigurationId())) {
+          HadoopConfiguration config = loadHadoopConfiguration(f);
+          if (config != null) {
+            configurations.put(config.getIdentifier(), config);
           }
         }
       }

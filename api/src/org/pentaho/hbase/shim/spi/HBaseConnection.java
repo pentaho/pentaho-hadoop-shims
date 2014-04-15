@@ -472,7 +472,7 @@ public abstract class HBaseConnection {
   public static URL stringToURL(String pathOrURL) throws MalformedURLException {
     URL result = null;
 
-    if (isEmpty(pathOrURL)) {
+    if (!isEmpty(pathOrURL)) {
       if (pathOrURL.toLowerCase().startsWith("http://")
           || pathOrURL.toLowerCase().startsWith("file://")) {
         result = new URL(pathOrURL);
