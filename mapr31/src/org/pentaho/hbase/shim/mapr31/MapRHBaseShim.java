@@ -41,7 +41,6 @@ public class MapRHBaseShim extends HBaseShim implements HBaseShimInterface {
 
   @Override
   public HBaseConnection getHBaseConnection() {
-    System.setProperty("mapr.library.flatclass", "");
     return new MapRHBaseConnection();
   }
 }

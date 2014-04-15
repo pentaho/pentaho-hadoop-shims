@@ -49,7 +49,6 @@ public class AuthenticatingHadoopShim extends DelegatingHadoopShim {
         }
       }
     }
-    System.setProperty( "mapr.library.flatclass", "" );
     super.onLoad( config, fsm );
   }
 }

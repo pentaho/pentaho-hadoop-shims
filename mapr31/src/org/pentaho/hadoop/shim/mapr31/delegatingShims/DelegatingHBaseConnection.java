@@ -503,6 +503,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
     return delegate.targetTableIsAutoFlush();
   }
 
+  @Override
   public String toString() {
     return delegate.toString();
   }
