@@ -24,6 +24,7 @@ import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
 import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.api.DistributedCacheUtil;
+import org.pentaho.hadoop.shim.common.CommonSqoopShim;
 import org.pentaho.hadoop.shim.common.ShimUtils;
 import org.pentaho.hadoop.shim.mapr31.MapR3DistributedCacheUtilImpl;
 import org.pentaho.hadoop.shim.mapr31.authentication.HiveKerberosConsumer;
@@ -34,6 +35,7 @@ import org.pentaho.hadoop.shim.spi.PentahoHadoopShim;
 import org.pentaho.hadoop.shim.spi.PigShim;
 import org.pentaho.hadoop.shim.spi.SqoopShim;
 import org.pentaho.hbase.shim.mapr31.authentication.HBaseKerberosConsumer;
+import org.pentaho.hbase.shim.mapr31.authentication.HBaseKerberosUserProvider;
 import org.pentaho.hbase.shim.mapr31.wrapper.HBaseShimInterface;
 import org.pentaho.hdfs.vfs.HadoopFileSystem;
 import org.pentaho.hdfs.vfs.MapRFileProvider;
@@ -61,6 +63,7 @@ public class UserSpoofingHadoopAuthorizationService extends NoOpHadoopAuthorizat
   private final HadoopShim hadoopShim;
   private final OozieClientFactory oozieClientFactory;
   private final HBaseShimInterface hBaseShimInterface;
+  private final SqoopShim sqoopShim;
   private boolean isRoot;
 
   public UserSpoofingHadoopAuthorizationService(
@@ -160,6 +163,13 @@ public class UserSpoofingHadoopAuthorizationService extends NoOpHadoopAuthorizat
     } catch ( IOException e1 ) {
       throw new AuthenticationConsumptionException( e1 );
     }
+    sqoopShim = new CommonSqoopShim(){
+      @Override
+      public int runTool( String[] args, Configuration c ) {
+        c.set( "hbase.client.userprovider.class", HBaseKerberosUserProvider.class.getCanonicalName() );
+        return super.runTool( args, c );
+      }
+    };
     oozieClientFactory =
         KerberosInvocationHandler.forObject( userSpoofingHadoopAuthorizationCallable.getLoginContext(),
             new OozieClientFactoryImpl( hadoopShim.createConfiguration().get( OOZIE_PROXY_USER ) ),
@@ -186,6 +196,7 @@ public class UserSpoofingHadoopAuthorizationService extends NoOpHadoopAuthorizat
     shimMap.put( HadoopShim.class, hadoopShim );
     shimMap.put( OozieClientFactory.class, oozieClientFactory );
     shimMap.put( HBaseShimInterface.class, hBaseShimInterface );
+    shimMap.put( SqoopShim.class, sqoopShim );
   }
 
   @Override
