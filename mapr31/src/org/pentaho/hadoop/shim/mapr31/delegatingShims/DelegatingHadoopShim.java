@@ -19,7 +19,7 @@ import org.pentaho.hadoop.shim.spi.HadoopShim;
 
 public class DelegatingHadoopShim implements HadoopShim, HasHadoopAuthorizationService {
   protected static final String SUPER_USER = "authentication.superuser.provider";
-  protected static final String PROVIDER_LIST = "authentication.provider.list";
+  public static final String PROVIDER_LIST = "authentication.provider.list";
   private HadoopShim delegate = null;
 
   @Override
