@@ -172,8 +172,9 @@ public class UserSpoofingHadoopAuthorizationService extends NoOpHadoopAuthorizat
           }
         } else {
           throw new RuntimeException( "Unable to find authentication performer for id "
-              + hadoopShim.createConfiguration().get( HIVE_PROVIDER ) + " (specified as " + HIVE_PROVIDER
-              + " in core-site.xml)", null );
+              + userSpoofingHadoopAuthorizationCallable.getConfigProperties().getProperty(
+                  DelegatingHadoopShim.SUPER_USER ) + " (specified as " + DelegatingHadoopShim.SUPER_USER
+              + " in config.properties)", null );
         }
       }
     }, new HashSet<Class<?>>( Arrays.<Class<?>> asList( DistributedCacheUtil.class ) ) );
@@ -204,8 +205,9 @@ public class UserSpoofingHadoopAuthorizationService extends NoOpHadoopAuthorizat
       hBaseShimInterface = performer.perform( null );
     } else {
       throw new AuthenticationConsumptionException( "Unable to find authentication performer for id "
-          + hadoopShim.createConfiguration().get( HBASE_PROVIDER ) + " (specified as " + HBASE_PROVIDER
-          + " in core-site.xml)", null );
+          + userSpoofingHadoopAuthorizationCallable.getConfigProperties().getProperty(
+              DelegatingHadoopShim.SUPER_USER ) + " (specified as " + DelegatingHadoopShim.SUPER_USER
+          + " in config.properties)", null );
     }
     sqoopShim = UserSpoofingMaprInvocationHandler.forObject( new CommonSqoopShim() {
       @Override
