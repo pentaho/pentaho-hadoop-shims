@@ -22,6 +22,7 @@
 
 package org.pentaho.hbase.shim.mapr31;
 
+import org.apache.hadoop.conf.Configuration;
 import org.pentaho.hadoop.shim.ShimVersion;
 import org.pentaho.hbase.shim.mapr31.wrapper.HBaseShimInterface;
 import org.pentaho.hbase.shim.spi.HBaseConnection;
@@ -42,5 +43,10 @@ public class MapRHBaseShim extends HBaseShim implements HBaseShimInterface {
   @Override
   public HBaseConnection getHBaseConnection() {
     return new MapRHBaseConnection();
+  }
+
+  @Override
+  public void setInfo( Configuration configuration ) {
+    // noop
   }
 }

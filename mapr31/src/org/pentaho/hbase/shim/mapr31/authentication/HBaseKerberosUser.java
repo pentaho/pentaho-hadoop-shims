@@ -25,6 +25,9 @@ public class HBaseKerberosUser extends SecureHadoopUser {
 
   @Override
   public String getName() {
+    if ( loginContext == null ) {
+      return super.getName();
+    }
     List<Principal> principals = new ArrayList<Principal>( loginContext.getSubject().getPrincipals() );
     if ( principals.size() != 1 ) {
       throw new RuntimeException( "Expected 1 principal, found " + principals.size() );
@@ -34,6 +37,9 @@ public class HBaseKerberosUser extends SecureHadoopUser {
 
   @Override
   public String getShortName() {
+    if ( loginContext == null ) {
+      return super.getShortName();
+    }
     try {
       return new HadoopKerberosName( getName() ).getShortName();
     } catch ( IOException e ) {
@@ -43,11 +49,17 @@ public class HBaseKerberosUser extends SecureHadoopUser {
 
   @Override
   public <T> T runAs( PrivilegedAction<T> action ) {
+    if ( loginContext == null ) {
+      return super.runAs( action );
+    }
     return Subject.doAs( loginContext.getSubject(), action );
   }
 
   @Override
   public <T> T runAs( PrivilegedExceptionAction<T> action ) throws IOException, InterruptedException {
+    if ( loginContext == null ) {
+      return super.runAs( action );
+    }
     try {
       return Subject.doAs( loginContext.getSubject(), action );
     } catch ( PrivilegedActionException e ) {

@@ -35,7 +35,6 @@ import org.pentaho.hadoop.shim.spi.PentahoHadoopShim;
 import org.pentaho.hadoop.shim.spi.PigShim;
 import org.pentaho.hadoop.shim.spi.SqoopShim;
 import org.pentaho.hbase.shim.mapr31.authentication.HBaseKerberosConsumer;
-import org.pentaho.hbase.shim.mapr31.authentication.HBaseKerberosUserProvider;
 import org.pentaho.hbase.shim.mapr31.wrapper.HBaseShimInterface;
 import org.pentaho.hdfs.vfs.HadoopFileSystem;
 import org.pentaho.hdfs.vfs.MapRFileProvider;
@@ -73,7 +72,6 @@ public class UserSpoofingHadoopAuthorizationService extends NoOpHadoopAuthorizat
     isRoot = this.userSpoofingHadoopAuthorizationCallable.call().getUserCreds().getIsRoot();
     userMap = new HashMap<Class<?>, String>();
     userMap.put( PigShim.class, PIG_PROXY_USER );
-    userMap.put( SqoopShim.class, SQOOP_PROXY_USER );
     userMap.put( OozieClientFactory.class, OOZIE_PROXY_USER );
     shimMap = new HashMap<Class<?>, PentahoHadoopShim>();
     delegateMap = new HashMap<Class<?>, Set<Class<?>>>();
@@ -163,13 +161,6 @@ public class UserSpoofingHadoopAuthorizationService extends NoOpHadoopAuthorizat
     } catch ( IOException e1 ) {
       throw new AuthenticationConsumptionException( e1 );
     }
-    sqoopShim = new CommonSqoopShim(){
-      @Override
-      public int runTool( String[] args, Configuration c ) {
-        c.set( "hbase.client.userprovider.class", HBaseKerberosUserProvider.class.getCanonicalName() );
-        return super.runTool( args, c );
-      }
-    };
     oozieClientFactory =
         KerberosInvocationHandler.forObject( userSpoofingHadoopAuthorizationCallable.getLoginContext(),
             new OozieClientFactoryImpl( hadoopShim.createConfiguration().get( OOZIE_PROXY_USER ) ),
@@ -193,6 +184,13 @@ public class UserSpoofingHadoopAuthorizationService extends NoOpHadoopAuthorizat
           + hadoopShim.createConfiguration().get( HBASE_PROVIDER ) + " (specified as " + HBASE_PROVIDER
           + " in core-site.xml)", null );
     }
+    sqoopShim = UserSpoofingMaprInvocationHandler.forObject( new CommonSqoopShim() {
+      @Override
+      public int runTool( String[] args, Configuration c ) {
+        hBaseShimInterface.setInfo( ShimUtils.asConfiguration( c ) );
+        return super.runTool( args, c );
+      }
+    }, new HashSet<Class<?>>(), hadoopShim.createConfiguration().get( SQOOP_PROXY_USER ), isRoot );
     shimMap.put( HadoopShim.class, hadoopShim );
     shimMap.put( OozieClientFactory.class, oozieClientFactory );
     shimMap.put( HBaseShimInterface.class, hBaseShimInterface );
