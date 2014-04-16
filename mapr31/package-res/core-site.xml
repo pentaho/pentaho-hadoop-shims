@@ -40,16 +40,4 @@
 <description>This property specifies the user to impersonate for staging PMR to hdfs. 
 (Your authentication.superuser.provider in config.properties must have the correct permissions) </description>
 </property> -->
-<property>
-<name>pentaho.hbase.auth.provider</name>
-<value>mapr-kerberos</value>
-<description>This property specifies the authentication provider to use for hbase.
-(must be defined in config.properties)</description>
-</property>
-<property>
-<name>pentaho.hive2.auth.provider</name>
-<value>mapr-kerberos</value>
-<description>This property specifies the authentication provider to use for hive2.
-(must be defined in config.properties)</description>
-</property>
 </configuration>

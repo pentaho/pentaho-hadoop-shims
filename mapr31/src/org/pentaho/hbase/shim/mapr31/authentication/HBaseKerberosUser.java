@@ -88,4 +88,9 @@ public class HBaseKerberosUser extends SecureHadoopUser {
       throw new IOException( e );
     }
   }
+  
+  @Override
+  public String toString() {
+    return getName();
+  }
 }

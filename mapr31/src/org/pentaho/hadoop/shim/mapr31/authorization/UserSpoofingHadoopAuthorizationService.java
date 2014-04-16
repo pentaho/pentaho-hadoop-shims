@@ -1,24 +1,24 @@
 /*******************************************************************************
-*
-* Pentaho Big Data
-*
-* Copyright (C) 2002-2014 by Pentaho : http://www.pentaho.com
-*
-*******************************************************************************
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with
-* the License. You may obtain a copy of the License at
-*
-*    http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-******************************************************************************/
+ *
+ * Pentaho Big Data
+ *
+ * Copyright (C) 2002-2014 by Pentaho : http://www.pentaho.com
+ *
+ *******************************************************************************
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ ******************************************************************************/
 
 package org.pentaho.hadoop.shim.mapr31.authorization;
 
@@ -149,7 +149,7 @@ public class UserSpoofingHadoopAuthorizationService extends NoOpHadoopAuthorizat
         } );
         setDistributedCacheUtil( new MapR3DistributedCacheUtilImpl( config ) );
       }
-      
+
       @Override
       public Driver getJdbcDriver( String driverType ) {
         Driver delegate = super.getJdbcDriver( driverType );
@@ -159,11 +159,11 @@ public class UserSpoofingHadoopAuthorizationService extends NoOpHadoopAuthorizat
         } catch ( AuthenticationFactoryException e ) {
           throw new RuntimeException( e );
         }
-        new PropertyAuthenticationProviderParser( userSpoofingHadoopAuthorizationCallable.getConfigProperties(), manager )
-            .process( DelegatingHadoopShim.PROVIDER_LIST );
+        new PropertyAuthenticationProviderParser( userSpoofingHadoopAuthorizationCallable.getConfigProperties(),
+            manager ).process( DelegatingHadoopShim.PROVIDER_LIST );
         AuthenticationPerformer<Driver, Driver> performer =
-            manager.getAuthenticationPerformer( Driver.class, Driver.class, hadoopShim.createConfiguration().get(
-                HBASE_PROVIDER ) );
+            manager.getAuthenticationPerformer( Driver.class, Driver.class, userSpoofingHadoopAuthorizationCallable
+                .getConfigProperties().getProperty( DelegatingHadoopShim.SUPER_USER ) );
         if ( performer != null ) {
           try {
             return performer.perform( delegate );
@@ -177,7 +177,7 @@ public class UserSpoofingHadoopAuthorizationService extends NoOpHadoopAuthorizat
         }
       }
     }, new HashSet<Class<?>>( Arrays.<Class<?>> asList( DistributedCacheUtil.class ) ) );
-    
+
     try {
       HadoopKerberosName.setConfiguration( ShimUtils.asConfiguration( hadoopShim.createConfiguration() ) );
     } catch ( IOException e1 ) {
@@ -197,8 +197,9 @@ public class UserSpoofingHadoopAuthorizationService extends NoOpHadoopAuthorizat
     new PropertyAuthenticationProviderParser( userSpoofingHadoopAuthorizationCallable.getConfigProperties(), manager )
         .process( DelegatingHadoopShim.PROVIDER_LIST );
     AuthenticationPerformer<HBaseShimInterface, Void> performer =
-        manager.getAuthenticationPerformer( HBaseShimInterface.class, Void.class, hadoopShim.createConfiguration().get(
-            HBASE_PROVIDER ) );
+        manager
+            .getAuthenticationPerformer( HBaseShimInterface.class, Void.class, userSpoofingHadoopAuthorizationCallable
+                .getConfigProperties().getProperty( DelegatingHadoopShim.SUPER_USER ) );
     if ( performer != null ) {
       hBaseShimInterface = performer.perform( null );
     } else {
