@@ -22,16 +22,7 @@
 
 package org.pentaho.hbase.shim.spi;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
-import java.util.NavigableMap;
-import java.util.Properties;
-
-import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.hadoop.shim.spi.PentahoHadoopShim;
-import org.pentaho.hbase.shim.api.ColumnFilter;
-import org.pentaho.hbase.shim.api.HBaseValueMeta;
 
 public abstract class HBaseShim implements PentahoHadoopShim {
   
