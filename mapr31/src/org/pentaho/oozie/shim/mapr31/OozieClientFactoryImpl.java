@@ -1,24 +1,24 @@
 /*******************************************************************************
-*
-* Pentaho Big Data
-*
-* Copyright (C) 2002-2014 by Pentaho : http://www.pentaho.com
-*
-*******************************************************************************
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with
-* the License. You may obtain a copy of the License at
-*
-*    http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-******************************************************************************/
+ *
+ * Pentaho Big Data
+ *
+ * Copyright (C) 2002-2014 by Pentaho : http://www.pentaho.com
+ *
+ *******************************************************************************
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ ******************************************************************************/
 
 package org.pentaho.oozie.shim.mapr31;
 
@@ -45,7 +45,11 @@ public class OozieClientFactoryImpl implements OozieClientFactory {
 
   @Override
   public OozieClient create( String oozieUrl ) {
-    return OozieImpersonationInvocationHandler.forObject( new OozieClientImpl( new AuthOozieClient( oozieUrl ) ),
-        new HashSet<Class<?>>( Arrays.<Class<?>> asList( OozieClient.class, OozieJob.class ) ), doAsUser );
+    OozieClient client = new OozieClientImpl( new AuthOozieClient( oozieUrl ) );
+    if ( doAsUser != null ) {
+      return OozieImpersonationInvocationHandler.forObject( client, new HashSet<Class<?>>( Arrays.<Class<?>> asList(
+          OozieClient.class, OozieJob.class ) ), doAsUser );
+    }
+    return client;
   }
 }
