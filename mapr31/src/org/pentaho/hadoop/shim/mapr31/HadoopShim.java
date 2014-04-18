@@ -28,6 +28,7 @@ import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
 import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.common.CommonHadoopShim;
+import org.pentaho.hadoop.shim.common.ShimUtils;
 import org.pentaho.hdfs.vfs.MapRFileProvider;
 
 public class HadoopShim extends CommonHadoopShim {
@@ -83,6 +84,13 @@ public class HadoopShim extends CommonHadoopShim {
     conf.set("fs.default.name", fsDefaultName);
     conf.set("mapred.job.tracker", jobTracker);
     conf.set("fs.maprfs.impl", MapRFileProvider.FS_MAPR_IMPL);
+  }
+  
+  @Override
+  public Configuration createConfiguration() {
+    Configuration result = super.createConfiguration();
+    ShimUtils.asConfiguration( result ).addResource( "hbase-site.xml" );
+    return result;
   }
 
   @Override
