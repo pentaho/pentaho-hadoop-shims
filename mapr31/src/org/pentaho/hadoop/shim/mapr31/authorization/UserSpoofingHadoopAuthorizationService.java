@@ -73,9 +73,6 @@ public class UserSpoofingHadoopAuthorizationService extends NoOpHadoopAuthorizat
   protected static final String PIG_PROXY_USER = "pentaho.pig.proxy.user";
   protected static final String SQOOP_PROXY_USER = "pentaho.sqoop.proxy.user";
   protected static final String OOZIE_PROXY_USER = "pentaho.oozie.proxy.user";
-  protected static final String HBASE_PROVIDER = "pentaho.hbase.auth.provider";
-  protected static final String HIVE_PROVIDER = "pentaho.hive.auth.provider";
-  protected static final String PMR_STAGE_PROXY_USER = "pentaho.pmr.staging.proxy.user";
 
   private final Map<Class<?>, String> userMap;
   private final Map<Class<?>, Set<Class<?>>> delegateMap;
@@ -112,7 +109,7 @@ public class UserSpoofingHadoopAuthorizationService extends NoOpHadoopAuthorizat
 
       @SuppressWarnings( "unused" )
       public String getDistributedCacheUtilGetUser() throws ConfigurationException {
-        return createConfiguration().get( PMR_STAGE_PROXY_USER );
+        return createConfiguration().get( HDFS_PROXY_USER );
       }
 
       @Override

@@ -33,11 +33,5 @@
 <value>exampleuser</value>
 <description>This property specifies the user to impersonate for oozie. 
 (Your authentication.superuser.provider in config.properties must have the correct permissions) </description>
-</property>
-<property>
-<name>pentaho.pmr.staging.proxy.user</name>
-<value>exampleuser</value>
-<description>This property specifies the user to impersonate for staging PMR to hdfs. 
-(Your authentication.superuser.provider in config.properties must have the correct permissions) </description>
 </property> -->
 </configuration>
