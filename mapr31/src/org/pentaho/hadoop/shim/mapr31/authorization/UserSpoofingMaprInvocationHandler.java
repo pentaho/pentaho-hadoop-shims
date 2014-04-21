@@ -1,24 +1,24 @@
 /*******************************************************************************
-*
-* Pentaho Big Data
-*
-* Copyright (C) 2002-2014 by Pentaho : http://www.pentaho.com
-*
-*******************************************************************************
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with
-* the License. You may obtain a copy of the License at
-*
-*    http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-******************************************************************************/
+ *
+ * Pentaho Big Data
+ *
+ * Copyright (C) 2002-2014 by Pentaho : http://www.pentaho.com
+ *
+ *******************************************************************************
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ ******************************************************************************/
 
 package org.pentaho.hadoop.shim.mapr31.authorization;
 
@@ -37,60 +37,66 @@ import org.apache.commons.lang.ClassUtils;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.log4j.Logger;
 import org.pentaho.di.core.auth.core.AuthenticationConsumptionException;
+import org.pentaho.hadoop.shim.mapr31.authentication.context.MapRAuthenticationContext;
 
 public class UserSpoofingMaprInvocationHandler<T> implements InvocationHandler {
   private static final Logger logger = Logger.getLogger( UserSpoofingMaprInvocationHandler.class );
+  private final MapRAuthenticationContext mapRAuthenticationContext;
   private final T delegate;
   private final Set<Class<?>> interfacesToDelegate;
   private final Set<Method> methodsWithoutGetUser;
   private final String user;
-  private final boolean isRoot;
 
-  public UserSpoofingMaprInvocationHandler( T delegate ) {
-    this( delegate, new HashSet<Class<?>>(), null, false );
+  public UserSpoofingMaprInvocationHandler( MapRAuthenticationContext mapRAuthenticationContext, T delegate ) {
+    this( mapRAuthenticationContext, delegate, new HashSet<Class<?>>(), null );
   }
 
-  public UserSpoofingMaprInvocationHandler( T delegate, Set<Class<?>> interfacesToDelegate ) {
-    this( delegate, interfacesToDelegate, null, false );
+  public UserSpoofingMaprInvocationHandler( MapRAuthenticationContext mapRAuthenticationContext, T delegate,
+      Set<Class<?>> interfacesToDelegate ) {
+    this( mapRAuthenticationContext, delegate, interfacesToDelegate, null );
   }
 
-  public UserSpoofingMaprInvocationHandler( T delegate, Set<Class<?>> interfacesToDelegate, String user, boolean isRoot ) {
+  public UserSpoofingMaprInvocationHandler( MapRAuthenticationContext mapRAuthenticationContext, T delegate,
+      Set<Class<?>> interfacesToDelegate, String user ) {
+    this.mapRAuthenticationContext = mapRAuthenticationContext;
     this.delegate = delegate;
     this.interfacesToDelegate = interfacesToDelegate;
     this.user = user;
     this.methodsWithoutGetUser = new HashSet<Method>();
-    this.isRoot = isRoot;
   }
 
-  public static <T> T forObject( T delegate, Set<Class<?>> interfacesToDelegate ) {
-    return forObject( delegate, interfacesToDelegate, null, false );
+  public static <T> T forObject( MapRAuthenticationContext mapRAuthenticationContext, T delegate,
+      Set<Class<?>> interfacesToDelegate ) {
+    return forObject( mapRAuthenticationContext, delegate, interfacesToDelegate, null );
   }
 
   @SuppressWarnings( "unchecked" )
-  public static <T> T forObject( T delegate, Set<Class<?>> interfacesToDelegate, String user, boolean isRoot ) {
+  public static <T> T forObject( MapRAuthenticationContext mapRAuthenticationContext, T delegate,
+      Set<Class<?>> interfacesToDelegate, String user ) {
     return (T) Proxy.newProxyInstance( delegate.getClass().getClassLoader(), (Class<?>[]) ClassUtils.getAllInterfaces(
-        delegate.getClass() ).toArray( new Class<?>[] {} ), new UserSpoofingMaprInvocationHandler<Object>( delegate,
-        interfacesToDelegate, user, isRoot ) );
+        delegate.getClass() ).toArray( new Class<?>[] {} ), new UserSpoofingMaprInvocationHandler<Object>(
+        mapRAuthenticationContext, delegate, interfacesToDelegate, user ) );
   }
 
-  public static <T> T forObject( final Callable<T> delegateCallable, Set<Class<?>> interfacesToDelegate, String user,
-      boolean isRoot ) throws AuthenticationConsumptionException {
+  public static <T> T forObject( MapRAuthenticationContext mapRAuthenticationContext,
+      final Callable<T> delegateCallable, Set<Class<?>> interfacesToDelegate, String user )
+    throws AuthenticationConsumptionException {
     T delegate;
     try {
-      delegate = runAsUser( new PrivilegedExceptionAction<T>() {
+      delegate = runAsUser( mapRAuthenticationContext, new PrivilegedExceptionAction<T>() {
 
         @Override
         public T run() throws Exception {
           return delegateCallable.call();
         }
-      }, user, isRoot );
+      }, user );
     } catch ( Throwable e ) {
       if ( !( e instanceof Exception ) ) {
         e = new Exception( e );
       }
       throw new AuthenticationConsumptionException( (Exception) e );
     }
-    return forObject( delegate, interfacesToDelegate, user, isRoot );
+    return forObject( mapRAuthenticationContext, delegate, interfacesToDelegate, user );
   }
 
   private Method getMethodForUserName( Method originalMethod ) {
@@ -104,20 +110,27 @@ public class UserSpoofingMaprInvocationHandler<T> implements InvocationHandler {
     return null;
   }
 
-  private static <T> T runAsUser( PrivilegedExceptionAction<T> action, String user, boolean isRoot ) throws Throwable {
+  private static <T> T runAsUser( MapRAuthenticationContext mapRAuthenticationContext,
+      final PrivilegedExceptionAction<T> action, final String user ) throws Throwable {
     ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
     try {
       Thread.currentThread().setContextClassLoader( UserSpoofingMaprInvocationHandler.class.getClassLoader() );
-      UserGroupInformation userToImpersonate = UserGroupInformation.getLoginUser();
-      if ( user != null && !user.equals( userToImpersonate.getUserName() ) ) {
-        if ( !isRoot ) {
-          logger
-              .warn( "In MapR, only the root user (usually mapr) can impersonate other users, attempted to impersonate "
-                  + user + " from " + userToImpersonate.getUserName() + " for " + action );
+      return mapRAuthenticationContext.doAs( new PrivilegedExceptionAction<T>() {
+
+        @Override
+        public T run() throws Exception {
+          UserGroupInformation userToImpersonate = UserGroupInformation.getLoginUser();
+          if ( user != null && !user.equals( userToImpersonate.getUserName() ) ) {
+            if ( logger.isDebugEnabled() ) {
+              logger
+                  .debug( "In MapR, only the root user (usually mapr) can impersonate other users, attempted to impersonate "
+                      + user + " from " + userToImpersonate.getUserName() + " for " + action );
+            }
+            userToImpersonate = UserGroupInformation.createProxyUser( user, userToImpersonate );
+          }
+          return userToImpersonate.doAs( action );
         }
-        userToImpersonate = UserGroupInformation.createProxyUser( user, userToImpersonate );
-      }
-      return userToImpersonate.doAs( action );
+      } );
     } catch ( Exception e ) {
       Throwable actualException = e;
       if ( actualException instanceof UndeclaredThrowableException ) {
@@ -145,7 +158,8 @@ public class UserSpoofingMaprInvocationHandler<T> implements InvocationHandler {
               new Class<?>[] {} ) ) {
             if ( interfacesToDelegate.contains( iface ) ) {
               result =
-                  forObject( result, interfacesToDelegate, UserGroupInformation.getCurrentUser().getUserName(), isRoot );
+                  forObject( mapRAuthenticationContext, result, interfacesToDelegate, UserGroupInformation
+                      .getCurrentUser().getUserName() );
               break;
             }
           }
@@ -171,7 +185,7 @@ public class UserSpoofingMaprInvocationHandler<T> implements InvocationHandler {
       impersonateUser = user;
     }
     try {
-      return runAsUser( action, impersonateUser, isRoot );
+      return runAsUser( mapRAuthenticationContext, action, impersonateUser );
     } catch ( Exception e ) {
       if ( e instanceof InvocationTargetException ) {
         throw e.getCause();

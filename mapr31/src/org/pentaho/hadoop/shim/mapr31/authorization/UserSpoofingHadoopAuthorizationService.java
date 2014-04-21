@@ -23,6 +23,8 @@
 package org.pentaho.hadoop.shim.mapr31.authorization;
 
 import java.io.IOException;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.sql.Driver;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -82,13 +84,19 @@ public class UserSpoofingHadoopAuthorizationService extends NoOpHadoopAuthorizat
   private final OozieClientFactory oozieClientFactory;
   private final HBaseShimInterface hBaseShimInterface;
   private final SqoopShim sqoopShim;
-  private boolean isRoot;
 
   public UserSpoofingHadoopAuthorizationService(
       final UserSpoofingHadoopAuthorizationCallable userSpoofingHadoopAuthorizationCallable )
-    throws AuthenticationConsumptionException {
+    throws AuthenticationConsumptionException, PrivilegedActionException {
     this.userSpoofingHadoopAuthorizationCallable = userSpoofingHadoopAuthorizationCallable;
-    isRoot = this.userSpoofingHadoopAuthorizationCallable.call().getUserCreds().getIsRoot();
+    userSpoofingHadoopAuthorizationCallable.getMapRAuthenticationContext().doAs( new PrivilegedExceptionAction<Void>() {
+
+      @Override
+      public Void run() throws Exception {
+        // Noop to trigger first load
+        return null;
+      }
+    } );
     userMap = new HashMap<Class<?>, String>();
     userMap.put( PigShim.class, PIG_PROXY_USER );
     userMap.put( OozieClientFactory.class, OOZIE_PROXY_USER );
@@ -96,85 +104,88 @@ public class UserSpoofingHadoopAuthorizationService extends NoOpHadoopAuthorizat
     delegateMap = new HashMap<Class<?>, Set<Class<?>>>();
     Set<Class<?>> oozieSet = new HashSet<Class<?>>( Arrays.<Class<?>> asList( OozieClient.class, OozieJob.class ) );
     delegateMap.put( OozieClientFactory.class, oozieSet );
-    hadoopShim = UserSpoofingMaprInvocationHandler.forObject( new org.pentaho.hadoop.shim.mapr31.HadoopShim() {
+    hadoopShim =
+        UserSpoofingMaprInvocationHandler.forObject( userSpoofingHadoopAuthorizationCallable
+            .getMapRAuthenticationContext(), new org.pentaho.hadoop.shim.mapr31.HadoopShim() {
 
-      public String getFileSystemGetUser( Configuration conf ) {
-        return conf.get( HDFS_PROXY_USER );
-      }
+          public String getFileSystemGetUser( Configuration conf ) {
+            return conf.get( HDFS_PROXY_USER );
+          }
 
-      @SuppressWarnings( "unused" )
-      public String submitJobGetUser( Configuration conf ) {
-        return conf.get( MR_PROXY_USER );
-      }
+          @SuppressWarnings( "unused" )
+          public String submitJobGetUser( Configuration conf ) {
+            return conf.get( MR_PROXY_USER );
+          }
 
-      @SuppressWarnings( "unused" )
-      public String getDistributedCacheUtilGetUser() throws ConfigurationException {
-        return createConfiguration().get( HDFS_PROXY_USER );
-      }
-
-      @Override
-      public void onLoad( HadoopConfiguration config, HadoopConfigurationFileSystemManager fsm ) throws Exception {
-        fsm.addProvider( config, MapRFileProvider.SCHEME, config.getIdentifier(), new MapRFileProvider() {
+          @SuppressWarnings( "unused" )
+          public String getDistributedCacheUtilGetUser() throws ConfigurationException {
+            return createConfiguration().get( HDFS_PROXY_USER );
+          }
 
           @Override
-          protected FileSystem doCreateFileSystem( FileName name, FileSystemOptions fileSystemOptions )
-            throws FileSystemException {
-            return new MapRFileSystem( name, fileSystemOptions ) {
+          public void onLoad( HadoopConfiguration config, HadoopConfigurationFileSystemManager fsm ) throws Exception {
+            fsm.addProvider( config, MapRFileProvider.SCHEME, config.getIdentifier(), new MapRFileProvider() {
 
               @Override
-              public HadoopFileSystem getHDFSFileSystem() throws FileSystemException {
-                Callable<HadoopFileSystem> callable = new Callable<HadoopFileSystem>() {
+              protected FileSystem doCreateFileSystem( FileName name, FileSystemOptions fileSystemOptions )
+                throws FileSystemException {
+                return new MapRFileSystem( name, fileSystemOptions ) {
 
                   @Override
-                  public HadoopFileSystem call() throws Exception {
-                    return getHDFSFileSystemPrivate();
+                  public HadoopFileSystem getHDFSFileSystem() throws FileSystemException {
+                    Callable<HadoopFileSystem> callable = new Callable<HadoopFileSystem>() {
+
+                      @Override
+                      public HadoopFileSystem call() throws Exception {
+                        return getHDFSFileSystemPrivate();
+                      }
+                    };
+                    try {
+                      return UserSpoofingMaprInvocationHandler.forObject( userSpoofingHadoopAuthorizationCallable
+                          .getMapRAuthenticationContext(), callable, new HashSet<Class<?>>(),
+                          getFileSystemGetUser( createConfiguration() ) );
+                    } catch ( AuthenticationConsumptionException e ) {
+                      throw new FileSystemException( e.getCause() );
+                    }
+                  }
+
+                  private HadoopFileSystem getHDFSFileSystemPrivate() throws FileSystemException {
+                    return super.getHDFSFileSystem();
                   }
                 };
-                try {
-                  return UserSpoofingMaprInvocationHandler.forObject( callable, new HashSet<Class<?>>(),
-                      getFileSystemGetUser( createConfiguration() ), isRoot );
-                } catch ( AuthenticationConsumptionException e ) {
-                  throw new FileSystemException( e.getCause() );
-                }
               }
+            } );
+            setDistributedCacheUtil( new MapR3DistributedCacheUtilImpl( config ) );
+          }
 
-              private HadoopFileSystem getHDFSFileSystemPrivate() throws FileSystemException {
-                return super.getHDFSFileSystem();
+          @Override
+          public Driver getJdbcDriver( String driverType ) {
+            Driver delegate = super.getJdbcDriver( driverType );
+            AuthenticationManager manager = AuthenticationPersistenceManager.getAuthenticationManager();
+            try {
+              manager.registerConsumerClass( HiveKerberosConsumer.class );
+            } catch ( AuthenticationFactoryException e ) {
+              throw new RuntimeException( e );
+            }
+            new PropertyAuthenticationProviderParser( userSpoofingHadoopAuthorizationCallable.getConfigProperties(),
+                manager ).process( DelegatingHadoopShim.PROVIDER_LIST );
+            AuthenticationPerformer<Driver, Driver> performer =
+                manager.getAuthenticationPerformer( Driver.class, Driver.class, userSpoofingHadoopAuthorizationCallable
+                    .getConfigProperties().getProperty( DelegatingHadoopShim.SUPER_USER ) );
+            if ( performer != null ) {
+              try {
+                return performer.perform( delegate );
+              } catch ( AuthenticationConsumptionException e ) {
+                throw new RuntimeException( e );
               }
-            };
+            } else {
+              throw new RuntimeException( "Unable to find authentication performer for id "
+                  + userSpoofingHadoopAuthorizationCallable.getConfigProperties().getProperty(
+                      DelegatingHadoopShim.SUPER_USER ) + " (specified as " + DelegatingHadoopShim.SUPER_USER
+                  + " in config.properties)", null );
+            }
           }
-        } );
-        setDistributedCacheUtil( new MapR3DistributedCacheUtilImpl( config ) );
-      }
-
-      @Override
-      public Driver getJdbcDriver( String driverType ) {
-        Driver delegate = super.getJdbcDriver( driverType );
-        AuthenticationManager manager = AuthenticationPersistenceManager.getAuthenticationManager();
-        try {
-          manager.registerConsumerClass( HiveKerberosConsumer.class );
-        } catch ( AuthenticationFactoryException e ) {
-          throw new RuntimeException( e );
-        }
-        new PropertyAuthenticationProviderParser( userSpoofingHadoopAuthorizationCallable.getConfigProperties(),
-            manager ).process( DelegatingHadoopShim.PROVIDER_LIST );
-        AuthenticationPerformer<Driver, Driver> performer =
-            manager.getAuthenticationPerformer( Driver.class, Driver.class, userSpoofingHadoopAuthorizationCallable
-                .getConfigProperties().getProperty( DelegatingHadoopShim.SUPER_USER ) );
-        if ( performer != null ) {
-          try {
-            return performer.perform( delegate );
-          } catch ( AuthenticationConsumptionException e ) {
-            throw new RuntimeException( e );
-          }
-        } else {
-          throw new RuntimeException( "Unable to find authentication performer for id "
-              + userSpoofingHadoopAuthorizationCallable.getConfigProperties().getProperty(
-                  DelegatingHadoopShim.SUPER_USER ) + " (specified as " + DelegatingHadoopShim.SUPER_USER
-              + " in config.properties)", null );
-        }
-      }
-    }, new HashSet<Class<?>>( Arrays.<Class<?>> asList( DistributedCacheUtil.class ) ) );
+        }, new HashSet<Class<?>>( Arrays.<Class<?>> asList( DistributedCacheUtil.class ) ) );
 
     try {
       HadoopKerberosName.setConfiguration( ShimUtils.asConfiguration( hadoopShim.createConfiguration() ) );
@@ -182,10 +193,10 @@ public class UserSpoofingHadoopAuthorizationService extends NoOpHadoopAuthorizat
       throw new AuthenticationConsumptionException( e1 );
     }
     oozieClientFactory =
-        KerberosInvocationHandler.forObject( userSpoofingHadoopAuthorizationCallable.getLoginContext(),
-            new OozieClientFactoryImpl( hadoopShim.createConfiguration().get( OOZIE_PROXY_USER ) ),
-            new HashSet<Class<?>>( Arrays.<Class<?>> asList( OozieClientFactory.class, OozieClient.class,
-                OozieJob.class ) ) );
+        KerberosInvocationHandler.forObject(
+            userSpoofingHadoopAuthorizationCallable.getKerberosAuthenticationContext(), new OozieClientFactoryImpl(
+                hadoopShim.createConfiguration().get( OOZIE_PROXY_USER ) ), new HashSet<Class<?>>( Arrays
+                .<Class<?>> asList( OozieClientFactory.class, OozieClient.class, OozieJob.class ) ) );
     AuthenticationManager manager = AuthenticationPersistenceManager.getAuthenticationManager();
     try {
       manager.registerConsumerClass( HBaseKerberosConsumer.class );
@@ -202,17 +213,18 @@ public class UserSpoofingHadoopAuthorizationService extends NoOpHadoopAuthorizat
       hBaseShimInterface = performer.perform( null );
     } else {
       throw new AuthenticationConsumptionException( "Unable to find authentication performer for id "
-          + userSpoofingHadoopAuthorizationCallable.getConfigProperties().getProperty(
-              DelegatingHadoopShim.SUPER_USER ) + " (specified as " + DelegatingHadoopShim.SUPER_USER
-          + " in config.properties)", null );
+          + userSpoofingHadoopAuthorizationCallable.getConfigProperties().getProperty( DelegatingHadoopShim.SUPER_USER )
+          + " (specified as " + DelegatingHadoopShim.SUPER_USER + " in config.properties)", null );
     }
-    sqoopShim = UserSpoofingMaprInvocationHandler.forObject( new CommonSqoopShim() {
-      @Override
-      public int runTool( String[] args, Configuration c ) {
-        hBaseShimInterface.setInfo( ShimUtils.asConfiguration( c ) );
-        return super.runTool( args, c );
-      }
-    }, new HashSet<Class<?>>(), hadoopShim.createConfiguration().get( SQOOP_PROXY_USER ), isRoot );
+    sqoopShim =
+        UserSpoofingMaprInvocationHandler.forObject( userSpoofingHadoopAuthorizationCallable
+            .getMapRAuthenticationContext(), new CommonSqoopShim() {
+          @Override
+          public int runTool( String[] args, Configuration c ) {
+            hBaseShimInterface.setInfo( ShimUtils.asConfiguration( c ) );
+            return super.runTool( args, c );
+          }
+        }, new HashSet<Class<?>>(), hadoopShim.createConfiguration().get( SQOOP_PROXY_USER ) );
     shimMap.put( HadoopShim.class, hadoopShim );
     shimMap.put( OozieClientFactory.class, oozieClientFactory );
     shimMap.put( HBaseShimInterface.class, hBaseShimInterface );
@@ -233,8 +245,8 @@ public class UserSpoofingHadoopAuthorizationService extends NoOpHadoopAuthorizat
         delegateSet = new HashSet<Class<?>>();
       }
       result =
-          UserSpoofingMaprInvocationHandler.forObject( super.getShim( clazz ), new HashSet<Class<?>>( delegateSet ),
-              shimUser, isRoot );
+          UserSpoofingMaprInvocationHandler.forObject( userSpoofingHadoopAuthorizationCallable
+              .getMapRAuthenticationContext(), super.getShim( clazz ), new HashSet<Class<?>>( delegateSet ), shimUser );
     }
     return result;
   }
