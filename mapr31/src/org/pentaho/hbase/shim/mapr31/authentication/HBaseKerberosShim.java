@@ -29,10 +29,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 
-import javax.security.auth.login.LoginContext;
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.security.HadoopKerberosName;
+import org.pentaho.hadoop.shim.mapr31.authentication.context.KerberosAuthenticationContext;
 import org.pentaho.hadoop.shim.mapr31.authorization.KerberosInvocationHandler;
 import org.pentaho.hadoop.shim.mapr31.delegatingShims.DelegatingHBaseConnection;
 import org.pentaho.hbase.shim.mapr31.MapRHBaseConnection;
@@ -44,18 +43,18 @@ import org.pentaho.hbase.shim.spi.HBaseConnection;
 
 public class HBaseKerberosShim extends MapRHBaseShim implements HBaseShimInterface {
   public static final String PENTAHO_LOGIN_CONTEXT_UUID = "pentaho.login.context.uuid";
-  private final LoginContext loginContext;
+  private final KerberosAuthenticationContext kerberosAuthenticationContext;
   private final String loginContextUuid;
 
-  public HBaseKerberosShim( LoginContext loginContext ) {
-    this.loginContext = loginContext;
+  public HBaseKerberosShim( KerberosAuthenticationContext kerberosAuthenticationContext ) {
+    this.kerberosAuthenticationContext = kerberosAuthenticationContext;
     loginContextUuid = UUID.randomUUID().toString();
-    HBaseKerberosUserProvider.setLoginContext( loginContextUuid, loginContext );
+    HBaseKerberosUserProvider.setLoginContext( loginContextUuid, kerberosAuthenticationContext );
   }
 
   @Override
   public HBaseConnection getHBaseConnection() {
-    return new DelegatingHBaseConnection( KerberosInvocationHandler.forObject( loginContext, new MapRHBaseConnection() {
+    return new DelegatingHBaseConnection( KerberosInvocationHandler.forObject( kerberosAuthenticationContext, new MapRHBaseConnection() {
 
       @Override
       public void configureConnection( Properties connProps, List<String> logMessages ) throws Exception {
