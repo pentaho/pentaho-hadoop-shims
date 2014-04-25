@@ -31,14 +31,21 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.lang.SystemUtils;
+
 /**
  * Subclass of java.util.Properties with support for overriding properties with different config values (e.g. mr1 vs mr2
  * config differences)
  */
 public class ShimProperties extends Properties {
+  public static interface WindowsChecker {
+    boolean isWindows();
+  }
   private static final long serialVersionUID = 2033564331119378266L;
 
   public static final String SHIM_CP_CONFIG = "shim.current.config";
+  
+  private final WindowsChecker windowsChecker;
 
   public static enum ListOverrideType {
     REPLACE, APPEND, PREPEND
@@ -47,13 +54,33 @@ public class ShimProperties extends Properties {
   public static enum SetOverrideType {
     REPLACE, OVERLAY
   }
+  
+  public ShimProperties() {
+    this( new WindowsChecker() {
+
+      @Override
+      public boolean isWindows() {
+        return SystemUtils.IS_OS_WINDOWS;
+      }
+    } );
+  }
+
+  protected ShimProperties( WindowsChecker windowsChecker ) {
+    this.windowsChecker = windowsChecker;
+  }
 
   private List<String> getShimConfigs() {
     List<String> shimConfigs = new ArrayList<String>();
-    String shimCurrentConfig = getProperty( SHIM_CP_CONFIG );
+    String shimCurrentConfig = super.getProperty( SHIM_CP_CONFIG );
+    String os = "linux";
+    if ( windowsChecker.isWindows() ) {
+      os = "windows";
+    }
+    shimConfigs.add( os );
     if ( shimCurrentConfig != null ) {
       for ( String config : shimCurrentConfig.trim().split( "," ) ) {
         shimConfigs.add( config.trim() );
+        shimConfigs.add( os + "." + config.trim() );
       }
     }
     return shimConfigs;
@@ -62,7 +89,7 @@ public class ShimProperties extends Properties {
   private List<String> getShimConfigProperties( String property ) {
     List<String> shimConfigProperties = new ArrayList<String>();
     for ( String config : getShimConfigs() ) {
-      shimConfigProperties.add( getProperty( config + "." + property ) );
+      shimConfigProperties.add( super.getProperty( config + "." + property ) );
     }
     return shimConfigProperties;
   }
@@ -91,7 +118,7 @@ public class ShimProperties extends Properties {
     List<String> shimConfigValues = getShimConfigProperties( property );
     List<String> shimProperties = new ArrayList<String>();
 
-    String globalValues = getProperty( property );
+    String globalValues = super.getProperty( property );
     if ( globalValues != null && globalValues.trim().length() > 0 ) {
       shimProperties.addAll( Arrays.asList( globalValues.split( "," ) ) );
     }
@@ -146,7 +173,7 @@ public class ShimProperties extends Properties {
     List<String> shimConfigValues = getShimConfigProperties( property );
     Set<String> shimProperties = new HashSet<String>();
 
-    String globalValues = getProperty( property );
+    String globalValues = super.getProperty( property );
     if ( globalValues != null && globalValues.trim().length() > 0 ) {
       shimProperties.addAll( Arrays.asList( globalValues.split( "," ) ) );
     }
@@ -172,6 +199,21 @@ public class ShimProperties extends Properties {
 
     return shimProperties;
   }
+  
+  @Override
+  public String getProperty( String key ) {
+    List<String> configProperties = getShimConfigProperties( key );
+    for ( int i = configProperties.size() - 1; i >= 0; i-- ) {
+      String property = configProperties.get( i );
+      if ( property != null ) {
+        property = property.trim();
+        if ( property.length() > 0 ) {
+          return property;
+        }
+      }
+    }
+    return super.getProperty( key );
+  }
 
   /**
    * Returns a map of key -> value of all shim properties with the given prefix (the prefix is removed)
@@ -190,7 +232,7 @@ public class ShimProperties extends Properties {
     for ( String currentPrefix : propertyPrefixes ) {
       for ( String propertyName : stringPropertyNames() ) {
         if ( propertyName.startsWith( currentPrefix ) ) {
-          prefixedProperties.put( propertyName.substring( currentPrefix.length() ), getProperty( propertyName ) );
+          prefixedProperties.put( propertyName.substring( currentPrefix.length() ), super.getProperty( propertyName ) );
         }
       }
     }
