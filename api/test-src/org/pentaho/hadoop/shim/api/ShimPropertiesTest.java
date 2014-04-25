@@ -23,6 +23,8 @@
 package org.pentaho.hadoop.shim.api;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,13 +37,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.pentaho.hadoop.shim.api.ShimProperties.ListOverrideType;
 import org.pentaho.hadoop.shim.api.ShimProperties.SetOverrideType;
+import org.pentaho.hadoop.shim.api.ShimProperties.WindowsChecker;
 
 public class ShimPropertiesTest {
   private ShimProperties shimProperties;
+  private WindowsChecker windowsChecker;
 
   @Before
   public void setup() {
-    shimProperties = new ShimProperties();
+    windowsChecker = mock( WindowsChecker.class );
+    shimProperties = new ShimProperties( windowsChecker );
   }
 
   private String join( String delim, Collection<String> collection ) {
@@ -289,5 +294,56 @@ public class ShimPropertiesTest {
     shimProperties.setProperty( "hbase.java.system.flatclass", "green" );
     shimProperties.setProperty( ShimProperties.SHIM_CP_CONFIG, "mr1,hbase" );
     assertEquals( "green", shimProperties.getPrefixedProperties( "java.system" ).get( "flatclass" ) );
+  }
+  
+  @Test
+  public void testGetPrefixedOsPropertiesWindowsShimConfig() {
+    when( windowsChecker.isWindows() ).thenReturn( true );
+    shimProperties.setProperty( "java.system.flatclass", "false" );
+    shimProperties.setProperty( "windows.java.system.flatclass", "true" );
+    assertEquals( "true", shimProperties.getPrefixedProperties( "java.system" ).get( "flatclass" ) );
+  }
+  
+  @Test
+  public void testGetPrefixedOsPropertiesLinuxShimConfigFallback() {
+    when( windowsChecker.isWindows() ).thenReturn( false );
+    shimProperties.setProperty( "java.system.flatclass", "true" );
+    assertEquals( "true", shimProperties.getProperty( "java.system.flatclass", "false" ) );
+  }
+
+  @Test
+  public void testGetPrefixedOsPropertiesLinuxShimConfigNoBase() {
+    when( windowsChecker.isWindows() ).thenReturn( false );
+    shimProperties.setProperty( "linux.java.system.flatclass", "true" );
+    assertEquals( "true", shimProperties.getProperty( "java.system.flatclass", "false" ) );
+  }
+  
+  @Test
+  public void testGetPrefixedOsPropertiesLinuxShimConfig() {
+    when( windowsChecker.isWindows() ).thenReturn( false );
+    shimProperties.setProperty( "java.system.flatclass", "false" );
+    shimProperties.setProperty( "linux.java.system.flatclass", "true" );
+    assertEquals( "true", shimProperties.getProperty( "java.system.flatclass" ) );
+  }
+  
+  @Test
+  public void testGetPrefixedOsPropertiesWindowsShimConfigTrumpedBySetConfig() {
+    when( windowsChecker.isWindows() ).thenReturn( true );
+    shimProperties.setProperty( "java.system.flatclass", "false" );
+    shimProperties.setProperty( "windows.java.system.flatclass", "false" );
+    shimProperties.setProperty( "mr1.java.system.flatclass", "true" );
+    shimProperties.setProperty( ShimProperties.SHIM_CP_CONFIG, "mr1" );
+    assertEquals( "true", shimProperties.getProperty( "java.system.flatclass" ) );
+  }
+
+  @Test
+  public void testGetPrefixedOsPropertiesWindowsAndShimConfigTrumpsWindowsConfig() {
+    when( windowsChecker.isWindows() ).thenReturn( true );
+    shimProperties.setProperty( "java.system.flatclass", "false" );
+    shimProperties.setProperty( "windows.java.system.flatclass", "false" );
+    shimProperties.setProperty( "mr1.java.system.flatclass", "false" );
+    shimProperties.setProperty( "windows.mr1.java.system.flatclass", "true" );
+    shimProperties.setProperty( ShimProperties.SHIM_CP_CONFIG, "mr1" );
+    assertEquals( "true", shimProperties.getProperty( "java.system.flatclass" ) );
   }
 }
