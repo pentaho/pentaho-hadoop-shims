@@ -1,0 +1,22 @@
+<!--
+  - These settings are the minimum necessary MapReduce settings for the Hortonworks 2.0 Sandbox. The settings for your cluster may be different, 
+  - please see the descriptions below along with your vendor documentation for the appropriate property values.
+  -
+  - The Apache defaults (not necessarily vendor-compatible) are listed here:
+  - http://hadoop.apache.org/docs/current/hadoop-mapreduce-client/hadoop-mapreduce-client-core/mapred-default.xml
+  -->
+<configuration>
+  <!-- 
+    - The following property specifies in which mode to run MapReduce jobs.
+    - the choices are local, classic, or yarn:
+    - 
+    - local: run the MapReduce tasks on this client machine
+    - classic: run job(s) on the cluster using MapReduce v1
+    - yarn: run job(s) on the cluster using MapReduce v2 (on YARN)
+    -
+    -->    
+  <property>
+    <name>mapreduce.framework.name</name>
+    <value>yarn</value>
+  </property>
+</configuration>

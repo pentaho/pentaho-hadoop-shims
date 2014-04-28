@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
+  <info organisation="${ivy.artifact.group}" module="${ivy.artifact.id}" revision="${project.revision}" />
+
+  <configurations>
+    <conf name="default" />
+    <conf name="zip" />
+    <conf name="test" visibility="private" />
+    <conf name="provided" />
+    <conf name="client" />
+    <conf name="pmr" />
+  </configurations>
+
+  <publications>
+    <artifact name="${ivy.artifact.id}" type="jar" conf="default" />
+    <artifact name="${package.id}" type="zip" conf="zip" />
+  </publications>
+
+  <dependencies defaultconf="default->default">
+    <dependency conf="provided->default" org="pentaho" name="pentaho-hadoop-shims-api" rev="${project.revision}" changing="true"/>
+    <dependency conf="provided->default" org="pentaho-kettle" name="kettle-core" rev="${dependency.kettle.revision}" changing="true"/>
+    <dependency conf="provided->default" org="pentaho-kettle" name="kettle-engine" rev="${dependency.kettle.revision}" changing="true"/>
+
+    <dependency org="pentaho" name="pentaho-hdfs-vfs" rev="${dependency.pentaho-hdfs-vfs.revision}" transitive="false" changing="true"/>
+    <dependency org="pentaho" name="pentaho-hadoop-snappy" rev="${dependency.pentaho-hadoop-snappy.revision}" changing="true"/>
+
+    <dependency conf="client->default" org="commons-httpclient" name="commons-httpclient" rev="${dependency.commons-httpclient.revision}" transitive="false" />
+    <dependency conf="client->default" org="commons-net" name="commons-net" rev="${dependency.commons-net.revision}" transitive="false" />
+
+    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-common" rev="${dependency.hadoop.revision}" />
+    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-hdfs" rev="${dependency.hadoop.revision}" />
+    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-mapreduce-client" rev="${dependency.hadoop.revision}" >
+      <!-- <exclude name="a.*" matcher="regexp" />
+      <exclude name="commons-beanutils.*" matcher="regexp" />
+      <exclude name="commons-collections" />
+      <exclude name="commons-digester" />
+      <exclude name="commons-io" />
+      <exclude name="commons-lang" />
+      <exclude name="commons-math" />
+      <exclude name="core" />
+      <exclude name="ja.*" matcher="regexp" />
+      <exclude name="jersey.*" matcher="regexp" />
+      <exclude name="jettison" />
+      <exclude name="jetty.*" matcher="regexp" />
+      <exclude name="js.*" matcher="regexp" />
+      <exclude name="junit" />
+      <exclude name="s.*" matcher="regexp" />-->
+    </dependency>
+    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-app" rev="${dependency.hadoop.revision}" />
+    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-common" rev="${dependency.hadoop.revision}"/>
+    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-jobclient" rev="${dependency.hadoop.revision}" />
+    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-shuffle" rev="${dependency.hadoop.revision}" />
+
+    <!-- 
+      This patch gets us around bugs like MAPREDUCE-5665 where MapReduce jobs submitted from a Windows client to YARN
+      fail because of client-side attributes used during cluster-side execution.
+     -->
+    <dependency org="pentaho" name="hadoop2-windows-patch" rev="${dependency.hadoop2-windows-patch.revision}" transitive="false">
+      <artifact name="hadoop2-windows-patch" ext="jar"/>
+    </dependency>
+    
+    <!-- Resolving HDP Pig is messy, the core JAR is provided, some other Pig dependencies need to be added or excluded
+    <dependency conf="pmr->default" org="org.apache.pig" name="pig" rev="${dependency.pig.revision}" transitive="true">
+      <exclude org="com.google.guava" />
+      <exclude org="jline" />
+      <exclude org="org.apache.pig" />
+      <exclude org="org.codehaus.jackson" />
+      <exclude org="org.slf4j" />
+    </dependency>-->
+    <dependency org="org.apache.pig" name="pig" rev="${dependency.pig.revision}" transitive="false" />
+    <dependency org="dk.brics.automaton" name="automaton" rev="${dependency.automaton.revision}" transitive="false" />
+    
+    <dependency org="org.apache.sqoop" name="sqoop" rev="${dependency.apache-sqoop.revision}" changing="true" transitive="false"/>
+    
+    <dependency conf="pmr->default" org="com.google.protobuf" name="protobuf-java" rev="${protobuf-java.version}" transitive="false" />
+
+    <dependency conf="pmr->default" org="org.apache.hbase" name="hbase" rev="${dependency.apache-hbase.revision}" transitive="false"/>
+    <dependency conf="pmr->default" org="org.apache.hbase" name="hbase-hadoop-compat" rev="${dependency.apache-hbase.revision}" transitive="false"/>
+    <dependency conf="pmr->default" org="org.apache.zookeeper" name="zookeeper" rev="${dependency.zookeeper.revision}" transitive="false"/>
+
+    <dependency org="org.apache.hive" name="hive-jdbc" rev="${dependency.hive-jdbc.revision}" changing="false" transitive="false"/>
+    <dependency org="org.apache.hive" name="hive-exec" rev="${dependency.hive-jdbc.revision}" changing="false"/>
+    <dependency org="org.apache.hive" name="hive-service" rev="${dependency.hive-jdbc.revision}" changing="false"/>
+    <dependency org="org.apache.hive" name="hive-metastore" rev="${dependency.hive-jdbc.revision}" changing="false"/>
+    <dependency org="org.apache.thrift" name="libfb303" rev="${dependency.thrift.revision}" changing="false"/>
+    <dependency org="org.apache.thrift" name="libthrift" rev="${dependency.thrift.revision}" changing="false"/>
+    
+    <dependency conf="provided->default" org="com.thoughtworks.xstream" name="xstream" rev="${dependency.xstream.revision}" transitive="false"/>
+    <dependency conf="provided->default" org="log4j" name="log4j" rev="1.2.14" />
+    <dependency conf="provided->default" org="commons-lang" name="commons-lang" rev="${dependency.commons-lang.revision}" transitive="false"/>
+    
+    <dependency conf="test->default" org="junit" name="junit" rev="4.5"/>
+    <dependency conf="test->default" org="org.safehaus.jug" name="jug-lgpl" rev="2.0.0" />
+    <dependency conf="test->default" org="pentaho" name="pentaho-hadoop-shims-api-test" rev="${project.revision}" changing="true"/>
+
+    <!-- Exclude log4j from default libraries - it's brought in transitively through many of the Hadoop dependencies and should not be included -->
+    <exclude org="log4j" module="log4j" conf="default" />
+    <!-- Exclude antlr. Hive brings in a version that's not compatible with Pig. -->
+    <exclude org="org.antlr" conf="default" />
+  </dependencies>
+</ivy-module>
