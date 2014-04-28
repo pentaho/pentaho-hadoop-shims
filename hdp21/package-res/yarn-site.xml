@@ -1,0 +1,36 @@
+<!--
+  - These settings are the minimum necessary YARN settings for the Hortonworks 2.0 Sandbox. The settings for your cluster may be different, please
+  - see the descriptions below along with your vendor documentation for the appropriate property values.
+  -
+  - The Apache defaults (not necessarily vendor-compatible) are listed here:
+  - http://hadoop.apache.org/docs/current/hadoop-yarn/hadoop-yarn-common/yarn-default.xml
+  -->
+<configuration>
+  <!--
+    - The yarn.application.classpath property specifies the classpath to use on the cluster for executing YARN applications.
+    - it is included here because when job(s) are submitted from PDI, the yarn-default.xml file in the Hadoop client JAR(s)
+    - will be loaded, and the default setting for yarn.application.classpath is not correct for the Hortonworks Sandbox and
+    - not compatible with the documented installation of a Hortonworks 2.0 cluster.
+    - If these paths are not correct for your sandbox/cluster, update this property accordingly and restart PDI.
+    -->
+  <property>
+    <name>yarn.application.classpath</name>
+    <value>/etc/hadoop/conf,/usr/lib/hadoop/*,/usr/lib/hadoop/lib/*,/usr/lib/hadoop-hdfs/*,/usr/lib/hadoop-hdfs/lib/*,/usr/lib/hadoop-yarn/*,/usr/lib/hadoop-yarn/lib/*,/usr/lib/hadoop-mapreduce/*,/usr/lib/hadoop-mapreduce/lib/*</value>
+  </property>
+
+  <!--
+    - This property specifies the hostname for the YARN ResourceManager of your cluster/sandbox. Update this property accordingly
+    -->
+  <property>
+    <name>yarn.resourcemanager.hostname</name>
+    <value>sandbox.hortonworks.com</value>
+  </property>
+
+  <!--
+    - This property specifies the hostname:port value for the YARN ResourceManager of your cluster/sandbox. Update this property accordingly
+    -->
+  <property>
+    <name>yarn.resourcemanager.address</name>
+    <value>${yarn.resourcemanager.hostname}:8050</value>
+  </property>
+</configuration>
