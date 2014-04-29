@@ -518,7 +518,54 @@ public class DriverProxyInvocationChain {
             // Intercept PreparedStatement.getMetaData() to see if it throws an exception
             if("getMetaData".equals(methodName) && (args == null || args.length==0)) {
               return getProxiedObject(getMetaData());
-            }              
+            }
+            else if( PreparedStatement.class.isInstance(proxy) && "setObject".equals(methodName)
+                    && args.length == 2 && Integer.class.isInstance(args[0]) ) {
+                // Intercept PreparedStatement.setObject(position, value)
+                // Set value using value type instead
+                // This should already be fixed in later Hive JDBC versions:
+
+                PreparedStatement ps = (PreparedStatement) proxy;
+                int parameterIndex = (Integer) args[0];
+                Object x = args[1];
+
+                if( x == null ){
+                    // PreparedStatement.setNull may not be supported
+                    ps.setNull( parameterIndex, Types.NULL );
+                } else if (x instanceof String) {
+                    ps.setString(parameterIndex, (String) x );
+                } else if (x instanceof Short) {
+                    ps.setShort(parameterIndex, ( (Short) x ).shortValue() );
+                } else if (x instanceof Integer) {
+                    ps.setInt(parameterIndex, ( (Integer) x ).intValue() );
+                } else if (x instanceof Long) {
+                    ps.setLong(parameterIndex, ( (Long) x ).longValue() );
+                } else if (x instanceof Float) {
+                    ps.setFloat(parameterIndex, ( (Float) x).floatValue() );
+                } else if (x instanceof Double) {
+                    ps.setDouble(parameterIndex, ( (Double) x ).doubleValue() );
+                } else if (x instanceof Boolean) {
+                    ps.setBoolean(parameterIndex, ( (Boolean) x).booleanValue() );
+                } else if (x instanceof Byte) {
+                    ps.setByte(parameterIndex, ( (Byte) x ).byteValue() );
+                } else if (x instanceof Character) {
+                    ps.setString(parameterIndex, x.toString());
+                } else {
+                    // Can't infer a type.
+                    throw new SQLException( "Type " + x.getClass() + " is not yet supported", cause);
+                }
+                return null;
+            }
+            else if( PreparedStatement.class.isInstance(proxy) && "setNull".equals(methodName)
+                    && args.length == 2 && Integer.class.isInstance(args[0]) ) {
+
+                PreparedStatement ps = (PreparedStatement) proxy;
+                int parameterIndex = (Integer) args[0];
+                // Use empty String instead (not ideal, but won't crash)
+                ps.setString(parameterIndex, "");
+
+                return null;
+            }
             else {
               throw cause;
             }
@@ -530,7 +577,7 @@ public class DriverProxyInvocationChain {
         }
       }
     }
-    
+
     /**
      *  Returns the result set meta data.  If a result set was not created by running an execute or executeQuery then a null is returned.
      *
