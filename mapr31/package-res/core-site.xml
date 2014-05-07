@@ -4,34 +4,4 @@
 <!-- Put site-specific property overrides in this file. -->
 
 <configuration>
-<!-- <property>
-<name>pentaho.hdfs.proxy.user</name>
-<value>exampleuser</value>
-<description>This property specifies the user to impersonate for hdfs steps and vfs. 
-(Your authentication.superuser.provider in config.properties must have the correct permissions) </description>
-</property>
-<property>
-<name>pentaho.mapreduce.proxy.user</name>
-<value>exampleuser</value>
-<description>This property specifies the user to impersonate for mapreduce. 
-(Your authentication.superuser.provider in config.properties must have the correct permissions) </description>
-</property>
-<property>
-<name>pentaho.pig.proxy.user</name>
-<value>exampleuser</value>
-<description>This property specifies the user to impersonate for pig. 
-(Your authentication.superuser.provider in config.properties must have the correct permissions) </description>
-</property>
-<property>
-<name>pentaho.sqoop.proxy.user</name>
-<value>exampleuser</value>
-<description>This property specifies the user to impersonate for sqoop. 
-(Your authentication.superuser.provider in config.properties must have the correct permissions) </description>
-</property>
-<property>
-<name>pentaho.oozie.proxy.user</name>
-<value>exampleuser</value>
-<description>This property specifies the user to impersonate for oozie. 
-(Your authentication.superuser.provider in config.properties must have the correct permissions) </description>
-</property> -->
 </configuration>
