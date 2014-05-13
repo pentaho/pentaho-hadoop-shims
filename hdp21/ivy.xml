@@ -102,5 +102,8 @@
     <exclude org="log4j" module="log4j" conf="default" />
     <!-- Exclude antlr. Hive brings in a version that's not compatible with Pig. -->
     <exclude org="org.antlr" conf="default" />
+    <!--  Exclude xerces, it's provided and will wreak havoc if there are multiple instances / versions -->
+    <exclude org="xml-apis" module="xml-apis" conf="*" />
+    <exclude org="xerces" module="xercesImpl" conf="*" />
   </dependencies>
 </ivy-module>
