@@ -74,8 +74,13 @@
     
     <dependency conf="pmr->default" org="com.google.protobuf" name="protobuf-java" rev="${protobuf-java.version}" transitive="false" />
 
-    <dependency conf="pmr->default" org="org.apache.hbase" name="hbase" rev="${dependency.apache-hbase.revision}" transitive="false"/>
+    <dependency conf="pmr->default" org="org.apache.hbase" name="hbase-server" rev="${dependency.apache-hbase.revision}" transitive="false"/>
+    <dependency conf="pmr->default" org="org.apache.hbase" name="hbase-client" rev="${dependency.apache-hbase.revision}" transitive="false"/>
+    <dependency conf="pmr->default" org="org.apache.hbase" name="hbase-prefix-tree" rev="${dependency.apache-hbase.revision}" transitive="false"/>
+    <dependency conf="pmr->default" org="org.apache.hbase" name="hbase-protocol" rev="${dependency.apache-hbase.revision}" transitive="false"/>
+    <dependency conf="pmr->default" org="org.apache.hbase" name="hbase-common" rev="${dependency.apache-hbase.revision}" transitive="false"/>
     <dependency conf="pmr->default" org="org.apache.hbase" name="hbase-hadoop-compat" rev="${dependency.apache-hbase.revision}" transitive="false"/>
+    <dependency conf="pmr->default" org="org.cloudera.htrace" name="htrace-core" rev="2.04" transitive="false" />
     <dependency conf="pmr->default" org="org.apache.zookeeper" name="zookeeper" rev="${dependency.zookeeper.revision}" transitive="false"/>
 
     <dependency org="org.apache.hive" name="hive-jdbc" rev="${dependency.hive-jdbc.revision}" changing="false" transitive="false"/>
