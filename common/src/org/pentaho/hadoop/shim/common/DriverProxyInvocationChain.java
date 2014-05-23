@@ -57,7 +57,7 @@ import java.sql.Types;
 public class DriverProxyInvocationChain {
   
   /** The initialized. */
-  protected static boolean initialized = false;
+  private static boolean initialized = false;
   
   /** The hive1 db meta data class. */
   protected static Class<? extends DatabaseMetaData> hive1DbMetaDataClass = null;
@@ -221,6 +221,9 @@ public class DriverProxyInvocationChain {
               String methodName = method.getName();
               if("createStatement".equals(methodName)) {
                 o = createStatement(connection,args);
+              }
+              else if("isReadOnly".equals(methodName)) {
+                o = Boolean.FALSE;
               }
               else if("setReadOnly".equals(methodName)) {
                 o = (Void)null;
@@ -841,6 +844,14 @@ public class DriverProxyInvocationChain {
       }
       return false;
     }
+  }
+
+  protected static boolean isInitialized() {
+    return initialized;
+  }
+
+  public static void setInitialized( boolean initialized ) {
+    DriverProxyInvocationChain.initialized = initialized;
   }
 }
 

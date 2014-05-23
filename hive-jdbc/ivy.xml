@@ -20,5 +20,6 @@
     <dependency conf="test->default" org="commons-logging" name="commons-logging" rev="1.1.1"/>
     <dependency conf="test->default" org="${ivy.artifact.group}" name="pentaho-hadoop-shims-api" rev="${project.revision}" changing="true" />
     <dependency conf="test->default" org="${ivy.artifact.group}" name="pentaho-hadoop-shims-api-test" rev="${project.revision}" changing="true" />
+    <dependency conf="test->default" org="org.mockito" name="mockito-all" rev="1.9.5" transitive="false" />
   </dependencies>
 </ivy-module>

@@ -20,6 +20,6 @@
     <dependency conf="test->default" org="junit" name="junit" rev="4.5"/>
     <dependency conf="test->default" org="commons-logging" name="commons-logging" rev="1.1.1"/>
     <dependency conf="test->default" org="org.jboss.shrinkwrap" name="shrinkwrap-impl-base" rev="1.0.0-alpha-12" />
-    <dependency org="org.mockito"         name="mockito-all"   rev="1.9.5"   conf="test->default" transitive="false" />
+    <dependency conf="test->default" org="org.mockito" name="mockito-all" rev="1.9.5" transitive="false" />
   </dependencies>
 </ivy-module>
