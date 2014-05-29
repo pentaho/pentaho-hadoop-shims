@@ -1,24 +1,24 @@
 /*******************************************************************************
-*
-* Pentaho Big Data
-*
-* Copyright (C) 2002-2014 by Pentaho : http://www.pentaho.com
-*
-*******************************************************************************
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with
-* the License. You may obtain a copy of the License at
-*
-*    http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-******************************************************************************/
+ *
+ * Pentaho Big Data
+ *
+ * Copyright (C) 2002-2014 by Pentaho : http://www.pentaho.com
+ *
+ *******************************************************************************
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ ******************************************************************************/
 
 package org.pentaho.hadoop.shim.mapr31.authorization;
 
@@ -30,19 +30,31 @@ import org.pentaho.di.core.auth.AuthenticationPersistenceManager;
 import org.pentaho.di.core.auth.NoAuthenticationAuthenticationProvider;
 import org.pentaho.di.core.auth.core.AuthenticationManager;
 import org.pentaho.di.core.auth.core.AuthenticationPerformer;
+import org.pentaho.di.core.logging.LogChannel;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
-import org.pentaho.hadoop.shim.mapr31.authentication.PropertyAuthenticationProviderParser;
-import org.pentaho.hadoop.shim.mapr31.authentication.MapRSuperUserKerberosConsumer.MapRSuperUserKerberosConsumerType;
 import org.pentaho.hadoop.shim.mapr31.authentication.MapRSuperUserNoAuthConsumer.MapRSuperUserNoAuthConsumerType;
+import org.pentaho.hadoop.shim.mapr31.authentication.PropertyAuthenticationProviderParser;
 import org.pentaho.hadoop.shim.mapr31.delegatingShims.DelegatingHadoopShim;
 import org.pentaho.hadoop.shim.spi.PentahoHadoopShim;
 
 public class AuthenticatingHadoopShim extends DelegatingHadoopShim {
   @Override
   public void onLoad( HadoopConfiguration config, HadoopConfigurationFileSystemManager fsm ) throws Exception {
-    AuthenticationConsumerPluginType.getInstance().registerPlugin( (URLClassLoader) getClass().getClassLoader(),
-        MapRSuperUserKerberosConsumerType.class );
+    String activators = config.getConfigProperties().getProperty( "activator.classes" );
+    if ( activators != null ) {
+      activators = activators.trim();
+      for ( String className : activators.split( "," ) ) {
+        className = className.trim();
+        if ( className.length() > 0 ) {
+          try {
+            Class.forName( className ).newInstance();
+          } catch ( Exception e ) {
+            LogChannel.GENERAL.logError( e.getMessage(), e );
+          }
+        }
+      }
+    }
     AuthenticationConsumerPluginType.getInstance().registerPlugin( (URLClassLoader) getClass().getClassLoader(),
         MapRSuperUserNoAuthConsumerType.class );
     String provider = NoAuthenticationAuthenticationProvider.NO_AUTH_ID;
