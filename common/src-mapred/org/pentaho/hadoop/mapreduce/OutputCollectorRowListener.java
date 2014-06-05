@@ -89,18 +89,23 @@ public class OutputCollectorRowListener<K, V> extends RowAdapter {
           setDebugStatus( reporter,
             "Begin conversion of output key [from:" + (row[outOrdinals.getKeyOrdinal()] == null ? null : row[outOrdinals.getKeyOrdinal()].getClass()) + "] [to:" + outClassK + "]"); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        setDebugStatus(reporter, "getConverter: " + (row[outOrdinals.getKeyOrdinal()] == null ? null : row[outOrdinals.getKeyOrdinal()].getClass()));
-        setDebugStatus(reporter, "out class: " + outClassK);
+        if (debug) {
+          setDebugStatus(reporter, "getConverter: " + (row[outOrdinals.getKeyOrdinal()] == null ? null : row[outOrdinals.getKeyOrdinal()].getClass()));
+          setDebugStatus(reporter, "out class: " + outClassK);
+        }
 
         ITypeConverter converter = typeConverterFactory
             .getConverter(
                 row[outOrdinals.getKeyOrdinal()] == null ? null : row[outOrdinals.getKeyOrdinal()].getClass(),
                 outClassK);
-        setDebugStatus(reporter, "ordinals key: " + outOrdinals.getKeyOrdinal());
-        setDebugStatus(reporter, "rowMeta: " + rowMeta);
-        setDebugStatus(reporter, "rowMeta: " + rowMeta.getMetaXML());
-        setDebugStatus(reporter, "meta: " + rowMeta.getValueMeta(outOrdinals.getKeyOrdinal()));
-        setDebugStatus(reporter, "key: " + row[outOrdinals.getKeyOrdinal()]);
+        if (debug) {
+          setDebugStatus(reporter, "ordinals key: " + outOrdinals.getKeyOrdinal());
+          setDebugStatus(reporter, "rowMeta: " + rowMeta);
+          setDebugStatus(reporter, "rowMeta: " + rowMeta.getMetaXML());
+          setDebugStatus(reporter, "meta: " + rowMeta.getValueMeta(outOrdinals.getKeyOrdinal()));
+          setDebugStatus(reporter, "key: " + row[outOrdinals.getKeyOrdinal()]);
+        }
+        
         Object outKey = converter.convert(rowMeta.getValueMeta(outOrdinals.getKeyOrdinal()), row[outOrdinals.getKeyOrdinal()]);
 
        if (debug) {
@@ -111,11 +116,13 @@ public class OutputCollectorRowListener<K, V> extends RowAdapter {
         ITypeConverter valueConverter = typeConverterFactory.getConverter(
             row[outOrdinals.getValueOrdinal()] == null ? null : row[outOrdinals.getValueOrdinal()].getClass(),
             outClassV);
-        setDebugStatus(reporter, "ordinals value: " + outOrdinals.getValueOrdinal());
-        setDebugStatus(reporter, "rowMeta: " + rowMeta);
-        setDebugStatus(reporter, "rowMeta: " + rowMeta.getMetaXML());
-        setDebugStatus(reporter, "meta: " + rowMeta.getValueMeta(outOrdinals.getValueOrdinal()));
-        setDebugStatus(reporter, "value: " + row[outOrdinals.getValueOrdinal()]);
+        if (debug) {
+          setDebugStatus(reporter, "ordinals value: " + outOrdinals.getValueOrdinal());
+          setDebugStatus(reporter, "rowMeta: " + rowMeta);
+          setDebugStatus(reporter, "rowMeta: " + rowMeta.getMetaXML());
+          setDebugStatus(reporter, "meta: " + rowMeta.getValueMeta(outOrdinals.getValueOrdinal()));
+          setDebugStatus(reporter, "value: " + row[outOrdinals.getValueOrdinal()]);
+        }
         Object outVal = valueConverter.convert(rowMeta.getValueMeta(outOrdinals.getValueOrdinal()), row[outOrdinals.getValueOrdinal()]);
 
         if (outKey != null && outVal != null) {
