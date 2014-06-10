@@ -15,6 +15,11 @@
     - yarn: run job(s) on the cluster using MapReduce v2 (on YARN)
     -
     -->    
+
+  <property>
+    <name>mapreduce.jobhistory.address</name>
+    <value>sandbox.hortonworks.com:10020</value>
+  </property>
   <property>
     <name>mapreduce.framework.name</name>
     <value>yarn</value>
