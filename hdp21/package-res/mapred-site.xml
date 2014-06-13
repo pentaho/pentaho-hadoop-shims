@@ -15,13 +15,27 @@
     - yarn: run job(s) on the cluster using MapReduce v2 (on YARN)
     -
     -->    
-
-  <property>
-    <name>mapreduce.jobhistory.address</name>
-    <value>sandbox.hortonworks.com:10020</value>
-  </property>
   <property>
     <name>mapreduce.framework.name</name>
     <value>yarn</value>
   </property>
+  
+  <!--
+    - The following property allows to run MR jobs cross-platformly.
+    - It means that jobs created on Windows MR client can be run on Linux cluster or vice versa.
+    -
+    -->
+  <property>
+    <name>mapreduce.app-submission.cross-platform</name>
+    <value>true</value>
+  </property>
+
+  <!--
+    - This property specifies the hostname:port value for the MapReduce JobHistory Server of your cluster/sandbox. Update this property accordingly
+    -->
+  <property>
+    <name>mapreduce.jobhistory.address</name>
+    <value>sandbox.hortonworks.com:10020</value>
+  </property> 
+
 </configuration>
