@@ -785,35 +785,44 @@ public class DriverProxyInvocationChain {
      * @throws Throwable the throwable
      */
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-      
+    public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable {
       try {
-        return method.invoke(rsmd, args);
-      }
-      catch(Throwable t) {
-        if(t instanceof InvocationTargetException) {
+        String methodName = method.getName();
+        if ( ( "getColumnName".equals( methodName ) || ( "getColumnLabel".equals( methodName ) ) ) && ( args != null ) && ( args.length == 1 ) ) {
+          return getColumnName( (Integer) args[ 0 ] );
+        }
+        return method.invoke( this.rsmd, args );
+      } catch ( Throwable t ) {
+        if ( ( t instanceof InvocationTargetException ) ) {
           Throwable cause = t.getCause();
-        
-          if(cause instanceof SQLException) {
-            if(cause.getMessage().equals("Method not supported")) {
+          if ( ( cause instanceof SQLException ) ) {
+            if ( cause.getMessage().equals( "Method not supported" ) ) {
               String methodName = method.getName();
-              if("isSigned".equals(methodName)) {
-                return isSigned((Integer)args[0]);
+              if ( "isSigned".equals( methodName ) ) {
+                if ( args != null ) {
+                  return isSigned( (Integer) args[ 0 ] );
+                }
               }
-              else {
-                throw cause;
-              }
+              throw cause;
             }
-            else throw cause;
-          }
-          else {
             throw cause;
           }
+          throw cause;
         }
-        else {
-          throw t;
+        throw t;
+      }
+    }
+
+    private String getColumnName( Integer column ) throws SQLException {
+      String columnName = null;
+      columnName = this.rsmd.getColumnName( column );
+      if ( columnName != null ) {
+        int dotIndex = columnName.indexOf( '.' );
+        if ( dotIndex != -1 ) {
+          return columnName.substring( dotIndex + 1 );
         }
       }
+      return columnName;
     }
     
     /**
