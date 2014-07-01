@@ -126,7 +126,7 @@ public class DriverProxyInvocationChain {
   @SuppressWarnings( { "unchecked" } )
   protected static void init() {
 
-    // Get all the Hive 1 and Hive 2 classes we'll need to call methods on later. 
+    // Get all the Hive 1 and Hive 2 classes we'll need to call methods on later.
 
     ClassLoader cl = driverProxyClassLoader;
 
@@ -306,16 +306,16 @@ public class DriverProxyInvocationChain {
         throw new SQLException( "Can't create Statement, connection is closed " );
       }
       /* Ignore these for now -- this proxy stuff should go away anyway when the fixes are made to Apache Hive
-       
+
       int resultSetType = (Integer)args[0];
       int resultSetConcurrency = (Integer)args[1];
-      
+
       if(resultSetType != ResultSet.TYPE_FORWARD_ONLY) {
         throw new SQLException(
             "Invalid parameter to createStatement() only TYPE_FORWARD_ONLY is supported
             ("+resultSetType+"!="+ResultSet.TYPE_FORWARD_ONLY+")");
       }
-      
+
       if(resultSetConcurrency != ResultSet.CONCUR_READ_ONLY) {
         throw new SQLException(
             "Invalid parameter to createStatement() only CONCUR_READ_ONLY is supported");
@@ -368,7 +368,7 @@ public class DriverProxyInvocationChain {
         if ( "getTables".equals( methodName ) ) {
 
           // For Hive/Impala drivers, we need to intercept the getTables method even though it doesn't
-          // throw an exception, because the ResultSet is empty. The temp fix is to try an execute a 
+          // throw an exception, because the ResultSet is empty. The temp fix is to try an execute a
           // HiveQL query of "show tables". This only returns one (differently-named) column containing
           // the table/view name, vs. getTables() which returns much metadata. C'est la vie.
 
@@ -714,10 +714,10 @@ public class DriverProxyInvocationChain {
 
         if ( t instanceof InvocationTargetException ) {
           Throwable cause = t.getCause();
+          String methodName = method.getName();
 
           if ( cause instanceof SQLException ) {
             if ( cause.getMessage().equals( "Method not supported" ) ) {
-              String methodName = method.getName();
               if ( "getStatement".equals( methodName ) ) {
                 return getStatement();
               } else {
@@ -726,6 +726,10 @@ public class DriverProxyInvocationChain {
             } else {
               throw cause;
             }
+          } else if ( cause instanceof IllegalMonitorStateException && "close".equals( methodName ) ) {
+            // Workaround for BISERVER-11782. By this moment invocation of closeClientOperation did it's job and failed
+            // trying to unlock not locked lock, just ignore this.
+            return null;
           } else {
             throw cause;
           }
