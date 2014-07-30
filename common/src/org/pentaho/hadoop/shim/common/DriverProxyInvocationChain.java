@@ -255,6 +255,8 @@ public class DriverProxyInvocationChain {
                 o = Boolean.FALSE;
               } else if ( "setReadOnly".equals( methodName ) ) {
                 o = (Void) null;
+              } else if ( "setAutoCommit".equals( methodName ) ) {
+                o = (Void) null;
               } else {
                 throw cause;
               }
