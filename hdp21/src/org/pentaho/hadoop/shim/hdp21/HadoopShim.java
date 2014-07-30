@@ -32,7 +32,6 @@ import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
 import org.pentaho.hadoop.shim.api.mapred.RunningJob;
 import org.pentaho.hadoop.shim.common.CommonHadoopShim;
 import org.pentaho.hadoop.shim.common.DistributedCacheUtilImpl;
-import org.pentaho.hadoop.shim.common.fs.FileSystemProxy;
 import org.pentaho.hdfs.vfs.HDFSFileProvider;
 
 import java.io.IOException;
@@ -107,31 +106,4 @@ public class HadoopShim extends CommonHadoopShim {
     }
   }
 
-  @Override
-  public org.pentaho.hadoop.shim.api.fs.FileSystem getFileSystem( org.pentaho.hadoop.shim.api.Configuration conf )
-    throws IOException {
-    // Set the context class loader when instantiating the configuration
-    // since org.apache.hadoop.conf.Configuration uses it to load resources
-    ClassLoader cl = Thread.currentThread().getContextClassLoader();
-    Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
-    try {
-      return new FileSystemProxy(
-        org.apache.hadoop.fs.FileSystem.get( ( (ConfigurationProxyV2) conf ).getJob().getConfiguration() ) );
-    } finally {
-      Thread.currentThread().setContextClassLoader( cl );
-    }
-  }
-
-  @Override public String[] getNamenodeConnectionInfo( org.pentaho.hadoop.shim.api.Configuration c ) {
-    URI namenode = org.apache.hadoop.fs.FileSystem.getDefaultUri(
-      ( (ConfigurationProxyV2) c ).getJob().getConfiguration() );
-    String[] result = new String[ 2 ];
-    if ( namenode != null ) {
-      result[ 0 ] = namenode.getHost();
-      if ( namenode.getPort() != -1 ) {
-        result[ 1 ] = String.valueOf( namenode.getPort() );
-      }
-    }
-    return result;
-  }
 }

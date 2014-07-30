@@ -119,26 +119,37 @@ public class ConfigurationProxyV2 implements Configuration {
   @Override
   public void setMapperClass( Class<?> c ) {
     if ( org.apache.hadoop.mapred.Mapper.class.isAssignableFrom( c ) ) {
+      setUseOldMapApi();
       getJobConf().setMapperClass( (Class<? extends org.apache.hadoop.mapred.Mapper>) c );
     } else if ( org.apache.hadoop.mapreduce.Mapper.class.isAssignableFrom( c ) ) {
       job.setMapperClass( (Class<? extends org.apache.hadoop.mapreduce.Mapper>) c );
     }
   }
 
+  private void setUseOldMapApi() {
+    set( "mapred.mapper.new-api", "false" );
+  }
+
   @SuppressWarnings( "unchecked" )
   @Override
   public void setCombinerClass( Class<?> c ) {
     if ( org.apache.hadoop.mapred.Reducer.class.isAssignableFrom( c ) ) {
+      setUseOldRedApi();
       getJobConf().setCombinerClass( (Class<? extends org.apache.hadoop.mapred.Reducer>) c );
     } else if ( org.apache.hadoop.mapreduce.Reducer.class.isAssignableFrom( c ) ) {
       job.setCombinerClass( (Class<? extends org.apache.hadoop.mapreduce.Reducer>) c );
     }
   }
 
+  private void setUseOldRedApi() {
+    set( "mapred.reducer.new-api", "false" );
+  }
+
   @SuppressWarnings( "unchecked" )
   @Override
   public void setReducerClass( Class<?> c ) {
     if ( org.apache.hadoop.mapred.Reducer.class.isAssignableFrom( c ) ) {
+      setUseOldRedApi();
       getJobConf().setReducerClass( (Class<? extends org.apache.hadoop.mapred.Reducer>) c );
     } else if ( org.apache.hadoop.mapreduce.Reducer.class.isAssignableFrom( c ) ) {
       job.setReducerClass( (Class<? extends org.apache.hadoop.mapreduce.Reducer>) c );
@@ -167,6 +178,7 @@ public class ConfigurationProxyV2 implements Configuration {
   @Override
   public void setInputFormat( Class<?> inputFormat ) {
     if ( org.apache.hadoop.mapred.InputFormat.class.isAssignableFrom( inputFormat ) ) {
+      setUseOldMapApi();
       getJobConf().setInputFormat( (Class<? extends org.apache.hadoop.mapred.InputFormat>) inputFormat );
     } else if ( org.apache.hadoop.mapreduce.InputFormat.class.isAssignableFrom( inputFormat ) ) {
       job.setInputFormatClass( (Class<? extends org.apache.hadoop.mapreduce.InputFormat>) inputFormat );
@@ -177,6 +189,10 @@ public class ConfigurationProxyV2 implements Configuration {
   @Override
   public void setOutputFormat( Class<?> outputFormat ) {
     if ( org.apache.hadoop.mapred.OutputFormat.class.isAssignableFrom( outputFormat ) ) {
+      setUseOldRedApi();
+      if ( getJobConf().getNumReduceTasks() == 0 || get( "mapred.partitioner.class" ) != null ) {
+        setUseOldMapApi();
+      }
       getJobConf().setOutputFormat( (Class<? extends org.apache.hadoop.mapred.OutputFormat>) outputFormat );
     } else if ( org.apache.hadoop.mapreduce.OutputFormat.class.isAssignableFrom( outputFormat ) ) {
       job.setOutputFormatClass( (Class<? extends org.apache.hadoop.mapreduce.OutputFormat>) outputFormat );
@@ -226,10 +242,10 @@ public class ConfigurationProxyV2 implements Configuration {
   }
 
   /**
-   * Sets the requisite number of reduce tasks for the MapReduce job submitted with this configuration.  <p>If
-   * {@code n} is {@code zero} there will not be a reduce (or sort/shuffle) phase and the output of the map tasks will
-   * be written directly to the distributed file system under the path specified via {@link
-   * #setOutputPath(org.pentaho.hadoop.shim.api.fs.Path)</p>
+   * Sets the requisite number of reduce tasks for the MapReduce job submitted with this configuration.  <p>If {@code n}
+   * is {@code zero} there will not be a reduce (or sort/shuffle) phase and the output of the map tasks will be written
+   * directly to the distributed file system under the path specified via {@link #setOutputPath(org.pentaho.hadoop
+   * .shim.api.fs.Path)</p>
    *
    * @param n the number of reduce tasks required for this job
    * @param n
@@ -258,5 +274,23 @@ public class ConfigurationProxyV2 implements Configuration {
   @Override
   public String getDefaultFileSystemURL() {
     return get( "fs.default.name", "" );
+  }
+
+  /**
+   * Hack
+   * Return this configuration as was asked with provided delegate class (If it is possible).
+   *
+   * @param delegate class of desired return object
+   * @return this configuration delegate object if possible
+   */
+  @Override
+  public <T> T getAsDelegateConf( Class<T> delegate ) {
+    if ( delegate.isAssignableFrom( this.getClass() ) ) {
+      return (T) this;
+    } else if ( delegate.isAssignableFrom( JobConf.class ) ) {
+      return (T) getJobConf();
+    } else {
+      return null;
+    }
   }
 }
