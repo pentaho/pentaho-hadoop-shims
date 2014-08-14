@@ -255,8 +255,14 @@ public class DriverProxyInvocationChain {
                 o = Boolean.FALSE;
               } else if ( "setReadOnly".equals( methodName ) ) {
                 o = (Void) null;
+              } else if ( "setAutoCommit".equals( methodName ) ) {
+                o = (Void) null;
               } else {
                 throw cause;
+              }
+            } else if ( cause.getMessage().equals( "enabling autocommit is not supported" ) ) {
+              if ( "setAutoCommit".equals( method.getName() ) ) {
+                o = (Void) null;
               }
             } else {
               throw cause;
