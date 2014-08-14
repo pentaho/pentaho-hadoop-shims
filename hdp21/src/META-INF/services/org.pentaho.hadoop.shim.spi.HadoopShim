@@ -1,1 +1,1 @@
-org.pentaho.hadoop.shim.hdp21.HadoopShim
+org.pentaho.hadoop.shim.hdp21.authorization.AuthenticatingHadoopShim

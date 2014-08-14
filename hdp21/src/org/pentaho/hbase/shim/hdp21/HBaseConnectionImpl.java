@@ -1,8 +1,9 @@
 package org.pentaho.hbase.shim.hdp21;
 
 import org.pentaho.hbase.shim.common.CommonHBaseConnection;
+import org.pentaho.hbase.shim.hdp21.wrapper.HBaseConnectionInterface;
 
-public class HBaseConnectionImpl extends CommonHBaseConnection {
+public class HBaseConnectionImpl extends CommonHBaseConnection implements HBaseConnectionInterface {
 
   @Override
   public Class<?> getByteArrayComparableClass() throws ClassNotFoundException {
