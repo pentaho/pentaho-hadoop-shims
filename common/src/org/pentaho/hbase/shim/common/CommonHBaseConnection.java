@@ -47,6 +47,8 @@ import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.CompareFilter;
 import org.apache.hadoop.hbase.filter.FilterList;
+import org.apache.hadoop.hbase.filter.Filter;
+import org.apache.hadoop.hbase.filter.PrefixFilter;
 import org.apache.hadoop.hbase.filter.RegexStringComparator;
 import org.apache.hadoop.hbase.filter.SingleColumnValueFilter;
 import org.apache.hadoop.hbase.filter.SubstringComparator;
@@ -344,6 +346,22 @@ public class CommonHBaseConnection extends HBaseConnection {
     if ( cacheSize > 0 ) {
       m_sourceScan.setCaching( cacheSize );
     }
+  }
+
+  public void newSourceTablePrefixScan( byte[] prefix, int cacheSize, boolean matchAny ) throws Exception {
+ 	  newSourceTableScan(null, null, cacheSize);
+
+ 	  if ( m_sourceScan.getFilter() == null ) {
+ 	    // create a new FilterList
+ 	    FilterList fl =
+ 	        new FilterList( matchAny ? FilterList.Operator.MUST_PASS_ONE : FilterList.Operator.MUST_PASS_ALL );
+ 	    m_sourceScan.setFilter( fl );
+ 	  }
+
+ 	  FilterList fl = (FilterList) m_sourceScan.getFilter();
+
+	  Filter prefixFilter = new PrefixFilter(prefix);
+	  fl.addFilter(prefixFilter);
   }
 
   @Override
