@@ -23,8 +23,9 @@
 package org.pentaho.hadoop.mapreduce;
 
 import java.io.IOException;
-
+import java.util.Iterator;
 import java.util.UUID;
+import java.util.Map.Entry;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapred.JobConf;
@@ -53,6 +54,7 @@ public class PentahoMapReduceBase<K, V> extends MapReduceBase {
     OUT_RECORD_WITH_NULL_VALUE
   }
 
+  private final String ENVIRONMENT_VARIABLE_PREFIX = "java.system.";
   protected String transMapXml;
   protected String transCombinerXml;
   protected String transReduceXml;
@@ -121,10 +123,25 @@ public class PentahoMapReduceBase<K, V> extends MapReduceBase {
        if (xStream != null) {
            setDebugStatus("PentahoMapReduceBase: Setting classes variableSpace property.: ");
            variableSpace = (VariableSpace)xStream.fromXML(xmlVariableSpace);
-       }
+           
+        for ( String variableName : variableSpace.listVariables() ) {
+          if ( variableName.startsWith( "KETTLE_" ) ) {
+            System.setProperty( variableName, variableSpace.getVariable( variableName ) );
+          }
+        }
+      }
     }
     else {
       setDebugStatus("PentahoMapReduceBase: The PDI Job's variable space was not found in the job configuration.");
+    }
+    
+    // Check for environment variables in the userDefined variables
+    Iterator<Entry<String, String>> iter = job.iterator();
+    while ( iter.hasNext() ) {
+      Entry<String, String> entry = iter.next();
+      if ( entry.getKey().startsWith( ENVIRONMENT_VARIABLE_PREFIX ) ) {
+        System.setProperty( entry.getKey().substring( ENVIRONMENT_VARIABLE_PREFIX.length() ), entry.getValue() );
+      }
     }
     
     switch(mrOperation) {

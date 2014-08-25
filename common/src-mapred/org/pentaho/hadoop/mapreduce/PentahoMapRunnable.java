@@ -22,16 +22,26 @@
 
 package org.pentaho.hadoop.mapreduce;
 
-import com.thoughtworks.xstream.XStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.UUID;
+
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.mapred.*;
+import org.apache.hadoop.mapred.JobConf;
+import org.apache.hadoop.mapred.MapRunnable;
+import org.apache.hadoop.mapred.OutputCollector;
+import org.apache.hadoop.mapred.RecordReader;
+import org.apache.hadoop.mapred.Reporter;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.logging.KettleLogStore;
 import org.pentaho.di.core.logging.KettleLoggingEvent;
 import org.pentaho.di.core.logging.LogLevel;
 import org.pentaho.di.core.row.RowMeta;
-import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.di.core.variables.Variables;
 import org.pentaho.di.trans.RowProducer;
@@ -42,11 +52,7 @@ import org.pentaho.di.trans.step.StepMetaInterface;
 import org.pentaho.hadoop.mapreduce.converter.TypeConverterFactory;
 import org.pentaho.hadoop.mapreduce.converter.spi.ITypeConverter;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import com.thoughtworks.xstream.XStream;
 
 /**
  * Map runner that uses the normal Kettle execution engine to process all input data during one single run.<p>
@@ -86,13 +92,15 @@ public class PentahoMapRunnable<K1, V1, K2, V2> implements MapRunnable<K1, V1, K
   protected LogLevel logLevel;
   
   protected OutputCollectorRowListener<K2, V2> rowCollector;
+  
+  private final String ENVIRONMENT_VARIABLE_PREFIX = "java.system.";
 
   public PentahoMapRunnable() throws KettleException {
   }
 
   public void configure(JobConf job) {
     debug = "true".equalsIgnoreCase(job.get("debug")); //$NON-NLS-1$
-
+   
     transMapXml = job.get("transformation-map-xml");
     transReduceXml = job.get("transformation-reduce-xml");
     mapInputStepName = job.get("transformation-map-input-stepname");
@@ -113,11 +121,27 @@ public class PentahoMapRunnable<K1, V1, K2, V2> implements MapRunnable<K1, V1, K
        
        setDebugStatus("PentahoMapRunnable(): Setting classes variableSpace property.: ");
        variableSpace = (VariableSpace)xStream.fromXML(xmlVariableSpace);
+       
+       for ( String variableName : variableSpace.listVariables() ) {
+         if (variableName.startsWith( "KETTLE_" )){
+           System.setProperty( variableName, variableSpace.getVariable( variableName ) );
+         }
+       }
     }
     else {
       setDebugStatus("PentahoMapRunnable(): The PDI Job's variable space was not sent.");
       variableSpace = new Variables();
    }
+    
+    // Check for environment variables in the userDefined variables
+    Iterator<Entry<String, String>> iter = job.iterator();
+    while ( iter.hasNext() ) {
+      Entry<String, String> entry = iter.next();
+      if ( entry.getKey().startsWith( ENVIRONMENT_VARIABLE_PREFIX ) ) {
+        System.setProperty( entry.getKey().substring( ENVIRONMENT_VARIABLE_PREFIX.length() ), entry.getValue() );
+      }
+    }
+
 
    // Pass some information to the transformation...
    //
