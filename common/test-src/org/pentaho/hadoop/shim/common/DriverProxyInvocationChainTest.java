@@ -129,4 +129,15 @@ public class DriverProxyInvocationChainTest {
     }
   }
 
+  @Test
+  public void testCutDoubledTableNameFromColumnName() throws Exception {
+    assertEquals( null,
+      DriverProxyInvocationChain.ResultSetMetaDataInvocationHandler.cutDoubledTableNameFromColumnName( null ) );
+    assertEquals( "columnName", DriverProxyInvocationChain.ResultSetMetaDataInvocationHandler
+      .cutDoubledTableNameFromColumnName( "tableName.columnName" ) );
+    assertEquals( "tableName.columnName", DriverProxyInvocationChain.ResultSetMetaDataInvocationHandler
+      .cutDoubledTableNameFromColumnName( "tableName.tableName.columnName" ) );
+    assertEquals( "tableName_tableName_columnName", DriverProxyInvocationChain.ResultSetMetaDataInvocationHandler
+      .cutDoubledTableNameFromColumnName( "tableName_tableName_columnName" ) );
+  }
 }
