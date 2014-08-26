@@ -788,7 +788,8 @@ public class DriverProxyInvocationChain {
    * this file is specifically for handling Hive JDBC calls, and therefore should not be used to proxy any other JDBC
    * objects besides those provided by Hive.
    */
-  private static class ResultSetMetaDataInvocationHandler implements InvocationHandler {
+  //@VisibleForTesting has not guava in all class pathes so that`s why package access modificator was used
+  static class ResultSetMetaDataInvocationHandler implements InvocationHandler {
 
     /**
      * The "real" ResultSetMetaData object.
@@ -845,6 +846,11 @@ public class DriverProxyInvocationChain {
     private String getColumnName( Integer column ) throws SQLException {
       String columnName = null;
       columnName = this.rsmd.getColumnName( column );
+      return cutDoubledTableNameFromColumnName( columnName );
+    }
+
+    //@VisibleForTesting has not guava in all class pathes so that`s why package access modificator was used
+    static String cutDoubledTableNameFromColumnName( String columnName ) {
       if ( columnName != null ) {
         int dotIndex = columnName.indexOf( '.' );
         if ( dotIndex != -1 ) {
