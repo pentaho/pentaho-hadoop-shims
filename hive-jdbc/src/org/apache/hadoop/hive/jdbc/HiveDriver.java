@@ -53,7 +53,7 @@ import org.pentaho.hadoop.hive.jdbc.JDBCDriverCallable;
  * JDBC driver via HadoopConfiguration#getHiveJdbcDriver.
  * </p>
  * <p>
- * All calls to the loaded HiveDriver will have the current Thread's context 
+ * All calls to the loaded HiveDriver will have the current Thread's context
  * class loader set to the class that loaded the driver so subsequent resource
  * lookups are successful.
  * </p>
@@ -63,7 +63,7 @@ public class HiveDriver implements java.sql.Driver {
    * Method name of {@link org.pentaho.hadoop.shim.spi.HadoopShim#getJdbcDriver()}
    */
   private static final String METHOD_GET_JDBC_DRIVER = "getJdbcDriver";
-  
+
   /**
    * Driver type = "hive"
    */
@@ -108,7 +108,7 @@ public class HiveDriver implements java.sql.Driver {
       throw new SQLException("Unable to load Hive JDBC driver for the currently active Hadoop configuration", ex);
     }
 
-    // Check if the Shim contains a Hive driver. It may return this driver if it 
+    // Check if the Shim contains a Hive driver. It may return this driver if it
     // doesn't contain one since it'll be found in one of the parent class loaders
     // so we also need to make sure we didn't return ourself... :)
     if (driver == null || driver.getClass() == this.getClass()) {
@@ -133,7 +133,7 @@ public class HiveDriver implements java.sql.Driver {
     return callWithActiveDriver(new JDBCDriverCallable<Connection>() {
       @Override
       public Connection call() throws Exception {
-        return driver.connect(url, info);
+        return driver.acceptsURL( url ) ? driver.connect( url, info ) : null;
       }
     });
   }
@@ -203,7 +203,7 @@ public class HiveDriver implements java.sql.Driver {
       return false;
     }
   }
-  
+
   public Logger getParentLogger() throws SQLFeatureNotSupportedException {
     return null;
   }

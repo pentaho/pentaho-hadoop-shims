@@ -66,7 +66,7 @@ public class HiveDriverTest {
   public void getActiveDriver() throws SQLException {
     final AtomicBoolean called = new AtomicBoolean(false);
     HadoopShim shim = new MockHadoopShim() {
-      
+
       public java.sql.Driver getJdbcDriver(String scheme) {
         if(scheme.equalsIgnoreCase("hive")) {
           called.set(true);
@@ -86,7 +86,7 @@ public class HiveDriverTest {
       public java.sql.Driver getJdbcDriver(String scheme) {
         if(scheme.equalsIgnoreCase("hive")) {
           throw new RuntimeException();
-        } 
+        }
         else {
           return null;
         }
@@ -143,18 +143,25 @@ public class HiveDriverTest {
 
   @Test
   public void connect() throws SQLException {
-    final AtomicBoolean called = new AtomicBoolean(false);
+    final AtomicBoolean connectCalled = new AtomicBoolean(false);
+    final AtomicBoolean acceptsUrlCalled = new AtomicBoolean(false);
     Driver driver = new MockDriver() {
       @Override
       public Connection connect(String url, Properties info) throws SQLException {
-        called.set(true);
+        connectCalled.set( true );
         return null;
+      }
+
+      @Override
+      public boolean acceptsURL( String url ) throws SQLException {
+        acceptsUrlCalled.set( true );
+        return true;
       }
     };
     HiveDriver d = new HiveDriver(getMockUtil(getMockShimWithDriver(driver)));
 
     d.connect(null, null);
-    assertTrue(called.get());
+    assertTrue( connectCalled.get() && acceptsUrlCalled.get() );
   }
 
   @Test
@@ -264,7 +271,7 @@ public class HiveDriverTest {
     d.jdbcCompliant();
     assertTrue(called.get());
   }
-  
+
   @Test
   public void jdbcCompliant_exception() throws SQLException {
     Driver driver = new MockDriver() {
@@ -274,7 +281,7 @@ public class HiveDriverTest {
       }
     };
     HiveDriver d = new HiveDriver(getMockUtil(getMockShimWithDriver(driver)));
-    
+
     // should return false if there is an exception
     assertFalse(d.jdbcCompliant());
   }
