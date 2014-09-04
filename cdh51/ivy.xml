@@ -27,6 +27,10 @@
 
     <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-client" rev="${dependency.hadoop.revision}" changing="true"/>
     <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-core" rev="${dependency.hadoop.mr1.revision}" transitive="false" changing="true"/>
+    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-app" rev="${dependency.hadoop.revision}" />
+    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-common" rev="${dependency.hadoop.revision}"/>
+    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-jobclient" rev="${dependency.hadoop.revision}" />
+    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-shuffle" rev="${dependency.hadoop.revision}" />
 
     <!--
       This patch gets us around bugs like MAPREDUCE-5665 where MapReduce jobs submitted from a Windows client to YARN
@@ -44,6 +48,7 @@
     <dependency conf="pmr->default" org="org.apache.hbase" name="hbase-server" rev="${dependency.apache-hbase.revision}" transitive="false" changing="true"/>
     <dependency conf="pmr->default" org="org.apache.hbase" name="hbase-thrift" rev="${dependency.apache-hbase.revision}" transitive="false" changing="true"/>
     <dependency conf="pmr->default" org="org.cloudera.htrace" name="htrace-core" rev="2.01" transitive="false" changing="true"/>
+    <dependency conf="pmr->default" org="org.apache.zookeeper" name="zookeeper" rev="${dependency.zookeeper.revision}" transitive="false"/>
 
     <dependency org="pentaho" name="pentaho-hdfs-vfs" rev="${dependency.pentaho-hdfs-vfs.revision}" transitive="false" changing="true"/>
 
