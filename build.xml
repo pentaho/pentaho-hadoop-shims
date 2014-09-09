@@ -116,6 +116,14 @@
       </sequential>
     </for>
   </target>
+	
+  <target name="package-eula" depends="install-antcontrib,init">
+    <for list="${shim-non-api-modules}" param="module" trim="true">
+      <sequential>
+        <ant antfile="build.xml" dir="@{module}" inheritall="false" target="package-eula" />
+      </sequential>
+    </for>
+  </target>
 
   <target name="dist" depends="init, build-all"/>    
 </project>

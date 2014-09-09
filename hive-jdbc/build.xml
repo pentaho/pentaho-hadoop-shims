@@ -30,4 +30,7 @@
         <include name="**/*.jar" />
       </fileset>
     </path>
+	
+	<target name="package-eula" />
+	
 </project>
