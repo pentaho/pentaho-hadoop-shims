@@ -94,6 +94,7 @@ public class PentahoMapRunnable<K1, V1, K2, V2> implements MapRunnable<K1, V1, K
   protected OutputCollectorRowListener<K2, V2> rowCollector;
   
   private final String ENVIRONMENT_VARIABLE_PREFIX = "java.system.";
+  private final String KETTLE_VARIABLE_PREFIX = "KETTLE_";
 
   public PentahoMapRunnable() throws KettleException {
   }
@@ -123,7 +124,7 @@ public class PentahoMapRunnable<K1, V1, K2, V2> implements MapRunnable<K1, V1, K
        variableSpace = (VariableSpace)xStream.fromXML(xmlVariableSpace);
        
        for ( String variableName : variableSpace.listVariables() ) {
-         if (variableName.startsWith( "KETTLE_" )){
+         if ( variableName.startsWith( KETTLE_VARIABLE_PREFIX ) ){
            System.setProperty( variableName, variableSpace.getVariable( variableName ) );
          }
        }
@@ -140,8 +141,10 @@ public class PentahoMapRunnable<K1, V1, K2, V2> implements MapRunnable<K1, V1, K
       if ( entry.getKey().startsWith( ENVIRONMENT_VARIABLE_PREFIX ) ) {
         System.setProperty( entry.getKey().substring( ENVIRONMENT_VARIABLE_PREFIX.length() ), entry.getValue() );
       }
+      else if ( entry.getKey().startsWith( KETTLE_VARIABLE_PREFIX ) ){
+        System.setProperty( entry.getKey(), entry.getValue() );
+      }
     }
-
 
    // Pass some information to the transformation...
    //
