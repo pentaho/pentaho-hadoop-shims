@@ -55,6 +55,7 @@ public class PentahoMapReduceBase<K, V> extends MapReduceBase {
   }
 
   private final String ENVIRONMENT_VARIABLE_PREFIX = "java.system.";
+  private final String KETTLE_VARIABLE_PREFIX = "KETTLE_";
   protected String transMapXml;
   protected String transCombinerXml;
   protected String transReduceXml;
@@ -125,7 +126,7 @@ public class PentahoMapReduceBase<K, V> extends MapReduceBase {
            variableSpace = (VariableSpace)xStream.fromXML(xmlVariableSpace);
            
         for ( String variableName : variableSpace.listVariables() ) {
-          if ( variableName.startsWith( "KETTLE_" ) ) {
+          if ( variableName.startsWith( KETTLE_VARIABLE_PREFIX ) ) {
             System.setProperty( variableName, variableSpace.getVariable( variableName ) );
           }
         }
@@ -141,6 +142,9 @@ public class PentahoMapReduceBase<K, V> extends MapReduceBase {
       Entry<String, String> entry = iter.next();
       if ( entry.getKey().startsWith( ENVIRONMENT_VARIABLE_PREFIX ) ) {
         System.setProperty( entry.getKey().substring( ENVIRONMENT_VARIABLE_PREFIX.length() ), entry.getValue() );
+      }
+      else if ( entry.getKey().startsWith( KETTLE_VARIABLE_PREFIX ) ){
+        System.setProperty( entry.getKey(), entry.getValue() );
       }
     }
     
