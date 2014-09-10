@@ -27,6 +27,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ArrayList;
@@ -46,6 +48,7 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.pentaho.hadoop.shim.api.ShimProperties;
@@ -55,6 +58,7 @@ import org.pentaho.hadoop.shim.spi.MockHadoopShim;
 public class HadoopConfigurationLocatorTest {
 
   private static String HADOOP_CONFIGURATIONS_PATH = System.getProperty( "java.io.tmpdir" ) + "/hadoop-configurations";
+  private static FileObject configFile;
 
   @BeforeClass
   public static void setup() throws Exception {
@@ -69,12 +73,14 @@ public class HadoopConfigurationLocatorTest {
     assertEquals( FileType.FOLDER, aConfigFolder.getType() );
 
     // Create the properties file for the configuration as hadoop-configurations/a/config.properties
-    FileObject configFile = aConfigFolder.resolveFile( "config.properties" );
+    configFile = aConfigFolder.resolveFile( "config.properties" );
     Properties p = new Properties();
     p.setProperty( "name", "Test Configuration A" );
     p.setProperty( "classpath", "" );
     p.setProperty( "library.path", "" );
+    p.setProperty( "required.classes", HadoopConfigurationLocatorTest.class.getName() );
     p.store( configFile.getContent().getOutputStream(), "Test Configuration A" );
+    configFile.close();
 
     // Create the implementation jar
     FileObject implJar = aConfigFolder.resolveFile( "a-config.jar" );
@@ -117,6 +123,31 @@ public class HadoopConfigurationLocatorTest {
   }
 
   @Test
+  public void init_MissingRequiredClasses() throws IOException {
+    Properties properties = new Properties();
+    InputStream inputStream = configFile.getContent().getInputStream();
+    properties.load( inputStream );
+    inputStream.close();
+    properties.setProperty( "required.classes", "this.class.does.not.Exist" );
+    properties.store( configFile.getContent().getOutputStream(), "Test Configuration A" );
+    configFile.close();
+    HadoopConfigurationLocator locator = new HadoopConfigurationLocator();
+    try {
+      locator.init(
+        VFS.getManager().resolveFile( HADOOP_CONFIGURATIONS_PATH ), new MockActiveHadoopConfigurationLocator( "a" ),
+        new DefaultFileSystemManager() );
+      Assert.fail( "Should have got exception " );
+    } catch ( ConfigurationException e ) {
+      assertEquals(
+        "Unable to load class this.class.does.not.Exist that is required to start the Test Configuration A Hadoop Shim"
+        , e.getCause().getMessage() );
+    } finally {
+      properties.setProperty( "required.classes", HadoopConfigurationLocator.class.getName() );
+      properties.store( configFile.getContent().getOutputStream(), "Test Configuration A" );
+      configFile.close();
+    }
+  }
+
   public void init() throws FileSystemException, ConfigurationException {
     HadoopConfigurationLocator locator = new HadoopConfigurationLocator();
     locator.init( VFS.getManager().resolveFile( HADOOP_CONFIGURATIONS_PATH ),

@@ -44,6 +44,7 @@ import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileType;
 import org.apache.commons.vfs.impl.DefaultFileSystemManager;
 import org.apache.log4j.Logger;
+import org.pentaho.di.core.Const;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.hadoop.shim.api.ActiveHadoopConfigurationLocator;
 import org.pentaho.hadoop.shim.api.Required;
@@ -368,6 +369,8 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
       // API classes we're using
       ClassLoader cl = createConfigurationLoader( folder, getClass()
         .getClassLoader(), classpathElements, configurationProperties, ignoredClasses );
+      verifyClasses(
+        cl, configurationProperties.getProperty( "required.classes" ), configurationProperties.getProperty( "name" ) );
 
       // Treat the Hadoop shim special. It is absolutely required for a Hadoop configuration.
       HadoopShim hadoopShim = null;
@@ -400,6 +403,20 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
       return config;
     } catch ( Throwable t ) {
       throw new ConfigurationException( BaseMessages.getString( PKG, "Error.LoadingConfiguration" ), t );
+    }
+  }
+
+  protected void verifyClasses( ClassLoader classLoader, String requiredClasses, String shimName )
+    throws ConfigurationException {
+    if ( !Const.isEmpty( requiredClasses ) ) {
+      for ( String className : requiredClasses.split( "," ) ) {
+        try {
+          classLoader.loadClass( className );
+        } catch ( Throwable e ) {
+          throw new ConfigurationException(
+            BaseMessages.getString( PKG, "Error.MissingRequiredClasses", className, shimName ) );
+        }
+      }
     }
   }
 
