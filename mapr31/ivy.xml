@@ -32,7 +32,7 @@
     <dependency conf="default" org="org.apache.pig" name="pig-withouthadoop" rev="${dependency.pig.revision}" changing="false" transitive="false" />
     <!-- MapR Pig needs extra client-side JARs -->
     <dependency org="dk.brics.automaton" name="automaton" rev="1.11-8" changing="false" transitive="false"/>
-    <dependency conf="default" org="com.mapr.fs" name="libprotodefs" rev="1.0.3-mapr-3.1.0" changing="false" transitive="false" />
+    <dependency conf="provided->default" org="com.mapr.fs" name="libprotodefs" rev="1.0.3-mapr-3.1.0" changing="false" transitive="false" />
 
     <dependency conf="default" org="pentaho" name="pentaho-hdfs-vfs" rev="${dependency.pentaho-hdfs-vfs.revision}" transitive="false" changing="true"/>
     <dependency conf="default" org="pentaho" name="pentaho-hadoop-snappy" rev="${dependency.pentaho-hadoop-snappy.revision}" changing="true"/>
@@ -48,11 +48,15 @@
     <dependency org="log4j" name="log4j" rev="1.2.14" />
     <dependency org="commons-lang" name="commons-lang" rev="${dependency.commons-lang.revision}" transitive="false"/>
 
-    <dependency org="org.apache.hadoop" name="hadoop-core" rev="${dependency.hadoop.revision}" transitive="true" conf="default">
+    <dependency org="org.apache.hadoop" name="hadoop-core" rev="${dependency.hadoop.revision}" transitive="true" conf="default,provided->default">
       <exclude org="junit"/>
       <exclude org="ant"/>
+      <exclude org="com.mapr.hadoop" conf="default"/>
+      <exclude org="com.mapr.util" conf="default"/>
+      <exclude name="hadoop-core" conf="default"/>
+      <exclude name="hadoop-auth" conf="default"/>
     </dependency>
-    <dependency conf="default" org="com.mapr.fs" name="libprotodefs" rev="${dependency.hadoop.revision}" transitive="false"/>
+    <dependency conf="provided->default" org="com.mapr.fs" name="libprotodefs" rev="${dependency.hadoop.revision}" transitive="false"/>
     <dependency conf="default" org="net.sf.flexjson" name="flexjson" rev="2.1" transitive="false"/>
     
     <dependency conf="test->default" org="junit" name="junit" rev="4.5"/>
