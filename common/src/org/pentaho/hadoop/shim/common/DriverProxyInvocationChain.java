@@ -215,10 +215,11 @@ public class DriverProxyInvocationChain {
 
         if(t instanceof InvocationTargetException) {
           Throwable cause = t.getCause();
-        
+
           if(cause instanceof SQLException) {
-            if(cause.getMessage().equals("Method not supported")) {
-              String methodName = method.getName();
+            String methodName = method.getName();
+            if(cause.getMessage().startsWith("Method not supported")
+                || cause.getMessage().equals("enabling autocommit is not supported")) {
               if("createStatement".equals(methodName)) {
                 o = createStatement(connection,args);
               }

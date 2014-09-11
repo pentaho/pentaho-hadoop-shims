@@ -101,7 +101,7 @@ public class CommonHadoopShim implements HadoopShim {
         Driver driverProxy = DriverProxyInvocationChain.getProxy( Driver.class, newInstance );
         return driverProxy;
       } else {
-        throw new Exception( "JDBC driver of type '" + driverType + "' not supported" );
+        return null;
       }
 
     } catch ( Exception ex ) {

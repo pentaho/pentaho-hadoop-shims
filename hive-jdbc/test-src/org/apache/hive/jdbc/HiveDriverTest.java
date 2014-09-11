@@ -22,6 +22,8 @@
 
 package org.apache.hive.jdbc;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.InvocationTargetException;
@@ -66,7 +68,7 @@ public class HiveDriverTest {
   public void getActiveDriver() throws SQLException {
     final AtomicBoolean called = new AtomicBoolean(false);
     HadoopShim shim = new MockHadoopShim() {
-      
+
       public java.sql.Driver getJdbcDriver(String scheme) {
         if(scheme.equalsIgnoreCase("hive2")) {
           called.set(true);
@@ -86,7 +88,7 @@ public class HiveDriverTest {
       public java.sql.Driver getJdbcDriver(String scheme) {
         if(scheme.equalsIgnoreCase("hive2")) {
           throw new RuntimeException();
-        } 
+        }
         else {
           return null;
         }
@@ -100,24 +102,6 @@ public class HiveDriverTest {
     } catch (SQLException ex) {
       assertEquals(InvocationTargetException.class, ex.getCause().getClass());
       assertEquals("Unable to load Hive Server 2 JDBC driver for the currently active Hadoop configuration", ex.getMessage());
-    }
-  }
-
-  @Test
-  public void getActiveDriver_null_driver() {
-    HadoopShim shim = new MockHadoopShim() {
-      public java.sql.Driver getJdbcDriver(String scheme) {
-        return null;
-      }
-    };
-    HiveDriver d = new HiveDriver(getMockUtil(shim));
-
-    try {
-      d.getActiveDriver();
-      fail("Expected exception");
-    } catch (SQLException ex) {
-      assertNull(ex.getCause());
-      assertEquals("The active Hadoop configuration does not contain a Hive Server 2 JDBC driver", ex.getMessage());
     }
   }
 
@@ -155,6 +139,22 @@ public class HiveDriverTest {
 
     d.connect(null, null);
     assertTrue(called.get());
+  }
+
+  @Test
+  public void connect_returns_null_if_shim_doesnt_have_hive2_driver() {
+    HadoopShim shim = new MockHadoopShim() {
+      public java.sql.Driver getJdbcDriver( String scheme ) {
+        return null;
+      }
+    };
+    HiveDriver d = new HiveDriver( getMockUtil( shim ) );
+
+    try {
+      assertThat( d.connect( null, null ), is( nullValue() ) );
+    } catch ( SQLException ex ) {
+      fail( "Should not get exception if there is no hive2 driver in shim" );
+    }
   }
 
   @Test
@@ -264,7 +264,7 @@ public class HiveDriverTest {
     d.jdbcCompliant();
     assertTrue(called.get());
   }
-  
+
   @Test
   public void jdbcCompliant_exception() throws SQLException {
     Driver driver = new MockDriver() {
@@ -274,7 +274,7 @@ public class HiveDriverTest {
       }
     };
     HiveDriver d = new HiveDriver(getMockUtil(getMockShimWithDriver(driver)));
-    
+
     // should return false if there is an exception
     assertFalse(d.jdbcCompliant());
   }
