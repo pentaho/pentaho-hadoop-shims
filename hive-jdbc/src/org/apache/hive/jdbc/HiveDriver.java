@@ -53,7 +53,7 @@ import org.pentaho.hadoop.hive.jdbc.JDBCDriverCallable;
  * JDBC driver via HadoopConfiguration#getHiveJdbcDriver.
  * </p>
  * <p>
- * All calls to the loaded HiveDriver will have the current Thread's context 
+ * All calls to the loaded HiveDriver will have the current Thread's context
  * class loader set to the class that loaded the driver so subsequent resource
  * lookups are successful.
  * </p>
@@ -63,7 +63,7 @@ public class HiveDriver implements java.sql.Driver {
    * Method name of {@link org.pentaho.hadoop.shim.spi.HadoopShim#getJdbcDriver()}
    */
   private static final String METHOD_GET_JDBC_DRIVER = "getJdbcDriver";
-  
+
   /**
    * Driver type = "hive"
    */
@@ -107,7 +107,7 @@ public class HiveDriver implements java.sql.Driver {
       throw new SQLException("Unable to load Hive Server 2 JDBC driver for the currently active Hadoop configuration", ex);
     }
 
-    // Check if the Shim contains a Hive driver. It may return this driver if it 
+    // Check if the Shim contains a Hive driver. It may return this driver if it
     // doesn't contain one since it'll be found in one of the parent class loaders
     // so we also need to make sure we didn't return ourself... :)
     if (driver == null || driver.getClass() == this.getClass()) {
@@ -117,8 +117,23 @@ public class HiveDriver implements java.sql.Driver {
     return driver;
   }
 
-  protected <T> T callWithActiveDriver(JDBCDriverCallable<T> callback) throws SQLException {
-    return callback.callWithDriver(getActiveDriver());
+  /**
+   * Runs callback against driver got from active hadoop configuration. <code>defaultResult</code> will be returned in
+   * case active hadoop configuration doesn't support driver requested.
+   *
+   * @param callback
+   *          callback to be executed
+   * @param defaultResult
+   *          default result which
+   * @param <T> type of return value
+   * @return result of invocation or <code>defaultResult</code>
+   */
+  protected <T> T callWithActiveDriver( JDBCDriverCallable<T> callback, T defaultResult ) {
+    try {
+      return callback.callWithDriver( getActiveDriver() );
+    } catch ( SQLException sql ) {
+      return defaultResult;
+    }
   }
 
   /**
@@ -134,7 +149,7 @@ public class HiveDriver implements java.sql.Driver {
       public Connection call() throws Exception {
         return driver.connect(url, info);
       }
-    });
+    }, null);
   }
 
   @Override
@@ -144,7 +159,7 @@ public class HiveDriver implements java.sql.Driver {
       public Boolean call() throws Exception {
         return driver.acceptsURL(url);
       }
-    }));
+    }, false));
   }
 
   @Override
@@ -154,55 +169,42 @@ public class HiveDriver implements java.sql.Driver {
       public DriverPropertyInfo[] call() throws Exception {
         return driver.getPropertyInfo(url, info);
       }
-    });
+    }, new DriverPropertyInfo[0]);
   }
 
   @Override
   public int getMajorVersion() {
-    try {
-      return (int) callWithActiveDriver(new JDBCDriverCallable<Integer>() {
-        @Override
-        public Integer call() throws Exception {
-          return driver.getMajorVersion();
-        }
-      });
-    } catch (SQLException ex) {
-      // No idea what the driver version is without a driver
-      return -1;
-    }
+    return (int) callWithActiveDriver(new JDBCDriverCallable<Integer>() {
+      @Override
+      public Integer call() throws Exception {
+        return driver.getMajorVersion();
+      }
+    }, -1); // No idea what the driver version is without a driver
   }
 
   @Override
   public int getMinorVersion() {
-    try {
-      return (int) callWithActiveDriver(new JDBCDriverCallable<Integer>() {
-        @Override
-        public Integer call() throws Exception {
-          return driver.getMinorVersion();
-        }
-      });
-    } catch (SQLException ex) {
-      // No idea what the driver version is without a driver
-      return -1;
-    }
+    return (int) callWithActiveDriver(new JDBCDriverCallable<Integer>() {
+      @Override
+      public Integer call() throws Exception {
+        return driver.getMinorVersion();
+      }
+    }, -1); // No idea what the driver version is without a driver
   }
 
   @Override
   public boolean jdbcCompliant() {
-    try {
-      return Boolean.TRUE.equals(callWithActiveDriver(new JDBCDriverCallable<Boolean>() {
-        @Override
-        public Boolean call() throws Exception {
-          return driver.jdbcCompliant();
-        }
-      }));
-    } catch (SQLException ex) {
-      // The HiveDriver is not JDBC compliant as of Hive 0.9.0. If the driver
-      // cannot return it's actual compliancy we'll default to false
-      return false;
-    }
+    // The HiveDriver is not JDBC compliant as of Hive 0.9.0. If the driver
+    // cannot return it's actual compliancy we'll default to false
+
+    return Boolean.TRUE.equals(callWithActiveDriver(new JDBCDriverCallable<Boolean>() {
+      @Override
+      public Boolean call() throws Exception {
+        return driver.jdbcCompliant();
+      }
+    }, false));
   }
-  
+
   public Logger getParentLogger() throws SQLFeatureNotSupportedException {
     return null;
   }
