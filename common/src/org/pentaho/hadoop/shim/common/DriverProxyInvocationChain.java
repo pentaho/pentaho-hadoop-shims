@@ -247,8 +247,10 @@ public class DriverProxyInvocationChain {
           Throwable cause = t.getCause();
 
           if ( cause instanceof SQLException ) {
-            if ( cause.getMessage().equals( "Method not supported" ) ) {
-              String methodName = method.getName();
+            String methodName = method.getName();
+            if ( cause.getMessage().equals( "Method not supported" )
+                // shims with pentaho's hive driver (hadoop-20, hdp13)
+                || cause.getMessage().equals( "Method not supported - setAutoCommit(false)" )) {
               if ( "createStatement".equals( methodName ) ) {
                 o = createStatement( connection, args );
               } else if ( "isReadOnly".equals( methodName ) ) {
