@@ -1,24 +1,24 @@
 /*******************************************************************************
-*
-* Pentaho Big Data
-*
-* Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
-*
-*******************************************************************************
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with
-* the License. You may obtain a copy of the License at
-*
-*    http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-******************************************************************************/
+ *
+ * Pentaho Big Data
+ *
+ * Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
+ *
+ *******************************************************************************
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ ******************************************************************************/
 
 package org.pentaho.hadoop.shim.cdh51;
 
@@ -40,7 +40,7 @@ import java.net.URI;
 public class HadoopShim extends CommonHadoopShim {
 
   static {
-    JDBC_DRIVER_MAP.put("hive2",org.apache.hive.jdbc.HiveDriver.class);
+    JDBC_DRIVER_MAP.put( "hive2", org.apache.hive.jdbc.HiveDriver.class );
   }
 
   @Override
@@ -58,20 +58,21 @@ public class HadoopShim extends CommonHadoopShim {
     fsm.addProvider( config, "hdfs", config.getIdentifier(), new HDFSFileProvider() );
     setDistributedCacheUtil( new DistributedCacheUtilImpl( config ) {
 
-      public void addFileToClassPath(Path file, Configuration conf) throws IOException {
-        String classpath = conf.get("mapred.job.classpath.files");
-        conf.set("mapred.job.classpath.files", classpath == null ? file.toString() : classpath + getClusterPathSeparator() + file.toString());
-        FileSystem fs = FileSystem.get(conf);
-        URI uri = fs.makeQualified(file).toUri();
+      public void addFileToClassPath( Path file, Configuration conf ) throws IOException {
+        String classpath = conf.get( "mapred.job.classpath.files" );
+        conf.set( "mapred.job.classpath.files",
+          classpath == null ? file.toString() : classpath + getClusterPathSeparator() + file.toString() );
+        FileSystem fs = FileSystem.get( conf );
+        URI uri = fs.makeQualified( file ).toUri();
 
-        DistributedCache.addCacheFile(uri, conf);
+        DistributedCache.addCacheFile( uri, conf );
       }
 
       public String getClusterPathSeparator() {
         // Use a comma rather than an OS-specific separator (see https://issues.apache.org/jira/browse/HADOOP-4864)
-        return System.getProperty("hadoop.cluster.path.separator", ",");
+        return System.getProperty( "hadoop.cluster.path.separator", "," );
       }
-    });
+    } );
   }
 
   @Override

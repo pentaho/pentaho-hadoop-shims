@@ -1,24 +1,24 @@
 /*******************************************************************************
-*
-* Pentaho Big Data
-*
-* Copyright (C) 2002-2014 by Pentaho : http://www.pentaho.com
-*
-*******************************************************************************
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with
-* the License. You may obtain a copy of the License at
-*
-*    http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-******************************************************************************/
+ *
+ * Pentaho Big Data
+ *
+ * Copyright (C) 2002-2014 by Pentaho : http://www.pentaho.com
+ *
+ *******************************************************************************
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ ******************************************************************************/
 
 package org.pentaho.hbase.shim.mapr31.wrapper;
 
@@ -34,13 +34,13 @@ import org.pentaho.hbase.shim.spi.HBaseBytesUtilShim;
 public interface HBaseConnectionInterface {
 
   public abstract void addColumnFilterToScan( ColumnFilter cf, HBaseValueMeta columnMeta, VariableSpace vars,
-      boolean matchAny ) throws Exception;
+                                              boolean matchAny ) throws Exception;
 
   public abstract void addColumnToScan( String colFamilyName, String colName, boolean colNameIsBinary )
     throws Exception;
 
   public abstract void addColumnToTargetPut( String columnFamily, String columnName, boolean colNameIsBinary,
-      byte[] colValue ) throws Exception;
+                                             byte[] colValue ) throws Exception;
 
   public abstract boolean checkForHBaseRow( Object rowToCheck );
 
@@ -84,7 +84,7 @@ public interface HBaseConnectionInterface {
   public abstract Class<?> getDeserializedNumericComparatorClass() throws ClassNotFoundException;
 
   public abstract byte[] getResultSetCurrentRowColumnLatest( String colFamilyName, String colName,
-      boolean colNameIsBinary ) throws Exception;
+                                                             boolean colNameIsBinary ) throws Exception;
 
   public abstract NavigableMap<byte[], byte[]> getResultSetCurrentRowFamilyMap( String familyName ) throws Exception;
 
@@ -94,7 +94,7 @@ public interface HBaseConnectionInterface {
     throws Exception;
 
   public abstract byte[]
-    getRowColumnLatest( Object aRow, String colFamilyName, String colName, boolean colNameIsBinary ) throws Exception;
+  getRowColumnLatest( Object aRow, String colFamilyName, String colName, boolean colNameIsBinary ) throws Exception;
 
   public abstract NavigableMap<byte[], byte[]> getRowFamilyMap( Object aRow, String familyName ) throws Exception;
 

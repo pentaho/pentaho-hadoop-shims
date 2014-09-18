@@ -272,13 +272,13 @@ public class ShimPropertiesTest {
     shimProperties.setProperty( ShimProperties.SHIM_CP_CONFIG, "mr1" );
     assertEquals( combinedList, shimProperties.getConfigList( "propName" ) );
   }
-  
+
   @Test
   public void testGetPrefixedPropertiesNoShimConfig() {
     shimProperties.setProperty( "java.system.flatclass", "false" );
     assertEquals( "false", shimProperties.getPrefixedProperties( "java.system" ).get( "flatclass" ) );
   }
-  
+
   @Test
   public void testGetPrefixedPropertiesShimConfig() {
     shimProperties.setProperty( "java.system.flatclass", "false" );
@@ -286,7 +286,7 @@ public class ShimPropertiesTest {
     shimProperties.setProperty( ShimProperties.SHIM_CP_CONFIG, "mr1" );
     assertEquals( "true", shimProperties.getPrefixedProperties( "java.system" ).get( "flatclass" ) );
   }
-  
+
   @Test
   public void testGetPrefixedProperties2ShimConfig() {
     shimProperties.setProperty( "java.system.flatclass", "false" );
@@ -295,7 +295,7 @@ public class ShimPropertiesTest {
     shimProperties.setProperty( ShimProperties.SHIM_CP_CONFIG, "mr1,hbase" );
     assertEquals( "green", shimProperties.getPrefixedProperties( "java.system" ).get( "flatclass" ) );
   }
-  
+
   @Test
   public void testGetPrefixedOsPropertiesWindowsShimConfig() {
     when( windowsChecker.isWindows() ).thenReturn( true );
@@ -303,7 +303,7 @@ public class ShimPropertiesTest {
     shimProperties.setProperty( "windows.java.system.flatclass", "true" );
     assertEquals( "true", shimProperties.getPrefixedProperties( "java.system" ).get( "flatclass" ) );
   }
-  
+
   @Test
   public void testGetPrefixedOsPropertiesLinuxShimConfigFallback() {
     when( windowsChecker.isWindows() ).thenReturn( false );
@@ -317,7 +317,7 @@ public class ShimPropertiesTest {
     shimProperties.setProperty( "linux.java.system.flatclass", "true" );
     assertEquals( "true", shimProperties.getProperty( "java.system.flatclass", "false" ) );
   }
-  
+
   @Test
   public void testGetPrefixedOsPropertiesLinuxShimConfig() {
     when( windowsChecker.isWindows() ).thenReturn( false );
@@ -325,7 +325,7 @@ public class ShimPropertiesTest {
     shimProperties.setProperty( "linux.java.system.flatclass", "true" );
     assertEquals( "true", shimProperties.getProperty( "java.system.flatclass" ) );
   }
-  
+
   @Test
   public void testGetPrefixedOsPropertiesWindowsShimConfigTrumpedBySetConfig() {
     when( windowsChecker.isWindows() ).thenReturn( true );

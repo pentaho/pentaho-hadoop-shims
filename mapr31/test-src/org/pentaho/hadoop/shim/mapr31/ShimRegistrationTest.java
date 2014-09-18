@@ -1,24 +1,24 @@
 /*******************************************************************************
-*
-* Pentaho Big Data
-*
-* Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
-*
-*******************************************************************************
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with
-* the License. You may obtain a copy of the License at
-*
-*    http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-******************************************************************************/
+ *
+ * Pentaho Big Data
+ *
+ * Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
+ *
+ *******************************************************************************
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ ******************************************************************************/
 
 package org.pentaho.hadoop.shim.mapr31;
 
@@ -42,19 +42,21 @@ public class ShimRegistrationTest {
    */
   @Test
   public void hadoopShimRegistered() {
-    ServiceLoader<org.pentaho.hadoop.shim.spi.HadoopShim> l = ServiceLoader.load(org.pentaho.hadoop.shim.spi.HadoopShim.class);
+    ServiceLoader<org.pentaho.hadoop.shim.spi.HadoopShim> l =
+      ServiceLoader.load( org.pentaho.hadoop.shim.spi.HadoopShim.class );
     org.pentaho.hadoop.shim.spi.HadoopShim s = l.iterator().next();
-    assertTrue(HadoopShim.class.isAssignableFrom(s.getClass()));
+    assertTrue( HadoopShim.class.isAssignableFrom( s.getClass() ) );
   }
-  
+
   /**
    * Make sure we've registered our Pig Shim
    */
   @Test
   public void pigShimRegistered() {
-    ServiceLoader<org.pentaho.hadoop.shim.spi.PigShim> l = ServiceLoader.load(org.pentaho.hadoop.shim.spi.PigShim.class);
+    ServiceLoader<org.pentaho.hadoop.shim.spi.PigShim> l =
+      ServiceLoader.load( org.pentaho.hadoop.shim.spi.PigShim.class );
     org.pentaho.hadoop.shim.spi.PigShim s = l.iterator().next();
-    assertTrue(org.pentaho.hadoop.shim.mapr31.PigShim.class.isAssignableFrom(s.getClass()));
+    assertTrue( org.pentaho.hadoop.shim.mapr31.PigShim.class.isAssignableFrom( s.getClass() ) );
   }
 
   /**
@@ -62,19 +64,19 @@ public class ShimRegistrationTest {
    */
   @Test
   public void sqoopShimRegistered() {
-    ServiceLoader<SqoopShim> l = ServiceLoader.load(SqoopShim.class);
+    ServiceLoader<SqoopShim> l = ServiceLoader.load( SqoopShim.class );
     SqoopShim s = l.iterator().next();
-    assertTrue(CommonSqoopShim.class.isAssignableFrom(s.getClass()));
+    assertTrue( CommonSqoopShim.class.isAssignableFrom( s.getClass() ) );
   }
-  
+
   /**
    * Make sure we've registered our Snappy Shim
    */
   @Test
   public void snappyShimRegistered() {
-    ServiceLoader<SnappyShim> l = ServiceLoader.load(SnappyShim.class);
+    ServiceLoader<SnappyShim> l = ServiceLoader.load( SnappyShim.class );
     SnappyShim s = l.iterator().next();
-    assertTrue(org.pentaho.hadoop.shim.mapr31.SnappyShim.class.isAssignableFrom(s.getClass()));
+    assertTrue( org.pentaho.hadoop.shim.mapr31.SnappyShim.class.isAssignableFrom( s.getClass() ) );
   }
 
   /**
@@ -82,8 +84,8 @@ public class ShimRegistrationTest {
    */
   @Test
   public void hbaseShimRegistered() {
-    ServiceLoader<HBaseShim> l = ServiceLoader.load(HBaseShim.class);
+    ServiceLoader<HBaseShim> l = ServiceLoader.load( HBaseShim.class );
     HBaseShim s = l.iterator().next();
-    assertTrue(org.pentaho.hbase.shim.mapr31.MapRHBaseShim.class.isAssignableFrom(s.getClass()));
+    assertTrue( org.pentaho.hbase.shim.mapr31.MapRHBaseShim.class.isAssignableFrom( s.getClass() ) );
   }
 }

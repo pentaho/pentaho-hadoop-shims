@@ -40,7 +40,6 @@ import org.apache.hadoop.hbase.util.Bytes;
  *
  * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
  * @version $Revision$
- *
  */
 public class DeserializedNumericComparator extends ByteArrayComparable {
 
@@ -141,16 +140,17 @@ public class DeserializedNumericComparator extends ByteArrayComparable {
 
   /**
    * Needed for hbase-0.95+
+   *
    * @throws IOException
    */
-  public static ByteArrayComparable parseFrom(final byte [] pbBytes) {
+  public static ByteArrayComparable parseFrom( final byte[] pbBytes ) {
     DataInput in = new DataInputStream( new ByteArrayInputStream( pbBytes ) );
     try {
       boolean m_isInteger = in.readBoolean();
       boolean m_isLongOrDouble = in.readBoolean();
       long m_longValue = in.readLong();
       double m_doubleValue = in.readDouble();
-      if (m_isInteger) {
+      if ( m_isInteger ) {
         return new DeserializedNumericComparator( m_isInteger, m_isLongOrDouble, m_longValue );
       } else {
         return new DeserializedNumericComparator( m_isInteger, m_isLongOrDouble, m_doubleValue );

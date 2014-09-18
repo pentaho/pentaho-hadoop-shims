@@ -1,24 +1,24 @@
 /*******************************************************************************
-*
-* Pentaho Big Data
-*
-* Copyright (C) 2002-2014 by Pentaho : http://www.pentaho.com
-*
-*******************************************************************************
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with
-* the License. You may obtain a copy of the License at
-*
-*    http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-******************************************************************************/
+ *
+ * Pentaho Big Data
+ *
+ * Copyright (C) 2002-2014 by Pentaho : http://www.pentaho.com
+ *
+ *******************************************************************************
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ ******************************************************************************/
 
 package org.pentaho.hadoop.shim.mapr31.authentication;
 
@@ -67,7 +67,7 @@ public class PropertyAuthenticationProviderParser {
   }
 
   public PropertyAuthenticationProviderParser( Properties properties, AuthenticationManager manager,
-      AuthenticationProviderInstantiator authenticationProviderInstantiator ) {
+                                               AuthenticationProviderInstantiator authenticationProviderInstantiator ) {
     this.properties = properties;
     this.manager = manager;
     this.authenticationProviderInstantiator = authenticationProviderInstantiator;
@@ -86,11 +86,11 @@ public class PropertyAuthenticationProviderParser {
 
   private void processPrefix( String prefix ) {
     AuthenticationProvider provider =
-        authenticationProviderInstantiator.instantiate( properties.getProperty( prefix + ".class" ) );
+      authenticationProviderInstantiator.instantiate( properties.getProperty( prefix + ".class" ) );
     if ( provider != null ) {
       for ( Method method : provider.getClass().getMethods() ) {
         if ( method.getName().startsWith( "set" ) && method.getName().length() >= 4
-            && method.getParameterTypes().length == 1 ) {
+          && method.getParameterTypes().length == 1 ) {
           String propName = prefix + "." + method.getName().substring( 3, 4 ).toLowerCase();
           if ( method.getName().length() > 4 ) {
             propName += method.getName().substring( 4 );
@@ -98,7 +98,7 @@ public class PropertyAuthenticationProviderParser {
           if ( properties.containsKey( propName ) ) {
             String strValue = Encr.decryptPasswordOptionallyEncrypted( properties.getProperty( propName ) );
             Object actualValue = null;
-            Class<?> argType = method.getParameterTypes()[0];
+            Class<?> argType = method.getParameterTypes()[ 0 ];
             if ( argType.isPrimitive() ) {
               argType = ClassUtils.primitiveToWrapper( argType );
             }
@@ -116,12 +116,12 @@ public class PropertyAuthenticationProviderParser {
                   actualValue = valueOf.invoke( null, strValue );
                 } catch ( Exception e ) {
                   logger.warn( "Unable to convert string property " + propName + "(" + strValue + ") to "
-                      + argType.getClass().getCanonicalName() + " to invoke setter " + method.getName(), e );
+                    + argType.getClass().getCanonicalName() + " to invoke setter " + method.getName(), e );
                 }
               } else {
                 logger.warn( "Could not find method to convert " + propName + "(" + strValue + ") to "
-                    + argType.getClass().getCanonicalName()
-                    + " (currently only primitives and their wrappers are supported)" );
+                  + argType.getClass().getCanonicalName()
+                  + " (currently only primitives and their wrappers are supported)" );
               }
             }
             if ( actualValue != null ) {
@@ -133,7 +133,7 @@ public class PropertyAuthenticationProviderParser {
                   cause = e.getCause();
                 }
                 logger.warn( "Error invoking setter " + method.toString() + " with property " + propName + "("
-                    + strValue + ")", cause );
+                  + strValue + ")", cause );
               }
             }
           }

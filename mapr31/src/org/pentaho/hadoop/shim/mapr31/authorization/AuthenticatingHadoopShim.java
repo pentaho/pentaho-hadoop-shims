@@ -56,7 +56,7 @@ public class AuthenticatingHadoopShim extends DelegatingHadoopShim {
       }
     }
     AuthenticationConsumerPluginType.getInstance().registerPlugin( (URLClassLoader) getClass().getClassLoader(),
-        MapRSuperUserNoAuthConsumerType.class );
+      MapRSuperUserNoAuthConsumerType.class );
     String provider = NoAuthenticationAuthenticationProvider.NO_AUTH_ID;
     if ( config.getConfigProperties().containsKey( SUPER_USER ) ) {
       provider = config.getConfigProperties().getProperty( SUPER_USER );
@@ -64,22 +64,22 @@ public class AuthenticatingHadoopShim extends DelegatingHadoopShim {
     AuthenticationManager manager = AuthenticationPersistenceManager.getAuthenticationManager();
     new PropertyAuthenticationProviderParser( config.getConfigProperties(), manager ).process( PROVIDER_LIST );
     AuthenticationPerformer<HadoopAuthorizationService, Properties> performer =
-        manager.getAuthenticationPerformer( HadoopAuthorizationService.class, Properties.class, provider );
+      manager.getAuthenticationPerformer( HadoopAuthorizationService.class, Properties.class, provider );
     if ( performer == null ) {
       throw new RuntimeException( "Unable to find relevant provider for MapR super user (id of "
-          + config.getConfigProperties().getProperty( SUPER_USER ) );
+        + config.getConfigProperties().getProperty( SUPER_USER ) );
     } else {
       HadoopAuthorizationService hadoopAuthorizationService = performer.perform( config.getConfigProperties() );
       if ( hadoopAuthorizationService == null ) {
         throw new RuntimeException( "Unable to get HadoopAuthorizationService for provider "
-            + config.getConfigProperties().getProperty( SUPER_USER ) );
+          + config.getConfigProperties().getProperty( SUPER_USER ) );
       }
       for ( PentahoHadoopShim shim : config.getAvailableShims() ) {
         if ( HasHadoopAuthorizationService.class.isInstance( shim ) ) {
           ( (HasHadoopAuthorizationService) shim ).setHadoopAuthorizationService( hadoopAuthorizationService );
         } else {
           throw new Exception( "Found shim: " + shim + " that didn't implement "
-              + HasHadoopAuthorizationService.class.getCanonicalName() );
+            + HasHadoopAuthorizationService.class.getCanonicalName() );
         }
       }
     }

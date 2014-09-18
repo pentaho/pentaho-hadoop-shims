@@ -41,10 +41,11 @@ public class ShimProperties extends Properties {
   public static interface WindowsChecker {
     boolean isWindows();
   }
+
   private static final long serialVersionUID = 2033564331119378266L;
 
   public static final String SHIM_CP_CONFIG = "shim.current.config";
-  
+
   private final WindowsChecker windowsChecker;
 
   public static enum ListOverrideType {
@@ -54,7 +55,7 @@ public class ShimProperties extends Properties {
   public static enum SetOverrideType {
     REPLACE, OVERLAY
   }
-  
+
   public ShimProperties() {
     this( new WindowsChecker() {
 
@@ -96,9 +97,8 @@ public class ShimProperties extends Properties {
 
   /**
    * Gets a list from a comma separated property with support for overrides, defaulting to Append behavior
-   * 
-   * @param property
-   *          the property
+   *
+   * @param property the property
    * @return the list
    */
   public List<String> getConfigList( String property ) {
@@ -107,11 +107,9 @@ public class ShimProperties extends Properties {
 
   /**
    * Gets a list from a comma separated property with support for overrides
-   * 
-   * @param property
-   *          the property
-   * @param listOverrideType
-   *          the override type
+   *
+   * @param property         the property
+   * @param listOverrideType the override type
    * @return the list
    */
   public List<String> getConfigList( String property, ListOverrideType listOverrideType ) {
@@ -131,7 +129,7 @@ public class ShimProperties extends Properties {
             shimProperty.add( prop.trim() );
           }
         }
-        switch ( listOverrideType ) {
+        switch( listOverrideType ) {
           case APPEND:
             shimProperties.addAll( shimProperty );
             break;
@@ -151,9 +149,8 @@ public class ShimProperties extends Properties {
 
   /**
    * Gets a list from a comma separated property with support for overrides, defaulting to Overlay behavior
-   * 
-   * @param property
-   *          the property
+   *
+   * @param property the property
    * @return the list
    */
   public Set<String> getConfigSet( String property ) {
@@ -162,11 +159,9 @@ public class ShimProperties extends Properties {
 
   /**
    * Gets a list from a comma separated property with support for overrides
-   * 
-   * @param property
-   *          the property
-   * @param overrideType
-   *          the override type
+   *
+   * @param property     the property
+   * @param overrideType the override type
    * @return the list
    */
   public Set<String> getConfigSet( String property, SetOverrideType overrideType ) {
@@ -186,7 +181,7 @@ public class ShimProperties extends Properties {
             shimProperty.add( prop.trim() );
           }
         }
-        switch ( overrideType ) {
+        switch( overrideType ) {
           case OVERLAY:
             shimProperties.addAll( shimProperty );
             break;
@@ -199,7 +194,7 @@ public class ShimProperties extends Properties {
 
     return shimProperties;
   }
-  
+
   @Override
   public String getProperty( String key ) {
     List<String> configProperties = getShimConfigProperties( key );
@@ -217,9 +212,8 @@ public class ShimProperties extends Properties {
 
   /**
    * Returns a map of key -> value of all shim properties with the given prefix (the prefix is removed)
-   * 
-   * @param prefix
-   *          the prefix to look for
+   *
+   * @param prefix the prefix to look for
    * @return a map of key -> value of all shim properties with the given prefix (the prefix is removed)
    */
   public Map<String, String> getPrefixedProperties( String prefix ) {

@@ -1,24 +1,24 @@
 /*******************************************************************************
-*
-* Pentaho Big Data
-*
-* Copyright (C) 2002-2014 by Pentaho : http://www.pentaho.com
-*
-*******************************************************************************
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with
-* the License. You may obtain a copy of the License at
-*
-*    http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-******************************************************************************/
+ *
+ * Pentaho Big Data
+ *
+ * Copyright (C) 2002-2014 by Pentaho : http://www.pentaho.com
+ *
+ *******************************************************************************
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ ******************************************************************************/
 
 package org.pentaho.hadoop.shim.mapr31.delegatingShims;
 
@@ -59,8 +59,8 @@ public class DelegatingHadoopShim implements HadoopShim, HasHadoopAuthorizationS
     return delegate.getVersion();
   }
 
-  @SuppressWarnings( "deprecation" )
   @Override
+  @SuppressWarnings( "deprecation" )
   public Driver getHiveJdbcDriver() {
     return delegate.getHiveJdbcDriver();
   }
@@ -97,9 +97,10 @@ public class DelegatingHadoopShim implements HadoopShim, HasHadoopAuthorizationS
 
   @Override
   public void configureConnectionInformation( String namenodeHost, String namenodePort, String jobtrackerHost,
-      String jobtrackerPort, Configuration conf, List<String> logMessages ) throws Exception {
+                                              String jobtrackerPort, Configuration conf, List<String> logMessages )
+    throws Exception {
     delegate.configureConnectionInformation( namenodeHost, namenodePort, jobtrackerHost, jobtrackerPort, conf,
-        logMessages );
+      logMessages );
   }
 
   @Override
@@ -112,26 +113,26 @@ public class DelegatingHadoopShim implements HadoopShim, HasHadoopAuthorizationS
     return delegate.submitJob( c );
   }
 
-  @SuppressWarnings( "deprecation" )
   @Override
+  @SuppressWarnings( "deprecation" )
   public Class<?> getHadoopWritableCompatibleClass( ValueMetaInterface kettleType ) {
     return delegate.getHadoopWritableCompatibleClass( kettleType );
   }
 
-  @SuppressWarnings( "deprecation" )
   @Override
+  @SuppressWarnings( "deprecation" )
   public Class<?> getPentahoMapReduceCombinerClass() {
     return delegate.getPentahoMapReduceCombinerClass();
   }
 
-  @SuppressWarnings( "deprecation" )
   @Override
+  @SuppressWarnings( "deprecation" )
   public Class<?> getPentahoMapReduceReducerClass() {
     return delegate.getPentahoMapReduceReducerClass();
   }
 
-  @SuppressWarnings( "deprecation" )
   @Override
+  @SuppressWarnings( "deprecation" )
   public Class<?> getPentahoMapReduceMapRunnerClass() {
     return delegate.getPentahoMapReduceMapRunnerClass();
   }
