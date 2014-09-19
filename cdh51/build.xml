@@ -13,19 +13,4 @@
 
   <import file="../common-shims-build.xml"/>
 
-  <target name="resolve" depends="subfloor.resolve">
-    <mkdir dir="lib/client/mr1"/>
-    <move todir="lib/client/mr1">
-      <fileset dir="lib/client">
-        <include name="**/hadoop*mr1*.jar"/>
-      </fileset>
-    </move>
-    <mkdir dir="lib/client/mr2"/>
-    <move todir="lib/client/mr2">
-      <fileset dir="lib/client">
-        <include name="**/hadoop-mapreduce-client-*.jar"/>
-        <include name="**/hadoop-yarn-*.jar"/>
-      </fileset>
-    </move>
-  </target>
 </project>
