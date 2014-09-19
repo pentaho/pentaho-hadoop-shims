@@ -26,7 +26,7 @@
     <dependency conf="provided->default" org="commons-lang" name="commons-lang" rev="${dependency.commons-lang.revision}" transitive="false"/>
 
     <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-client" rev="${dependency.hadoop.revision}" changing="true"/>
-    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-core" rev="${dependency.hadoop.mr1.revision}" transitive="false" changing="true"/>
+    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-core" rev="${dependency.hadoop.revision}" changing="true"/>
     <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-app" rev="${dependency.hadoop.revision}" />
     <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-common" rev="${dependency.hadoop.revision}"/>
     <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-jobclient" rev="${dependency.hadoop.revision}" />
