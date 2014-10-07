@@ -30,22 +30,13 @@ import java.sql.SQLException;
 import org.pentaho.hadoop.hive.jdbc.HadoopConfigurationUtil;
 
 /**
- * <p>
- * This is proxy driver for the Impala JDBC Driver available through the current active Hadoop configuration.
- * </p>
- * <p>
- * This driver is named exactly the same as the official Apache Hive driver so no further modifications are required by
- * calling code to swap in this proxy.
- * </p>
- * <p>
- * This class uses reflection to attempt to find the Big Data Plugin and load the HadoopConfigurationBootstrap so we
- * have access to the Hive JDBC driver that is compatible with the currently selected Hadoop configuration. All
- * operations are delegated to the current active Hadoop configuration's Hive JDBC driver via
- * HadoopConfiguration#getHiveJdbcDriver.
- * </p>
- * <p>
- * All calls to the loaded HiveDriver will have the current Thread's context class loader set to the class that loaded
- * the driver so subsequent resource lookups are successful.
+ * <p> This is proxy driver for the Impala JDBC Driver available through the current active Hadoop configuration. </p>
+ * <p> This driver is named exactly the same as the official Apache Hive driver so no further modifications are required
+ * by calling code to swap in this proxy. </p> <p> This class uses reflection to attempt to find the Big Data Plugin and
+ * load the HadoopConfigurationBootstrap so we have access to the Hive JDBC driver that is compatible with the currently
+ * selected Hadoop configuration. All operations are delegated to the current active Hadoop configuration's Hive JDBC
+ * driver via HadoopConfiguration#getHiveJdbcDriver. </p> <p> All calls to the loaded HiveDriver will have the current
+ * Thread's context class loader set to the class that loaded the driver so subsequent resource lookups are successful.
  * </p>
  */
 public class ImpalaDriver extends HiveDriver {

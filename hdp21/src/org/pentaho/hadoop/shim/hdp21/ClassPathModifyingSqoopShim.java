@@ -30,10 +30,8 @@ import org.pentaho.hadoop.shim.common.CommonSqoopShim;
 
 /**
  * Sqoop shim to handle working around Sqoop's ConfigurationManager and how it builds up the class path when compiling
- * temporary files.
- * <p/>
- * <p> This applies to any version of Hadoop that bundles classes in separate jars instead of the conglomerate "core"
- * jar. </p>
+ * temporary files. <p/> <p> This applies to any version of Hadoop that bundles classes in separate jars instead of the
+ * conglomerate "core" jar. </p>
  */
 public class ClassPathModifyingSqoopShim extends CommonSqoopShim {
   private static final String PROPERTY_JAVA_CLASS_PATH = "java.class.path";

@@ -246,14 +246,13 @@ public class DriverProxyInvocationChain {
         if ( t instanceof InvocationTargetException ) {
           Throwable cause = t.getCause();
 
-          if(cause instanceof SQLException) {
+          if ( cause instanceof SQLException ) {
             String methodName = method.getName();
-            if(cause.getMessage().startsWith("Method not supported")
-                || cause.getMessage().equals("enabling autocommit is not supported")) {
-              if("createStatement".equals(methodName)) {
-                o = createStatement(connection,args);
-              }
-              else if("isReadOnly".equals(methodName)) {
+            if ( cause.getMessage().startsWith( "Method not supported" )
+              || cause.getMessage().equals( "enabling autocommit is not supported" ) ) {
+              if ( "createStatement".equals( methodName ) ) {
+                o = createStatement( connection, args );
+              } else if ( "isReadOnly".equals( methodName ) ) {
                 o = Boolean.FALSE;
               } else if ( "setReadOnly".equals( methodName ) ) {
                 o = (Void) null;
@@ -815,7 +814,8 @@ public class DriverProxyInvocationChain {
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable {
       try {
         String methodName = method.getName();
-        if ( ( "getColumnName".equals( methodName ) || ( "getColumnLabel".equals( methodName ) ) ) && ( args != null ) && ( args.length == 1 ) ) {
+        if ( ( "getColumnName".equals( methodName ) || ( "getColumnLabel".equals( methodName ) ) ) && ( args != null )
+          && ( args.length == 1 ) ) {
           return getColumnName( (Integer) args[ 0 ] );
         }
         return method.invoke( this.rsmd, args );

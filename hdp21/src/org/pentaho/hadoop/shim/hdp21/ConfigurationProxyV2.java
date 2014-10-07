@@ -115,8 +115,8 @@ public class ConfigurationProxyV2 implements Configuration {
     job.setMapOutputValueClass( c );
   }
 
-  @SuppressWarnings( "unchecked" )
   @Override
+  @SuppressWarnings( "unchecked" )
   public void setMapperClass( Class<?> c ) {
     if ( org.apache.hadoop.mapred.Mapper.class.isAssignableFrom( c ) ) {
       setUseOldMapApi();
@@ -130,8 +130,8 @@ public class ConfigurationProxyV2 implements Configuration {
     set( "mapred.mapper.new-api", "false" );
   }
 
-  @SuppressWarnings( "unchecked" )
   @Override
+  @SuppressWarnings( "unchecked" )
   public void setCombinerClass( Class<?> c ) {
     if ( org.apache.hadoop.mapred.Reducer.class.isAssignableFrom( c ) ) {
       setUseOldRedApi();
@@ -145,8 +145,8 @@ public class ConfigurationProxyV2 implements Configuration {
     set( "mapred.reducer.new-api", "false" );
   }
 
-  @SuppressWarnings( "unchecked" )
   @Override
+  @SuppressWarnings( "unchecked" )
   public void setReducerClass( Class<?> c ) {
     if ( org.apache.hadoop.mapred.Reducer.class.isAssignableFrom( c ) ) {
       setUseOldRedApi();
@@ -166,16 +166,16 @@ public class ConfigurationProxyV2 implements Configuration {
     job.setOutputValueClass( c );
   }
 
-  @SuppressWarnings( "unchecked" )
   @Override
+  @SuppressWarnings( "unchecked" )
   public void setMapRunnerClass( Class<?> c ) {
     if ( org.apache.hadoop.mapred.MapRunnable.class.isAssignableFrom( c ) ) {
       getJobConf().setMapRunnerClass( (Class<? extends org.apache.hadoop.mapred.MapRunnable>) c );
     }
   }
 
-  @SuppressWarnings( "unchecked" )
   @Override
+  @SuppressWarnings( "unchecked" )
   public void setInputFormat( Class<?> inputFormat ) {
     if ( org.apache.hadoop.mapred.InputFormat.class.isAssignableFrom( inputFormat ) ) {
       setUseOldMapApi();
@@ -185,8 +185,8 @@ public class ConfigurationProxyV2 implements Configuration {
     }
   }
 
-  @SuppressWarnings( "unchecked" )
   @Override
+  @SuppressWarnings( "unchecked" )
   public void setOutputFormat( Class<?> outputFormat ) {
     if ( org.apache.hadoop.mapred.OutputFormat.class.isAssignableFrom( outputFormat ) ) {
       setUseOldRedApi();
@@ -277,8 +277,7 @@ public class ConfigurationProxyV2 implements Configuration {
   }
 
   /**
-   * Hack
-   * Return this configuration as was asked with provided delegate class (If it is possible).
+   * Hack Return this configuration as was asked with provided delegate class (If it is possible).
    *
    * @param delegate class of desired return object
    * @return this configuration delegate object if possible

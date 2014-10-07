@@ -60,7 +60,7 @@ import org.pentaho.hbase.shim.spi.HBaseConnection;
 
 /**
  * Concrete implementation for Hadoop 20.x.
- * 
+ *
  * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
  */
 public class CommonHBaseConnection extends HBaseConnection {
@@ -111,7 +111,7 @@ public class CommonHBaseConnection extends HBaseConnection {
         }
       } catch ( MalformedURLException e ) {
         throw new IllegalArgumentException( BaseMessages.getString( PKG,
-            "CommonHBaseConnection.Error.MalformedConfigURL" ) );
+          "CommonHBaseConnection.Error.MalformedConfigURL" ) );
       }
 
       if ( !isEmpty( zookeeperQuorum ) ) {
@@ -146,7 +146,8 @@ public class CommonHBaseConnection extends HBaseConnection {
 
   protected void checkConfiguration() throws Exception {
     if ( m_admin == null ) {
-      throw new Exception( BaseMessages.getString( PKG, "CommonHBaseConnection.Error.ConnectionHasNotBeenConfigured" ) );
+      throw new Exception(
+        BaseMessages.getString( PKG, "CommonHBaseConnection.Error.ConnectionHasNotBeenConfigured" ) );
     }
   }
 
@@ -252,13 +253,13 @@ public class CommonHBaseConnection extends HBaseConnection {
           setCompressionType.invoke( h, valueOf.invoke( null, value ) );
         } else if ( key.toString().equals( COL_DESCRIPTOR_IN_MEMORY_KEY ) ) {
           boolean result =
-              ( value.toLowerCase().equals( "Y" ) || value.toLowerCase().equals( "yes" ) || value.toLowerCase().equals(
-                  "true" ) );
+            ( value.toLowerCase().equals( "Y" ) || value.toLowerCase().equals( "yes" ) || value.toLowerCase().equals(
+              "true" ) );
           h.setInMemory( result );
         } else if ( key.toString().equals( COL_DESCRIPTOR_BLOCK_CACHE_ENABLED_KEY ) ) {
           boolean result =
-              ( value.toLowerCase().equals( "Y" ) || value.toLowerCase().equals( "yes" ) || value.toLowerCase().equals(
-                  "true" ) );
+            ( value.toLowerCase().equals( "Y" ) || value.toLowerCase().equals( "yes" ) || value.toLowerCase().equals(
+              "true" ) );
           h.setBlockCacheEnabled( result );
         } else if ( key.toString().equals( COL_DESCRIPTOR_BLOCK_SIZE_KEY ) ) {
           h.setBlocksize( Integer.parseInt( value ) );
@@ -351,23 +352,18 @@ public class CommonHBaseConnection extends HBaseConnection {
     checkSourceScan();
 
     m_sourceScan.addColumn( m_bytesUtil.toBytes( colFamilyName ), ( colNameIsBinary ) ? m_bytesUtil
-        .toBytesBinary( colName ) : m_bytesUtil.toBytes( colName ) );
+      .toBytesBinary( colName ) : m_bytesUtil.toBytes( colName ) );
   }
 
   /**
    * Add a column filter to the list of filters that the scanner will apply to rows server-side.
-   * 
-   * @param cf
-   *          the column filter to add
-   * @param columnMeta
-   *          the meta data for the column used in the filter to add
-   * @param matchAny
-   *          true if the list of filters (if not created yet) should be "match one" (and false if it should be
-   *          "match all")
-   * @param vars
-   *          variables to use
-   * @throws Exception
-   *           if a problem occurs
+   *
+   * @param cf         the column filter to add
+   * @param columnMeta the meta data for the column used in the filter to add
+   * @param matchAny   true if the list of filters (if not created yet) should be "match one" (and false if it should be
+   *                   "match all")
+   * @param vars       variables to use
+   * @throws Exception if a problem occurs
    */
   @Override
   public void addColumnFilterToScan( ColumnFilter cf, HBaseValueMeta columnMeta, VariableSpace vars, boolean matchAny )
@@ -382,7 +378,7 @@ public class CommonHBaseConnection extends HBaseConnection {
       if ( m_sourceScan.getFilter() == null ) {
         // create a new FilterList
         FilterList fl =
-            new FilterList( matchAny ? FilterList.Operator.MUST_PASS_ONE : FilterList.Operator.MUST_PASS_ALL );
+          new FilterList( matchAny ? FilterList.Operator.MUST_PASS_ONE : FilterList.Operator.MUST_PASS_ALL );
         m_sourceScan.setFilter( fl );
       }
 
@@ -393,7 +389,7 @@ public class CommonHBaseConnection extends HBaseConnection {
       byte[] qualifier = m_bytesUtil.toBytes( columnMeta.getColumnName() );
       ColumnFilter.ComparisonType op = cf.getComparisonOperator();
 
-      switch ( op ) {
+      switch( op ) {
         case EQUAL:
           comp = CompareFilter.CompareOp.EQUAL;
           break;
@@ -442,22 +438,23 @@ public class CommonHBaseConnection extends HBaseConnection {
             Class<?> deserializedNumericComparatorClass = getDeserializedNumericComparatorClass();
             if ( columnMeta.isInteger() ) {
               Constructor ctor =
-                  deserializedNumericComparatorClass.getConstructor( boolean.class, boolean.class, long.class );
+                deserializedNumericComparatorClass.getConstructor( boolean.class, boolean.class, long.class );
               if ( columnMeta.getIsLongOrDouble() ) {
-                comparator = ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), num.longValue() );
+                comparator =
+                  ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), num.longValue() );
               } else {
                 comparator =
-                    ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), (long) num.intValue() );
+                  ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), (long) num.intValue() );
               }
             } else {
               Constructor ctor =
-                  deserializedNumericComparatorClass.getConstructor( boolean.class, boolean.class, double.class );
+                deserializedNumericComparatorClass.getConstructor( boolean.class, boolean.class, double.class );
               if ( columnMeta.getIsLongOrDouble() ) {
                 comparator =
-                    ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), num.doubleValue() );
+                  ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), num.doubleValue() );
               } else {
                 comparator =
-                    ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), (double) num.floatValue() );
+                  ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), (double) num.floatValue() );
               }
             }
           } else if ( columnMeta.isInteger() ) {
@@ -489,7 +486,7 @@ public class CommonHBaseConnection extends HBaseConnection {
             // custom comparator for signed comparison
             Class<?> deserializedNumericComparatorClass = getDeserializedNumericComparatorClass();
             Constructor ctor =
-                deserializedNumericComparatorClass.getConstructor( boolean.class, boolean.class, long.class );
+              deserializedNumericComparatorClass.getConstructor( boolean.class, boolean.class, long.class );
             comparator = ctor.newInstance( true, true, dateAsMillis );
           }
         } else if ( columnMeta.isBoolean() ) {
@@ -518,8 +515,8 @@ public class CommonHBaseConnection extends HBaseConnection {
 
       if ( comparator != null ) {
         Constructor<SingleColumnValueFilter> scvfCtor =
-            SingleColumnValueFilter.class.getConstructor( byte[].class, byte[].class, CompareFilter.CompareOp.class,
-                comparatorClass );
+          SingleColumnValueFilter.class.getConstructor( byte[].class, byte[].class, CompareFilter.CompareOp.class,
+            comparatorClass );
         SingleColumnValueFilter scf = scvfCtor.newInstance( family, qualifier, comp, comparator );
         scf.setFilterIfMissing( true );
         fl.addFilter( scf );
@@ -632,8 +629,8 @@ public class CommonHBaseConnection extends HBaseConnection {
     }
 
     byte[] result =
-        ( (Result) aRow ).getValue( m_bytesUtil.toBytes( colFamilyName ), colNameIsBinary ? m_bytesUtil
-            .toBytesBinary( colName ) : m_bytesUtil.toBytes( colName ) );
+      ( (Result) aRow ).getValue( m_bytesUtil.toBytes( colFamilyName ), colNameIsBinary ? m_bytesUtil
+        .toBytesBinary( colName ) : m_bytesUtil.toBytes( colName ) );
 
     return result;
   }
@@ -768,7 +765,7 @@ public class CommonHBaseConnection extends HBaseConnection {
     checkTargetPut();
 
     m_currentTargetPut.add( m_bytesUtil.toBytes( columnFamily ), colNameIsBinary ? m_bytesUtil
-        .toBytesBinary( columnName ) : m_bytesUtil.toBytes( columnName ), colValue );
+      .toBytesBinary( columnName ) : m_bytesUtil.toBytes( columnName ), colValue );
   }
 
   @Override

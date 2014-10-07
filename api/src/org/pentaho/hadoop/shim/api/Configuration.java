@@ -122,11 +122,9 @@ public interface Configuration {
   void setNumMapTasks( int n );
 
   /**
-   * Sets the requisite number of reduce tasks for the MapReduce job submitted with this configuration.
-   * <p/>
-   * <p>If {@code n} is {@code zero} there will not be a reduce (or sort/shuffle) phase and the output of the map tasks
-   * will be written directly to the distributed file system under the path specified via {@link
-   * #setOutputPath(Path)</p>
+   * Sets the requisite number of reduce tasks for the MapReduce job submitted with this configuration. <p/> <p>If
+   * {@code n} is {@code zero} there will not be a reduce (or sort/shuffle) phase and the output of the map tasks will
+   * be written directly to the distributed file system under the path specified via {@link #setOutputPath(Path)</p>
    *
    * @param n the number of reduce tasks required for this job
    */
@@ -148,8 +146,7 @@ public interface Configuration {
   String getDefaultFileSystemURL();
 
   /**
-   * Hack
-   * Return this configuration as was asked with provided delegate class (If it is possible).
+   * Hack Return this configuration as was asked with provided delegate class (If it is possible).
    *
    * @param delegate class of desired return object
    * @return this configuration delegate object if possible

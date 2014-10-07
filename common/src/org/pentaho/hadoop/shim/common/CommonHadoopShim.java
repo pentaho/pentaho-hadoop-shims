@@ -61,11 +61,11 @@ public class CommonHadoopShim implements HadoopShim {
 
   @SuppressWarnings( "serial" )
   protected static Map<String, Class<? extends Driver>> JDBC_DRIVER_MAP =
-      new HashMap<String, Class<? extends Driver>>() {
-        {
-          put( "hive", org.apache.hadoop.hive.jdbc.HiveDriver.class );
-        }
-      };
+    new HashMap<String, Class<? extends Driver>>() {
+      {
+        put( "hive", org.apache.hadoop.hive.jdbc.HiveDriver.class );
+      }
+    };
 
   @Override
   public ShimVersion getVersion() {
@@ -146,7 +146,7 @@ public class CommonHadoopShim implements HadoopShim {
   public DistributedCacheUtil getDistributedCacheUtil() throws ConfigurationException {
     if ( dcUtil == null ) {
       throw new ConfigurationException( BaseMessages.getString( CommonHadoopShim.class,
-          "CommonHadoopShim.DistributedCacheUtilMissing" ) );
+        "CommonHadoopShim.DistributedCacheUtilMissing" ) );
     }
     return dcUtil;
   }
@@ -154,11 +154,11 @@ public class CommonHadoopShim implements HadoopShim {
   @Override
   public String[] getNamenodeConnectionInfo( Configuration c ) {
     URI namenode = org.apache.hadoop.fs.FileSystem.getDefaultUri( ShimUtils.asConfiguration( c ) );
-    String[] result = new String[2];
+    String[] result = new String[ 2 ];
     if ( namenode != null ) {
-      result[0] = namenode.getHost();
+      result[ 0 ] = namenode.getHost();
       if ( namenode.getPort() != -1 ) {
-        result[1] = String.valueOf( namenode.getPort() );
+        result[ 1 ] = String.valueOf( namenode.getPort() );
       }
     }
     return result;
@@ -166,11 +166,11 @@ public class CommonHadoopShim implements HadoopShim {
 
   @Override
   public String[] getJobtrackerConnectionInfo( Configuration c ) {
-    String[] result = new String[2];
+    String[] result = new String[ 2 ];
     if ( !"local".equals( c.get( "mapred.job.tracker", "local" ) ) ) {
       InetSocketAddress jobtracker = getJobTrackerAddress( c );
-      result[0] = jobtracker.getHostName();
-      result[1] = String.valueOf( jobtracker.getPort() );
+      result[ 0 ] = jobtracker.getHostName();
+      result[ 1 ] = String.valueOf( jobtracker.getPort() );
     }
     return result;
   }
@@ -182,7 +182,8 @@ public class CommonHadoopShim implements HadoopShim {
 
   @Override
   public void configureConnectionInformation( String namenodeHost, String namenodePort, String jobtrackerHost,
-      String jobtrackerPort, Configuration conf, List<String> logMessages ) throws Exception {
+                                              String jobtrackerPort, Configuration conf, List<String> logMessages )
+    throws Exception {
 
     if ( namenodeHost == null || namenodeHost.trim().length() == 0 ) {
       throw new Exception( "No hdfs host specified!" );

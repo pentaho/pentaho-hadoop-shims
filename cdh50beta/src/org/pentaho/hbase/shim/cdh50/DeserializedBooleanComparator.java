@@ -38,11 +38,9 @@ import org.apache.hadoop.hbase.util.Bytes;
  * Various string and numeric deserializations are tried. All representations of "false" (for a given encoding type)
  * sort before "true" - e.g. "false" < "true"; 0 < 1; "F" < "T"; "N" < "Y" etc. Thus < or > comparisons (excluding <
  * false and > true) are equivalent to !=.
- * 
- * 
+ *
  * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
  * @version $Revision$
- * 
  */
 public class DeserializedBooleanComparator extends ByteArrayComparable {
 
@@ -103,14 +101,14 @@ public class DeserializedBooleanComparator extends ByteArrayComparable {
   public static Boolean decodeBoolFromString( byte[] rawEncoded ) {
     String tempString = Bytes.toString( rawEncoded );
     if ( tempString.equalsIgnoreCase( "Y" ) || tempString.equalsIgnoreCase( "N" )
-        || tempString.equalsIgnoreCase( "YES" ) || tempString.equalsIgnoreCase( "NO" )
-        || tempString.equalsIgnoreCase( "TRUE" ) || tempString.equalsIgnoreCase( "FALSE" )
-        || tempString.equalsIgnoreCase( "T" ) || tempString.equalsIgnoreCase( "F" )
-        || tempString.equalsIgnoreCase( "1" ) || tempString.equalsIgnoreCase( "0" ) ) {
+      || tempString.equalsIgnoreCase( "YES" ) || tempString.equalsIgnoreCase( "NO" )
+      || tempString.equalsIgnoreCase( "TRUE" ) || tempString.equalsIgnoreCase( "FALSE" )
+      || tempString.equalsIgnoreCase( "T" ) || tempString.equalsIgnoreCase( "F" )
+      || tempString.equalsIgnoreCase( "1" ) || tempString.equalsIgnoreCase( "0" ) ) {
 
       return Boolean.valueOf( tempString.equalsIgnoreCase( "Y" ) || tempString.equalsIgnoreCase( "YES" )
-          || tempString.equalsIgnoreCase( "TRUE" ) || tempString.equalsIgnoreCase( "T" )
-          || tempString.equalsIgnoreCase( "1" ) );
+        || tempString.equalsIgnoreCase( "TRUE" ) || tempString.equalsIgnoreCase( "T" )
+        || tempString.equalsIgnoreCase( "1" ) );
     }
 
     // not identifiable from a string
@@ -119,7 +117,7 @@ public class DeserializedBooleanComparator extends ByteArrayComparable {
 
   public static Boolean decodeBoolFromNumber( byte[] rawEncoded ) {
     if ( rawEncoded.length == Bytes.SIZEOF_BYTE ) {
-      byte val = rawEncoded[0];
+      byte val = rawEncoded[ 0 ];
       if ( val == 0 || val == 1 ) {
         return new Boolean( val == 1 );
       }
@@ -174,12 +172,13 @@ public class DeserializedBooleanComparator extends ByteArrayComparable {
       throw new RuntimeException( "Unable to serialize to byte array.", e );
     }
   }
-  
+
   /**
    * Needed for hbase-0.95+
-   * @throws IOException 
+   *
+   * @throws IOException
    */
-  public static ByteArrayComparable parseFrom(final byte [] pbBytes) {
+  public static ByteArrayComparable parseFrom( final byte[] pbBytes ) {
     DataInput in = new DataInputStream( new ByteArrayInputStream( pbBytes ) );
     try {
       boolean m_value = new Boolean( in.readBoolean() );

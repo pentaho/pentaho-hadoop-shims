@@ -12,14 +12,15 @@ import org.pentaho.di.core.auth.KerberosAuthenticationProvider;
 import org.pentaho.di.core.auth.UsernamePasswordAuthenticationProvider;
 import org.pentaho.di.core.auth.core.AuthenticationManager;
 import org.pentaho.di.core.encryption.Encr;
-import org.pentaho.hadoop.shim.mapr31.authentication.PropertyAuthenticationProviderParser.AuthenticationProviderInstantiator;
+import org.pentaho.hadoop.shim.mapr31.authentication.PropertyAuthenticationProviderParser
+  .AuthenticationProviderInstantiator;
 
 public class PropertyAuthenticationProviderParserTest {
   @Test
   public void testHappyPath() {
     KerberosAuthenticationProvider kerberosAuthenticationProvider = new KerberosAuthenticationProvider();
     UsernamePasswordAuthenticationProvider usernamePasswordAuthenticationProvider =
-        new UsernamePasswordAuthenticationProvider();
+      new UsernamePasswordAuthenticationProvider();
     Properties props = new Properties();
     props.setProperty( "authentication.provider.list", "kerby,notsokerby" );
 
@@ -38,9 +39,9 @@ public class PropertyAuthenticationProviderParserTest {
     AuthenticationProviderInstantiator instantiator = mock( AuthenticationProviderInstantiator.class );
     when( instantiator.instantiate( props.getProperty( "kerby.class" ) ) ).thenReturn( kerberosAuthenticationProvider );
     when( instantiator.instantiate( props.getProperty( "notsokerby.class" ) ) ).thenReturn(
-        usernamePasswordAuthenticationProvider );
+      usernamePasswordAuthenticationProvider );
     PropertyAuthenticationProviderParser parser =
-        new PropertyAuthenticationProviderParser( props, manager, instantiator );
+      new PropertyAuthenticationProviderParser( props, manager, instantiator );
     parser.process( "authentication.provider.list" );
 
     assertEquals( "kerby", kerberosAuthenticationProvider.getId() );
@@ -60,7 +61,7 @@ public class PropertyAuthenticationProviderParserTest {
   public void testObfuscatedPath() {
     KerberosAuthenticationProvider kerberosAuthenticationProvider = new KerberosAuthenticationProvider();
     UsernamePasswordAuthenticationProvider usernamePasswordAuthenticationProvider =
-        new UsernamePasswordAuthenticationProvider();
+      new UsernamePasswordAuthenticationProvider();
     Properties props = new Properties();
     props.setProperty( "authentication.provider.list", "kerby,notsokerby" );
 
@@ -79,9 +80,9 @@ public class PropertyAuthenticationProviderParserTest {
     AuthenticationProviderInstantiator instantiator = mock( AuthenticationProviderInstantiator.class );
     when( instantiator.instantiate( props.getProperty( "kerby.class" ) ) ).thenReturn( kerberosAuthenticationProvider );
     when( instantiator.instantiate( props.getProperty( "notsokerby.class" ) ) ).thenReturn(
-        usernamePasswordAuthenticationProvider );
+      usernamePasswordAuthenticationProvider );
     PropertyAuthenticationProviderParser parser =
-        new PropertyAuthenticationProviderParser( props, manager, instantiator );
+      new PropertyAuthenticationProviderParser( props, manager, instantiator );
     parser.process( "authentication.provider.list" );
 
     assertEquals( "kerby", kerberosAuthenticationProvider.getId() );

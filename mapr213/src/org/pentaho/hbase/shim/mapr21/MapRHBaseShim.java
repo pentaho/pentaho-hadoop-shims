@@ -28,7 +28,7 @@ import org.pentaho.hbase.shim.spi.HBaseShim;
 
 /**
  * Concrete implementation of HBaseShim suitable for use with Apache HBase 0.90.x.
- * 
+ *
  * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
  */
 public class MapRHBaseShim extends HBaseShim {
