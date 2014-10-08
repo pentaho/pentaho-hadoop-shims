@@ -44,8 +44,14 @@ public class AuthenticatingHadoopShim extends DelegatingHadoopShim {
   public void onLoad( HadoopConfiguration config, HadoopConfigurationFileSystemManager fsm ) throws Exception {
     AuthenticationConsumerPluginType.getInstance().registerPlugin( (URLClassLoader) getClass().getClassLoader(),
       HadoopNoAuthConsumer.HadoopNoAuthConsumerType.class );
+
+    String provider = NoAuthenticationAuthenticationProvider.NO_AUTH_ID;
+    if ( config.getConfigProperties().containsKey( SUPER_USER ) ) {
+      provider = config.getConfigProperties().getProperty( SUPER_USER );
+    }
+
     String activators = config.getConfigProperties().getProperty( "activator.classes" );
-    if ( activators != null ) {
+    if ( activators != null && !provider.equals( NoAuthenticationAuthenticationProvider.NO_AUTH_ID ) ) {
       activators = activators.trim();
       for ( String className : activators.split( "," ) ) {
         className = className.trim();
@@ -58,10 +64,7 @@ public class AuthenticatingHadoopShim extends DelegatingHadoopShim {
         }
       }
     }
-    String provider = NoAuthenticationAuthenticationProvider.NO_AUTH_ID;
-    if ( config.getConfigProperties().containsKey( SUPER_USER ) ) {
-      provider = config.getConfigProperties().getProperty( SUPER_USER );
-    }
+
     AuthenticationManager manager = AuthenticationPersistenceManager.getAuthenticationManager();
     new PropertyAuthenticationProviderParser( config.getConfigProperties(), manager ).process( PROVIDER_LIST );
     AuthenticationPerformer<HadoopAuthorizationService, Properties> performer =
