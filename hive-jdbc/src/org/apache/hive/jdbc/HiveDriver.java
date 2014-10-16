@@ -143,12 +143,18 @@ public class HiveDriver implements java.sql.Driver {
 
   @Override
   public boolean acceptsURL(final String url) throws SQLException {
-    return Boolean.TRUE.equals(callWithActiveDriver(new JDBCDriverCallable<Boolean>() {
-      @Override
-      public Boolean call() throws Exception {
-        return driver.acceptsURL(url);
-      }
-    }));
+    if ( getActiveDriver() == null ) {
+      // Ignore connection attempt in case corresponding driver is not provided by the shim
+      return false;
+    }
+    else {
+      return Boolean.TRUE.equals(callWithActiveDriver(new JDBCDriverCallable<Boolean>() {
+              @Override
+              public Boolean call() throws Exception {
+                  return driver.acceptsURL(url);
+              }
+          }));
+    }
   }
 
   @Override

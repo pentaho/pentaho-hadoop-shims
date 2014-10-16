@@ -106,6 +106,18 @@ public class HiveDriverTest {
   }
 
   @Test
+  public void getActiveDriver_null_in_getJdbcDriver() throws Exception {
+    HadoopShim shim = new MockHadoopShim() {
+      public java.sql.Driver getJdbcDriver(String scheme) {
+        return null;
+      }
+    };
+    HiveDriver d = new HiveDriver(getMockUtil(shim));
+
+    assertNull( d.getActiveDriver() );
+  }
+
+  @Test
   public void getActiveDriver_same_driver() {
     HadoopShim shim = new MockHadoopShim() {
       public java.sql.Driver getJdbcDriver(String scheme) {
@@ -171,6 +183,21 @@ public class HiveDriverTest {
 
     d.acceptsURL(null);
     assertTrue(called.get());
+  }
+
+  @Test
+  public void acceptsURL_no_driver() throws SQLException {
+    final AtomicBoolean called = new AtomicBoolean(false);
+    HadoopShim shim = new MockHadoopShim() {
+      @Override
+      public Driver getJdbcDriver(String scheme) {
+        return null;
+      }
+    };
+    HiveDriver d = new HiveDriver( getMockUtil( shim ) );
+
+    assertFalse( d.acceptsURL( "jdbc:postgres://" ) );
+
   }
 
   @Test
