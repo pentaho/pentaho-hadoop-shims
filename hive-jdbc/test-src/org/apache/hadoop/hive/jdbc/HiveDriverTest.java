@@ -2,7 +2,7 @@
 *
 * Pentaho Big Data
 *
-* Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
+* Copyright (C) 2002-2014 by Pentaho : http://www.pentaho.com
 *
 *******************************************************************************
 *
@@ -77,7 +77,7 @@ public class HiveDriverTest {
     };
     HiveDriver d = new HiveDriver(getMockUtil(shim));
     d.getActiveDriver();
-    assertTrue("Shim's getJdbcDriver(\"hive\") not called", called.get());
+    assertTrue( "Shim's getJdbcDriver(\"hive\") not called", called.get() );
   }
 
   @Test
@@ -98,7 +98,7 @@ public class HiveDriverTest {
       d.getActiveDriver();
       fail("Expected exception");
     } catch (SQLException ex) {
-      assertEquals(InvocationTargetException.class, ex.getCause().getClass());
+      assertEquals( InvocationTargetException.class, ex.getCause().getClass() );
       assertEquals("Unable to load Hive JDBC driver for the currently active Hadoop configuration", ex.getMessage());
     }
   }
@@ -134,10 +134,10 @@ public class HiveDriverTest {
 
     try {
       d.getActiveDriver();
-      fail("Expected exception");
+      fail( "Expected exception" );
     } catch (SQLException ex) {
       assertNull(ex.getCause());
-      assertEquals("The active Hadoop configuration does not contain a Hive JDBC driver", ex.getMessage());
+      assertEquals( "The active Hadoop configuration does not contain a Hive JDBC driver", ex.getMessage() );
     }
   }
 
@@ -160,7 +160,7 @@ public class HiveDriverTest {
     };
     HiveDriver d = new HiveDriver(getMockUtil(getMockShimWithDriver(driver)));
 
-    d.connect(null, null);
+    d.connect( null, null );
     assertTrue( connectCalled.get() && acceptsUrlCalled.get() );
   }
 
@@ -176,8 +176,23 @@ public class HiveDriverTest {
     };
     HiveDriver d = new HiveDriver(getMockUtil(getMockShimWithDriver(driver)));
 
-    d.acceptsURL(null);
+    d.acceptsURL( null );
     assertTrue(called.get());
+  }
+
+  @Test
+  public void acceptsURL_no_driver() throws SQLException {
+    final AtomicBoolean called = new AtomicBoolean(false);
+    HadoopShim shim = new MockHadoopShim() {
+      @Override
+      public Driver getJdbcDriver(String scheme) {
+        return null;
+      }
+    };
+    HiveDriver d = new HiveDriver( getMockUtil( shim ) );
+
+    assertFalse( d.acceptsURL( "jdbc:postgres://" ) );
+
   }
 
   @Test

@@ -1,24 +1,24 @@
 /*******************************************************************************
-*
-* Pentaho Big Data
-*
-* Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
-*
-*******************************************************************************
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with
-* the License. You may obtain a copy of the License at
-*
-*    http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-******************************************************************************/
+ *
+ * Pentaho Big Data
+ *
+ * Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
+ *
+ *******************************************************************************
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ ******************************************************************************/
 
 package org.apache.hive.jdbc;
 
@@ -106,10 +106,22 @@ public class HiveDriverTest {
   }
 
   @Test
+  public void getActiveDriver_null_in_getJdbcDriver() throws Exception {
+    HadoopShim shim = new MockHadoopShim() {
+      public java.sql.Driver getJdbcDriver(String scheme) {
+        return null;
+      }
+    };
+    HiveDriver d = new HiveDriver(getMockUtil(shim));
+
+    assertNull( d.getActiveDriver() );
+  }
+
+  @Test
   public void getActiveDriver_same_driver() {
     HadoopShim shim = new MockHadoopShim() {
       public java.sql.Driver getJdbcDriver(String scheme) {
-     // Return another shim driver. This should fail when called since the
+        // Return another shim driver. This should fail when called since the
         // classes are the same
         return (scheme.equalsIgnoreCase("hive2")) ? new HiveDriver() : null;
       }
@@ -171,6 +183,21 @@ public class HiveDriverTest {
 
     d.acceptsURL(null);
     assertTrue(called.get());
+  }
+
+  @Test
+  public void acceptsURL_no_driver() throws SQLException {
+    final AtomicBoolean called = new AtomicBoolean(false);
+    HadoopShim shim = new MockHadoopShim() {
+      @Override
+      public Driver getJdbcDriver(String scheme) {
+        return null;
+      }
+    };
+    HiveDriver d = new HiveDriver( getMockUtil( shim ) );
+
+    assertFalse( d.acceptsURL( "jdbc:postgres://" ) );
+
   }
 
   @Test
