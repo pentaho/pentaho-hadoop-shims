@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <property>
+    <name>dfs.namenode.servicerpc-address</name>
+    <value>quickstart.cloudera:8022</value>
+  </property>
+  <property>
+    <name>dfs.https.address</name>
+    <value>quickstart.cloudera:50470</value>
+  </property>
+  <property>
+    <name>dfs.https.port</name>
+    <value>50470</value>
+  </property>
+  <property>
+    <name>dfs.namenode.http-address</name>
+    <value>quickstart.cloudera:50070</value>
+  </property>
+  <!-- when running on VM with one DataNode this value can be only 1, default is 3 -->
+  <property>
+    <name>dfs.replication</name>
+    <value>1</value>
+  </property> 
+  <!-- usable for testing on VM without additional security -->
+  <property>
+    <name>dfs.permissions</name>
+    <value>false</value>
+  </property>
+  <!-- true in case of VM switched with ip different from your local machine (virtual network for example) and /etc/hosts 
+  (.../windows/System32/drivers/etc/hosts) file was modified to be able to use domain name addressing. Default value is false. -->
+  <property>
+    <name>dfs.client.use.datanode.hostname</name>
+    <value>true</value>
+  </property>
+  <property>
+    <name>fs.permissions.umask-mode</name>
+    <value>022</value>
+  </property>
+  <!-- set false if not used acl's based security, usable for testing with VM image, default value is true -->
+  <property>
+    <name>dfs.namenode.acls.enabled</name>
+    <value>false</value>
+  </property>
+</configuration>

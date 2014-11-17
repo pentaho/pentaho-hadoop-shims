@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <configuration>
+  <property>
+    <name>fs.defaultFS</name>
+    <value>hdfs://quickstart.cloudera:8020</value>
+  </property>
+  <!-- Possible values are simple (no authentication), and kerberos -->
+  <property>
+    <name>hadoop.security.authentication</name>
+    <value>simple</value>
+  </property>
+  <property>
+    <name>hadoop.rpc.protection</name>
+    <value>authentication</value>
+  </property>
+  <!-- Maps kerberos principals to local user names -->
+  <property>
+    <name>hadoop.security.auth_to_local</name>
+    <value>DEFAULT</value>
+  </property>
 </configuration>
