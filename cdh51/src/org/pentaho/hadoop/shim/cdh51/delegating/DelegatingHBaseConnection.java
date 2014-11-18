@@ -44,7 +44,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
    * (non-Javadoc)
    *
    * @see
-   * org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#addColumnFilterToScan(org.pentaho.hbase
+   * org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#addColumnFilterToScan(org.pentaho.hbase
    * .shim.api.ColumnFilter, org.pentaho.hbase.shim.api.HBaseValueMeta, org.pentaho.di.core.variables.VariableSpace,
    * boolean)
    */
@@ -57,7 +57,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#addColumnToScan(java.lang.String,
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#addColumnToScan(java.lang.String,
    * java.lang.String, boolean)
    */
   @Override
@@ -68,7 +68,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#addColumnToTargetPut(java.lang.String,
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#addColumnToTargetPut(java.lang.String,
    * java.lang.String, boolean, byte[])
    */
   @Override
@@ -80,7 +80,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#checkForHBaseRow(java.lang.Object)
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#checkForHBaseRow(java.lang.Object)
    */
   @Override
   public boolean checkForHBaseRow( Object rowToCheck ) {
@@ -90,7 +90,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#checkHBaseAvailable()
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#checkHBaseAvailable()
    */
   @Override
   public void checkHBaseAvailable() throws Exception {
@@ -100,7 +100,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#closeSourceResultSet()
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#closeSourceResultSet()
    */
   @Override
   public void closeSourceResultSet() throws Exception {
@@ -110,7 +110,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#closeSourceTable()
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#closeSourceTable()
    */
   @Override
   public void closeSourceTable() throws Exception {
@@ -120,7 +120,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#closeTargetTable()
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#closeTargetTable()
    */
   @Override
   public void closeTargetTable() throws Exception {
@@ -131,7 +131,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
    * (non-Javadoc)
    *
    * @see
-   * org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#configureConnection(java.util.Properties,
+   * org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#configureConnection(java.util.Properties,
    * java.util.List)
    */
   @Override
@@ -142,7 +142,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#createTable(java.lang.String,
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#createTable(java.lang.String,
    * java.util.List, java.util.Properties)
    */
   @Override
@@ -153,7 +153,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#deleteTable(java.lang.String)
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#deleteTable(java.lang.String)
    */
   @Override
   public void deleteTable( String tableName ) throws Exception {
@@ -163,7 +163,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#disableTable(java.lang.String)
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#disableTable(java.lang.String)
    */
   @Override
   public void disableTable( String tableName ) throws Exception {
@@ -173,7 +173,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#enableTable(java.lang.String)
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#enableTable(java.lang.String)
    */
   @Override
   public void enableTable( String tableName ) throws Exception {
@@ -183,7 +183,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#equals(java.lang.Object)
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#equals(java.lang.Object)
    */
   @Override
   public boolean equals( Object obj ) {
@@ -193,7 +193,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#executeSourceTableScan()
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#executeSourceTableScan()
    */
   @Override
   public void executeSourceTableScan() throws Exception {
@@ -203,7 +203,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#executeTargetTableDelete(byte[])
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#executeTargetTableDelete(byte[])
    */
   @Override
   public void executeTargetTableDelete( byte[] rowKey ) throws Exception {
@@ -213,7 +213,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#executeTargetTablePut()
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#executeTargetTablePut()
    */
   @Override
   public void executeTargetTablePut() throws Exception {
@@ -223,7 +223,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#flushCommitsTargetTable()
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#flushCommitsTargetTable()
    */
   @Override
   public void flushCommitsTargetTable() throws Exception {
@@ -233,7 +233,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#getBloomTypeClass()
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#getBloomTypeClass()
    */
   @Override
   public Class<?> getBloomTypeClass() throws ClassNotFoundException {
@@ -243,7 +243,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#getByteArrayComparableClass()
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#getByteArrayComparableClass()
    */
   @Override
   public Class<?> getByteArrayComparableClass() throws ClassNotFoundException {
@@ -253,7 +253,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#getBytesUtil()
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#getBytesUtil()
    */
   @Override
   public HBaseBytesUtilShim getBytesUtil() throws Exception {
@@ -263,7 +263,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#getCompressionAlgorithmClass()
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#getCompressionAlgorithmClass()
    */
   @Override
   public Class<?> getCompressionAlgorithmClass() throws ClassNotFoundException {
@@ -274,7 +274,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
    * (non-Javadoc)
    *
    * @see
-   * org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#getDeserializedBooleanComparatorClass()
+   * org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#getDeserializedBooleanComparatorClass()
    */
   @Override
   public Class<?> getDeserializedBooleanComparatorClass() throws ClassNotFoundException {
@@ -285,7 +285,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
    * (non-Javadoc)
    *
    * @see
-   * org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#getDeserializedNumericComparatorClass()
+   * org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#getDeserializedNumericComparatorClass()
    */
   @Override
   public Class<?> getDeserializedNumericComparatorClass() throws ClassNotFoundException {
@@ -296,7 +296,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
    * (non-Javadoc)
    *
    * @see
-   * org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#getResultSetCurrentRowColumnLatest(java
+   * org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#getResultSetCurrentRowColumnLatest(java
    * .lang.String, java.lang.String, boolean)
    */
   @Override
@@ -309,7 +309,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
    * (non-Javadoc)
    *
    * @see
-   * org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#getResultSetCurrentRowFamilyMap(java.lang
+   * org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#getResultSetCurrentRowFamilyMap(java.lang
    * .String)
    */
   @Override
@@ -320,7 +320,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#getResultSetCurrentRowKey()
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#getResultSetCurrentRowKey()
    */
   @Override
   public byte[] getResultSetCurrentRowKey() throws Exception {
@@ -330,7 +330,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#getResultSetCurrentRowMap()
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#getResultSetCurrentRowMap()
    */
   @Override
   public NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> getResultSetCurrentRowMap()
@@ -341,7 +341,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#getRowColumnLatest(java.lang.Object,
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#getRowColumnLatest(java.lang.Object,
    * java.lang.String, java.lang.String, boolean)
    */
   @Override
@@ -353,7 +353,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#getRowFamilyMap(java.lang.Object,
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#getRowFamilyMap(java.lang.Object,
    * java.lang.String)
    */
   @Override
@@ -364,7 +364,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#getRowKey(java.lang.Object)
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#getRowKey(java.lang.Object)
    */
   @Override
   public byte[] getRowKey( Object aRow ) throws Exception {
@@ -374,7 +374,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#getRowMap(java.lang.Object)
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#getRowMap(java.lang.Object)
    */
   @Override
   public NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> getRowMap( Object aRow )
@@ -385,7 +385,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#getTableFamiles(java.lang.String)
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#getTableFamiles(java.lang.String)
    */
   @Override
   public List<String> getTableFamiles( String tableName ) throws Exception {
@@ -395,7 +395,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#hashCode()
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#hashCode()
    */
   @Override
   public int hashCode() {
@@ -406,7 +406,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
    * (non-Javadoc)
    *
    * @see
-   * org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#isImmutableBytesWritable(java.lang.Object)
+   * org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#isImmutableBytesWritable(java.lang.Object)
    */
   @Override
   public boolean isImmutableBytesWritable( Object o ) {
@@ -416,7 +416,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#isTableAvailable(java.lang.String)
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#isTableAvailable(java.lang.String)
    */
   @Override
   public boolean isTableAvailable( String tableName ) throws Exception {
@@ -426,7 +426,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#isTableDisabled(java.lang.String)
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#isTableDisabled(java.lang.String)
    */
   @Override
   public boolean isTableDisabled( String tableName ) throws Exception {
@@ -436,7 +436,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#listTableNames()
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#listTableNames()
    */
   @Override
   public List<String> listTableNames() throws Exception {
@@ -446,7 +446,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#newSourceTable(java.lang.String)
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#newSourceTable(java.lang.String)
    */
   @Override
   public void newSourceTable( String tableName ) throws Exception {
@@ -456,7 +456,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#newSourceTableScan(byte[], byte[],
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#newSourceTableScan(byte[], byte[],
    * int)
    */
   @Override
@@ -467,7 +467,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#newTargetTable(java.lang.String,
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#newTargetTable(java.lang.String,
    * java.util.Properties)
    */
   @Override
@@ -478,7 +478,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#newTargetTablePut(byte[], boolean)
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#newTargetTablePut(byte[], boolean)
    */
   @Override
   public void newTargetTablePut( byte[] key, boolean writeToWAL ) throws Exception {
@@ -488,7 +488,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#resultSetNextRow()
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#resultSetNextRow()
    */
   @Override
   public boolean resultSetNextRow() throws Exception {
@@ -498,7 +498,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#sourceTableRowExists(byte[])
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#sourceTableRowExists(byte[])
    */
   @Override
   public boolean sourceTableRowExists( byte[] rowKey ) throws Exception {
@@ -508,7 +508,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#tableExists(java.lang.String)
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#tableExists(java.lang.String)
    */
   @Override
   public boolean tableExists( String tableName ) throws Exception {
@@ -518,7 +518,7 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   /*
    * (non-Javadoc)
    *
-   * @see org.pentaho.hadoop.shim.mapr31.delegatingShims.HBaseConnectionInterface#targetTableIsAutoFlush()
+   * @see org.pentaho.hadoop.shim.mapr401.delegatingShims.HBaseConnectionInterface#targetTableIsAutoFlush()
    */
   @Override
   public boolean targetTableIsAutoFlush() throws Exception {

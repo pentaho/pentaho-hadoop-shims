@@ -23,6 +23,12 @@
 package org.pentaho.hadoop.shim.mapr21;
 
 import org.pentaho.hadoop.shim.common.CommonPigShim;
+import org.apache.pig.PigServer;
+import org.apache.pig.tools.grunt.GruntParser;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.Properties;
 
 public class PigShim extends CommonPigShim {
   
@@ -32,4 +38,20 @@ public class PigShim extends CommonPigShim {
     return false;
   }
 
+  @Override
+  public int[] executeScript( String pigScript, org.pentaho.hadoop.shim.spi.PigShim.ExecutionMode mode,
+                              Properties properties ) throws
+    IOException, org.apache.pig.tools.pigscript.parser.ParseException {
+    ClassLoader cl = Thread.currentThread().getContextClassLoader();
+    Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
+    try {
+      PigServer pigServer = new PigServer( getExecType( mode ), properties );
+      GruntParser grunt = new GruntParser( new StringReader( pigScript ) );
+      grunt.setInteractive( false );
+      grunt.setParams( pigServer );
+      return grunt.parseStopOnError( false );
+    } finally {
+      Thread.currentThread().setContextClassLoader( cl );
+    }
+  }
 }
