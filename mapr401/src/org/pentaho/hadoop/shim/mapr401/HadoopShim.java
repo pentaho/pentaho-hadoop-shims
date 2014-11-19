@@ -22,6 +22,7 @@
 
 package org.pentaho.hadoop.shim.mapr401;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.pentaho.hadoop.shim.HadoopConfiguration;
@@ -30,6 +31,8 @@ import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.common.CommonHadoopShim;
 import org.pentaho.hadoop.shim.common.ShimUtils;
 import org.pentaho.hdfs.vfs.MapRFileProvider;
+import org.apache.hadoop.mapreduce.Job;
+import org.pentaho.hadoop.shim.api.mapred.RunningJob;
 
 public class HadoopShim extends CommonHadoopShim {
   protected static final String SUPER_USER = "authentication.superuser.provider";
@@ -82,14 +85,25 @@ public class HadoopShim extends CommonHadoopShim {
 
     String fsDefaultName = MFS_SCHEME + namenodeHost;
     String jobTracker = MFS_SCHEME + jobtrackerHost;
-    conf.set( "fs.default.name", fsDefaultName );
-    conf.set( "mapred.job.tracker", jobTracker );
+    //conf.set( "fs.default.name", fsDefaultName );
+    //conf.set( "mapred.job.tracker", jobTracker );
     conf.set( "fs.maprfs.impl", MapRFileProvider.FS_MAPR_IMPL );
   }
 
   @Override
-  public Configuration createConfiguration() {
-    Configuration result = super.createConfiguration();
+  public org.pentaho.hadoop.shim.api.Configuration createConfiguration() {
+    org.pentaho.hadoop.shim.api.Configuration result;
+    // Set the context class loader when instantiating the configuration
+    // since org.apache.hadoop.conf.Configuration uses it to load resources
+    ClassLoader cl = Thread.currentThread().getContextClassLoader();
+    Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
+    try {
+      result = new org.pentaho.hadoop.shim.mapr401.ConfigurationProxyV2();
+    } catch ( IOException e ) {
+      throw new RuntimeException( "Unable to create configuration for new mapreduce api: ", e );
+    } finally {
+      Thread.currentThread().setContextClassLoader( cl );
+    }
     ShimUtils.asConfiguration( result ).addResource( "hbase-site.xml" );
     return result;
   }
@@ -97,6 +111,23 @@ public class HadoopShim extends CommonHadoopShim {
   @Override
   public void onLoad( HadoopConfiguration config, HadoopConfigurationFileSystemManager fsm ) throws Exception {
     fsm.addProvider( config, MapRFileProvider.SCHEME, config.getIdentifier(), new MapRFileProvider() );
-    setDistributedCacheUtil( new MapR3DistributedCacheUtilImpl( config ) );
+    setDistributedCacheUtil( new MapR4DistributedCacheUtilImpl( config ) );
+  }
+
+  @Override
+  public RunningJob submitJob( org.pentaho.hadoop.shim.api.Configuration c ) throws IOException {
+    ClassLoader cl = Thread.currentThread().getContextClassLoader();
+    Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
+    try {
+      Job job = ( (org.pentaho.hadoop.shim.mapr401.ConfigurationProxyV2) c ).getJob();
+      job.submit();
+      return new RunningJobProxyV2( job );
+    } catch ( InterruptedException e ) {
+      throw new RuntimeException( e );
+    } catch ( ClassNotFoundException e ) {
+      throw new RuntimeException( e );
+    } finally {
+      Thread.currentThread().setContextClassLoader( cl );
+    }
   }
 }

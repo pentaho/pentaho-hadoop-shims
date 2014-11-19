@@ -22,8 +22,10 @@
 
 package org.pentaho.hbase.shim.common;
 
+import java.io.ByteArrayOutputStream;
 import java.io.DataInput;
 import java.io.DataOutput;
+import java.io.DataOutputStream;
 import java.io.IOException;
 
 import org.apache.hadoop.hbase.filter.ByteArrayComparable;
@@ -42,22 +44,43 @@ public class DeserializedBooleanComparator extends ByteArrayComparable {
 
   protected Boolean m_value;
 
-  public DeserializedBooleanComparator( boolean value ) {
-    super( Bytes.toBytes( value ) );
-    m_value = value;
+  public DeserializedBooleanComparator( byte[] raw ) {
+    super( raw );
+    m_value = Bytes.toBoolean( raw );
   }
+
+  public DeserializedBooleanComparator( boolean value ) {
+      this( Bytes.toBytes( value ) );
+    }
 
   @Override
   public byte[] getValue() {
     return Bytes.toBytes( m_value.booleanValue() );
   }
 
+  /**
+   * @return The comparator serialized using pb
+   */
   @Override
+  public byte[] toByteArray() {
+    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+    DataOutputStream output = new DataOutputStream( byteArrayOutputStream );
+    try {
+      write( output );
+      output.close();
+      byteArrayOutputStream.close();
+      return byteArrayOutputStream.toByteArray();
+    } catch ( IOException e ) {
+      throw new RuntimeException( "Unable to serialize to byte array.", e );
+    }
+  }
+
+
   public void readFields( DataInput in ) throws IOException {
     m_value = new Boolean( in.readBoolean() );
   }
 
-  @Override
+
   public void write( DataOutput out ) throws IOException {
     out.writeBoolean( m_value.booleanValue() );
   }
@@ -96,17 +119,15 @@ public class DeserializedBooleanComparator extends ByteArrayComparable {
 
   public static Boolean decodeBoolFromString( byte[] rawEncoded ) {
     String tempString = Bytes.toString( rawEncoded );
-    if ( tempString.equalsIgnoreCase( "Y" ) || tempString.equalsIgnoreCase( "N" ) ||
-      tempString.equalsIgnoreCase( "YES" ) || tempString.equalsIgnoreCase( "NO" ) ||
-      tempString.equalsIgnoreCase( "TRUE" ) || tempString.equalsIgnoreCase( "FALSE" ) ||
-      tempString.equalsIgnoreCase( "T" ) || tempString.equalsIgnoreCase( "F" ) ||
-      tempString.equalsIgnoreCase( "1" ) || tempString.equalsIgnoreCase( "0" ) ) {
+    if ( tempString.equalsIgnoreCase( "Y" ) || tempString.equalsIgnoreCase( "N" )
+      || tempString.equalsIgnoreCase( "YES" ) || tempString.equalsIgnoreCase( "NO" )
+      || tempString.equalsIgnoreCase( "TRUE" ) || tempString.equalsIgnoreCase( "FALSE" )
+      || tempString.equalsIgnoreCase( "T" ) || tempString.equalsIgnoreCase( "F" )
+      || tempString.equalsIgnoreCase( "1" ) || tempString.equalsIgnoreCase( "0" ) ) {
 
-      return Boolean.valueOf( tempString.equalsIgnoreCase( "Y" ) ||
-        tempString.equalsIgnoreCase( "YES" ) ||
-        tempString.equalsIgnoreCase( "TRUE" ) ||
-        tempString.equalsIgnoreCase( "T" ) ||
-        tempString.equalsIgnoreCase( "1" ) );
+      return Boolean.valueOf( tempString.equalsIgnoreCase( "Y" ) || tempString.equalsIgnoreCase( "YES" )
+        || tempString.equalsIgnoreCase( "TRUE" ) || tempString.equalsIgnoreCase( "T" )
+        || tempString.equalsIgnoreCase( "1" ) );
     }
 
     // not identifiable from a string

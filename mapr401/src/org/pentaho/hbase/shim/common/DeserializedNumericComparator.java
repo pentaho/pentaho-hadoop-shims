@@ -22,8 +22,10 @@
 
 package org.pentaho.hbase.shim.common;
 
+import java.io.ByteArrayOutputStream;
 import java.io.DataInput;
 import java.io.DataOutput;
+import java.io.DataOutputStream;
 import java.io.IOException;
 
 import org.apache.hadoop.hbase.filter.ByteArrayComparable;
@@ -49,17 +51,19 @@ public class DeserializedNumericComparator extends ByteArrayComparable {
   /**
    * Nullary constructor for Writable, do not use
    */
-  public DeserializedNumericComparator() {
-    super();
+  public DeserializedNumericComparator( byte[] raw ) {
+    super( raw );
   }
 
   public DeserializedNumericComparator( boolean isInteger, boolean isLongOrDouble, long value ) {
+    this( Bytes.toBytes( value ) );
     m_isInteger = isInteger;
     m_isLongOrDouble = isLongOrDouble;
     m_longValue = value;
   }
 
   public DeserializedNumericComparator( boolean isInteger, boolean isLongOrDouble, double value ) {
+    this( Bytes.toBytes( value ) );
     m_isInteger = isInteger;
     m_isLongOrDouble = isLongOrDouble;
 
@@ -75,7 +79,23 @@ public class DeserializedNumericComparator extends ByteArrayComparable {
     return Bytes.toBytes( m_doubleValue );
   }
 
+  /**
+   * @return The comparator serialized using pb
+   */
   @Override
+  public byte[] toByteArray() {
+    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+    DataOutputStream output = new DataOutputStream( byteArrayOutputStream );
+    try {
+      write( output );
+      output.close();
+      byteArrayOutputStream.close();
+      return byteArrayOutputStream.toByteArray();
+    } catch ( IOException e ) {
+      throw new RuntimeException( "Unable to serialize to byte array.", e );
+    }
+  }
+
   public void readFields( DataInput in ) throws IOException {
     m_isInteger = in.readBoolean();
     m_isLongOrDouble = in.readBoolean();
@@ -83,7 +103,6 @@ public class DeserializedNumericComparator extends ByteArrayComparable {
     m_doubleValue = in.readDouble();
   }
 
-  @Override
   public void write( DataOutput out ) throws IOException {
     out.writeBoolean( m_isInteger );
     out.writeBoolean( m_isLongOrDouble );

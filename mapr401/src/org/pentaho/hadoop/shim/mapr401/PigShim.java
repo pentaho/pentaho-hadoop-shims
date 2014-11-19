@@ -46,9 +46,8 @@ public class PigShim extends CommonPigShim {
     Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
     try {
       PigServer pigServer = new PigServer( getExecType( mode ), properties );
-      GruntParser grunt = new GruntParser( new StringReader( pigScript ) );
+      GruntParser grunt = new GruntParser( new StringReader( pigScript ), pigServer );
       grunt.setInteractive( false );
-      grunt.setParams( pigServer );
       return grunt.parseStopOnError( false );
     } finally {
       Thread.currentThread().setContextClassLoader( cl );

@@ -32,9 +32,9 @@ import org.apache.hadoop.fs.Path;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.common.DistributedCacheUtilImpl;
 
-public class MapR3DistributedCacheUtilImpl extends DistributedCacheUtilImpl {
+public class MapR4DistributedCacheUtilImpl extends DistributedCacheUtilImpl {
 
-  public MapR3DistributedCacheUtilImpl( HadoopConfiguration configuration ) {
+  public MapR4DistributedCacheUtilImpl( HadoopConfiguration configuration ) {
     super( configuration );
   }
 
@@ -58,5 +58,10 @@ public class MapR3DistributedCacheUtilImpl extends DistributedCacheUtilImpl {
     URI uri = fs.makeQualified( file ).toUri();
 
     DistributedCache.addCacheFile( uri, conf );
+  }
+
+  public String getClusterPathSeparator() {
+    // Use a comma rather than an OS-specific separator (see https://issues.apache.org/jira/browse/HADOOP-4864)
+    return System.getProperty( "hadoop.cluster.path.separator", "," );
   }
 }
