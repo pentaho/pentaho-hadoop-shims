@@ -262,7 +262,7 @@ public class PentahoTableRecordReaderImpl {
 
         try {
           Method m = result.getClass().getMethod( "copyFrom", Result.class );
-          m.invoke( result, value );
+          m.invoke( value, result );
         } catch ( NoSuchMethodException e ) {
           throw new IOException( e );
         } catch ( SecurityException e ) {
