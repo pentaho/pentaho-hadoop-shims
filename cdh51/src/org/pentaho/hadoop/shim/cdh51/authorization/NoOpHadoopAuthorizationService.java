@@ -39,7 +39,7 @@ public class NoOpHadoopAuthorizationService implements HadoopAuthorizationServic
   public NoOpHadoopAuthorizationService() {
     shimMap = new HashMap<Class<?>, PentahoHadoopShim>();
     shimMap.put( HadoopShim.class, new org.pentaho.hadoop.shim.cdh51.HadoopShim() );
-    shimMap.put( PigShim.class, new org.pentaho.hadoop.shim.common.CommonPigShim() );
+    shimMap.put( PigShim.class, new org.pentaho.hadoop.shim.cdh51.PigShim() );
     shimMap.put( SnappyShim.class, new org.pentaho.hadoop.shim.cdh51.SnappyShim() );
     shimMap.put( SqoopShim.class, new org.pentaho.hadoop.shim.cdh51.ClassPathModifyingSqoopShim() );
     shimMap.put( HBaseShimInterface.class, new org.pentaho.hbase.shim.cdh51.HBaseShimImpl() );

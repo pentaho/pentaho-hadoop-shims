@@ -33,7 +33,6 @@ import org.junit.Test;
 import org.pentaho.hadoop.shim.ConfigurationException;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
-import org.pentaho.hadoop.shim.mapr31.HadoopShim;
 import org.pentaho.hadoop.shim.spi.HadoopConfigurationProvider;
 
 public class HadoopShimTest {
