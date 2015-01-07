@@ -22,6 +22,10 @@
 
 package org.pentaho.hadoop.shim.cdh52.delegating;
 
+import java.io.IOException;
+import java.sql.Driver;
+import java.util.List;
+
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.hadoop.shim.ConfigurationException;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
@@ -29,17 +33,15 @@ import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
 import org.pentaho.hadoop.shim.ShimVersion;
 import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.api.DistributedCacheUtil;
+import org.pentaho.hadoop.shim.api.HasNamedConfiguration;
+import org.pentaho.hadoop.shim.api.NamedConfigurationLoader;
 import org.pentaho.hadoop.shim.api.fs.FileSystem;
 import org.pentaho.hadoop.shim.api.mapred.RunningJob;
 import org.pentaho.hadoop.shim.cdh52.authorization.HadoopAuthorizationService;
 import org.pentaho.hadoop.shim.cdh52.authorization.HasHadoopAuthorizationService;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 
-import java.io.IOException;
-import java.sql.Driver;
-import java.util.List;
-
-public class DelegatingHadoopShim implements HadoopShim, HasHadoopAuthorizationService {
+public class DelegatingHadoopShim implements HadoopShim, HasHadoopAuthorizationService, HasNamedConfiguration {
   public static final String SUPER_USER = "authentication.superuser.provider";
   public static final String PROVIDER_LIST = "authentication.provider.list";
   private HadoopShim delegate = null;
@@ -49,6 +51,10 @@ public class DelegatingHadoopShim implements HadoopShim, HasHadoopAuthorizationS
     delegate.onLoad( config, fsm );
   }
 
+  public void loadNamedConfiguration() {
+    NamedConfigurationLoader.load( getClass() );
+  }
+  
   @Override
   public void setHadoopAuthorizationService( HadoopAuthorizationService hadoopAuthorizationService ) throws Exception {
     delegate = hadoopAuthorizationService.getShim( HadoopShim.class );

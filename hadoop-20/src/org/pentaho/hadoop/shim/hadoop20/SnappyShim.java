@@ -24,9 +24,14 @@ package org.pentaho.hadoop.shim.hadoop20;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.compress.SnappyCodec;
+import org.pentaho.di.core.namedconfig.model.NamedConfiguration;
+import org.pentaho.di.core.namedconfig.model.Group;
+import org.pentaho.di.core.namedconfig.model.Property;
 import org.pentaho.hadoop.shim.common.CommonSnappyShim;
+import org.pentaho.hadoop.shim.api.HasNamedConfiguration;
+import org.pentaho.hadoop.shim.api.NamedConfigurationLoader;
 
-public class SnappyShim extends CommonSnappyShim {
+public class SnappyShim extends CommonSnappyShim implements HasNamedConfiguration {
   /**
    * Tests whether hadoop-snappy (not to be confused with other java-based
    * snappy implementations such as jsnappy or snappy-java) plus the 
@@ -45,4 +50,9 @@ public class SnappyShim extends CommonSnappyShim {
       Thread.currentThread().setContextClassLoader(cl);
     }
   }
+  
+  public void loadNamedConfiguration() {
+    NamedConfigurationLoader.load( getClass() );
+  }
+  
 }

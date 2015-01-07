@@ -48,6 +48,7 @@ import org.pentaho.di.core.Const;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.hadoop.shim.api.ActiveHadoopConfigurationLocator;
 import org.pentaho.hadoop.shim.api.Required;
+import org.pentaho.hadoop.shim.api.HasNamedConfiguration;
 import org.pentaho.hadoop.shim.api.ShimProperties;
 import org.pentaho.hadoop.shim.spi.HadoopConfigurationProvider;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
@@ -382,6 +383,10 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
           logger.warn( BaseMessages.getString( PKG, "Error.MissingRequiredShim", shimType.getSimpleName() ) );
           // Do not continue to load the configuration if we are missing a required shim
           return null;
+        }
+        if ( s instanceof HasNamedConfiguration ) {
+          HasNamedConfiguration nc = (HasNamedConfiguration) s;
+          nc.loadNamedConfiguration();
         }
         if ( HadoopShim.class.isAssignableFrom( shimType ) ) {
           hadoopShim = (HadoopShim) s;
