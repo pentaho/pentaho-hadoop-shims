@@ -30,13 +30,16 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.Date;
 import java.sql.Driver;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.sql.Types;
+import java.util.Calendar;
 
 /**
  * DriverProxyInvocationChain is a temporary solution for interacting with Hive drivers. At the time this class was
@@ -510,7 +513,6 @@ public class DriverProxyInvocationChain {
    * @param <T> the generic type of object whose methods return ResultSet objects
    */
   private static class CaptureResultSetInvocationHandler<T extends Statement> implements InvocationHandler {
-
     /**
      * The object whose methods return ResultSet objects.
      */
@@ -548,60 +550,77 @@ public class DriverProxyInvocationChain {
             // Intercept PreparedStatement.getMetaData() to see if it throws an exception
             if ( "getMetaData".equals( methodName ) && ( args == null || args.length == 0 ) ) {
               return getProxiedObject( getMetaData() );
-            } else if ( PreparedStatement.class.isInstance( proxy ) && "setObject".equals( methodName )
-              && args.length == 2 && Integer.class.isInstance( args[ 0 ] ) ) {
-              // Intercept PreparedStatement.setObject(position, value)
-              // Set value using value type instead
-              // This should already be fixed in later Hive JDBC versions:
-
+            } else if ( PreparedStatement.class.isInstance( proxy ) ) { 
               PreparedStatement ps = (PreparedStatement) proxy;
-              int parameterIndex = (Integer) args[ 0 ];
-              Object x = args[ 1 ];
-
-              if ( x == null ) {
-                // PreparedStatement.setNull may not be supported
-                ps.setNull( parameterIndex, Types.NULL );
-              } else if ( x instanceof String ) {
-                ps.setString( parameterIndex, (String) x );
-              } else if ( x instanceof Short ) {
-                ps.setShort( parameterIndex, ( (Short) x ).shortValue() );
-              } else if ( x instanceof Integer ) {
-                ps.setInt( parameterIndex, ( (Integer) x ).intValue() );
-              } else if ( x instanceof Long ) {
-                ps.setLong( parameterIndex, ( (Long) x ).longValue() );
-              } else if ( x instanceof Float ) {
-                ps.setFloat( parameterIndex, ( (Float) x ).floatValue() );
-              } else if ( x instanceof Double ) {
-                ps.setDouble( parameterIndex, ( (Double) x ).doubleValue() );
-              } else if ( x instanceof Boolean ) {
-                ps.setBoolean( parameterIndex, ( (Boolean) x ).booleanValue() );
-              } else if ( x instanceof Byte ) {
-                ps.setByte( parameterIndex, ( (Byte) x ).byteValue() );
-              } else if ( x instanceof Character ) {
-                ps.setString( parameterIndex, x.toString() );
-              } else {
-                // Can't infer a type.
-                throw new SQLException( "Type " + x.getClass() + " is not yet supported", cause );
+              if ("setObject".equals( methodName ) && args.length == 2 && Integer.class.isInstance( args[ 0 ] ) ) {
+                // Intercept PreparedStatement.setObject(position, value)
+                // Set value using value type instead
+                // This should already be fixed in later Hive JDBC versions:
+  
+                int parameterIndex = (Integer) args[ 0 ];
+                Object x = args[ 1 ];
+  
+                if ( x == null ) {
+                  // PreparedStatement.setNull may not be supported
+                  ps.setNull( parameterIndex, Types.NULL );
+                } else if ( x instanceof String ) {
+                  ps.setString( parameterIndex, (String) x );
+                } else if ( x instanceof Short ) {
+                  ps.setShort( parameterIndex, ( (Short) x ).shortValue() );
+                } else if ( x instanceof Integer ) {
+                  ps.setInt( parameterIndex, ( (Integer) x ).intValue() );
+                } else if ( x instanceof Long ) {
+                  ps.setLong( parameterIndex, ( (Long) x ).longValue() );
+                } else if ( x instanceof Float ) {
+                  ps.setFloat( parameterIndex, ( (Float) x ).floatValue() );
+                } else if ( x instanceof Double ) {
+                  ps.setDouble( parameterIndex, ( (Double) x ).doubleValue() );
+                } else if ( x instanceof Boolean ) {
+                  ps.setBoolean( parameterIndex, ( (Boolean) x ).booleanValue() );
+                } else if ( x instanceof Byte ) {
+                  ps.setByte( parameterIndex, ( (Byte) x ).byteValue() );
+                } else if ( x instanceof Character ) {
+                  ps.setString( parameterIndex, x.toString() );
+                } else {
+                  // Can't infer a type.
+                  throw new SQLException( "Type " + x.getClass() + " is not yet supported", cause );
+                }
+                return null;
+              } else if ( "setNull".equals( methodName )
+                && args.length == 2 && Integer.class.isInstance( args[ 0 ] ) ) {
+  
+                int parameterIndex = (Integer) args[ 0 ];
+                // Use empty String instead (not ideal, but won't crash)
+                ps.setString( parameterIndex, "" );
+  
+                return null;
+              } else if ( args.length == 3 && Integer.class.isInstance( args[0] )
+                  && java.util.Date.class.isAssignableFrom( method.getParameterTypes()[1] )
+                  && Calendar.class.isAssignableFrom( method.getParameterTypes()[2] ) ) {
+                Integer index = ( Integer ) args[0];
+                if ( args[1] == null ) {
+                  ps.setObject( index, args[1] );
+                  return null;
+                }
+                Calendar calendar;
+                if ( args[2] == null ) {
+                  calendar = Calendar.getInstance();
+                } else {
+                  calendar = Calendar.getInstance( ( ( Calendar ) args[2] ).getTimeZone() );
+                }
+                calendar.setTime( ( java.util.Date ) args[1] );
+                if ( "setTimestamp".equals( methodName ) ) {
+                  ps.setString( index, new Timestamp( calendar.getTimeInMillis() ).toString() );
+                  return null;
+                } else if ( "setDate".equals( methodName ) ) {
+                  ps.setString( index, new Date( calendar.getTimeInMillis() ).toString() );
+                  return null;
+                }
               }
-              return null;
-            } else if ( PreparedStatement.class.isInstance( proxy ) && "setNull".equals( methodName )
-              && args.length == 2 && Integer.class.isInstance( args[ 0 ] ) ) {
-
-              PreparedStatement ps = (PreparedStatement) proxy;
-              int parameterIndex = (Integer) args[ 0 ];
-              // Use empty String instead (not ideal, but won't crash)
-              ps.setString( parameterIndex, "" );
-
-              return null;
-            } else {
-              throw cause;
             }
-          } else {
-            throw cause;
           }
-        } else {
-          throw cause;
         }
+        throw cause;
       }
     }
 
