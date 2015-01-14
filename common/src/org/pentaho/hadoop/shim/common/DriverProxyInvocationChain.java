@@ -590,8 +590,15 @@ public class DriverProxyInvocationChain {
                 && args.length == 2 && Integer.class.isInstance( args[ 0 ] ) ) {
   
                 int parameterIndex = (Integer) args[ 0 ];
-                // Use empty String instead (not ideal, but won't crash)
-                ps.setString( parameterIndex, "" );
+                // Overriding date to get NULL into query with no quotes around it
+                ps.setDate( parameterIndex, new Date( 0 ) {
+                  private static final long serialVersionUID = 1L;
+
+                  @Override
+                  public String toString() {
+                    return "NULL";
+                  };
+                } );
   
                 return null;
               } else if ( args.length == 3 && Integer.class.isInstance( args[0] )
