@@ -539,19 +539,48 @@ public class DriverProxyInvocationChain {
     @Override
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable {
       // try to invoke the method as-is
+      String methodName = method.getName();
+      PreparedStatement ps = (PreparedStatement) proxy;
       try {
-        return getProxiedObject( method.invoke( t, args ) );
+        final boolean isSetTimestamp = "setTimestamp".equals( methodName );
+        if ( isSetTimestamp || "setDate".equals( methodName ) ) {
+          if ( args[1] == null ) {
+            ps.setNull( (Integer) args[0], isSetTimestamp ? Types.TIMESTAMP : Types.DATE );
+          } else {
+            final String value;
+            if ( args.length == 3 && 
+                java.util.Date.class.isAssignableFrom( method.getParameterTypes()[1] ) &&
+                Calendar.class.isAssignableFrom( method.getParameterTypes()[2] ) ) {
+              final Calendar calendar;
+              if ( args[2] == null ) {
+                calendar = Calendar.getInstance();
+              } else {
+                calendar = Calendar.getInstance( ( ( Calendar ) args[2] ).getTimeZone() );
+              }
+              calendar.setTime( ( java.util.Date ) args[1] );
+              if ( isSetTimestamp ) {
+                value = new Timestamp( calendar.getTimeInMillis() ).toString();
+              } else {
+                value = new Date( calendar.getTimeInMillis() ).toString();
+              }
+            } else {
+              value = args[1].toString();
+            }
+            ps.setString( (Integer) args[0], value );
+          }
+          return null;
+        } else {
+          return getProxiedObject( method.invoke( t, args ) );
+        }
       } catch ( InvocationTargetException ite ) {
         Throwable cause = ite.getCause();
 
         if ( cause instanceof SQLException ) {
           if ( cause.getMessage().equals( "Method not supported" ) ) {
-            String methodName = method.getName();
             // Intercept PreparedStatement.getMetaData() to see if it throws an exception
             if ( "getMetaData".equals( methodName ) && ( args == null || args.length == 0 ) ) {
               return getProxiedObject( getMetaData() );
             } else if ( PreparedStatement.class.isInstance( proxy ) ) { 
-              PreparedStatement ps = (PreparedStatement) proxy;
               if ("setObject".equals( methodName ) && args.length == 2 && Integer.class.isInstance( args[ 0 ] ) ) {
                 // Intercept PreparedStatement.setObject(position, value)
                 // Set value using value type instead
@@ -601,28 +630,6 @@ public class DriverProxyInvocationChain {
                 } );
   
                 return null;
-              } else if ( args.length == 3 && Integer.class.isInstance( args[0] )
-                  && java.util.Date.class.isAssignableFrom( method.getParameterTypes()[1] )
-                  && Calendar.class.isAssignableFrom( method.getParameterTypes()[2] ) ) {
-                Integer index = ( Integer ) args[0];
-                if ( args[1] == null ) {
-                  ps.setObject( index, args[1] );
-                  return null;
-                }
-                Calendar calendar;
-                if ( args[2] == null ) {
-                  calendar = Calendar.getInstance();
-                } else {
-                  calendar = Calendar.getInstance( ( ( Calendar ) args[2] ).getTimeZone() );
-                }
-                calendar.setTime( ( java.util.Date ) args[1] );
-                if ( "setTimestamp".equals( methodName ) ) {
-                  ps.setString( index, new Timestamp( calendar.getTimeInMillis() ).toString() );
-                  return null;
-                } else if ( "setDate".equals( methodName ) ) {
-                  ps.setString( index, new Date( calendar.getTimeInMillis() ).toString() );
-                  return null;
-                }
               }
             }
           }
