@@ -540,10 +540,10 @@ public class DriverProxyInvocationChain {
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable {
       // try to invoke the method as-is
       String methodName = method.getName();
-      PreparedStatement ps = (PreparedStatement) proxy;
       try {
         final boolean isSetTimestamp = "setTimestamp".equals( methodName );
-        if ( isSetTimestamp || "setDate".equals( methodName ) ) {
+        if ( PreparedStatement.class.isInstance( proxy ) && ( isSetTimestamp || "setDate".equals( methodName ) ) ) {
+          PreparedStatement ps = (PreparedStatement) proxy;
           if ( args[1] == null ) {
             ps.setNull( (Integer) args[0], isSetTimestamp ? Types.TIMESTAMP : Types.DATE );
           } else {
@@ -581,6 +581,7 @@ public class DriverProxyInvocationChain {
             if ( "getMetaData".equals( methodName ) && ( args == null || args.length == 0 ) ) {
               return getProxiedObject( getMetaData() );
             } else if ( PreparedStatement.class.isInstance( proxy ) ) { 
+              PreparedStatement ps = (PreparedStatement) proxy;
               if ("setObject".equals( methodName ) && args.length == 2 && Integer.class.isInstance( args[ 0 ] ) ) {
                 // Intercept PreparedStatement.setObject(position, value)
                 // Set value using value type instead
