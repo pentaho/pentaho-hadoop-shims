@@ -63,6 +63,15 @@ public class DriverProxyInvocationChain {
    * The initialized.
    */
   private static boolean initialized = false;
+  
+  private static final Date NULL_DATE = new Date( 0 ) {
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public String toString() {
+      return "NULL";
+    };
+  };
 
   /**
    * The hive1 db meta data class.
@@ -542,7 +551,11 @@ public class DriverProxyInvocationChain {
       String methodName = method.getName();
       try {
         final boolean isSetTimestamp = "setTimestamp".equals( methodName );
-        if ( PreparedStatement.class.isInstance( proxy ) && ( isSetTimestamp || "setDate".equals( methodName ) ) ) {
+        // We want to intercept all setTimestamp and date calls to set them as a string instead,
+        // Causing hive driver to put single quotes around them
+        // Exception to this is the NULL_DATE date which signifies that we're explicitly
+        // Trying to get NULL into the paramter map without quotes around it
+        if ( PreparedStatement.class.isInstance( proxy ) && ( isSetTimestamp || "setDate".equals( methodName ) ) && args[1] != NULL_DATE ) {
           PreparedStatement ps = (PreparedStatement) proxy;
           if ( args[1] == null ) {
             ps.setNull( (Integer) args[0], isSetTimestamp ? Types.TIMESTAMP : Types.DATE );
@@ -621,14 +634,7 @@ public class DriverProxyInvocationChain {
   
                 int parameterIndex = (Integer) args[ 0 ];
                 // Overriding date to get NULL into query with no quotes around it
-                ps.setDate( parameterIndex, new Date( 0 ) {
-                  private static final long serialVersionUID = 1L;
-
-                  @Override
-                  public String toString() {
-                    return "NULL";
-                  };
-                } );
+                ps.setDate( parameterIndex, NULL_DATE );
   
                 return null;
               }
