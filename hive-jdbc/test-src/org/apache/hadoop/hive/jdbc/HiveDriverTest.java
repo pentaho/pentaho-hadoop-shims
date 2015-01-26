@@ -1,24 +1,24 @@
 /*******************************************************************************
-*
-* Pentaho Big Data
-*
-* Copyright (C) 2002-2014 by Pentaho : http://www.pentaho.com
-*
-*******************************************************************************
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with
-* the License. You may obtain a copy of the License at
-*
-*    http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-******************************************************************************/
+ *
+ * Pentaho Big Data
+ *
+ * Copyright (C) 2002-2014 by Pentaho : http://www.pentaho.com
+ *
+ *******************************************************************************
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ ******************************************************************************/
 
 package org.apache.hadoop.hive.jdbc;
 
@@ -34,21 +34,22 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.Test;
 import org.pentaho.hadoop.hive.jdbc.HadoopConfigurationUtil;
+import org.pentaho.hadoop.hive.jdbc.JDBCDriverCallable;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 import org.pentaho.hadoop.shim.spi.MockHadoopShim;
 
 public class HiveDriverTest {
 
-  private HadoopShim getMockShimWithDriver(final Driver driver) {
+  private HadoopShim getMockShimWithDriver( final Driver driver ) {
     return new MockHadoopShim() {
       @Override
-      public Driver getJdbcDriver(String scheme) {
-        return scheme.equalsIgnoreCase("hive") ? driver : null;
+      public Driver getJdbcDriver( String scheme ) {
+        return scheme.equalsIgnoreCase( "hive" ) ? driver : null;
       }
     };
   }
 
-  private HadoopConfigurationUtil getMockUtil(final HadoopShim shim) {
+  private HadoopConfigurationUtil getMockUtil( final HadoopShim shim ) {
     return new HadoopConfigurationUtil() {
       @Override
       public Object getActiveHadoopShim() throws Exception {
@@ -57,97 +58,122 @@ public class HiveDriverTest {
     };
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test( expected = NullPointerException.class )
   public void instantiation_no_util() {
-    new HiveDriver(null);
+    new HiveDriver( null );
   }
 
   @Test
   public void getActiveDriver() throws SQLException {
-    final AtomicBoolean called = new AtomicBoolean(false);
+    final AtomicBoolean called = new AtomicBoolean( false );
     HadoopShim shim = new MockHadoopShim() {
 
-      public java.sql.Driver getJdbcDriver(String scheme) {
-        if(scheme.equalsIgnoreCase("hive")) {
-          called.set(true);
+      public java.sql.Driver getJdbcDriver( String scheme ) {
+        if ( scheme.equalsIgnoreCase( "hive" ) ) {
+          called.set( true );
           return new MockDriver();
+        } else {
+          return null;
         }
-        else return null;
       }
     };
-    HiveDriver d = new HiveDriver(getMockUtil(shim));
+    HiveDriver d = new HiveDriver( getMockUtil( shim ) );
     d.getActiveDriver();
     assertTrue( "Shim's getJdbcDriver(\"hive\") not called", called.get() );
   }
 
   @Test
-  public void getActiveDriver_exception_in_getJdbcDriver() {
+  public void getActiveDriver_exception_in_getJdbcDriver() throws Exception {
     HadoopShim shim = new MockHadoopShim() {
-      public java.sql.Driver getJdbcDriver(String scheme) {
-        if(scheme.equalsIgnoreCase("hive")) {
+      public java.sql.Driver getJdbcDriver( String scheme ) {
+        if ( scheme.equalsIgnoreCase( "hive" ) ) {
           throw new RuntimeException();
-        }
-        else {
+        } else {
           return null;
         }
       }
     };
-    HiveDriver d = new HiveDriver(getMockUtil(shim));
 
     try {
+      HiveDriver d = new HiveDriver( getMockUtil( shim ) );
       d.getActiveDriver();
-      fail("Expected exception");
-    } catch (SQLException ex) {
+      fail( "Expected exception" );
+    } catch ( SQLException ex ) {
       assertEquals( InvocationTargetException.class, ex.getCause().getClass() );
-      assertEquals("Unable to load Hive JDBC driver for the currently active Hadoop configuration", ex.getMessage());
+      assertEquals( "Unable to load Hive JDBC driver for the currently active Hadoop configuration", ex.getMessage() );
     }
   }
 
   @Test
-  public void getActiveDriver_null_driver() {
+  public void getActiveDriver_null_driver() throws Exception {
     HadoopShim shim = new MockHadoopShim() {
-      public java.sql.Driver getJdbcDriver(String scheme) {
+      public java.sql.Driver getJdbcDriver( String scheme ) {
         return null;
       }
     };
-    HiveDriver d = new HiveDriver(getMockUtil(shim));
+    HiveDriver d = new HiveDriver( getMockUtil( shim ) );
 
-    try {
-      d.getActiveDriver();
-      fail("Expected exception");
-    } catch (SQLException ex) {
-      assertNull(ex.getCause());
-      assertEquals("The active Hadoop configuration does not contain a Hive JDBC driver", ex.getMessage());
-    }
+    assertNull( d.getActiveDriver() );
   }
 
   @Test
-  public void getActiveDriver_same_driver() {
+  public void getActiveDriver_same_driver() throws Exception {
     HadoopShim shim = new MockHadoopShim() {
-      public java.sql.Driver getJdbcDriver(String scheme) {
-     // Return another shim driver. This should fail when called since the
+      public java.sql.Driver getJdbcDriver( String scheme ) {
+        // Return another shim driver. This should fail when called since the
         // classes are the same
-        return (scheme.equalsIgnoreCase("hive")) ? new HiveDriver() : null;
+        return ( scheme.equalsIgnoreCase( "hive" ) ) ? new HiveDriver() : null;
       }
     };
-    HiveDriver d = new HiveDriver(getMockUtil(shim));
+    HiveDriver d = new HiveDriver( getMockUtil( shim ) );
 
-    try {
-      d.getActiveDriver();
-      fail( "Expected exception" );
-    } catch (SQLException ex) {
-      assertNull(ex.getCause());
-      assertEquals( "The active Hadoop configuration does not contain a Hive JDBC driver", ex.getMessage() );
-    }
+    assertNull( d.getActiveDriver() );
   }
 
+  @Test( expected = SQLException.class )
+  public void callWithActiveDriver_same_driver() throws Exception {
+    HadoopShim shim = new MockHadoopShim() {
+      public java.sql.Driver getJdbcDriver( String scheme ) {
+        // Return another shim driver. This should fail when called since the
+        // classes are the same
+        return ( scheme.equalsIgnoreCase( "hive" ) ) ? new HiveDriver() : null;
+      }
+    };
+    HiveDriver d = new HiveDriver( getMockUtil( shim ) );
+
+    d.callWithActiveDriver( new JDBCDriverCallable<String>() {
+      @Override
+      public String call() throws Exception {
+        return "test";
+      }
+    } );
+  }
+
+  @Test( expected = SQLException.class )
+  public void callWithActiveDriver_null_driver() throws Exception {
+    HadoopShim shim = new MockHadoopShim() {
+      public java.sql.Driver getJdbcDriver( String scheme ) {
+        // Return another shim driver. This should fail when called since the
+        // classes are the same
+        return null;
+      }
+    };
+    HiveDriver d = new HiveDriver( getMockUtil( shim ) );
+
+    d.callWithActiveDriver( new JDBCDriverCallable<String>() {
+      @Override
+      public String call() throws Exception {
+        return "test";
+      }
+    } );
+  }
   @Test
   public void connect() throws SQLException {
-    final AtomicBoolean connectCalled = new AtomicBoolean(false);
-    final AtomicBoolean acceptsUrlCalled = new AtomicBoolean(false);
+    final AtomicBoolean connectCalled = new AtomicBoolean( false );
+    final AtomicBoolean acceptsUrlCalled = new AtomicBoolean( false );
     Driver driver = new MockDriver() {
       @Override
-      public Connection connect(String url, Properties info) throws SQLException {
+      public Connection connect( String url, Properties info ) throws SQLException {
         connectCalled.set( true );
         return null;
       }
@@ -158,7 +184,7 @@ public class HiveDriverTest {
         return true;
       }
     };
-    HiveDriver d = new HiveDriver(getMockUtil(getMockShimWithDriver(driver)));
+    HiveDriver d = new HiveDriver( getMockUtil( getMockShimWithDriver( driver ) ) );
 
     d.connect( null, null );
     assertTrue( connectCalled.get() && acceptsUrlCalled.get() );
@@ -166,26 +192,26 @@ public class HiveDriverTest {
 
   @Test
   public void acceptsURL() throws SQLException {
-    final AtomicBoolean called = new AtomicBoolean(false);
+    final AtomicBoolean called = new AtomicBoolean( false );
     Driver driver = new MockDriver() {
       @Override
-      public boolean acceptsURL(String url) throws SQLException {
-        called.set(true);
+      public boolean acceptsURL( String url ) throws SQLException {
+        called.set( true );
         return false;
       }
     };
-    HiveDriver d = new HiveDriver(getMockUtil(getMockShimWithDriver(driver)));
+    HiveDriver d = new HiveDriver( getMockUtil( getMockShimWithDriver( driver ) ) );
 
     d.acceptsURL( null );
-    assertTrue(called.get());
+    assertTrue( called.get() );
   }
 
   @Test
   public void acceptsURL_no_driver() throws SQLException {
-    final AtomicBoolean called = new AtomicBoolean(false);
+    final AtomicBoolean called = new AtomicBoolean( false );
     HadoopShim shim = new MockHadoopShim() {
       @Override
-      public Driver getJdbcDriver(String scheme) {
+      public Driver getJdbcDriver( String scheme ) {
         return null;
       }
     };
@@ -197,34 +223,34 @@ public class HiveDriverTest {
 
   @Test
   public void getPropertyInfo() throws SQLException {
-    final AtomicBoolean called = new AtomicBoolean(false);
+    final AtomicBoolean called = new AtomicBoolean( false );
     Driver driver = new MockDriver() {
       @Override
-      public DriverPropertyInfo[] getPropertyInfo(String url, Properties info) throws SQLException {
-        called.set(true);
+      public DriverPropertyInfo[] getPropertyInfo( String url, Properties info ) throws SQLException {
+        called.set( true );
         return null;
       }
     };
-    HiveDriver d = new HiveDriver(getMockUtil(getMockShimWithDriver(driver)));
+    HiveDriver d = new HiveDriver( getMockUtil( getMockShimWithDriver( driver ) ) );
 
-    d.getPropertyInfo(null, null);
-    assertTrue(called.get());
+    d.getPropertyInfo( null, null );
+    assertTrue( called.get() );
   }
 
   @Test
   public void getMajorVersion() throws SQLException {
-    final AtomicBoolean called = new AtomicBoolean(false);
+    final AtomicBoolean called = new AtomicBoolean( false );
     Driver driver = new MockDriver() {
       @Override
       public int getMajorVersion() {
-        called.set(true);
+        called.set( true );
         return 0;
       }
     };
-    HiveDriver d = new HiveDriver(getMockUtil(getMockShimWithDriver(driver)));
+    HiveDriver d = new HiveDriver( getMockUtil( getMockShimWithDriver( driver ) ) );
 
     d.getMajorVersion();
-    assertTrue(called.get());
+    assertTrue( called.get() );
   }
 
   @Test
@@ -235,26 +261,26 @@ public class HiveDriverTest {
         throw new NullPointerException();
       }
     };
-    HiveDriver d = new HiveDriver(getMockUtil(getMockShimWithDriver(driver)));
+    HiveDriver d = new HiveDriver( getMockUtil( getMockShimWithDriver( driver ) ) );
 
     // If an exception is thrown the version returned should be -1
-    assertEquals(-1, d.getMajorVersion());
+    assertEquals( -1, d.getMajorVersion() );
   }
 
   @Test
   public void getMinorVersion() throws SQLException {
-    final AtomicBoolean called = new AtomicBoolean(false);
+    final AtomicBoolean called = new AtomicBoolean( false );
     Driver driver = new MockDriver() {
       @Override
       public int getMinorVersion() {
-        called.set(true);
+        called.set( true );
         return 0;
       }
     };
-    HiveDriver d = new HiveDriver(getMockUtil(getMockShimWithDriver(driver)));
+    HiveDriver d = new HiveDriver( getMockUtil( getMockShimWithDriver( driver ) ) );
 
     d.getMinorVersion();
-    assertTrue(called.get());
+    assertTrue( called.get() );
   }
 
   @Test
@@ -265,26 +291,26 @@ public class HiveDriverTest {
         throw new NullPointerException();
       }
     };
-    HiveDriver d = new HiveDriver(getMockUtil(getMockShimWithDriver(driver)));
+    HiveDriver d = new HiveDriver( getMockUtil( getMockShimWithDriver( driver ) ) );
 
     // If an exception is thrown the version returned should be -1
-    assertEquals(-1, d.getMinorVersion());
+    assertEquals( -1, d.getMinorVersion() );
   }
 
   @Test
   public void jdbcCompliant() throws SQLException {
-    final AtomicBoolean called = new AtomicBoolean(false);
+    final AtomicBoolean called = new AtomicBoolean( false );
     Driver driver = new MockDriver() {
       @Override
       public boolean jdbcCompliant() {
-        called.set(true);
+        called.set( true );
         return false;
       }
     };
-    HiveDriver d = new HiveDriver(getMockUtil(getMockShimWithDriver(driver)));
+    HiveDriver d = new HiveDriver( getMockUtil( getMockShimWithDriver( driver ) ) );
 
     d.jdbcCompliant();
-    assertTrue(called.get());
+    assertTrue( called.get() );
   }
 
   @Test
@@ -295,9 +321,9 @@ public class HiveDriverTest {
         throw new NullPointerException();
       }
     };
-    HiveDriver d = new HiveDriver(getMockUtil(getMockShimWithDriver(driver)));
+    HiveDriver d = new HiveDriver( getMockUtil( getMockShimWithDriver( driver ) ) );
 
     // should return false if there is an exception
-    assertFalse(d.jdbcCompliant());
+    assertFalse( d.jdbcCompliant() );
   }
 }

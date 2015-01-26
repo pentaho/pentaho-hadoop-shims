@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2014 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -101,7 +101,7 @@ public class ImpalaDriver extends HiveDriver {
     // doesn't contain one since it'll be found in one of the parent class loaders
     // so we also need to make sure we didn't return ourself... :)
     if ( driver == null || driver.getClass() == this.getClass() ) {
-      throw new SQLException( "The active Hadoop configuration does not contain a Impala JDBC driver" );
+      driver = null;
     }
 
     return driver;
