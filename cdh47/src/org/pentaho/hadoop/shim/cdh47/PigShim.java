@@ -19,7 +19,7 @@
  * limitations under the License.
  *
  ******************************************************************************/
-package org.pentaho.hadoop.shim.cdh42;
+package org.pentaho.hadoop.shim.cdh47;
 
 import org.apache.pig.PigServer;
 import org.apache.pig.tools.grunt.GruntParser;
