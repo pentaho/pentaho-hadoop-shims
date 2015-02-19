@@ -1,0 +1,27 @@
+<!--===========================================================================
+  This is the build file for the Hadoop EMR 3.2 Shim modules.
+  
+  See ../build-res/subfloor.xml for more details
+============================================================================-->
+<project name="pentaho-hadoop-shims-emr32" basedir="." default="dist"
+  xmlns:ivy="antlib:org.apache.ivy.ant" >
+  <property name="lib.pmr.dir" value="lib-provided/pmr" description="Ivy dependencies of 'pmr' configuration are placed here. Placed under lib/ so they are packaged that way."/>
+   <property name="lib.client.dir" value="lib-provided/client" description="Ivy dependencies of 'client' configuration are placed here. Placed under lib/ so they are packaged that way."/>
+  <description>
+    This build file is used to create the Hadoop EMR 3.2 Shim module for the Big Data plugin
+    and is based off Subfloor (../build-res/subfloor.xml)
+  </description>
+
+  <import file="../common-shims-build.xml"/>
+
+  <target name="assemble.copy-libs">
+      <copy todir="${approot.stage.dir}/lib">
+        <fileset dir="${lib.provided.dir}" />
+        <fileset file="${dist.dir}/${mapred.artifact.name}" />
+      </copy>
+      <copy todir="${approot.stage.dir}">
+        <fileset file="${dist.dir}/${ivy.artifact.id}-${project.revision}.jar" />
+        <fileset file="${dist.dir}/${hbase-comparators.artifact.name}" />
+      </copy>
+    </target>
+</project>
