@@ -2,7 +2,7 @@
 *
 * Pentaho Big Data
 *
-* Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
+* Copyright (C) 2002-2014 by Pentaho : http://www.pentaho.com
 *
 *******************************************************************************
 *
@@ -20,24 +20,8 @@
 *
 ******************************************************************************/
 
-package org.pentaho.hadoop.shim.cdh42;
+package org.pentaho.hadoop.shim.hdp22.authorization;
 
-
-import org.apache.hive.jdbc.HiveDriver;
-import org.pentaho.hadoop.shim.common.CommonHadoopShim;
-
-public class HadoopShim extends CommonHadoopShim {
-  
-  static {
-    JDBC_DRIVER_MAP.put("hive2",org.apache.hive.jdbc.HiveDriver.class); 
-  }
-  @Override
-  protected String getDefaultNamenodePort() {
-    return "8020";
-  }
-  
-  @Override
-  protected String getDefaultJobtrackerPort() {
-    return "8021";
-  }
+public interface HasHadoopAuthorizationService {
+  public void setHadoopAuthorizationService( HadoopAuthorizationService hadoopAuthorizationService ) throws Exception;
 }

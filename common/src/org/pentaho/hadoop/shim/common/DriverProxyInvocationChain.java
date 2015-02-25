@@ -30,13 +30,16 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.Date;
 import java.sql.Driver;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.sql.Types;
+import java.util.Calendar;
 
 /**
  * DriverProxyInvocationChain is a temporary solution for interacting with Hive drivers. At the time this class was
@@ -60,6 +63,15 @@ public class DriverProxyInvocationChain {
    * The initialized.
    */
   private static boolean initialized = false;
+  
+  private static final Date NULL_DATE = new Date( 0 ) {
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public String toString() {
+      return "NULL";
+    };
+  };
 
   /**
    * The hive1 db meta data class.
@@ -510,7 +522,6 @@ public class DriverProxyInvocationChain {
    * @param <T> the generic type of object whose methods return ResultSet objects
    */
   private static class CaptureResultSetInvocationHandler<T extends Statement> implements InvocationHandler {
-
     /**
      * The object whose methods return ResultSet objects.
      */
@@ -537,71 +548,100 @@ public class DriverProxyInvocationChain {
     @Override
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable {
       // try to invoke the method as-is
+      String methodName = method.getName();
       try {
-        return getProxiedObject( method.invoke( t, args ) );
+        final boolean isSetTimestamp = "setTimestamp".equals( methodName );
+        // We want to intercept all setTimestamp and date calls to set them as a string instead,
+        // Causing hive driver to put single quotes around them
+        // Exception to this is the NULL_DATE date which signifies that we're explicitly
+        // Trying to get NULL into the paramter map without quotes around it
+        if ( PreparedStatement.class.isInstance( proxy ) && ( isSetTimestamp || "setDate".equals( methodName ) ) && args[1] != NULL_DATE ) {
+          PreparedStatement ps = (PreparedStatement) proxy;
+          if ( args[1] == null ) {
+            ps.setNull( (Integer) args[0], isSetTimestamp ? Types.TIMESTAMP : Types.DATE );
+          } else {
+            final String value;
+            if ( args.length == 3 && 
+                java.util.Date.class.isAssignableFrom( method.getParameterTypes()[1] ) &&
+                Calendar.class.isAssignableFrom( method.getParameterTypes()[2] ) ) {
+              final Calendar calendar;
+              if ( args[2] == null ) {
+                calendar = Calendar.getInstance();
+              } else {
+                calendar = Calendar.getInstance( ( ( Calendar ) args[2] ).getTimeZone() );
+              }
+              calendar.setTime( ( java.util.Date ) args[1] );
+              if ( isSetTimestamp ) {
+                value = new Timestamp( calendar.getTimeInMillis() ).toString();
+              } else {
+                value = new Date( calendar.getTimeInMillis() ).toString();
+              }
+            } else {
+              value = args[1].toString();
+            }
+            ps.setString( (Integer) args[0], value );
+          }
+          return null;
+        } else {
+          return getProxiedObject( method.invoke( t, args ) );
+        }
       } catch ( InvocationTargetException ite ) {
         Throwable cause = ite.getCause();
 
         if ( cause instanceof SQLException ) {
           if ( cause.getMessage().equals( "Method not supported" ) ) {
-            String methodName = method.getName();
             // Intercept PreparedStatement.getMetaData() to see if it throws an exception
             if ( "getMetaData".equals( methodName ) && ( args == null || args.length == 0 ) ) {
               return getProxiedObject( getMetaData() );
-            } else if ( PreparedStatement.class.isInstance( proxy ) && "setObject".equals( methodName )
-              && args.length == 2 && Integer.class.isInstance( args[ 0 ] ) ) {
-              // Intercept PreparedStatement.setObject(position, value)
-              // Set value using value type instead
-              // This should already be fixed in later Hive JDBC versions:
-
+            } else if ( PreparedStatement.class.isInstance( proxy ) ) { 
               PreparedStatement ps = (PreparedStatement) proxy;
-              int parameterIndex = (Integer) args[ 0 ];
-              Object x = args[ 1 ];
-
-              if ( x == null ) {
-                // PreparedStatement.setNull may not be supported
-                ps.setNull( parameterIndex, Types.NULL );
-              } else if ( x instanceof String ) {
-                ps.setString( parameterIndex, (String) x );
-              } else if ( x instanceof Short ) {
-                ps.setShort( parameterIndex, ( (Short) x ).shortValue() );
-              } else if ( x instanceof Integer ) {
-                ps.setInt( parameterIndex, ( (Integer) x ).intValue() );
-              } else if ( x instanceof Long ) {
-                ps.setLong( parameterIndex, ( (Long) x ).longValue() );
-              } else if ( x instanceof Float ) {
-                ps.setFloat( parameterIndex, ( (Float) x ).floatValue() );
-              } else if ( x instanceof Double ) {
-                ps.setDouble( parameterIndex, ( (Double) x ).doubleValue() );
-              } else if ( x instanceof Boolean ) {
-                ps.setBoolean( parameterIndex, ( (Boolean) x ).booleanValue() );
-              } else if ( x instanceof Byte ) {
-                ps.setByte( parameterIndex, ( (Byte) x ).byteValue() );
-              } else if ( x instanceof Character ) {
-                ps.setString( parameterIndex, x.toString() );
-              } else {
-                // Can't infer a type.
-                throw new SQLException( "Type " + x.getClass() + " is not yet supported", cause );
+              if ("setObject".equals( methodName ) && args.length == 2 && Integer.class.isInstance( args[ 0 ] ) ) {
+                // Intercept PreparedStatement.setObject(position, value)
+                // Set value using value type instead
+                // This should already be fixed in later Hive JDBC versions:
+  
+                int parameterIndex = (Integer) args[ 0 ];
+                Object x = args[ 1 ];
+  
+                if ( x == null ) {
+                  // PreparedStatement.setNull may not be supported
+                  ps.setNull( parameterIndex, Types.NULL );
+                } else if ( x instanceof String ) {
+                  ps.setString( parameterIndex, (String) x );
+                } else if ( x instanceof Short ) {
+                  ps.setShort( parameterIndex, ( (Short) x ).shortValue() );
+                } else if ( x instanceof Integer ) {
+                  ps.setInt( parameterIndex, ( (Integer) x ).intValue() );
+                } else if ( x instanceof Long ) {
+                  ps.setLong( parameterIndex, ( (Long) x ).longValue() );
+                } else if ( x instanceof Float ) {
+                  ps.setFloat( parameterIndex, ( (Float) x ).floatValue() );
+                } else if ( x instanceof Double ) {
+                  ps.setDouble( parameterIndex, ( (Double) x ).doubleValue() );
+                } else if ( x instanceof Boolean ) {
+                  ps.setBoolean( parameterIndex, ( (Boolean) x ).booleanValue() );
+                } else if ( x instanceof Byte ) {
+                  ps.setByte( parameterIndex, ( (Byte) x ).byteValue() );
+                } else if ( x instanceof Character ) {
+                  ps.setString( parameterIndex, x.toString() );
+                } else {
+                  // Can't infer a type.
+                  throw new SQLException( "Type " + x.getClass() + " is not yet supported", cause );
+                }
+                return null;
+              } else if ( "setNull".equals( methodName )
+                && args.length == 2 && Integer.class.isInstance( args[ 0 ] ) ) {
+  
+                int parameterIndex = (Integer) args[ 0 ];
+                // Overriding date to get NULL into query with no quotes around it
+                ps.setDate( parameterIndex, NULL_DATE );
+  
+                return null;
               }
-              return null;
-            } else if ( PreparedStatement.class.isInstance( proxy ) && "setNull".equals( methodName )
-              && args.length == 2 && Integer.class.isInstance( args[ 0 ] ) ) {
-
-              PreparedStatement ps = (PreparedStatement) proxy;
-              int parameterIndex = (Integer) args[ 0 ];
-              // Use empty String instead (not ideal, but won't crash)
-              ps.setString( parameterIndex, "" );
-
-              return null;
-            } else {
-              throw cause;
             }
-          } else {
-            throw cause;
           }
-        } else {
-          throw cause;
         }
+        throw cause;
       }
     }
 
