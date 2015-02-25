@@ -26,6 +26,7 @@ import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.security.UserGroupInformation;
 import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.common.ShimUtils;
 
@@ -38,16 +39,33 @@ public class ConfigurationProxyV2 implements Configuration {
 
   private Job job;
 
+  protected class JobProxy extends Job {
+    private JobProxy( JobConf conf ) throws IOException {
+      super( conf );
+    }
+
+    void refreshUGI() {
+      try {
+        this.ugi = UserGroupInformation.getCurrentUser();
+      } catch ( IOException e ) {
+        throw new RuntimeException( e );
+      }
+    }
+  }
+
   public ConfigurationProxyV2() throws IOException {
-    job = Job.getInstance();
-    getJobConf().addResource( "hdfs-site.xml" );
+    // create with a null Cluster
+    JobConf jobConf = new JobConf( new org.apache.hadoop.conf.Configuration() );
+    job = new JobProxy( jobConf );
+    job.getConfiguration().addResource( "hdfs-site.xml" );
   }
 
   public JobConf getJobConf() {
-    return (JobConf) job.getConfiguration();
+    return (JobConf) getJob().getConfiguration();
   }
 
   public Job getJob() {
+    ( (JobProxy) job ).refreshUGI();
     return job;
   }
 
@@ -58,7 +76,7 @@ public class ConfigurationProxyV2 implements Configuration {
    */
   @Override
   public void setJobName( String jobName ) {
-    job.setJobName( jobName );
+    getJob().setJobName( jobName );
   }
 
   /**
@@ -102,7 +120,7 @@ public class ConfigurationProxyV2 implements Configuration {
    */
   @Override
   public void setMapOutputKeyClass( Class<?> c ) {
-    job.setMapOutputKeyClass( c );
+    getJob().setMapOutputKeyClass( c );
   }
 
   /**
@@ -112,7 +130,7 @@ public class ConfigurationProxyV2 implements Configuration {
    */
   @Override
   public void setMapOutputValueClass( Class<?> c ) {
-    job.setMapOutputValueClass( c );
+    getJob().setMapOutputValueClass( c );
   }
 
   @SuppressWarnings( "unchecked" )
@@ -122,7 +140,7 @@ public class ConfigurationProxyV2 implements Configuration {
       setUseOldMapApi();
       getJobConf().setMapperClass( (Class<? extends org.apache.hadoop.mapred.Mapper>) c );
     } else if ( org.apache.hadoop.mapreduce.Mapper.class.isAssignableFrom( c ) ) {
-      job.setMapperClass( (Class<? extends org.apache.hadoop.mapreduce.Mapper>) c );
+      getJob().setMapperClass( (Class<? extends org.apache.hadoop.mapreduce.Mapper>) c );
     }
   }
 
@@ -137,7 +155,7 @@ public class ConfigurationProxyV2 implements Configuration {
       setUseOldRedApi();
       getJobConf().setCombinerClass( (Class<? extends org.apache.hadoop.mapred.Reducer>) c );
     } else if ( org.apache.hadoop.mapreduce.Reducer.class.isAssignableFrom( c ) ) {
-      job.setCombinerClass( (Class<? extends org.apache.hadoop.mapreduce.Reducer>) c );
+      getJob().setCombinerClass( (Class<? extends org.apache.hadoop.mapreduce.Reducer>) c );
     }
   }
 
@@ -152,18 +170,18 @@ public class ConfigurationProxyV2 implements Configuration {
       setUseOldRedApi();
       getJobConf().setReducerClass( (Class<? extends org.apache.hadoop.mapred.Reducer>) c );
     } else if ( org.apache.hadoop.mapreduce.Reducer.class.isAssignableFrom( c ) ) {
-      job.setReducerClass( (Class<? extends org.apache.hadoop.mapreduce.Reducer>) c );
+      getJob().setReducerClass( (Class<? extends org.apache.hadoop.mapreduce.Reducer>) c );
     }
   }
 
   @Override
   public void setOutputKeyClass( Class<?> c ) {
-    job.setOutputKeyClass( c );
+    getJob().setOutputKeyClass( c );
   }
 
   @Override
   public void setOutputValueClass( Class<?> c ) {
-    job.setOutputValueClass( c );
+    getJob().setOutputValueClass( c );
   }
 
   @SuppressWarnings( "unchecked" )
@@ -181,7 +199,7 @@ public class ConfigurationProxyV2 implements Configuration {
       setUseOldMapApi();
       getJobConf().setInputFormat( (Class<? extends org.apache.hadoop.mapred.InputFormat>) inputFormat );
     } else if ( org.apache.hadoop.mapreduce.InputFormat.class.isAssignableFrom( inputFormat ) ) {
-      job.setInputFormatClass( (Class<? extends org.apache.hadoop.mapreduce.InputFormat>) inputFormat );
+      getJob().setInputFormatClass( (Class<? extends org.apache.hadoop.mapreduce.InputFormat>) inputFormat );
     }
   }
 
@@ -195,7 +213,7 @@ public class ConfigurationProxyV2 implements Configuration {
       }
       getJobConf().setOutputFormat( (Class<? extends org.apache.hadoop.mapred.OutputFormat>) outputFormat );
     } else if ( org.apache.hadoop.mapreduce.OutputFormat.class.isAssignableFrom( outputFormat ) ) {
-      job.setOutputFormatClass( (Class<? extends org.apache.hadoop.mapreduce.OutputFormat>) outputFormat );
+      getJob().setOutputFormatClass( (Class<? extends org.apache.hadoop.mapreduce.OutputFormat>) outputFormat );
     }
   }
 
@@ -209,7 +227,7 @@ public class ConfigurationProxyV2 implements Configuration {
       actualPaths[ i ] = ShimUtils.asPath( paths[ i ] );
     }
     try {
-      FileInputFormat.setInputPaths( job, actualPaths );
+      FileInputFormat.setInputPaths( getJob(), actualPaths );
     } catch ( IOException e ) {
       e.printStackTrace();
     }
@@ -217,17 +235,17 @@ public class ConfigurationProxyV2 implements Configuration {
 
   @Override
   public void setOutputPath( org.pentaho.hadoop.shim.api.fs.Path path ) {
-    FileOutputFormat.setOutputPath( job, ShimUtils.asPath( path ) );
+    FileOutputFormat.setOutputPath( getJob(), ShimUtils.asPath( path ) );
   }
 
   @Override
   public void setJarByClass( Class<?> c ) {
-    job.setJarByClass( c );
+    getJob().setJarByClass( c );
   }
 
   @Override
   public void setJar( String url ) {
-    job.setJar( url );
+    getJob().setJar( url );
   }
 
   /**
@@ -252,7 +270,7 @@ public class ConfigurationProxyV2 implements Configuration {
    */
   @Override
   public void setNumReduceTasks( int n ) {
-    job.setNumReduceTasks( n );
+    getJob().setNumReduceTasks( n );
   }
 
   /**
