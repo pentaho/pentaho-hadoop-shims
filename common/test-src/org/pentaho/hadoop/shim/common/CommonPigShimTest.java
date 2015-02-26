@@ -38,17 +38,7 @@ public class CommonPigShimTest {
   class TestPigShim extends CommonPigShim {
     @Override public int[] executeScript( String pigScript, ExecutionMode executionMode, Properties properties )
       throws Exception {
-      ClassLoader cl = Thread.currentThread().getContextClassLoader();
-      Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
-      try {
-        PigServer pigServer = new PigServer( getExecType( executionMode ), properties );
-        GruntParser grunt = new GruntParser( new StringReader( pigScript ) );
-        grunt.setInteractive( false );
-        grunt.setParams( pigServer );
-        return grunt.parseStopOnError( false );
-      } finally {
-        Thread.currentThread().setContextClassLoader( cl );
-      }
+      return new int[0];
     }
   }
 
