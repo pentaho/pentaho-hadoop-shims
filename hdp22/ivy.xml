@@ -109,10 +109,5 @@
     <!--  Exclude xerces, it's provided and will wreak havoc if there are multiple instances / versions -->
     <exclude org="xml-apis" module="xml-apis" conf="*" />
     <exclude org="xerces" module="xercesImpl" conf="*" />
-
-    <!-- Temporarily exclude to avoid build issue. -->
-    <exclude org="org.pentaho" module="pentaho-aggdesigner-algorithm"/>
-    <exclude org="org.mortbay.jetty" module="jetty"/>
-    <exclude org="org.mortbay.jetty" module="jetty-util"/>
   </dependencies>
 </ivy-module>
