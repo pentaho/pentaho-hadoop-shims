@@ -27,9 +27,9 @@
     <dependency conf="client->default" org="commons-httpclient" name="commons-httpclient" rev="${dependency.commons-httpclient.revision}" transitive="false" />
     <dependency conf="client->default" org="commons-net" name="commons-net" rev="${dependency.commons-net.revision}" transitive="false" />
 
-    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-common" rev="${dependency.hadoop.revision}" />
-    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-hdfs" rev="${dependency.hadoop.revision}" />
-    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-mapreduce-client" rev="${dependency.hadoop.revision}" >
+    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-common" rev="${dependency.hadoop.revision}" transitive="false"/>
+    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-hdfs" rev="${dependency.hadoop.revision}" transitive="false"/>
+    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-mapreduce-client" rev="${dependency.hadoop.revision}" transitive="false">
       <!-- <exclude name="a.*" matcher="regexp" />
       <exclude name="commons-beanutils.*" matcher="regexp" />
       <exclude name="commons-collections" />
@@ -46,10 +46,11 @@
       <exclude name="junit" />
       <exclude name="s.*" matcher="regexp" />-->
     </dependency>
-    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-app" rev="${dependency.hadoop.revision}" />
-    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-common" rev="${dependency.hadoop.revision}"/>
-    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-jobclient" rev="${dependency.hadoop.revision}"/>
-    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-shuffle" rev="${dependency.hadoop.revision}"/>
+    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-core" rev="${dependency.hadoop.revision}" transitive="false"/>
+    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-app" rev="${dependency.hadoop.revision}" transitive="false"/>
+    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-common" rev="${dependency.hadoop.revision}" transitive="false"/>
+    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-jobclient" rev="${dependency.hadoop.revision}" transitive="false"/>
+    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-shuffle" rev="${dependency.hadoop.revision}" transitive="false"/>
 
     <!--
       This patch gets us around bugs like MAPREDUCE-5665 where MapReduce jobs submitted from a Windows client to YARN
@@ -87,8 +88,8 @@
     <dependency org="org.apache.oozie" name="oozie-core" rev="${dependency.apache-oozie.revision}" changing="true" transitive="false"/>
     <dependency org="org.apache.oozie" name="oozie-client" rev="${dependency.apache-oozie.revision}" changing="true" transitive="false"/>
     <dependency org="org.apache.hive" name="hive-jdbc" rev="${dependency.hive-jdbc.revision}" changing="false" transitive="false"/>
-    <dependency org="org.apache.hive" name="hive-exec" rev="${dependency.hive-jdbc.revision}" changing="false"/>
-    <dependency org="org.apache.hive" name="hive-service" rev="${dependency.hive-jdbc.revision}" changing="false"/>
+    <dependency org="org.apache.hive" name="hive-exec" rev="${dependency.hive-jdbc.revision}" changing="false" transitive="false"/>
+    <dependency org="org.apache.hive" name="hive-service" rev="${dependency.hive-jdbc.revision}" changing="false" transitive="false"/>
     <dependency org="org.apache.hive" name="hive-metastore" rev="${dependency.hive-jdbc.revision}" changing="false"/>
     <dependency org="org.apache.thrift" name="libfb303" rev="${dependency.thrift.revision}" changing="false"/>
     <dependency org="org.apache.thrift" name="libthrift" rev="${dependency.thrift.revision}" changing="false"/>
