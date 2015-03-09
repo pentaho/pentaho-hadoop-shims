@@ -213,7 +213,7 @@
 
   <!-- Run normal and common tests -->
   <target name="cobertura.test-instrumented"
-          depends="init-test-reports,install-cobertura,compile,compile-tests,cobertura.instrument-classes">
+          depends="cobertura.init-test-reports,install-cobertura,compile,compile-tests,cobertura.instrument-classes">
     <mkdir dir="${instrumented.classes.dir}" />
     <path id="cobertura.classpath">
       <fileset dir="${subfloor.resources.dir}/cobertura">
@@ -246,8 +246,8 @@
       <classpath refid="cobertura.classpath" />
 
       <formatter type="xml" />
-      <test name="${testcase}" todir="${testreports.xml.dir}" if="testcase" />
-      <batchtest todir="${testreports.xml.dir}" unless="testcase">
+      <test name="${testcase}" todir="${cobertura.testreports.xml.dir}" if="testcase" />
+      <batchtest todir="${cobertura.testreports.xml.dir}" unless="testcase">
         <fileset dir="${testsrc.dir}" casesensitive="yes">
           <include name="**/*Test.java" />
         </fileset>
@@ -257,11 +257,11 @@
       </batchtest>
     </junit>
 
-    <junitreport todir="${testreports.html.dir}">
-      <fileset dir="${testreports.xml.dir}">
+    <junitreport todir="${cobertura.testreports.html.dir}">
+      <fileset dir="${cobertura.testreports.xml.dir}">
         <include name="TEST-*.xml" />
       </fileset>
-      <report format="frames" todir="${testreports.html.dir}" />
+      <report format="frames" todir="${cobertura.testreports.html.dir}" />
     </junitreport>
   </target>
 
