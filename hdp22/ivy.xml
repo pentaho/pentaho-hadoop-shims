@@ -100,6 +100,7 @@
     <dependency conf="test->default" org="junit" name="junit" rev="4.5"/>
     <dependency conf="test->default" org="org.safehaus.jug" name="jug-lgpl" rev="2.0.0" />
     <dependency conf="test->default" org="pentaho" name="pentaho-hadoop-shims-api-test" rev="${project.revision}" changing="true"/>
+    <dependency conf="test->default" org="org.mockito" name="mockito-all" rev="1.9.5" transitive="false" />
 
     <!-- Exclude log4j from default libraries - it's brought in transitively through many of the Hadoop dependencies and should not be included -->
     <exclude org="log4j" module="log4j" conf="default" />
@@ -108,10 +109,5 @@
     <!--  Exclude xerces, it's provided and will wreak havoc if there are multiple instances / versions -->
     <exclude org="xml-apis" module="xml-apis" conf="*" />
     <exclude org="xerces" module="xercesImpl" conf="*" />
-
-    <!-- Temporarily exclude to avoid build issue. -->
-    <exclude org="org.pentaho" module="pentaho-aggdesigner-algorithm"/>
-    <exclude org="org.mortbay.jetty" module="jetty"/>
-    <exclude org="org.mortbay.jetty" module="jetty-util"/>
   </dependencies>
 </ivy-module>

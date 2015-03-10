@@ -14,7 +14,7 @@
   <import file="build-res/subfloor-pkg.xml"/>
 
   <!-- Every non-api shim module. These will be compiled/resolved after api. -->
-  <property name="shim-non-api-modules" value="hive-jdbc,hadoop-20,cdh47,cdh52,hdp21,hdp22,mapr31,mapr401" />
+  <property name="shim-non-api-modules" value="hive-jdbc,hadoop-20,cdh47,cdh53,hdp21,hdp22,mapr31,mapr401" />
   <!-- These are the modules this script should build -->
   <property name="modules" value="api,${shim-non-api-modules}" />
 	  
@@ -121,6 +121,16 @@
     <for list="${shim-non-api-modules}" param="module" trim="true">
       <sequential>
         <ant antfile="build.xml" dir="@{module}" inheritall="false" target="package-eula" />
+      </sequential>
+    </for>
+  </target>
+
+  <target name="dist-source" depends="init">
+    <for list="${shim-non-api-modules}" param="module" trim="true">
+      <sequential>
+        <ant antfile="build.xml" dir="@{module}" inheritall="false" target="source.jar" />
+        <ant antfile="build.xml" dir="@{module}" inheritall="false" target="source.zip" />
+        <ant antfile="build.xml" dir="@{module}" inheritall="false" target="source.targz" />
       </sequential>
     </for>
   </target>

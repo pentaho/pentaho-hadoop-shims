@@ -252,6 +252,10 @@ public class DriverProxyInvocationChain {
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable {
       Object o = null;
       try {
+        if ( "prepareStatement".equals( method.getName() ) ) {
+          String sql = (String) args[0];
+          args[0] = HiveSQLUtils.processSQLString( sql );
+        }
         o = method.invoke( connection, args );
       } catch ( Throwable t ) {
 
