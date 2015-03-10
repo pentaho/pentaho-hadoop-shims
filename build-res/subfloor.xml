@@ -233,7 +233,16 @@ TYPICAL TARGET SEQUENCE
   <property name="coberturareports.html.dir"
             value="${coberturareports.dir}/html"
             description="Cobertura html reports are placed here" />
-
+  <property name="cobertura.testreports.dir"
+	        value="${coberturareports.dir}/test"
+	  		description="Cobertura junit reports base dir" />
+  <property name="cobertura.testreports.xml.dir"
+		    value="${cobertura.testreports.dir}/xml"
+		  	description="Cobertura junit xml reports are placed here" />
+  <property name="cobertura.testreports.html.dir"
+			value="${cobertura.testreports.dir}/html"
+			description="Cobertura junit html reports are placed here" />
+	
   <!-- Javadoc properties -->
   <property name="javadoc.dir"
             value="${bin.dir}/javadoc"
@@ -1718,7 +1727,6 @@ TYPICAL TARGET SEQUENCE
     <delete dir="${instrumented.classes.dir}" />
   </target>
 
-
   <!--=======================================================================
     cobertura.clean-coverage-reports
 
@@ -1728,8 +1736,19 @@ TYPICAL TARGET SEQUENCE
     <delete dir="${coberturareports.xml.dir}" />
     <delete dir="${coberturareports.html.dir}" />
     <delete dir="${coberturareports.dir}" />
+  	<delete dir="${cobertura.testreports.xml.dir}" />
+  	<delete dir="${cobertura.testreports.html.dir}" />
   </target>
+	
+  <!--=======================================================================
+	cobertura.init-test-reports
 
+    Prepare directories for cobertura JUnit test reports
+    ====================================================================-->	
+  <target name="cobertura.init-test-reports">
+	<mkdir dir="${cobertura.testreports.xml.dir}" />
+	<mkdir dir="${cobertura.testreports.html.dir}" />
+  </target>
 
   <!--=======================================================================
       cobertura.test-instrumented
@@ -1737,7 +1756,7 @@ TYPICAL TARGET SEQUENCE
       Runs tests against instrumented classes and generates xml and html JUnit test reports
       ====================================================================-->
   <target name="cobertura.test-instrumented"
-          depends="init-test-reports,install-cobertura,compile,compile-tests,cobertura.instrument-classes">
+          depends="cobertura.init-test-reports,install-cobertura,compile,compile-tests,cobertura.instrument-classes">
     <mkdir dir="${instrumented.classes.dir}" />
     <path id="cobertura.classpath">
       <fileset dir="${subfloor.resources.dir}/cobertura-${cobertura.version}">
@@ -1770,19 +1789,19 @@ TYPICAL TARGET SEQUENCE
       <classpath refid="cobertura.classpath" />
 
       <formatter type="xml" />
-      <test name="${testcase}" todir="${testreports.xml.dir}" if="testcase" />
-      <batchtest todir="${testreports.xml.dir}" unless="testcase">
+      <test name="${testcase}" todir="${cobertura.testreports.xml.dir}" if="testcase" />
+      <batchtest todir="${cobertura.testreports.xml.dir}" unless="testcase">
         <fileset dir="${testsrc.dir}" casesensitive="yes">
           <include name="**/*Test.java" />
         </fileset>
       </batchtest>
     </junit>
 
-    <junitreport todir="${testreports.html.dir}">
-      <fileset dir="${testreports.xml.dir}">
+    <junitreport todir="${cobertura.testreports.html.dir}">
+      <fileset dir="${cobertura.testreports.xml.dir}">
         <include name="TEST-*.xml" />
       </fileset>
-      <report format="frames" todir="${testreports.html.dir}" />
+      <report format="frames" todir="${cobertura.testreports.html.dir}" />
     </junitreport>
   </target>
 
