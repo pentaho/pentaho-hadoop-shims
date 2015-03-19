@@ -126,4 +126,13 @@
   </target>
 
   <target name="dist" depends="init, build-all"/>    
+  
+  <target name="continuous" depends="init">
+    <for list="${shims-to-build}" param="module" trim="true">
+      <sequential>
+      <ant antfile="build.xml" dir="${path-to-shims}/@{module}" inheritall="false" target="subfloor.continuous" />
+      </sequential>
+    </for>
+  </target>
+  
 </project>
