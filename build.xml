@@ -125,6 +125,15 @@
     </for>
   </target>
 
+  <target name="dist-source" depends="init">
+    <for list="${shim-non-api-modules}" param="module" trim="true">
+      <sequential>
+        <ant antfile="build.xml" dir="@{module}" inheritall="false" target="source.jar" />
+        <ant antfile="build.xml" dir="@{module}" inheritall="false" target="source.zip" />
+        <ant antfile="build.xml" dir="@{module}" inheritall="false" target="source.targz" />
+      </sequential>
+    </for>
+  </target>
   <target name="dist" depends="init, build-all"/>    
   
   <target name="continuous" depends="init">
