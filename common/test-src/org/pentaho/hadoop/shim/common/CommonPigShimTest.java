@@ -28,21 +28,29 @@ import org.apache.pig.ExecType;
 import org.junit.Test;
 import org.pentaho.hadoop.shim.spi.PigShim.ExecutionMode;
 
+import java.util.Properties;
+
 public class CommonPigShimTest {
+
+  class TestPigShim extends CommonPigShim {
+    @Override public int[] executeScript( String pigScript, ExecutionMode executionMode, Properties properties )
+      throws Exception {
+      return new int[ 0 ];
+    }
+  }
 
   @Test
   public void isLocalExecutionSupported() {
-    assertTrue(new CommonPigShim().isLocalExecutionSupported());
+    assertTrue( new TestPigShim().isLocalExecutionSupported() );
   }
-  
+
   @Test
   public void getExecType_local() {
-    assertEquals(ExecType.LOCAL, new CommonPigShim().getExecType(ExecutionMode.LOCAL));
+    assertEquals( ExecType.LOCAL, new TestPigShim().getExecType( ExecutionMode.LOCAL ) );
   }
 
   @Test
   public void getExecType_mapreduce() {
-    assertEquals(ExecType.MAPREDUCE, new CommonPigShim().getExecType(ExecutionMode.MAPREDUCE));
+    assertEquals( ExecType.MAPREDUCE, new TestPigShim().getExecType( ExecutionMode.MAPREDUCE ) );
   }
-  
 }
