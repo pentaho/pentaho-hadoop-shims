@@ -23,7 +23,9 @@
 package org.pentaho.hadoop.shim.emr32;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 
 import org.junit.Test;
@@ -43,10 +45,7 @@ public class ShimRegistrationTest {
    */
   @Test
   public void hadoopShimRegistered() {
-    ServiceLoader<org.pentaho.hadoop.shim.spi.HadoopShim> l =
-      ServiceLoader.load( org.pentaho.hadoop.shim.spi.HadoopShim.class );
-    org.pentaho.hadoop.shim.spi.HadoopShim s = l.iterator().next();
-    assertTrue( org.pentaho.hadoop.shim.emr32.HadoopShim.class.isAssignableFrom( s.getClass() ) );
+    assertRegistered(org.pentaho.hadoop.shim.spi.HadoopShim.class);
   }
 
   /**
@@ -54,9 +53,7 @@ public class ShimRegistrationTest {
    */
   @Test
   public void pigShimRegistered() {
-    ServiceLoader<PigShim> l = ServiceLoader.load( PigShim.class );
-    PigShim s = l.iterator().next();
-    assertTrue( CommonPigShim.class.isAssignableFrom( s.getClass() ) );
+    assertRegistered( PigShim.class );
   }
 
   /**
@@ -64,9 +61,7 @@ public class ShimRegistrationTest {
    */
   @Test
   public void sqoopShimRegistered() {
-    ServiceLoader<SqoopShim> l = ServiceLoader.load( SqoopShim.class );
-    SqoopShim s = l.iterator().next();
-    assertTrue( org.pentaho.hadoop.shim.emr32.ClassPathModifyingSqoopShim.class.equals( s.getClass() ) );
+    assertRegistered(SqoopShim.class);
   }
 
   /**
@@ -74,9 +69,7 @@ public class ShimRegistrationTest {
    */
   @Test
   public void snappyShimRegistered() {
-    ServiceLoader<SnappyShim> l = ServiceLoader.load( SnappyShim.class );
-    SnappyShim s = l.iterator().next();
-    assertTrue( org.pentaho.hadoop.shim.emr32.SnappyShim.class.isAssignableFrom( s.getClass() ) );
+    assertRegistered(SnappyShim.class);
   }
 
   /**
@@ -84,8 +77,16 @@ public class ShimRegistrationTest {
    */
   @Test
   public void hbaseShimRegistered() {
-    ServiceLoader<HBaseShim> l = ServiceLoader.load( HBaseShim.class );
-    HBaseShim s = l.iterator().next();
-    assertTrue( org.pentaho.hbase.shim.emr32.HBaseShimImpl.class.isAssignableFrom( s.getClass() ) );
+    assertRegistered( HBaseShim.class );
+  }
+
+  private <T> void assertRegistered( Class<T> type ) {
+    try {
+      ServiceLoader<T> loader = ServiceLoader.load( type );
+      T shim = loader.iterator().next();
+      assertTrue(shim.getClass().getPackage().getName().startsWith( "org.pentaho.hadoop.shim.emr32" ) );
+    } catch ( ServiceConfigurationError error ) {
+      fail( error.getMessage() );
+    }
   }
 }
