@@ -2,7 +2,7 @@
 *
 * Pentaho Big Data
 *
-* Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
+* Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
 *
 *******************************************************************************
 *
@@ -31,13 +31,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.di.core.exception.KettleException;
-import org.pentaho.di.core.plugins.KettleLifecyclePluginType;
-import org.pentaho.di.core.plugins.Plugin;
-import org.pentaho.di.core.plugins.PluginInterface;
-import org.pentaho.di.core.plugins.PluginMainClassType;
-import org.pentaho.di.core.plugins.PluginRegistry;
-import org.pentaho.di.core.plugins.StepPluginType;
-import org.pentaho.hadoop.hive.jdbc.HadoopConfigurationUtil;
+import org.pentaho.di.core.plugins.*;
 
 /**
  * A mixture of unit and integration tests for {@link HadoopConfigurationUtil}
@@ -48,9 +42,9 @@ public class HadoopConfigurationUtilTest {
   public static void init() throws KettleException {
     // Register a bogus HadoopCopyFilesPlugin. This is the plugin we key off of to find the Big Data Plugin
     KettleEnvironment.init();
-    PluginMainClassType mainClassTypesAnnotation = KettleLifecyclePluginType.class.getAnnotation(PluginMainClassType.class);
-    PluginInterface hadoopConfigurationBootstrap = new Plugin(new String[]{"HadoopConfigurationBootstrap"}, StepPluginType.class, mainClassTypesAnnotation.value(), "", "", "", null, false, false, new HashMap<Class<?>, String>(), new ArrayList<String>(), null, null);
-    PluginRegistry.getInstance().registerPlugin(KettleLifecyclePluginType.class, hadoopConfigurationBootstrap);
+    PluginMainClassType mainClassTypesAnnotation = LifecyclePluginType.class.getAnnotation(PluginMainClassType.class);
+    PluginInterface hadoopConfigurationBootstrap = new Plugin(new String[]{"HadoopSpoonPlugin"}, StepPluginType.class, mainClassTypesAnnotation.value(), "", "", "", null, false, false, new HashMap<Class<?>, String>(), new ArrayList<String>(), null, null);
+    PluginRegistry.getInstance().registerPlugin(LifecyclePluginType.class, hadoopConfigurationBootstrap);
   }
 
   @Test
