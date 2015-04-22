@@ -966,4 +966,8 @@ public class CommonHBaseConnection extends HBaseConnection {
     return value.toLowerCase().equals( "y" ) || value.toLowerCase().equals( "yes" ) || value.toLowerCase()
         .equals( "true" );
   }
+
+  @Override
+  public void obtainAuthTokenForJob( org.pentaho.hadoop.shim.api.Configuration conf ) throws Exception {
+  }
 }
