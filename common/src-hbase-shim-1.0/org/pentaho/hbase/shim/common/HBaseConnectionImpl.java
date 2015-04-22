@@ -171,4 +171,17 @@ public class HBaseConnectionImpl extends CommonHBaseConnection implements HBaseC
       }
     } );
   }
+
+  @Override
+  public void obtainAuthTokenForJob( final org.pentaho.hadoop.shim.api.Configuration conf ) throws Exception {
+    doWithContextClassLoader( new Callable<Void>() {
+
+      @Override
+      public Void call() throws Exception {
+         HBaseConnectionImpl.super.obtainAuthTokenForJob( conf );
+         return null;
+      }
+    } );
+  }
+
 }

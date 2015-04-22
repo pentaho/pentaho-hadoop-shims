@@ -44,6 +44,8 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.pentaho.hadoop.shim.api.Configuration;
+
 /**
  * Implementation of HBaseConnection that partially "simulates" a real HBase instance. Used for unit testing the HBase
  * steps and supporting classes.
@@ -840,5 +842,9 @@ public class FakeHBaseConnection extends HBaseConnection {
 
   @Override
   public void close() throws Exception {
+  }
+
+  @Override
+  public void obtainAuthTokenForJob( Configuration conf ) throws Exception {
   }
 }
