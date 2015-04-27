@@ -9,7 +9,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>pentaho</groupId>
-  <artifactId>pentaho-hadoop-shims-emr32-package</artifactId>
+  <artifactId>pentaho-hadoop-shims-emr34-package</artifactId>
   <packaging>zip</packaging>
   <version>TRUNK-SNAPSHOT</version>
 </project>

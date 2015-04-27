@@ -1,14 +1,14 @@
 <!--===========================================================================
-  This is the build file for the Hadoop EMR 3.2 Shim modules.
-  
+  This is the build file for the Hadoop EMR 3.$ Shim modules.
+
   See ../build-res/subfloor.xml for more details
 ============================================================================-->
-<project name="pentaho-hadoop-shims-emr32" basedir="." default="dist"
+<project name="pentaho-hadoop-shims-emr34" basedir="." default="dist"
   xmlns:ivy="antlib:org.apache.ivy.ant" >
   <property name="lib.pmr.dir" value="lib-provided/pmr" description="Ivy dependencies of 'pmr' configuration are placed here. Placed under lib/ so they are packaged that way."/>
    <property name="lib.client.dir" value="lib-provided/client" description="Ivy dependencies of 'client' configuration are placed here. Placed under lib/ so they are packaged that way."/>
   <description>
-    This build file is used to create the Hadoop EMR 3.2 Shim module for the Big Data plugin
+    This build file is used to create the Hadoop EMR 3.4 Shim module for the Big Data plugin
     and is based off Subfloor (../build-res/subfloor.xml)
   </description>
 
