@@ -20,7 +20,7 @@
  *
  ******************************************************************************/
 
-package org.pentaho.hbase.shim.emr32;
+package org.pentaho.hbase.shim.emr34;
 
 import org.apache.hadoop.hbase.filter.WritableByteArrayComparable;
 import org.apache.hadoop.hbase.util.Bytes;

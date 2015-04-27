@@ -20,11 +20,11 @@
  *
  ******************************************************************************/
 
-package org.pentaho.hbase.shim.emr32;
+package org.pentaho.hbase.shim.emr34;
 
 import org.apache.hadoop.conf.Configuration;
 import org.pentaho.hadoop.shim.ShimVersion;
-import org.pentaho.hbase.shim.emr32.wrapper.HBaseShimInterface;
+import org.pentaho.hbase.shim.emr34.wrapper.HBaseShimInterface;
 import org.pentaho.hbase.shim.spi.HBaseConnection;
 import org.pentaho.hbase.shim.spi.HBaseShim;
 

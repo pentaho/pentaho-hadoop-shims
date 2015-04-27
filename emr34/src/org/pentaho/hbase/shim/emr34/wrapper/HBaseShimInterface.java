@@ -20,7 +20,7 @@
 *
 ******************************************************************************/
 
-package org.pentaho.hbase.shim.emr32.wrapper;
+package org.pentaho.hbase.shim.emr34.wrapper;
 
 import org.apache.hadoop.conf.Configuration;
 import org.pentaho.hadoop.shim.spi.PentahoHadoopShim;

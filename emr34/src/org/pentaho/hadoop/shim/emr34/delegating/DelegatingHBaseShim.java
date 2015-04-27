@@ -26,7 +26,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.pentaho.hadoop.shim.ShimVersion;
 import org.pentaho.hadoop.shim.emr34.authorization.HadoopAuthorizationService;
 import org.pentaho.hadoop.shim.emr34.authorization.HasHadoopAuthorizationService;
-import org.pentaho.hbase.shim.emr32.wrapper.HBaseShimInterface;
+import org.pentaho.hbase.shim.emr34.wrapper.HBaseShimInterface;
 import org.pentaho.hbase.shim.spi.HBaseConnection;
 import org.pentaho.hbase.shim.spi.HBaseShim;
 

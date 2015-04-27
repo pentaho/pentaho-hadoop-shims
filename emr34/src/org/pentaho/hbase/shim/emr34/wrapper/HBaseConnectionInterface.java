@@ -20,7 +20,7 @@
  *
  ******************************************************************************/
 
-package org.pentaho.hbase.shim.emr32.wrapper;
+package org.pentaho.hbase.shim.emr34.wrapper;
 
 import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.hbase.shim.api.ColumnFilter;

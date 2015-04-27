@@ -25,7 +25,7 @@ package org.pentaho.hadoop.shim.emr34.delegating;
 import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.hbase.shim.api.ColumnFilter;
 import org.pentaho.hbase.shim.api.HBaseValueMeta;
-import org.pentaho.hbase.shim.emr32.wrapper.HBaseConnectionInterface;
+import org.pentaho.hbase.shim.emr34.wrapper.HBaseConnectionInterface;
 import org.pentaho.hbase.shim.spi.HBaseBytesUtilShim;
 import org.pentaho.hbase.shim.spi.HBaseConnection;
 

@@ -20,10 +20,10 @@
  *
  ******************************************************************************/
 
-package org.pentaho.hbase.shim.emr32;
+package org.pentaho.hbase.shim.emr34;
 
 import org.pentaho.hbase.shim.common.CommonHBaseConnection;
-import org.pentaho.hbase.shim.emr32.wrapper.HBaseConnectionInterface;
+import org.pentaho.hbase.shim.emr34.wrapper.HBaseConnectionInterface;
 
 import java.util.List;
 import java.util.Properties;
@@ -48,12 +48,12 @@ public class HBaseConnectionImpl extends CommonHBaseConnection implements HBaseC
 
   @Override
   public Class<?> getDeserializedNumericComparatorClass() throws ClassNotFoundException {
-    return Class.forName( "org.pentaho.hbase.shim.emr32.DeserializedNumericComparator" );
+    return Class.forName( "org.pentaho.hbase.shim.emr34.DeserializedNumericComparator" );
   }
 
   @Override
   public Class<?> getDeserializedBooleanComparatorClass() throws ClassNotFoundException {
-    return Class.forName( "org.pentaho.hbase.shim.emr32.DeserializedBooleanComparator" );
+    return Class.forName( "org.pentaho.hbase.shim.emr34.DeserializedBooleanComparator" );
   }
 
   protected <T> T doWithContextClassLoader( Callable<T> callable ) throws Exception {

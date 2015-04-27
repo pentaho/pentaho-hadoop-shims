@@ -27,7 +27,7 @@ import org.pentaho.hadoop.shim.spi.PentahoHadoopShim;
 import org.pentaho.hadoop.shim.spi.PigShim;
 import org.pentaho.hadoop.shim.spi.SnappyShim;
 import org.pentaho.hadoop.shim.spi.SqoopShim;
-import org.pentaho.hbase.shim.emr32.wrapper.HBaseShimInterface;
+import org.pentaho.hbase.shim.emr34.wrapper.HBaseShimInterface;
 import org.pentaho.oozie.shim.api.OozieClientFactory;
 
 import java.util.HashMap;
@@ -42,7 +42,7 @@ public class NoOpHadoopAuthorizationService implements HadoopAuthorizationServic
     shimMap.put( PigShim.class, new org.pentaho.hadoop.shim.emr34.PigShim() );
     shimMap.put( SnappyShim.class, new org.pentaho.hadoop.shim.emr34.SnappyShim() );
     shimMap.put( SqoopShim.class, new org.pentaho.hadoop.shim.emr34.ClassPathModifyingSqoopShim() );
-    shimMap.put( HBaseShimInterface.class, new org.pentaho.hbase.shim.emr32.HBaseShimImpl() );
+    shimMap.put( HBaseShimInterface.class, new org.pentaho.hbase.shim.emr34.HBaseShimImpl() );
     try {
       shimMap.put( OozieClientFactory.class, (PentahoHadoopShim) Class.forName(
           "org.pentaho.di.job.entries.oozie.OozieClientFactoryImpl" ).newInstance() );

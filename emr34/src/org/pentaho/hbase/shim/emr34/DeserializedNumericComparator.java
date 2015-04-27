@@ -20,7 +20,7 @@
  *
  ******************************************************************************/
 
-package org.pentaho.hbase.shim.emr32;
+package org.pentaho.hbase.shim.emr34;
 
 import java.io.DataInput;
 import java.io.DataOutput;
