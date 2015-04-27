@@ -20,7 +20,7 @@
 *
 ******************************************************************************/
 
-package org.pentaho.hadoop.shim.emr32.authentication;
+package org.pentaho.hadoop.shim.emr34.authentication;
 
 import org.apache.commons.lang.ClassUtils;
 import org.apache.log4j.Logger;

@@ -20,7 +20,7 @@
 *
 ******************************************************************************/
 
-package org.pentaho.hadoop.shim.emr32.delegating;
+package org.pentaho.hadoop.shim.emr34.delegating;
 
 import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.hbase.shim.api.ColumnFilter;

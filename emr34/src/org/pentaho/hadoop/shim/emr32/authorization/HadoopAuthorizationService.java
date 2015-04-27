@@ -20,7 +20,7 @@
 *
 ******************************************************************************/
 
-package org.pentaho.hadoop.shim.emr32.authorization;
+package org.pentaho.hadoop.shim.emr34.authorization;
 
 import org.pentaho.hadoop.shim.spi.PentahoHadoopShim;
 

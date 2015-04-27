@@ -20,7 +20,7 @@
 *
 ******************************************************************************/
 
-package org.pentaho.hadoop.shim.emr32.delegating;
+package org.pentaho.hadoop.shim.emr34.delegating;
 
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.hadoop.shim.ConfigurationException;
@@ -31,8 +31,8 @@ import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.api.DistributedCacheUtil;
 import org.pentaho.hadoop.shim.api.fs.FileSystem;
 import org.pentaho.hadoop.shim.api.mapred.RunningJob;
-import org.pentaho.hadoop.shim.emr32.authorization.HadoopAuthorizationService;
-import org.pentaho.hadoop.shim.emr32.authorization.HasHadoopAuthorizationService;
+import org.pentaho.hadoop.shim.emr34.authorization.HadoopAuthorizationService;
+import org.pentaho.hadoop.shim.emr34.authorization.HasHadoopAuthorizationService;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 
 import java.io.IOException;

@@ -20,7 +20,7 @@
  *
  ******************************************************************************/
 
-package org.pentaho.hadoop.shim.emr32;
+package org.pentaho.hadoop.shim.emr34;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

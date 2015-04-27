@@ -20,7 +20,7 @@
  *
  ******************************************************************************/
 
-package org.pentaho.hadoop.shim.emr32;
+package org.pentaho.hadoop.shim.emr34;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.filecache.DistributedCache;
@@ -87,7 +87,7 @@ public class HadoopShim extends CommonHadoopShim {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
     try {
-      Job job = ( (org.pentaho.hadoop.shim.emr32.ConfigurationProxyV2) c ).getJob();
+      Job job = ( (org.pentaho.hadoop.shim.emr34.ConfigurationProxyV2) c ).getJob();
       job.submit();
       return new RunningJobProxyV2( job );
     } catch ( InterruptedException e ) {
@@ -106,7 +106,7 @@ public class HadoopShim extends CommonHadoopShim {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
     try {
-      return new org.pentaho.hadoop.shim.emr32.ConfigurationProxyV2();
+      return new org.pentaho.hadoop.shim.emr34.ConfigurationProxyV2();
     } catch ( IOException e ) {
       throw new RuntimeException( "Unable to create configuration for new mapreduce api: ", e );
     } finally {

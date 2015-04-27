@@ -20,7 +20,7 @@
 *
 ******************************************************************************/
 
-package org.pentaho.hadoop.shim.emr32.authorization;
+package org.pentaho.hadoop.shim.emr34.authorization;
 
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 import org.pentaho.hadoop.shim.spi.PentahoHadoopShim;
@@ -38,10 +38,10 @@ public class NoOpHadoopAuthorizationService implements HadoopAuthorizationServic
 
   public NoOpHadoopAuthorizationService() {
     shimMap = new HashMap<Class<?>, PentahoHadoopShim>();
-    shimMap.put( HadoopShim.class, new org.pentaho.hadoop.shim.emr32.HadoopShim() );
-    shimMap.put( PigShim.class, new org.pentaho.hadoop.shim.emr32.PigShim() );
-    shimMap.put( SnappyShim.class, new org.pentaho.hadoop.shim.emr32.SnappyShim() );
-    shimMap.put( SqoopShim.class, new org.pentaho.hadoop.shim.emr32.ClassPathModifyingSqoopShim() );
+    shimMap.put( HadoopShim.class, new org.pentaho.hadoop.shim.emr34.HadoopShim() );
+    shimMap.put( PigShim.class, new org.pentaho.hadoop.shim.emr34.PigShim() );
+    shimMap.put( SnappyShim.class, new org.pentaho.hadoop.shim.emr34.SnappyShim() );
+    shimMap.put( SqoopShim.class, new org.pentaho.hadoop.shim.emr34.ClassPathModifyingSqoopShim() );
     shimMap.put( HBaseShimInterface.class, new org.pentaho.hbase.shim.emr32.HBaseShimImpl() );
     try {
       shimMap.put( OozieClientFactory.class, (PentahoHadoopShim) Class.forName(

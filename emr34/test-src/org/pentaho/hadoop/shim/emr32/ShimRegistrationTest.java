@@ -20,7 +20,7 @@
  *
  ******************************************************************************/
 
-package org.pentaho.hadoop.shim.emr32;
+package org.pentaho.hadoop.shim.emr34;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -84,7 +84,7 @@ public class ShimRegistrationTest {
     try {
       ServiceLoader<T> loader = ServiceLoader.load( type );
       T shim = loader.iterator().next();
-      assertTrue(shim.getClass().getPackage().getName().startsWith( "org.pentaho.hadoop.shim.emr32" ) );
+      assertTrue(shim.getClass().getPackage().getName().startsWith( "org.pentaho.hadoop.shim.emr34" ) );
     } catch ( ServiceConfigurationError error ) {
       fail( error.getMessage() );
     }

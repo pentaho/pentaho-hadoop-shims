@@ -20,7 +20,7 @@
  *
  ******************************************************************************/
 
-package org.pentaho.hadoop.shim.emr32;
+package org.pentaho.hadoop.shim.emr34;
 
 import org.apache.hadoop.io.compress.SnappyCodec;
 import org.apache.hadoop.conf.Configuration;

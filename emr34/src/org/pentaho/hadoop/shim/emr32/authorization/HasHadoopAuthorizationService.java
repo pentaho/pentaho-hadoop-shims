@@ -20,7 +20,7 @@
 *
 ******************************************************************************/
 
-package org.pentaho.hadoop.shim.emr32.authorization;
+package org.pentaho.hadoop.shim.emr34.authorization;
 
 public interface HasHadoopAuthorizationService {
   public void setHadoopAuthorizationService( HadoopAuthorizationService hadoopAuthorizationService ) throws Exception;

@@ -20,11 +20,11 @@
 *
 ******************************************************************************/
 
-package org.pentaho.hadoop.shim.emr32.delegating;
+package org.pentaho.hadoop.shim.emr34.delegating;
 
 import org.pentaho.hadoop.shim.ShimVersion;
-import org.pentaho.hadoop.shim.emr32.authorization.HadoopAuthorizationService;
-import org.pentaho.hadoop.shim.emr32.authorization.HasHadoopAuthorizationService;
+import org.pentaho.hadoop.shim.emr34.authorization.HadoopAuthorizationService;
+import org.pentaho.hadoop.shim.emr34.authorization.HasHadoopAuthorizationService;
 import org.pentaho.hadoop.shim.spi.SnappyShim;
 
 import java.io.InputStream;

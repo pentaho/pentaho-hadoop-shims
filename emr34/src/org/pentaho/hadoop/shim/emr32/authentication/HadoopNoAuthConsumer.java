@@ -20,15 +20,15 @@
 *
 ******************************************************************************/
 
-package org.pentaho.hadoop.shim.emr32.authentication;
+package org.pentaho.hadoop.shim.emr34.authentication;
 
 import org.pentaho.di.core.auth.AuthenticationConsumerPlugin;
 import org.pentaho.di.core.auth.AuthenticationConsumerType;
 import org.pentaho.di.core.auth.NoAuthenticationAuthenticationProvider;
 import org.pentaho.di.core.auth.core.AuthenticationConsumer;
 import org.pentaho.di.core.auth.core.AuthenticationConsumptionException;
-import org.pentaho.hadoop.shim.emr32.authorization.HadoopAuthorizationService;
-import org.pentaho.hadoop.shim.emr32.authorization.NoOpHadoopAuthorizationService;
+import org.pentaho.hadoop.shim.emr34.authorization.HadoopAuthorizationService;
+import org.pentaho.hadoop.shim.emr34.authorization.NoOpHadoopAuthorizationService;
 
 import java.util.Properties;
 

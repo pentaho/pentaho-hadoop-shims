@@ -20,7 +20,7 @@
  *
  ******************************************************************************/
 
-package org.pentaho.hadoop.shim.emr32.authorization;
+package org.pentaho.hadoop.shim.emr34.authorization;
 
 import org.pentaho.di.core.auth.AuthenticationConsumerPluginType;
 import org.pentaho.di.core.auth.AuthenticationPersistenceManager;
@@ -31,9 +31,9 @@ import org.pentaho.di.core.auth.core.AuthenticationPerformer;
 import org.pentaho.di.core.logging.LogChannel;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
-import org.pentaho.hadoop.shim.emr32.authentication.HadoopNoAuthConsumer;
-import org.pentaho.hadoop.shim.emr32.authentication.PropertyAuthenticationProviderParser;
-import org.pentaho.hadoop.shim.emr32.delegating.DelegatingHadoopShim;
+import org.pentaho.hadoop.shim.emr34.authentication.HadoopNoAuthConsumer;
+import org.pentaho.hadoop.shim.emr34.authentication.PropertyAuthenticationProviderParser;
+import org.pentaho.hadoop.shim.emr34.delegating.DelegatingHadoopShim;
 import org.pentaho.hadoop.shim.spi.PentahoHadoopShim;
 
 import java.net.URLClassLoader;
