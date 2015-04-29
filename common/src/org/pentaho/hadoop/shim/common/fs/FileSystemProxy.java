@@ -50,6 +50,14 @@ public class FileSystemProxy extends org.apache.hadoop.fs.FileSystem implements 
     return delegate;
   }
 
+  protected org.apache.hadoop.fs.FileSystem getDelegate( org.apache.hadoop.fs.Path hadoopPath ) {
+    return (org.apache.hadoop.fs.FileSystem) getDelegate();
+  }
+
+  protected org.apache.hadoop.fs.FileSystem getDelegate( org.pentaho.hadoop.shim.api.fs.Path pentahoPath ) {
+    return getDelegate( ShimUtils.asPath( pentahoPath ) );
+  }
+
   @Override
   public org.pentaho.hadoop.shim.api.fs.Path asPath(String path) {
     return new PathProxy(path);
@@ -67,7 +75,7 @@ public class FileSystemProxy extends org.apache.hadoop.fs.FileSystem implements 
 
   @Override
   public boolean exists(org.pentaho.hadoop.shim.api.fs.Path path) throws IOException {
-    return delegate.exists(ShimUtils.asPath(path));
+    return getDelegate( path ).exists( ShimUtils.asPath(path));
   }
 
   @Override
@@ -78,29 +86,29 @@ public class FileSystemProxy extends org.apache.hadoop.fs.FileSystem implements 
   // DELEGATING METHODS  
   @Override
   public FSDataOutputStream append(Path f, int bufferSize, Progressable progress) throws IOException {
-    return delegate.append(f, bufferSize, progress);
+    return getDelegate( f ).append( f, bufferSize, progress );
   }
 
   @Override
   public FSDataOutputStream create(Path f, FsPermission permission, boolean overwrite, int bufferSize,
       short replication, long blockSize, Progressable progress) throws IOException {
-    return delegate.create(f, overwrite, bufferSize, replication, blockSize, progress);
+    return getDelegate( f ).create( f, overwrite, bufferSize, replication, blockSize, progress );
   }
 
   @Override
   @Deprecated
   public boolean delete(Path f) throws IOException {
-    return delegate.delete(f);
+    return getDelegate( f ).delete( f );
   }
 
   @Override
   public boolean delete(Path f, boolean recursive) throws IOException {
-    return delegate.delete(f, recursive);
+    return getDelegate( f ).delete( f, recursive );
   }
 
   @Override
   public FileStatus getFileStatus(Path f) throws IOException {
-    return delegate.getFileStatus(f);
+    return getDelegate( f ).getFileStatus( f );
   }
 
   @Override
@@ -115,26 +123,26 @@ public class FileSystemProxy extends org.apache.hadoop.fs.FileSystem implements 
 
   @Override
   public FileStatus[] listStatus(Path f) throws IOException {
-    return delegate.listStatus(f);
+    return getDelegate( f ).listStatus( f );
   }
 
   @Override
   public boolean mkdirs(Path f, FsPermission permission) throws IOException {
-    return delegate.mkdirs(f, permission);
+    return getDelegate( f ).mkdirs( f, permission );
   }
 
   @Override
   public FSDataInputStream open(Path f, int bufferSize) throws IOException {
-    return delegate.open(f, bufferSize);
+    return getDelegate( f ).open( f, bufferSize );
   }
 
   @Override
   public boolean rename(Path src, Path dst) throws IOException {
-    return delegate.rename(src, dst);
+    return getDelegate( src ).rename( src, dst );
   }
 
   @Override
   public void setWorkingDirectory(Path f) {
-    delegate.setWorkingDirectory(f);
+    getDelegate( f ).setWorkingDirectory(f);
   }
 }

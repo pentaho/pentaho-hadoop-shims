@@ -7,14 +7,29 @@ import static org.mockito.Mockito.when;
 
 import java.util.Properties;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.pentaho.di.core.Const;
 import org.pentaho.di.core.auth.KerberosAuthenticationProvider;
 import org.pentaho.di.core.auth.UsernamePasswordAuthenticationProvider;
 import org.pentaho.di.core.auth.core.AuthenticationManager;
 import org.pentaho.di.core.encryption.Encr;
+import org.pentaho.di.core.encryption.TwoWayPasswordEncoderPluginType;
+import org.pentaho.di.core.exception.KettleException;
+import org.pentaho.di.core.plugins.PluginRegistry;
+import org.pentaho.di.core.util.EnvUtil;
 import org.pentaho.hadoop.shim.mapr401.authentication.PropertyAuthenticationProviderParser.AuthenticationProviderInstantiator;
 
 public class PropertyAuthenticationProviderParserTest {
+  @BeforeClass
+  public static void beforeClass() throws KettleException {
+    PluginRegistry.addPluginType(TwoWayPasswordEncoderPluginType.getInstance());
+    PluginRegistry.init();
+    String passwordEncoderPluginID =
+            Const.NVL(EnvUtil.getSystemProperty(Const.KETTLE_PASSWORD_ENCODER_PLUGIN), "Kettle");
+    Encr.init( passwordEncoderPluginID );
+  }
+
   @Test
   public void testHappyPath() {
     KerberosAuthenticationProvider kerberosAuthenticationProvider = new KerberosAuthenticationProvider();

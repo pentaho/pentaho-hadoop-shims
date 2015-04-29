@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -23,15 +23,16 @@
 package org.pentaho.hadoop.shim.hdp21;
 
 import org.junit.Test;
-import org.pentaho.hadoop.shim.common.CommonPigShim;
 import org.pentaho.hadoop.shim.spi.PigShim;
 import org.pentaho.hadoop.shim.spi.SnappyShim;
 import org.pentaho.hadoop.shim.spi.SqoopShim;
 import org.pentaho.hbase.shim.spi.HBaseShim;
 
+import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Validate that our Shim service providers have been registered properly
@@ -43,10 +44,7 @@ public class ShimRegistrationTest {
    */
   @Test
   public void hadoopShimRegistered() {
-    ServiceLoader<org.pentaho.hadoop.shim.spi.HadoopShim> l =
-      ServiceLoader.load( org.pentaho.hadoop.shim.spi.HadoopShim.class );
-    org.pentaho.hadoop.shim.spi.HadoopShim s = l.iterator().next();
-    assertTrue( org.pentaho.hadoop.shim.hdp21.HadoopShim.class.isAssignableFrom( s.getClass() ) );
+    assertRegistered( org.pentaho.hadoop.shim.spi.HadoopShim.class );
   }
 
   /**
@@ -54,9 +52,7 @@ public class ShimRegistrationTest {
    */
   @Test
   public void pigShimRegistered() {
-    ServiceLoader<PigShim> l = ServiceLoader.load( PigShim.class );
-    PigShim s = l.iterator().next();
-    assertTrue( CommonPigShim.class.isAssignableFrom( s.getClass() ) );
+    assertRegistered( PigShim.class );
   }
 
   /**
@@ -64,9 +60,7 @@ public class ShimRegistrationTest {
    */
   @Test
   public void sqoopShimRegistered() {
-    ServiceLoader<SqoopShim> l = ServiceLoader.load( SqoopShim.class );
-    SqoopShim s = l.iterator().next();
-    assertTrue( org.pentaho.hadoop.shim.hdp21.ClassPathModifyingSqoopShim.class.equals( s.getClass() ) );
+    assertRegistered( SqoopShim.class );
   }
 
   /**
@@ -74,9 +68,7 @@ public class ShimRegistrationTest {
    */
   @Test
   public void snappyShimRegistered() {
-    ServiceLoader<SnappyShim> l = ServiceLoader.load( SnappyShim.class );
-    SnappyShim s = l.iterator().next();
-    assertTrue( org.pentaho.hadoop.shim.hdp21.SnappyShim.class.isAssignableFrom( s.getClass() ) );
+    assertRegistered( SnappyShim.class );
   }
 
   /**
@@ -84,8 +76,16 @@ public class ShimRegistrationTest {
    */
   @Test
   public void hbaseShimRegistered() {
-    ServiceLoader<HBaseShim> l = ServiceLoader.load( HBaseShim.class );
-    HBaseShim s = l.iterator().next();
-    assertTrue( org.pentaho.hbase.shim.hdp21.HBaseShimImpl.class.isAssignableFrom( s.getClass() ) );
+    assertRegistered( HBaseShim.class );
+  }
+
+  private <T> void assertRegistered( Class<T> type ) {
+    try {
+      ServiceLoader<T> loader = ServiceLoader.load( type );
+      T shim = loader.iterator().next();
+      assertTrue( shim.getClass().getPackage().getName().startsWith( "org.pentaho.hadoop.shim.hdp21" ) );
+    } catch ( ServiceConfigurationError error ) {
+      fail( error.getMessage() );
+    }
   }
 }
