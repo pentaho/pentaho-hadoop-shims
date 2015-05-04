@@ -110,7 +110,18 @@ public class PentahoTableInputFormat extends TableInputFormat {
     if (!Const.isEmpty(cacheSize)) {
       rr.setScanCacheRowSize(Integer.parseInt(cacheSize));
     }
-    
+
+    String ts = job.get( SCAN_TIMESTAMP );
+    if ( !Const.isEmpty( ts ) ) {
+      rr.setTimestamp( Long.parseLong( ts ) );
+    }
+
+    String tsStart = job.get( SCAN_TIMERANGE_START );
+    String tsEnd = job.get( SCAN_TIMERANGE_END );
+    if ( !Const.isEmpty( tsStart ) && !Const.isEmpty( tsEnd ) ) {
+      rr.setTimeStampRange( Long.parseLong( tsStart ), Long.parseLong( tsEnd ) );
+    }
+
     setTableRecordReader(rr);
   }
   
