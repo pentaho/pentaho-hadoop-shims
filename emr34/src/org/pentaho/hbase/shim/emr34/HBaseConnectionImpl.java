@@ -32,21 +32,6 @@ import java.util.concurrent.Callable;
 public class HBaseConnectionImpl extends CommonHBaseConnection implements HBaseConnectionInterface {
 
   @Override
-  public Class<?> getByteArrayComparableClass() throws ClassNotFoundException {
-    return Class.forName( "org.apache.hadoop.hbase.filter.ByteArrayComparable" );
-  }
-
-  @Override
-  public Class<?> getCompressionAlgorithmClass() throws ClassNotFoundException {
-    return Class.forName( "org.apache.hadoop.hbase.io.compress.Compression.Algorithm" );
-  }
-
-  @Override
-  public Class<?> getBloomTypeClass() throws ClassNotFoundException {
-    return Class.forName( "org.apache.hadoop.hbase.regionserver.BloomType" );
-  }
-
-  @Override
   public Class<?> getDeserializedNumericComparatorClass() throws ClassNotFoundException {
     return Class.forName( "org.pentaho.hbase.shim.emr34.DeserializedNumericComparator" );
   }
