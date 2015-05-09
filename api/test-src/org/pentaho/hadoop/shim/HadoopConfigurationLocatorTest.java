@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -246,8 +247,8 @@ public class HadoopConfigurationLocatorTest {
     f.setAccessible( true );
     try {
       String[] usrPaths = (String[]) f.get( null );
-      assertEquals( "test", usrPaths[ usrPaths.length - 2 ] );
-      assertEquals( "ing", usrPaths[ usrPaths.length - 1 ] );
+      assertTrue( Arrays.asList( usrPaths ).contains( "test" ) );
+      assertTrue( Arrays.asList( usrPaths ).contains( "ing" ) );
     } finally {
       f.setAccessible( accessible );
     }
@@ -258,15 +259,18 @@ public class HadoopConfigurationLocatorTest {
     IllegalArgumentException, IllegalAccessException {
     HadoopConfigurationLocator locator = new HadoopConfigurationLocator();
     locator.registerNativeLibraryPaths( "test,ing" );
-    locator.registerNativeLibraryPaths( "ing" );
 
     Field f = ClassLoader.class.getDeclaredField( "usr_paths" );
     boolean accessible = f.isAccessible();
     f.setAccessible( true );
     try {
       String[] usrPaths = (String[]) f.get( null );
-      assertEquals( "test", usrPaths[ usrPaths.length - 2 ] );
-      assertEquals( "ing", usrPaths[ usrPaths.length - 1 ] );
+      int pathCount = usrPaths.length;
+      locator.registerNativeLibraryPaths( "ing" );
+      usrPaths = (String[]) f.get( null );
+      assertTrue( Arrays.asList( usrPaths ).contains( "test" ) );
+      assertTrue( Arrays.asList( usrPaths ).contains( "ing" ) );
+      assertEquals( pathCount, usrPaths.length );
     } finally {
       f.setAccessible( accessible );
     }
