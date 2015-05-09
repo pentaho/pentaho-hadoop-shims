@@ -148,24 +148,25 @@ public class PentahoMapReduceBase<K, V> extends MapReduceBase {
       }
     }
 
-    // Pass some information to the transformation ...
-    variableSpace.setVariable("Internal.Hadoop.NumMapTasks", Integer.toString(job.getNumMapTasks()));
-    variableSpace.setVariable("Internal.Hadoop.NumReduceTasks", Integer.toString(job.getNumReduceTasks()));
-    String taskId = job.get("mapred.task.id");
-    variableSpace.setVariable("Internal.Hadoop.TaskId", taskId);
-    String nodeNumber;
-    if (Const.isEmpty(taskId)) {
+    if ( variableSpace != null ) {
+      // Pass some information to the transformation ...
+      variableSpace.setVariable( "Internal.Hadoop.NumMapTasks", Integer.toString(job.getNumMapTasks() ) );
+      variableSpace.setVariable( "Internal.Hadoop.NumReduceTasks", Integer.toString(job.getNumReduceTasks() ) );
+      String taskId = job.get( "mapred.task.id" );
+      variableSpace.setVariable( "Internal.Hadoop.TaskId", taskId );
+      String nodeNumber;
+      if ( Const.isEmpty( taskId ) ) {
         nodeNumber="0";
-    } else {
-        int lastUnderscoreIndex = taskId.lastIndexOf("_");
-        if (lastUnderscoreIndex>=0) {
-            nodeNumber = taskId.substring(lastUnderscoreIndex+1);
+      } else {
+        int lastUnderscoreIndex = taskId.lastIndexOf( "_" );
+        if ( lastUnderscoreIndex>=0 ) {
+          nodeNumber = taskId.substring( lastUnderscoreIndex + 1 );
         } else {
-            nodeNumber = "0";
+          nodeNumber = "0";
         }
+      }
+      variableSpace.setVariable( "Internal.Hadoop.NodeNumber", Integer.toString( Integer.valueOf( nodeNumber ) ) );
     }
-    variableSpace.setVariable("Internal.Hadoop.NodeNumber", Integer.toString(Integer.valueOf(nodeNumber)));
-
 
     switch(mrOperation) {
       case Combine:
