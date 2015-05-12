@@ -87,5 +87,6 @@
     <dependency conf="test->default" org="pentaho" name="pentaho-hadoop-shims-api" rev="${project.revision}" changing="true"/>
 
     <exclude org="org.antlr" conf="default->provided" />
+    <exclude org="javax.xml.stream" />
   </dependencies>
 </ivy-module>
