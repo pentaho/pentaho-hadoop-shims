@@ -37,6 +37,8 @@ import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
+import org.pentaho.di.core.variables.VariableSpace;
+import org.apache.hadoop.mapred.JobConf;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.di.core.exception.KettleException;
@@ -108,6 +110,37 @@ public class MRUtil {
     }
   }
 
+  public static void passInformationToTransformation(final VariableSpace variableSpace, final JobConf job) {
+    if ( variableSpace != null && job != null ) {
+      variableSpace.setVariable("Internal.Hadoop.NumMapTasks", Integer.toString(job.getNumMapTasks()));
+      variableSpace.setVariable("Internal.Hadoop.NumReduceTasks", Integer.toString(job.getNumReduceTasks()));
+      String taskId = job.get("mapred.task.id");
+      variableSpace.setVariable("Internal.Hadoop.TaskId", taskId);
+      // TODO: Verify if the string range holds true for all Hadoop distributions
+      // Extract the node number from the task ID. 
+      // The consensus currently is that it's the part after the last underscore. 
+      // 
+      // Examples: 
+      // job_201208090841_9999 
+      // job_201208090841_10000 
+      // 
+      String nodeNumber; 
+      if (Const.isEmpty(taskId)) { 
+        nodeNumber="0"; 
+      } else { 
+        int lastUnderscoreIndex = taskId.lastIndexOf("_"); 
+        if (lastUnderscoreIndex>=0) { 
+          nodeNumber = taskId.substring(lastUnderscoreIndex+1); 
+        } else { 
+          nodeNumber = "0"; 
+        } 
+      } 
+      // get rid of zeroes. 
+      // 
+      variableSpace.setVariable("Internal.Hadoop.NodeNumber", Integer.toString(Integer.valueOf(nodeNumber))); 
+    }
+  }
+  
   /**
    * @return the current working directory for this JVM.
    */

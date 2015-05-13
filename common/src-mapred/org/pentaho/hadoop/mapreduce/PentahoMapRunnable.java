@@ -51,6 +51,7 @@ import org.pentaho.di.trans.step.StepInterface;
 import org.pentaho.di.trans.step.StepMetaInterface;
 import org.pentaho.hadoop.mapreduce.converter.TypeConverterFactory;
 import org.pentaho.hadoop.mapreduce.converter.spi.ITypeConverter;
+import org.pentaho.hadoop.mapreduce.MRUtil;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -146,36 +147,8 @@ public class PentahoMapRunnable<K1, V1, K2, V2> implements MapRunnable<K1, V1, K
       }
     }
 
-   // Pass some information to the transformation...
-   //
-   variableSpace.setVariable("Internal.Hadoop.NumMapTasks", Integer.toString(job.getNumMapTasks()));
-   variableSpace.setVariable("Internal.Hadoop.NumReduceTasks", Integer.toString(job.getNumReduceTasks()));
-   String taskId = job.get("mapred.task.id");
-   variableSpace.setVariable("Internal.Hadoop.TaskId", taskId);
-   // TODO: Verify if the string range holds true for all Hadoop distributions
-   // Extract the node number from the task ID. 
-   // The consensus currently is that it's the part after the last underscore. 
-   // 
-   // Examples: 
-   // job_201208090841_9999 
-   // job_201208090841_10000 
-   // 
-   String nodeNumber; 
-   if (Const.isEmpty(taskId)) { 
-     nodeNumber="0"; 
-   } else { 
-     int lastUnderscoreIndex = taskId.lastIndexOf("_"); 
-     if (lastUnderscoreIndex>=0) { 
-       nodeNumber = taskId.substring(lastUnderscoreIndex+1); 
-     } else { 
-       nodeNumber = "0"; 
-     } 
-   } 
-
-   // get rid of zeroes. 
-   // 
-   variableSpace.setVariable("Internal.Hadoop.NodeNumber", Integer.toString(Integer.valueOf(nodeNumber))); 
-      
+    MRUtil.passInformationToTransformation(variableSpace, job);
+    
     setDebugStatus("Job configuration");
     setDebugStatus("Output key class: " + outClassK.getName());
     setDebugStatus("Output value class: " + outClassV.getName());
