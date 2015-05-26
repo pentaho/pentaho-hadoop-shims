@@ -22,6 +22,21 @@
 
 package org.pentaho.hadoop.shim.common;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
+
+import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Properties;
+
 import org.apache.hadoop.hive.jdbc.HiveDriver;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -97,7 +112,10 @@ public class DriverProxyInvocationChainTest {
     String URL = "jdbc:hive://localhost:8020/default";
 
     // Get mock of original connection, inject the usual SQLException (Method not supported)
-    doReturn( mock( Connection.class ) ).when( hiveDriver ).connect( URL, null );
+    Connection connectionMock = mock( Connection.class );
+    doReturn( mock( Statement.class ) ).when( connectionMock ).createStatement();
+
+    doReturn( connectionMock ).when( hiveDriver ).connect( URL, null );
     Connection hiveConnection = hiveDriver.connect( URL, null );
     assertNotNull( "The real Hive connection should be valid!", hiveConnection );
     doThrow( new SQLException( "Method not supported" ) ).when( hiveConnection ).isReadOnly();
@@ -121,4 +139,18 @@ public class DriverProxyInvocationChainTest {
     }
   }
 
+  @Test
+  public void testDatabaseSelected() throws SQLException {
+    Driver driverMock = mock( HiveDriver.class );
+    Driver driverProxy = DriverProxyInvocationChain.getProxy( Driver.class, driverMock );
+
+    Connection connectionMock = mock( Connection.class );
+    doReturn( connectionMock ).when( driverMock ).connect( anyString(), (Properties) isNull() );
+
+    Statement statementMock = mock( Statement.class );
+    doReturn( statementMock ).when( connectionMock ).createStatement();
+
+    driverProxy.connect( "jdbc:hive://host:port/dbName", null );
+    verify( statementMock ).execute( "use dbName" );
+  }
 }
