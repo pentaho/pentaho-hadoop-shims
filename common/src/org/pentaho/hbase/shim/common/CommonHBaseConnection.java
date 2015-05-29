@@ -539,14 +539,14 @@ public class CommonHBaseConnection extends HBaseConnection {
   // Older HBase versions use org.apache.hadoop.hbase.io.hfile.Compression
   // Newer ones (0.95+) use org.apache.hadoop.hbase.io.compress.Compression
   public Class<?> getCompressionAlgorithmClass() throws ClassNotFoundException {
-    return Class.forName( "org.apache.hadoop.hbase.io.hfile.Compression.Algorithm" );
+    return Class.forName( "org.apache.hadoop.hbase.io.hfile.Compression$Algorithm" );
   }
 
   // TODO - Override this method if necessary!
   // Older HBase versions use org.apache.hadoop.hbase.regionserver.StoreFile.BloomType
   // Newer ones (0.95+) use org.apache.hadoop.hbase.regionserver.BloomType
   public Class<?> getBloomTypeClass() throws ClassNotFoundException {
-    return Class.forName( "org.apache.hadoop.hbase.regionserver.StoreFile.BloomType" );
+    return Class.forName( "org.apache.hadoop.hbase.regionserver.StoreFile$BloomType" );
   }
 
   // TODO - Override this method to return the specified class for each shim.

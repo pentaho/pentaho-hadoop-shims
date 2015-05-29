@@ -37,8 +37,10 @@ import org.pentaho.di.core.logging.LogLevel;
 import org.pentaho.di.core.row.RowMeta;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.variables.VariableSpace;
+import org.pentaho.di.core.variables.Variables;
 import org.pentaho.di.trans.RowProducer;
 import org.pentaho.di.trans.Trans;
+import org.pentaho.hadoop.mapreduce.MRUtil;
 
 import com.thoughtworks.xstream.XStream;
 import org.pentaho.hadoop.mapreduce.converter.spi.ITypeConverter;
@@ -134,6 +136,7 @@ public class PentahoMapReduceBase<K, V> extends MapReduceBase {
     }
     else {
       setDebugStatus("PentahoMapReduceBase: The PDI Job's variable space was not found in the job configuration.");
+      variableSpace = new Variables();
     }
     
     // Check for environment variables in the userDefined variables
@@ -147,7 +150,9 @@ public class PentahoMapReduceBase<K, V> extends MapReduceBase {
         System.setProperty( entry.getKey(), entry.getValue() );
       }
     }
-    
+
+    MRUtil.passInformationToTransformation(variableSpace, job);
+
     switch(mrOperation) {
       case Combine:
         outClassK = (Class<K>) job.getMapOutputKeyClass();
