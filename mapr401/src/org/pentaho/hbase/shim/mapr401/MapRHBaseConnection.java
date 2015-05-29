@@ -148,4 +148,22 @@ public class MapRHBaseConnection extends CommonHBaseConnection implements HBaseC
       }
     } );
   }
+
+  // newer ones (0.95+) use ByteArrayComparable
+  public Class<?> getByteArrayComparableClass() throws ClassNotFoundException {
+    return Class.forName( "org.apache.hadoop.hbase.filter.ByteArrayComparable" );
+  }
+
+  // Older HBase versions use org.apache.hadoop.hbase.io.hfile.Compression
+  // Newer ones (0.95+) use org.apache.hadoop.hbase.io.compress.Compression
+  public Class<?> getCompressionAlgorithmClass() throws ClassNotFoundException {
+    return Class.forName( "org.apache.hadoop.hbase.io.compress.Compression" );
+  }
+
+  // Older HBase versions use org.apache.hadoop.hbase.regionserver.StoreFile.BloomType
+  // Newer ones (0.95+) use org.apache.hadoop.hbase.regionserver.BloomType
+  public Class<?> getBloomTypeClass() throws ClassNotFoundException {
+    return Class.forName( "org.apache.hadoop.hbase.regionserver.BloomType" );
+  }
+
 }
