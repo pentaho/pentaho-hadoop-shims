@@ -26,7 +26,16 @@
     <dependency conf="default" org="org.apache.thrift" name="libthrift" rev="${dependency.thrift.revision}" changing="false" transitive="false"/>
     <dependency conf="default" org="org.apache.oozie" name="oozie-core" rev="${dependency.apache-oozie.revision}" changing="true" transitive="false"/>
     <dependency conf="default" org="org.apache.oozie" name="oozie-client" rev="${dependency.apache-oozie.revision}" changing="true" transitive="false"/>
-
+    <dependency conf="default" org="org.apache.hbase" name="hbase-client" rev="${dependency.apache-hbase.revision}"
+                transitive="false"/>
+    <dependency conf="default" org="org.apache.hbase" name="hbase-common" rev="${dependency.apache-hbase.revision}"
+                transitive="false"/>
+    <dependency conf="default" org="org.apache.hbase" name="hbase-server" rev="${dependency.apache-hbase.revision}"
+                transitive="false"/>
+    <dependency conf="default" org="org.apache.hbase" name="hbase-protocol" rev="${dependency.apache-hbase.revision}"
+                transitive="false"/>
+    <dependency conf="default" org="org.apache.hbase" name="hbase-hadoop-compat"
+                rev="${dependency.apache-hbase.revision}" transitive="false"/>
     <dependency conf="provided->default" org="org.apache.hadoop" name="hadoop-yarn-common" rev="${dependency.hadoop.revision}"/>
     <dependency conf="provided->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-app" rev="${dependency.hadoop.revision}"/>
     <dependency conf="provided->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-core" rev="${dependency.hadoop.revision}"/>
@@ -44,11 +53,7 @@
     <dependency conf="default" org="pentaho" name="pentaho-hdfs-vfs" rev="${dependency.pentaho-hdfs-vfs.revision}" transitive="false" changing="true"/>
     <dependency conf="default" org="pentaho" name="pentaho-hadoop-snappy" rev="${dependency.pentaho-hadoop-snappy.revision}" changing="true" />
 
-    <dependency conf="pmr->default" org="org.apache.hbase" name="hbase-client" rev="${dependency.apache-hbase.revision}" transitive="false"/>
-    <dependency conf="pmr->default" org="org.apache.hbase" name="hbase-common" rev="${dependency.apache-hbase.revision}" transitive="false"/>
-    <dependency conf="pmr->default" org="org.apache.hbase" name="hbase-server" rev="${dependency.apache-hbase.revision}" transitive="false"/>
-    <dependency conf="pmr->default" org="org.apache.hbase" name="hbase-protocol" rev="${dependency.apache-hbase.revision}" transitive="false"/>
-    <dependency conf="pmr->default" org="org.apache.hbase" name="hbase-hadoop-compat" rev="${dependency.apache-hbase.revision}" transitive="false"/>
+
     <dependency conf="pmr->default" org="org.cloudera.htrace" name="htrace-core" rev="2.04" transitive="false" changing="true"/>
     <dependency conf="pmr->default" org="org.apache.zookeeper" name="zookeeper" rev="${dependency.apache-zookeeper.revision}" transitive="false"/>
 
