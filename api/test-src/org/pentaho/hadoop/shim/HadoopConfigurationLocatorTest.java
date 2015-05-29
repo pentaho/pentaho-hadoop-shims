@@ -2,7 +2,7 @@
 *
 * Pentaho Big Data
 *
-* Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
+* Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
 *
 *******************************************************************************
 *
@@ -298,7 +298,7 @@ public class HadoopConfigurationLocatorTest {
     assertNotNull( cl.getResource( "config.properties" ) );
   }
 
-  @Test
+  @Test (expected = ConfigurationException.class)
   public void findHadoopConfigurations_errorLoadingHadoopConfig() throws Exception {
     FileObject root = VFS.getManager().resolveFile( HADOOP_CONFIGURATIONS_PATH );
     HadoopConfigurationLocator locator = new HadoopConfigurationLocator() {
@@ -306,39 +306,7 @@ public class HadoopConfigurationLocatorTest {
         throw new ConfigurationException( "test" );
       }
     };
-
-    // In addition to simply failing make sure we are logging succinct messages to WARN and verbose to DEBUG
-    Logger logger = Logger.getLogger( locator.getClass() );
-    final List<LoggingEvent> logEvents = new ArrayList<LoggingEvent>();
-    logger.addAppender( new AppenderSkeleton() {
-
-      @Override
-      public boolean requiresLayout() {
-        return false;
-      }
-
-      @Override
-      public void close() {
-      }
-
-      @Override
-      protected void append( LoggingEvent event ) {
-        logEvents.add( event );
-      }
-    } );
-    logger.setLevel( Level.DEBUG );
-
     locator.init( root, new MockActiveHadoopConfigurationLocator( "a" ), new DefaultFileSystemManager() );
-    assertEquals( 0, locator.getConfigurations().size() );
-    assertEquals( 2, logEvents.size() );
-    assertEquals( Level.WARN, logEvents.get( 0 ).getLevel() );
-    assertEquals( "Unable to load Hadoop Configuration from \"" + root.getURL()
-      + "/a\". For more information enable debug logging.", logEvents.get( 0 ).getMessage() );
-    assertNull( logEvents.get( 0 ).getThrowableInformation() );
-    assertEquals( Level.DEBUG, logEvents.get( 1 ).getLevel() );
-    assertEquals( "Unable to load Hadoop Configuration from \"" + root.getURL() + "/a\".",
-      logEvents.get( 1 ).getMessage() );
-    assertNotNull( logEvents.get( 1 ).getThrowableInformation() );
   }
 
   @Test
@@ -347,11 +315,8 @@ public class HadoopConfigurationLocatorTest {
     FileObject root = VFS.getManager().resolveFile( HADOOP_CONFIGURATIONS_PATH );
 
     List<URL> urls = locator.parseURLs( root, "a,b" );
-    assertEquals( 3, urls.size() );
+    assertEquals( 2, urls.size() );
     assertEquals( root.getURL().toURI().resolve( "hadoop-configurations/a/" ), urls.get( 0 ).toURI() );
     assertEquals( root.getURL().toURI().resolve( "hadoop-configurations/a/a-config.jar" ), urls.get( 1 ).toURI() );
-    // Non-folders (and in this case something that doesn't exist, will not have a / appended. It will be treated like a file reference
-    assertEquals( root.getURL().toURI().resolve( "hadoop-configurations/b" ), urls.get( 2 ).toURI() );
-
   }
 }
