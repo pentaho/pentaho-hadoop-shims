@@ -45,9 +45,11 @@
     <dependency conf="provided->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-shuffle" rev="${dependency.hadoop.revision}"/>
 
     <dependency conf="default" org="org.apache.sqoop" name="sqoop" rev="${dependency.apache-sqoop.revision}"  changing="false" transitive="false"/>
+    <dependency conf="default" org="dk.brics.automaton" name="automaton" rev="${dependency.automaton.revision}" transitive="false" />
     <dependency conf="default" org="org.apache.pig" name="pig" rev="${dependency.pig.revision}" changing="false" transitive="false"/>
     <!-- MapR Pig needs extra client-side JARs -->
     <dependency conf="provided->default" org="com.mapr.fs" name="libprotodefs" rev="4.1.0-mapr" changing="false" transitive="false" />
+
 
     <dependency conf="default" org="pentaho" name="pentaho-hdfs-vfs" rev="${dependency.pentaho-hdfs-vfs.revision}" transitive="false" changing="true"/>
     <dependency conf="default" org="pentaho" name="pentaho-hadoop-snappy" rev="${dependency.pentaho-hadoop-snappy.revision}" changing="true" />
