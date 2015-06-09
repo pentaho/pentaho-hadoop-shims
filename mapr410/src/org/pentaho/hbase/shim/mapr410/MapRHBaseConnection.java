@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2014 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -20,14 +20,14 @@
  *
  ******************************************************************************/
 
-package org.pentaho.hbase.shim.mapr401;
+package org.pentaho.hbase.shim.mapr410;
 
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Callable;
 
 import org.pentaho.hbase.shim.common.CommonHBaseConnection;
-import org.pentaho.hbase.shim.mapr401.wrapper.HBaseConnectionInterface;
+import org.pentaho.hbase.shim.mapr410.wrapper.HBaseConnectionInterface;
 
 public class MapRHBaseConnection extends CommonHBaseConnection implements HBaseConnectionInterface {
 

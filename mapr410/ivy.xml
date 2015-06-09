@@ -45,10 +45,11 @@
     <dependency conf="provided->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-shuffle" rev="${dependency.hadoop.revision}"/>
 
     <dependency conf="default" org="org.apache.sqoop" name="sqoop" rev="${dependency.apache-sqoop.revision}"  changing="false" transitive="false"/>
-    <!--<dependency conf="default" org="org.apache.pig" name="pig-withouthadoop" rev="${dependency.pig.revision}" changing="false" transitive="false" />-->
-    <dependency conf="default" org="org.apache.pig" name="pig-withouthadoop" rev="${dependency.pig.revision}" changing="false" transitive="false" m:classifier="h2"/>
+    <dependency conf="default" org="dk.brics.automaton" name="automaton" rev="${dependency.automaton.revision}" transitive="false" />
+    <dependency conf="default" org="org.apache.pig" name="pig" rev="${dependency.pig.revision}" changing="false" transitive="false"/>
     <!-- MapR Pig needs extra client-side JARs -->
-    <dependency conf="provided->default" org="com.mapr.fs" name="libprotodefs" rev="4.0.1-mapr" changing="false" transitive="false" />
+    <dependency conf="provided->default" org="com.mapr.fs" name="libprotodefs" rev="4.1.0-mapr" changing="false" transitive="false" />
+
 
     <dependency conf="default" org="pentaho" name="pentaho-hdfs-vfs" rev="${dependency.pentaho-hdfs-vfs.revision}" transitive="false" changing="true"/>
     <dependency conf="default" org="pentaho" name="pentaho-hadoop-snappy" rev="${dependency.pentaho-hadoop-snappy.revision}" changing="true" />
@@ -64,7 +65,6 @@
     <dependency org="log4j" name="log4j" rev="1.2.15" conf="provided" transitive="false"/>
     <dependency org="commons-lang" name="commons-lang" rev="${dependency.commons-lang.revision}" transitive="false" conf="provided->default"/>
     <dependency org="org.apache.hadoop" name="hadoop-common" rev="${dependency.hadoop.revision}" transitive="false" conf="provided->default"/>
-    <dependency org="org.apache.hadoop" name="hadoop-core" rev="${dependency.hadoop.revision}" transitive="false" conf="provided"/>
 
     <dependency conf="test->default" org="junit" name="junit" rev="4.5"/>
     <dependency conf="test->default" org="org.safehaus.jug" name="jug-lgpl" rev="2.0.0"/>
