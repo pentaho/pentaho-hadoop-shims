@@ -154,4 +154,11 @@
     </for>
   </target>
 
+  <target name="jacoco" depends="init">
+    <for list="${modules}" param="module" trim="true">
+      <sequential>
+        <ant antfile="build.xml" dir="@{module}" inheritall="false" target="jacoco" />
+      </sequential>
+    </for>
+  </target>
 </project>
