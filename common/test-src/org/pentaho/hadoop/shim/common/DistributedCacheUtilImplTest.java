@@ -407,8 +407,11 @@ public class DistributedCacheUtilImplTest {
     List<Path> files = Arrays.asList(new Path("a"), new Path("b"), new Path("c"));
 
     ch.addCachedFilesToClasspath(files, conf);
-   
-    assertEquals("yes", conf.get("mapred.create.symlink"));
+
+    // this check is not needed for each and every shim
+    if ( "true".equals( System.getProperty( "org.pentaho.hadoop.shims.check.symlink", "false" ) ) ) {
+      assertEquals("yes", conf.get("mapred.create.symlink"));
+    }
 
     for (Path file : files) {
       assertTrue(conf.get("mapred.cache.files").contains(file.toString()));
