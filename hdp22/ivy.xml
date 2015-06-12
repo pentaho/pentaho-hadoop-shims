@@ -109,5 +109,39 @@
     <!--  Exclude xerces, it's provided and will wreak havoc if there are multiple instances / versions -->
     <exclude org="xml-apis" module="xml-apis" conf="*" />
     <exclude org="xerces" module="xercesImpl" conf="*" />
+    <!-- Exclude duplicate jars from lib/client -->
+    <exclude conf="client" org="asm" module="asm"/>
+    <exclude conf="client" org="com.google.code.findbugs" module="jsr305"/>
+    <exclude conf="client" org="com.google.guava" module="guava"/>
+    <exclude conf="client" org="com.sun.xml.bind" module="jaxb-impl"/>
+    <exclude conf="client" org="com.thoughtworks.paranamer" module="paranamer"/>
+    <exclude conf="client" org="commons-beanutils" module="commons-beanutils-core"/>
+    <exclude conf="client" org="commons-cli" module="commons-cli"/>
+    <exclude conf="client" org="commons-codec" module="commons-codec"/>
+    <exclude conf="client" org="commons-collections" module="commons-collections"/>
+    <exclude conf="client" org="commons-digester" module="commons-digester"/>
+    <exclude conf="client" org="commons-httpclient" module="commons-httpclient"/>
+    <exclude conf="client" org="commons-io" module="commons-io"/>
+    <exclude conf="client" org="commons-lang" module="commons-lang"/>
+    <exclude conf="client" org="commons-logging" module="commons-logging"/>
+    <exclude conf="client" org="io.netty" module="netty"/>
+    <exclude conf="client" org="javax.activation" module="activation"/>
+    <exclude conf="client" org="javax.servlet" module="servlet-api"/>
+    <exclude conf="client" org="javax.xml.bind" module="jaxb-api"/>
+    <exclude conf="client" org="jline" module="jline"/>
+    <exclude conf="client" org="org.apache.avro" module="avro"/>
+    <exclude conf="client" org="org.apache.commons" module="commons-compress"/>
+    <exclude conf="client" org="org.apache.curator" module="curator-client"/>
+    <exclude conf="client" org="org.apache.curator" module="curator-framework"/>
+    <exclude conf="client" org="org.apache.curator" module="curator-recipes"/>
+    <exclude conf="client" org="org.apache.httpcomponents" module="httpclient"/>
+    <exclude conf="client" org="org.apache.httpcomponents" module="httpcore"/>
+    <exclude conf="client" org="org.codehaus.jackson" module="jackson-core-asl"/>
+    <exclude conf="client" org="org.codehaus.jackson" module="jackson-mapper-asl"/>
+    <exclude conf="client" org="org.htrace" module="htrace-core"/>
+    <exclude conf="client" org="org.slf4j" module="slf4j-api"/>
+    <exclude conf="client" org="org.slf4j" module="slf4j-log4j12"/>
+    <exclude conf="client" org="org.tukaani" module="xz"/>
+    <exclude conf="client" org="org.xerial.snappy" module="snappy-java"/>
   </dependencies>
 </ivy-module>
