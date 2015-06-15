@@ -46,7 +46,9 @@
 
     <dependency conf="default" org="org.apache.sqoop" name="sqoop" rev="${dependency.apache-sqoop.revision}"  changing="false" transitive="false"/>
     <dependency conf="default" org="dk.brics.automaton" name="automaton" rev="${dependency.automaton.revision}" transitive="false" />
-    <dependency conf="default" org="org.apache.pig" name="pig" rev="${dependency.pig.revision}" changing="false" transitive="false"/>
+    <dependency conf="default" org="org.apache.pig" name="pig" rev="${dependency.pig.revision}" changing="false" transitive="false">
+      <artifact name="pig" type="jar" ext="jar" m:classifier="h2"/>
+    </dependency>
     <!-- MapR Pig needs extra client-side JARs -->
     <dependency conf="provided->default" org="com.mapr.fs" name="libprotodefs" rev="4.1.0-mapr" changing="false" transitive="false" />
 
