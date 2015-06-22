@@ -610,12 +610,14 @@ public class DistributedCacheUtilImplTest {
     DistributedCacheUtilImpl util = new DistributedCacheUtilImpl(TEST_CONFIG);
 
     // Fake out the "plugins" directory for the project's root directory
+    String originalValue = System.getProperty(Const.PLUGIN_BASE_FOLDERS_PROP);
     System.setProperty(Const.PLUGIN_BASE_FOLDERS_PROP, KettleVFS.getFileObject(".").getURL().toURI().getPath());
 
     assertNotNull("Should have found plugin dir: bin/", util.findPluginFolder("bin"));
     assertNotNull("Should be able to find nested plugin dir: bin/test/", util.findPluginFolder("bin/test"));
 
     assertNull("Should not have found plugin dir: org/", util.findPluginFolder("org"));
+    System.setProperty(Const.PLUGIN_BASE_FOLDERS_PROP, originalValue);
   }
 
   @Test
@@ -635,12 +637,12 @@ public class DistributedCacheUtilImplTest {
     Path p1 = new Path("/testing1");
     Path p2 = new Path("/testing2");
     Configuration conf = new Configuration();
-
+    String originalValue = System.getProperty( "hadoop.cluster.path.separator", ":" );
     System.setProperty("hadoop.cluster.path.separator", "J");
 
     util.addFileToClassPath(p1, conf);
     util.addFileToClassPath(p2, conf);
     assertEquals("/testing1J/testing2", conf.get("mapred.job.classpath.files"));
-
+    System.setProperty("hadoop.cluster.path.separator", originalValue);
   }
 }
