@@ -22,27 +22,19 @@
 
 package org.pentaho.hadoop.shim.common;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.SQLException;
-
 import org.apache.hadoop.hive.jdbc.HiveDriver;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.SQLException;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class DriverProxyInvocationChainTest {
 
@@ -103,13 +95,13 @@ public class DriverProxyInvocationChainTest {
     Driver proxiedDriver = DriverProxyInvocationChain.getProxy( Driver.class, hiveDriver );
 
     String URL = "jdbc:hive://localhost:8020/default";
-    
+
     // Get mock of original connection, inject the usual SQLException (Method not supported)
     doReturn( mock( Connection.class ) ).when( hiveDriver ).connect( URL, null );
     Connection hiveConnection = hiveDriver.connect( URL, null );
     assertNotNull( "The real Hive connection should be valid!", hiveConnection );
     doThrow( new SQLException( "Method not supported" ) ).when( hiveConnection ).isReadOnly();
-    
+
     // Get connection via proxy
     Connection proxiedConnection = proxiedDriver.connect( URL, null );
     assertNotNull( "The proxied Hive connection should be valid!", proxiedConnection );
@@ -118,14 +110,14 @@ public class DriverProxyInvocationChainTest {
     try {
       hiveConnection.isReadOnly();
     } catch ( SQLException sqlException ) {
-      assertEquals(sqlException.getMessage(), "Method not supported" );
+      assertEquals( sqlException.getMessage(), "Method not supported" );
     }
-    
+
     // Do not allow a SQLException for the proxied driver
     try {
       assertFalse( proxiedConnection.isReadOnly() );
     } catch ( SQLException sqlException ) {
-      fail("No exception should be thrown for isReadOnly(), expecting false");
+      fail( "No exception should be thrown for isReadOnly(), expecting false" );
     }
   }
 

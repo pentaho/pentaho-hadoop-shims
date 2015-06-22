@@ -1,24 +1,24 @@
 /*******************************************************************************
-*
-* Pentaho Big Data
-*
-* Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
-*
-*******************************************************************************
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with
-* the License. You may obtain a copy of the License at
-*
-*    http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-******************************************************************************/
+ *
+ * Pentaho Big Data
+ *
+ * Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
+ *
+ *******************************************************************************
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ ******************************************************************************/
 
 package org.pentaho.hadoop.shim.common.mapred;
 
@@ -27,7 +27,7 @@ import java.io.IOException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapred.Counters;
 import org.apache.hadoop.mapred.JobID;
-import org.apache.hadoop.mapred.JobStatus; 
+import org.apache.hadoop.mapred.JobStatus;
 import org.apache.hadoop.mapred.RunningJob;
 import org.apache.hadoop.mapred.TaskAttemptID;
 import org.apache.hadoop.mapred.TaskCompletionEvent;
@@ -71,12 +71,12 @@ public class MockRunningJob implements RunningJob {
   }
 
   @Override
-  public TaskCompletionEvent[] getTaskCompletionEvents(int arg0) throws IOException {
+  public TaskCompletionEvent[] getTaskCompletionEvents( int arg0 ) throws IOException {
     return null;
   }
 
   @Override
-  public String[] getTaskDiagnostics(TaskAttemptID arg0) throws IOException {
+  public String[] getTaskDiagnostics( TaskAttemptID arg0 ) throws IOException {
     return null;
   }
 
@@ -100,12 +100,12 @@ public class MockRunningJob implements RunningJob {
   }
 
   @Override
-  public void killTask(TaskAttemptID arg0, boolean arg1) throws IOException {
+  public void killTask( TaskAttemptID arg0, boolean arg1 ) throws IOException {
   }
 
   @Override
   @Deprecated
-  public void killTask(String arg0, boolean arg1) throws IOException {
+  public void killTask( String arg0, boolean arg1 ) throws IOException {
   }
 
   @Override
@@ -119,7 +119,7 @@ public class MockRunningJob implements RunningJob {
   }
 
   @Override
-  public void setJobPriority(String arg0) throws IOException {
+  public void setJobPriority( String arg0 ) throws IOException {
   }
 
   @Override
@@ -135,21 +135,21 @@ public class MockRunningJob implements RunningJob {
   public String getFailureInfo() throws IOException {
     return null;
   }
-  
+
   //Omit @Override since not all Hadoop versions define this method 
   public JobStatus getJobStatus() throws IOException {
     return null;
   }
-  
+
   //Omit @Override since not all Hadoop versions define this method
-  public int unBlackListTracker(String arg0) {
+  public int unBlackListTracker( String arg0 ) {
     return 0;
   }
 
-  public org.apache.hadoop.mapred.TaskCompletionEventList getTaskCompletionEventList(int arg0) {
+  public org.apache.hadoop.mapred.TaskCompletionEventList getTaskCompletionEventList( int arg0 ) {
     return null;
   }
-  
+
   public boolean isRetired() throws java.io.IOException {
     return false;
   }

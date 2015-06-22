@@ -23,7 +23,9 @@ package org.pentaho.hadoop.mapreduce;
 
 import org.junit.Test;
 import org.pentaho.di.core.exception.KettleException;
+
 import java.io.IOException;
+
 import static org.junit.Assert.*;
 
 /**
@@ -31,7 +33,7 @@ import static org.junit.Assert.*;
  */
 public class GenericTransReduceTest {
   @Test
-  public void testClose() throws KettleException , IOException {
+  public void testClose() throws KettleException, IOException {
     GenericTransReduce gtr = new GenericTransReduce();
     try {
       gtr.close();
