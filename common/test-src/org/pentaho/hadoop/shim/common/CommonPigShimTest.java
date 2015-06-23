@@ -22,23 +22,21 @@
 
 package org.pentaho.hadoop.shim.common;
 
-import static org.junit.Assert.*;
-
 import org.apache.pig.ExecType;
-import org.apache.pig.PigServer;
-import org.apache.pig.tools.grunt.GruntParser;
 import org.junit.Test;
 import org.pentaho.hadoop.shim.spi.PigShim.ExecutionMode;
 
-import java.io.StringReader;
 import java.util.Properties;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class CommonPigShimTest {
 
   class TestPigShim extends CommonPigShim {
     @Override public int[] executeScript( String pigScript, ExecutionMode executionMode, Properties properties )
       throws Exception {
-      return new int[0];
+      return new int[ 0 ];
     }
   }
 
