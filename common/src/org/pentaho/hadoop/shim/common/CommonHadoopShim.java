@@ -22,14 +22,6 @@
 
 package org.pentaho.hadoop.shim.common;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.URI;
-import java.sql.Driver;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.hadoop.hive.jdbc.HiveDriver;
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapred.JobClient;
@@ -55,7 +47,53 @@ import org.pentaho.hadoop.shim.common.mapred.RunningJobProxy;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 import org.pentaho.hdfs.vfs.HDFSFileProvider;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.URI;
+import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.DriverPropertyInfo;
+import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.logging.Logger;
+
 public class CommonHadoopShim implements HadoopShim {
+  public static class NotSupportedDriver implements Driver {
+    public static SQLException notSupported =
+      new SQLException( "Chosen driver is not supported in currently active Hadoop shim" );
+
+    @Override public Connection connect( String url, Properties info ) throws SQLException {
+      throw notSupported;
+    }
+
+    @Override public boolean acceptsURL( String url ) throws SQLException {
+      throw notSupported;
+    }
+
+    @Override public DriverPropertyInfo[] getPropertyInfo( String url, Properties info ) throws SQLException {
+      throw notSupported;
+    }
+
+    @Override public int getMajorVersion() {
+      return 0;
+    }
+
+    @Override public int getMinorVersion() {
+      return 0;
+    }
+
+    @Override public boolean jdbcCompliant() {
+      return false;
+    }
+
+    @Override public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+      return null;
+    }
+  }
 
   private DistributedCacheUtil dcUtil;
 
@@ -66,6 +104,36 @@ public class CommonHadoopShim implements HadoopShim {
           put( "hive", org.apache.hadoop.hive.jdbc.HiveDriver.class );
         }
       };
+
+  @SuppressWarnings( "serial" )
+  protected static Map<String, String> JDBC_POSSIBLE_DRIVER_MAP =
+    new HashMap<String, String>();
+
+  static {
+    JDBC_POSSIBLE_DRIVER_MAP.put( "hive2Simba", "org.pentaho.hadoop.shim.common.CommonHadoopShim$NotSupportedDriver" );
+    JDBC_POSSIBLE_DRIVER_MAP.put( "ImpalaSimba", "org.pentaho.hadoop.shim.common.CommonHadoopShim$NotSupportedDriver" );
+  }
+
+  @SuppressWarnings( "unchecked" )
+  protected Class<? extends Driver> tryToLoadDriver( String driverClassName ) {
+    Class possibleDriver = null;
+    ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
+    try {
+      possibleDriver = Class.forName( driverClassName );
+      if ( Driver.class.isAssignableFrom( possibleDriver ) ) {
+        return possibleDriver;
+      } else {
+        throw new ClassCastException( "Specified extra driver class does not extends java.sql.Driver" );
+      }
+    } catch ( ClassNotFoundException e ) {
+      // Ignore
+    } catch ( ClassCastException e2 ) {
+      e2.printStackTrace();
+    } finally {
+      Thread.currentThread().setContextClassLoader( originalClassLoader );
+    }
+    return null;
+  }
 
   @Override
   public ShimVersion getVersion() {
@@ -98,9 +166,12 @@ public class CommonHadoopShim implements HadoopShim {
       Class<? extends Driver> clazz = JDBC_DRIVER_MAP.get( driverType );
       if ( clazz != null ) {
         Driver newInstance = clazz.newInstance();
-        Driver driverProxy = DriverProxyInvocationChain.getProxy( Driver.class, newInstance );
-        return driverProxy;
+        return DriverProxyInvocationChain.getProxy( Driver.class, newInstance );
       } else {
+        clazz = tryToLoadDriver( JDBC_POSSIBLE_DRIVER_MAP.get( driverType ) );
+        if ( clazz != null ) {
+          return clazz.newInstance();
+        }
         return null;
       }
 

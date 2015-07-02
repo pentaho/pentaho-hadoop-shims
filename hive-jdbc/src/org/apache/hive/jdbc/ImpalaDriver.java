@@ -22,12 +22,9 @@
 
 package org.apache.hive.jdbc;
 
-import java.lang.reflect.Method;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-
 import org.pentaho.hadoop.hive.jdbc.HadoopConfigurationUtil;
+
+import java.sql.DriverManager;
 
 /**
  * <p>
@@ -49,20 +46,6 @@ import org.pentaho.hadoop.hive.jdbc.HadoopConfigurationUtil;
  * </p>
  */
 public class ImpalaDriver extends HiveDriver {
-  /**
-   * Method name of {@link org.pentaho.hadoop.shim.spi.HadoopShim#getJdbcDriver()}
-   */
-  private static final String METHOD_GET_JDBC_DRIVER = "getJdbcDriver";
-
-  /**
-   * Driver type = "hive"
-   */
-  private static final String METHOD_JDBC_PARAM = "hive2";
-
-  /**
-   * Utility for resolving Hadoop configurations dynamically.
-   */
-  private HadoopConfigurationUtil util;
 
   // Register ourself with the JDBC Driver Manager
   static {
@@ -73,8 +56,12 @@ public class ImpalaDriver extends HiveDriver {
     }
   }
 
+  {
+    ERROR_SELF_DESCRIPTION = "Impala";
+  }
+
   /**
-   * Create a new Hive driver with the default configuration utility.
+   * Create a new Impala driver with the default configuration utility.
    */
   public ImpalaDriver() {
     this( new HadoopConfigurationUtil() );
@@ -85,26 +72,6 @@ public class ImpalaDriver extends HiveDriver {
       throw new NullPointerException();
     }
     this.util = util;
-  }
-
-  protected Driver getActiveDriver() throws SQLException {
-    Driver driver = null;
-    try {
-      Object shim = util.getActiveHadoopShim();
-      Method getHiveJdbcDriver = shim.getClass().getMethod( METHOD_GET_JDBC_DRIVER, String.class );
-      driver = (Driver) getHiveJdbcDriver.invoke( shim, METHOD_JDBC_PARAM );
-    } catch ( Exception ex ) {
-      throw new SQLException( "Unable to load Impala JDBC driver for the currently active Hadoop configuration", ex );
-    }
-
-    // Check if the Shim contains a Hive driver. It may return this driver if it
-    // doesn't contain one since it'll be found in one of the parent class loaders
-    // so we also need to make sure we didn't return ourself... :)
-    if ( driver == null || driver.getClass() == this.getClass() ) {
-      driver = null;
-    }
-
-    return driver;
   }
 
 }
