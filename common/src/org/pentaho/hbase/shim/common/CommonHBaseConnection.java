@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -39,9 +39,8 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.client.Delete;
+import org.apache.hadoop.hbase.client.Durability;
 import org.apache.hadoop.hbase.client.Get;
-import org.apache.hadoop.hbase.client.HTable;
-import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
@@ -53,6 +52,11 @@ import org.apache.hadoop.hbase.filter.SubstringComparator;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.di.i18n.BaseMessages;
+import org.pentaho.hbase.factory.HBaseAdmin;
+import org.pentaho.hbase.factory.HBaseClientFactory;
+import org.pentaho.hbase.factory.HBaseClientFactoryLocator;
+import org.pentaho.hbase.factory.HBasePut;
+import org.pentaho.hbase.factory.HBaseTable;
 import org.pentaho.hbase.shim.api.ColumnFilter;
 import org.pentaho.hbase.shim.api.HBaseValueMeta;
 import org.pentaho.hbase.shim.spi.HBaseBytesUtilShim;
@@ -67,14 +71,15 @@ public class CommonHBaseConnection extends HBaseConnection {
   private static Class<?> PKG = CommonHBaseConnection.class;
 
   protected Configuration m_config = null;
-  protected org.apache.hadoop.hbase.client.HBaseAdmin m_admin;
+  protected HBaseAdmin m_admin;
+  protected HBaseClientFactory m_factory;
 
-  protected HTable m_sourceTable;
+  protected HBaseTable m_sourceTable;
   protected Scan m_sourceScan;
   protected ResultScanner m_resultSet;
   protected Result m_currentResultSetRow;
-  protected HTable m_targetTable;
-  protected Put m_currentTargetPut;
+  protected HBaseTable m_targetTable;
+  protected HBasePut m_currentTargetPut;
 
   protected HBaseBytesUtilShim m_bytesUtil;
 
@@ -129,7 +134,9 @@ public class CommonHBaseConnection extends HBaseConnection {
         }
       }
 
-      m_admin = new org.apache.hadoop.hbase.client.HBaseAdmin( m_config );
+      m_factory = HBaseClientFactoryLocator.getHBaseClientFactory( m_config );
+
+      m_admin = m_factory.getHBaseAdmin();
     } finally {
       Thread.currentThread().setContextClassLoader( cl );
     }
@@ -146,7 +153,8 @@ public class CommonHBaseConnection extends HBaseConnection {
 
   protected void checkConfiguration() throws Exception {
     if ( m_admin == null ) {
-      throw new Exception( BaseMessages.getString( PKG, "CommonHBaseConnection.Error.ConnectionHasNotBeenConfigured" ) );
+      throw new Exception(
+          BaseMessages.getString( PKG, "CommonHBaseConnection.Error.ConnectionHasNotBeenConfigured" ) );
     }
   }
 
@@ -221,7 +229,7 @@ public class CommonHBaseConnection extends HBaseConnection {
   public List<String> getTableFamiles( String tableName ) throws Exception {
     checkConfiguration();
 
-    HTableDescriptor descriptor = m_admin.getTableDescriptor( m_bytesUtil.toBytes( tableName ) );
+    HTableDescriptor descriptor = m_admin.getTableDescriptor( tableName );
     Collection<HColumnDescriptor> families = descriptor.getFamilies();
     List<String> famList = new ArrayList<String>();
     for ( HColumnDescriptor h : families ) {
@@ -294,7 +302,7 @@ public class CommonHBaseConnection extends HBaseConnection {
   public void createTable( String tableName, List<String> colFamilyNames, Properties creationProps ) throws Exception {
     checkConfiguration();
 
-    HTableDescriptor tableDescription = new HTableDescriptor( tableName );
+    HTableDescriptor tableDescription = m_factory.getHBaseTableDescriptor( tableName );
 
     for ( String familyName : colFamilyNames ) {
       HColumnDescriptor c = new HColumnDescriptor( familyName );
@@ -310,7 +318,7 @@ public class CommonHBaseConnection extends HBaseConnection {
     checkConfiguration();
 
     closeSourceTable();
-    m_sourceTable = new HTable( m_config, tableName );
+    m_sourceTable = m_factory.getHBaseTable( tableName );
   }
 
   @Override
@@ -441,23 +449,29 @@ public class CommonHBaseConnection extends HBaseConnection {
             // custom comparator for signed comparison, specific to each shim due to HBase API changes
             Class<?> deserializedNumericComparatorClass = getDeserializedNumericComparatorClass();
             if ( columnMeta.isInteger() ) {
-              Constructor ctor =
+              Constructor<?> ctor =
                   deserializedNumericComparatorClass.getConstructor( boolean.class, boolean.class, long.class );
               if ( columnMeta.getIsLongOrDouble() ) {
-                comparator = ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), num.longValue() );
+                comparator = ctor.newInstance(
+                    columnMeta.isInteger(),
+                    columnMeta.getIsLongOrDouble(),
+                    num.longValue() );
               } else {
                 comparator =
                     ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), (long) num.intValue() );
               }
             } else {
-              Constructor ctor =
+              Constructor<?> ctor =
                   deserializedNumericComparatorClass.getConstructor( boolean.class, boolean.class, double.class );
               if ( columnMeta.getIsLongOrDouble() ) {
                 comparator =
                     ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), num.doubleValue() );
               } else {
                 comparator =
-                    ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), (double) num.floatValue() );
+                    ctor.newInstance(
+                        columnMeta.isInteger(),
+                        columnMeta.getIsLongOrDouble(),
+                        (double) num.floatValue() );
               }
             }
           } else if ( columnMeta.isInteger() ) {
@@ -488,7 +502,7 @@ public class CommonHBaseConnection extends HBaseConnection {
           } else {
             // custom comparator for signed comparison
             Class<?> deserializedNumericComparatorClass = getDeserializedNumericComparatorClass();
-            Constructor ctor =
+            Constructor<?> ctor =
                 deserializedNumericComparatorClass.getConstructor( boolean.class, boolean.class, long.class );
             comparator = ctor.newInstance( true, true, dateAsMillis );
           }
@@ -504,7 +518,7 @@ public class CommonHBaseConnection extends HBaseConnection {
           }
 
           Class<?> deserializedBooleanComparatorClass = getDeserializedBooleanComparatorClass();
-          Constructor ctor = deserializedBooleanComparatorClass.getConstructor( boolean.class );
+          Constructor<?> ctor = deserializedBooleanComparatorClass.getConstructor( boolean.class );
           comparator = ctor.newInstance( decodedB.booleanValue() );
         }
       } else {
@@ -704,7 +718,7 @@ public class CommonHBaseConnection extends HBaseConnection {
     checkConfiguration();
     closeTargetTable();
 
-    m_targetTable = new HTable( m_config, tableName );
+    m_targetTable = m_factory.getHBaseTable( tableName );
 
     if ( props != null ) {
       Set<Object> keys = props.keySet();
@@ -730,8 +744,8 @@ public class CommonHBaseConnection extends HBaseConnection {
   public void newTargetTablePut( byte[] key, boolean writeToWAL ) throws Exception {
     checkTargetTable();
 
-    m_currentTargetPut = new Put( key );
-    m_currentTargetPut.setWriteToWAL( writeToWAL );
+    m_currentTargetPut = m_factory.getHBasePut( key );
+    m_currentTargetPut.setDurability( writeToWAL ? Durability.USE_DEFAULT : Durability.SKIP_WAL );
   }
 
   @Override
@@ -767,8 +781,10 @@ public class CommonHBaseConnection extends HBaseConnection {
     checkTargetTable();
     checkTargetPut();
 
-    m_currentTargetPut.add( m_bytesUtil.toBytes( columnFamily ), colNameIsBinary ? m_bytesUtil
-        .toBytesBinary( columnName ) : m_bytesUtil.toBytes( columnName ), colValue );
+    m_currentTargetPut.addColumn(
+        m_bytesUtil.toBytes( columnFamily ),
+        colNameIsBinary ? m_bytesUtil.toBytesBinary( columnName ) : m_bytesUtil.toBytes( columnName ),
+        colValue );
   }
 
   @Override
@@ -813,5 +829,22 @@ public class CommonHBaseConnection extends HBaseConnection {
     // ImmutableBytesWritable.class from the same CL as o.getClass() was loaded
     // from
     return o instanceof ImmutableBytesWritable;
+  }
+
+  @Override
+  public void close() throws Exception {
+    closeTargetTable();
+    closeSourceResultSet();
+    closeSourceTable();
+
+    closeClientFactory();
+  }
+
+  void closeClientFactory() {
+    if ( m_factory != null ) {
+      m_factory.close();
+    }
+
+    m_factory = null;
   }
 }

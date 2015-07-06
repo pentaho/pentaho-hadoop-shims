@@ -2,7 +2,7 @@
 *
 * Pentaho Big Data
 *
-* Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
+* Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
 *
 *******************************************************************************
 *
@@ -837,5 +837,9 @@ public class FakeHBaseConnection extends HBaseConnection {
     if (m_currentResultSetRow == null) {
       throw new Exception("No current resut set row available!");
     }
+  }
+
+  @Override
+  public void close() throws Exception {
   }
 }
