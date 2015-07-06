@@ -129,4 +129,6 @@ public interface HBaseConnectionInterface {
 
   public abstract boolean targetTableIsAutoFlush() throws Exception;
 
+  public abstract void close() throws Exception;
+
 }
