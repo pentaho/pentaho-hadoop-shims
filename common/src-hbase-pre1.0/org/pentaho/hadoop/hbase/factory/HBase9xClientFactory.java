@@ -25,7 +25,6 @@ import java.io.IOException;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HTableDescriptor;
-import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.mapred.Table9xInputFormatDiscloser;
 import org.pentaho.hbase.factory.HBaseAdmin;
@@ -69,7 +68,7 @@ class HBase9xClientFactory implements HBaseClientFactory {
 
   @Override
   public HTableDescriptor getHBaseTableDescriptor( String tableName ) {
-    return new HTableDescriptor( TableName.valueOf( tableName ) );
+    return new HTableDescriptor( tableName );
   }
 
   @Override
@@ -96,7 +95,7 @@ class HBase9xClientFactory implements HBaseClientFactory {
 
       @Override
       protected void setHBaseTable( Configuration conf, String tableName ) throws IOException {
-        invoker.setHTable( new HTable( conf, TableName.valueOf( tableName ) ) );
+        invoker.setHTable( new HTable( conf, tableName ) );
       }
 
       @Override

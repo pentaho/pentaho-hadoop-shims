@@ -62,7 +62,7 @@ class HBase10Admin implements HBaseAdmin {
   }
 
   @Override
-  public HTableDescriptor getTableDescriptor( String tableName ) throws IOException {
+  public HTableDescriptor getTableDescriptor( byte[] tableName ) throws IOException {
     return admin.getTableDescriptor( TableName.valueOf( tableName ) );
   }
 

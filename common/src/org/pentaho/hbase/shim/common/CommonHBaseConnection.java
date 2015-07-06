@@ -39,7 +39,6 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.client.Delete;
-import org.apache.hadoop.hbase.client.Durability;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
@@ -229,7 +228,7 @@ public class CommonHBaseConnection extends HBaseConnection {
   public List<String> getTableFamiles( String tableName ) throws Exception {
     checkConfiguration();
 
-    HTableDescriptor descriptor = m_admin.getTableDescriptor( tableName );
+    HTableDescriptor descriptor = m_admin.getTableDescriptor( m_bytesUtil.toBytes( tableName ) );
     Collection<HColumnDescriptor> families = descriptor.getFamilies();
     List<String> famList = new ArrayList<String>();
     for ( HColumnDescriptor h : families ) {
@@ -745,7 +744,7 @@ public class CommonHBaseConnection extends HBaseConnection {
     checkTargetTable();
 
     m_currentTargetPut = m_factory.getHBasePut( key );
-    m_currentTargetPut.setDurability( writeToWAL ? Durability.USE_DEFAULT : Durability.SKIP_WAL );
+    m_currentTargetPut.setWriteToWAL( writeToWAL );
   }
 
   @Override

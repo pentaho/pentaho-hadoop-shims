@@ -24,7 +24,6 @@ package org.pentaho.hadoop.hbase.factory;
 import java.io.IOException;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Put;
@@ -39,7 +38,7 @@ class HBase9xTable implements HBaseTable {
   private final HTable tab;
   
   HBase9xTable( Configuration conf, String tableName ) throws IOException {
-    tab = new HTable( conf, TableName.valueOf( tableName ) );
+    tab = new HTable( conf, tableName );
   }
 
   /**
@@ -57,7 +56,7 @@ class HBase9xTable implements HBaseTable {
 
   @Override
   public void setAutoFlush( boolean autoFlush ) throws IOException {
-    tab.setAutoFlushTo( autoFlush ); 
+    tab.setAutoFlush( autoFlush ); 
   }
 
   @Override

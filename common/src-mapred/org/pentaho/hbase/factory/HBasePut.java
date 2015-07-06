@@ -21,10 +21,8 @@
 ******************************************************************************/
 package org.pentaho.hbase.factory;
 
-import org.apache.hadoop.hbase.client.Durability;
-
 public interface HBasePut {
-  void setDurability( Durability durability );
+  void setWriteToWAL( boolean writeToWAL );
   void addColumn( byte[] colFamily, byte[] colName, byte[] colValue );
 
 }

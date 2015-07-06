@@ -33,7 +33,7 @@ public interface HBaseAdmin {
   boolean isTableDisabled( String tableName ) throws IOException;
   boolean isTableEnabled( String tableName ) throws IOException;
   boolean isTableAvailable( String tableName ) throws IOException;
-  HTableDescriptor getTableDescriptor( String tableName ) throws IOException;
+  HTableDescriptor getTableDescriptor( byte[] tableName ) throws IOException;
   void deleteTable( String tableName ) throws IOException;
   void createTable( HTableDescriptor tableDesc ) throws IOException;
   void close() throws IOException;

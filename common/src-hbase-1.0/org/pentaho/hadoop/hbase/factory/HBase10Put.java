@@ -33,8 +33,8 @@ public class HBase10Put implements HBasePut {
   }
   
   @Override
-  public void setDurability( Durability durability ) {
-    put.setDurability( durability );
+  public void setWriteToWAL( boolean writeToWAL ) {
+    put.setDurability( writeToWAL ? Durability.USE_DEFAULT : Durability.SKIP_WAL );
   }
 
   @Override

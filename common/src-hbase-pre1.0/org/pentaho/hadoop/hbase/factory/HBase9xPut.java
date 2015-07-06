@@ -21,7 +21,6 @@
 ******************************************************************************/
 package org.pentaho.hadoop.hbase.factory;
 
-import org.apache.hadoop.hbase.client.Durability;
 import org.apache.hadoop.hbase.client.Put;
 import org.pentaho.hbase.factory.HBasePut;
 
@@ -33,8 +32,8 @@ public class HBase9xPut implements HBasePut {
   }
 
   @Override
-  public void setDurability( Durability durability ) {
-    put.setDurability( durability );
+  public void setWriteToWAL( boolean writeToWAL ) {
+    put.setWriteToWAL( writeToWAL );
   }
 
   @Override

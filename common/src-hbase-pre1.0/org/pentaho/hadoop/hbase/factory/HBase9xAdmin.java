@@ -22,10 +22,11 @@
 package org.pentaho.hadoop.hbase.factory;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HTableDescriptor;
-import org.apache.hadoop.hbase.TableName;
 import org.pentaho.hbase.factory.HBaseAdmin;
 
 class HBase9xAdmin implements HBaseAdmin {
@@ -37,7 +38,7 @@ class HBase9xAdmin implements HBaseAdmin {
 
   @Override
   public boolean tableExists( String tableName ) throws IOException {
-    return admin.tableExists( TableName.valueOf( tableName ) );
+    return admin.tableExists( tableName );
   }
 
   @Override
@@ -47,37 +48,37 @@ class HBase9xAdmin implements HBaseAdmin {
 
   @Override
   public boolean isTableDisabled( String tableName ) throws IOException {
-    return admin.isTableDisabled( TableName.valueOf( tableName ) );
+    return admin.isTableDisabled( tableName );
   }
 
   @Override
   public boolean isTableEnabled( String tableName ) throws IOException {
-    return admin.isTableEnabled( TableName.valueOf( tableName ) );
+    return admin.isTableEnabled( tableName );
   }
   
   @Override
   public boolean isTableAvailable( String tableName ) throws IOException {
-    return admin.isTableAvailable( TableName.valueOf( tableName ) );
+    return admin.isTableAvailable( tableName );
   }
 
   @Override
-  public HTableDescriptor getTableDescriptor( String tableName ) throws IOException {
-    return admin.getTableDescriptor( TableName.valueOf( tableName ) );
+  public HTableDescriptor getTableDescriptor( byte[] tableName ) throws IOException {
+    return admin.getTableDescriptor( tableName );
   }
 
   @Override
   public void enableTable( String tableName ) throws IOException {
-    admin.enableTable( TableName.valueOf( tableName ) );
+    admin.enableTable( tableName );
   }
 
   @Override
   public void disableTable( String tableName ) throws IOException {
-    admin.disableTable( TableName.valueOf( tableName ) );
+    admin.disableTable( tableName );
   }
 
   @Override
   public void deleteTable( String tableName ) throws IOException {
-    admin.deleteTable( TableName.valueOf( tableName ) );
+    admin.deleteTable( tableName );
   }
 
   @Override
@@ -87,6 +88,24 @@ class HBase9xAdmin implements HBaseAdmin {
 
   @Override
   public void close() throws IOException {
-    admin.close();
+    Method closeMethod = null;
+    try {
+      closeMethod = admin.getClass().getMethod( "close", new Class<?> [0] );
+    } catch ( NoSuchMethodException e ) {
+    } catch ( SecurityException e ) {
+      throw new IOException( "can't find 'close' method", e );
+    }
+
+    if ( closeMethod != null ) {
+      try {
+        closeMethod.invoke( admin, new Object[0] );
+      } catch ( IllegalAccessException e ) {
+        throw new IOException( "can't close admin", e );
+      } catch ( IllegalArgumentException e ) {
+        throw new IOException( "can't close admin", e );
+      } catch ( InvocationTargetException e ) {
+        throw new IOException( "can't close admin", e );
+      }
+    }
   }
 }
