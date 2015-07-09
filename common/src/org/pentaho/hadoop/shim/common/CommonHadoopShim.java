@@ -206,11 +206,11 @@ public class CommonHadoopShim implements HadoopShim {
     }
   }
 
-  public void setDistributedCacheUtil( DistributedCacheUtil dcUtil ) {
-    if ( dcUtil == null ) {
+  public void setDistributedCacheUtil( DistributedCacheUtil dcUtilParam ) {
+    if ( dcUtilParam == null ) {
       throw new NullPointerException();
     }
-    this.dcUtil = dcUtil;
+    this.dcUtil = dcUtilParam;
   }
 
   @Override
