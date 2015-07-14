@@ -31,7 +31,7 @@ public class TaskCompletionEventProxy implements TaskCompletionEvent {
     if ( delegateParam == null ) {
       throw new NullPointerException();
     }
-    this.delegate = delegate;
+    this.delegate = delegateParam;
   }
 
   @Override

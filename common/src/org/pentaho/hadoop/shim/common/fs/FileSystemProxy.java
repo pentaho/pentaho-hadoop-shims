@@ -38,11 +38,11 @@ public class FileSystemProxy extends org.apache.hadoop.fs.FileSystem implements 
 
   private org.apache.hadoop.fs.FileSystem delegate;
 
-  public FileSystemProxy( org.apache.hadoop.fs.FileSystem delegate ) {
-    if ( delegate == null ) {
+  public FileSystemProxy( org.apache.hadoop.fs.FileSystem delegateParam ) {
+    if ( delegateParam == null ) {
       throw new NullPointerException();
     }
-    this.delegate = delegate;
+    this.delegate = delegateParam;
   }
 
   @Override

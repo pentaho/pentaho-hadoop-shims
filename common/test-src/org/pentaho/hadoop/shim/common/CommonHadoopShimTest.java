@@ -263,4 +263,79 @@ public class CommonHadoopShimTest {
   public void getPentahoMapReduceMapRunnerClass() {
     assertEquals( PentahoMapRunnable.class, new CommonHadoopShim().getPentahoMapReduceMapRunnerClass() );
   }
+
+  /*  BAD-215 enable after decisionod enabling functionality
+  @Test( expected = SQLException.class )
+  public void getJdbcDriver_notSupportedShim_acceptsUrl() throws SQLException {
+    CommonHadoopShim shim = new CommonHadoopShim();
+    Driver notSupportedShimDriver = shim.getJdbcDriver( "hive2Simba" );
+    notSupportedShimDriver.acceptsURL( "" );
+  }
+
+  @Test( expected = SQLException.class )
+  public void getJdbcDriver_notSupportedShim_connect() throws SQLException {
+    CommonHadoopShim shim = new CommonHadoopShim();
+    Driver notSupportedShimDriver = shim.getJdbcDriver( "hive2Simba" );
+    notSupportedShimDriver.connect( "", null );
+  }
+
+  @Test( expected = SQLException.class )
+  public void getJdbcDriver_supportedShim_acceptsUrl() {
+    CommonHadoopShim shim = new CommonHadoopShim() {
+      {
+        JDBC_POSSIBLE_DRIVER_MAP.put( "hive2Simba", SupportedDriver.class.getCanonicalName() );
+      }
+    };
+    Driver notSupportedShimDriver = shim.getJdbcDriver( "hive2Simba" );
+    try {
+      notSupportedShimDriver.acceptsURL( "" );
+    } catch ( SQLException e ) {
+      fail( "In supported shim driver should be added to the Classes map" + e.getMessage() );
+    }
+  }
+
+  @Test( expected = SQLException.class )
+  public void getJdbcDriver_supportedShim_connect() {
+    CommonHadoopShim shim = new CommonHadoopShim() {
+      {
+        JDBC_POSSIBLE_DRIVER_MAP.put( "hive2Simba", SupportedDriver.class.getCanonicalName() );
+      }
+    };
+    Driver notSupportedShimDriver = shim.getJdbcDriver( "hive2Simba" );
+    try {
+      notSupportedShimDriver.connect( "", null );
+    } catch ( SQLException e ) {
+      fail( "In supported shim driver should be added to the Classes map" + e.getMessage() );
+    }
+  }
+
+  private static class SupportedDriver implements Driver {
+    @Override public Connection connect( String url, Properties info ) throws SQLException {
+      return null;
+    }
+
+    @Override public boolean acceptsURL( String url ) throws SQLException {
+      return false;
+    }
+
+    @Override public DriverPropertyInfo[] getPropertyInfo( String url, Properties info ) throws SQLException {
+      return new DriverPropertyInfo[ 0 ];
+    }
+
+    @Override public int getMajorVersion() {
+      return 0;
+    }
+
+    @Override public int getMinorVersion() {
+      return 0;
+    }
+
+    @Override public boolean jdbcCompliant() {
+      return false;
+    }
+
+    @Override public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+      return null;
+    }
+  } */
 }

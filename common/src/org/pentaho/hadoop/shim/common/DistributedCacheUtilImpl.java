@@ -108,11 +108,11 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.Dis
    */
   private HadoopConfiguration configuration;
 
-  public DistributedCacheUtilImpl( HadoopConfiguration configuration ) {
-    if ( configuration == null ) {
+  public DistributedCacheUtilImpl( HadoopConfiguration configurationParam ) {
+    if ( configurationParam == null ) {
       throw new NullPointerException();
     }
-    this.configuration = configuration;
+    this.configuration = configurationParam;
   }
 
   /**
