@@ -17,6 +17,8 @@
   </publications>
 
   <dependencies defaultconf="default->provided">
+    <dependency conf="provided->default" org="pentaho" name="pentaho-hadoop-shims-api" rev="${project.revision}" changing="true"/>
+
     <dependency org="com.amazonaws" name="aws-java-sdk-emr" rev="${dependency.amazon-sdk.revision}" transitive="false" conf="client->default"/>
     <dependency org="com.amazonaws" name="aws-java-sdk-core" rev="${dependency.amazon-sdk.revision}" transitive="false" conf="client->default"/>
     <dependency org="com.amazonaws" name="aws-java-sdk-dynamodb" rev="${dependency.amazon-sdk.revision}" transitive="false" conf="client->default"/>
@@ -83,7 +85,6 @@
     <dependency conf="test->default" org="org.safehaus.jug" name="jug-lgpl" rev="2.0.0" />
     <dependency conf="test->default" org="pentaho" name="pentaho-hadoop-shims-api-test" rev="${project.revision}" changing="true"/>
     <dependency conf="test->default" org="org.mockito" name="mockito-all" rev="1.9.5" transitive="false" />
-    <dependency conf="test->default" org="pentaho" name="pentaho-hadoop-shims-api" rev="${project.revision}" changing="true"/>
 
     <exclude org="org.antlr" conf="default->provided" />
     <exclude org="javax.xml.stream" />
