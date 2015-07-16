@@ -22,7 +22,6 @@
     <dependency conf="provided->default" org="pentaho-kettle" name="kettle-engine" rev="${dependency.kettle.revision}" changing="true"/>
 
     <dependency org="pentaho" name="pentaho-hdfs-vfs" rev="${dependency.pentaho-hdfs-vfs.revision}" transitive="false" changing="true"/>
-    <dependency org="pentaho" name="pentaho-hadoop-snappy" rev="${dependency.pentaho-hadoop-snappy.revision}" changing="true"/>
 
     <dependency conf="client->default" org="commons-httpclient" name="commons-httpclient" rev="${dependency.commons-httpclient.revision}" transitive="false" />
     <dependency conf="client->default" org="commons-net" name="commons-net" rev="${dependency.commons-net.revision}" transitive="false" />

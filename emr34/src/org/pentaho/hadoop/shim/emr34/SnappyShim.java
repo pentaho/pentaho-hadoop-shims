@@ -23,7 +23,6 @@
 package org.pentaho.hadoop.shim.emr34;
 
 import org.apache.hadoop.io.compress.SnappyCodec;
-import org.apache.hadoop.conf.Configuration;
 import org.pentaho.hadoop.shim.common.CommonSnappyShim;
 
 public class SnappyShim extends CommonSnappyShim {
@@ -37,7 +36,7 @@ public class SnappyShim extends CommonSnappyShim {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
     try {
-      return SnappyCodec.isNativeSnappyLoaded( new Configuration() );
+      return SnappyCodec.isNativeCodeLoaded( );
     } catch ( Throwable t ) {
       return false;
     } finally {
