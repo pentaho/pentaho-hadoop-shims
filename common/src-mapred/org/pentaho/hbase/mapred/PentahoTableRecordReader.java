@@ -2,7 +2,7 @@
 *
 * Pentaho Big Data
 *
-* Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
+* Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
 *
 *******************************************************************************
 *
@@ -24,7 +24,6 @@ package org.pentaho.hbase.mapred;
 
 import java.io.IOException;
 
-import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
@@ -70,13 +69,6 @@ public class PentahoTableRecordReader extends TableRecordReader {
    */
   public void init() throws IOException {
     m_recordReaderImpl.restart(m_recordReaderImpl.getStartRow());
-  }
-
-  /**                                                                                                                                                  
-   * @param htable the {@link HTable} to scan.                                                                                                         
-   */
-  public void setHTable(HTable htable) {
-    m_recordReaderImpl.setHTable(htable);
   }
 
   /**                                                                                                                                                  
@@ -151,5 +143,9 @@ public class PentahoTableRecordReader extends TableRecordReader {
   public boolean next(ImmutableBytesWritable key, Result value)
   throws IOException {
     return m_recordReaderImpl.next(key, value);
+  }
+  
+  protected PentahoTableRecordReaderImpl getImpl() {
+    return m_recordReaderImpl;
   }
 }

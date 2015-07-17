@@ -530,4 +530,9 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   public String toString() {
     return delegate.toString();
   }
+
+  @Override
+  public void close() throws Exception {
+    delegate.close();
+  }
 }

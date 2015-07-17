@@ -2,7 +2,7 @@
 *
 * Pentaho Big Data
 *
-* Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
+* Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
 *
 *******************************************************************************
 *
@@ -81,8 +81,8 @@ public abstract class HBaseConnection {
    *          connection configuration process
    * @throws Exception if a problem occurs
    */
-  public abstract void configureConnection(Properties connProps,
-      List<String> logMessages) throws Exception;
+  public abstract void configureConnection( Properties connProps,
+      List<String> logMessages ) throws Exception;
 
   /**
    * Check if HBase is available and running
@@ -106,7 +106,7 @@ public abstract class HBaseConnection {
    * @return true if the table exists
    * @throws Exception if a problem occurs
    */
-  public abstract boolean tableExists(String tableName) throws Exception;
+  public abstract boolean tableExists( String tableName ) throws Exception;
 
   /**
    * Returns true if the named table is disabled in HBase
@@ -115,7 +115,7 @@ public abstract class HBaseConnection {
    * @return true if the table is disabled
    * @throws Exception if a problem occurs
    */
-  public abstract boolean isTableDisabled(String tableName) throws Exception;
+  public abstract boolean isTableDisabled( String tableName ) throws Exception;
 
   /**
    * Returns true if the named table is available
@@ -124,7 +124,7 @@ public abstract class HBaseConnection {
    * @return true if the table is available
    * @throws Exception if a problem occurs
    */
-  public abstract boolean isTableAvailable(String tableName) throws Exception;
+  public abstract boolean isTableAvailable( String tableName ) throws Exception;
 
   /**
    * Disable the named table
@@ -132,7 +132,7 @@ public abstract class HBaseConnection {
    * @param tableName the name of the table to disable
    * @throws Exception if a problem occurs
    */
-  public abstract void disableTable(String tableName) throws Exception;
+  public abstract void disableTable( String tableName ) throws Exception;
 
   /**
    * Enable the named table
@@ -140,7 +140,7 @@ public abstract class HBaseConnection {
    * @param tableName the name of the table to enable
    * @throws Exception if a problem occurs
    */
-  public abstract void enableTable(String tableName) throws Exception;
+  public abstract void enableTable( String tableName ) throws Exception;
 
   /**
    * Delete the named table from HBase
@@ -148,7 +148,7 @@ public abstract class HBaseConnection {
    * @param tableName the name of the table to delete
    * @throws Exception if a problem occurs
    */
-  public abstract void deleteTable(String tableName) throws Exception;
+  public abstract void deleteTable( String tableName ) throws Exception;
 
   /**
    * Delete a row from the current target table
@@ -158,7 +158,7 @@ public abstract class HBaseConnection {
    *           <code>newTargetTable</code> or a problem occurs during the
    *           operation.
    */
-  public abstract void executeTargetTableDelete(byte[] rowKey) throws Exception;
+  public abstract void executeTargetTableDelete( byte[] rowKey ) throws Exception;
 
   /**
    * Create the named table in HBase
@@ -169,8 +169,8 @@ public abstract class HBaseConnection {
    *          creation keys).
    * @throws Exception a problem occurs
    */
-  public abstract void createTable(String tableName,
-      List<String> colFamilyNames, Properties creationProps) throws Exception;
+  public abstract void createTable( String tableName,
+      List<String> colFamilyNames, Properties creationProps ) throws Exception;
 
   /**
    * Return a list of column families for the supplied table name
@@ -179,8 +179,7 @@ public abstract class HBaseConnection {
    * @return a list of column families existing in the named table
    * @throws Exception if a problem occurs
    */
-  public abstract List<String> getTableFamiles(String tableName)
-      throws Exception;
+  public abstract List<String> getTableFamiles( String tableName ) throws Exception;
 
   /**
    * Specify a new source table to use for read operations
@@ -188,7 +187,7 @@ public abstract class HBaseConnection {
    * @param tableName the name of the table to read from
    * @throws Exception if a problem occurs
    */
-  public abstract void newSourceTable(String tableName) throws Exception;
+  public abstract void newSourceTable( String tableName ) throws Exception;
 
   /**
    * Returns true if the source table contains a row with the given row key
@@ -197,7 +196,7 @@ public abstract class HBaseConnection {
    * @return true if the source table contains a row with the given row key
    * @throws Exception if a problem occurs
    */
-  public abstract boolean sourceTableRowExists(byte[] rowKey) throws Exception;
+  public abstract boolean sourceTableRowExists( byte[] rowKey ) throws Exception;
 
   /**
    * Configure a new source table scan. HBase can do a full table scan if no
@@ -212,8 +211,8 @@ public abstract class HBaseConnection {
    * @param cacheSize the size of the scanner cache
    * @throws Exception no source table has been specified or if a problem occurs
    */
-  public abstract void newSourceTableScan(byte[] keyLowerBound,
-      byte[] keyUpperBound, int cacheSize) throws Exception;
+  public abstract void newSourceTableScan( byte[] keyLowerBound,
+      byte[] keyUpperBound, int cacheSize ) throws Exception;
 
   /**
    * Configure a new target table put
@@ -223,8 +222,7 @@ public abstract class HBaseConnection {
    * @throws Exception if no target table has been specified or if a problem
    *           occurs
    */
-  public abstract void newTargetTablePut(byte[] key, boolean writeToWAL)
-      throws Exception;
+  public abstract void newTargetTablePut( byte[] key, boolean writeToWAL ) throws Exception;
 
   /**
    * Returns true if the target table is set up to automatically flush commits
@@ -259,9 +257,8 @@ public abstract class HBaseConnection {
    * @param colValue the encoded column value to add
    * @throws Exception if a problem occurs
    */
-  public abstract void addColumnToTargetPut(String columnFamily,
-      String columnName, boolean colNameIsBinary, byte[] colValue)
-      throws Exception;
+  public abstract void addColumnToTargetPut( String columnFamily,
+      String columnName, boolean colNameIsBinary, byte[] colValue ) throws Exception;
 
   /**
    * Add a column filter to the list of filters that the scanner will apply to
@@ -274,9 +271,8 @@ public abstract class HBaseConnection {
    *          "match one" (and false if it should be "match all")
    * @throws Exception if a problem occurs
    */
-  public abstract void addColumnFilterToScan(ColumnFilter cf,
-      HBaseValueMeta columnMeta, VariableSpace vars, boolean matchAny)
-      throws Exception;
+  public abstract void addColumnFilterToScan( ColumnFilter cf,
+      HBaseValueMeta columnMeta, VariableSpace vars, boolean matchAny ) throws Exception;
 
   /**
    * Add a specific column to the current source table scan
@@ -287,8 +283,8 @@ public abstract class HBaseConnection {
    * @param colNameIsBinary true if the column name is binary
    * @throws Exception if a problem occurs
    */
-  public abstract void addColumnToScan(String colFamilyName, String colName,
-      boolean colNameIsBinary) throws Exception;
+  public abstract void addColumnToScan( String colFamilyName, String colName,
+      boolean colNameIsBinary ) throws Exception;
 
   /**
    * Execute the current source table scan
@@ -316,7 +312,7 @@ public abstract class HBaseConnection {
    *           current instance/version of HBase wrapped by this HBaseAdmin or
    *           if a problem occurs
    */
-  public abstract byte[] getRowKey(Object aRow) throws Exception;
+  public abstract byte[] getRowKey( Object aRow ) throws Exception;
 
   /**
    * Get the row key of the current row from the current source table scan
@@ -340,8 +336,8 @@ public abstract class HBaseConnection {
    *           current instance/version of HBase wrapped by this HBaseAdmin or
    *           if a problem occurs
    */
-  public abstract byte[] getRowColumnLatest(Object aRow, String colFamilyName,
-      String colName, boolean colNameIsBinary) throws Exception;
+  public abstract byte[] getRowColumnLatest( Object aRow, String colFamilyName,
+      String colName, boolean colNameIsBinary ) throws Exception;
 
   /**
    * Checks if the supplied object is a HBase "row" for the instance/version of
@@ -350,7 +346,7 @@ public abstract class HBaseConnection {
    * @param rowToCheck an HBase row to check for validity
    * @return true if the supplied object is an HBase "row" object
    */
-  public abstract boolean checkForHBaseRow(Object rowToCheck);
+  public abstract boolean checkForHBaseRow( Object rowToCheck );
 
   /**
    * Gets the value of a column from the current row from the source table scan
@@ -367,8 +363,7 @@ public abstract class HBaseConnection {
    *           scan has not been "executed" or a problem occurs
    */
   public abstract byte[] getResultSetCurrentRowColumnLatest(
-      String colFamilyName, String colName, boolean colNameIsBinary)
-      throws Exception;
+      String colFamilyName, String colName, boolean colNameIsBinary ) throws Exception;
 
   /**
    * Return a map of columns to values from the supplied HBase row object for
@@ -381,8 +376,8 @@ public abstract class HBaseConnection {
    *           the instance/versions of HBase wrapped by this HBaseAdmin or a
    *           problem occurs
    */
-  public abstract NavigableMap<byte[], byte[]> getRowFamilyMap(Object aRow,
-      String familyName) throws Exception;
+  public abstract NavigableMap<byte[], byte[]> getRowFamilyMap( Object aRow,
+      String familyName ) throws Exception;
 
   /**
    * Return a map of columns to values from the current source table scan row
@@ -395,7 +390,7 @@ public abstract class HBaseConnection {
    *           problem occurs
    */
   public abstract NavigableMap<byte[], byte[]> getResultSetCurrentRowFamilyMap(
-      String familyName) throws Exception;
+      String familyName ) throws Exception;
 
   /**
    * Get a full map for the supplied HBase row (i.e. column family -> column
@@ -408,7 +403,7 @@ public abstract class HBaseConnection {
    *           problem occurs
    */
   public abstract NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> getRowMap(
-      Object aRow) throws Exception;
+      Object aRow ) throws Exception;
 
   /**
    * Get a full map from the current source table scan row (i.e. column family
@@ -419,7 +414,7 @@ public abstract class HBaseConnection {
    *           hasn't been "executed" or a problem occurs
    */
   public abstract NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> getResultSetCurrentRowMap()
-      throws Exception;
+    throws Exception;
 
   /**
    * Close the current source table
@@ -443,8 +438,7 @@ public abstract class HBaseConnection {
    * @throws Exception if the connection HBaseAdmin hasn't been configured or a
    *           problem occurs
    */
-  public abstract void newTargetTable(String tableName, Properties props)
-      throws Exception;
+  public abstract void newTargetTable( String tableName, Properties props ) throws Exception;
 
   /**
    * Close the target table
@@ -460,7 +454,7 @@ public abstract class HBaseConnection {
    * @return {@code true} if {@code o} is an
    *         {@link org.apache.hadoop.hbase.io.ImmutableBytesWritable}.
    */
-  public abstract boolean isImmutableBytesWritable(Object o);
+  public abstract boolean isImmutableBytesWritable( Object o );
 
   /**
    * Utility method to covert a string to a URL object.
@@ -469,23 +463,29 @@ public abstract class HBaseConnection {
    * @return a URL
    * @throws MalformedURLException if there is a problem with the URL.
    */
-  public static URL stringToURL(String pathOrURL) throws MalformedURLException {
+  public static URL stringToURL( String pathOrURL ) throws MalformedURLException {
     URL result = null;
 
-    if (!isEmpty(pathOrURL)) {
-      if (pathOrURL.toLowerCase().startsWith("http://")
-          || pathOrURL.toLowerCase().startsWith("file://")) {
-        result = new URL(pathOrURL);
+    if ( !isEmpty( pathOrURL ) ) {
+      if ( pathOrURL.toLowerCase().startsWith( "http://" )
+          || pathOrURL.toLowerCase().startsWith( "file://" ) ) {
+        result = new URL( pathOrURL );
       } else {
         String c = "file://" + pathOrURL;
-        result = new URL(c);
+        result = new URL( c );
       }
     }
 
     return result;
   }
 
-  public static boolean isEmpty(String toCheck) {
-    return (toCheck == null || toCheck.length() == 0);
+  public static boolean isEmpty( String toCheck ) {
+    return ( toCheck == null || toCheck.length() == 0 );
   }
+
+  /**
+   * Is used to close all backed resources
+   * @throws Exception is thrown in case of any failure
+   */
+  public abstract void close() throws Exception;
 }

@@ -2,7 +2,7 @@
 *
 * Pentaho Big Data
 *
-* Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
+* Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
 *
 *******************************************************************************
 *
@@ -27,13 +27,15 @@ import java.io.IOException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.mapred.TableInputFormat;
+import org.apache.hadoop.hbase.mapred.TableRecordReader;
 import org.apache.hadoop.util.StringUtils;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.mapred.JobConf;
 import org.pentaho.di.core.Const;
+import org.pentaho.hbase.factory.HBaseClientFactoryLocator;
 
 /**
  * Extends the mapred TableInputFormat and adds the ability to specify 
@@ -46,7 +48,8 @@ import org.pentaho.di.core.Const;
  * 
  * <code>
  * hbase.mapred.inputtable // name of the HBase table to read from
- * hbase.mapred.tablecolumns // space delimited list of columns in ColFam:ColName format (ColName can be ommitted to read all columns from a family)
+ * hbase.mapred.tablecolumns // space delimited list of columns in ColFam:ColName format
+ * (ColName can be ommitted to read all columns from a family)
  * hbase.mapreduce.scan.cachedrows // number of rows for caching that will be passed to scanners
  * hbase.mapreduce.scan.timestamp // timestamp used to filter columns with a specific time stamp
  * hbase.mapreduce.scan.timerange.start // starting timestamp to filter in a given timestamp range
@@ -56,30 +59,32 @@ import org.pentaho.di.core.Const;
  * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
  */
 public class PentahoTableInputFormat extends TableInputFormat {
-  
+
   // Note that the hbase.mapred.tablecolumns property is inherited
   // from TableInputFormat. This property expects a space-delimited list
   // of column names to read in the format "ColumnFamily:ColumnName". The
   // ColumnName may be ommitted in order to read *all* columns from the 
   // specified family
-  
+
   /** The name of the table to read from */
   public static final String INPUT_TABLE = "hbase.mapred.inputtable";
-  
+
   /** The number of rows (integer) for caching that will be passed to scanners. */
   public static final String SCAN_CACHEDROWS = "hbase.mapreduce.scan.cachedrows";
-  
+
   /** The timestamp (long) used to filter columns with a specific timestamp. */
   public static final String SCAN_TIMESTAMP = "hbase.mapreduce.scan.timestamp";
-  
+
   /** The starting timestamp (long) used to filter columns with a specific range of versions. */
   public static final String SCAN_TIMERANGE_START = "hbase.mapreduce.scan.timerange.start";
-  
+
   /** The ending timestamp (long) used to filter columns with a specific range of versions. */
   public static final String SCAN_TIMERANGE_END = "hbase.mapreduce.scan.timerange.end";
-  
+
   protected final Log PLOG = LogFactory.getLog(PentahoTableInputFormat.class);
   
+  private PentahoTableInputFormat delegate;
+
   public void configure(JobConf job) {
     
     String tableName = job.get(INPUT_TABLE);
@@ -98,14 +103,19 @@ public class PentahoTableInputFormat extends TableInputFormat {
       setInputColumns(m_cols);
     }
     
+    Configuration conf = HBaseConfiguration.create(job);
+    
+    delegate = HBaseClientFactoryLocator.getHBaseClientFactory( conf ).getTableInputFormatImpl( this, conf );
+
     try {
-      setHTable(new HTable(HBaseConfiguration.create(job), tableName));
+      setHBaseTable( conf, tableName );
     } catch (Exception e) {
       PLOG.error(StringUtils.stringifyException(e));
     }
-    
+
     // set our table record reader
-    PentahoTableRecordReader rr = new PentahoTableRecordReader();
+    PentahoTableRecordReader rr = createRecordReader( conf );
+
     String cacheSize = job.get(SCAN_CACHEDROWS); 
     if (!Const.isEmpty(cacheSize)) {
       rr.setScanCacheRowSize(Integer.parseInt(cacheSize));
@@ -124,7 +134,7 @@ public class PentahoTableInputFormat extends TableInputFormat {
 
     setTableRecordReader(rr);
   }
-  
+
   public void validateInput(JobConf job) throws IOException {
     // expecting a table name
     String tableName = job.get(INPUT_TABLE);
@@ -132,16 +142,28 @@ public class PentahoTableInputFormat extends TableInputFormat {
       throw new IOException("expecting one table name");
     }
 
-    // connected to table?                                                                                                                             
-    if (getHTable() == null) {
+    // connected to table?
+    if ( !checkHBaseTable() ) {
       throw new IOException("could not connect to table '" +
         tableName + "'");
     }
 
-    // expecting at least one column/column family                                                                                                                   
+    // expecting at least one column/column family
     String colArg = job.get(COLUMN_LIST);
     if (colArg == null || colArg.length() == 0) {
       throw new IOException("expecting at least one column/column family");
     }
+  }
+
+  protected void setHBaseTable(Configuration conf, String tableName) throws IOException {
+    delegate.setHBaseTable( conf, tableName );
+  }
+
+  protected boolean checkHBaseTable() {
+    return delegate.checkHBaseTable();
+  }
+
+  protected PentahoTableRecordReader createRecordReader(Configuration conf) {
+    return delegate.createRecordReader( conf );
   }
 }

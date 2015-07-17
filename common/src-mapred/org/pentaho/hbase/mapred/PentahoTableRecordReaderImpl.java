@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -30,7 +30,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.UnknownScannerException;
-import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
@@ -40,6 +39,7 @@ import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.hbase.util.Writables;
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.util.StringUtils;
+import org.pentaho.hbase.factory.HBaseTable;
 
 /**
  * Iterate over an HBase table data, return (Text, RowResult) pairs.
@@ -55,7 +55,7 @@ public class PentahoTableRecordReaderImpl {
   private byte[] lastRow;
   private Filter trrRowFilter;
   private ResultScanner scanner;
-  private HTable htable;
+  private HBaseTable htable;
   private byte[][] trrInputColumns;
   private int scanCacheRows = -1; // use default if -1
   private Long timeStamp;
@@ -161,7 +161,7 @@ public class PentahoTableRecordReaderImpl {
    * @param htable
    *          the {@link HTable} to scan.
    */
-  public void setHTable( HTable htable ) {
+  public void setHTable( HBaseTable htable ) {
     this.htable = htable;
   }
 
