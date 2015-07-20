@@ -9,6 +9,8 @@
 
   <property name="common.dir" value="../common" />
 
+  <property name="hbase.generation" value="pre1.0"/>
+
   <property name="api.dist.dir" value="../api/dist" description="Distrbution directory for the api project. This is where the api jar will be referenced from." />
   <property name="lib.provided.dir" value="lib-provided" description="Ivy dependencies of 'provided' configuration are placed here"/>
   <property name="lib.pmr.dir" value="lib/pmr" description="Ivy dependencies of 'pmr' configuration are placed here. Placed under lib/ so they are packaged that way."/>
@@ -21,6 +23,8 @@
   <property name="ivy.artifact.mapred.id" value="${ivy.artifact.id}-mapred" description="Name of artifact id for the mapred jar" />
   <property name="mapred.artifact.name" value="${ivy.artifact.mapred.id}-${project.revision}.jar" description="Name of the mapred jar file to create"/>
   <property name="hbase-comparators.artifact.name" value="${ivy.artifact.id}-hbase-comparators-${project.revision}.jar" description="Name of the mapred jar file to create"/>
+  
+  <property name="src.common-hbase.dir" value="${common.dir}/src-hbase-${hbase.generation}"/>
 
   <!-- Setup the compile classpath to include the provided jars and the api jar -->
   <path id="classpath">
@@ -109,9 +113,11 @@
         <path refid="classpath"/>
       </classpath>
       <src path="${src.common-mapred.dir}" />
+      <src path="${src.common-hbase.dir}" />
     </javac>
     <copy todir="${classes.common-mapred.dir}" flatten="false">
       <fileset dir="${src.common-mapred.dir}" excludes="**/*.java" />
+      <fileset dir="${src.common-hbase.dir}" excludes="**/*.java" />
     </copy>
   </target>
 
@@ -125,6 +131,7 @@
         <copy todir="${classes.dir}" flatten="false">
           <fileset dir="${src.common.dir}" excludes="**/*.java" />
           <fileset dir="${src.common-mapred.dir}" excludes="**/*.java" />
+          <fileset dir="${src.common-hbase.dir}" excludes="**/*.java" />
         </copy>
       </then>
     </if>
@@ -494,6 +501,7 @@
 						<sourcefiles encoding="UTF-8">
 							<fileset dir="${src.dir}"/>
 							<fileset dir="${src.common-mapred.dir}"/>
+							<fileset dir="${src.common-hbase.dir}"/>
 						</sourcefiles>
 					</structure>
 					<html destdir="${jacoco.report.dir}"/>
