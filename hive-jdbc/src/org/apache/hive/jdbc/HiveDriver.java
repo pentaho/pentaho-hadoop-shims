@@ -59,20 +59,13 @@ import org.pentaho.hadoop.hive.jdbc.JDBCDriverCallable;
  * </p>
  */
 public class HiveDriver implements java.sql.Driver {
-  /**
-   * Method name of {@link org.pentaho.hadoop.shim.spi.HadoopShim#getJdbcDriver()}
-   */
-  private static final String METHOD_GET_JDBC_DRIVER = "getJdbcDriver";
 
   /**
-   * Driver type = "hive"
+   * Method name of {@link org.pentaho.hadoop.shim.spi.HadoopShim#getJdbcDriver(String)}
    */
-  private static final String METHOD_JDBC_PARAM = "hive2";
+  protected static final String METHOD_GET_JDBC_DRIVER = "getJdbcDriver";
 
-  /**
-   * Utility for resolving Hadoop configurations dynamically.
-   */
-  private HadoopConfigurationUtil util;
+  protected static final String SIMBA_SPECIFIC_URL_PARAMETER = "AuthMech=";
 
   // Register ourself with the JDBC Driver Manager
   static {
@@ -82,6 +75,18 @@ public class HiveDriver implements java.sql.Driver {
       throw new RuntimeException( "Unable to register Hive Server 2 JDBC driver", ex );
     }
   }
+
+  protected String ERROR_SELF_DESCRIPTION = "Hive Server 2";
+
+  /**
+   * Driver type = "hive2"
+   */
+  protected String METHOD_JDBC_PARAM = "hive2";
+
+  /**
+   * Utility for resolving Hadoop configurations dynamically.
+   */
+  protected HadoopConfigurationUtil util;
 
   /**
    * Create a new Hive driver with the default configuration utility.
@@ -104,8 +109,9 @@ public class HiveDriver implements java.sql.Driver {
       Method getHiveJdbcDriver = shim.getClass().getMethod( METHOD_GET_JDBC_DRIVER, String.class );
       driver = (Driver) getHiveJdbcDriver.invoke( shim, METHOD_JDBC_PARAM );
     } catch ( Exception ex ) {
-      throw new SQLException(
-        "Unable to load Hive Server 2 JDBC driver for the currently active Hadoop configuration", ex );
+      throw new SQLException( String
+        .format( "Unable to load %s JDBC driver for the currently active Hadoop configuration",
+          ERROR_SELF_DESCRIPTION ), ex );
     }
 
     // Check if the Shim contains a Hive driver. It may return this driver if it
@@ -123,7 +129,8 @@ public class HiveDriver implements java.sql.Driver {
     if ( drv != null ) {
       return callback.callWithDriver( drv );
     } else {
-      throw new SQLException( "The active Hadoop configuration does not contain a Hive Server 2 / Impala JDBC driver" );
+      throw new SQLException( String.format( "The active Hadoop configuration does not contain a %s JDBC driver",
+        ERROR_SELF_DESCRIPTION ) );
     }
   }
 
@@ -137,8 +144,7 @@ public class HiveDriver implements java.sql.Driver {
    */
   @Override
   public Connection connect( final String url, final Properties info ) throws SQLException {
-    if ( getActiveDriver() == null ) {
-      // Ignore connection attempt in case corresponding driver is not provided by the shim
+    if ( checkBeforeCallActiveDriver( url ) ) {
       return null;
     }
     return callWithActiveDriver( new JDBCDriverCallable<Connection>() {
@@ -151,6 +157,9 @@ public class HiveDriver implements java.sql.Driver {
 
   @Override
   public boolean acceptsURL( final String url ) throws SQLException {
+    if ( checkBeforeCallActiveDriver( url ) ) {
+      return false;
+    }
     try {
       boolean accepts = callWithActiveDriver( new JDBCDriverCallable<Boolean>() {
         @Override
@@ -170,8 +179,22 @@ public class HiveDriver implements java.sql.Driver {
     }
   }
 
+  protected boolean checkBeforeCallActiveDriver( String url ) throws SQLException {
+    if ( getActiveDriver() == null ) {
+      // Ignore connection attempt in case corresponding driver is not provided by the shim
+      return true;
+    } else if ( url.contains( SIMBA_SPECIFIC_URL_PARAMETER ) ) {
+      // BAD-215 check required to distinguish Simba driver
+      return true;
+    }
+    return false;
+  }
+
   @Override
   public DriverPropertyInfo[] getPropertyInfo( final String url, final Properties info ) throws SQLException {
+    if ( checkBeforeCallActiveDriver( url ) ) {
+      return null;
+    }
     return callWithActiveDriver( new JDBCDriverCallable<DriverPropertyInfo[]>() {
       @Override
       public DriverPropertyInfo[] call() throws Exception {

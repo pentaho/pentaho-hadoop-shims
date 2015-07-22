@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -63,14 +63,14 @@ public class DriverProxyInvocationChain {
    * The initialized.
    */
   private static boolean initialized = false;
-  
+
   private static final Date NULL_DATE = new Date( 0 ) {
     private static final long serialVersionUID = 1L;
 
     @Override
     public String toString() {
       return "NULL";
-    };
+    }
   };
 
   /**
@@ -253,8 +253,8 @@ public class DriverProxyInvocationChain {
       Object o = null;
       try {
         if ( "prepareStatement".equals( method.getName() ) ) {
-          String sql = (String) args[0];
-          args[0] = HiveSQLUtils.processSQLString( sql );
+          String sql = (String) args[ 0 ];
+          args[ 0 ] = HiveSQLUtils.processSQLString( sql );
         }
         o = method.invoke( connection, args );
       } catch ( Throwable t ) {
@@ -262,14 +262,13 @@ public class DriverProxyInvocationChain {
         if ( t instanceof InvocationTargetException ) {
           Throwable cause = t.getCause();
 
-          if(cause instanceof SQLException) {
+          if ( cause instanceof SQLException ) {
             String methodName = method.getName();
-            if(cause.getMessage().startsWith("Method not supported")
-                || cause.getMessage().equals("enabling autocommit is not supported")) {
-              if("createStatement".equals(methodName)) {
-                o = createStatement(connection,args);
-              }
-              else if("isReadOnly".equals(methodName)) {
+            if ( cause.getMessage().startsWith( "Method not supported" )
+              || cause.getMessage().equals( "enabling autocommit is not supported" ) ) {
+              if ( "createStatement".equals( methodName ) ) {
+                o = createStatement( connection, args );
+              } else if ( "isReadOnly".equals( methodName ) ) {
                 o = Boolean.FALSE;
               } else if ( "setReadOnly".equals( methodName ) ) {
                 o = (Void) null;
@@ -559,31 +558,32 @@ public class DriverProxyInvocationChain {
         // Causing hive driver to put single quotes around them
         // Exception to this is the NULL_DATE date which signifies that we're explicitly
         // Trying to get NULL into the paramter map without quotes around it
-        if ( PreparedStatement.class.isInstance( proxy ) && ( isSetTimestamp || "setDate".equals( methodName ) ) && args[1] != NULL_DATE ) {
+        if ( PreparedStatement.class.isInstance( proxy ) && ( isSetTimestamp || "setDate".equals( methodName ) )
+          && args[ 1 ] != NULL_DATE ) {
           PreparedStatement ps = (PreparedStatement) proxy;
-          if ( args[1] == null ) {
-            ps.setNull( (Integer) args[0], isSetTimestamp ? Types.TIMESTAMP : Types.DATE );
+          if ( args[ 1 ] == null ) {
+            ps.setNull( (Integer) args[ 0 ], isSetTimestamp ? Types.TIMESTAMP : Types.DATE );
           } else {
             final String value;
-            if ( args.length == 3 && 
-                java.util.Date.class.isAssignableFrom( method.getParameterTypes()[1] ) &&
-                Calendar.class.isAssignableFrom( method.getParameterTypes()[2] ) ) {
+            if ( args.length == 3
+              && java.util.Date.class.isAssignableFrom( method.getParameterTypes()[ 1 ] )
+              && Calendar.class.isAssignableFrom( method.getParameterTypes()[ 2 ] ) ) {
               final Calendar calendar;
-              if ( args[2] == null ) {
+              if ( args[ 2 ] == null ) {
                 calendar = Calendar.getInstance();
               } else {
-                calendar = Calendar.getInstance( ( ( Calendar ) args[2] ).getTimeZone() );
+                calendar = Calendar.getInstance( ( (Calendar) args[ 2 ] ).getTimeZone() );
               }
-              calendar.setTime( ( java.util.Date ) args[1] );
+              calendar.setTime( (java.util.Date) args[ 1 ] );
               if ( isSetTimestamp ) {
                 value = new Timestamp( calendar.getTimeInMillis() ).toString();
               } else {
                 value = new Date( calendar.getTimeInMillis() ).toString();
               }
             } else {
-              value = args[1].toString();
+              value = args[ 1 ].toString();
             }
-            ps.setString( (Integer) args[0], value );
+            ps.setString( (Integer) args[ 0 ], value );
           }
           return null;
         } else {
@@ -597,16 +597,16 @@ public class DriverProxyInvocationChain {
             // Intercept PreparedStatement.getMetaData() to see if it throws an exception
             if ( "getMetaData".equals( methodName ) && ( args == null || args.length == 0 ) ) {
               return getProxiedObject( getMetaData() );
-            } else if ( PreparedStatement.class.isInstance( proxy ) ) { 
+            } else if ( PreparedStatement.class.isInstance( proxy ) ) {
               PreparedStatement ps = (PreparedStatement) proxy;
-              if ("setObject".equals( methodName ) && args.length == 2 && Integer.class.isInstance( args[ 0 ] ) ) {
+              if ( "setObject".equals( methodName ) && args.length == 2 && Integer.class.isInstance( args[ 0 ] ) ) {
                 // Intercept PreparedStatement.setObject(position, value)
                 // Set value using value type instead
                 // This should already be fixed in later Hive JDBC versions:
-  
+
                 int parameterIndex = (Integer) args[ 0 ];
                 Object x = args[ 1 ];
-  
+
                 if ( x == null ) {
                   // PreparedStatement.setNull may not be supported
                   ps.setNull( parameterIndex, Types.NULL );
@@ -635,11 +635,11 @@ public class DriverProxyInvocationChain {
                 return null;
               } else if ( "setNull".equals( methodName )
                 && args.length == 2 && Integer.class.isInstance( args[ 0 ] ) ) {
-  
+
                 int parameterIndex = (Integer) args[ 0 ];
                 // Overriding date to get NULL into query with no quotes around it
                 ps.setDate( parameterIndex, NULL_DATE );
-  
+
                 return null;
               }
             }
@@ -859,7 +859,8 @@ public class DriverProxyInvocationChain {
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable {
       try {
         String methodName = method.getName();
-        if ( ( "getColumnName".equals( methodName ) || ( "getColumnLabel".equals( methodName ) ) ) && ( args != null ) && ( args.length == 1 ) ) {
+        if ( ( "getColumnName".equals( methodName ) || ( "getColumnLabel".equals( methodName ) ) ) && ( args != null )
+          && ( args.length == 1 ) ) {
           return getColumnName( (Integer) args[ 0 ] );
         }
         return method.invoke( this.rsmd, args );
@@ -915,7 +916,7 @@ public class DriverProxyInvocationChain {
 
       // we need to convert the thrift type to the SQL type
       int type = rsmd.getColumnType( column );
-      switch( type ) {
+      switch ( type ) {
         case Types.DOUBLE: case Types.DECIMAL: case Types.FLOAT:
         case Types.INTEGER: case Types.REAL: case Types.SMALLINT: case Types.TINYINT:
         case Types.BIGINT:

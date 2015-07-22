@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2014 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -42,16 +42,20 @@ import org.pentaho.hadoop.shim.spi.MockHadoopShim;
 
 public class HiveDriverTest {
 
-  private HadoopShim getMockShimWithDriver( final Driver driver ) {
+  protected String SCHEME_STRING = "hive2";
+  protected String URL_SUITABLE = "jdbc.hive2://host:port/";
+  protected String URL_UNSUITABLE = "jdbc.hive2://host:port/AuthMech=0";
+
+  protected HadoopShim getMockShimWithDriver( final Driver driver ) {
     return new MockHadoopShim() {
       @Override
       public Driver getJdbcDriver( String scheme ) {
-        return scheme.equalsIgnoreCase( "hive2" ) ? driver : null;
+        return scheme.equalsIgnoreCase( SCHEME_STRING ) ? driver : null;
       }
     };
   }
 
-  private HadoopConfigurationUtil getMockUtil( final HadoopShim shim ) {
+  protected HadoopConfigurationUtil getMockUtil( final HadoopShim shim ) {
     return new HadoopConfigurationUtil() {
       @Override
       public Object getActiveHadoopShim() throws Exception {
@@ -62,7 +66,7 @@ public class HiveDriverTest {
 
   @Test( expected = NullPointerException.class )
   public void instantiation_no_util() {
-    new HiveDriver( null );
+    getActiveTestDriverInstance( (HadoopConfigurationUtil) null );
   }
 
   @Test
@@ -71,7 +75,7 @@ public class HiveDriverTest {
     HadoopShim shim = new MockHadoopShim() {
 
       public java.sql.Driver getJdbcDriver( String scheme ) {
-        if ( scheme.equalsIgnoreCase( "hive2" ) ) {
+        if ( scheme.equalsIgnoreCase( SCHEME_STRING ) ) {
           called.set( true );
           return new MockDriver();
         } else {
@@ -79,8 +83,8 @@ public class HiveDriverTest {
         }
       }
     };
-    HiveDriver d = new HiveDriver( getMockUtil( shim ) );
-    d.getActiveDriver();
+    Driver d = getActiveTestDriverInstance( getMockUtil( shim ) );
+    ( (HiveDriver) d ).getActiveDriver();
     assertTrue( "Shim's getJdbcDriver(\"hive2\") not called", called.get() );
   }
 
@@ -88,7 +92,7 @@ public class HiveDriverTest {
   public void getActiveDriver_exception_in_getJdbcDriver() {
     HadoopShim shim = new MockHadoopShim() {
       public java.sql.Driver getJdbcDriver( String scheme ) {
-        if ( scheme.equalsIgnoreCase( "hive2" ) ) {
+        if ( scheme.equalsIgnoreCase( SCHEME_STRING ) ) {
           throw new RuntimeException();
         } else {
           return null;
@@ -97,12 +101,13 @@ public class HiveDriverTest {
     };
 
     try {
-      HiveDriver d = new HiveDriver( getMockUtil( shim ) );
-      d.getActiveDriver();
+      Driver d = getActiveTestDriverInstance( getMockUtil( shim ) );
+      ( (HiveDriver) d ).getActiveDriver();
       fail( "Expected exception" );
     } catch ( SQLException ex ) {
       assertEquals( InvocationTargetException.class, ex.getCause().getClass() );
-      assertEquals( "Unable to load Hive Server 2 JDBC driver for the currently active Hadoop configuration", ex.getMessage() );
+      assertEquals( "Unable to load Hive Server 2 JDBC driver for the currently active Hadoop configuration",
+        ex.getMessage() );
     }
   }
 
@@ -113,9 +118,9 @@ public class HiveDriverTest {
         return null;
       }
     };
-    HiveDriver d = new HiveDriver( getMockUtil( shim ) );
+    Driver d = getActiveTestDriverInstance( getMockUtil( shim ) );
 
-    assertNull( d.getActiveDriver() );
+    assertNull( ( (HiveDriver) d ).getActiveDriver() );
   }
 
   @Test
@@ -124,12 +129,12 @@ public class HiveDriverTest {
       public java.sql.Driver getJdbcDriver( String scheme ) {
         // Return another shim driver. This should fail when called since the
         // classes are the same
-        return ( scheme.equalsIgnoreCase( "hive2" ) ) ? new HiveDriver() : null;
+        return ( scheme.equalsIgnoreCase( SCHEME_STRING ) ) ? getActiveTestDriverInstance() : null;
       }
     };
-    HiveDriver d = new HiveDriver( getMockUtil( shim ) );
+    Driver d = getActiveTestDriverInstance( getMockUtil( shim ) );
 
-    assertNull( d.getActiveDriver() );
+    assertNull( ( (HiveDriver) d ).getActiveDriver() );
 
   }
 
@@ -139,12 +144,12 @@ public class HiveDriverTest {
       public java.sql.Driver getJdbcDriver( String scheme ) {
         // Return another shim driver. This should fail when called since the
         // classes are the same
-        return ( scheme.equalsIgnoreCase( "hive2" ) ) ? new HiveDriver() : null;
+        return ( scheme.equalsIgnoreCase( SCHEME_STRING ) ) ? getActiveTestDriverInstance() : null;
       }
     };
-    HiveDriver d = new HiveDriver( getMockUtil( shim ) );
+    Driver d = getActiveTestDriverInstance( getMockUtil( shim ) );
 
-    d.callWithActiveDriver( new JDBCDriverCallable<String>() {
+    ( (HiveDriver) d ).callWithActiveDriver( new JDBCDriverCallable<String>() {
       @Override
       public String call() throws Exception {
         return "test";
@@ -161,9 +166,9 @@ public class HiveDriverTest {
         return null;
       }
     };
-    HiveDriver d = new HiveDriver( getMockUtil( shim ) );
+    Driver d = getActiveTestDriverInstance( getMockUtil( shim ) );
 
-    d.callWithActiveDriver( new JDBCDriverCallable<String>() {
+    ( (HiveDriver) d ).callWithActiveDriver( new JDBCDriverCallable<String>() {
       @Override
       public String call() throws Exception {
         return "test";
@@ -181,9 +186,9 @@ public class HiveDriverTest {
         return null;
       }
     };
-    HiveDriver d = new HiveDriver( getMockUtil( getMockShimWithDriver( driver ) ) );
+    Driver d = getActiveTestDriverInstance( driver );
 
-    d.connect( null, null );
+    d.connect( URL_SUITABLE, new Properties() );
     assertTrue( called.get() );
   }
 
@@ -194,10 +199,10 @@ public class HiveDriverTest {
         return null;
       }
     };
-    HiveDriver d = new HiveDriver( getMockUtil( shim ) );
+    Driver d = getActiveTestDriverInstance( getMockUtil( shim ) );
 
     try {
-      assertThat( d.connect( null, null ), is( nullValue() ) );
+      assertThat( d.connect( URL_SUITABLE, new Properties() ), is( nullValue() ) );
     } catch ( SQLException ex ) {
       fail( "Should not get exception if there is no hive2 driver in shim" );
     }
@@ -213,9 +218,9 @@ public class HiveDriverTest {
         return false;
       }
     };
-    HiveDriver d = new HiveDriver( getMockUtil( getMockShimWithDriver( driver ) ) );
+    Driver d = getActiveTestDriverInstance( driver );
 
-    d.acceptsURL( null );
+    d.acceptsURL( URL_SUITABLE );
     assertTrue( called.get() );
   }
 
@@ -228,9 +233,9 @@ public class HiveDriverTest {
         return null;
       }
     };
-    HiveDriver d = new HiveDriver( getMockUtil( shim ) );
+    Driver d = getActiveTestDriverInstance( getMockUtil( shim ) );
 
-    assertFalse( d.acceptsURL( "jdbc:postgres://" ) );
+    assertFalse( d.acceptsURL( URL_UNSUITABLE ) );
 
   }
 
@@ -244,9 +249,9 @@ public class HiveDriverTest {
         return null;
       }
     };
-    HiveDriver d = new HiveDriver( getMockUtil( getMockShimWithDriver( driver ) ) );
+    Driver d = getActiveTestDriverInstance( driver );
 
-    d.getPropertyInfo( null, null );
+    d.getPropertyInfo( URL_SUITABLE, new Properties() );
     assertTrue( called.get() );
   }
 
@@ -260,7 +265,7 @@ public class HiveDriverTest {
         return 0;
       }
     };
-    HiveDriver d = new HiveDriver( getMockUtil( getMockShimWithDriver( driver ) ) );
+    Driver d = getActiveTestDriverInstance( driver );
 
     d.getMajorVersion();
     assertTrue( called.get() );
@@ -274,7 +279,7 @@ public class HiveDriverTest {
         throw new NullPointerException();
       }
     };
-    HiveDriver d = new HiveDriver( getMockUtil( getMockShimWithDriver( driver ) ) );
+    Driver d = getActiveTestDriverInstance( driver );
 
     // If an exception is thrown the version returned should be -1
     assertEquals( -1, d.getMajorVersion() );
@@ -290,7 +295,7 @@ public class HiveDriverTest {
         return 0;
       }
     };
-    HiveDriver d = new HiveDriver( getMockUtil( getMockShimWithDriver( driver ) ) );
+    Driver d = getActiveTestDriverInstance( driver );
 
     d.getMinorVersion();
     assertTrue( called.get() );
@@ -304,10 +309,22 @@ public class HiveDriverTest {
         throw new NullPointerException();
       }
     };
-    HiveDriver d = new HiveDriver( getMockUtil( getMockShimWithDriver( driver ) ) );
+    Driver d = getActiveTestDriverInstance( driver );
 
     // If an exception is thrown the version returned should be -1
     assertEquals( -1, d.getMinorVersion() );
+  }
+
+  protected Driver getActiveTestDriverInstance( Driver driver ) {
+    return getActiveTestDriverInstance( getMockUtil( getMockShimWithDriver( driver ) ) );
+  }
+
+  protected Driver getActiveTestDriverInstance( HadoopConfigurationUtil util ) {
+    return new HiveDriver( util );
+  }
+
+  protected Driver getActiveTestDriverInstance() {
+    return new HiveDriver();
   }
 
   @Test
@@ -320,7 +337,7 @@ public class HiveDriverTest {
         return false;
       }
     };
-    HiveDriver d = new HiveDriver( getMockUtil( getMockShimWithDriver( driver ) ) );
+    Driver d = getActiveTestDriverInstance( driver );
 
     d.jdbcCompliant();
     assertTrue( called.get() );
@@ -334,9 +351,26 @@ public class HiveDriverTest {
         throw new NullPointerException();
       }
     };
-    HiveDriver d = new HiveDriver( getMockUtil( getMockShimWithDriver( driver ) ) );
+    Driver d = getActiveTestDriverInstance( driver );
 
     // should return false if there is an exception
     assertFalse( d.jdbcCompliant() );
   }
+
+  @Test
+  public void connectSimbaUrl() throws SQLException {
+    final AtomicBoolean called = new AtomicBoolean( false );
+    Driver driver = new MockDriver() {
+      @Override
+      public Connection connect( String url, Properties info ) throws SQLException {
+        called.set( true );
+        return null;
+      }
+    };
+    Driver d = getActiveTestDriverInstance( driver );
+
+    d.connect( URL_UNSUITABLE, new Properties() );
+    assertFalse( called.get() );
+  }
+
 }
