@@ -106,6 +106,7 @@ public class PentahoTableInputFormat extends TableInputFormat {
     
     // set our table record reader
     PentahoTableRecordReader rr = new PentahoTableRecordReader();
+    rr.setHTable( getHTable() );
     String cacheSize = job.get(SCAN_CACHEDROWS); 
     if (!Const.isEmpty(cacheSize)) {
       rr.setScanCacheRowSize(Integer.parseInt(cacheSize));
