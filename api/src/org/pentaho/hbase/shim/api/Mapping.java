@@ -95,6 +95,22 @@ public class Mapping {
     }
   }
 
+  public enum TupleMapping {
+    KEY( "KEY" ), FAMILY( "Family" ), COLUMN( "Column" ), VALUE( "Value" ), TIMESTAMP(
+      "Timestamp" );
+
+    private final String m_stringVal;
+
+    TupleMapping( String name ) {
+      m_stringVal = name;
+    }
+
+    @Override
+    public String toString() {
+      return m_stringVal;
+    }
+  }
+
   protected KeyType m_keyType = KeyType.STRING;
 
   /** Fast lookup by alias */

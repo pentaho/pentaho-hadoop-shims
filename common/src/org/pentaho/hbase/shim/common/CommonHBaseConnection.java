@@ -43,11 +43,18 @@ import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.filter.BinaryPrefixComparator;
 import org.apache.hadoop.hbase.filter.CompareFilter;
+import org.apache.hadoop.hbase.filter.FamilyFilter;
 import org.apache.hadoop.hbase.filter.FilterList;
+import org.apache.hadoop.hbase.filter.PrefixFilter;
+import org.apache.hadoop.hbase.filter.QualifierFilter;
 import org.apache.hadoop.hbase.filter.RegexStringComparator;
+import org.apache.hadoop.hbase.filter.RowFilter;
 import org.apache.hadoop.hbase.filter.SingleColumnValueFilter;
 import org.apache.hadoop.hbase.filter.SubstringComparator;
+import org.apache.hadoop.hbase.filter.TimestampsFilter;
+import org.apache.hadoop.hbase.filter.ValueFilter;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 import org.pentaho.di.core.logging.KettleLogStore;
 import org.pentaho.di.core.logging.LogChannelInterface;
@@ -60,6 +67,7 @@ import org.pentaho.hbase.factory.HBasePut;
 import org.pentaho.hbase.factory.HBaseTable;
 import org.pentaho.hbase.shim.api.ColumnFilter;
 import org.pentaho.hbase.shim.api.HBaseValueMeta;
+import org.pentaho.hbase.shim.api.Mapping;
 import org.pentaho.hbase.shim.spi.HBaseBytesUtilShim;
 import org.pentaho.hbase.shim.spi.HBaseConnection;
 
@@ -404,8 +412,6 @@ public class CommonHBaseConnection extends HBaseConnection {
       FilterList fl = (FilterList) m_sourceScan.getFilter();
 
       CompareFilter.CompareOp comp = null;
-      byte[] family = m_bytesUtil.toBytes( columnMeta.getColumnFamily() );
-      byte[] qualifier = m_bytesUtil.toBytes( columnMeta.getColumnName() );
       ColumnFilter.ComparisonType op = cf.getComparisonOperator();
 
       switch ( op ) {
@@ -434,7 +440,7 @@ public class CommonHBaseConnection extends HBaseConnection {
 
       String comparisonString = cf.getConstant().trim();
       comparisonString = vars.environmentSubstitute( comparisonString );
-
+      byte[] comparison = m_bytesUtil.toBytes( comparisonString );
       Class<?> comparatorClass = getByteArrayComparableClass();
       Object comparator = null;
 
@@ -532,18 +538,85 @@ public class CommonHBaseConnection extends HBaseConnection {
         comp = CompareFilter.CompareOp.EQUAL;
         if ( cf.getComparisonOperator() == ColumnFilter.ComparisonType.SUBSTRING ) {
           comparator = new SubstringComparator( comparisonString );
-        } else {
+        } else if ( cf.getComparisonOperator() == ColumnFilter.ComparisonType.REGEX ) {
           comparator = new RegexStringComparator( comparisonString );
+        } else /*if ( cf.getComparisonOperator() == ColumnFilter.ComparisonType.PREFIX )*/ {
+          //First of all check if it is Key in this case prefix filter is more appreciable
+          if ( columnMeta.isKey() ) {
+            PrefixFilter scf = new PrefixFilter( comparison );
+            fl.addFilter( scf );
+            return;
+          }
+          comparator = new BinaryPrefixComparator( comparison );
+          // comparator == null means prefix was chosen
         }
       }
 
       if ( comparator != null ) {
+        Mapping.TupleMapping tupleMapping;
+        try {
+          tupleMapping = Mapping.TupleMapping.valueOf( cf.getFieldAlias().toUpperCase() );
+        } catch ( IllegalArgumentException ignored ) {
+          tupleMapping = null;
+        }
+        if ( tupleMapping != null ) {
+          switch( tupleMapping ) {
+            case KEY: {
+              Constructor<RowFilter> rowFilterConstructor =
+                RowFilter.class.getConstructor( CompareFilter.CompareOp.class, comparatorClass );
+              RowFilter scf = rowFilterConstructor.newInstance( comp, comparator );
+              fl.addFilter( scf );
+              return;
+            }
+            case FAMILY: {
+              Constructor<FamilyFilter> familyFilterConstructor =
+                FamilyFilter.class.getConstructor( CompareFilter.CompareOp.class, comparatorClass );
+              FamilyFilter scf = familyFilterConstructor.newInstance( comp, comparator );
+              fl.addFilter( scf );
+              return;
+            }
+            case COLUMN: {
+              //TODO Check if ColumnPrefixFilter works faster and suit more
+
+              Constructor<QualifierFilter> columnFilterConstructor =
+                QualifierFilter.class.getConstructor( CompareFilter.CompareOp.class, comparatorClass );
+              QualifierFilter scf = columnFilterConstructor.newInstance( comp, comparator );
+              fl.addFilter( scf );
+              return;
+            }
+            case VALUE: {
+              Constructor<ValueFilter> valueFilterConstructor =
+                ValueFilter.class.getConstructor( CompareFilter.CompareOp.class, comparatorClass );
+              ValueFilter scf = valueFilterConstructor.newInstance( comp, comparator );
+              fl.addFilter( scf );
+              return;
+            }
+            case TIMESTAMP: {
+              Constructor<TimestampsFilter> columnFilterConstructor =
+                TimestampsFilter.class.getConstructor( CompareFilter.CompareOp.class, comparatorClass );
+              TimestampsFilter scf = columnFilterConstructor.newInstance( comp, comparator );
+              fl.addFilter( scf );
+              return;
+            }
+          }
+        }
+        byte[] family = m_bytesUtil.toBytes( columnMeta.getColumnFamily() );
+        byte[] qualifier = m_bytesUtil.toBytes( columnMeta.getColumnName() );
+
         Constructor<SingleColumnValueFilter> scvfCtor =
             SingleColumnValueFilter.class.getConstructor( byte[].class, byte[].class, CompareFilter.CompareOp.class,
                 comparatorClass );
         SingleColumnValueFilter scf = scvfCtor.newInstance( family, qualifier, comp, comparator );
         scf.setFilterIfMissing( true );
         fl.addFilter( scf );
+      } else {
+        //First of all check if it is Key
+        if ( columnMeta.isKey() ) {
+          PrefixFilter scf = new PrefixFilter( comparison );
+          fl.addFilter( scf );
+        } else {
+
+        }
       }
     } finally {
       Thread.currentThread().setContextClassLoader( cl );
