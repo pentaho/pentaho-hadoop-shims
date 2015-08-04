@@ -36,12 +36,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.commons.vfs.AllFileSelector;
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
-import org.apache.commons.vfs.FileType;
-import org.apache.commons.vfs.VFS;
-import org.apache.commons.vfs.impl.DefaultFileSystemManager;
+import org.apache.commons.vfs2.AllFileSelector;
+import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemException;
+import org.apache.commons.vfs2.FileType;
+import org.apache.commons.vfs2.VFS;
+import org.apache.commons.vfs2.impl.DefaultFileSystemManager;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;

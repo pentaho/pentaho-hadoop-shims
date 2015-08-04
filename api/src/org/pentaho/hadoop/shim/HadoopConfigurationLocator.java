@@ -37,12 +37,12 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSelectInfo;
-import org.apache.commons.vfs.FileSelector;
-import org.apache.commons.vfs.FileSystemException;
-import org.apache.commons.vfs.FileType;
-import org.apache.commons.vfs.impl.DefaultFileSystemManager;
+import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSelectInfo;
+import org.apache.commons.vfs2.FileSelector;
+import org.apache.commons.vfs2.FileSystemException;
+import org.apache.commons.vfs2.FileType;
+import org.apache.commons.vfs2.impl.DefaultFileSystemManager;
 import org.apache.log4j.Logger;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.i18n.BaseMessages;

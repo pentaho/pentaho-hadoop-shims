@@ -27,8 +27,8 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
-import org.apache.commons.vfs.VFS;
-import org.apache.commons.vfs.impl.DefaultFileSystemManager;
+import org.apache.commons.vfs2.VFS;
+import org.apache.commons.vfs2.impl.DefaultFileSystemManager;
 import org.junit.Test;
 import org.pentaho.hadoop.shim.ConfigurationException;
 import org.pentaho.hadoop.shim.HadoopConfiguration;

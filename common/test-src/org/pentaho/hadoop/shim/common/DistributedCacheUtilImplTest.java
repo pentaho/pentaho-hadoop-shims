@@ -36,8 +36,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.apache.commons.vfs.AllFileSelector;
-import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs2.AllFileSelector;
+import org.apache.commons.vfs2.FileObject;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.ContentSummary;
 import org.apache.hadoop.fs.FileSystem;
