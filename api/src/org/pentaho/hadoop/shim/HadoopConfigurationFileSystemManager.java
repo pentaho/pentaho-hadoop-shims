@@ -25,9 +25,9 @@ package org.pentaho.hadoop.shim;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.vfs.FileSystemException;
-import org.apache.commons.vfs.impl.DefaultFileSystemManager;
-import org.apache.commons.vfs.provider.FileProvider;
+import org.apache.commons.vfs2.FileSystemException;
+import org.apache.commons.vfs2.impl.DefaultFileSystemManager;
+import org.apache.commons.vfs2.provider.FileProvider;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.hadoop.shim.spi.HadoopConfigurationProvider;
 /**

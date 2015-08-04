@@ -29,11 +29,11 @@ import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 
-import org.apache.commons.vfs.FileSystemException;
-import org.apache.commons.vfs.VFS;
-import org.apache.commons.vfs.impl.DefaultFileSystemManager;
-import org.apache.commons.vfs.provider.FileProvider;
-import org.apache.commons.vfs.provider.ram.RamFileProvider;
+import org.apache.commons.vfs2.FileSystemException;
+import org.apache.commons.vfs2.VFS;
+import org.apache.commons.vfs2.impl.DefaultFileSystemManager;
+import org.apache.commons.vfs2.provider.FileProvider;
+import org.apache.commons.vfs2.provider.ram.RamFileProvider;
 import org.junit.Test;
 import org.pentaho.hadoop.shim.ConfigurationException;
 import org.pentaho.hadoop.shim.HadoopConfiguration;

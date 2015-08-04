@@ -27,7 +27,7 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.net.URL;
 
-import org.apache.commons.vfs.VFS;
+import org.apache.commons.vfs2.VFS;
 import org.junit.Test;
 
 public class HadoopConfigurationClassLoaderTest {

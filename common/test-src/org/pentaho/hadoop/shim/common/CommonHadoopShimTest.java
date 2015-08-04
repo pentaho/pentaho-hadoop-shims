@@ -22,8 +22,9 @@
 
 package org.pentaho.hadoop.shim.common;
 
-import org.apache.commons.vfs.VFS;
-import org.apache.commons.vfs.impl.DefaultFileSystemManager;
+import org.apache.commons.vfs2.FileSystemException;
+import org.apache.commons.vfs2.VFS;
+import org.apache.commons.vfs2.impl.DefaultFileSystemManager;
 import org.apache.hadoop.util.VersionInfo;
 import org.junit.Test;
 import org.pentaho.di.i18n.BaseMessages;

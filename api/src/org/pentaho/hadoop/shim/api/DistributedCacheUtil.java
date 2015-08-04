@@ -25,7 +25,7 @@ package org.pentaho.hadoop.shim.api;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs2.FileObject;
 import org.pentaho.hadoop.shim.api.fs.FileSystem;
 import org.pentaho.hadoop.shim.api.fs.Path;
 
