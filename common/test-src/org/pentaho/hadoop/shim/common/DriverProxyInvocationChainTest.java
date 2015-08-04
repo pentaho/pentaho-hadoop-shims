@@ -69,20 +69,24 @@ public class DriverProxyInvocationChainTest {
   @Test
   public void testInitHive1Classes() {
     assertTrue( DriverProxyInvocationChain.isInitialized() );
-    assertNotNull( DriverProxyInvocationChain.hive1DbMetaDataClass );
-    assertNotNull( DriverProxyInvocationChain.hive1ResultSetClass );
-    assertNotNull( DriverProxyInvocationChain.hive1ClientClass );
-    assertNotNull( DriverProxyInvocationChain.hive1StatementClass );
+    if ( Boolean.parseBoolean( System.getProperty( "org.pentaho.hadoop.shims.check.hive1", "true" ) ) ) {
+      assertNotNull( DriverProxyInvocationChain.hive1DbMetaDataClass );
+      assertNotNull( DriverProxyInvocationChain.hive1ResultSetClass );
+      assertNotNull( DriverProxyInvocationChain.hive1ClientClass );
+      assertNotNull( DriverProxyInvocationChain.hive1StatementClass );
+    }
   }
 
   @Test
   public void testGetProxyNotNull() {
     assertTrue( DriverProxyInvocationChain.isInitialized() );
-    // Create Hive driver
-    Driver hiveDriver = new HiveDriver();
-    // Create proxy to driver
-    Driver driver = DriverProxyInvocationChain.getProxy( Driver.class, hiveDriver );
-    assertNotNull( driver );
+    if ( Boolean.parseBoolean( System.getProperty( "org.pentaho.hadoop.shims.check.hive1", "true" ) ) ) {
+      // Create Hive driver
+      Driver hiveDriver = new HiveDriver();
+      // Create proxy to driver
+      Driver driver = DriverProxyInvocationChain.getProxy( Driver.class, hiveDriver );
+      assertNotNull( driver );
+    }
   }
 
   @Test

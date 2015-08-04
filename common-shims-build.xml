@@ -10,8 +10,6 @@
   <property name="common.dir" value="../common" />
 
   <property name="hbase.generation" value="pre1.0"/>
-
-  <property name="api.dist.dir" value="../api/dist" description="Distrbution directory for the api project. This is where the api jar will be referenced from." />
   <property name="lib.provided.dir" value="lib-provided" description="Ivy dependencies of 'provided' configuration are placed here"/>
   <property name="lib.pmr.dir" value="lib/pmr" description="Ivy dependencies of 'pmr' configuration are placed here. Placed under lib/ so they are packaged that way."/>
   <property name="lib.client.dir" value="lib/client" description="Ivy dependencies of 'client' configuration are placed here. Placed under lib/ so they are packaged that way."/>
@@ -34,7 +32,6 @@
     <fileset dir="${lib.dir}">
       <include name="**/*.jar" />
     </fileset>
-    <fileset file="${api.dist.dir}/pentaho-hadoop-shims-api-${project.revision}.jar"/>
     <fileset dir="${lib.provided.dir}">
       <include name="**/*.jar" />
     </fileset>
@@ -48,7 +45,6 @@
     <fileset dir="${lib.dir}">
       <include name="**/*.jar" />
     </fileset>
-    <fileset file="${api.dist.dir}/pentaho-hadoop-shims-api-${project.revision}.jar"/>
     <fileset dir="${lib.provided.dir}">
       <include name="**/*.jar" />
     </fileset>
