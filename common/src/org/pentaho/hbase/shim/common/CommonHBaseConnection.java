@@ -49,6 +49,8 @@ import org.apache.hadoop.hbase.filter.RegexStringComparator;
 import org.apache.hadoop.hbase.filter.SingleColumnValueFilter;
 import org.apache.hadoop.hbase.filter.SubstringComparator;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
+import org.pentaho.di.core.logging.KettleLogStore;
+import org.pentaho.di.core.logging.LogChannelInterface;
 import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.hbase.factory.HBaseAdmin;
@@ -81,6 +83,8 @@ public class CommonHBaseConnection extends HBaseConnection {
   protected HBasePut m_currentTargetPut;
 
   protected HBaseBytesUtilShim m_bytesUtil;
+
+  protected LogChannelInterface log = KettleLogStore.getLogChannelInterfaceFactory().create( this );
 
   public CommonHBaseConnection() {
     try {
@@ -131,6 +135,10 @@ public class CommonHBaseConnection extends HBaseConnection {
             logMessages.add( BaseMessages.getString( PKG, "CommonHBaseConnection.Error.UnableToParseZookeeperPort" ) );
           }
         }
+      }
+
+      if ( log.isDebug() ) {
+        log.logDebug( "Opening HBase connection ..." );
       }
 
       m_factory = HBaseClientFactoryLocator.getHBaseClientFactory( m_config );
@@ -832,6 +840,9 @@ public class CommonHBaseConnection extends HBaseConnection {
 
   @Override
   public void close() throws Exception {
+    if ( log.isDebug() ) {
+      log.logDebug( "Closing HBase connection ..." );
+    }
     closeTargetTable();
     closeSourceResultSet();
     closeSourceTable();
