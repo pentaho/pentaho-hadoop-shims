@@ -2,7 +2,10 @@ package org.pentaho.hadoop.shim.common;
 
 import org.junit.Test;
 
+import java.net.URISyntaxException;
+
 import static org.junit.Assert.assertEquals;
+import static org.pentaho.hadoop.shim.common.HiveSQLUtils.getDatabaseNameFromURL;
 
 public class HiveSQLUtilsTest {
   @Test
@@ -53,5 +56,13 @@ public class HiveSQLUtilsTest {
     String sql = "INSERT INTO TABLE - whatever - new hive syntax is used";
     String processedSql = HiveSQLUtils.processSQLString( sql );
     assertEquals( sql, processedSql );
+  }
+
+  @Test
+  public void testGetDatabaseNameFromURL() throws URISyntaxException {
+    assertEquals( "", getDatabaseNameFromURL( "jdbc:mysql://host:10000/dbName" ) );
+    assertEquals( "", getDatabaseNameFromURL( "jdbc:hive://host:10000" ) );
+    assertEquals( "dbName", getDatabaseNameFromURL( "jdbc:hive2://host:10000/dbName" ) );
+    assertEquals( "dbName", getDatabaseNameFromURL( "jdbc:hive2://host:21051/dbName;principal=impala/host@realm" ) );
   }
 }
