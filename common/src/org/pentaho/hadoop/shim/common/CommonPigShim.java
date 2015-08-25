@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -22,26 +22,23 @@
 
 package org.pentaho.hadoop.shim.common;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.net.URL;
-import java.util.List;
-import java.util.Properties;
-
 import org.apache.pig.ExecType;
-import org.apache.pig.PigServer;
 import org.apache.pig.backend.hadoop.datastorage.ConfigurationUtil;
 import org.apache.pig.impl.util.PropertiesUtil;
-import org.apache.pig.tools.grunt.GruntParser;
 import org.apache.pig.tools.parameters.ParameterSubstitutionPreprocessor;
 import org.apache.pig.tools.parameters.ParseException;
 import org.pentaho.hadoop.shim.ShimVersion;
 import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.spi.PigShim;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
+import java.net.URL;
+import java.util.List;
+import java.util.Properties;
 
 public abstract class CommonPigShim implements PigShim {
   private static final String[] EMPTY_STRING_ARRAY = new String[ 0 ];
@@ -83,7 +80,7 @@ public abstract class CommonPigShim implements PigShim {
    * @return Type of execution for mode
    */
   protected ExecType getExecType( ExecutionMode mode ) {
-    switch( mode ) {
+    switch ( mode ) {
       case LOCAL:
         return ExecType.LOCAL;
       case MAPREDUCE:

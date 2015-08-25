@@ -1,24 +1,24 @@
 /*******************************************************************************
-*
-* Pentaho Big Data
-*
-* Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
-*
-*******************************************************************************
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with
-* the License. You may obtain a copy of the License at
-*
-*    http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-******************************************************************************/
+ *
+ * Pentaho Big Data
+ *
+ * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
+ *
+ *******************************************************************************
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ ******************************************************************************/
 
 package org.pentaho.hadoop.shim.common.fs;
 
@@ -38,11 +38,11 @@ public class FileSystemProxy extends org.apache.hadoop.fs.FileSystem implements 
 
   private org.apache.hadoop.fs.FileSystem delegate;
 
-  public FileSystemProxy(org.apache.hadoop.fs.FileSystem delegate) {
-    if (delegate == null) {
+  public FileSystemProxy( org.apache.hadoop.fs.FileSystem delegateParam ) {
+    if ( delegateParam == null ) {
       throw new NullPointerException();
     }
-    this.delegate = delegate;
+    this.delegate = delegateParam;
   }
 
   @Override
@@ -59,55 +59,55 @@ public class FileSystemProxy extends org.apache.hadoop.fs.FileSystem implements 
   }
 
   @Override
-  public org.pentaho.hadoop.shim.api.fs.Path asPath(String path) {
-    return new PathProxy(path);
+  public org.pentaho.hadoop.shim.api.fs.Path asPath( String path ) {
+    return new PathProxy( path );
   }
 
   @Override
-  public org.pentaho.hadoop.shim.api.fs.Path asPath(org.pentaho.hadoop.shim.api.fs.Path parent, String child) {
-    return new PathProxy(parent, child);
+  public org.pentaho.hadoop.shim.api.fs.Path asPath( org.pentaho.hadoop.shim.api.fs.Path parent, String child ) {
+    return new PathProxy( parent, child );
   }
 
   @Override
-  public org.pentaho.hadoop.shim.api.fs.Path asPath(String parent, String child) {
-    return new PathProxy(parent, child);
+  public org.pentaho.hadoop.shim.api.fs.Path asPath( String parent, String child ) {
+    return new PathProxy( parent, child );
   }
 
   @Override
-  public boolean exists(org.pentaho.hadoop.shim.api.fs.Path path) throws IOException {
-    return getDelegate( path ).exists( ShimUtils.asPath(path));
+  public boolean exists( org.pentaho.hadoop.shim.api.fs.Path path ) throws IOException {
+    return getDelegate( path ).exists( ShimUtils.asPath( path ) );
   }
 
   @Override
-  public boolean delete(org.pentaho.hadoop.shim.api.fs.Path path, boolean recursive) throws IOException {
-    return delete(ShimUtils.asPath(path), recursive);
+  public boolean delete( org.pentaho.hadoop.shim.api.fs.Path path, boolean recursive ) throws IOException {
+    return delete( ShimUtils.asPath( path ), recursive );
   }
 
   // DELEGATING METHODS  
   @Override
-  public FSDataOutputStream append(Path f, int bufferSize, Progressable progress) throws IOException {
+  public FSDataOutputStream append( Path f, int bufferSize, Progressable progress ) throws IOException {
     return getDelegate( f ).append( f, bufferSize, progress );
   }
 
   @Override
-  public FSDataOutputStream create(Path f, FsPermission permission, boolean overwrite, int bufferSize,
-      short replication, long blockSize, Progressable progress) throws IOException {
+  public FSDataOutputStream create( Path f, FsPermission permission, boolean overwrite, int bufferSize,
+                                    short replication, long blockSize, Progressable progress ) throws IOException {
     return getDelegate( f ).create( f, overwrite, bufferSize, replication, blockSize, progress );
   }
 
   @Override
   @Deprecated
-  public boolean delete(Path f) throws IOException {
+  public boolean delete( Path f ) throws IOException {
     return getDelegate( f ).delete( f );
   }
 
   @Override
-  public boolean delete(Path f, boolean recursive) throws IOException {
+  public boolean delete( Path f, boolean recursive ) throws IOException {
     return getDelegate( f ).delete( f, recursive );
   }
 
   @Override
-  public FileStatus getFileStatus(Path f) throws IOException {
+  public FileStatus getFileStatus( Path f ) throws IOException {
     return getDelegate( f ).getFileStatus( f );
   }
 
@@ -122,27 +122,27 @@ public class FileSystemProxy extends org.apache.hadoop.fs.FileSystem implements 
   }
 
   @Override
-  public FileStatus[] listStatus(Path f) throws IOException {
+  public FileStatus[] listStatus( Path f ) throws IOException {
     return getDelegate( f ).listStatus( f );
   }
 
   @Override
-  public boolean mkdirs(Path f, FsPermission permission) throws IOException {
+  public boolean mkdirs( Path f, FsPermission permission ) throws IOException {
     return getDelegate( f ).mkdirs( f, permission );
   }
 
   @Override
-  public FSDataInputStream open(Path f, int bufferSize) throws IOException {
+  public FSDataInputStream open( Path f, int bufferSize ) throws IOException {
     return getDelegate( f ).open( f, bufferSize );
   }
 
   @Override
-  public boolean rename(Path src, Path dst) throws IOException {
+  public boolean rename( Path src, Path dst ) throws IOException {
     return getDelegate( src ).rename( src, dst );
   }
 
   @Override
-  public void setWorkingDirectory(Path f) {
-    getDelegate( f ).setWorkingDirectory(f);
+  public void setWorkingDirectory( Path f ) {
+    getDelegate( f ).setWorkingDirectory( f );
   }
 }
