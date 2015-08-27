@@ -145,20 +145,4 @@ public class HadoopShim extends CommonHadoopShim {
     }
   }
 
-  @Override
-  public Driver getJdbcDriver( String driverType ) {
-    try {
-      Class<? extends Driver> clazz = JDBC_DRIVER_MAP.get( driverType );
-      if ( clazz != null ) {
-        Driver newInstance = clazz.newInstance();
-        Driver driverProxy = DriverProxyInvocationChain.getProxy( Driver.class, newInstance );
-        return driverProxy;
-      } else {
-        return null;
-      }
-
-    } catch ( Exception ex ) {
-      throw new RuntimeException( "Unable to load JDBC driver of type: " + driverType, ex );
-    }
-  }
 }
