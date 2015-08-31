@@ -215,6 +215,16 @@ public abstract class HBaseConnection {
       byte[] keyUpperBound, int cacheSize ) throws Exception;
 
   /**
+   * Configure a new source table scan, using a prefix filter to scan the rows.
+   *
+   * @param prefix the key prefix for the scan filter
+   * @param cacheSize the size of the scanner cache
+   * @param matchAny
+   * @throws Exception if a problem occurs
+   */
+   public abstract void newSourceTablePrefixScan(byte[] prefix, int cacheSize, boolean matchAny) throws Exception;
+
+  /**
    * Configure a new target table put
    * 
    * @param key the key of the row that will be inserted into the target table

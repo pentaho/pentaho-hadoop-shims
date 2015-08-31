@@ -751,6 +751,10 @@ public class FakeHBaseConnection extends HBaseConnection {
     m_sourceScan = new Scan( keyLowerBound, keyUpperBound );
   }
 
+  public void newSourceTablePrefixScan(byte[] prefix, int cacheSize, boolean matchAny ) throws Exception {
+
+  }
+
   @Override
   public void newTargetTable( String tableName, Properties arg1 )
     throws Exception {
