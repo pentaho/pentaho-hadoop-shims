@@ -32,12 +32,14 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.commons.vfs2.AllFileSelector;
 import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSelector;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.ContentSummary;
 import org.apache.hadoop.fs.FileSystem;
@@ -54,6 +56,9 @@ import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.common.fs.PathProxy;
 import org.pentaho.hadoop.shim.spi.MockHadoopShim;
 import org.pentaho.hdfs.vfs.HDFSFileSystem;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 /**
  * Test the DistributedCacheUtil
@@ -228,21 +233,34 @@ public class DistributedCacheUtilImplTest {
   @Test
   public void findFiles_vfs_hdfs() throws Exception {
 
-    // Stage files then make sure we can find them in HDFS
     DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
-    Configuration conf = new Configuration();
-    FileSystem fs = getLocalFileSystem( conf );
-    HDFSFileSystem.setMockHDFSFileSystem( fs );
 
-    // Must use absolute paths so the HDFS VFS FileSystem can resolve the URL properly (can't do relative paths when
-    // using KettleVFS.getFileObject() within HDFS)
-    Path root = new Path( KettleVFS.getFileObject( "." ).getURL().getPath() + "/bin/test/findFiles_hdfs" );
-    Path dest = new Path( root, "org/pentaho/mapreduce/" );
+    URL url = new URL( "http://localhost:8020/path/to/file" );
+    Configuration conf = mock( Configuration.class );
+    FileSystem fs = mock( FileSystem.class );
+    FileObject source = mock( FileObject.class );
+    Path dest = mock( Path.class );
+    FileObject hdfsDest = mock( FileObject.class );
+    Path root = mock( Path.class );
 
-    FileObject hdfsDest = KettleVFS.getFileObject( "hdfs://localhost/" + dest.toString() );
+    FileObject[] fileObjects = new FileObject[12];
+    for ( int i = 0; i < fileObjects.length; i++ ) {
+      URL fileUrl = new URL( "http://localhost:8020/path/to/file/" + i );
+      FileObject fileObject = mock( FileObject.class );
+      fileObjects[i] = fileObject;
+      doReturn( fileUrl ).when( fileObject ).getURL();
+    }
 
-    // Copy the contents of test folder
-    FileObject source = createTestFolderWithContent();
+    doReturn( url ).when( source ).getURL();
+    doReturn( conf ).when( fs ).getConf();
+    doReturn( 0 ).when( conf ).getInt( any( String.class ), anyInt() );
+    doReturn( true ).when( source ).exists();
+    doReturn( fileObjects ).when( hdfsDest ).findFiles( any( FileSelector.class ) );
+    doReturn( true ).when( fs ).delete( root, true );
+    doReturn( fileObjects.length ).when( source ).delete( any( AllFileSelector.class ) );
+    doNothing().when( fs ).copyFromLocalFile( any( Path.class ), any( Path.class ) );
+    doNothing().when( fs ).setPermission( any( Path.class ), any( FsPermission.class ) );
+    doReturn( true ).when( fs ).setReplication( any( Path.class ), anyShort() );
 
     try {
       try {
