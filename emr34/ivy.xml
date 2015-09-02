@@ -17,7 +17,7 @@
   </publications>
 
   <dependencies defaultconf="default->provided">
-    <dependency conf="provided->default" org="pentaho" name="pentaho-hadoop-shims-api" rev="${project.revision}" changing="true"/>
+    <dependency conf="provided->default" org="pentaho" name="pentaho-hadoop-shims-api" rev="${project.revision}" transitive="false" changing="true"/>
 
     <dependency org="com.amazonaws" name="aws-java-sdk-emr" rev="${dependency.amazon-sdk.revision}" transitive="false" conf="client->default"/>
     <dependency org="com.amazonaws" name="aws-java-sdk-core" rev="${dependency.amazon-sdk.revision}" transitive="false" conf="client->default"/>
