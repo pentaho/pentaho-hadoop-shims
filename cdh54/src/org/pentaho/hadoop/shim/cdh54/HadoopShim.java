@@ -54,7 +54,7 @@ import java.util.Properties;
 public class HadoopShim extends CommonHadoopShim {
 
   static {
-    JDBC_DRIVER_MAP.put("hive2",org.apache.hive.jdbc.HiveDriver.class);
+    JDBC_DRIVER_MAP.put( "hive2", org.apache.hive.jdbc.HiveDriver.class );
   }
 
   @Override
@@ -91,12 +91,12 @@ public class HadoopShim extends CommonHadoopShim {
   }
 
   protected void registerExtraDatabaseTypes( Properties configuration ) throws KettlePluginException {
-    String hiveSimbaDriverName = configuration.getProperty( "hive2.simba.driver", "com.simba.hive.jdbc41.HS2Driver" );
-      JDBC_POSSIBLE_DRIVER_MAP.put( "hive2Simba", hiveSimbaDriverName );
+    /*String hiveSimbaDriverName = configuration.getProperty( "hive2.simba.driver", "com.simba.hive.jdbc41.HS2Driver" );
+      JDBC_POSSIBLE_DRIVER_MAP.put( "hive2Simba", hiveSimbaDriverName );*/
 
-      String impalaSimbaDriverName =
-        configuration.getProperty( "impala.simba.driver", "com.simba.impala.jdbc41.Driver" );
-      JDBC_POSSIBLE_DRIVER_MAP.put( "ImpalaSimba", impalaSimbaDriverName );
+    String impalaSimbaDriverName =
+      configuration.getProperty( "impala.simba.driver", "com.cloudera.impala.jdbc41.Driver" );
+    JDBC_POSSIBLE_DRIVER_MAP.put( "ImpalaSimba", impalaSimbaDriverName );
   }
 
   protected void registerExtraDatabaseType( String id, String description, String mainClass )
