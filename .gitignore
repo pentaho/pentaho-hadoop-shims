@@ -6,7 +6,9 @@ stage-pmr/
 /*/test-lib/
 eclipse-bin/
 override.properties
-.settings/
+/.classpath
+/.project
+/.settings
 /*/dev-lib/
 /pdi-null
 /pdi-bin

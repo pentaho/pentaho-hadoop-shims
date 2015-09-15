@@ -305,7 +305,21 @@
   </target>
 
   <!-- override assemble to copy common package resources into the staging directory -->
-  <target name="assemble" depends="common-assemble,subfloor-pkg.assemble"/>
+  <target name="assemble" depends="common-assemble,subfloor-pkg.assemble">
+  	<if>
+  		<isset property="oss-license.filename"/>
+  		<then>
+  		    <ivy:resolve file="${ivyfile}" conf="oss-licenses" />
+  		    <ivy:retrieve conf="oss-licenses" pattern="${bin.dir}/[module].[ext]" />
+  			<echo message="copying ${oss-license.filename} to ${approot.stage.dir}" />
+  		    <unzip src="${bin.dir}/oss-licenses.zip" dest="${approot.stage.dir}">
+  		      <patternset>
+  		        <include name="${oss-license.filename}"/>
+  		      </patternset>
+  		    </unzip>
+  		</then>
+  	</if>
+  </target>
   
   <!-- Publish the mapred jar as well -->
   <target name="publish-local-nojar.post">
