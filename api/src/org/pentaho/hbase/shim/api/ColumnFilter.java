@@ -35,7 +35,7 @@ public class ColumnFilter {
     
     EQUAL("="), GREATER_THAN(">"), GREATER_THAN_OR_EQUAL(">="),
     LESS_THAN("<"), LESS_THAN_OR_EQUAL("<="), NOT_EQUAL("!="),
-    SUBSTRING("Substring"), REGEX("Regular expression");
+    SUBSTRING("Substring"), REGEX("Regular expression"), PREFIX( "Starts from" );
     
     private final String m_stringVal;
     
@@ -210,7 +210,7 @@ public class ColumnFilter {
   }
   
   public static String[] getAllOperators() {
-    String[] ops = new String[8];
+    String[] ops = new String[9];
     
     ops[0] = ComparisonType.EQUAL.toString();
     ops[1] = ComparisonType.NOT_EQUAL.toString();
@@ -219,17 +219,19 @@ public class ColumnFilter {
     ops[4] = ComparisonType.LESS_THAN.toString();
     ops[5] = ComparisonType.LESS_THAN_OR_EQUAL.toString();
     ops[6] = ComparisonType.SUBSTRING.toString();
-    ops[7] = ComparisonType.REGEX.toString();
-    
+    ops[7] = ComparisonType.PREFIX.toString();
+    ops[8] = ComparisonType.REGEX.toString();
+
     return ops;
   }
   
   public static String[] getStringOperators() {
-    String[] ops = new String[2];
+    String[] ops = new String[3];
     
     ops[0] = ComparisonType.SUBSTRING.toString();
-    ops[1] = ComparisonType.REGEX.toString();
-    
+    ops[1] = ComparisonType.PREFIX.toString();
+    ops[2] = ComparisonType.REGEX.toString();
+
     return ops;
   }
   
