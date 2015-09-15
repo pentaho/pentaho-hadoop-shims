@@ -9,6 +9,7 @@
     <conf name="provided" />
     <conf name="pmr" />
     <conf name="client" />
+    <conf name="oss-licenses" />
   </configurations>
 
   <publications>
@@ -82,6 +83,12 @@
     <dependency conf="default" org="pentaho" name="hadoop2-windows-patch" rev="${dependency.hadoop2-windows-patch.revision}" transitive="false">
       <artifact name="hadoop2-windows-patch" ext="jar"/>
     </dependency>
+
+    <!--  OSS Licenses file -->
+    <dependency org="pentaho" name="oss-licenses" rev="${dependency.oss-licenses.revision}" conf="oss-licenses->default">
+      <artifact name="oss-licenses" type="zip" />
+    </dependency>
+    
     <exclude org="org.antlr" conf="provided" />
 
   </dependencies>

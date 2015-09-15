@@ -9,6 +9,7 @@
     <conf name="provided" />
     <conf name="client" />
     <conf name="pmr" />
+    <conf name="oss-licenses" />
   </configurations>
 
   <publications>
@@ -100,6 +101,11 @@
     <dependency conf="test->default" org="org.safehaus.jug" name="jug-lgpl" rev="2.0.0" />
     <dependency conf="test->default" org="pentaho" name="pentaho-hadoop-shims-api-test" rev="${project.revision}" changing="true"/>
     <dependency conf="test->default" org="org.mockito" name="mockito-all" rev="1.9.5" transitive="false" />
+    
+    <!--  OSS Licenses file -->
+    <dependency org="pentaho" name="oss-licenses" rev="${dependency.oss-licenses.revision}" conf="oss-licenses->default">
+      <artifact name="oss-licenses" type="zip" />
+    </dependency>
 
     <!-- Exclude log4j from default libraries - it's brought in transitively through many of the Hadoop dependencies and should not be included -->
     <exclude org="log4j" module="log4j" conf="default" />

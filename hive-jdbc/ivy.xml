@@ -5,6 +5,7 @@
   <configurations>
     <conf name="default" />
     <conf name="test" visibility="private" />
+    <conf name="oss-licenses" />
   </configurations>
 
   <publications>
@@ -21,5 +22,11 @@
     <dependency conf="test->default" org="${ivy.artifact.group}" name="pentaho-hadoop-shims-api" rev="${project.revision}" changing="true" />
     <dependency conf="test->default" org="${ivy.artifact.group}" name="pentaho-hadoop-shims-api-test" rev="${project.revision}" changing="true" />
     <dependency conf="test->default" org="org.mockito" name="mockito-all" rev="1.9.5" transitive="false" />
+    
+    <!--  OSS Licenses file -->
+    <dependency org="pentaho" name="oss-licenses" rev="${dependency.oss-licenses.revision}" conf="oss-licenses->default">
+      <artifact name="oss-licenses" type="zip" />
+    </dependency>
+    
   </dependencies>
 </ivy-module>
