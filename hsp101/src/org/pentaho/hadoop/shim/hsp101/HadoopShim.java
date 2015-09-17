@@ -36,6 +36,7 @@ import org.pentaho.hdfs.vfs.HDFSFileProvider;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.List;
 
 public class HadoopShim extends CommonHadoopShim {
 
@@ -104,5 +105,21 @@ public class HadoopShim extends CommonHadoopShim {
     } finally {
       Thread.currentThread().setContextClassLoader( cl );
     }
+  }
+
+  @Override public void configureConnectionInformation( String namenodeHost, String namenodePort, String jobtrackerHost,
+                                                        String jobtrackerPort, org.pentaho.hadoop.shim.api.Configuration conf,
+                                                        List<String> logMessages ) throws Exception {
+    if ( jobtrackerHost == null || jobtrackerHost.trim().length() == 0 ) {
+      throw new Exception( "No job tracker host specified!" );
+    }
+
+    if ( jobtrackerPort == null || jobtrackerPort.trim().length() == 0 ) {
+      jobtrackerPort = getDefaultJobtrackerPort();
+      logMessages.add( "No job tracker port specified - using default: " + jobtrackerPort );
+    }
+
+    String jobTracker = jobtrackerHost + ":" + jobtrackerPort;
+    conf.set( "mapred.job.tracker", jobTracker );
   }
 }
