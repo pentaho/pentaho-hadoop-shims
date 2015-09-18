@@ -18,7 +18,7 @@
   </publications>
 
   <dependencies defaultconf="default->provided">
-    <dependency conf="provided->default" org="pentaho" name="pentaho-hadoop-shims-api" rev="${project.revision}" transitive="false" changing="true"/>
+    <dependency conf="default->default" org="pentaho" name="pentaho-hadoop-shims-api" rev="${project.revision}" transitive="false" changing="true"/>
 
     <dependency org="com.amazonaws" name="aws-java-sdk-emr" rev="${dependency.amazon-sdk.revision}" transitive="false" conf="client->default"/>
     <dependency org="com.amazonaws" name="aws-java-sdk-core" rev="${dependency.amazon-sdk.revision}" transitive="false" conf="client->default"/>
@@ -59,7 +59,7 @@
     <!-- MapR Pig needs extra client-side JARs -->
     <!--<dependency conf="default->provided" org="com.mapr.fs" name="libprotodefs" rev="4.0.1-mapr" changing="false" transitive="false" />-->
 
-    <dependency conf="default->default" org="pentaho" name="pentaho-hdfs-vfs" rev="${dependency.pentaho-hdfs-vfs.revision}" transitive="false" changing="true"/>
+    <dependency conf="default,provided->default" org="pentaho" name="pentaho-hdfs-vfs" rev="${dependency.pentaho-hdfs-vfs.revision}" transitive="false" changing="true"/>
     <!--
           This patch gets us around bugs like MAPREDUCE-5665 where MapReduce jobs submitted from a Windows client to YARN
           fail because of client-side attributes used during cluster-side execution.
