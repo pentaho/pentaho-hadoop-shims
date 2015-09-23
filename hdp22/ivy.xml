@@ -107,11 +107,6 @@
       <artifact name="oss-licenses" type="zip" />
     </dependency>
 
-    <!-- Exclude jersey, it's in system classloade r-->
-    <dependency conf="client->default" org="com.sun.xml.bind" name="jaxb-impl" rev="${dependency.jaxb-impl.revision}"/>
-    <exclude org="com.sun.jersey" conf="client" matcher="regexp"/>
-    <exclude org="com.sun.jersey.contribs" module="jersey-guice" conf="client"/>
-
     <!-- Exclude log4j from default libraries - it's brought in transitively through many of the Hadoop dependencies and should not be included -->
     <exclude org="log4j" module="log4j" conf="default" />
     <!-- Exclude antlr. Hive brings in a version that's not compatible with Pig. -->
@@ -119,6 +114,5 @@
     <!--  Exclude xerces, it's provided and will wreak havoc if there are multiple instances / versions -->
     <exclude org="xml-apis" module="xml-apis" conf="*" />
     <exclude org="xerces" module="xercesImpl" conf="*" />
-
   </dependencies>
 </ivy-module>
