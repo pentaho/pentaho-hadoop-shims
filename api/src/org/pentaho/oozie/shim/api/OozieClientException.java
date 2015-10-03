@@ -24,14 +24,26 @@ package org.pentaho.oozie.shim.api;
 
 public class OozieClientException extends Exception {
   private static final long serialVersionUID = 2603554509709959992L;
-  
   private final String errorCode;
 
+  /**
+   * @deprecated use {@link #OozieClientException(String, Throwable, String)} instead.
+   */
+  @Deprecated
   public OozieClientException( Throwable cause, String errorCode ) {
     super( cause );
     this.errorCode = errorCode;
   }
-  
+
+  /**
+   * Error code was left for backward compatibility Now message from org.apache.oozie.client.OozieClientException should
+   * be used as it already contains correct formatted template from error code.
+   */
+  public OozieClientException( String message, Throwable cause, String errorCode ) {
+    super( message, cause );
+    this.errorCode = errorCode;
+  }
+
   public String getErrorCode() {
     return errorCode;
   }
