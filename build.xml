@@ -14,7 +14,7 @@
   <import file="build-res/subfloor-pkg.xml"/>
 
   <!-- Every non-api shim module. These will be compiled/resolved after api. -->
-  <property name="shim-non-api-modules" value="hive-jdbc,hdp21,hdp22,cdh53,cdh54,mapr410,emr34" />
+  <property name="shim-non-api-modules" value="hive-jdbc,hdp21,hdp22,cdh53,cdh54,mapr410,emr34,emr310" />
   <!-- These are the modules this script should build -->
   <property name="modules" value="api,${shim-non-api-modules}" />
 
