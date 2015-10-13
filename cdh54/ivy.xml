@@ -28,12 +28,30 @@
 
     <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-client" rev="${dependency.hadoop.revision}" changing="true">
       <exclude module="jline"/>
+      <exclude org="org.apache.avro" module="avro"/>
+      <exclude org="commons-beanutils" module="commons-beanutils"/>
+      <exclude org="commons-cli" module="commons-cli"/>
+      <exclude org="commons-codec" module="commons-codec"/>
+      <exclude org="commons-collections" module="commons-collections"/>
+      <exclude org="commons-httpclient" module="commons-httpclient"/>
+      <exclude org="commons-io" module="commons-io"/>
+      <exclude org="commons-lang" module="commons-lang"/>
+      <exclude org="commons-logging" module="commons-logging"/>
+      <exclude org="org.apache.commons" module="commons-compress"/>
+      <exclude org="org.apache.httpcomponents" module="httpclient"/>
+      <exclude org="org.apache.httpcomponents" module="httpcore"/>
+      <exclude org="org.fusesource.leveldbjni" module="leveldbjni-all"/>
+      <exclude org="org.apache.zookeeper" module="zookeeper"/>
+      <exclude org="com.thoughtworks.paranamer" module="paranamer"/>
+      <exclude org="com.google.protobuf" module="protobuf-java"/>
+      <exclude org="org.codehaus.jackson" module="jackson-core-asl"/>
+      <exclude org="org.codehaus.jackson" module="jackson-mapper-asl"/>
+      <exclude org="com.google.code.findbugs" module="jsr305"/>
+      <exclude org="org.slf4j" module="slf4j-api"/>
+      <exclude org="org.slf4j" module="slf4j-log4j12"/>
+      <exclude org="org.tukaani" module="xz" />
+      <exclude org="org.xerial.snappy" module="snappy-java"/>
     </dependency>
-    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-core" rev="${dependency.hadoop.revision}" changing="true"/>
-    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-app" rev="${dependency.hadoop.revision}" />
-    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-common" rev="${dependency.hadoop.revision}"/>
-    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-jobclient" rev="${dependency.hadoop.revision}" />
-    <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-shuffle" rev="${dependency.hadoop.revision}" />
 
     <!--
       This patch gets us around bugs like MAPREDUCE-5665 where MapReduce jobs submitted from a Windows client to YARN
@@ -96,5 +114,9 @@
     <exclude org="org.antlr" conf="default" />
     <exclude org="junit" conf="default,zip,client,provided,pmr"/>
     <exclude org="com.google.guava" />
+    <exclude module="hadoop-annotations" conf="default"/>
+    <exclude module="hadoop-yarn-api" conf="default"/>
+    <exclude module="hadoop-yarn-common" conf="default"/>
+    <exclude module="hadoop-yarn-server-common" conf="default"/>
   </dependencies>
 </ivy-module>
