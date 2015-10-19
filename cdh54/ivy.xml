@@ -28,7 +28,14 @@
 
     <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-client" rev="${dependency.hadoop.revision}" changing="true">
       <exclude module="jline"/>
-      <exclude org="org.apache.avro" module="avro"/>
+      <exclude org="asm" module="asm"/>
+      <exclude org="com.google.code.findbugs" module="jsr305"/>
+      <exclude org="com.google.inject" module="guice"/>
+      <exclude org="com.google.protobuf" module="protobuf-java"/>
+      <exclude org="com.sun.jersey" module="jersey-client"/>
+      <exclude org="com.sun.jersey.contribs" module="jersey-guice"/>
+      <exclude org="com.sun.xml.bind" module="jaxb-impl"/>
+      <exclude org="com.sun.xml.bind" module="jaxb-impl"/>
       <exclude org="commons-beanutils" module="commons-beanutils"/>
       <exclude org="commons-cli" module="commons-cli"/>
       <exclude org="commons-codec" module="commons-codec"/>
@@ -37,16 +44,18 @@
       <exclude org="commons-io" module="commons-io"/>
       <exclude org="commons-lang" module="commons-lang"/>
       <exclude org="commons-logging" module="commons-logging"/>
+      <exclude org="javax.inject" module="javax.inject"/>
+      <exclude org="javax.servlet" module="servlet-api"/>
+      <exclude org="javax.xml.bind" module="jaxb-api"/>
+      <exclude org="org.apache.avro" module="avro"/>
       <exclude org="org.apache.commons" module="commons-compress"/>
       <exclude org="org.apache.httpcomponents" module="httpclient"/>
       <exclude org="org.apache.httpcomponents" module="httpcore"/>
-      <exclude org="org.fusesource.leveldbjni" module="leveldbjni-all"/>
       <exclude org="org.apache.zookeeper" module="zookeeper"/>
-      <exclude org="com.thoughtworks.paranamer" module="paranamer"/>
-      <exclude org="com.google.protobuf" module="protobuf-java"/>
       <exclude org="org.codehaus.jackson" module="jackson-core-asl"/>
       <exclude org="org.codehaus.jackson" module="jackson-mapper-asl"/>
-      <exclude org="com.google.code.findbugs" module="jsr305"/>
+      <exclude org="org.codehaus.jettison" module="jettison"/>
+      <exclude org="org.fusesource.leveldbjni" module="leveldbjni-all"/>
       <exclude org="org.slf4j" module="slf4j-api"/>
       <exclude org="org.slf4j" module="slf4j-log4j12"/>
       <exclude org="org.tukaani" module="xz" />
