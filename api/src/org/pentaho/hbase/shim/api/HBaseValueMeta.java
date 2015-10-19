@@ -777,6 +777,10 @@ public class HBaseValueMeta extends ValueMeta {
    * @return the deserialized object
    */
   public static Object decodeObject(byte[] rawEncoded) {
+    if ( rawEncoded == null ) {
+      return null;
+    }
+
     try {
       ByteArrayInputStream bis = new ByteArrayInputStream(rawEncoded);
       BufferedInputStream buf = new BufferedInputStream(bis);
@@ -894,6 +898,10 @@ public class HBaseValueMeta extends ValueMeta {
   public static Boolean decodeBoolFromNumber(byte[] rawEncoded,
       HBaseBytesUtilShim bytesUtil) {
 
+    if ( rawEncoded == null ) {
+      return null;
+    }
+
     if (rawEncoded.length == bytesUtil.getSizeOfByte()) {
       byte val = rawEncoded[0];
       if (val == 0 || val == 1) {
@@ -950,6 +958,10 @@ public class HBaseValueMeta extends ValueMeta {
    */
   public static Object[] stringIndexListToObjects(String list)
       throws IllegalArgumentException {
+    if ( list == null ) {
+      return null;
+    }
+
     String[] labels = list.replace("{", "").replace("}", "").split(",");
     if (labels.length < 1) {
       throw new IllegalArgumentException(BaseMessages.getString(PKG,
@@ -971,6 +983,9 @@ public class HBaseValueMeta extends ValueMeta {
    * @return a comma separated list as a string
    */
   public static String objectIndexValuesToString(Object[] values) {
+    if ( values == null ) {
+      return "{}";
+    }
     StringBuffer result = new StringBuffer();
     result.append("{");
 
