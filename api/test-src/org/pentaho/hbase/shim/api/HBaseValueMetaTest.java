@@ -26,7 +26,6 @@ import org.junit.After;
 import org.junit.Test;
 import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.di.core.exception.KettleException;
-import org.pentaho.di.core.plugins.PluginRegistry;
 import org.pentaho.di.core.row.value.ValueMetaBigNumber;
 import org.pentaho.di.core.row.value.ValueMetaBinary;
 import org.pentaho.di.core.row.value.ValueMetaBoolean;
@@ -37,12 +36,10 @@ import org.pentaho.di.core.row.value.ValueMetaSerializable;
 import org.pentaho.di.core.row.value.ValueMetaString;
 import org.pentaho.hbase.shim.spi.MockHBaseBytesUtilShim;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
 
 /**
  * User: Dzmitry Stsiapanau

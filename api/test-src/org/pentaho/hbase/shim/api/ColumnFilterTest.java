@@ -40,9 +40,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 /**
- * User: Dzmitry Stsiapanau
- * Date: 10/16/2015
- * Time: 08:38
+ * User: Dzmitry Stsiapanau Date: 10/16/2015 Time: 08:38
  */
 
 public class ColumnFilterTest extends ColumnFilter {
@@ -195,7 +193,7 @@ public class ColumnFilterTest extends ColumnFilter {
       @Override public Object answer( InvocationOnMock invocation ) throws Throwable {
         String code = (String) invocation.getArguments()[ 3 ];
         String value = (String) invocation.getArguments()[ 4 ];
-        switch( code ) {
+        switch ( code ) {
           case "cf_alias": {
             assertEquals( FIELD_ALIAS, value );
             break;
@@ -206,7 +204,7 @@ public class ColumnFilterTest extends ColumnFilter {
             assertEquals( OPERATOR.toString(), value );
             break;
           } case "cf_signed_comp": {
-            assertEquals( SIGNED_COMPARISON ? "Y": "N", value ); break;
+            assertEquals( SIGNED_COMPARISON ? "Y" : "N", value ); break;
           } case "cf_constant": {
             assertEquals( CONSTANT, value ); break;
           } case "cf_format": {
@@ -228,7 +226,7 @@ public class ColumnFilterTest extends ColumnFilter {
     doAnswer( new Answer() {
       @Override public Object answer( InvocationOnMock invocation ) throws Throwable {
         String code = (String) invocation.getArguments()[ 2 ];
-        switch( code ) {
+        switch ( code ) {
           case "cf_alias": {
             return FIELD_ALIAS;
           } case "cf_type": {
@@ -236,7 +234,7 @@ public class ColumnFilterTest extends ColumnFilter {
           } case "cf_comparison_opp": {
             return OPERATOR.toString();
           } case "cf_signed_comp": {
-            return SIGNED_COMPARISON ? "Y": "N";
+            return SIGNED_COMPARISON ? "Y" : "N";
           } case "cf_constant": {
             return CONSTANT;
           } case "cf_format": {

@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -22,18 +22,17 @@
 
 package org.pentaho.hadoop.shim.emr310;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.junit.Test;
+import org.pentaho.hadoop.shim.spi.PigShim;
+import org.pentaho.hadoop.shim.spi.SnappyShim;
+import org.pentaho.hadoop.shim.spi.SqoopShim;
+import org.pentaho.hbase.shim.spi.HBaseShim;
 
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 
-import org.junit.Test;
-import org.pentaho.hadoop.shim.common.CommonPigShim;
-import org.pentaho.hadoop.shim.spi.PigShim;
-import org.pentaho.hadoop.shim.spi.SqoopShim;
-import org.pentaho.hadoop.shim.spi.SnappyShim;
-import org.pentaho.hbase.shim.spi.HBaseShim;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Validate that our Shim service providers have been registered properly
@@ -45,7 +44,7 @@ public class ShimRegistrationTest {
    */
   @Test
   public void hadoopShimRegistered() {
-    assertRegistered(org.pentaho.hadoop.shim.spi.HadoopShim.class);
+    assertRegistered( org.pentaho.hadoop.shim.spi.HadoopShim.class );
   }
 
   /**
@@ -61,7 +60,7 @@ public class ShimRegistrationTest {
    */
   @Test
   public void sqoopShimRegistered() {
-    assertRegistered(SqoopShim.class);
+    assertRegistered( SqoopShim.class );
   }
 
   /**
@@ -69,7 +68,7 @@ public class ShimRegistrationTest {
    */
   @Test
   public void snappyShimRegistered() {
-    assertRegistered(SnappyShim.class);
+    assertRegistered( SnappyShim.class );
   }
 
   /**
@@ -84,7 +83,7 @@ public class ShimRegistrationTest {
     try {
       ServiceLoader<T> loader = ServiceLoader.load( type );
       T shim = loader.iterator().next();
-      assertTrue(shim.getClass().getPackage().getName().startsWith( "org.pentaho.hadoop.shim.emr310" ) );
+      assertTrue( shim.getClass().getPackage().getName().startsWith( "org.pentaho.hadoop.shim.emr310" ) );
     } catch ( ServiceConfigurationError error ) {
       fail( error.getMessage() );
     }

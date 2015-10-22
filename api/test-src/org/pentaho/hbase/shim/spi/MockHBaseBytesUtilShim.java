@@ -23,12 +23,10 @@
 package org.pentaho.hbase.shim.spi;
 
 /**
- * User: Dzmitry Stsiapanau
- * Date: 10/16/2015
- * Time: 08:38
+ * User: Dzmitry Stsiapanau Date: 10/16/2015 Time: 08:38
  */
 
-public class MockHBaseBytesUtilShim implements HBaseBytesUtilShim{
+public class MockHBaseBytesUtilShim implements HBaseBytesUtilShim {
 
   @Override public int getSizeOfFloat() {
     return 1;
@@ -55,27 +53,27 @@ public class MockHBaseBytesUtilShim implements HBaseBytesUtilShim{
   }
 
   @Override public byte[] toBytes( String aString ) {
-    return new byte[]{1};
+    return new byte[] { 1 };
   }
 
   @Override public byte[] toBytes( int anInt ) {
-    return new byte[]{2};
+    return new byte[] { 2 };
   }
 
   @Override public byte[] toBytes( long aLong ) {
-    return new byte[]{3};
+    return new byte[] { 3 };
   }
 
   @Override public byte[] toBytes( float aFloat ) {
-    return new byte[]{4};
+    return new byte[] { 4 };
   }
 
   @Override public byte[] toBytes( double aDouble ) {
-    return new byte[]{5};
+    return new byte[] { 5 };
   }
 
   @Override public byte[] toBytesBinary( String value ) {
-    return new byte[]{6};
+    return new byte[] { 6 };
   }
 
   @Override public String toString( byte[] value ) {
