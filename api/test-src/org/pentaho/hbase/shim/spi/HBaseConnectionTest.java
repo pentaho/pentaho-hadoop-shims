@@ -30,18 +30,16 @@ import static org.junit.Assert.*;
 
 
 /**
- * User: Dzmitry Stsiapanau
- * Date: 10/16/2015
- * Time: 08:38
+ * User: Dzmitry Stsiapanau Date: 10/16/2015 Time: 08:38
  */
 public class HBaseConnectionTest {
 
   @Test
   public void testStringToURL() throws Exception {
-      assertEquals( null, HBaseConnection.stringToURL( null ) );
-      assertEquals( new URL( "http:///" ), HBaseConnection.stringToURL( "http:///" ) );
-      assertEquals( new URL( "file:///" ), HBaseConnection.stringToURL( "file:///" ) );
-      assertEquals( new URL( "file:///" ), HBaseConnection.stringToURL( "/" ) );
+    assertEquals( null, HBaseConnection.stringToURL( null ) );
+    assertEquals( new URL( "http:///" ), HBaseConnection.stringToURL( "http:///" ) );
+    assertEquals( new URL( "file:///" ), HBaseConnection.stringToURL( "file:///" ) );
+    assertEquals( new URL( "file:///" ), HBaseConnection.stringToURL( "/" ) );
   }
 
   @Test

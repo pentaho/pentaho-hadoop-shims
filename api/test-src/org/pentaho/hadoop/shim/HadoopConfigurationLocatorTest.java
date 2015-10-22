@@ -1,40 +1,26 @@
 /*******************************************************************************
-*
-* Pentaho Big Data
-*
-* Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
-*
-*******************************************************************************
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with
-* the License. You may obtain a copy of the License at
-*
-*    http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-******************************************************************************/
+ *
+ * Pentaho Big Data
+ *
+ * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
+ *
+ *******************************************************************************
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ ******************************************************************************/
 
 package org.pentaho.hadoop.shim;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
 
 import org.apache.commons.vfs2.AllFileSelector;
 import org.apache.commons.vfs2.FileObject;
@@ -42,10 +28,6 @@ import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileType;
 import org.apache.commons.vfs2.VFS;
 import org.apache.commons.vfs2.impl.DefaultFileSystemManager;
-import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LoggingEvent;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -55,6 +37,16 @@ import org.junit.Test;
 import org.pentaho.hadoop.shim.api.ShimProperties;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 import org.pentaho.hadoop.shim.spi.MockHadoopShim;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
+
+import static org.junit.Assert.*;
 
 public class HadoopConfigurationLocatorTest {
 
@@ -94,28 +86,28 @@ public class HadoopConfigurationLocatorTest {
     archive.as( ZipExporter.class ).exportTo( implJar.getContent().getOutputStream() );
   }
 
-  @Test ( expected = ConfigurationException.class )
+  @Test( expected = ConfigurationException.class )
   public void init_invalidDirectory() throws FileSystemException, ConfigurationException {
     HadoopConfigurationLocator locator = new HadoopConfigurationLocator();
     locator.init( VFS.getManager().resolveFile( "ram://bogus-path" ), new MockActiveHadoopConfigurationLocator(),
       new DefaultFileSystemManager() );
   }
 
-  @Test ( expected = NullPointerException.class )
+  @Test( expected = NullPointerException.class )
   public void init_null_basedir() throws FileSystemException, ConfigurationException {
     HadoopConfigurationLocator locator = new HadoopConfigurationLocator();
     locator.init( null, new MockActiveHadoopConfigurationLocator(),
       new DefaultFileSystemManager() );
   }
 
-  @Test ( expected = NullPointerException.class )
+  @Test( expected = NullPointerException.class )
   public void init_null_activeLocator() throws FileSystemException, ConfigurationException {
     HadoopConfigurationLocator locator = new HadoopConfigurationLocator();
     locator.init( VFS.getManager().resolveFile( HADOOP_CONFIGURATIONS_PATH ), null,
       new DefaultFileSystemManager() );
   }
 
-  @Test ( expected = NullPointerException.class )
+  @Test( expected = NullPointerException.class )
   public void init_null_fsm() throws FileSystemException, ConfigurationException {
     HadoopConfigurationLocator locator = new HadoopConfigurationLocator();
     locator.init( VFS.getManager().resolveFile( HADOOP_CONFIGURATIONS_PATH ),
@@ -170,7 +162,7 @@ public class HadoopConfigurationLocatorTest {
     assertTrue( locator.hasConfiguration( "a" ) );
   }
 
-  @Test ( expected = RuntimeException.class )
+  @Test( expected = RuntimeException.class )
   public void hasConfiguration_not_intialized() {
     HadoopConfigurationLocator locator = new HadoopConfigurationLocator();
     locator.hasConfiguration( null );
@@ -189,7 +181,7 @@ public class HadoopConfigurationLocatorTest {
     assertEquals( "Test Configuration A", a.getName() );
   }
 
-  @Test ( expected = ConfigurationException.class )
+  @Test( expected = ConfigurationException.class )
   public void getConfiguration_unknown_id() throws Exception {
     HadoopConfigurationLocator locator = new HadoopConfigurationLocator();
     locator.init( VFS.getManager().resolveFile( HADOOP_CONFIGURATIONS_PATH ),
@@ -199,13 +191,13 @@ public class HadoopConfigurationLocatorTest {
     locator.getConfiguration( "unknown" );
   }
 
-  @Test ( expected = RuntimeException.class )
+  @Test( expected = RuntimeException.class )
   public void getConfiguration_not_intialized() throws ConfigurationException {
     HadoopConfigurationLocator locator = new HadoopConfigurationLocator();
     locator.getConfiguration( null );
   }
 
-  @Test ( expected = RuntimeException.class )
+  @Test( expected = RuntimeException.class )
   public void getConfigurations_not_intialized() {
     HadoopConfigurationLocator locator = new HadoopConfigurationLocator();
     locator.getConfigurations();
@@ -223,13 +215,13 @@ public class HadoopConfigurationLocatorTest {
   }
 
 
-  @Test ( expected = RuntimeException.class )
+  @Test( expected = RuntimeException.class )
   public void getActiveConfiguration_not_intialized() throws ConfigurationException {
     HadoopConfigurationLocator locator = new HadoopConfigurationLocator();
     locator.getActiveConfiguration();
   }
 
-  @Test ( expected = NullPointerException.class )
+  @Test( expected = NullPointerException.class )
   public void registerNativeLibraryPath_null_path() throws SecurityException, NoSuchFieldException,
     IllegalArgumentException, IllegalAccessException {
     HadoopConfigurationLocator locator = new HadoopConfigurationLocator();
@@ -276,13 +268,13 @@ public class HadoopConfigurationLocatorTest {
     }
   }
 
-  @Test ( expected = ConfigurationException.class )
+  @Test( expected = ConfigurationException.class )
   public void createConfigurationLoader_null_root() throws ConfigurationException {
     HadoopConfigurationLocator locator = new HadoopConfigurationLocator();
     locator.createConfigurationLoader( null, null, null, new ShimProperties() );
   }
 
-  @Test ( expected = ConfigurationException.class )
+  @Test( expected = ConfigurationException.class )
   public void createConfigurationLoader_root_not_a_folder() throws Exception {
     HadoopConfigurationLocator locator = new HadoopConfigurationLocator();
     // Try to create a configuration based on a file, not a folder
@@ -302,7 +294,7 @@ public class HadoopConfigurationLocatorTest {
     assertNotNull( cl.getResource( "config.properties" ) );
   }
 
-  @Test (expected = ConfigurationException.class)
+  @Test( expected = ConfigurationException.class )
   public void findHadoopConfigurations_errorLoadingHadoopConfig() throws Exception {
     FileObject root = VFS.getManager().resolveFile( HADOOP_CONFIGURATIONS_PATH );
     HadoopConfigurationLocator locator = new HadoopConfigurationLocator() {

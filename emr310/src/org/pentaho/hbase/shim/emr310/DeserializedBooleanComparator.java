@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -94,17 +94,17 @@ public class DeserializedBooleanComparator extends WritableByteArrayComparable {
 
   public static Boolean decodeBoolFromString( byte[] rawEncoded ) {
     String tempString = Bytes.toString( rawEncoded );
-    if ( tempString.equalsIgnoreCase( "Y" ) || tempString.equalsIgnoreCase( "N" ) ||
-      tempString.equalsIgnoreCase( "YES" ) || tempString.equalsIgnoreCase( "NO" ) ||
-      tempString.equalsIgnoreCase( "TRUE" ) || tempString.equalsIgnoreCase( "FALSE" ) ||
-      tempString.equalsIgnoreCase( "T" ) || tempString.equalsIgnoreCase( "F" ) ||
-      tempString.equalsIgnoreCase( "1" ) || tempString.equalsIgnoreCase( "0" ) ) {
+    if ( tempString.equalsIgnoreCase( "Y" ) || tempString.equalsIgnoreCase( "N" )
+      || tempString.equalsIgnoreCase( "YES" ) || tempString.equalsIgnoreCase( "NO" )
+      || tempString.equalsIgnoreCase( "TRUE" ) || tempString.equalsIgnoreCase( "FALSE" )
+      || tempString.equalsIgnoreCase( "T" ) || tempString.equalsIgnoreCase( "F" )
+      || tempString.equalsIgnoreCase( "1" ) || tempString.equalsIgnoreCase( "0" ) ) {
 
-      return Boolean.valueOf( tempString.equalsIgnoreCase( "Y" ) ||
-        tempString.equalsIgnoreCase( "YES" ) ||
-        tempString.equalsIgnoreCase( "TRUE" ) ||
-        tempString.equalsIgnoreCase( "T" ) ||
-        tempString.equalsIgnoreCase( "1" ) );
+      return Boolean.valueOf( tempString.equalsIgnoreCase( "Y" )
+        ||  tempString.equalsIgnoreCase( "YES" )
+        ||  tempString.equalsIgnoreCase( "TRUE" )
+        ||  tempString.equalsIgnoreCase( "T" )
+        ||  tempString.equalsIgnoreCase( "1" ) );
     }
 
     // not identifiable from a string
@@ -127,8 +127,8 @@ public class DeserializedBooleanComparator extends WritableByteArrayComparable {
       }
     }
 
-    if ( rawEncoded.length == Bytes.SIZEOF_INT ||
-      rawEncoded.length == Bytes.SIZEOF_FLOAT ) {
+    if ( rawEncoded.length == Bytes.SIZEOF_INT
+      || rawEncoded.length == Bytes.SIZEOF_FLOAT ) {
       int tempInt = Bytes.toInt( rawEncoded );
       if ( tempInt == 1 || tempInt == 0 ) {
         return new Boolean( tempInt == 1 );
@@ -140,8 +140,8 @@ public class DeserializedBooleanComparator extends WritableByteArrayComparable {
       }
     }
 
-    if ( rawEncoded.length == Bytes.SIZEOF_LONG ||
-      rawEncoded.length == Bytes.SIZEOF_DOUBLE ) {
+    if ( rawEncoded.length == Bytes.SIZEOF_LONG
+      || rawEncoded.length == Bytes.SIZEOF_DOUBLE ) {
       long tempLong = Bytes.toLong( rawEncoded );
       if ( tempLong == 0L || tempLong == 1L ) {
         return new Boolean( tempLong == 1L );
