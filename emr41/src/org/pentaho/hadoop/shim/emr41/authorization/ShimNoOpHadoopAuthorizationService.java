@@ -20,28 +20,26 @@
  *
  ******************************************************************************/
 
-package org.pentaho.hbase.shim.emr41;
+package org.pentaho.hadoop.shim.emr41.authorization;
 
-import org.apache.hadoop.conf.Configuration;
-import org.pentaho.hadoop.shim.ShimVersion;
-import org.pentaho.hbase.shim.emr41.wrapper.HBaseShimInterface;
-import org.pentaho.hbase.shim.spi.HBaseConnection;
-import org.pentaho.hbase.shim.spi.HBaseShim;
+import org.pentaho.hadoop.shim.common.CommonHadoopShim;
+import org.pentaho.hadoop.shim.common.CommonPigShim;
+import org.pentaho.hadoop.shim.common.PigShimImpl;
+import org.pentaho.hadoop.shim.common.authorization.NoOpHadoopAuthorizationService;
+import org.pentaho.hadoop.shim.emr41.HadoopShim;
 
-public class HBaseShimImpl extends HBaseShim implements HBaseShimInterface {
 
-  @Override
-  public ShimVersion getVersion() {
-    return new ShimVersion( 1, 0 );
+public class ShimNoOpHadoopAuthorizationService extends NoOpHadoopAuthorizationService {
+
+  @Override protected CommonHadoopShim getHadoopShim() {
+    return new HadoopShim();
   }
 
-  public HBaseConnection getHBaseConnection() {
-    return new HBaseConnectionImpl();
+  @Override protected CommonPigShim getPigShim() {
+    return new PigShimImpl(){
+      @Override public boolean isLocalExecutionSupported() {
+        return false;
+      }
+    };
   }
-
-  @Override
-  public void setInfo( Configuration configuration ) {
-    // noop
-  }
-
 }

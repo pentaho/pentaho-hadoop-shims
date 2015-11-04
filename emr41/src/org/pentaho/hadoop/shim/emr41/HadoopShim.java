@@ -31,27 +31,20 @@ import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
 import org.pentaho.hadoop.shim.api.mapred.RunningJob;
 import org.pentaho.hadoop.shim.common.CommonHadoopShim;
+import org.pentaho.hadoop.shim.common.ConfigurationProxyV2;
 import org.pentaho.hadoop.shim.common.DistributedCacheUtilImpl;
+import org.pentaho.hadoop.shim.common.FileSystemProxyV2;
+import org.pentaho.hadoop.shim.common.HadoopShimImpl;
 import org.pentaho.hadoop.shim.common.ShimUtils;
 import org.pentaho.hdfs.vfs.HDFSFileProvider;
 
 import java.io.IOException;
 import java.net.URI;
 
-public class HadoopShim extends CommonHadoopShim {
+public class HadoopShim extends HadoopShimImpl {
 
   static {
     JDBC_DRIVER_MAP.put( "hive2", org.apache.hive.jdbc.HiveDriver.class );
-  }
-
-  @Override
-  protected String getDefaultNamenodePort() {
-    return "8020";
-  }
-
-  @Override
-  protected String getDefaultJobtrackerPort() {
-    return "8021";
   }
 
   @Override
@@ -80,38 +73,6 @@ public class HadoopShim extends CommonHadoopShim {
       fsm.addProvider( config, "s3n", config.getIdentifier(), new HDFSFileProvider() );
     }
 
-  }
-
-  @Override
-  public RunningJob submitJob( org.pentaho.hadoop.shim.api.Configuration c ) throws IOException {
-    ClassLoader cl = Thread.currentThread().getContextClassLoader();
-    Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
-    try {
-      Job job = ( (org.pentaho.hadoop.shim.emr41.ConfigurationProxyV2) c ).getJob();
-      job.submit();
-      return new RunningJobProxyV2( job );
-    } catch ( InterruptedException e ) {
-      throw new RuntimeException( e );
-    } catch ( ClassNotFoundException e ) {
-      throw new RuntimeException( e );
-    } finally {
-      Thread.currentThread().setContextClassLoader( cl );
-    }
-  }
-
-  @Override
-  public org.pentaho.hadoop.shim.api.Configuration createConfiguration() {
-    // Set the context class loader when instantiating the configuration
-    // since org.apache.hadoop.conf.Configuration uses it to load resources
-    ClassLoader cl = Thread.currentThread().getContextClassLoader();
-    Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
-    try {
-      return new org.pentaho.hadoop.shim.emr41.ConfigurationProxyV2();
-    } catch ( IOException e ) {
-      throw new RuntimeException( "Unable to create configuration for new mapreduce api: ", e );
-    } finally {
-      Thread.currentThread().setContextClassLoader( cl );
-    }
   }
 
   @Override public org.pentaho.hadoop.shim.api.fs.FileSystem getFileSystem(
