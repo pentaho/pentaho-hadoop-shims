@@ -161,4 +161,12 @@
       </sequential>
     </for>
   </target>
+
+  <target name="ivy-report" depends="init">
+    <for list="${modules}" param="module" trim="true">
+      <sequential>
+        <ant antfile="build.xml" dir="@{module}" inheritall="false" target="ivy-report" />
+      </sequential>
+    </for>
+  </target>
 </project>

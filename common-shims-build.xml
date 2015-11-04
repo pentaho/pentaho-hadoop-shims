@@ -21,8 +21,33 @@
   <property name="ivy.artifact.mapred.id" value="${ivy.artifact.id}-mapred" description="Name of artifact id for the mapred jar" />
   <property name="mapred.artifact.name" value="${ivy.artifact.mapred.id}-${project.revision}.jar" description="Name of the mapred jar file to create"/>
   <property name="hbase-comparators.artifact.name" value="${ivy.artifact.id}-hbase-comparators-${project.revision}.jar" description="Name of the mapred jar file to create"/>
-  
-  <property name="src.common-hbase.dir" value="${common.dir}/src-hbase-${hbase.generation}"/>
+
+  <target name="init-common" depends="install-antcontrib">
+    <property name="src.common-hbase.dir" value="${common.dir}/src-hbase-${hbase.generation}"/>
+    <if>
+      <istrue value="${common.modern.shim.include}"/>
+      <then>
+        <property name="src.common.modern.shim.dir" value="${common.dir}/src-modern"/>
+        <property name="test-src.common.modern.shim.dir" value="${common.dir}/test-src-modern"/>
+      </then>
+      <else>
+        <property name="src.common.modern.shim.dir" value="${common.dir}/src-dummy"/>
+        <property name="test-src.common.modern.shim.dir" value="${common.dir}/src-dummy"/>
+      </else>
+    </if>
+    <condition property="src.common.hadoop.shim.dir" value="${common.dir}/src-hadoop-shim-${common.hadoop.shim.version}"
+               else="${common.dir}/src-dummy">
+      <isset property="common.hadoop.shim.version"/>
+    </condition>
+    <condition property="src.common.hbase.shim.dir" value="${common.dir}/src-hbase-shim-${common.hbase.shim.version}"
+               else="${common.dir}/src-dummy">
+      <isset property="common.hbase.shim.version"/>
+    </condition>
+    <condition property="src.common.pig.shim.dir" value="${common.dir}/src-pig-shim-${common.pig.shim.version}"
+               else="${common.dir}/src-dummy">
+      <isset property="common.pig.shim.version"/>
+    </condition>
+  </target>
 
   <!-- Setup the compile classpath to include the provided jars and the api jar -->
   <path id="classpath">
@@ -57,8 +82,9 @@
   </path>
 
   <!-- override init so we can create our mapred.classes.dir -->
-  <target name="init" depends="subfloor.init">
+  <target name="init" depends="init-common,subfloor.init">
     <mkdir dir="${classes.common-mapred.dir}" />
+    <mkdir dir="${common.dir}/src-dummy" />
   </target>
 
   <!-- 
@@ -67,6 +93,7 @@
   -->
   <target name="clean-jars" depends="subfloor.clean-jars">
     <delete dir="${lib.provided.dir}"/>
+    <delete dir="${common.dir}/src-dummy"/>
   </target>
 
   <!-- Resolve provided dependencies to a separate directory -->
@@ -94,6 +121,10 @@
       </classpath>
       <src path="${src.dir}" />
       <src path="${src.common.dir}" />
+      <src path="${src.common.modern.shim.dir}" />
+      <src path="${src.common.hadoop.shim.dir}" />
+      <src path="${src.common.hbase.shim.dir}" />
+      <src path="${src.common.pig.shim.dir}" />
     </javac>
   </target>
 
@@ -128,6 +159,10 @@
           <fileset dir="${src.common.dir}" excludes="**/*.java" />
           <fileset dir="${src.common-mapred.dir}" excludes="**/*.java" />
           <fileset dir="${src.common-hbase.dir}" excludes="**/*.java" />
+          <fileset dir="${src.common.modern.shim.dir}" excludes="**/*.java" />
+          <fileset dir="${src.common.hadoop.shim.dir}" excludes="**/*.java" />
+          <fileset dir="${src.common.hbase.shim.dir}" excludes="**/*.java" />
+          <fileset dir="${src.common.pig.shim.dir}" excludes="**/*.java" />
         </copy>
       </then>
     </if>
@@ -142,6 +177,7 @@
            target="${javac.target}"
            fork="true">
       <src path="${testsrc.common.dir}" />
+      <src path="${test-src.common.modern.shim.dir}" />
       <classpath refid="test.classpath" />
     </javac>
 
@@ -151,6 +187,9 @@
         <exclude name="**/*.java" />
       </fileset>
       <fileset dir="${testsrc.common.dir}">
+        <exclude name="**/*.java" />
+      </fileset>
+      <fileset dir="${test-src.common.modern.shim.dir}">
         <exclude name="**/*.java" />
       </fileset>
     </copy>
@@ -187,12 +226,12 @@
            haltonfailure="${junit.haltonfailure}"
            printsummary="yes">
       <sysproperty key="java.awt.headless" value="${headless.unittest}" />
-      
+
       <syspropertyset>
         <propertyref prefix="junit.sysprop." />
         <mapper type="glob" from="junit.sysprop.*" to="*"/>
       </syspropertyset>
-      
+
       <classpath refid="test.classpath" />
       <formatter type="xml" />
       <test name="${testcase}" todir="${testreports.xml.dir}" if="testcase" />
@@ -201,6 +240,9 @@
           <include name="**/*Test.java" />
         </fileset>
         <fileset dir="${testsrc.common.dir}" casesensitive="yes">
+          <include name="**/*Test.java" />
+        </fileset>
+        <fileset dir="${test-src.common.modern.shim.dir}" casesensitive="yes">
           <include name="**/*Test.java" />
         </fileset>
       </batchtest>
@@ -236,7 +278,7 @@
         <propertyref prefix="junit.sysprop." />
         <mapper type="glob" from="junit.sysprop.*" to="*"/>
       </syspropertyset>
-      
+
       <!--
         Note the classpath order: instrumented classes are before the
         original (uninstrumented) classes.  This is important.
@@ -255,6 +297,9 @@
           <include name="**/*Test.java" />
         </fileset>
         <fileset dir="${testsrc.common.dir}" casesensitive="yes">
+          <include name="**/*Test.java" />
+        </fileset>
+        <fileset dir="${test-src.common.modern.shim.dir}" casesensitive="yes">
           <include name="**/*Test.java" />
         </fileset>
       </batchtest>
@@ -320,7 +365,7 @@
   		</then>
   	</if>
   </target>
-  
+
   <!-- Publish the mapred jar as well -->
   <target name="publish-local-nojar.post">
     <antcall target="publish-local-nojar.internal">
@@ -332,14 +377,14 @@
   <target name="source.jar" depends="subfloor.source.jar">
     <jar jarfile="${dist.dir}/${ivy.artifact.mapred.id}-${project.revision}-sources.jar" basedir="${src.common-mapred.dir}" />
   </target>
-  
+
   <!-- Publish the mapred jar as well -->
   <target name="publish-nojar" depends="subfloor.publish-nojar,subfloor-pkg.publish-nojar">
     <antcall target="publish-nojar.internal">
       <param name="ivy.artifact.id" value="${ivy.artifact.mapred.id}"/>
     </antcall>
   </target>
-	
+
 	<!-- ======================================== EULA assembly packaging ========================================= -->
 	<target name="package-eula">
 
@@ -355,7 +400,7 @@
 		<condition property="isWindows">
 		    <os family="windows" />
 		</condition>
-		
+
 		<if>
 			<not>
 				<isset property="pentaho-eula-assembly-pom.version"/>
@@ -365,7 +410,7 @@
 				<echo>pentaho-eula-assembly-pom.version not set, assuming default of ${pentaho-eula-assembly-pom.version}</echo>
 			</then>
 		</if>
-		
+
 		<if>
 			<not>
 				<isset property="artifactName"/>
@@ -375,14 +420,14 @@
 				<echo>artifactName not set, assuming default of ${artifactName}</echo>
 			</then>
 		</if>
-		
+
 		<if>
 			<not>
 				<available file="dist/pentaho-eula-assembly-pom-${pentaho-eula-assembly-pom.version}-pom.xml" type="file" />
 			</not>
 			<then>
-				<get src="${pentaho.resolve.repo}/com/pentaho/pentaho-eula-assembly-pom/${pentaho-eula-assembly-pom.version}/pentaho-eula-assembly-pom-${pentaho-eula-assembly-pom.version}-pom.xml" 
-		              dest="dist/pentaho-eula-assembly-pom-${pentaho-eula-assembly-pom.version}-pom.xml" 
+				<get src="${pentaho.resolve.repo}/com/pentaho/pentaho-eula-assembly-pom/${pentaho-eula-assembly-pom.version}/pentaho-eula-assembly-pom-${pentaho-eula-assembly-pom.version}-pom.xml"
+		              dest="dist/pentaho-eula-assembly-pom-${pentaho-eula-assembly-pom.version}-pom.xml"
 		              verbose="true" />
 			</then>
 		</if>
@@ -417,11 +462,11 @@
 				</exec>
 			</else>
 		</if>
-		
+
 		<delete file="dist/ant-contrib-1.0b3.jar" />
 
 	</target>
-	
+
 	<!--=======================================================================
       Overrride subfloor 'jacoco' target definition to include common tests
       ====================================================================-->
@@ -472,6 +517,8 @@
 		             printsummary="yes">
 					<sysproperty key="java.awt.headless" value="${headless.unittest}"/>
 
+          <jvmarg line="${junit.jvmargs}"/>
+
 					<syspropertyset>
 						<propertyref prefix="junit.sysprop."/>
 						<mapper type="glob" from="junit.sysprop.*" to="*"/>
@@ -484,10 +531,13 @@
 					<test name="${testcase}" todir="${testreports.xml.dir}" if="testcase"/>
 					<batchtest fork="yes" todir="${testreports.xml.dir}" unless="testcase">
 						<fileset dir="${testsrc.dir}" casesensitive="yes">
-							<include name="**/*Test.java"/>
+              <include name="${junit.test.pattern}"/>
 						</fileset>
 						<fileset dir="${testsrc.common.dir}" casesensitive="yes">
-							<include name="**/*Test.java" />
+              <include name="${junit.test.pattern}"/>
+						</fileset>
+            <fileset dir="${test-src.common.modern.shim.dir}" casesensitive="yes">
+              <include name="${junit.test.pattern}"/>
 						</fileset>
 					</batchtest>
 				</junit>
@@ -505,13 +555,21 @@
 					</executiondata>
 					<structure name="${ivy.artifact.id}">
 						<classfiles>
-							<fileset dir="${classes.dir}"/>
-							<fileset dir="${classes.common-mapred.dir}" />
+							<fileset dir="${classes.dir}">
+                <exclude name="${jacoco.ui.class.exclude.pattern}"/>
+              </fileset>
+							<fileset dir="${classes.common-mapred.dir}">
+                <exclude name="${jacoco.ui.class.exclude.pattern}"/>
+              </fileset>
 						</classfiles>
 						<sourcefiles encoding="UTF-8">
 							<fileset dir="${src.dir}"/>
 							<fileset dir="${src.common-mapred.dir}"/>
 							<fileset dir="${src.common-hbase.dir}"/>
+              <fileset dir="${src.common.modern.shim.dir}"/>
+              <fileset dir="${src.common.hbase.shim.dir}"/>
+              <fileset dir="${src.common.hadoop.shim.dir}"/>
+              <fileset dir="${src.common.pig.shim.dir}"/>
 						</sourcefiles>
 					</structure>
 					<html destdir="${jacoco.report.dir}"/>

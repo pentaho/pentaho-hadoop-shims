@@ -20,13 +20,16 @@
  *
  ******************************************************************************/
 
-package org.pentaho.hbase.shim.emr41;
+package org.pentaho.hbase.shim.common;
 
-import org.pentaho.hbase.shim.common.CommonHBaseConnection;
-import org.pentaho.hbase.shim.emr41.wrapper.HBaseConnectionInterface;
+import org.pentaho.hbase.shim.common.wrapper.HBaseConnectionInterface;
+import org.pentaho.hbase.shim.spi.IDeserializedBooleanComparator;
+import org.pentaho.hbase.shim.spi.IDeserializedNumericComparator;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.ServiceLoader;
 import java.util.concurrent.Callable;
 
 public class HBaseConnectionImpl extends CommonHBaseConnection implements HBaseConnectionInterface {
@@ -48,12 +51,22 @@ public class HBaseConnectionImpl extends CommonHBaseConnection implements HBaseC
 
   @Override
   public Class<?> getDeserializedNumericComparatorClass() throws ClassNotFoundException {
-    return Class.forName( "org.pentaho.hbase.shim.emr41.DeserializedNumericComparator" );
+    final Iterator<IDeserializedNumericComparator> providers =
+      ServiceLoader.load( IDeserializedNumericComparator.class ).iterator();
+    if ( providers.hasNext() ) {
+      return providers.next().getClass();
+    }
+    return Class.forName( "org.pentaho.hbase.shim.common.DeserializedNumericComparator" );
   }
 
   @Override
   public Class<?> getDeserializedBooleanComparatorClass() throws ClassNotFoundException {
-    return Class.forName( "org.pentaho.hbase.shim.emr41.DeserializedBooleanComparator" );
+    final Iterator<IDeserializedBooleanComparator> providers =
+      ServiceLoader.load( IDeserializedBooleanComparator.class ).iterator();
+    if ( providers.hasNext() ) {
+      return providers.next().getClass();
+    }
+    return Class.forName( "org.pentaho.hbase.shim.common.DeserializedBooleanComparator" );
   }
 
   protected <T> T doWithContextClassLoader( Callable<T> callable ) throws Exception {

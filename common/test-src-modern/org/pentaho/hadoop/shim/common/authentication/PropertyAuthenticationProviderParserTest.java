@@ -1,11 +1,4 @@
-package org.pentaho.hadoop.shim.mapr31.authentication;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Properties;
+package org.pentaho.hadoop.shim.common.authentication;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -18,7 +11,14 @@ import org.pentaho.di.core.encryption.TwoWayPasswordEncoderPluginType;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.plugins.PluginRegistry;
 import org.pentaho.di.core.util.EnvUtil;
-import org.pentaho.hadoop.shim.mapr31.authentication.PropertyAuthenticationProviderParser.AuthenticationProviderInstantiator;
+import org.pentaho.hadoop.shim.common.authentication.PropertyAuthenticationProviderParser
+  .AuthenticationProviderInstantiator;
+
+import java.util.Properties;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
+
 
 public class PropertyAuthenticationProviderParserTest {
 
@@ -27,7 +27,7 @@ public class PropertyAuthenticationProviderParserTest {
     PluginRegistry.addPluginType( TwoWayPasswordEncoderPluginType.getInstance() );
     PluginRegistry.init();
     String passwordEncoderPluginID =
-            Const.NVL( EnvUtil.getSystemProperty(Const.KETTLE_PASSWORD_ENCODER_PLUGIN), "Kettle" );
+      Const.NVL( EnvUtil.getSystemProperty( Const.KETTLE_PASSWORD_ENCODER_PLUGIN ), "Kettle" );
     Encr.init( passwordEncoderPluginID );
   }
 
@@ -35,7 +35,7 @@ public class PropertyAuthenticationProviderParserTest {
   public void testHappyPath() {
     KerberosAuthenticationProvider kerberosAuthenticationProvider = new KerberosAuthenticationProvider();
     UsernamePasswordAuthenticationProvider usernamePasswordAuthenticationProvider =
-        new UsernamePasswordAuthenticationProvider();
+      new UsernamePasswordAuthenticationProvider();
     Properties props = new Properties();
     props.setProperty( "authentication.provider.list", "kerby,notsokerby" );
 
@@ -54,9 +54,9 @@ public class PropertyAuthenticationProviderParserTest {
     AuthenticationProviderInstantiator instantiator = mock( AuthenticationProviderInstantiator.class );
     when( instantiator.instantiate( props.getProperty( "kerby.class" ) ) ).thenReturn( kerberosAuthenticationProvider );
     when( instantiator.instantiate( props.getProperty( "notsokerby.class" ) ) ).thenReturn(
-        usernamePasswordAuthenticationProvider );
+      usernamePasswordAuthenticationProvider );
     PropertyAuthenticationProviderParser parser =
-        new PropertyAuthenticationProviderParser( props, manager, instantiator );
+      new PropertyAuthenticationProviderParser( props, manager, instantiator );
     parser.process( "authentication.provider.list" );
 
     assertEquals( "kerby", kerberosAuthenticationProvider.getId() );
@@ -76,7 +76,7 @@ public class PropertyAuthenticationProviderParserTest {
   public void testObfuscatedPath() {
     KerberosAuthenticationProvider kerberosAuthenticationProvider = new KerberosAuthenticationProvider();
     UsernamePasswordAuthenticationProvider usernamePasswordAuthenticationProvider =
-        new UsernamePasswordAuthenticationProvider();
+      new UsernamePasswordAuthenticationProvider();
     Properties props = new Properties();
     props.setProperty( "authentication.provider.list", "kerby,notsokerby" );
 
@@ -95,9 +95,9 @@ public class PropertyAuthenticationProviderParserTest {
     AuthenticationProviderInstantiator instantiator = mock( AuthenticationProviderInstantiator.class );
     when( instantiator.instantiate( props.getProperty( "kerby.class" ) ) ).thenReturn( kerberosAuthenticationProvider );
     when( instantiator.instantiate( props.getProperty( "notsokerby.class" ) ) ).thenReturn(
-        usernamePasswordAuthenticationProvider );
+      usernamePasswordAuthenticationProvider );
     PropertyAuthenticationProviderParser parser =
-        new PropertyAuthenticationProviderParser( props, manager, instantiator );
+      new PropertyAuthenticationProviderParser( props, manager, instantiator );
     parser.process( "authentication.provider.list" );
 
     assertEquals( "kerby", kerberosAuthenticationProvider.getId() );
