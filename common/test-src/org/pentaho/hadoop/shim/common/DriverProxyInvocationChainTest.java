@@ -25,7 +25,6 @@ package org.pentaho.hadoop.shim.common;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyString;
@@ -43,13 +42,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.SQLException;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class DriverProxyInvocationChainTest {
 
