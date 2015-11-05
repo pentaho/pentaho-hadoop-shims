@@ -20,14 +20,25 @@
 *
 ******************************************************************************/
 
-package org.pentaho.hbase.shim.emr310.wrapper;
+package org.pentaho.hadoop.shim.emr310.authorization;
 
-import org.apache.hadoop.conf.Configuration;
-import org.pentaho.hadoop.shim.spi.PentahoHadoopShim;
-import org.pentaho.hbase.shim.spi.HBaseConnection;
+import org.pentaho.hadoop.shim.common.CommonHadoopShim;
+import org.pentaho.hadoop.shim.common.CommonPigShim;
+import org.pentaho.hadoop.shim.common.PigShimImpl;
+import org.pentaho.hadoop.shim.common.authorization.NoOpHadoopAuthorizationService;
+import org.pentaho.hadoop.shim.emr310.HadoopShim;
 
-public interface HBaseShimInterface extends PentahoHadoopShim {
-  public HBaseConnection getHBaseConnection();
+public class ShimNoOpHadoopAuthorizationService extends NoOpHadoopAuthorizationService {
 
-  public void setInfo( Configuration configuration );
+  @Override protected CommonHadoopShim getHadoopShim() {
+    return new HadoopShim();
+  }
+
+  @Override protected CommonPigShim getPigShim() {
+    return new PigShimImpl(){
+      @Override public boolean isLocalExecutionSupported() {
+        return false;
+      }
+    };
+  }
 }
