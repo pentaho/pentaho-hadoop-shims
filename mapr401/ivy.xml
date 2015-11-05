@@ -65,7 +65,7 @@
     <dependency org="org.apache.hadoop" name="hadoop-common" rev="${dependency.hadoop.revision}" transitive="false" conf="provided->default"/>
     <dependency org="org.apache.hadoop" name="hadoop-core" rev="${dependency.hadoop.revision}" transitive="false" conf="provided"/>
 
-    <dependency conf="test->default" org="junit" name="junit" rev="4.5"/>
+    <dependency conf="test->default" org="junit" name="junit" rev="4.11"/>
     <dependency conf="test->default" org="org.safehaus.jug" name="jug-lgpl" rev="2.0.0"/>
     <dependency conf="test->default" org="pentaho" name="pentaho-hadoop-shims-api-test" rev="${project.revision}" changing="true"/>
     <dependency conf="test->default" org="org.mockito" name="mockito-all" rev="1.9.5" transitive="false"/>
