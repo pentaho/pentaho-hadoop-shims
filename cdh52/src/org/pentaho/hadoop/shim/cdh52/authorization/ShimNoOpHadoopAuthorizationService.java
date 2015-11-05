@@ -20,29 +20,10 @@
 *
 ******************************************************************************/
 
-package org.pentaho.hadoop.shim.cdh52.delegating;
+package org.pentaho.hadoop.shim.cdh52.authorization;
 
-import org.pentaho.hadoop.shim.ShimVersion;
-import org.pentaho.hadoop.shim.api.Configuration;
-import org.pentaho.hadoop.shim.cdh52.authorization.HadoopAuthorizationService;
-import org.pentaho.hadoop.shim.cdh52.authorization.HasHadoopAuthorizationService;
-import org.pentaho.hadoop.shim.spi.SqoopShim;
+import org.pentaho.hadoop.shim.common.authorization.NoOpHadoopAuthorizationService;
 
-public class DelegatingSqoopShim implements SqoopShim, HasHadoopAuthorizationService {
-  private SqoopShim delegate;
+public class ShimNoOpHadoopAuthorizationService extends NoOpHadoopAuthorizationService {
 
-  @Override
-  public void setHadoopAuthorizationService( HadoopAuthorizationService hadoopAuthorizationService ) {
-    delegate = hadoopAuthorizationService.getShim( SqoopShim.class );
-  }
-
-  @Override
-  public int runTool( String[] args, Configuration c ) {
-    return delegate.runTool( args, c );
-  }
-
-  @Override
-  public ShimVersion getVersion() {
-    return delegate.getVersion();
-  }
 }
