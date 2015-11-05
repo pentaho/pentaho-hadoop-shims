@@ -22,6 +22,24 @@
 
 package org.pentaho.hadoop.shim.emr34.authorization;
 
-public interface HasHadoopAuthorizationService {
-  public void setHadoopAuthorizationService( HadoopAuthorizationService hadoopAuthorizationService ) throws Exception;
+import org.pentaho.hadoop.shim.common.CommonHadoopShim;
+import org.pentaho.hadoop.shim.common.CommonPigShim;
+import org.pentaho.hadoop.shim.common.PigShimImpl;
+import org.pentaho.hadoop.shim.common.authorization.NoOpHadoopAuthorizationService;
+import org.pentaho.hadoop.shim.emr34.HadoopShim;
+
+
+public class ShimNoOpHadoopAuthorizationService extends NoOpHadoopAuthorizationService {
+
+  @Override protected CommonHadoopShim getHadoopShim() {
+    return new HadoopShim();
+  }
+
+  @Override protected CommonPigShim getPigShim() {
+    return new PigShimImpl(){
+      @Override public boolean isLocalExecutionSupported() {
+        return false;
+      }
+    };
+  }
 }
