@@ -35,18 +35,39 @@
         <property name="test-src.common.modern.shim.dir" value="${common.dir}/src-dummy"/>
       </else>
     </if>
-    <condition property="src.common.hadoop.shim.dir" value="${common.dir}/src-hadoop-shim-${common.hadoop.shim.version}"
-               else="${common.dir}/src-dummy">
+    <if>
       <isset property="common.hadoop.shim.version"/>
-    </condition>
-    <condition property="src.common.hbase.shim.dir" value="${common.dir}/src-hbase-shim-${common.hbase.shim.version}"
-               else="${common.dir}/src-dummy">
+      <then>
+        <property name="src.common.hadoop.shim.dir" value="${common.dir}/src-hadoop-shim-${common.hadoop.shim.version}"/>
+        <property name="test-src.common.hadoop.shim.dir" value="${common.dir}/test-src-hadoop-shim-${common.hadoop.shim.version}"/>
+      </then>
+      <else>
+        <property name="src.common.hadoop.shim.dir" value="${common.dir}/src-dummy"/>
+        <property name="test-src.common.hadoop.shim.dir" value="${common.dir}/src-dummy"/>
+      </else>
+    </if>
+    <if>
       <isset property="common.hbase.shim.version"/>
-    </condition>
-    <condition property="src.common.pig.shim.dir" value="${common.dir}/src-pig-shim-${common.pig.shim.version}"
-               else="${common.dir}/src-dummy">
+      <then>
+        <property name="src.common.hbase.shim.dir" value="${common.dir}/src-hbase-shim-${common.hbase.shim.version}"/>
+        <property name="test-src.common.hbase.shim.dir" value="${common.dir}/test-src-hbase-shim-${common.hbase.shim.version}"/>
+      </then>
+      <else>
+        <property name="src.common.hbase.shim.dir" value="${common.dir}/src-dummy"/>
+        <property name="test-src.common.hbase.shim.dir" value="${common.dir}/src-dummy"/>
+      </else>
+    </if>
+    <if>
       <isset property="common.pig.shim.version"/>
-    </condition>
+      <then>
+        <property name="src.common.pig.shim.dir" value="${common.dir}/src-pig-shim-${common.pig.shim.version}"/>
+        <property name="test-src.common.pig.shim.dir" value="${common.dir}/test-src-pig-shim-${common.pig.shim.version}"/>
+      </then>
+      <else>
+        <property name="src.common.pig.shim.dir" value="${common.dir}/src-dummy"/>
+        <property name="test-src.common.pig.shim.dir" value="${common.dir}/src-dummy"/>
+      </else>
+    </if>
   </target>
 
   <!-- Setup the compile classpath to include the provided jars and the api jar -->
@@ -178,6 +199,9 @@
            fork="true">
       <src path="${testsrc.common.dir}" />
       <src path="${test-src.common.modern.shim.dir}" />
+      <src path="${test-src.common.hadoop.shim.dir}" />
+      <src path="${test-src.common.hbase.shim.dir}" />
+      <src path="${test-src.common.pig.shim.dir}" />
       <classpath refid="test.classpath" />
     </javac>
 
@@ -190,6 +214,15 @@
         <exclude name="**/*.java" />
       </fileset>
       <fileset dir="${test-src.common.modern.shim.dir}">
+        <exclude name="**/*.java" />
+      </fileset>
+      <fileset dir="${test-src.common.hadoop.shim.dir}">
+        <exclude name="**/*.java" />
+      </fileset>
+      <fileset dir="${test-src.common.hbase.shim.dir}">
+        <exclude name="**/*.java" />
+      </fileset>
+      <fileset dir="${test-src.common.pig.shim.dir}">
         <exclude name="**/*.java" />
       </fileset>
     </copy>
@@ -243,6 +276,15 @@
           <include name="**/*Test.java" />
         </fileset>
         <fileset dir="${test-src.common.modern.shim.dir}" casesensitive="yes">
+          <include name="**/*Test.java" />
+        </fileset>
+        <fileset dir="${test-src.common.hadoop.shim.dir}" casesensitive="yes">
+          <include name="**/*Test.java" />
+        </fileset>
+        <fileset dir="${test-src.common.hbase.shim.dir}" casesensitive="yes">
+          <include name="**/*Test.java" />
+        </fileset>
+        <fileset dir="${test-src.common.pig.shim.dir}" casesensitive="yes">
           <include name="**/*Test.java" />
         </fileset>
       </batchtest>
@@ -300,6 +342,15 @@
           <include name="**/*Test.java" />
         </fileset>
         <fileset dir="${test-src.common.modern.shim.dir}" casesensitive="yes">
+          <include name="**/*Test.java" />
+        </fileset>
+        <fileset dir="${test-src.common.hadoop.shim.dir}" casesensitive="yes">
+          <include name="**/*Test.java" />
+        </fileset>
+        <fileset dir="${test-src.common.hbase.shim.dir}" casesensitive="yes">
+          <include name="**/*Test.java" />
+        </fileset>
+        <fileset dir="${test-src.common.pig.shim.dir}" casesensitive="yes">
           <include name="**/*Test.java" />
         </fileset>
       </batchtest>
@@ -537,6 +588,15 @@
               <include name="${junit.test.pattern}"/>
 						</fileset>
             <fileset dir="${test-src.common.modern.shim.dir}" casesensitive="yes">
+              <include name="${junit.test.pattern}"/>
+						</fileset>
+            <fileset dir="${test-src.common.hadoop.shim.dir}" casesensitive="yes">
+              <include name="${junit.test.pattern}"/>
+						</fileset>
+            <fileset dir="${test-src.common.hbase.shim.dir}" casesensitive="yes">
+              <include name="${junit.test.pattern}"/>
+						</fileset>
+            <fileset dir="${test-src.common.pig.shim.dir}" casesensitive="yes">
               <include name="${junit.test.pattern}"/>
 						</fileset>
 					</batchtest>

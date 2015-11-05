@@ -1,39 +1,21 @@
 /*******************************************************************************
- *
  * Pentaho Big Data
- *
+ * <p/>
  * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
- *
- *******************************************************************************
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with
+ * <p/>
+ * ******************************************************************************
+ * <p/>
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  ******************************************************************************/
 
 package org.pentaho.hbase.shim.common;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.NavigableMap;
-import java.util.Properties;
-import java.util.Set;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
@@ -46,6 +28,7 @@ import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.BinaryPrefixComparator;
 import org.apache.hadoop.hbase.filter.CompareFilter;
 import org.apache.hadoop.hbase.filter.FamilyFilter;
+import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.filter.FilterList;
 import org.apache.hadoop.hbase.filter.PrefixFilter;
 import org.apache.hadoop.hbase.filter.QualifierFilter;
@@ -71,9 +54,23 @@ import org.pentaho.hbase.shim.api.Mapping;
 import org.pentaho.hbase.shim.spi.HBaseBytesUtilShim;
 import org.pentaho.hbase.shim.spi.HBaseConnection;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.NavigableMap;
+import java.util.Properties;
+import java.util.Set;
+
 /**
  * Concrete implementation for Hadoop 20.x.
- * 
+ *
  * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
  */
 public class CommonHBaseConnection extends HBaseConnection {
@@ -126,8 +123,8 @@ public class CommonHBaseConnection extends HBaseConnection {
           m_config.addResource( "hbase-site.xml" );
         }
       } catch ( MalformedURLException e ) {
-        throw new IllegalArgumentException( BaseMessages.getString( PKG,
-            "CommonHBaseConnection.Error.MalformedConfigURL" ) );
+        throw new IllegalArgumentException(
+            BaseMessages.getString( PKG, "CommonHBaseConnection.Error.MalformedConfigURL" ) );
       }
 
       if ( !isEmpty( zookeeperQuorum ) ) {
@@ -149,12 +146,16 @@ public class CommonHBaseConnection extends HBaseConnection {
         log.logDebug( "Opening HBase connection ..." );
       }
 
-      m_factory = HBaseClientFactoryLocator.getHBaseClientFactory( m_config );
+      m_factory = getHBaseClientFactory();
 
       m_admin = m_factory.getHBaseAdmin();
     } finally {
       Thread.currentThread().setContextClassLoader( cl );
     }
+  }
+
+  HBaseClientFactory getHBaseClientFactory() {
+    return HBaseClientFactoryLocator.getHBaseClientFactory( m_config );
   }
 
   @Override
@@ -274,14 +275,10 @@ public class CommonHBaseConnection extends HBaseConnection {
           Method setCompressionType = h.getClass().getMethod( "setCompressionType", compressionAlgorithmClass );
           setCompressionType.invoke( h, valueOf.invoke( null, value ) );
         } else if ( key.toString().equals( COL_DESCRIPTOR_IN_MEMORY_KEY ) ) {
-          boolean result =
-              ( value.toLowerCase().equals( "Y" ) || value.toLowerCase().equals( "yes" ) || value.toLowerCase().equals(
-                  "true" ) );
+          boolean result = toBoolean( value );
           h.setInMemory( result );
         } else if ( key.toString().equals( COL_DESCRIPTOR_BLOCK_CACHE_ENABLED_KEY ) ) {
-          boolean result =
-              ( value.toLowerCase().equals( "Y" ) || value.toLowerCase().equals( "yes" ) || value.toLowerCase().equals(
-                  "true" ) );
+          boolean result = ( toBoolean( value ) );
           h.setBlockCacheEnabled( result );
         } else if ( key.toString().equals( COL_DESCRIPTOR_BLOCK_SIZE_KEY ) ) {
           h.setBlocksize( Integer.parseInt( value ) );
@@ -373,28 +370,23 @@ public class CommonHBaseConnection extends HBaseConnection {
   public void addColumnToScan( String colFamilyName, String colName, boolean colNameIsBinary ) throws Exception {
     checkSourceScan();
 
-    m_sourceScan.addColumn( m_bytesUtil.toBytes( colFamilyName ), ( colNameIsBinary ) ? m_bytesUtil
-        .toBytesBinary( colName ) : m_bytesUtil.toBytes( colName ) );
+    m_sourceScan.addColumn( m_bytesUtil.toBytes( colFamilyName ),
+        ( colNameIsBinary ) ? m_bytesUtil.toBytesBinary( colName ) : m_bytesUtil.toBytes( colName ) );
   }
 
   /**
    * Add a column filter to the list of filters that the scanner will apply to rows server-side.
-   * 
-   * @param cf
-   *          the column filter to add
-   * @param columnMeta
-   *          the meta data for the column used in the filter to add
-   * @param matchAny
-   *          true if the list of filters (if not created yet) should be "match one" (and false if it should be
-   *          "match all")
-   * @param vars
-   *          variables to use
-   * @throws Exception
-   *           if a problem occurs
+   *
+   * @param cf         the column filter to add
+   * @param columnMeta the meta data for the column used in the filter to add
+   * @param matchAny   true if the list of filters (if not created yet) should be "match one" (and false if it should be
+   *                   "match all")
+   * @param vars       variables to use
+   * @throws Exception if a problem occurs
    */
   @Override
   public void addColumnFilterToScan( ColumnFilter cf, HBaseValueMeta columnMeta, VariableSpace vars, boolean matchAny )
-    throws Exception {
+      throws Exception {
 
     checkSourceScan();
 
@@ -402,41 +394,12 @@ public class CommonHBaseConnection extends HBaseConnection {
     try {
       Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
 
-      if ( m_sourceScan.getFilter() == null ) {
-        // create a new FilterList
-        FilterList fl =
-            new FilterList( matchAny ? FilterList.Operator.MUST_PASS_ONE : FilterList.Operator.MUST_PASS_ALL );
-        m_sourceScan.setFilter( fl );
-      }
+      createEmptyFilterIfNull( matchAny );
 
       FilterList fl = (FilterList) m_sourceScan.getFilter();
 
-      CompareFilter.CompareOp comp = null;
       ColumnFilter.ComparisonType op = cf.getComparisonOperator();
-
-      switch ( op ) {
-        case EQUAL:
-          comp = CompareFilter.CompareOp.EQUAL;
-          break;
-        case NOT_EQUAL:
-          comp = CompareFilter.CompareOp.NOT_EQUAL;
-          break;
-        case GREATER_THAN:
-          comp = CompareFilter.CompareOp.GREATER;
-          break;
-        case GREATER_THAN_OR_EQUAL:
-          comp = CompareFilter.CompareOp.GREATER_OR_EQUAL;
-          break;
-        case LESS_THAN:
-          comp = CompareFilter.CompareOp.LESS;
-          break;
-        case LESS_THAN_OR_EQUAL:
-          comp = CompareFilter.CompareOp.LESS_OR_EQUAL;
-          break;
-        default:
-          comp = null;
-          break;
-      }
+      CompareFilter.CompareOp comp = getCompareOpByComparisonType( op );
 
       String comparisonString = cf.getConstant().trim();
       comparisonString = vars.environmentSubstitute( comparisonString );
@@ -448,77 +411,12 @@ public class CommonHBaseConnection extends HBaseConnection {
 
         // do the numeric comparison stuff
         if ( columnMeta.isNumeric() ) {
-
-          // Double/Float or Long/Integer
-          DecimalFormat df = new DecimalFormat();
-          String formatS = vars.environmentSubstitute( cf.getFormat() );
-          if ( !isEmpty( formatS ) ) {
-            df.applyPattern( formatS );
-          }
-
-          Number num = df.parse( comparisonString );
-
-          if ( cf.getSignedComparison() ) {
-            // custom comparator for signed comparison, specific to each shim due to HBase API changes
-            Class<?> deserializedNumericComparatorClass = getDeserializedNumericComparatorClass();
-            if ( columnMeta.isInteger() ) {
-              Constructor<?> ctor =
-                  deserializedNumericComparatorClass.getConstructor( boolean.class, boolean.class, long.class );
-              if ( columnMeta.getIsLongOrDouble() ) {
-                comparator = ctor.newInstance(
-                    columnMeta.isInteger(),
-                    columnMeta.getIsLongOrDouble(),
-                    num.longValue() );
-              } else {
-                comparator =
-                    ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), (long) num.intValue() );
-              }
-            } else {
-              Constructor<?> ctor =
-                  deserializedNumericComparatorClass.getConstructor( boolean.class, boolean.class, double.class );
-              if ( columnMeta.getIsLongOrDouble() ) {
-                comparator =
-                    ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), num.doubleValue() );
-              } else {
-                comparator =
-                    ctor.newInstance(
-                        columnMeta.isInteger(),
-                        columnMeta.getIsLongOrDouble(),
-                        (double) num.floatValue() );
-              }
-            }
-          } else if ( columnMeta.isInteger() ) {
+          if ( !cf.getSignedComparison() && columnMeta.isInteger() ) {
             comparatorClass = byte[].class;
-            if ( !columnMeta.getIsLongOrDouble() ) {
-              comparator = m_bytesUtil.toBytes( num.intValue() );
-            } else {
-              comparator = m_bytesUtil.toBytes( num.longValue() );
-            }
-          } else {
-            if ( !columnMeta.getIsLongOrDouble() ) {
-              comparator = m_bytesUtil.toBytes( num.floatValue() );
-            } else {
-              comparator = m_bytesUtil.toBytes( num.doubleValue() );
-            }
           }
+          comparator = getNumericComparator( cf, columnMeta, vars, comparisonString );
         } else if ( columnMeta.isDate() ) {
-          SimpleDateFormat sdf = new SimpleDateFormat();
-          String formatS = vars.environmentSubstitute( cf.getFormat() );
-          if ( !isEmpty( formatS ) ) {
-            sdf.applyPattern( formatS );
-          }
-          Date d = sdf.parse( comparisonString );
-
-          long dateAsMillis = d.getTime();
-          if ( !cf.getSignedComparison() ) {
-            comparator = m_bytesUtil.toBytes( dateAsMillis );
-          } else {
-            // custom comparator for signed comparison
-            Class<?> deserializedNumericComparatorClass = getDeserializedNumericComparatorClass();
-            Constructor<?> ctor =
-                deserializedNumericComparatorClass.getConstructor( boolean.class, boolean.class, long.class );
-            comparator = ctor.newInstance( true, true, dateAsMillis );
-          }
+          comparator = getDateComparator( cf, vars, comparisonString );
         } else if ( columnMeta.isBoolean() ) {
 
           // temporarily encode it so that we can use the utility routine in
@@ -529,10 +427,7 @@ public class CommonHBaseConnection extends HBaseConnection {
           if ( decodedB == null ) {
             return;
           }
-
-          Class<?> deserializedBooleanComparatorClass = getDeserializedBooleanComparatorClass();
-          Constructor<?> ctor = deserializedBooleanComparatorClass.getConstructor( boolean.class );
-          comparator = ctor.newInstance( decodedB.booleanValue() );
+          comparator = getBooleanComparator( decodedB );
         }
       } else {
         comp = CompareFilter.CompareOp.EQUAL;
@@ -554,58 +449,18 @@ public class CommonHBaseConnection extends HBaseConnection {
 
       if ( comparator != null ) {
         Mapping.TupleMapping tupleMapping;
-        try {
-          tupleMapping = Mapping.TupleMapping.valueOf( cf.getFieldAlias().toUpperCase() );
-        } catch ( IllegalArgumentException ignored ) {
-          tupleMapping = null;
-        }
+        tupleMapping = getTupleMappingByName( cf.getFieldAlias().toUpperCase() );
         if ( tupleMapping != null ) {
-          switch( tupleMapping ) {
-            case KEY: {
-              Constructor<RowFilter> rowFilterConstructor =
-                RowFilter.class.getConstructor( CompareFilter.CompareOp.class, comparatorClass );
-              RowFilter scf = rowFilterConstructor.newInstance( comp, comparator );
-              fl.addFilter( scf );
-              return;
-            }
-            case FAMILY: {
-              Constructor<FamilyFilter> familyFilterConstructor =
-                FamilyFilter.class.getConstructor( CompareFilter.CompareOp.class, comparatorClass );
-              FamilyFilter scf = familyFilterConstructor.newInstance( comp, comparator );
-              fl.addFilter( scf );
-              return;
-            }
-            case COLUMN: {
-              //TODO Check if ColumnPrefixFilter works faster and suit more
-
-              Constructor<QualifierFilter> columnFilterConstructor =
-                QualifierFilter.class.getConstructor( CompareFilter.CompareOp.class, comparatorClass );
-              QualifierFilter scf = columnFilterConstructor.newInstance( comp, comparator );
-              fl.addFilter( scf );
-              return;
-            }
-            case VALUE: {
-              Constructor<ValueFilter> valueFilterConstructor =
-                ValueFilter.class.getConstructor( CompareFilter.CompareOp.class, comparatorClass );
-              ValueFilter scf = valueFilterConstructor.newInstance( comp, comparator );
-              fl.addFilter( scf );
-              return;
-            }
-            case TIMESTAMP: {
-              Constructor<TimestampsFilter> columnFilterConstructor =
-                TimestampsFilter.class.getConstructor( CompareFilter.CompareOp.class, comparatorClass );
-              TimestampsFilter scf = columnFilterConstructor.newInstance( comp, comparator );
-              fl.addFilter( scf );
-              return;
-            }
-          }
+          addFilterByMapping( fl, comp, comparatorClass, comparator, tupleMapping );
+          return;
         }
         byte[] family = m_bytesUtil.toBytes( columnMeta.getColumnFamily() );
         byte[] qualifier = m_bytesUtil.toBytes( columnMeta.getColumnName() );
 
-        Constructor<SingleColumnValueFilter> scvfCtor =
-            SingleColumnValueFilter.class.getConstructor( byte[].class, byte[].class, CompareFilter.CompareOp.class,
-                comparatorClass );
+        Constructor<SingleColumnValueFilter>
+            scvfCtor =
+            SingleColumnValueFilter.class
+                .getConstructor( byte[].class, byte[].class, CompareFilter.CompareOp.class, comparatorClass );
         SingleColumnValueFilter scf = scvfCtor.newInstance( family, qualifier, comp, comparator );
         scf.setFilterIfMissing( true );
         fl.addFilter( scf );
@@ -614,13 +469,190 @@ public class CommonHBaseConnection extends HBaseConnection {
         if ( columnMeta.isKey() ) {
           PrefixFilter scf = new PrefixFilter( comparison );
           fl.addFilter( scf );
-        } else {
-
         }
       }
     } finally {
       Thread.currentThread().setContextClassLoader( cl );
     }
+  }
+
+  protected Object getNumericComparator( ColumnFilter cf, HBaseValueMeta columnMeta, VariableSpace vars,
+      String comparisonString ) throws Exception {
+    DecimalFormat df = new DecimalFormat();
+    String formatS = vars.environmentSubstitute( cf.getFormat() );
+    if ( !isEmpty( formatS ) ) {
+      df.applyPattern( formatS );
+    }
+    Number num = df.parse( comparisonString );
+
+    Object comparator;
+    if ( cf.getSignedComparison() ) {
+      comparator = getSignedComparisonComparator( columnMeta, num );
+    } else if ( columnMeta.isInteger() ) {
+      //comparatorClass = byte[].class;
+      if ( !columnMeta.getIsLongOrDouble() ) {
+        comparator = m_bytesUtil.toBytes( num.intValue() );
+      } else {
+        comparator = m_bytesUtil.toBytes( num.longValue() );
+      }
+    } else {
+      if ( !columnMeta.getIsLongOrDouble() ) {
+        comparator = m_bytesUtil.toBytes( num.floatValue() );
+      } else {
+        comparator = m_bytesUtil.toBytes( num.doubleValue() );
+      }
+    }
+    return comparator;
+  }
+
+  protected Object getBooleanComparator( Boolean decodedB )
+      throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException,
+      java.lang.reflect.InvocationTargetException {
+    Class<?> deserializedBooleanComparatorClass = getDeserializedBooleanComparatorClass();
+    Constructor<?> ctor = deserializedBooleanComparatorClass.getConstructor( boolean.class );
+    return ctor.newInstance( decodedB );
+  }
+
+  protected Object getDateComparator( ColumnFilter cf, VariableSpace vars, String comparisonString )
+      throws ParseException, ClassNotFoundException, NoSuchMethodException, InstantiationException,
+      IllegalAccessException, java.lang.reflect.InvocationTargetException {
+    SimpleDateFormat sdf = new SimpleDateFormat();
+    String formatS = vars.environmentSubstitute( cf.getFormat() );
+    if ( !isEmpty( formatS ) ) {
+      sdf.applyPattern( formatS );
+    }
+
+    Object comparator;
+    Date d = sdf.parse( comparisonString );
+    long dateAsMillis = d.getTime();
+    if ( !cf.getSignedComparison() ) {
+      comparator = m_bytesUtil.toBytes( dateAsMillis );
+    } else {
+      // custom comparator for signed comparison
+      Class<?> deserializedNumericComparatorClass = getDeserializedNumericComparatorClass();
+      Constructor<?>
+          ctor =
+          deserializedNumericComparatorClass.getConstructor( boolean.class, boolean.class, long.class );
+      comparator = ctor.newInstance( true, true, dateAsMillis );
+    }
+    return comparator;
+  }
+
+  protected Object getSignedComparisonComparator( HBaseValueMeta columnMeta, Number num ) throws Exception {
+    // custom comparator for signed comparison, specific to each shim due to HBase API changes
+    Class<?> deserializedNumericComparatorClass = getDeserializedNumericComparatorClass();
+    Object comparator;
+    if ( columnMeta.isInteger() ) {
+      Constructor<?>
+          ctor =
+          deserializedNumericComparatorClass.getConstructor( boolean.class, boolean.class, long.class );
+      if ( columnMeta.getIsLongOrDouble() ) {
+        comparator = ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), num.longValue() );
+      } else {
+        comparator = ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), (long) num.intValue() );
+      }
+    } else {
+      Constructor<?>
+          ctor =
+          deserializedNumericComparatorClass.getConstructor( boolean.class, boolean.class, double.class );
+      if ( columnMeta.getIsLongOrDouble() ) {
+        comparator = ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), num.doubleValue() );
+      } else {
+        comparator =
+            ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), (double) num.floatValue() );
+      }
+    }
+    return comparator;
+  }
+
+  void addFilterByMapping( FilterList fl, CompareFilter.CompareOp comp, Class<?> comparatorClass, Object comparator,
+      Mapping.TupleMapping tupleMapping ) throws NoSuchMethodException, InstantiationException, IllegalAccessException,
+      java.lang.reflect.InvocationTargetException {
+    switch ( tupleMapping ) {
+      case KEY: {
+        addFilter( RowFilter.class, fl, comp, comparatorClass, comparator );
+        return;
+      }
+      case FAMILY: {
+        addFilter( FamilyFilter.class, fl, comp, comparatorClass, comparator );
+        return;
+      }
+      case COLUMN: {
+        //TODO Check if ColumnPrefixFilter works faster and suit more
+
+        addFilter( QualifierFilter.class, fl, comp, comparatorClass, comparator );
+        return;
+      }
+      case VALUE: {
+        addFilter( ValueFilter.class, fl, comp, comparatorClass, comparator );
+        return;
+      }
+      case TIMESTAMP: {
+        addFilter( TimestampsFilter.class, fl, comp, comparatorClass, comparator );
+        //        Constructor<TimestampsFilter> columnFilterConstructor =
+        //          TimestampsFilter.class.getConstructor( CompareFilter.CompareOp.class, comparatorClass );
+        //        TimestampsFilter scf = columnFilterConstructor.newInstance( comp, comparator );
+        //        fl.addFilter( scf );
+        return;
+      }
+    }
+  }
+
+  protected <T extends Filter> void addFilter( Class<T> filterClass, FilterList fl, CompareFilter.CompareOp comp,
+      Class<?> comparatorClass, Object comparator )
+      throws NoSuchMethodException, InstantiationException, IllegalAccessException,
+      java.lang.reflect.InvocationTargetException {
+    Constructor<T> constructor = filterClass.getConstructor( CompareFilter.CompareOp.class, comparatorClass );
+    T scf = constructor.newInstance( comp, comparator );
+    fl.addFilter( scf );
+  }
+
+  protected Mapping.TupleMapping getTupleMappingByName( String name ) {
+    Mapping.TupleMapping tupleMapping;
+    try {
+      tupleMapping = Mapping.TupleMapping.valueOf( name );
+    } catch ( IllegalArgumentException ignored ) {
+      tupleMapping = null;
+    }
+    return tupleMapping;
+  }
+
+  protected void createEmptyFilterIfNull( boolean matchAny ) {
+    if ( m_sourceScan.getFilter() == null ) {
+      // create a new FilterList
+      FilterList
+          fl =
+          new FilterList( matchAny ? FilterList.Operator.MUST_PASS_ONE : FilterList.Operator.MUST_PASS_ALL );
+      m_sourceScan.setFilter( fl );
+    }
+  }
+
+  protected CompareFilter.CompareOp getCompareOpByComparisonType( ColumnFilter.ComparisonType op ) {
+    CompareFilter.CompareOp comp;
+    switch ( op ) {
+      case EQUAL:
+        comp = CompareFilter.CompareOp.EQUAL;
+        break;
+      case NOT_EQUAL:
+        comp = CompareFilter.CompareOp.NOT_EQUAL;
+        break;
+      case GREATER_THAN:
+        comp = CompareFilter.CompareOp.GREATER;
+        break;
+      case GREATER_THAN_OR_EQUAL:
+        comp = CompareFilter.CompareOp.GREATER_OR_EQUAL;
+        break;
+      case LESS_THAN:
+        comp = CompareFilter.CompareOp.LESS;
+        break;
+      case LESS_THAN_OR_EQUAL:
+        comp = CompareFilter.CompareOp.LESS_OR_EQUAL;
+        break;
+      default:
+        comp = null;
+        break;
+    }
+    return comp;
   }
 
   // TODO - Override this method if necessary! Older HBase versions use WritableByteArrayComparable
@@ -665,7 +697,7 @@ public class CommonHBaseConnection extends HBaseConnection {
 
   protected void checkForCurrentResultSetRow() throws Exception {
     if ( m_currentResultSetRow == null ) {
-      throw new Exception( BaseMessages.getString( PKG, "CommonHBaseConnection.Error." ) );
+      throw new Exception( BaseMessages.getString( PKG, "CommonHBaseConnection.Error.NoCurrentResultSetRow" ) );
     }
   }
 
@@ -719,22 +751,23 @@ public class CommonHBaseConnection extends HBaseConnection {
 
   @Override
   public byte[] getRowColumnLatest( Object aRow, String colFamilyName, String colName, boolean colNameIsBinary )
-    throws Exception {
+      throws Exception {
 
     if ( !checkForHBaseRow( aRow ) ) {
       throw new Exception( BaseMessages.getString( PKG, "CommonHBaseConnection.Error.ObjectIsNotAnHBaseRow" ) );
     }
 
-    byte[] result =
-        ( (Result) aRow ).getValue( m_bytesUtil.toBytes( colFamilyName ), colNameIsBinary ? m_bytesUtil
-            .toBytesBinary( colName ) : m_bytesUtil.toBytes( colName ) );
+    byte[]
+        result =
+        ( (Result) aRow ).getValue( m_bytesUtil.toBytes( colFamilyName ),
+            colNameIsBinary ? m_bytesUtil.toBytesBinary( colName ) : m_bytesUtil.toBytes( colName ) );
 
     return result;
   }
 
   @Override
   public byte[] getResultSetCurrentRowColumnLatest( String colFamilyName, String colName, boolean colNameIsBinary )
-    throws Exception {
+      throws Exception {
     checkSourceScan();
     checkResultSet();
     checkForCurrentResultSetRow();
@@ -763,7 +796,7 @@ public class CommonHBaseConnection extends HBaseConnection {
 
   @Override
   public NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> getRowMap( Object aRow )
-    throws Exception {
+      throws Exception {
     if ( !checkForHBaseRow( aRow ) ) {
       throw new Exception( BaseMessages.getString( PKG, "CommonHBaseConnection.Error.ObjectIsNotAnHBaseRow" ) );
     }
@@ -773,7 +806,7 @@ public class CommonHBaseConnection extends HBaseConnection {
 
   @Override
   public NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> getResultSetCurrentRowMap()
-    throws Exception {
+      throws Exception {
     checkSourceScan();
     checkResultSet();
     checkForCurrentResultSetRow();
@@ -856,15 +889,13 @@ public class CommonHBaseConnection extends HBaseConnection {
 
   @Override
   public void addColumnToTargetPut( String columnFamily, String columnName, boolean colNameIsBinary, byte[] colValue )
-    throws Exception {
+      throws Exception {
 
     checkTargetTable();
     checkTargetPut();
 
-    m_currentTargetPut.addColumn(
-        m_bytesUtil.toBytes( columnFamily ),
-        colNameIsBinary ? m_bytesUtil.toBytesBinary( columnName ) : m_bytesUtil.toBytes( columnName ),
-        colValue );
+    m_currentTargetPut.addColumn( m_bytesUtil.toBytes( columnFamily ),
+        colNameIsBinary ? m_bytesUtil.toBytesBinary( columnName ) : m_bytesUtil.toBytes( columnName ), colValue );
   }
 
   @Override
@@ -929,5 +960,10 @@ public class CommonHBaseConnection extends HBaseConnection {
     }
 
     m_factory = null;
+  }
+
+  protected boolean toBoolean( String value ) {
+    return value.toLowerCase().equals( "y" ) || value.toLowerCase().equals( "yes" ) || value.toLowerCase()
+        .equals( "true" );
   }
 }
