@@ -1,6 +1,6 @@
-/*******************************************************************************
+/*! ******************************************************************************
  *
- * Pentaho Big Data
+ * Pentaho Data Integration
  *
  * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
  *
@@ -19,30 +19,21 @@
  * limitations under the License.
  *
  ******************************************************************************/
+package org.pentaho.hadoop.shim.common;
 
-package org.pentaho.hadoop.shim.mapr31;
+/**
+ * User: Dzmitry Stsiapanau Date: 11/11/2015 Time: 12:07
+ */
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.io.compress.SnappyCodec;
-import org.pentaho.hadoop.shim.common.SnappyShimImpl;
-
-public class SnappyShim extends SnappyShimImpl {
+public class SnappyShimImpl extends CommonSnappyShim {
   /**
    * Tests whether hadoop-snappy (not to be confused with other java-based snappy implementations such as jsnappy or
    * snappy-java) plus the native snappy libraries are available.
    *
    * @return true if hadoop-snappy is available on the classpath
    */
-  @Override
-  public boolean isHadoopSnappyAvailable() {
-    ClassLoader cl = Thread.currentThread().getContextClassLoader();
-    Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
-    try {
-      return SnappyCodec.isNativeSnappyLoaded( new Configuration() );
-    } catch ( Throwable t ) {
-      return false;
-    } finally {
-      Thread.currentThread().setContextClassLoader( cl );
-    }
+  @Override public boolean isHadoopSnappyAvailable() {
+    return false;
   }
 }
+
