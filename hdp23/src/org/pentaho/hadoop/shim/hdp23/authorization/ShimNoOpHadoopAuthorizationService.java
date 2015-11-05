@@ -20,29 +20,20 @@
 *
 ******************************************************************************/
 
-package org.pentaho.hadoop.shim.hdp23.delegating;
+package org.pentaho.hadoop.shim.hdp23.authorization;
 
-import org.pentaho.hadoop.shim.ShimVersion;
-import org.pentaho.hadoop.shim.api.Configuration;
-import org.pentaho.hadoop.shim.hdp23.authorization.HadoopAuthorizationService;
-import org.pentaho.hadoop.shim.hdp23.authorization.HasHadoopAuthorizationService;
-import org.pentaho.hadoop.shim.spi.SqoopShim;
 
-public class DelegatingSqoopShim implements SqoopShim, HasHadoopAuthorizationService {
-  private SqoopShim delegate;
+import org.pentaho.hadoop.shim.common.CommonHadoopShim;
+import org.pentaho.hadoop.shim.common.HadoopShimImpl;
+import org.pentaho.hadoop.shim.common.authorization.NoOpHadoopAuthorizationService;
 
-  @Override
-  public void setHadoopAuthorizationService( HadoopAuthorizationService hadoopAuthorizationService ) {
-    delegate = hadoopAuthorizationService.getShim( SqoopShim.class );
-  }
+public class ShimNoOpHadoopAuthorizationService extends NoOpHadoopAuthorizationService {
 
-  @Override
-  public int runTool( String[] args, Configuration c ) {
-    return delegate.runTool( args, c );
-  }
-
-  @Override
-  public ShimVersion getVersion() {
-    return delegate.getVersion();
+  @Override protected CommonHadoopShim getHadoopShim() {
+    return new HadoopShimImpl() {
+      @Override protected String getDefaultJobtrackerPort() {
+        return "50300";
+      }
+    };
   }
 }
