@@ -22,6 +22,17 @@
 
 package org.pentaho.hadoop.shim.hdp22.authorization;
 
-public interface HasHadoopAuthorizationService {
-  public void setHadoopAuthorizationService( HadoopAuthorizationService hadoopAuthorizationService ) throws Exception;
+import org.pentaho.hadoop.shim.common.CommonHadoopShim;
+import org.pentaho.hadoop.shim.common.HadoopShimImpl;
+import org.pentaho.hadoop.shim.common.authorization.NoOpHadoopAuthorizationService;
+
+public class ShimNoOpHadoopAuthorizationService extends NoOpHadoopAuthorizationService {
+
+  @Override protected CommonHadoopShim getHadoopShim() {
+    return new HadoopShimImpl() {
+      @Override protected String getDefaultJobtrackerPort() {
+        return "50300";
+      }
+    };
+  }
 }
