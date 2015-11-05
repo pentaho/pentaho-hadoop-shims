@@ -20,29 +20,24 @@
 *
 ******************************************************************************/
 
-package org.pentaho.hadoop.shim.cdh51.delegating;
+package org.pentaho.hadoop.shim.cdh51.authorization;
 
-import org.pentaho.hadoop.shim.ShimVersion;
-import org.pentaho.hadoop.shim.api.Configuration;
-import org.pentaho.hadoop.shim.cdh51.authorization.HadoopAuthorizationService;
-import org.pentaho.hadoop.shim.cdh51.authorization.HasHadoopAuthorizationService;
-import org.pentaho.hadoop.shim.spi.SqoopShim;
+import org.pentaho.hadoop.shim.common.authorization.NoOpHadoopAuthorizationService;
+import org.pentaho.hbase.shim.cdh51.HBaseConnectionImpl;
+import org.pentaho.hbase.shim.common.CommonHBaseShim;
+import org.pentaho.hbase.shim.common.HBaseShimImpl;
+import org.pentaho.hbase.shim.spi.HBaseConnection;
 
-public class DelegatingSqoopShim implements SqoopShim, HasHadoopAuthorizationService {
-  private SqoopShim delegate;
+public class ShimNoOpHadoopAuthorizationService extends NoOpHadoopAuthorizationService {
 
-  @Override
-  public void setHadoopAuthorizationService( HadoopAuthorizationService hadoopAuthorizationService ) {
-    delegate = hadoopAuthorizationService.getShim( SqoopShim.class );
-  }
-
-  @Override
-  public int runTool( String[] args, Configuration c ) {
-    return delegate.runTool( args, c );
-  }
-
-  @Override
-  public ShimVersion getVersion() {
-    return delegate.getVersion();
+  @Override protected CommonHBaseShim getHbaseShim() {
+    /* Todo: refactored as it was before - but need to check may be after if
+         new variant will work with old shim
+         Moreover seems that common variant contains some fixes */
+    return new HBaseShimImpl() {
+      @Override public HBaseConnection getHBaseConnection() {
+        return new HBaseConnectionImpl();
+      }
+    };
   }
 }
