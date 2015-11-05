@@ -22,24 +22,14 @@
 
 package org.pentaho.hadoop.shim.emr41;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.filecache.DistributedCache;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.mapreduce.Job;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
-import org.pentaho.hadoop.shim.api.mapred.RunningJob;
-import org.pentaho.hadoop.shim.common.CommonHadoopShim;
-import org.pentaho.hadoop.shim.common.ConfigurationProxyV2;
-import org.pentaho.hadoop.shim.common.DistributedCacheUtilImpl;
 import org.pentaho.hadoop.shim.common.FileSystemProxyV2;
 import org.pentaho.hadoop.shim.common.HadoopShimImpl;
 import org.pentaho.hadoop.shim.common.ShimUtils;
 import org.pentaho.hdfs.vfs.HDFSFileProvider;
 
 import java.io.IOException;
-import java.net.URI;
 
 public class HadoopShim extends HadoopShimImpl {
 
@@ -49,35 +39,15 @@ public class HadoopShim extends HadoopShimImpl {
 
   @Override
   public void onLoad( HadoopConfiguration config, HadoopConfigurationFileSystemManager fsm ) throws Exception {
-    fsm.addProvider( config, "hdfs", config.getIdentifier(), new HDFSFileProvider() );
-    setDistributedCacheUtil( new DistributedCacheUtilImpl( config ) {
-
-      public void addFileToClassPath( Path file, Configuration conf ) throws IOException {
-        String classpath = conf.get( "mapred.job.classpath.files" );
-        conf.set( "mapred.job.classpath.files",
-          classpath == null ? file.toString() : classpath + getClusterPathSeparator() + file.toString() );
-        FileSystem fs = FileSystem.get( conf );
-        URI uri = fs.makeQualified( file ).toUri();
-        //Job.getInstance( conf ).addCacheFile( uri );
-        DistributedCache.addCacheFile( uri, conf );
-      }
-
-      public String getClusterPathSeparator() {
-        // Use a comma rather than an OS-specific separator (see https://issues.apache.org/jira/browse/HADOOP-4864)
-        return System.getProperty( "hadoop.cluster.path.separator", "," );
-      }
-
-
-    } );
+    super.onLoad( config, fsm );
     if ( !fsm.hasProvider( "s3n" ) ) {
       fsm.addProvider( config, "s3n", config.getIdentifier(), new HDFSFileProvider() );
     }
-
   }
 
   @Override public org.pentaho.hadoop.shim.api.fs.FileSystem getFileSystem(
     org.pentaho.hadoop.shim.api.Configuration conf ) throws IOException {
-       // Set the context class loader when instantiating the configuration
+    // Set the context class loader when instantiating the configuration
     // since org.apache.hadoop.conf.Configuration uses it to load resources
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );

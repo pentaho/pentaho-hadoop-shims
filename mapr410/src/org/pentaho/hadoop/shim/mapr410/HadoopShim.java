@@ -29,6 +29,7 @@ import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
 import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.common.CommonHadoopShim;
+import org.pentaho.hadoop.shim.common.RunningJobProxyV2;
 import org.pentaho.hadoop.shim.common.ShimUtils;
 import org.pentaho.hdfs.vfs.MapRFileProvider;
 import org.apache.hadoop.mapreduce.Job;
