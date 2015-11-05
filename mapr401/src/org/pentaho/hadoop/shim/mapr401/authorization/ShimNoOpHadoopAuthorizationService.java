@@ -20,28 +20,27 @@
  *
  ******************************************************************************/
 
-package org.pentaho.hadoop.shim.mapr401;
+package org.pentaho.hadoop.shim.mapr401.authorization;
 
-import org.apache.hadoop.io.compress.SnappyCodec;
-import org.pentaho.hadoop.shim.common.CommonSnappyShim;
 
-public class SnappyShim extends CommonSnappyShim {
-  /**
-   * Tests whether hadoop-snappy (not to be confused with other java-based snappy implementations such as jsnappy or
-   * snappy-java) plus the native snappy libraries are available.
-   *
-   * @return true if hadoop-snappy is available on the classpath
-   */
-  @Override
-  public boolean isHadoopSnappyAvailable() {
-    ClassLoader cl = Thread.currentThread().getContextClassLoader();
-    Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
-    try {
-      return SnappyCodec.isNativeCodeLoaded( );
-    } catch ( Throwable t ) {
-      return false;
-    } finally {
-      Thread.currentThread().setContextClassLoader( cl );
-    }
+import org.pentaho.hadoop.shim.common.CommonHadoopShim;
+import org.pentaho.hadoop.shim.common.CommonPigShim;
+import org.pentaho.hadoop.shim.common.PigShimImpl;
+import org.pentaho.hadoop.shim.common.authorization.NoOpHadoopAuthorizationService;
+import org.pentaho.hadoop.shim.mapr401.HadoopShim;
+
+public class ShimNoOpHadoopAuthorizationService extends NoOpHadoopAuthorizationService {
+
+  @Override protected CommonHadoopShim getHadoopShim() {
+    return new HadoopShim();
   }
+
+  @Override protected CommonPigShim getPigShim() {
+    return new PigShimImpl() {
+      @Override public boolean isLocalExecutionSupported() {
+        return false;
+      }
+    };
+  }
+
 }
