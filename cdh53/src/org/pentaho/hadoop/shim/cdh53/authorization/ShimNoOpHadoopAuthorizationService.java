@@ -20,28 +20,11 @@
  *
  ******************************************************************************/
 
-package org.pentaho.hbase.shim.cdh53;
+package org.pentaho.hadoop.shim.cdh53.authorization;
 
-import org.apache.hadoop.conf.Configuration;
-import org.pentaho.hadoop.shim.ShimVersion;
-import org.pentaho.hbase.shim.cdh53.wrapper.HBaseShimInterface;
-import org.pentaho.hbase.shim.spi.HBaseConnection;
-import org.pentaho.hbase.shim.spi.HBaseShim;
 
-public class HBaseShimImpl extends HBaseShim implements HBaseShimInterface {
+import org.pentaho.hadoop.shim.common.authorization.NoOpHadoopAuthorizationService;
 
-  @Override
-  public ShimVersion getVersion() {
-    return new ShimVersion( 1, 0 );
-  }
-
-  public HBaseConnection getHBaseConnection() {
-    return new HBaseConnectionImpl();
-  }
-
-  @Override
-  public void setInfo( Configuration configuration ) {
-    // noop
-  }
+public class ShimNoOpHadoopAuthorizationService extends NoOpHadoopAuthorizationService {
 
 }
