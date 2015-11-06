@@ -36,7 +36,7 @@ import java.util.concurrent.Callable;
  * jar. </p>
  */
 public class ClassPathModifyingSqoopShim extends CommonSqoopShim {
-  private static final String PROPERTY_JAVA_CLASS_PATH = "java.class.path";
+  protected static final String PROPERTY_JAVA_CLASS_PATH = "java.class.path";
 
   /**
    * Run a given {@link java.util.concurrent.Callable} within a code block that sets the {@code "java.class.path"} property to the path

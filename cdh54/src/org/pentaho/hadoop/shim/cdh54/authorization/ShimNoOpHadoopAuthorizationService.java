@@ -22,9 +22,14 @@
 
 package org.pentaho.hadoop.shim.cdh54.authorization;
 
-import org.pentaho.hadoop.shim.spi.PentahoHadoopShim;
 
-public interface HadoopAuthorizationService {
+import org.pentaho.hadoop.shim.cdh54.HadoopShim;
+import org.pentaho.hadoop.shim.common.CommonHadoopShim;
+import org.pentaho.hadoop.shim.common.authorization.NoOpHadoopAuthorizationService;
 
-  public <T extends PentahoHadoopShim> T getShim( Class<T> clazz );
+public class ShimNoOpHadoopAuthorizationService extends NoOpHadoopAuthorizationService {
+
+  @Override protected CommonHadoopShim getHadoopShim() {
+    return new HadoopShim();
+  }
 }
