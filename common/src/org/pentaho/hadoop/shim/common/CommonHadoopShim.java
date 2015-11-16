@@ -29,7 +29,6 @@ import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.net.NetUtils;
 import org.apache.hadoop.util.VersionInfo;
 import org.pentaho.di.core.row.ValueMetaInterface;
-import org.pentaho.di.core.util.StringUtil;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.hadoop.mapreduce.GenericTransCombiner;
 import org.pentaho.hadoop.mapreduce.GenericTransReduce;
@@ -271,7 +270,7 @@ public class CommonHadoopShim implements HadoopShim {
       // it's been realized that this is pretty fine to have
       // NameNode URL w/o port: e.g. HA mode (BAD-358)
       namenodePort = "";
-      logMessages.add( "No hdfs port specified - HA? ");
+      logMessages.add( "No hdfs port specified - HA? " );
     }
 
     if ( jobtrackerPort == null || jobtrackerPort.trim().length() == 0 ) {

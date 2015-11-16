@@ -22,7 +22,6 @@
 
 package org.pentaho.hadoop.shim.common;
 
-import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.VFS;
 import org.apache.commons.vfs2.impl.DefaultFileSystemManager;
 import org.apache.hadoop.util.VersionInfo;
@@ -133,7 +132,7 @@ public class CommonHadoopShimTest {
     CommonHadoopShim shim = new CommonHadoopShim();
     Configuration conf = new ConfigurationProxy();
     List<String> logMessages = new ArrayList<String>();
-    
+
     shim.configureConnectionInformation( "namenodeHost", null, "jobtrackerHost", "jobtrackerPort", conf, logMessages );
     assertEquals( conf.get( "fs.default.name" ), "hdfs://namenodeHost" );
     assertEquals( conf.get( "mapred.job.tracker" ), "jobtrackerHost:jobtrackerPort" );
