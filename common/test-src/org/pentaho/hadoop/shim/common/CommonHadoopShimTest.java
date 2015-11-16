@@ -133,20 +133,29 @@ public class CommonHadoopShimTest {
     CommonHadoopShim shim = new CommonHadoopShim();
     Configuration conf = new ConfigurationProxy();
     List<String> logMessages = new ArrayList<String>();
+    
     shim.configureConnectionInformation( "namenodeHost", null, "jobtrackerHost", "jobtrackerPort", conf, logMessages );
-    assertEquals( conf.get( "fs.default.name" ), "hdfs://namenodeHost:" + shim.getDefaultNamenodePort() );
+    assertEquals( conf.get( "fs.default.name" ), "hdfs://namenodeHost" );
     assertEquals( conf.get( "mapred.job.tracker" ), "jobtrackerHost:jobtrackerPort" );
     assertEquals( 1, logMessages.size() );
     String message = logMessages.get( 0 );
-    assertTrue( "Unexpected message: " + message, message.contains( "using default" ) );
+    assertTrue( "Unexpected message: " + message, message.contains( "HA?" ) );
 
-    logMessages = new ArrayList<String>();
-    shim.configureConnectionInformation( "namenodeHost", "", "jobtrackerHost", "jobtrackerPort", conf, logMessages );
-    assertEquals( conf.get( "fs.default.name" ), "hdfs://namenodeHost:" + shim.getDefaultNamenodePort() );
+    logMessages.clear();
+    shim.configureConnectionInformation( "namenodeHost", "   \t   ", "jobtrackerHost", "jobtrackerPort", conf, logMessages );
+    assertEquals( conf.get( "fs.default.name" ), "hdfs://namenodeHost" );
     assertEquals( conf.get( "mapred.job.tracker" ), "jobtrackerHost:jobtrackerPort" );
     assertEquals( 1, logMessages.size() );
     message = logMessages.get( 0 );
-    assertTrue( "Unexpected message: " + message, message.contains( "using default" ) );
+    assertTrue( "Unexpected message: " + message, message.contains( "HA?" ) );
+
+    logMessages.clear();
+    shim.configureConnectionInformation( "namenodeHost", "   -1   ", "jobtrackerHost", "jobtrackerPort", conf, logMessages );
+    assertEquals( conf.get( "fs.default.name" ), "hdfs://namenodeHost" );
+    assertEquals( conf.get( "mapred.job.tracker" ), "jobtrackerHost:jobtrackerPort" );
+    assertEquals( 1, logMessages.size() );
+    message = logMessages.get( 0 );
+    assertTrue( "Unexpected message: " + message, message.contains( "HA?" ) );
   }
 
   @Test( expected = Exception.class )
