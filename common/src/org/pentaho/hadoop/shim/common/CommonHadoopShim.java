@@ -262,9 +262,15 @@ public class CommonHadoopShim implements HadoopShim {
       throw new Exception( "No job tracker host specified!" );
     }
 
-    if ( namenodePort == null || namenodePort.trim().length() == 0 ) {
-      namenodePort = getDefaultNamenodePort();
-      logMessages.add( "No hdfs port specified - using default: " + namenodePort );
+    if ( namenodePort != null
+        && namenodePort.trim().length() != 0
+        && !"-1".equals( namenodePort.trim() ) ) {
+      namenodePort = ":" + namenodePort;
+    } else {
+      // it's been realized that this is pretty fine to have
+      // NameNode URL w/o port: e.g. HA mode (BAD-358)
+      namenodePort = "";
+      logMessages.add( "No hdfs port specified - HA? " );
     }
 
     if ( jobtrackerPort == null || jobtrackerPort.trim().length() == 0 ) {
@@ -272,7 +278,7 @@ public class CommonHadoopShim implements HadoopShim {
       logMessages.add( "No job tracker port specified - using default: " + jobtrackerPort );
     }
 
-    String fsDefaultName = "hdfs://" + namenodeHost + ":" + namenodePort;
+    String fsDefaultName = "hdfs://" + namenodeHost + namenodePort;
     String jobTracker = jobtrackerHost + ":" + jobtrackerPort;
 
     conf.set( "fs.default.name", fsDefaultName );
