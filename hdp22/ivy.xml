@@ -90,6 +90,7 @@
     <dependency org="org.apache.hive" name="hive-exec" rev="${dependency.hive-jdbc.revision}" changing="false"/>
     <dependency org="org.apache.hive" name="hive-service" rev="${dependency.hive-jdbc.revision}" changing="false"/>
     <dependency org="org.apache.hive" name="hive-metastore" rev="${dependency.hive-jdbc.revision}" changing="false"/>
+    <dependency org="commons-collections" name="commons-collections" rev="3.2.2" changing="false"/>
     <dependency org="org.apache.thrift" name="libfb303" rev="${dependency.thrift.revision}" changing="false"/>
     <dependency org="org.apache.thrift" name="libthrift" rev="${dependency.thrift.revision}" changing="false"/>
 
