@@ -100,7 +100,7 @@
     <dependency org="org.apache.hive" name="hive-metastore" rev="${dependency.hive-jdbc.revision}" changing="false"/>
     <dependency org="org.apache.thrift" name="libfb303" rev="${dependency.thrift.revision}" changing="false"/>
     <dependency org="org.apache.thrift" name="libthrift" rev="${dependency.thrift.revision}" changing="false"/>
-    <dependency org="commons-collections" name="commons-collections" rev="3.2.2" changing="false"/>
+    <dependency org="commons-collections" name="commons-collections" rev="3.2.2" changing="false" conf="default;client->default"/>
 
     <dependency conf="provided->default" org="com.thoughtworks.xstream" name="xstream" rev="${dependency.xstream.revision}" transitive="false"/>
     <dependency conf="provided->default" org="log4j" name="log4j" rev="1.2.14" />
