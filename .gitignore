@@ -12,3 +12,4 @@ override.properties
 /*/dev-lib/
 /pdi-null
 /pdi-bin
+package-pom.xml
