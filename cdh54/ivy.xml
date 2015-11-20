@@ -71,6 +71,7 @@
         <!-- <exclude module="derby"/> -->
       <!-- <exclude module="datanucleus-core" /> -->
     </dependency>
+    <dependency org="commons-collections" name="commons-collections" rev="3.2.2" changing="false" conf="default;client->default"/>
     <dependency org="org.apache.oozie" name="oozie-core" rev="${dependency.apache-oozie.revision}" changing="true" transitive="false"/>
     <dependency org="org.apache.oozie" name="oozie-client" rev="${dependency.apache-oozie.revision}" changing="true" transitive="false"/>
     <!--  explicit dependency on datanucleus-core as it is newer than the one brought in by Hive -->
