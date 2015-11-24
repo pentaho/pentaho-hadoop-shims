@@ -1,7 +1,7 @@
 package org.pentaho.hbase.shim.cdh51;
 
 import org.pentaho.hbase.shim.common.CommonHBaseConnection;
-import org.pentaho.hbase.shim.cdh51.wrapper.HBaseConnectionInterface;
+import org.pentaho.hbase.shim.common.wrapper.HBaseConnectionInterface;
 
 public class HBaseConnectionImpl extends CommonHBaseConnection implements HBaseConnectionInterface {
 
