@@ -102,8 +102,8 @@
 
     <exclude org="org.antlr" conf="provided->provided" />
     <exclude org="javax.xml.stream" />
-    <exclude org="xerces" artifact="xercesImpl" conf="client->default"/>
-    <exclude org="xml-apis" artifact="xml-apis" conf="client->default"/>
+    <exclude org="xml-apis" artifact="xml-apis" conf="client" />
+    <exclude org="commons-collections" artifact="commons-collections" conf="client"/>
     <exclude org="org.apache.calcite" />
 
   </dependencies>
