@@ -531,7 +531,10 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.Dis
         ZipEntry ze;
         while ( ( ze = zis.getNextEntry() ) != null ) {
           FileObject entry = KettleVFS.getFileObject( dest + Const.FILE_SEPARATOR + ze.getName() );
-
+          FileObject parent = entry.getParent();
+          if ( parent != null ) {
+            parent.createFolder();
+          }
           if ( ze.isDirectory() ) {
             entry.createFolder();
             continue;
