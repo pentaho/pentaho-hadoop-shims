@@ -90,8 +90,7 @@
     <dependency org="org.apache.oozie" name="oozie-client" rev="${dependency.apache-oozie.revision}" changing="true" transitive="false"/>
     
     <dependency org="org.apache.hive" name="hive-jdbc" rev="${dependency.hive-jdbc.revision}" changing="false" transitive="true"/>
-    <dependency org="commons-collections" name="commons-collections" rev="3.2.2" changing="false" conf="default;client->default"/>
-<!--     
+<!--
     <dependency org="org.apache.hive" name="hive-exec" rev="${dependency.hive-jdbc.revision}" changing="false"/>
     <dependency org="org.apache.hive" name="hive-service" rev="${dependency.hive-jdbc.revision}" changing="false"/>
     <dependency org="org.apache.hive" name="hive-metastore" rev="${dependency.hive-jdbc.revision}" changing="false"/>
@@ -118,6 +117,7 @@
     <exclude org="org.antlr" conf="default" />
     <!--  Exclude xerces, it's provided and will wreak havoc if there are multiple instances / versions -->
     <exclude org="xml-apis" module="xml-apis" conf="*" />
+    <exclude org="commons-collections" artifact="commons-collections"/>
     <exclude org="xerces" module="xercesImpl" conf="*" />
     
     <exclude org="org.apache.hadoop" module="hadoop-annotations" conf="default" />
