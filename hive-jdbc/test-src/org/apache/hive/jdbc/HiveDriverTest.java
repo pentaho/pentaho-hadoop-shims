@@ -43,8 +43,8 @@ import org.pentaho.hadoop.shim.spi.MockHadoopShim;
 public class HiveDriverTest {
 
   protected String SCHEME_STRING = "hive2";
-  protected String URL_SUITABLE = "jdbc.hive2://host:port/";
-  protected String URL_UNSUITABLE = "jdbc.hive2://host:port/AuthMech=0";
+  protected String URL_SUITABLE = "jdbc:hive2://host:port/";
+  protected String URL_UNSUITABLE = "jdbc:hive2://host:port/AuthMech=0";
 
   protected HadoopShim getMockShimWithDriver( final Driver driver ) {
     return new MockHadoopShim() {

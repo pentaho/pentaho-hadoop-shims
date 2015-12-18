@@ -24,6 +24,7 @@ package org.apache.hive.jdbc;
 import org.pentaho.hadoop.hive.jdbc.HadoopConfigurationUtil;
 
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
 /**
  * User: Dzmitry Stsiapanau Date: 7/2/2015 Time: 03:42
@@ -56,5 +57,17 @@ public class ImpalaSimbaDriver extends HiveSimbaDriver {
       throw new NullPointerException();
     }
     this.util = util;
+  }
+
+  @Override
+  protected boolean checkBeforeCallActiveDriver( String url ) throws SQLException {
+    if ( !url.contains( SIMBA_SPECIFIC_URL_PARAMETER ) || !url.matches( ".+:impala:.*" ) ) {
+      // BAD-215 check required to distinguish Simba driver
+      return true;
+    } else if ( getActiveDriver() == null ) {
+      // Ignore connection attempt in case corresponding driver is not provided by the shim
+      return true;
+    }
+    return false;
   }
 }

@@ -61,7 +61,7 @@ public class HiveSimbaDriver extends HiveDriver {
 
   @Override
   protected boolean checkBeforeCallActiveDriver( String url ) throws SQLException {
-    if ( !url.contains( SIMBA_SPECIFIC_URL_PARAMETER ) ) {
+    if ( !url.contains( SIMBA_SPECIFIC_URL_PARAMETER ) || !url.matches( ".+:hive2:.*" )) {
       // BAD-215 check required to distinguish Simba driver
       return true;
     } else if ( getActiveDriver() == null ) {
