@@ -1,6 +1,6 @@
-/*******************************************************************************
+/*! ******************************************************************************
  *
- * Pentaho Big Data
+ * Pentaho Data Integration
  *
  * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
  *
@@ -19,15 +19,11 @@
  * limitations under the License.
  *
  ******************************************************************************/
-
 package org.apache.hive.jdbc;
 
 import org.junit.Test;
 import org.pentaho.hadoop.hive.jdbc.HadoopConfigurationUtil;
-import org.pentaho.hadoop.shim.spi.HadoopShim;
-import org.pentaho.hadoop.shim.spi.MockHadoopShim;
 
-import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
@@ -36,29 +32,28 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.Assert.*;
 
-public class HiveSimbaDriverTest extends HiveDriverTest {
-  protected String errMsg;
-  {
-    SCHEME_STRING = "hive2Simba";
-    URL_UNSUITABLE = "jdbc:hive2://host:port/";
-    URL_SUITABLE = "jdbc:hive2://host:port/AuthMech=0";
-    errMsg = "Unable to load Hive 2 Simba JDBC driver for the currently active Hadoop configuration";
-  }
+/**
+ * User: Dzmitry Stsiapanau Date: 12/17/2015 Time: 13:15
+ */
 
-  protected Driver getActiveTestDriverInstance( Driver driver ) {
-    return getActiveTestDriverInstance( getMockUtil( getMockShimWithDriver( driver ) ) );
+public class ImpalaSimbaDriverTest extends HiveSimbaDriverTest {
+
+  {
+    SCHEME_STRING = "ImpalaSimba";
+    URL_UNSUITABLE = "jdbc:impala://host:port/";
+    URL_SUITABLE = "jdbc:impala://host:port/AuthMech=0";
+    errMsg = "Unable to load Impala Simba JDBC driver for the currently active Hadoop configuration";
   }
 
   protected Driver getActiveTestDriverInstance( HadoopConfigurationUtil util ) {
-    return new HiveSimbaDriver( util );
+    return new ImpalaSimbaDriver( util );
   }
 
   @Override protected Driver getActiveTestDriverInstance() {
-    return new HiveSimbaDriver();
+    return new ImpalaSimbaDriver();
   }
 
   @Test
-  @Override
   public void connectSimbaUrl() throws SQLException {
     final AtomicBoolean called = new AtomicBoolean( false );
     Driver driver = new MockDriver() {
@@ -70,33 +65,11 @@ public class HiveSimbaDriverTest extends HiveDriverTest {
     };
     Driver d = getActiveTestDriverInstance( getMockUtil( getMockShimWithDriver( driver ) ) );
 
-    d.connect( "jdbc:hive2://host:port/AuthMech=0", null );
+    d.connect( "jdbc:impala://host:port/AuthMech=0", null );
     assertTrue( called.get() );
     called.set( false );
-    d.connect( "jdbc:impala://host:port/AuthMech=0", null );
+    d.connect( "jdbc:hive2://host:port/AuthMech=0", null );
     assertFalse( called.get() );
-  }
 
-
-  @Test
-  public void getActiveDriver_exception_in_getJdbcDriver() {
-    HadoopShim shim = new MockHadoopShim() {
-      public java.sql.Driver getJdbcDriver( String scheme ) {
-        if ( scheme.equalsIgnoreCase( SCHEME_STRING ) ) {
-          throw new RuntimeException();
-        } else {
-          return null;
-        }
-      }
-    };
-
-    try {
-      Driver d = getActiveTestDriverInstance( getMockUtil( shim ) );
-      ( (HiveSimbaDriver) d ).getActiveDriver();
-      fail( "Expected exception" );
-    } catch ( SQLException ex ) {
-      assertEquals( InvocationTargetException.class, ex.getCause().getClass() );
-      assertEquals( errMsg, ex.getMessage() );
-    }
   }
 }
