@@ -58,16 +58,22 @@
     </dependency>
     <dependency conf="provided->default" org="com.mapr.fs" name="libprotodefs" rev="${dependency.hadoop.revision}" transitive="false"/>
     <dependency conf="default" org="net.sf.flexjson" name="flexjson" rev="2.1" transitive="false"/>
-    
-    <dependency conf="test->default" org="junit" name="junit" rev="4.11"/>
+
+    <dependency conf="test->default" org="org.hamcrest" name="hamcrest-core" rev="1.3"/>
+    <dependency conf="test->default" org="org.hamcrest" name="hamcrest-library" rev="1.3"/>
+    <dependency conf="test->default" org="junit" name="junit" rev="4.11">
+      <exclude org="org.hamcrest" module="hamcrest-core"/>
+    </dependency>
     <dependency conf="test->default" org="org.safehaus.jug" name="jug-lgpl" rev="2.0.0" />
     <dependency conf="test->default" org="pentaho" name="pentaho-hadoop-shims-api-test" rev="${project.revision}" changing="true"/>
-    <dependency conf="test->default" org="org.mockito" name="mockito-all" rev="1.9.5" transitive="false" />
-    
+    <dependency conf="test->default" org="org.mockito" name="mockito-core" rev="1.9.5" transitive="true">
+      <exclude org="org.hamcrest" module="hamcrest-core"/>
+    </dependency>
+
     <!-- Exclude log4j from default libraries - it's brought in transitively through many of the Hadoop dependencies and should not be included -->
     <exclude org="log4j" module="log4j" conf="default" />
     <!-- Exclude antlr. Hive brings in a version that's not compatible with Pig. -->
     <exclude org="org.antlr" conf="default" />
-    
+    <exclude org="org.mockito" conf="default,provided" />
   </dependencies>
 </ivy-module>

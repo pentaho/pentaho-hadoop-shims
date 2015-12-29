@@ -117,7 +117,7 @@
     <exclude org="org.antlr" conf="default" />
     <!--  Exclude xerces, it's provided and will wreak havoc if there are multiple instances / versions -->
     <exclude org="xml-apis" module="xml-apis" conf="*" />
-    <exclude org="commons-collections" artifact="commons-collections"/>
+    <exclude org="commons-collections" artifact="commons-collections" conf="default,pmr,client" />
     <exclude org="xerces" module="xercesImpl" conf="*" />
     
     <exclude org="org.apache.hadoop" module="hadoop-annotations" conf="default" />

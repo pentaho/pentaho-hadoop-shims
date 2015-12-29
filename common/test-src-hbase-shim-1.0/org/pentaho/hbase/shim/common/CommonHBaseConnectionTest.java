@@ -254,8 +254,6 @@ public class CommonHBaseConnectionTest {
 
   @Test
   public void testConfigureColumnDescriptorWithColDescriptorCompressionKey() throws Exception {
-    doReturn( Class.forName( "org.apache.hadoop.hbase.io.compress.Compression$Algorithm" ) )
-        .when( connectionSpy ).getCompressionAlgorithmClass();
     HColumnDescriptor columnDescriptor = mock( HColumnDescriptor.class );
     properties.put( CommonHBaseConnection.COL_DESCRIPTOR_COMPRESSION_KEY, "LZO" );
     connectionSpy.configureColumnDescriptor( columnDescriptor, properties );
