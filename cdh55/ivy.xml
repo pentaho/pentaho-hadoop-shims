@@ -120,6 +120,9 @@
     <exclude org="org.apache.hadoop" module="hadoop-yarn-server-resourcemanager" conf="default,pmr" />
     <exclude org="org.apache.hadoop" module="hadoop-yarn-server-web-proxy" conf="default,pmr" />
     <override org="org.apache.htrace" module="htrace-core4" rev="4.0.1-incubating" />
+    <override org="com.fasterxml.jackson.core" module="jackson-annotation" rev="2.2.3" />
+    <override org="com.fasterxml.jackson.core" module="jackson-databind" rev="2.2.3" />
+    <override org="com.fasterxml.jackson.core" module="jackson-core" rev="2.2.3" />
 
   </dependencies>
 </ivy-module>
