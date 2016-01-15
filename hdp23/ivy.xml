@@ -101,7 +101,7 @@
     <dependency conf="provided->default" org="log4j" name="log4j" rev="1.2.14" />
     <dependency conf="provided->default" org="commons-lang" name="commons-lang" rev="${dependency.commons-lang.revision}" transitive="false"/>
 
-    <dependency conf="test->default" org="junit" name="junit" rev="4.5"/>
+    <dependency conf="test->default" org="junit" name="junit" rev="4.11"/>
     <dependency conf="test->default" org="org.safehaus.jug" name="jug-lgpl" rev="2.0.0" />
     <dependency conf="test->default" org="pentaho" name="pentaho-hadoop-shims-api-test" rev="${project.revision}" changing="true"/>
     <dependency conf="test->default" org="org.mockito" name="mockito-all" rev="1.9.5" transitive="false" />
@@ -117,7 +117,7 @@
     <exclude org="org.antlr" conf="default" />
     <!--  Exclude xerces, it's provided and will wreak havoc if there are multiple instances / versions -->
     <exclude org="xml-apis" module="xml-apis" conf="*" />
-    <exclude org="commons-collections" artifact="commons-collections"/>
+    <exclude org="commons-collections" artifact="commons-collections" conf="default,pmr,client" />
     <exclude org="xerces" module="xercesImpl" conf="*" />
     
     <exclude org="org.apache.hadoop" module="hadoop-annotations" conf="default" />
