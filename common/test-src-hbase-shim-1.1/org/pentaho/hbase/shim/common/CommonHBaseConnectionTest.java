@@ -24,6 +24,7 @@
 
 package org.pentaho.hbase.shim.common;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.TableName;
@@ -98,7 +99,7 @@ public class CommonHBaseConnectionTest {
     HBaseClientFactory mock = mock( HBaseClientFactory.class );
     HBaseAdmin hbaseAdmin = mock( HBaseAdmin.class );
     when( mock.getHBaseAdmin() ).thenReturn( hbaseAdmin );
-    doReturn( mock ).when( connectionSpy ).getHBaseClientFactory();
+    doReturn( mock ).when( connectionSpy ).getHBaseClientFactory( any( Configuration.class ) );
 
     connectionSpy.configureConnection( new Properties(), null );
 
@@ -1129,7 +1130,8 @@ public class CommonHBaseConnectionTest {
   }
 
   private void useMockForHBaseClientFactory() {
-    doReturn( mock( HBaseClientFactory.class ) ).when( connectionSpy ).getHBaseClientFactory();
+    doReturn( mock( HBaseClientFactory.class ) ).when( connectionSpy )
+        .getHBaseClientFactory( any( Configuration.class ) );
   }
 
   private VariableSpace mockVariableSpace() {
