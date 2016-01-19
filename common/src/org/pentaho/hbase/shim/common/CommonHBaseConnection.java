@@ -146,7 +146,7 @@ public class CommonHBaseConnection extends HBaseConnection {
         log.logDebug( "Opening HBase connection ..." );
       }
 
-      m_factory = getHBaseClientFactory();
+      m_factory = getHBaseClientFactory( m_config );
 
       m_admin = m_factory.getHBaseAdmin();
     } finally {
@@ -154,8 +154,8 @@ public class CommonHBaseConnection extends HBaseConnection {
     }
   }
 
-  HBaseClientFactory getHBaseClientFactory() {
-    return HBaseClientFactoryLocator.getHBaseClientFactory( m_config );
+  protected HBaseClientFactory getHBaseClientFactory( Configuration configuration ) {
+    return HBaseClientFactoryLocator.getHBaseClientFactory( configuration );
   }
 
   @Override
