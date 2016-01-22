@@ -22,21 +22,6 @@
 
 package org.pentaho.hadoop.shim.common;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Pattern;
-
 import org.apache.commons.vfs2.AllFileSelector;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSelector;
@@ -55,8 +40,19 @@ import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.common.fs.PathProxy;
 import org.pentaho.hadoop.shim.spi.MockHadoopShim;
-import org.pentaho.hdfs.vfs.HDFSFileSystem;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -196,6 +192,44 @@ public class DistributedCacheUtilImplTest {
     } finally {
       // clean up after ourself
       ch.deleteDirectory( extracted );
+    }
+  }
+
+  @Test
+  public void extractToTempZipEntriesMixed() throws Exception {
+    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
+
+    File dest = File.createTempFile( "entriesMixed", ".zip" );
+    ZipOutputStream outputStream = new ZipOutputStream( new FileOutputStream( dest ) );
+    ZipEntry e = new ZipEntry( "zipEntriesMixed" + "/" + "someFile.txt" );
+    outputStream.putNextEntry( e );
+    byte[] data = "someOutString".getBytes();
+    outputStream.write( data, 0, data.length);
+    outputStream.closeEntry();
+    e = new ZipEntry(  "zipEntriesMixed" + "/" );
+    outputStream.putNextEntry( e );
+    outputStream.closeEntry();
+    outputStream.close();
+
+    FileObject archive = KettleVFS.getFileObject( dest.getAbsolutePath() );
+
+    FileObject extracted = null;
+    try {
+      extracted = ch.extractToTemp( archive );
+    } catch ( IOException | KettleFileException e1 ) {
+      e1.printStackTrace();
+      fail( "Exception not expected in this case" );
+    }
+
+    assertNotNull( extracted );
+    assertTrue( extracted.exists() );
+    try {
+      // There should be 3 files and 5 directories inside the root folder (which is the 9th entry)
+      assertTrue( extracted.findFiles( new AllFileSelector() ).length == 3 );
+    } finally {
+      // clean up after ourself
+      ch.deleteDirectory( extracted );
+      dest.delete();
     }
   }
 
