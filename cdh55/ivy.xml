@@ -79,7 +79,6 @@
         <!-- <exclude module="derby"/> -->
       <!-- <exclude module="datanucleus-core" /> -->
     </dependency>
-    <dependency org="commons-collections" name="commons-collections" rev="${dependency.commons-collections.revision}" changing="false" conf="default;client->default"/>
     <dependency org="org.apache.oozie" name="oozie-core" rev="${dependency.apache-oozie.revision}" changing="true" transitive="false"/>
     <dependency org="org.apache.oozie" name="oozie-client" rev="${dependency.apache-oozie.revision}" changing="true" transitive="false"/>
     <!--  explicit dependency on datanucleus-core as it is newer than the one brought in by Hive -->
@@ -93,6 +92,7 @@
     <dependency conf="test->default" org="org.safehaus.jug" name="jug-lgpl" rev="2.0.0" />
     <dependency conf="test->default" org="pentaho" name="pentaho-hadoop-shims-api-test" rev="${project.revision}" changing="true"/>
     <dependency conf="test->default" org="org.mockito" name="mockito-all" rev="1.9.5" transitive="false" />
+    <dependency conf="test->default" org="commons-collections" name="commons-collections" rev="3.2.2" changing="false" />
     
     <!--  OSS Licenses file -->
     <dependency org="pentaho" name="oss-licenses" rev="${dependency.oss-licenses.revision}" conf="oss-licenses->default">
@@ -106,6 +106,7 @@
     <exclude org="junit" conf="default,zip,client,provided,pmr"/>
     <exclude org="com.google.guava" />
     <exclude org="xml-apis" module="xml-apis" />
+    <exclude org="commons-collections" module="commons-collections" conf="default,pmr,client"/>
     <exclude org="org.apache.zookeeper" module="zookeeper" conf="default,client"/>
     <exclude org="org.apache.hadoop" module="hadoop-annotations" conf="default,pmr" />
     <exclude org="org.apache.hadoop" module="hadoop-yarn-api" conf="default,pmr" />
