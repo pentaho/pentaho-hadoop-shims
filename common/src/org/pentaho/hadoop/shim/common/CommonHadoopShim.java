@@ -24,8 +24,6 @@ package org.pentaho.hadoop.shim.common;
 
 import org.apache.hadoop.hive.jdbc.HiveDriver;
 import org.apache.hadoop.io.Writable;
-import org.apache.hadoop.mapred.JobClient;
-import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.net.NetUtils;
 import org.apache.hadoop.util.VersionInfo;
 import org.pentaho.di.core.row.ValueMetaInterface;
@@ -43,7 +41,6 @@ import org.pentaho.hadoop.shim.api.DistributedCacheUtil;
 import org.pentaho.hadoop.shim.api.fs.FileSystem;
 import org.pentaho.hadoop.shim.api.mapred.RunningJob;
 import org.pentaho.hadoop.shim.common.fs.FileSystemProxy;
-import org.pentaho.hadoop.shim.common.mapred.RunningJobProxy;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 import org.pentaho.hdfs.vfs.HDFSFileProvider;
 
@@ -99,11 +96,11 @@ public class CommonHadoopShim implements HadoopShim {
 
   @SuppressWarnings( "serial" )
   protected static Map<String, Class<? extends Driver>> JDBC_DRIVER_MAP =
-      new HashMap<String, Class<? extends Driver>>() {
-        {
-          put( "hive", org.apache.hadoop.hive.jdbc.HiveDriver.class );
-        }
-      };
+    new HashMap<String, Class<? extends Driver>>() {
+      {
+        put( "hive", org.apache.hadoop.hive.jdbc.HiveDriver.class );
+      }
+    };
 
   @SuppressWarnings( "serial" )
   protected static Map<String, String> JDBC_POSSIBLE_DRIVER_MAP =
@@ -304,9 +301,9 @@ public class CommonHadoopShim implements HadoopShim {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
     try {
-      JobConf conf = ShimUtils.asConfiguration( c );
-      JobClient jobClient = new JobClient( conf );
-      return new RunningJobProxy( jobClient.submitJob( conf ) );
+      return c.submit();
+    } catch ( InterruptedException | ClassNotFoundException e ) {
+      throw new RuntimeException( e );
     } finally {
       Thread.currentThread().setContextClassLoader( cl );
     }

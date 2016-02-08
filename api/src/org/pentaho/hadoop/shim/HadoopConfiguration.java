@@ -22,18 +22,23 @@
 
 package org.pentaho.hadoop.shim;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
 import org.apache.commons.vfs2.FileObject;
 import org.pentaho.di.i18n.BaseMessages;
+import org.pentaho.hadoop.shim.api.Configuration;
+import org.pentaho.hadoop.shim.api.process.Processable;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 import org.pentaho.hadoop.shim.spi.PentahoHadoopShim;
 import org.pentaho.hadoop.shim.spi.PigShim;
 import org.pentaho.hadoop.shim.spi.SnappyShim;
 import org.pentaho.hadoop.shim.spi.SqoopShim;
 import org.pentaho.hbase.shim.spi.HBaseShim;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * A collection of Hadoop shim implementations for interactive with a Hadoop cluster.
@@ -125,7 +130,22 @@ public class HadoopConfiguration {
    * @return the Hadoop shim for this configuration
    */
   public HadoopShim getHadoopShim() {
-    return hadoopShim;
+    return getWrappedHadoopShim();
+  }
+
+  private HadoopShim getWrappedHadoopShim() {
+
+    return (HadoopShim) Proxy
+      .newProxyInstance( hadoopShim.getClass().getClassLoader(), new Class[] { HadoopShim.class },
+        new InvocationHandler() {
+          @Override public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable {
+            if ( method.getName().equals( "submitJob" ) ) {
+              process( (Configuration) args[ 0 ] );
+            }
+            return method.invoke( hadoopShim, args );
+          }
+        } );
+
   }
 
   /**
@@ -197,5 +217,15 @@ public class HadoopConfiguration {
 
   public List<PentahoHadoopShim> getAvailableShims() {
     return availableShims;
+  }
+
+  public void process( Configuration configuration ) {
+    Processable processable;
+    for ( PentahoHadoopShim shim : getAvailableShims() ) {
+      if ( Processable.class.isInstance( shim ) ) {
+        processable = (Processable) shim;
+        processable.process( configuration );
+      }
+    }
   }
 }

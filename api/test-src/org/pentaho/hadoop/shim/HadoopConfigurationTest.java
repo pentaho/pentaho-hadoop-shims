@@ -22,13 +22,10 @@
 
 package org.pentaho.hadoop.shim;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.VFS;
 import org.junit.Test;
+import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 import org.pentaho.hadoop.shim.spi.MockHBaseShim;
 import org.pentaho.hadoop.shim.spi.MockHadoopShim;
@@ -39,6 +36,9 @@ import org.pentaho.hadoop.shim.spi.PigShim;
 import org.pentaho.hadoop.shim.spi.SnappyShim;
 import org.pentaho.hadoop.shim.spi.SqoopShim;
 import org.pentaho.hbase.shim.spi.HBaseShim;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class HadoopConfigurationTest {
 
@@ -74,7 +74,7 @@ public class HadoopConfigurationTest {
     HadoopShim hadoopShim = new MockHadoopShim();
     HadoopConfiguration c =
       new HadoopConfiguration( VFS.getManager().resolveFile( "ram:///" ), "id", "name", hadoopShim );
-    assertEquals( hadoopShim, c.getHadoopShim() );
+    assertEquals( hadoopShim.getHadoopVersion(), c.getHadoopShim().getHadoopVersion() );
   }
 
   @Test
@@ -170,5 +170,16 @@ public class HadoopConfigurationTest {
     HadoopConfiguration c =
       new HadoopConfiguration( VFS.getManager().resolveFile( "ram:///" ), "id", "name", new MockHadoopShim() );
     assertEquals( c.getIdentifier(), c.toString() );
+  }
+
+  @Test
+  public void testProcess() throws Exception {
+    HadoopShim hadoopShim = new MockHadoopShim();
+    HadoopConfiguration c =
+      spy( new HadoopConfiguration( VFS.getManager().resolveFile( "ram:///" ), "id", "name", hadoopShim ) );
+    Configuration conf = mock( Configuration.class );
+    c.getHadoopShim().submitJob( conf );
+    verify( c ).process( conf );
+    assertEquals( hadoopShim.getHadoopVersion(), c.getHadoopShim().getHadoopVersion() );
   }
 }
