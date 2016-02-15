@@ -116,6 +116,8 @@
       <artifact name="oss-licenses" type="zip" />
     </dependency>
 
+    <!-- Exclude junit from default libraries - it's brought in transitively through commons-httpclient and jline and should not be included -->
+    <exclude org="junit" module="junit" conf="default" />
     <!-- Exclude log4j from default libraries - it's brought in transitively through many of the Hadoop dependencies and should not be included -->
     <exclude org="log4j" module="log4j" conf="default" />
     <!-- Exclude antlr. Hive brings in a version that's not compatible with Pig. -->
