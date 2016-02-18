@@ -83,7 +83,7 @@ public class ShimRegistrationTest {
     try {
       ServiceLoader<T> loader = ServiceLoader.load( type );
       T shim = loader.iterator().next();
-      assertTrue( shim.getClass().getPackage().getName().startsWith( "org.pentaho.hadoop.shim.hdp21" ) );
+      assertTrue( shim.getClass().getPackage().getName().startsWith( "org.pentaho.hadoop.shim.hsp101" ) );
     } catch ( ServiceConfigurationError error ) {
       fail( error.getMessage() );
     }
