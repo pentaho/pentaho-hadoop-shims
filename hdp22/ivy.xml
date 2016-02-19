@@ -33,7 +33,6 @@
       <exclude org="commons-beanutils" module="commons-beanutils-core"/>
       <exclude org="commons-cli" module="commons-cli"/>
       <exclude org="commons-codec" module="commons-codec"/>
-      <exclude org="commons-collections" module="commons-collections"/>
       <exclude org="commons-digester" module="commons-digester"/>
       <exclude org="commons-httpclient" module="commons-httpclient"/>
       <exclude org="commons-io" module="commons-io"/>
@@ -100,7 +99,6 @@
     <dependency org="org.apache.hive" name="hive-metastore" rev="${dependency.hive-jdbc.revision}" changing="false"/>
     <dependency org="org.apache.thrift" name="libfb303" rev="${dependency.thrift.revision}" changing="false"/>
     <dependency org="org.apache.thrift" name="libthrift" rev="${dependency.thrift.revision}" changing="false"/>
-    <dependency org="commons-collections" name="commons-collections" rev="3.2.2" changing="false" conf="default;client->default"/>
 
     <dependency conf="provided->default" org="com.thoughtworks.xstream" name="xstream" rev="${dependency.xstream.revision}" transitive="false"/>
     <dependency conf="provided->default" org="log4j" name="log4j" rev="1.2.14" />
@@ -124,6 +122,7 @@
     <exclude org="org.antlr" conf="default" />
     <!--  Exclude xerces, it's provided and will wreak havoc if there are multiple instances / versions -->
     <exclude org="xml-apis" module="xml-apis" conf="*" />
+    <exclude org="commons-collections" artifact="commons-collections" conf="default,pmr,client" />
     <exclude org="xerces" module="xercesImpl" conf="*" />
   </dependencies>
 </ivy-module>
