@@ -23,21 +23,7 @@
 package org.pentaho.hadoop.shim.cdh51.authorization;
 
 import org.pentaho.hadoop.shim.common.authorization.NoOpHadoopAuthorizationService;
-import org.pentaho.hbase.shim.cdh51.HBaseConnectionImpl;
-import org.pentaho.hbase.shim.common.CommonHBaseShim;
-import org.pentaho.hbase.shim.common.HBaseShimImpl;
-import org.pentaho.hbase.shim.spi.HBaseConnection;
 
 public class ShimNoOpHadoopAuthorizationService extends NoOpHadoopAuthorizationService {
 
-  @Override protected CommonHBaseShim getHbaseShim() {
-    /* Todo: refactored as it was before - but need to check may be after if
-         new variant will work with old shim
-         Moreover seems that common variant contains some fixes */
-    return new HBaseShimImpl() {
-      @Override public HBaseConnection getHBaseConnection() {
-        return new HBaseConnectionImpl();
-      }
-    };
-  }
 }
