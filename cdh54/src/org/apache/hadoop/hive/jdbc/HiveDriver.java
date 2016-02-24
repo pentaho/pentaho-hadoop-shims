@@ -37,9 +37,12 @@ import java.util.logging.Logger;
  *
  */
 public class HiveDriver implements Driver {
+  private static final String SQL_STATE_NOT_SUPPORTED = "0A000";
 
-  public HiveDriver() {
-    throw new RuntimeException( "Currently active Hadoop shim does not support the HiveServer1 JDBC driver" );
+  public HiveDriver() throws SQLException {
+    throw new SQLException(
+        "Currently active Hadoop shim does not support the HiveServer1 JDBC driver",
+        SQL_STATE_NOT_SUPPORTED );
   }
 
   @Override
