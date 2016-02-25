@@ -85,7 +85,7 @@ public class DriverProxyInvocationChainTest {
   }
 
   @Test
-  public void testGetProxyNotNull() {
+  public void testGetProxyNotNull() throws Exception {
     assertTrue( DriverProxyInvocationChain.isInitialized() );
     if ( Boolean.parseBoolean( System.getProperty( "org.pentaho.hadoop.shims.check.hive1", "true" ) ) ) {
       // Create Hive driver

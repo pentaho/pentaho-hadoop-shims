@@ -22,15 +22,17 @@
 
 package org.apache.hadoop.hive.jdbc;
 
-import static org.junit.Assert.*;
+import org.junit.Assert;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Logger;
 
 import org.junit.Test;
 import org.pentaho.hadoop.hive.jdbc.HadoopConfigurationUtil;
@@ -45,6 +47,19 @@ public class HiveDriverTest {
       @Override
       public Driver getJdbcDriver( String scheme ) {
         return scheme.equalsIgnoreCase( "hive" ) ? driver : null;
+      }
+    };
+  }
+
+  private HadoopShim getMockShimWithDriverClass( final Class<? extends Driver> driverClass ) {
+    return new MockHadoopShim() {
+      @Override
+      public Driver getJdbcDriver( String scheme ) {
+        try {
+          return scheme.equalsIgnoreCase( "hive" ) ? driverClass.newInstance() : null;
+        } catch ( Exception ex ) {
+          throw new RuntimeException( "Wrapper", ex );
+        }
       }
     };
   }
@@ -79,7 +94,7 @@ public class HiveDriverTest {
     };
     HiveDriver d = new HiveDriver( getMockUtil( shim ) );
     d.getActiveDriver();
-    assertTrue( "Shim's getJdbcDriver(\"hive\") not called", called.get() );
+    Assert.assertTrue( "Shim's getJdbcDriver(\"hive\") not called", called.get() );
   }
 
   @Test
@@ -97,10 +112,10 @@ public class HiveDriverTest {
     try {
       HiveDriver d = new HiveDriver( getMockUtil( shim ) );
       d.getActiveDriver();
-      fail( "Expected exception" );
+      Assert.fail( "Expected exception" );
     } catch ( SQLException ex ) {
-      assertEquals( InvocationTargetException.class, ex.getCause().getClass() );
-      assertEquals( "Unable to load Hive JDBC driver for the currently active Hadoop configuration", ex.getMessage() );
+      Assert.assertEquals( InvocationTargetException.class, ex.getCause().getClass() );
+      Assert.assertEquals( "Unable to load Hive JDBC driver for the currently active Hadoop configuration", ex.getMessage() );
     }
   }
 
@@ -113,7 +128,7 @@ public class HiveDriverTest {
     };
     HiveDriver d = new HiveDriver( getMockUtil( shim ) );
 
-    assertNull( d.getActiveDriver() );
+    Assert.assertNull( d.getActiveDriver() );
   }
 
   @Test
@@ -127,7 +142,7 @@ public class HiveDriverTest {
     };
     HiveDriver d = new HiveDriver( getMockUtil( shim ) );
 
-    assertNull( d.getActiveDriver() );
+    Assert.assertNull( d.getActiveDriver() );
   }
 
   @Test( expected = SQLException.class )
@@ -187,7 +202,58 @@ public class HiveDriverTest {
     HiveDriver d = new HiveDriver( getMockUtil( getMockShimWithDriver( driver ) ) );
 
     d.connect( null, null );
-    assertTrue( connectCalled.get() && acceptsUrlCalled.get() );
+    Assert.assertTrue( connectCalled.get() && acceptsUrlCalled.get() );
+  }
+
+
+  public static class CtorExceptionThrowingDriver implements Driver {
+
+    public CtorExceptionThrowingDriver() throws SQLException {
+      throw new SQLException( "Message", "0A000" ); // SQL State "feature not supported"
+    }
+
+    @Override
+    public Connection connect( String url, Properties info ) throws SQLException {
+      return null;
+    }
+
+    @Override
+    public boolean acceptsURL( String url ) throws SQLException {
+      return false;
+    }
+
+    @Override
+    public DriverPropertyInfo[] getPropertyInfo( String url, Properties info ) throws SQLException {
+      return null;
+    }
+
+    @Override
+    public int getMajorVersion() {
+      return 0;
+    }
+
+    @Override
+    public int getMinorVersion() {
+      return 0;
+    }
+
+    @Override
+    public boolean jdbcCompliant() {
+      return false;
+    }
+
+    @Override
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+      return null;
+    }
+
+  }
+
+  @Test
+  public void connectTest() throws Exception {
+    HiveDriver d = new HiveDriver( getMockUtil( getMockShimWithDriverClass( CtorExceptionThrowingDriver.class ) ) );
+
+    Assert.assertNull( "Fake driver should not make DriverManager hesitate", d.connect( null, null ) );
   }
 
   @Test
@@ -203,12 +269,11 @@ public class HiveDriverTest {
     HiveDriver d = new HiveDriver( getMockUtil( getMockShimWithDriver( driver ) ) );
 
     d.acceptsURL( null );
-    assertTrue( called.get() );
+    Assert.assertTrue( called.get() );
   }
 
   @Test
   public void acceptsURL_no_driver() throws SQLException {
-    final AtomicBoolean called = new AtomicBoolean( false );
     HadoopShim shim = new MockHadoopShim() {
       @Override
       public Driver getJdbcDriver( String scheme ) {
@@ -217,7 +282,7 @@ public class HiveDriverTest {
     };
     HiveDriver d = new HiveDriver( getMockUtil( shim ) );
 
-    assertFalse( d.acceptsURL( "jdbc:postgres://" ) );
+    Assert.assertFalse( d.acceptsURL( "jdbc:postgres://" ) );
 
   }
 
@@ -234,7 +299,7 @@ public class HiveDriverTest {
     HiveDriver d = new HiveDriver( getMockUtil( getMockShimWithDriver( driver ) ) );
 
     d.getPropertyInfo( null, null );
-    assertTrue( called.get() );
+    Assert.assertTrue( called.get() );
   }
 
   @Test
@@ -250,7 +315,7 @@ public class HiveDriverTest {
     HiveDriver d = new HiveDriver( getMockUtil( getMockShimWithDriver( driver ) ) );
 
     d.getMajorVersion();
-    assertTrue( called.get() );
+    Assert.assertTrue( called.get() );
   }
 
   @Test
@@ -264,7 +329,7 @@ public class HiveDriverTest {
     HiveDriver d = new HiveDriver( getMockUtil( getMockShimWithDriver( driver ) ) );
 
     // If an exception is thrown the version returned should be -1
-    assertEquals( -1, d.getMajorVersion() );
+    Assert.assertEquals( -1, d.getMajorVersion() );
   }
 
   @Test
@@ -280,7 +345,7 @@ public class HiveDriverTest {
     HiveDriver d = new HiveDriver( getMockUtil( getMockShimWithDriver( driver ) ) );
 
     d.getMinorVersion();
-    assertTrue( called.get() );
+    Assert.assertTrue( called.get() );
   }
 
   @Test
@@ -294,7 +359,7 @@ public class HiveDriverTest {
     HiveDriver d = new HiveDriver( getMockUtil( getMockShimWithDriver( driver ) ) );
 
     // If an exception is thrown the version returned should be -1
-    assertEquals( -1, d.getMinorVersion() );
+    Assert.assertEquals( -1, d.getMinorVersion() );
   }
 
   @Test
@@ -310,7 +375,7 @@ public class HiveDriverTest {
     HiveDriver d = new HiveDriver( getMockUtil( getMockShimWithDriver( driver ) ) );
 
     d.jdbcCompliant();
-    assertTrue( called.get() );
+    Assert.assertTrue( called.get() );
   }
 
   @Test
@@ -324,6 +389,6 @@ public class HiveDriverTest {
     HiveDriver d = new HiveDriver( getMockUtil( getMockShimWithDriver( driver ) ) );
 
     // should return false if there is an exception
-    assertFalse( d.jdbcCompliant() );
+    Assert.assertFalse( d.jdbcCompliant() );
   }
 }

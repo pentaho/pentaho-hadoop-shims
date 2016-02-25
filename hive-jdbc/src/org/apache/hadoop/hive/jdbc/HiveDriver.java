@@ -74,6 +74,11 @@ public class HiveDriver implements java.sql.Driver {
    */
   private HadoopConfigurationUtil util;
 
+  /**
+   * SQL State "feature not supported" with no subclass specified
+   */
+  private static final String SQL_STATE_NOT_SUPPORTED = "0A000";
+
   // Register ourself with the JDBC Driver Manager
   static {
     try {
@@ -104,6 +109,9 @@ public class HiveDriver implements java.sql.Driver {
       // public Driver HadoopShim#getHiveJdbcDriver()
       Method getHiveJdbcDriver = shim.getClass().getMethod( METHOD_GET_JDBC_DRIVER, String.class );
       driver = (Driver) getHiveJdbcDriver.invoke( shim, METHOD_JDBC_PARAM );
+    } catch ( SQLException ex ) {
+      // no need to wrap
+      throw ex;
     } catch ( Exception ex ) {
       throw new SQLException( "Unable to load Hive JDBC driver for the currently active Hadoop configuration", ex );
     }
@@ -137,12 +145,28 @@ public class HiveDriver implements java.sql.Driver {
    */
   @Override
   public Connection connect( final String url, final Properties info ) throws SQLException {
-    return callWithActiveDriver( new JDBCDriverCallable<Connection>() {
-      @Override
-      public Connection call() throws Exception {
-        return ( driver != null && driver.acceptsURL( url ) ) ? driver.connect( url, info ) : null;
-      }
-    } );
+    try {
+      return callWithActiveDriver( new JDBCDriverCallable<Connection>() {
+        @Override
+        public Connection call() throws Exception {
+          return ( driver != null && driver.acceptsURL( url ) ) ? driver.connect( url, info ) : null;
+        }
+      } );
+    } catch ( Exception ex ) {
+      Throwable cause = ex;
+      do {
+        // BACKLOG-6547
+        if ( cause instanceof SQLException
+            && SQL_STATE_NOT_SUPPORTED.equals( ( (SQLException) cause ).getSQLState() ) ) {
+          // this means that either driver can't be obtained or does not support connect().
+          // In both cases signal to DriverManager we can't process the URL
+          return null;
+        }
+        cause = cause.getCause();
+      } while ( cause != null );
+
+      throw ex;
+    }
   }
 
   @Override
