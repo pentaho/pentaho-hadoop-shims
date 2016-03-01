@@ -41,23 +41,31 @@ import org.pentaho.di.trans.RowProducer;
 import org.pentaho.di.trans.Trans;
 import org.pentaho.di.trans.step.BaseStepMeta;
 import org.pentaho.di.trans.step.StepInterface;
+import org.pentaho.di.trans.step.StepMeta;
 import org.pentaho.di.trans.step.StepMetaInterface;
+import org.pentaho.di.trans.steps.missing.MissingTrans;
 import org.pentaho.hadoop.mapreduce.converter.TypeConverterFactory;
 import org.pentaho.hadoop.mapreduce.converter.spi.ITypeConverter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Map runner that uses the normal Kettle execution engine to process all input data during one single run.<p> This
  * relies on newly un-@Deprecated interfaces ({@link MapRunnable}, {@link JobConf}) in Hadoop 0.21.0.
  */
 public class PentahoMapRunnable<K1, V1, K2, V2> implements MapRunnable<K1, V1, K2, V2> {
+  public static final String KETTLE_PMR_PLUGIN_TIMEOUT = "KETTLE_PMR_PLUGIN_TIMEOUT";
+
+  private long pluginWaitTimeout;
 
   protected static enum Counter {
     INPUT_RECORDS, OUTPUT_RECORDS, OUT_RECORD_WITH_NULL_KEY, OUT_RECORD_WITH_NULL_VALUE
@@ -98,6 +106,8 @@ public class PentahoMapRunnable<K1, V1, K2, V2> implements MapRunnable<K1, V1, K
   }
 
   public void configure( JobConf job ) {
+    pluginWaitTimeout = TimeUnit.MINUTES.toMillis( 5 );
+
     debug = "true".equalsIgnoreCase( job.get( "debug" ) ); //$NON-NLS-1$
 
     transMapXml = job.get( "transformation-map-xml" );
@@ -124,6 +134,13 @@ public class PentahoMapRunnable<K1, V1, K2, V2> implements MapRunnable<K1, V1, K
       for ( String variableName : variableSpace.listVariables() ) {
         if ( variableName.startsWith( KETTLE_VARIABLE_PREFIX ) ) {
           System.setProperty( variableName, variableSpace.getVariable( variableName ) );
+        }
+        if ( KETTLE_PMR_PLUGIN_TIMEOUT.equals( variableName ) ) {
+          try {
+            pluginWaitTimeout = Long.parseLong( variableSpace.getVariable( variableName ) );
+          } catch ( Exception e ) {
+            System.out.println( "Unable to parse plugin wait timeout, defaulting to 5 minutes" );
+          }
         }
       }
     } else {
@@ -157,7 +174,51 @@ public class PentahoMapRunnable<K1, V1, K2, V2> implements MapRunnable<K1, V1, K
       System.out.println( "Could not retrieve the log level from the job configuration.  logLevel will not be set." );
     }
 
-    createTrans( job );
+    long deadline = 0;
+    boolean first = true;
+    while ( true ) {
+      createTrans( job );
+
+      if ( first ) {
+        deadline = pluginWaitTimeout + System.currentTimeMillis();
+        System.out
+          .println( PentahoMapRunnable.class + ": Trans creation checking starting now " + new Date().toString() );
+        first = false;
+      }
+
+      List<MissingTrans> missingTranses = new ArrayList<MissingTrans>();
+      for ( StepMeta stepMeta : trans.getTransMeta().getSteps() ) {
+        StepMetaInterface stepMetaInterface = stepMeta.getStepMetaInterface();
+        if ( stepMetaInterface instanceof MissingTrans ) {
+          MissingTrans missingTrans = (MissingTrans) stepMetaInterface;
+          System.out.println(
+            MissingTrans.class + "{stepName: " + missingTrans.getStepName() + ", missingPluginId: " + missingTrans
+              .getMissingPluginId() + "}" );
+          missingTranses.add( missingTrans );
+        }
+      }
+
+      if ( missingTranses.size() == 0 ) {
+        System.out.println( PentahoMapRunnable.class + ": Done waiting on plugins now " + new Date().toString() );
+        break;
+      } else {
+        if ( System.currentTimeMillis() > deadline ) {
+          StringBuilder stringBuilder = new StringBuilder( "Failed to initialize plugins: " );
+          for ( MissingTrans missingTrans : missingTranses ) {
+            stringBuilder.append( missingTrans );
+            stringBuilder.append( ", " );
+          }
+          stringBuilder.setLength( stringBuilder.length() - 2 );
+          throw new RuntimeException( stringBuilder.toString() );
+        } else {
+          try {
+            Thread.sleep( Math.min( 100, deadline - System.currentTimeMillis() ) );
+          } catch ( InterruptedException e ) {
+            throw new RuntimeException( e );
+          }
+        }
+      }
+    }
   }
 
   public void injectValue( Object key, ITypeConverter inConverterK, Object value, ITypeConverter inConverterV,
