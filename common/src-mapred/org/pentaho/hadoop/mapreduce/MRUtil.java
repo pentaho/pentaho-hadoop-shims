@@ -37,13 +37,22 @@ import org.pentaho.di.trans.TransConfiguration;
 import org.pentaho.di.trans.TransExecutionConfiguration;
 import org.pentaho.di.trans.TransMeta;
 import org.pentaho.di.trans.TransMeta.TransformationType;
+import org.pentaho.di.trans.step.StepMeta;
+import org.pentaho.di.trans.step.StepMetaInterface;
+import org.pentaho.di.trans.steps.missing.MissingTrans;
 
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class MRUtil {
+  public static final String PROPERTY_PENTAHO_KETTLE_PMR_PLUGIN_TIMEOUT = "pentaho.kettle.pmr.plugin.timeout";
+
   /**
    * Path to the directory to load plugins from. This must be accessible from all TaskTracker nodes.
    */
@@ -56,9 +65,70 @@ public class MRUtil {
 
   public static Trans getTrans( final Configuration conf, final String transXml, boolean singleThreaded )
     throws KettleException {
+
     initKettleEnvironment( conf );
 
-    TransConfiguration transConfiguration = TransConfiguration.fromXML( transXml );
+    TransConfiguration transConfiguration;
+
+    long pluginWaitTimeout = TimeUnit.MINUTES.toMillis( 5 );
+
+    String timeoutString = conf.get( PROPERTY_PENTAHO_KETTLE_PMR_PLUGIN_TIMEOUT );
+    if ( timeoutString != null ) {
+      try {
+        pluginWaitTimeout = Long.parseLong( timeoutString );
+      } catch ( Exception e ) {
+        System.out.println( BaseMessages.getString( MRUtil.class, "PluginWaiting.CantParse", timeoutString ) );
+      }
+    }
+
+    long deadline = 0;
+    boolean first = true;
+    while ( true ) {
+      transConfiguration = TransConfiguration.fromXML( transXml );
+
+      if ( first ) {
+        deadline = pluginWaitTimeout + System.currentTimeMillis();
+        System.out.println(
+          BaseMessages.getString( MRUtil.class, "PluginWaiting.Starting", MRUtil.class.getCanonicalName(), new Date().toString() ) );
+        first = false;
+      }
+
+      List<MissingTrans> missingTranses = new ArrayList<MissingTrans>();
+      for ( StepMeta stepMeta : transConfiguration.getTransMeta().getSteps() ) {
+        StepMetaInterface stepMetaInterface = stepMeta.getStepMetaInterface();
+        if ( stepMetaInterface instanceof MissingTrans ) {
+          MissingTrans missingTrans = (MissingTrans) stepMetaInterface;
+          System.out.println(
+            MissingTrans.class + "{stepName: " + missingTrans.getStepName() + ", missingPluginId: " + missingTrans
+              .getMissingPluginId() + "}" );
+          missingTranses.add( missingTrans );
+        }
+      }
+
+      if ( missingTranses.size() == 0 ) {
+        System.out
+          .println( BaseMessages.getString( MRUtil.class, "PluginWaiting.Done", MRUtil.class.getCanonicalName(), new Date().toString() ) );
+        break;
+      } else {
+        if ( System.currentTimeMillis() > deadline ) {
+          StringBuilder stringBuilder =
+            new StringBuilder( BaseMessages.getString( MRUtil.class, "PluginWaiting.Failed" ) );
+          for ( MissingTrans missingTrans : missingTranses ) {
+            stringBuilder.append( missingTrans );
+            stringBuilder.append( ", " );
+          }
+          stringBuilder.setLength( stringBuilder.length() - 2 );
+          throw new RuntimeException( stringBuilder.toString() );
+        } else {
+          try {
+            Thread.sleep( Math.min( 100, deadline - System.currentTimeMillis() ) );
+          } catch ( InterruptedException e ) {
+            throw new RuntimeException( e );
+          }
+        }
+      }
+    }
+
     TransMeta transMeta = transConfiguration.getTransMeta();
     String carteObjectId = UUID.randomUUID().toString();
     SimpleLoggingObject servletLoggingObject =
