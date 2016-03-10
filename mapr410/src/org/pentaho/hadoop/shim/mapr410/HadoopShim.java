@@ -22,18 +22,15 @@
 
 package org.pentaho.hadoop.shim.mapr410;
 
-import java.io.IOException;
-import java.util.List;
-
 import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
 import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.common.CommonHadoopShim;
-import org.pentaho.hadoop.shim.common.RunningJobProxyV2;
 import org.pentaho.hadoop.shim.common.ShimUtils;
 import org.pentaho.hdfs.vfs.MapRFileProvider;
-import org.apache.hadoop.mapreduce.Job;
-import org.pentaho.hadoop.shim.api.mapred.RunningJob;
+
+import java.io.IOException;
+import java.util.List;
 
 public class HadoopShim extends CommonHadoopShim {
   protected static final String SUPER_USER = "authentication.superuser.provider";
@@ -76,8 +73,8 @@ public class HadoopShim extends CommonHadoopShim {
       jobtrackerHost = DEFAULT_CLUSTER;
       logMessages.add( "Using MapR default cluster for job tracker" );
     } else if ( jobtrackerPort == null || jobtrackerPort.trim().length() == 0 ) {
-      logMessages.add( "Using MapR CLDB named cluster: " + jobtrackerHost +
-        " for job tracker" );
+      logMessages.add( "Using MapR CLDB named cluster: " + jobtrackerHost
+        + " for job tracker" );
       jobtrackerHost = "/mapr/" + jobtrackerHost;
     } else {
       logMessages.add( "Using job tracker at " + jobtrackerHost + ":" + jobtrackerPort );
@@ -113,22 +110,5 @@ public class HadoopShim extends CommonHadoopShim {
   public void onLoad( HadoopConfiguration config, HadoopConfigurationFileSystemManager fsm ) throws Exception {
     fsm.addProvider( config, MapRFileProvider.SCHEME, config.getIdentifier(), new MapRFileProvider() );
     setDistributedCacheUtil( new MapR4DistributedCacheUtilImpl( config ) );
-  }
-
-  @Override
-  public RunningJob submitJob( org.pentaho.hadoop.shim.api.Configuration c ) throws IOException {
-    ClassLoader cl = Thread.currentThread().getContextClassLoader();
-    Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
-    try {
-      Job job = ( (org.pentaho.hadoop.shim.mapr410.ConfigurationProxyV2) c ).getJob();
-      job.submit();
-      return new RunningJobProxyV2( job );
-    } catch ( InterruptedException e ) {
-      throw new RuntimeException( e );
-    } catch ( ClassNotFoundException e ) {
-      throw new RuntimeException( e );
-    } finally {
-      Thread.currentThread().setContextClassLoader( cl );
-    }
   }
 }
