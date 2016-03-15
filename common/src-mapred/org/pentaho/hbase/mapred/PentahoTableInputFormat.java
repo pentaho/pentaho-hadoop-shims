@@ -31,6 +31,7 @@ import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.util.StringUtils;
 import org.pentaho.di.core.Const;
+import org.pentaho.hadoop.shim.api.process.RequiredCredentialsToken;
 import org.pentaho.hbase.factory.HBaseClientFactoryLocator;
 
 import java.io.IOException;
@@ -51,6 +52,8 @@ import java.io.IOException;
  *
  * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
  */
+
+@RequiredCredentialsToken( RequiredCredentialsToken.Type.HBASE )
 public class PentahoTableInputFormat extends TableInputFormat {
 
   // Note that the hbase.mapred.tablecolumns property is inherited

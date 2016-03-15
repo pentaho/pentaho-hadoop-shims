@@ -23,6 +23,9 @@
 package org.pentaho.hadoop.shim.api;
 
 import org.pentaho.hadoop.shim.api.fs.Path;
+import org.pentaho.hadoop.shim.api.mapred.RunningJob;
+
+import java.io.IOException;
 
 /**
  * A thin abstraction for {@link org.apache.hadoop.mapred.JobConf} (and consequently {@link
@@ -155,4 +158,11 @@ public interface Configuration {
    * @return this configuration delegate object if possible
    */
   <T> T getAsDelegateConf( Class<T> delegate );
+
+  /**
+   * Submit job for the current configuration provided by this implementation.
+   *
+   * @return RunningJob implementation
+   */
+  RunningJob submit() throws IOException, ClassNotFoundException, InterruptedException;
 }

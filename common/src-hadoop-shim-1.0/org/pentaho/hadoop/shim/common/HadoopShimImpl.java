@@ -78,9 +78,7 @@ public class HadoopShimImpl extends CommonHadoopShim {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
     try {
-      Job job = ( (ConfigurationProxyV2) c ).getJob();
-      job.submit();
-      return new RunningJobProxyV2( job );
+      return c.submit();
     } catch ( InterruptedException | ClassNotFoundException e ) {
       throw new RuntimeException( e );
     } finally {

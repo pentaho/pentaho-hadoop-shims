@@ -26,10 +26,15 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.FileInputFormat;
 import org.apache.hadoop.mapred.FileOutputFormat;
 import org.apache.hadoop.mapred.InputFormat;
+import org.apache.hadoop.mapred.JobClient;
 import org.apache.hadoop.mapred.MapRunnable;
 import org.apache.hadoop.mapred.Mapper;
 import org.apache.hadoop.mapred.OutputFormat;
 import org.apache.hadoop.mapred.Reducer;
+import org.pentaho.hadoop.shim.api.mapred.RunningJob;
+import org.pentaho.hadoop.shim.common.mapred.RunningJobProxy;
+
+import java.io.IOException;
 
 /**
  * A common configuration object representing org.apache.hadoop.conf.Configuration. <p> This has been un-deprecated in
@@ -98,6 +103,16 @@ public class ConfigurationProxy extends org.apache.hadoop.mapred.JobConf impleme
     } else {
       return null;
     }
+  }
+
+  /**
+   * Submit job for the current configuration provided by this implementation.
+   *
+   * @return RunningJob implementation
+   */
+  @Override public RunningJob submit() throws IOException, ClassNotFoundException, InterruptedException {
+    JobClient jobClient = new JobClient( this );
+    return new RunningJobProxy( jobClient.submitJob( this ) );
   }
 
   @Override

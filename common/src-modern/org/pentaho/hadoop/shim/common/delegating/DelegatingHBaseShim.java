@@ -24,13 +24,15 @@ package org.pentaho.hadoop.shim.common.delegating;
 
 import org.apache.hadoop.conf.Configuration;
 import org.pentaho.hadoop.shim.ShimVersion;
+import org.pentaho.hadoop.shim.api.process.Processable;
 import org.pentaho.hadoop.shim.common.authorization.HadoopAuthorizationService;
 import org.pentaho.hadoop.shim.common.authorization.HasHadoopAuthorizationService;
 import org.pentaho.hbase.shim.common.wrapper.HBaseShimInterface;
 import org.pentaho.hbase.shim.spi.HBaseConnection;
 import org.pentaho.hbase.shim.spi.HBaseShim;
 
-public class DelegatingHBaseShim extends HBaseShim implements HasHadoopAuthorizationService, HBaseShimInterface {
+public class DelegatingHBaseShim extends HBaseShim implements HasHadoopAuthorizationService, HBaseShimInterface,
+  Processable {
   private HBaseShimInterface delegate;
 
   @Override
@@ -51,5 +53,13 @@ public class DelegatingHBaseShim extends HBaseShim implements HasHadoopAuthoriza
   @Override
   public void setInfo( Configuration configuration ) {
     delegate.setInfo( configuration );
+  }
+
+  @Override public void process( org.pentaho.hadoop.shim.api.Configuration configuration ) {
+    Processable processable;
+    if ( Processable.class.isInstance( delegate ) ) {
+      processable = (Processable) delegate;
+      processable.process( configuration );
+    }
   }
 }
