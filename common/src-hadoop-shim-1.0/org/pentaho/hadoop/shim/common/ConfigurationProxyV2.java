@@ -37,11 +37,11 @@ import java.io.IOException;
  */
 public class ConfigurationProxyV2 implements Configuration {
 
-  private Job job;
+  protected Job job;
 
   public ConfigurationProxyV2() throws IOException {
     job = Job.getInstance();
-    getJobConf().addResource( "hdfs-site.xml" );
+    job.getConfiguration().addResource( "hdfs-site.xml" );
   }
 
   public JobConf getJobConf() {

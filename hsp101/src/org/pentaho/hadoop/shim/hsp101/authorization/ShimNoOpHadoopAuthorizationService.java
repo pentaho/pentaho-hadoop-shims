@@ -20,7 +20,7 @@
 *
 ******************************************************************************/
 
-package org.pentaho.hadoop.shim.hsp101.authorizaion;
+package org.pentaho.hadoop.shim.hsp101.authorization;
 
 
 import org.pentaho.hadoop.shim.common.CommonHadoopShim;
