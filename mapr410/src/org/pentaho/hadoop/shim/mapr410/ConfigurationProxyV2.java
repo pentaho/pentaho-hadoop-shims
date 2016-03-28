@@ -32,8 +32,6 @@ import java.io.IOException;
  */
 public class ConfigurationProxyV2 extends org.pentaho.hadoop.shim.common.ConfigurationProxyV2 {
 
-  private Job job;
-
   protected class JobProxy extends Job {
     private JobProxy( JobConf conf ) throws IOException {
       super( conf );
