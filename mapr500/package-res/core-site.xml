@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+  <property>
+    <name>hbase.table.namespace.mappings</name>
+    <value>*:/tables</value>
+  </property>
+  <property>
+    <name>fs.default.name</name>
+    <value>maprfs:///</value>
+  </property>
+  <property>
+    <name>fs.mapr.working.dir</name>
+    <value>/user/$USERNAME</value>
+  </property>
+  <property>
+    <name>hadoop.proxyuser.mapr.groups</name>
+    <value>*</value>
+  </property>
+  <property>
+    <name>hadoop.proxyuser.mapr.hosts</name>
+    <value>*</value>
+  </property>
+
+</configuration>
