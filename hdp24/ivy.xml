@@ -115,5 +115,6 @@
     <exclude org="org.apache.hadoop" module="hadoop-yarn-server-common" conf="default" />
     <exclude org="org.apache.hadoop" module="hadoop-yarn-server-resourcemanager" conf="default" />
     <exclude org="org.apache.hadoop" module="hadoop-yarn-server-web-proxy" conf="default" />
+    <exclude org="org.apache.hadoop" module="hadoop-hdfs" conf="default" />
   </dependencies>
 </ivy-module>
