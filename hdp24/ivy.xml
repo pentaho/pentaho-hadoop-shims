@@ -100,7 +100,8 @@
     <!-- Exclude log4j from default libraries - it's brought in transitively through many of the Hadoop dependencies and should not be included -->
     <exclude org="log4j" module="log4j" conf="default" />
     <!-- Exclude antlr. Hive brings in a version that's not compatible with Pig. -->
-    <exclude org="org.antlr" conf="default" />
+    <!-- Need to check pig antlr dependency does not conflict with hive antlr`s dependency. Currently we are using hive`s version. -->
+    <!--exclude org="org.antlr" conf="default" /-->
     <!--  Exclude xerces, it's provided and will wreak havoc if there are multiple instances / versions -->
     <exclude org="xml-apis" module="xml-apis" conf="*" />
     <exclude org="commons-collections" artifact="commons-collections" conf="default,pmr,client" />
