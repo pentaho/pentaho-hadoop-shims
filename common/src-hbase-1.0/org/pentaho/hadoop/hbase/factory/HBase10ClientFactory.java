@@ -2,7 +2,7 @@
 *
 * Pentaho Big Data
 *
-* Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
+* Copyright (C) 2002-2016 by Pentaho : http://www.pentaho.com
 *
 *******************************************************************************
 *
@@ -38,11 +38,11 @@ import org.pentaho.hbase.factory.HBaseTable;
 import org.pentaho.hbase.mapred.PentahoTableInputFormat;
 import org.pentaho.hbase.mapred.PentahoTableRecordReader;
 
-class HBase10ClientFactory implements HBaseClientFactory {
+public class HBase10ClientFactory implements HBaseClientFactory {
   private Connection conn = null;
   private final Configuration conf;
 
-  HBase10ClientFactory( Configuration conf ) throws Exception {
+  public HBase10ClientFactory( Configuration conf ) throws Exception {
     this.conf = conf;
     if ( conf != null ) {
       conn = ConnectionFactory.createConnection( conf );
@@ -51,7 +51,7 @@ class HBase10ClientFactory implements HBaseClientFactory {
     }
   }
 
-  synchronized Connection getConnection() throws IOException {
+  public synchronized Connection getConnection() throws IOException {
     if(conn == null) {
       conn = ConnectionFactory.createConnection( conf );
     }
