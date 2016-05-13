@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2016 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -31,7 +31,9 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.Driver;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
@@ -148,5 +150,42 @@ public class DriverProxyInvocationChainTest {
 
     driverProxy.connect( "jdbc:hive://host:port/dbName", null );
     verify( statementMock ).execute( "use dbName" );
+  }
+
+  @Test
+  public void testGetTablesWithSchema() throws SQLException {
+    Class hive2;
+    try {
+      hive2 = Class.forName( "org.apache.hive.jdbc.HiveDatabaseMetaData" );
+    } catch ( ClassNotFoundException e ) {
+      return;
+    }
+    if ( hive2 != null ) {
+      Driver driverMock = mock( HiveDriver.class );
+      Driver driverProxy = DriverProxyInvocationChain.getProxy( Driver.class, driverMock );
+
+      Connection connectionMock = mock( Connection.class );
+      doReturn( connectionMock ).when( driverMock ).connect( anyString(), (Properties) isNull() );
+
+      Statement statementMock = mock( Statement.class );
+      doReturn( statementMock ).when( connectionMock ).createStatement();
+
+      ResultSet resultSet = mock( ResultSet.class );
+      doReturn( resultSet ).when( statementMock ).executeQuery( anyString() );
+
+      DatabaseMetaData databaseMetaDataMock = (DatabaseMetaData) mock( hive2 );
+      doReturn( databaseMetaDataMock ).when( connectionMock ).getMetaData();
+
+      String schema = "someSchema";
+      doThrow( new SQLException( "Method is not supported" ) ).when( databaseMetaDataMock )
+        .getTables( null, schema, null, null );
+
+      Connection conn = driverProxy.connect( "jdbc:hive://host:port/dbName", null );
+
+      conn.getMetaData().getTables( null, schema, null, null );
+      verify( statementMock ).execute( "use dbName" );
+      verify( statementMock ).execute( "set pentaho.current.dbname=dbName" );
+      verify( statementMock ).executeQuery( "show tables in " + schema );
+    }
   }
 }
