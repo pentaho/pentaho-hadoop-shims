@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2016 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -59,6 +59,7 @@ import java.util.Calendar;
  */
 public class DriverProxyInvocationChain {
 
+  public static final String PENTAHO_CURRENT_DBNAME = "pentaho.current.dbname";
   /**
    * The initialized.
    */
@@ -210,9 +211,7 @@ public class DriverProxyInvocationChain {
               new Class[] { Connection.class }, new ConnectionInvocationHandler( (Connection) o ) );
 
           String dbName = HiveSQLUtils.getDatabaseNameFromURL( (String) args[0] );
-          if ( dbName.trim().length() > 0 ) {
-            proxiedConnection.createStatement().execute( "use " + dbName );
-          }
+          useSchema( dbName, proxiedConnection.createStatement() );
 
           return proxiedConnection;
         } else {
@@ -399,11 +398,11 @@ public class DriverProxyInvocationChain {
 
           if ( hive1DbMetaDataClass != null && hive1DbMetaDataClass.isAssignableFrom( t.getClass() ) ) {
             return getTables( t, hive1DbMetaDataClass, hive1StatementClass, hive1ClientClass,
-              (String) args[ 0 ], (String) args[ 1 ], (String) args[ 2 ], (String[]) args[ 3 ] );
+              (String) args[ 0 ], (String) args[ 1 ], (String) args[ 2 ], (String[]) args[ 3 ], method, args );
           }
           if ( hive2DbMetaDataClass != null && hive2DbMetaDataClass.isAssignableFrom( t.getClass() ) ) {
             return getTables( t, hive2DbMetaDataClass, hive2StatementClass, hive2ClientClass,
-              (String) args[ 0 ], (String) args[ 1 ], (String) args[ 2 ], (String[]) args[ 3 ] );
+              (String) args[ 0 ], (String) args[ 1 ], (String) args[ 2 ], (String[]) args[ 3 ], method, args );
           }
         } else if ( "getConnection".equals( methodName ) ) {
           // Return the connection
@@ -455,13 +454,16 @@ public class DriverProxyInvocationChain {
      * @param schemaPattern    the schema pattern
      * @param tableNamePattern the table name pattern
      * @param types            the types
+     * @param method           the original method
+     * @param args             the original args
      * @return the tables
      * @throws Exception the exception
      */
     public ResultSet getTables( Object originalObject, Class<? extends DatabaseMetaData> dbMetadataClass,
                                 Class<? extends Statement> statementClass, Class<?> clientClass,
                                 String catalog, String schemaPattern,
-                                String tableNamePattern, String[] types ) throws Exception {
+                                String tableNamePattern, String[] types, Method method, Object[] args )
+      throws Exception {
 
       boolean tables = false;
       if ( types == null ) {
@@ -476,6 +478,20 @@ public class DriverProxyInvocationChain {
 
       // If we're looking for tables, execute "show tables" query instead
       if ( tables ) {
+        try {
+          // try to invoke the method as-is
+          Object o = method.invoke( originalObject, args );
+          if ( o instanceof ResultSet ) {
+            ResultSet r = (ResultSet) o;
+            ResultSet ret = (ResultSet) Proxy.newProxyInstance( r.getClass().getClassLoader(),
+              new Class[] { ResultSet.class }, new ResultSetInvocationHandler( r ) );
+            if ( ret.isBeforeFirst() ) {
+              return ret;
+            }
+          }
+        } catch ( Exception e ) {
+          // ignored
+        }
         Statement showTables = null;
 
         // If we have a valid Connection, create and proxy the show tables statement
@@ -509,8 +525,18 @@ public class DriverProxyInvocationChain {
         }
         // If we found a way to call "show tables", do it
         if ( showTables != null ) {
-          ResultSet rs = showTables.executeQuery( "show tables" );
-          return rs;
+          ResultSet rs;
+          if ( schemaPattern != null ) {
+            rs = showTables.executeQuery( String.format( "show tables in %s", schemaPattern ) );
+          } else {
+            rs = showTables.executeQuery( "show tables" );
+          }
+          if ( rs != null ) {
+            return (ResultSet) Proxy.newProxyInstance( rs.getClass().getClassLoader(),
+              new Class[] { ResultSet.class }, new ResultSetInvocationHandler( rs ) );
+          } else {
+            return null;
+          }
         } else {
           throw new Exception( "Cannot execute SHOW TABLES query" );
         }
@@ -520,6 +546,21 @@ public class DriverProxyInvocationChain {
         ResultSet rs = (ResultSet) getTables.invoke( originalObject, catalog, schemaPattern, tableNamePattern, types );
         return rs;
       }
+    }
+  }
+
+  /**
+   * After it is possible to specify dbname mentioned in connection url using either: ex: 'use
+   * ${hiveconf:pentaho.current.dbname}'; or use in other queries: ex: 'select * from
+   * ${hiveconf:pentaho.current.dbname}.sometable;'
+   */
+  protected static void useSchema( String dbName, Statement statement ) throws SQLException {
+    if ( dbName.trim().length() > 0 ) {
+      String queries = String.format( "use %s", dbName );
+      statement.execute( queries );
+      queries = String.format( "set %s=%s", PENTAHO_CURRENT_DBNAME, dbName );
+      //String queries = String.format( "use %s;set %s=%s", dbName, PENTAHO_CURRENT_DBNAME, dbName );
+      statement.execute( queries );
     }
   }
 
