@@ -59,6 +59,7 @@
     <dependency conf="pmr->default" org="org.apache.hbase" name="hbase-server" rev="${dependency.apache-hbase.revision}" transitive="false" changing="true"/>
     <dependency conf="pmr->default" org="org.apache.hbase" name="hbase-thrift" rev="${dependency.apache-hbase.revision}" transitive="false" changing="true"/>
     <dependency conf="pmr->default" org="org.apache.htrace" name="htrace-core" rev="${dependency.htrace.revision}" transitive="false" changing="true"/>
+    <dependency conf="pmr->default" org="com.yammer.metrics" name="metrics-core" rev="${dependency.metrics-core.revision}" transitive="false" changing="true"/>
     <dependency conf="pmr->default" org="org.apache.zookeeper" name="zookeeper" rev="${dependency.zookeeper.revision}" transitive="false"/>
 
     <dependency org="pentaho" name="pentaho-hdfs-vfs" rev="${dependency.pentaho-hdfs-vfs.revision}" transitive="false" changing="true"/>
