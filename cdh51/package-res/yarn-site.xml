@@ -1,12 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <configuration>
+  <!-- if it is no possible to use proper authorization disable acl check on cluster and on client. Useful for VM sandbox testing -->
   <property>
-    <name>yarn.resourcemanager.hostname</name>
-    <value>clouderamanager.cdh5.test</value>
+    <name>yarn.acl.enable</name>
+    <value>false</value>
+  </property>
+  <property>
+    <name>yarn.admin.acl</name>
+    <value>*</value>
+  </property>  
+  <property>
+    <name>yarn.resourcemanager.address</name>
+    <value>quickstart.cloudera:8032</value>
+  </property>  
+  <property>
+	  <name>yarn.resourcemanager.hostname</name>
+	  <value>quickstart.cloudera</value>
+  </property>  
+  <property>
+    <name>yarn.resourcemanager.admin.address</name>
+    <value>quickstart.cloudera:8033</value>
+  </property>
+  <property>
+    <name>yarn.resourcemanager.scheduler.address</name>
+    <value>quickstart.cloudera:8030</value>
+  </property>
+  <property>
+    <name>yarn.resourcemanager.resource-tracker.address</name>
+    <value>quickstart.cloudera:8031</value>
+  </property>
+  <property>
+    <name>yarn.resourcemanager.webapp.address</name>
+    <value>quickstart.cloudera:8088</value>
+  </property>
+  <property>
+    <name>yarn.resourcemanager.webapp.https.address</name>
+    <value>quickstart.cloudera:8090</value>
+  </property>
+  <!-- depending on available memory on VM sandbox -->
+  <property>
+    <name>yarn.scheduler.minimum-allocation-mb</name>
+    <value>1</value>
+  </property>
+  <property>
+    <name>yarn.scheduler.increment-allocation-mb</name>
+    <value>512</value>
+  </property>
+  <property>
+    <name>yarn.scheduler.maximum-allocation-mb</name>
+    <value>1024</value>
+  </property>
+  <property>
+    <name>yarn.resourcemanager.amliveliness-monitor.interval-ms</name>
+    <value>1000</value>
+  </property>
+  <property>
+    <name>yarn.am.liveness-monitor.expiry-interval-ms</name>
+    <value>600000</value>
+  </property>
+  <!-- no retry for failing application. Useful for VM sandbox  -->
+  <property>
+    <name>yarn.resourcemanager.am.max-retries</name>
+    <value>1</value>
   </property>
   <property>
     <name>yarn.application.classpath</name>
-    <value>$HADOOP_CONF_DIR,$HADOOP_COMMON_HOME/*,$HADOOP_COMMON_HOME/lib/*,$HADOOP_HDFS_HOME/*,$HADOOP_HDFS_HOME/lib/*,$HADOOP_YARN_HOME/*,$HADOOP_YARN_HOME/lib/*</value>
+    <value>$HADOOP_CLIENT_CONF_DIR,$HADOOP_CONF_DIR,$HADOOP_COMMON_HOME/*,$HADOOP_COMMON_HOME/lib/*,$HADOOP_HDFS_HOME/*,$HADOOP_HDFS_HOME/lib/*,$HADOOP_YARN_HOME/*,$HADOOP_YARN_HOME/lib/*</value>
   </property>
 </configuration>

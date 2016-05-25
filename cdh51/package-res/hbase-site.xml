@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <property>
+    <name>hbase.rootdir</name>
+    <value>hdfs://quickstart.cloudera:8020/hbase</value>
+  </property>
+  <!-- Controls whether or not secure authentication is enabled for HBase. Possible values are 'simple' (no authentication), and 'kerberos'. -->
+  <property>
+    <name>hbase.security.authentication</name>
+    <value>simple</value>
+  </property>
+  <property>
+    <name>hbase.zookeeper.quorum</name>
+    <value>quickstart.cloudera</value>
+  </property>
+  <property>
+    <name>hbase.zookeeper.property.clientPort</name>
+    <value>2181</value>
+  </property>
+</configuration>
