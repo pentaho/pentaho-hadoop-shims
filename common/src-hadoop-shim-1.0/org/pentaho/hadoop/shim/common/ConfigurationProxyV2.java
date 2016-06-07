@@ -42,6 +42,7 @@ public class ConfigurationProxyV2 implements Configuration {
   public ConfigurationProxyV2() throws IOException {
     job = Job.getInstance();
     job.getConfiguration().addResource( "hdfs-site.xml" );
+    job.getConfiguration().addResource( "hive-site.xml" );
   }
 
   public JobConf getJobConf() {
