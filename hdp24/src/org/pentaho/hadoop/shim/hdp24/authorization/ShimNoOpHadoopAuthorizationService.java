@@ -24,13 +24,13 @@ package org.pentaho.hadoop.shim.hdp24.authorization;
 
 
 import org.pentaho.hadoop.shim.common.CommonHadoopShim;
-import org.pentaho.hadoop.shim.common.HadoopShimImpl;
 import org.pentaho.hadoop.shim.common.authorization.NoOpHadoopAuthorizationService;
+import org.pentaho.hadoop.shim.hdp24.HadoopShim;
 
 public class ShimNoOpHadoopAuthorizationService extends NoOpHadoopAuthorizationService {
 
   @Override protected CommonHadoopShim getHadoopShim() {
-    return new HadoopShimImpl() {
+    return new HadoopShim() {
       @Override protected String getDefaultJobtrackerPort() {
         return "50300";
       }
