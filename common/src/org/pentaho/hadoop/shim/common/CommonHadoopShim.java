@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2016 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -109,6 +109,7 @@ public class CommonHadoopShim implements HadoopShim {
   static {
     JDBC_POSSIBLE_DRIVER_MAP.put( "hive2Simba", "org.pentaho.hadoop.shim.common.CommonHadoopShim$NotSupportedDriver" );
     JDBC_POSSIBLE_DRIVER_MAP.put( "ImpalaSimba", "org.pentaho.hadoop.shim.common.CommonHadoopShim$NotSupportedDriver" );
+    JDBC_POSSIBLE_DRIVER_MAP.put( "SparkSqlSimba", "org.pentaho.hadoop.shim.common.CommonHadoopShim$NotSupportedDriver" );
   }
 
   @SuppressWarnings( "unchecked" )
