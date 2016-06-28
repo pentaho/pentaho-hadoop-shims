@@ -205,7 +205,8 @@ public class PentahoMapRunnable<K1, V1, K2, V2> implements MapRunnable<K1, V1, K
         if ( System.currentTimeMillis() > deadline ) {
           StringBuilder stringBuilder = new StringBuilder( "Failed to initialize plugins: " );
           for ( MissingTrans missingTrans : missingTranses ) {
-            stringBuilder.append( missingTrans );
+            stringBuilder.append( missingTrans.getMissingPluginId() );
+            stringBuilder.append( " on step " ).append( missingTrans.getStepName() );
             stringBuilder.append( ", " );
           }
           stringBuilder.setLength( stringBuilder.length() - 2 );
