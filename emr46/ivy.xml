@@ -147,7 +147,6 @@
     <dependency conf="pmr->default" org="org.apache.hbase" name="hbase-common" rev="${dependency.apache-hbase.revision}" transitive="false"/>
     <dependency conf="pmr->default" org="org.apache.hbase" name="hbase-thrift" rev="${dependency.apache-hbase.revision}" transitive="false"/>
     <dependency conf="pmr->default" org="org.apache.hbase" name="hbase-server" rev="${dependency.apache-hbase.revision}" transitive="false"/>
-    <dependency conf="pmr->default" org="org.apache.hbase" name="hbase-examples" rev="${dependency.apache-hbase.revision}" transitive="false"/>
     <dependency conf="pmr->default" org="com.yammer.metrics" name="metrics-core" rev="${dependency.metrics-core.revision}" transitive="false" changing="true"/>
     <dependency conf="pmr->default" org="org.apache.zookeeper" name="zookeeper" rev="${dependency.apache-zookeeper.revision}" transitive="false"/>
 
