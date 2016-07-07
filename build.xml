@@ -162,6 +162,22 @@
     </for>
   </target>
 
+  <target name="jacoco-integration" depends="init">
+    <for list="${modules}" param="module" trim="true">
+      <sequential>
+        <ant antfile="build.xml" dir="@{module}" inheritall="false" target="jacoco-integration" />
+      </sequential>
+    </for>
+  </target>
+
+  <target name="checkstyle" depends="init">
+    <for list="${modules}" param="module" trim="true">
+      <sequential>
+        <ant antfile="build.xml" dir="@{module}" inheritall="false" target="checkstyle" />
+      </sequential>
+    </for>
+  </target>
+
   <target name="ivy-report" depends="init">
     <for list="${modules}" param="module" trim="true">
       <sequential>
