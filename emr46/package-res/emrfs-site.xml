@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+  <!--
+  <property>
+    <name>fs.s3n.endpoint</name>
+    <value>s3.amazonaws.com</value>
+    <description>
+      Endpoint to use for s3.
+    </description>
+  </property>
+  <property>
+    <name>fs.s3n.awsAccessKeyId</name>
+    <value>InsertYourValueHere</value>
+  </property>
+  <property>
+    <name>fs.s3n.awsSecretAccessKey</name>
+    <value>InsertYourValueHere</value>
+  </property>
+  <property>
+    <name>fs.s3.awsAccessKeyId</name>
+    <value>InsertYourValueHere</value>
+  </property>
+  <property>
+    <name>fs.s3.awsSecretAccessKey</name>
+    <value>InsertYourValueHere</value>
+  </property>-->
+</configuration>
