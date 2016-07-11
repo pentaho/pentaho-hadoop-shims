@@ -130,7 +130,7 @@
     <dependency conf="default" org="org.apache.thrift" name="libthrift" rev="${dependency.thrift.revision}" changing="false" transitive="false"/>
     <dependency conf="default" org="org.apache.oozie" name="oozie-core" rev="${dependency.apache-oozie.revision}" changing="true" transitive="false"/>
     <dependency conf="default" org="org.apache.oozie" name="oozie-client" rev="${dependency.apache-oozie.revision}" changing="true" transitive="false"/>
-    <dependency conf="default" org="org.apache.sqoop" name="sqoop" rev="${dependency.apache-sqoop.revision}"  changing="false" transitive="false" m:classifier="${dependency.apache-sqoop.classifier}"/>
+    <dependency conf="default" org="org.apache.sqoop" name="sqoop" rev="${dependency.apache-sqoop.revision}"  changing="false" transitive="false"/>
     <dependency conf="default" org="org.apache.pig" name="pig" rev="${dependency.pig.revision}" changing="false" transitive="false" m:classifier="${dependency.pig.classifier}"/>
     <dependency conf="default" org="pentaho" name="pentaho-hdfs-vfs" rev="${dependency.pentaho-hdfs-vfs.revision}" transitive="false" changing="true"/>
     <!--
