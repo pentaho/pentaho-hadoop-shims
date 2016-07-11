@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2014 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2016 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -36,7 +36,7 @@ public class ShimNoOpHadoopAuthorizationService extends NoOpHadoopAuthorizationS
   }
 
   @Override protected CommonPigShim getPigShim() {
-    return new PigShimImpl(){
+    return new PigShimImpl() {
       @Override public boolean isLocalExecutionSupported() {
         return false;
       }
