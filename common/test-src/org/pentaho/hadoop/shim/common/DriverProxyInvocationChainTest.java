@@ -184,7 +184,6 @@ public class DriverProxyInvocationChainTest {
 
       conn.getMetaData().getTables( null, schema, null, null );
       verify( statementMock ).execute( "use dbName" );
-      verify( statementMock ).execute( "set pentaho.current.dbname=dbName" );
       verify( statementMock ).executeQuery( "show tables in " + schema );
     }
   }

@@ -549,17 +549,9 @@ public class DriverProxyInvocationChain {
     }
   }
 
-  /**
-   * After it is possible to specify dbname mentioned in connection url using either: ex: 'use
-   * ${hiveconf:pentaho.current.dbname}'; or use in other queries: ex: 'select * from
-   * ${hiveconf:pentaho.current.dbname}.sometable;'
-   */
   protected static void useSchema( String dbName, Statement statement ) throws SQLException {
     if ( dbName.trim().length() > 0 ) {
       String queries = String.format( "use %s", dbName );
-      statement.execute( queries );
-      queries = String.format( "set %s=%s", PENTAHO_CURRENT_DBNAME, dbName );
-      //String queries = String.format( "use %s;set %s=%s", dbName, PENTAHO_CURRENT_DBNAME, dbName );
       statement.execute( queries );
     }
   }
