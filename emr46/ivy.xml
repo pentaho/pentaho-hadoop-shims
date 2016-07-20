@@ -164,7 +164,7 @@
     <dependency conf="test->default" org="org.hamcrest" name="hamcrest-core" rev="${dependency.hamcrest-core.revision}" transitive="false"/>
     <dependency conf="test->default" org="org.safehaus.jug" name="jug-lgpl" rev="${dependency.jug-lgpl.revision}" transitive="false"/>
     <dependency conf="test->default" org="org.mockito" name="mockito-all" rev="${dependency.mockito-all.revision}" transitive="false" />
-    <dependency conf="test->default" org="pentaho" name="pentaho-hadoop-shims-api-test" rev="${dependency.pentaho-hadoop-shims-api-test.revision}" changing="true"/>
+    <dependency conf="test->default" org="pentaho" name="pentaho-hadoop-shims-api-test" rev="${dependency.hadoop-shims-api.revision}" changing="true"/>
 
 
     <!--  OSS Licenses file -->
