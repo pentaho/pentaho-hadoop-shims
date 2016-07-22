@@ -110,6 +110,7 @@ public class CommonHadoopShim implements HadoopShim {
     JDBC_POSSIBLE_DRIVER_MAP.put( "hive2Simba", "org.pentaho.hadoop.shim.common.CommonHadoopShim$NotSupportedDriver" );
     JDBC_POSSIBLE_DRIVER_MAP.put( "ImpalaSimba", "org.pentaho.hadoop.shim.common.CommonHadoopShim$NotSupportedDriver" );
     JDBC_POSSIBLE_DRIVER_MAP.put( "SparkSqlSimba", "org.pentaho.hadoop.shim.common.CommonHadoopShim$NotSupportedDriver" );
+    JDBC_POSSIBLE_DRIVER_MAP.put( "Impala", "org.apache.hive.jdbc.HiveDriver" );
   }
 
   @SuppressWarnings( "unchecked" )
