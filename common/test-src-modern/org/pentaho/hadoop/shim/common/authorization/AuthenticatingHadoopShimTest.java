@@ -29,7 +29,9 @@ import org.pentaho.hadoop.shim.spi.HadoopShim;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
 /**
@@ -70,5 +72,47 @@ public class AuthenticatingHadoopShimTest {
     assertTrue( "Activator class was not loaded", initialized1.get() );
     assertTrue( "Second activator class was not loaded", initialized2.get() );
     verify( shimMock ).onLoad( conf, hcfsm );
+  }
+
+  @Test
+  public void testOnLoadNoAuthInCaseImpersonationDisabled() throws Exception {
+    AuthenticatingHadoopShim shim = spy( new AuthenticatingHadoopShim() );
+    HadoopAuthorizationService has = mock( HadoopAuthorizationService.class );
+    HadoopShim shimMock = mock( HadoopShim.class );
+    when( has.getShim( HadoopShim.class ) ).thenReturn( shimMock );
+    shim.setHadoopAuthorizationService( has );
+    HadoopConfiguration conf = mock( HadoopConfiguration.class );
+    Properties props = new Properties();
+    props.setProperty( "authentication.superuser.provider",
+      "some-kerberos" );
+    when( conf.getConfigProperties() ).thenReturn( props );
+    HadoopConfigurationFileSystemManager hcfsm = mock( HadoopConfigurationFileSystemManager.class );
+    try {
+      shim.onLoad( conf, hcfsm );
+    } catch ( RuntimeException e ) {
+      assertEquals( "Unable to find relevant provider for chosen authentication method (id of some-kerberos",
+        e.getMessage() );
+    }
+
+    props = new Properties();
+    props.setProperty( "authentication.superuser.provider", "some-kerberos" );
+    props.setProperty( "pentaho.authentication.default.mapping.impersonation.type", "list" );
+    when( conf.getConfigProperties() ).thenReturn( props );
+    try {
+      shim.onLoad( conf, hcfsm );
+    } catch ( RuntimeException e ) {
+      assertEquals( "Unable to find relevant provider for chosen authentication method (id of some-kerberos",
+        e.getMessage() );
+    }
+
+    props = new Properties();
+    props.setProperty( "authentication.superuser.provider", "some-kerberos" );
+    props.setProperty( "pentaho.authentication.default.mapping.impersonation.type", "disabled" );
+    when( conf.getConfigProperties() ).thenReturn( props );
+    try {
+      shim.onLoad( conf, hcfsm );
+    } catch ( RuntimeException e ) {
+      fail( e.toString() );
+    }
   }
 }
