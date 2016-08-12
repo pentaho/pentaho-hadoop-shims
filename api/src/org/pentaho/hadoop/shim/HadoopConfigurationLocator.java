@@ -210,14 +210,19 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
       excludedJars = excludedJarsProperty.split( "," );
       if ( excludedJars != null ) {
         for ( String excludedJar : excludedJars ) {
-          pattern = Pattern.compile( ".*/" + excludedJar.toLowerCase() + "-\\d[\\.\\w]*\\.jar$" );
+          pattern = Pattern.compile( ".*/" + excludedJar.toLowerCase() + "-.*\\.jar$" );
+          matcher = pattern.matcher( "" );
           Iterator<URL> iterator = urls.listIterator();
           while ( iterator.hasNext() ) {
             URL url = iterator.next();
             if ( url.toString().toLowerCase().contains( excludedJar.toLowerCase() ) ) {
-              matcher = pattern.matcher( url.toString().toLowerCase() );
-              if ( matcher.matches() ) {
+              if ( excludedJar.endsWith( ".jar" ) || url.toString().toLowerCase()
+                .contains( excludedJar.toLowerCase() + ".jar" ) ) {
                 iterator.remove();
+              } else {
+                if ( matcher.reset( url.toString().toLowerCase() ).matches() ) {
+                  iterator.remove();
+                }
               }
             }
           }

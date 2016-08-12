@@ -1,18 +1,23 @@
 /*******************************************************************************
+ *
  * Pentaho Big Data
- * <p>
+ *
  * Copyright (C) 2002-2016 by Pentaho : http://www.pentaho.com
- * <p>
- * ******************************************************************************
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ *
+ *******************************************************************************
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
- * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations under the License.
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
  ******************************************************************************/
 
 package org.pentaho.hadoop.shim;
@@ -67,28 +72,12 @@ public class HadoopConfigurationLocatorTest {
     p.setProperty( "classpath", "" );
     p.setProperty( "library.path", "" );
     p.setProperty( "required.classes", HadoopConfigurationLocatorTest.class.getName() );
-    p.setProperty( "exclude.jars", "" );
     p.store( configFile.getContent().getOutputStream(), "Test Configuration A" );
     configFile.close();
 
     // Create the implementation jar
     FileObject implJar = aConfigFolder.resolveFile( "a-config.jar" );
     implJar.createFile();
-
-    FileObject implXercesJar = aConfigFolder.resolveFile( "xercesImpl-2.9.1.jar" );
-    implXercesJar.createFile();
-
-    FileObject implXmlApisJar = aConfigFolder.resolveFile( "xml-apis-1.3.04.jar" );
-    implXmlApisJar.createFile();
-
-    FileObject implXmlApisExtJar = aConfigFolder.resolveFile( "xml-apis-ext-1.3.04.jar" );
-    implXmlApisExtJar.createFile();
-
-    FileObject implXercesFakeVersionJar = aConfigFolder.resolveFile( "xerces-version-1.8.0.jar" );
-    implXercesFakeVersionJar.createFile();
-
-    FileObject implXercesImpl2Jar = aConfigFolder.resolveFile( "xercesImpl2-2.9.1.jar" );
-    implXercesImpl2Jar.createFile();
 
     // Use ShrinkWrap to create the jar and write it out to VFS
     JavaArchive archive = ShrinkWrap.create( JavaArchive.class, "a-configuration.jar" ).addAsServiceProvider(
@@ -322,66 +311,8 @@ public class HadoopConfigurationLocatorTest {
     FileObject root = VFS.getManager().resolveFile( HADOOP_CONFIGURATIONS_PATH );
 
     List<URL> urls = locator.parseURLs( root, "a,b" );
-    assertEquals( 7, urls.size() );
+    assertEquals( 2, urls.size() );
     assertEquals( root.getURL().toURI().resolve( "hadoop-configurations/a/" ), urls.get( 0 ).toURI() );
     assertEquals( root.getURL().toURI().resolve( "hadoop-configurations/a/a-config.jar" ), urls.get( 1 ).toURI() );
-  }
-
-  @Test
-  public void filterJars_null_args() throws Exception {
-    HadoopConfigurationLocator locator = new HadoopConfigurationLocator();
-    FileObject root = VFS.getManager().resolveFile( HADOOP_CONFIGURATIONS_PATH );
-
-    List<URL> list = locator.filterJars( null, null );
-
-    assertNull( list );
-  }
-
-  @Test
-  public void filterJars_null_arg_excludedJarsProperty() throws Exception {
-    HadoopConfigurationLocator locator = new HadoopConfigurationLocator();
-    FileObject root = VFS.getManager().resolveFile( HADOOP_CONFIGURATIONS_PATH );
-
-    List<URL> urls = locator.parseURLs( root, "a,b" );
-    List<URL> list = locator.filterJars( urls, null );
-
-    assertEquals( 7, list.size() );
-  }
-
-  @Test
-  public void filterJars_arg_excludedJarsProperty_emptyString() throws Exception {
-    HadoopConfigurationLocator locator = new HadoopConfigurationLocator();
-    FileObject root = VFS.getManager().resolveFile( HADOOP_CONFIGURATIONS_PATH );
-
-    List<URL> urls = locator.parseURLs( root, "a,b" );
-    List<URL> list = locator.filterJars( urls, "" );
-
-    assertEquals( 7, list.size() );
-  }
-
-  @Test
-  public void filterJars_arg_urls_containsOnlyExcludedJars() throws Exception {
-    HadoopConfigurationLocator locator = new HadoopConfigurationLocator();
-    FileObject root = VFS.getManager().resolveFile( HADOOP_CONFIGURATIONS_PATH );
-
-    List<URL> urls = locator.parseURLs( root, "a,b" );
-    urls.remove( 0 );
-    urls.remove( 0 );
-
-    List<URL> list = locator.filterJars( urls, "xercesImpl,xml-apis,xml-apis-ext,xerces-version,xercesImpl2" );
-
-    assertEquals( 0, list.size() );
-    assertNotNull( list );
-  }
-
-  @Test
-  public void filterJars_removeOnlyXercesImpl() throws Exception {
-    HadoopConfigurationLocator locator = new HadoopConfigurationLocator();
-    FileObject root = VFS.getManager().resolveFile( HADOOP_CONFIGURATIONS_PATH );
-
-    List<URL> urls = locator.parseURLs( root, "a,b" );
-    List<URL> list = locator.filterJars( urls, "xercesImpl" );
-
-    assertEquals( 6, list.size() );
   }
 }
