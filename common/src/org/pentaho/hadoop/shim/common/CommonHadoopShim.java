@@ -1,23 +1,18 @@
 /*******************************************************************************
- *
  * Pentaho Big Data
- *
+ * <p>
  * Copyright (C) 2002-2016 by Pentaho : http://www.pentaho.com
- *
- *******************************************************************************
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with
+ * <p>
+ * ******************************************************************************
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  ******************************************************************************/
 
 package org.pentaho.hadoop.shim.common;
@@ -162,14 +157,19 @@ public class CommonHadoopShim implements HadoopShim {
   @Override
   public Driver getJdbcDriver( String driverType ) {
     try {
+      Driver newInstance = null;
       Class<? extends Driver> clazz = JDBC_DRIVER_MAP.get( driverType );
       if ( clazz != null ) {
-        Driver newInstance = clazz.newInstance();
+        newInstance = clazz.newInstance();
         return DriverProxyInvocationChain.getProxy( Driver.class, newInstance );
       } else {
         clazz = tryToLoadDriver( JDBC_POSSIBLE_DRIVER_MAP.get( driverType ) );
         if ( clazz != null ) {
-          return clazz.newInstance();
+          newInstance = clazz.newInstance();
+          if ( driverType.equals( "Impala" ) ) {
+            return DriverProxyInvocationChain.getProxy( Driver.class, newInstance );
+          }
+          return newInstance;
         }
         return null;
       }
@@ -216,7 +216,7 @@ public class CommonHadoopShim implements HadoopShim {
   public DistributedCacheUtil getDistributedCacheUtil() throws ConfigurationException {
     if ( dcUtil == null ) {
       throw new ConfigurationException( BaseMessages.getString( CommonHadoopShim.class,
-          "CommonHadoopShim.DistributedCacheUtilMissing" ) );
+        "CommonHadoopShim.DistributedCacheUtilMissing" ) );
     }
     return dcUtil;
   }
@@ -224,11 +224,11 @@ public class CommonHadoopShim implements HadoopShim {
   @Override
   public String[] getNamenodeConnectionInfo( Configuration c ) {
     URI namenode = org.apache.hadoop.fs.FileSystem.getDefaultUri( ShimUtils.asConfiguration( c ) );
-    String[] result = new String[2];
+    String[] result = new String[ 2 ];
     if ( namenode != null ) {
-      result[0] = namenode.getHost();
+      result[ 0 ] = namenode.getHost();
       if ( namenode.getPort() != -1 ) {
-        result[1] = String.valueOf( namenode.getPort() );
+        result[ 1 ] = String.valueOf( namenode.getPort() );
       }
     }
     return result;
@@ -236,11 +236,11 @@ public class CommonHadoopShim implements HadoopShim {
 
   @Override
   public String[] getJobtrackerConnectionInfo( Configuration c ) {
-    String[] result = new String[2];
+    String[] result = new String[ 2 ];
     if ( !"local".equals( c.get( "mapred.job.tracker", "local" ) ) ) {
       InetSocketAddress jobtracker = getJobTrackerAddress( c );
-      result[0] = jobtracker.getHostName();
-      result[1] = String.valueOf( jobtracker.getPort() );
+      result[ 0 ] = jobtracker.getHostName();
+      result[ 1 ] = String.valueOf( jobtracker.getPort() );
     }
     return result;
   }
@@ -252,7 +252,8 @@ public class CommonHadoopShim implements HadoopShim {
 
   @Override
   public void configureConnectionInformation( String namenodeHost, String namenodePort, String jobtrackerHost,
-      String jobtrackerPort, Configuration conf, List<String> logMessages ) throws Exception {
+                                              String jobtrackerPort, Configuration conf, List<String> logMessages )
+    throws Exception {
 
     if ( namenodeHost == null || namenodeHost.trim().length() == 0 ) {
       throw new Exception( "No hdfs host specified!" );
@@ -262,8 +263,8 @@ public class CommonHadoopShim implements HadoopShim {
     }
 
     if ( namenodePort != null
-        && namenodePort.trim().length() != 0
-        && !"-1".equals( namenodePort.trim() ) ) {
+      && namenodePort.trim().length() != 0
+      && !"-1".equals( namenodePort.trim() ) ) {
       namenodePort = ":" + namenodePort;
     } else {
       // it's been realized that this is pretty fine to have
