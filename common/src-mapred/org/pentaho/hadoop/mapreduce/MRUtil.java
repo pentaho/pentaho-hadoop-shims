@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2016 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -62,7 +62,7 @@ public class MRUtil {
     TransMeta transMeta = transConfiguration.getTransMeta();
     String carteObjectId = UUID.randomUUID().toString();
     SimpleLoggingObject servletLoggingObject =
-      new SimpleLoggingObject( "HADOOP_MAPPER", LoggingObjectType.CARTE, null ); //$NON-NLS-1$
+        new SimpleLoggingObject( "HADOOP_MAPPER", LoggingObjectType.CARTE, null ); //$NON-NLS-1$
     servletLoggingObject.setContainerObjectId( carteObjectId );
     TransExecutionConfiguration executionConfiguration = transConfiguration.getTransExecutionConfiguration();
     servletLoggingObject.setLogLevel( executionConfiguration.getLogLevel() );
@@ -86,7 +86,8 @@ public class MRUtil {
   /**
    * Initialize the Kettle environment with settings from the provided configuration
    *
-   * @param conf Configuration to configure Kettle environment with
+   * @param conf
+   *          Configuration to configure Kettle environment with
    */
   private static void initKettleEnvironment( Configuration conf ) throws KettleException {
     if ( !KettleEnvironment.isInitialized() ) {
@@ -109,13 +110,13 @@ public class MRUtil {
       String taskId = job.get( "mapred.task.id" );
       variableSpace.setVariable( "Internal.Hadoop.TaskId", taskId );
       // TODO: Verify if the string range holds true for all Hadoop distributions
-      // Extract the node number from the task ID. 
-      // The consensus currently is that it's the part after the last underscore. 
-      // 
-      // Examples: 
-      // job_201208090841_9999 
-      // job_201208090841_10000 
-      // 
+      // Extract the node number from the task ID.
+      // The consensus currently is that it's the part after the last underscore.
+      //
+      // Examples:
+      // job_201208090841_9999
+      // job_201208090841_10000
+      //
       String nodeNumber;
       if ( Const.isEmpty( taskId ) ) {
         nodeNumber = "0";
@@ -127,8 +128,8 @@ public class MRUtil {
           nodeNumber = "0";
         }
       }
-      // get rid of zeroes. 
-      // 
+      // get rid of zeroes.
+      //
       variableSpace.setVariable( "Internal.Hadoop.NodeNumber", Integer.toString( Integer.valueOf( nodeNumber ) ) );
     }
   }
@@ -144,7 +145,8 @@ public class MRUtil {
    * Determines the Kettle Home property to use for this invocation from the configuration provided. If it is not set
    * the current working directory will be used.
    *
-   * @param conf Configuration to check for Kettle Home to be set in.
+   * @param conf
+   *          Configuration to check for Kettle Home to be set in.
    * @return The Kettle Home directory to use
    */
   public static String getKettleHomeProperty( Configuration conf ) {
@@ -159,19 +161,27 @@ public class MRUtil {
    * Builds a comma-separated list of paths to load Kettle plugins from. To be used as the value for the System property
    * {@link Const.PLUGIN_BASE_FOLDERS_PROP}.
    *
-   * @param conf Configuration to retrieve properties from
+   * @param conf
+   *          Configuration to retrieve properties from
    * @return Comma-separated list of paths to look for Kettle plugins in
    */
   public static String getPluginDirProperty( final Configuration conf ) throws KettleException {
     // Load plugins from the directory specified in the configuration
     String kettlePluginDir = conf.get( PROPERTY_PENTAHO_KETTLE_PLUGINS_DIR );
-
     if ( StringUtils.isEmpty( kettlePluginDir ) ) {
-      kettlePluginDir = getWorkingDir();
+      kettlePluginDir = getDefaultPluginDirs();
     }
-
-    kettlePluginDir = Const.DEFAULT_PLUGIN_BASE_FOLDERS + "," + kettlePluginDir;
     return kettlePluginDir;
+  }
+
+  /**
+   * Returns a comma-separated list of default paths to load Kettle plugins from.
+   *
+   * @return
+   */
+  private static final String getDefaultPluginDirs() {
+    return new StringBuilder().append( Const.DEFAULT_PLUGIN_BASE_FOLDERS ).append( "," ).append( getWorkingDir() )
+        .append( Const.FILE_SEPARATOR ).append( "plugins" ).toString();
   }
 
   /**
@@ -226,7 +236,7 @@ public class MRUtil {
       fos.write( System.getProperty( "line.separator" ).getBytes() ); //$NON-NLS-1$
       fos.close();
     } catch ( Throwable t ) {
-      //ignore
+      // ignore
     }
   }
 }
