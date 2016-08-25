@@ -21,6 +21,7 @@
   <property name="ivy.artifact.mapred.id" value="${ivy.artifact.id}-mapred" description="Name of artifact id for the mapred jar" />
   <property name="mapred.artifact.name" value="${ivy.artifact.mapred.id}-${project.revision}.jar" description="Name of the mapred jar file to create"/>
   <property name="hbase-comparators.artifact.name" value="${ivy.artifact.id}-hbase-comparators-${project.revision}.jar" description="Name of the mapred jar file to create"/>
+  <property name="sonar.sources" value="${bin.dir}/sonar-prep" />
 
   <target name="init-common" depends="install-antcontrib">
     <property name="src.common-hbase.dir" value="${common.dir}/src-hbase-${hbase.generation}"/>
@@ -566,5 +567,20 @@
 		</junitreport>
 
 	</target>
+
+    <target name="sonar-prepare-sources" >
+        <delete dir="${sonar.sources}" />
+        <mkdir dir="${sonar.sources}" />
+        <copy todir="${sonar.sources}" flatten="false">
+            <fileset dir="${src.dir}" />
+            <fileset dir="${src.common.dir}" />
+            <fileset dir="${src.common.modern.shim.dir}" />
+            <fileset dir="${src.common.hadoop.shim.dir}" />
+            <fileset dir="${src.common.hbase.shim.dir}" />
+            <fileset dir="${src.common.pig.shim.dir}" />
+        </copy>
+    </target>
+
+    <target name="sonar" depends="sonar-prepare-sources,subfloor.sonar"/>
 
 </project>
