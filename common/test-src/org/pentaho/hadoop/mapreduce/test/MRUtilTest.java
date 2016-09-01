@@ -23,6 +23,7 @@
 package org.pentaho.hadoop.mapreduce.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -31,6 +32,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.exception.KettleException;
+import org.pentaho.di.trans.Trans;
+import org.pentaho.di.trans.TransConfiguration;
+import org.pentaho.di.trans.TransExecutionConfiguration;
+import org.pentaho.di.trans.TransMeta;
+import org.pentaho.di.trans.TransMeta.TransformationType;
 import org.pentaho.hadoop.mapreduce.MRUtil;
 
 /**
@@ -39,7 +45,10 @@ import org.pentaho.hadoop.mapreduce.MRUtil;
 public class MRUtilTest {
   private static final String USER_DIR = System.getProperty( "user.dir" );
   private static final String EXPECTED_DEFAULT_PLUGIN_DIR = USER_DIR + Const.FILE_SEPARATOR + "plugins";
+  private static final TransMeta TRANS_META = getTestTransMeta();
+  private static final TransConfiguration TRANS_EXEC_CONFIG = getTestTransExecConfig( TRANS_META );
   private Configuration c;
+  private Trans trans;
 
   @Before
   public void setUp() {
@@ -79,4 +88,42 @@ public class MRUtilTest {
     assertEquals( KETTLE_HOME, kettleHome );
   }
 
+  @Test
+  public void createTrans_normalEngine() throws Exception {
+    // Reset transformationType from default value=TransformationType.Normal to the
+    // TransformationType.SerialSingleThreaded to get more reliable use case
+    TRANS_META.setTransformationType( TransformationType.SerialSingleThreaded );
+    assertEquals( TransformationType.SerialSingleThreaded, TRANS_META.getTransformationType() );
+
+    // get transformation with singleThreaded=false
+    trans = MRUtil.getTrans( c, TRANS_EXEC_CONFIG.getXML(), false );
+    assertNotNull( trans );
+    assertEquals( TRANS_META.getName(), trans.getTransMeta().getName() );
+    assertEquals( TransMeta.TransformationType.Normal, trans.getTransMeta().getTransformationType() );
+  }
+
+  @Test
+  public void createTrans_singleThreaded() throws Exception {
+    // Reset transformationType from default value=TransformationType.Normal to the
+    // TransformationType.SerialSingleThreaded to get more reliable use case
+    TRANS_META.setTransformationType( TransformationType.SerialSingleThreaded );
+    assertEquals( TransformationType.SerialSingleThreaded, TRANS_META.getTransformationType() );
+
+    // get transformation with singleThreaded=true
+    trans = MRUtil.getTrans( c, TRANS_EXEC_CONFIG.getXML(), true );
+    assertNotNull( trans );
+    assertEquals( TRANS_META.getName(), trans.getTransMeta().getName() );
+    assertEquals( TransMeta.TransformationType.SingleThreaded, trans.getTransMeta().getTransformationType() );
+  }
+
+  private static TransMeta getTestTransMeta() {
+    TransMeta transMeta = new TransMeta();
+    transMeta.setName( "Test transformation" );
+    return transMeta;
+  }
+
+  private static TransConfiguration getTestTransExecConfig( TransMeta trMeta ) {
+    TransExecutionConfiguration transExecConfig = new TransExecutionConfiguration();
+    return new TransConfiguration( trMeta, transExecConfig );
+  }
 }
