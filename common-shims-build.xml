@@ -1,7 +1,7 @@
 <!--===========================================================================
   This is the common build file for all shim implementation projects. This
   requires the api project to be jar'd up first; it is directly referenced.
-  
+
   See ../build-res/subfloor.xml for more details
 ============================================================================-->
 <project name="common-shims-build" xmlns:ivy="antlib:org.apache.ivy.ant">
@@ -109,8 +109,8 @@
     <mkdir dir="${common.dir}/src-dummy" />
   </target>
 
-  <!-- 
-  resolve related targets so we can resolve "provided" jars separate from 
+  <!--
+  resolve related targets so we can resolve "provided" jars separate from
   normal ones so they don't get automatically packaged in with the archives.
   -->
   <target name="clean-jars" depends="subfloor.clean-jars">
@@ -298,6 +298,46 @@
       <report format="frames" todir="${testreports.html.dir}" />
     </junitreport>
   </target>
+
+  <!--=======================================================================
+      Overrride subfloor 'integration-test' target definition to include common tests
+      ====================================================================-->
+	  <!-- Run integration tests -->
+	  <target name="integration-test" depends="compile,compile-tests,init-test-reports" description="Compiles and runs integration tests">
+	    <junit maxmemory="${junit.maxmemory}"
+	           fork="yes"
+	           failureProperty="test.failed"
+	           haltonfailure="${junit.haltonfailure}"
+	           printsummary="yes">
+	      <sysproperty key="java.awt.headless" value="${headless.unittest}" />
+
+	      <syspropertyset>
+	        <propertyref prefix="junit.sysprop." />
+	        <mapper type="glob" from="junit.sysprop.*" to="*"/>
+	      </syspropertyset>
+
+	      <classpath refid="test.classpath" />
+	      <formatter type="xml" />
+	      <test name="${testcase}" todir="${inttestreports.xml.dir}" if="testcase" />
+	      <batchtest fork="yes" todir="${inttestreports.xml.dir}" unless="testcase">
+	        <fileset dir="${inttestsrc.dir}" casesensitive="yes">
+	          <include name="${junit.integration.test.pattern}" />
+	        </fileset>
+	        <fileset dir="${testsrc.common.dir}" casesensitive="yes">
+	          <include name="${junit.integration.test.pattern}" />
+	        </fileset>
+	      </batchtest>
+	    </junit>
+
+	    <junitreport todir="${inttestreports.html.dir}">
+	      <fileset dir="${inttestreports.xml.dir}">
+	        <include name="TEST-*.xml" />
+	      </fileset>
+	      <report format="frames" todir="${inttestreports.html.dir}" />
+	    </junitreport>
+	  </target>
+
+
 
   <!-- Run normal and common tests -->
   <target name="cobertura.test-instrumented"
