@@ -1,23 +1,18 @@
 /*******************************************************************************
- *
  * Pentaho Big Data
- *
- * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
- *
- *******************************************************************************
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with
+ * <p>
+ * Copyright (C) 2002-2016 by Pentaho : http://www.pentaho.com
+ * <p>
+ * ******************************************************************************
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  ******************************************************************************/
 
 package org.pentaho.hadoop.shim;
@@ -36,6 +31,8 @@ import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSelectInfo;
@@ -68,6 +65,8 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
   private static final String CONFIG_PROPERTIES_FILE = "config.properties";
 
   private static final String CONFIG_PROPERTY_IGNORE_CLASSES = "ignore.classes";
+
+  private static final String CONFIG_PROPERTY_EXCLUDE_JARS = "exclude.jars";
 
   private static final String SHIM_CLASSPATH_IGNORE = "classpath.ignore";
 
@@ -193,6 +192,46 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
     }
   }
 
+  /**
+   * Exclude jars contained in exclude.jars property in config.properties file from the list of URLs
+   *
+   * @param urls                 the list of all the URLs to add to the class loader
+   * @param excludedJarsProperty exclude.jars property from a config.properties file
+   * @return The rest of the jars in {@code urls} after excluding the jars listed in {@code excludedJarsProperty}.
+   */
+
+  protected List<URL> filterJars( List<URL> urls, String excludedJarsProperty ) {
+
+    Pattern pattern;
+    Matcher matcher;
+    String[] excludedJars;
+
+    if ( !( excludedJarsProperty == null || excludedJarsProperty.trim().isEmpty() ) ) {
+      excludedJars = excludedJarsProperty.split( "," );
+      if ( excludedJars != null ) {
+        for ( String excludedJar : excludedJars ) {
+          pattern = Pattern.compile( ".*/" + excludedJar.toLowerCase() + "-.*\\.jar$" );
+          matcher = pattern.matcher( "" );
+          Iterator<URL> iterator = urls.listIterator();
+          while ( iterator.hasNext() ) {
+            URL url = iterator.next();
+            if ( url.toString().toLowerCase().contains( excludedJar.toLowerCase() ) ) {
+              if ( excludedJar.endsWith( ".jar" ) || url.toString().toLowerCase()
+                .contains( excludedJar.toLowerCase() + ".jar" ) ) {
+                iterator.remove();
+              } else {
+                if ( matcher.reset( url.toString().toLowerCase() ).matches() ) {
+                  iterator.remove();
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return urls;
+  }
+
   private List<URL> findJarsIn( FileObject path, final int maxdepth, final Set<String> paths )
     throws FileSystemException {
     FileObject[] jars = path.findFiles( new FileSelector() {
@@ -284,6 +323,8 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
       if ( classpathUrls != null ) {
         jars.addAll( 0, classpathUrls );
       }
+      //Exclude jars contained in exclude.jars property in config.properties file from the list of jars
+      jars = filterJars( jars, configurationProperties.getProperty( CONFIG_PROPERTY_EXCLUDE_JARS ) );
 
       return new HadoopConfigurationClassLoader( jars.toArray( EMPTY_URL_ARRAY ),
         parent, ignoredClasses );
