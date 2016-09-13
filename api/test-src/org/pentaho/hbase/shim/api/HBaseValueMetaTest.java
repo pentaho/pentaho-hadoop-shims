@@ -37,8 +37,10 @@ import org.pentaho.di.core.row.value.ValueMetaInteger;
 import org.pentaho.di.core.row.value.ValueMetaNumber;
 import org.pentaho.di.core.row.value.ValueMetaSerializable;
 import org.pentaho.di.core.row.value.ValueMetaString;
+import org.pentaho.hbase.shim.spi.HBaseBytesUtilShim;
 import org.pentaho.hbase.shim.spi.MockHBaseByteConverterUsingJavaByteBuffer;
 import org.pentaho.hbase.shim.spi.MockHBaseBytesUtilShim;
+import static org.mockito.Mockito.mock;
 
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutput;
@@ -57,16 +59,20 @@ import static org.junit.Assert.*;
 
 public class HBaseValueMetaTest extends HBaseValueMeta {
 
-
+  /**
+   * the byte array with size not covered test methods in {@link org.pentaho.hbase.shim.spi.MockHBaseBytesUtilShim} that allows to get size of the byte arrays.
+   * E.g. {@link org.pentaho.hbase.shim.spi.MockHBaseBytesUtilShim#getSizeOfShort()}
+   */
+  byte[] ENCODED_INCORRECT_BYTE_ARRAY = new byte[] { 1, 1, 1, 1, 1, 1, 1, 1 };
   private static final String DEF_NAME = "col_family,col_name,alias";
   private static final String DEF_NAME_NO_COL_NAME = "col_family";
   private static final String DEF_NAME_EXTRA_PARAM = "col_family,col_name,alias,extra_argument";
   private static final int DEF_TYPE = 0;
   private static final int DEF_LENGTH = 0;
   private static final int DEF_PRECISION = 0;
+  public static final HBaseBytesUtilShim BYTES_UTIL_MOCK = mock( HBaseBytesUtilShim.class );
   public static final MockHBaseBytesUtilShim BYTES_UTIL = new MockHBaseBytesUtilShim();
-  public static final MockHBaseByteConverterUsingJavaByteBuffer
-    BYTE_BUFFER_UTIL = new MockHBaseByteConverterUsingJavaByteBuffer();
+  public static final MockHBaseByteConverterUsingJavaByteBuffer BYTE_BUFFER_UTIL = new MockHBaseByteConverterUsingJavaByteBuffer();
 
   @Rule
   public ExpectedException thrown = ExpectedException.none();
@@ -480,6 +486,24 @@ public class HBaseValueMetaTest extends HBaseValueMeta {
   }
 
   @Test
+  public void testDecodeColumnValueStringIndexedStorageIllegalValue() {
+    String value = "Bogus";
+    byte[] encoded = BYTES_UTIL.toBytes( value );
+
+    HBaseValueMeta mappingMeta = new HBaseValueMeta( "famliy1" + HBaseValueMeta.SEPARATOR + "testcol" + HBaseValueMeta.SEPARATOR + "anAlias", ValueMetaInterface.TYPE_STRING, -1, -1 );
+    mappingMeta.setStorageType( ValueMetaInterface.STORAGE_TYPE_INDEXED );
+    Object[] legalVals = new Object[] { "Value1", "Value2", "Value3" };
+    mappingMeta.setIndex( legalVals );
+
+    try {
+      HBaseValueMeta.decodeColumnValue( encoded, mappingMeta, BYTES_UTIL );
+      fail( "Should have thrown an exception because the supplied value is not in the list of indexed values" );
+    } catch ( Exception ex ) {
+      assertEquals( "Test for IllegalIndexedColumnValue exception", "Value \"1\" is not in the list of legal values for indexed column \"anAlias\"", ex.getMessage().trim() );
+    }
+  }
+
+  @Test
   public void testDecodeColumnValue() throws Exception {
     HBaseValueMeta hbMeta = getHBaseValueMeta();
     hbMeta.setType( 2 );
@@ -490,6 +514,8 @@ public class HBaseValueMetaTest extends HBaseValueMeta {
     hbMeta.setIsLongOrDouble( false );
     keyValue = 3L;
     assertEquals( keyValue, HBaseValueMeta.decodeColumnValue( new byte[] { 1, 1, 1 }, hbMeta, BYTES_UTIL ) );
+    keyValue = (short) 6;
+    assertEquals( Long.valueOf( keyValue.toString() ), HBaseValueMeta.decodeColumnValue( new byte[] { 1, 1, 1, 1, 1 }, hbMeta, BYTES_UTIL ) );
     hbMeta.setIsLongOrDouble( true );
     keyValue = 2L;
     assertEquals( keyValue, HBaseValueMeta.decodeColumnValue( new byte[] { 1, 1, 1, 1 }, hbMeta, BYTES_UTIL ) );
@@ -511,8 +537,7 @@ public class HBaseValueMetaTest extends HBaseValueMeta {
     assertEquals( keyValue, HBaseValueMeta.decodeColumnValue( new byte[] { 1 }, hbMeta, BYTES_UTIL ) );
     hbMeta.setType( 7 );
     keyValue = "";
-    assertEquals( keyValue,
-      HBaseValueMeta.decodeColumnValue( new byte[] { -84, -19, 0, 5, 116, 0, 0 }, hbMeta, BYTES_UTIL ) );
+    assertEquals( keyValue, HBaseValueMeta.decodeColumnValue( new byte[] { -84, -19, 0, 5, 116, 0, 0 }, hbMeta, BYTES_UTIL ) );
     hbMeta.setType( 8 );
     keyValue = new byte[] { 1 };
     assertEquals( keyValue, HBaseValueMeta.decodeColumnValue( (byte[]) keyValue, hbMeta, BYTES_UTIL ) );
@@ -532,11 +557,54 @@ public class HBaseValueMetaTest extends HBaseValueMeta {
 
   @Test
   public void testDecodeBigDecimalSerialized() throws Exception {
-    try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+    try ( ByteArrayOutputStream bos = new ByteArrayOutputStream() ) {
       ObjectOutput out = new ObjectOutputStream( bos );
       int value = 123;
       out.writeObject( new BigDecimal( value ) );
       assertEquals( new BigDecimal( value ), HBaseValueMeta.decodeBigDecimal( bos.toByteArray(), BYTE_BUFFER_UTIL ) );
+    }
+  }
+
+  @Test
+  public void testDecodeColumnValueNumber_ThrownUnknownTypeForColumnException() throws Exception {
+    HBaseValueMeta hbMeta = getHBaseValueMeta();
+    // Number type
+    hbMeta.setType( 1 );
+    try {
+      HBaseValueMeta.decodeColumnValue( ENCODED_INCORRECT_BYTE_ARRAY, hbMeta, BYTES_UTIL );
+      fail( "Should have thrown an exception because the ValueMetaInterface.TYPE_NUMBER should be either Float or Double" );
+    } catch ( Exception ex ) {
+      assertTrue( ex instanceof KettleException );
+      assertEquals( "Test for UnknownTypeForColumn exception", "Unknown type for column", ex.getMessage().trim() );
+    }
+  }
+
+  @Test
+  public void testDecodeColumnValueInteger_ThrownIllegalIntegerLengthException() throws Exception {
+    HBaseValueMeta hbMeta = getHBaseValueMeta();
+    // Integer type
+    hbMeta.setType( 5 );
+    try {
+      HBaseValueMeta.decodeColumnValue( ENCODED_INCORRECT_BYTE_ARRAY, hbMeta, BYTES_UTIL );
+      fail( "Should have thrown an KettleException" );
+    } catch ( Exception ex ) {
+      assertTrue( ex instanceof KettleException );
+      assertEquals( "Test for IllegalIntegerLength exception", "Length of integer column value is not equal to the defined length of a short, int or long", ex.getMessage().trim() );
+    }
+  }
+
+  @Test
+  public void testDecodeColumnValueBoolean_ThrownIllegalIntegerLengthException() throws Exception {
+    HBaseValueMeta hbMeta = getHBaseValueMeta();
+    // Boolean type
+    hbMeta.setType( 4 );
+    byte[] anyStringBytes = "ANY STRING".getBytes();
+    try {
+      HBaseValueMeta.decodeColumnValue( anyStringBytes, hbMeta, BYTE_BUFFER_UTIL );
+      fail( "Should have thrown an KettleException" );
+    } catch ( Exception ex ) {
+      assertTrue( ex instanceof KettleException );
+      assertEquals( "Test for UnableToDecodeBoolean exception", "Unable to decode boolean value", ex.getMessage().trim() );
     }
   }
 
@@ -562,6 +630,10 @@ public class HBaseValueMetaTest extends HBaseValueMeta {
   public void testDecodeBoolFromStringAgainstByteBuffer() throws Exception {
     byte[] yBytes = "Y".getBytes();
     assertEquals( true, HBaseValueMeta.decodeBoolFromString( yBytes, BYTE_BUFFER_UTIL ) );
+    byte[] tBytes = "T".getBytes();
+    assertEquals( true, HBaseValueMeta.decodeBoolFromString( tBytes, BYTE_BUFFER_UTIL ) );
+    byte[] oneBytes = "1".getBytes();
+    assertEquals( true, HBaseValueMeta.decodeBoolFromString( oneBytes, BYTE_BUFFER_UTIL ) );
     byte[] yesBytes = "YES".getBytes();
     assertEquals( true, HBaseValueMeta.decodeBoolFromString( yesBytes, BYTE_BUFFER_UTIL ) );
     byte[] trueBytes = "TRUE".getBytes();
@@ -572,6 +644,10 @@ public class HBaseValueMetaTest extends HBaseValueMeta {
     assertEquals( false, HBaseValueMeta.decodeBoolFromString( noBytes, BYTE_BUFFER_UTIL ) );
     byte[] falseBytes = "FALSE".getBytes();
     assertEquals( false, HBaseValueMeta.decodeBoolFromString( falseBytes, BYTE_BUFFER_UTIL ) );
+    byte[] fBytes = "F".getBytes();
+    assertEquals( false, HBaseValueMeta.decodeBoolFromString( fBytes, BYTE_BUFFER_UTIL ) );
+    byte[] zeroBytes = "0".getBytes();
+    assertEquals( false, HBaseValueMeta.decodeBoolFromString( zeroBytes, BYTE_BUFFER_UTIL ) );
     byte[] anyStringBytes = "ANY STRING".getBytes();
     assertEquals( null, HBaseValueMeta.decodeBoolFromString( anyStringBytes, BYTE_BUFFER_UTIL ) );
   }
@@ -598,18 +674,18 @@ public class HBaseValueMetaTest extends HBaseValueMeta {
     assertEquals( false, HBaseValueMeta.decodeBoolFromNumber( new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 }, BYTE_BUFFER_UTIL ) );
     assertEquals( null, HBaseValueMeta.decodeBoolFromNumber( new byte[] { 0, 0, 2, 0, 0, 0, 0, 2 }, BYTE_BUFFER_UTIL ) );
 
-    byte[] double2 = ByteBuffer.allocate(BYTE_BUFFER_UTIL.getSizeOfDouble()).putDouble(2).array();
+    byte[] double2 = ByteBuffer.allocate( BYTE_BUFFER_UTIL.getSizeOfDouble() ).putDouble( 2 ).array();
     assertEquals( null, HBaseValueMeta.decodeBoolFromNumber( double2, BYTE_BUFFER_UTIL ) );
-    byte[] double0 = ByteBuffer.allocate(BYTE_BUFFER_UTIL.getSizeOfDouble()).putDouble(0).array();
+    byte[] double0 = ByteBuffer.allocate( BYTE_BUFFER_UTIL.getSizeOfDouble() ).putDouble( 0 ).array();
     assertEquals( false, HBaseValueMeta.decodeBoolFromNumber( double0, BYTE_BUFFER_UTIL ) );
-    byte[] double1 = ByteBuffer.allocate(BYTE_BUFFER_UTIL.getSizeOfDouble()).putDouble(1).array();
+    byte[] double1 = ByteBuffer.allocate( BYTE_BUFFER_UTIL.getSizeOfDouble() ).putDouble( 1 ).array();
     assertEquals( true, HBaseValueMeta.decodeBoolFromNumber( double1, BYTE_BUFFER_UTIL ) );
 
-    byte[] float2 = ByteBuffer.allocate(BYTE_BUFFER_UTIL.getSizeOfFloat()).putFloat(2).array();
+    byte[] float2 = ByteBuffer.allocate( BYTE_BUFFER_UTIL.getSizeOfFloat() ).putFloat( 2 ).array();
     assertEquals( null, HBaseValueMeta.decodeBoolFromNumber( float2, BYTE_BUFFER_UTIL ) );
-    byte[] float0 = ByteBuffer.allocate(BYTE_BUFFER_UTIL.getSizeOfFloat()).putFloat(0).array();
+    byte[] float0 = ByteBuffer.allocate( BYTE_BUFFER_UTIL.getSizeOfFloat() ).putFloat( 0 ).array();
     assertEquals( false, HBaseValueMeta.decodeBoolFromNumber( float0, BYTE_BUFFER_UTIL ) );
-    byte[] float1 = ByteBuffer.allocate(BYTE_BUFFER_UTIL.getSizeOfFloat()).putFloat(1).array();
+    byte[] float1 = ByteBuffer.allocate( BYTE_BUFFER_UTIL.getSizeOfFloat() ).putFloat( 1 ).array();
     assertEquals( true, HBaseValueMeta.decodeBoolFromNumber( float1, BYTE_BUFFER_UTIL ) );
 
   }
