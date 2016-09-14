@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Pentaho Big Data
  * <p/>
- * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2016 by Pentaho : http://www.pentaho.com
  * <p/>
  * ******************************************************************************
  * <p/>
@@ -127,6 +127,17 @@ public class CommonHBaseConnection extends HBaseConnection {
             BaseMessages.getString( PKG, "CommonHBaseConnection.Error.MalformedConfigURL" ) );
       }
 
+      if ( !isEmpty( zookeeperQuorum ) && !isEmpty( m_config.get( ZOOKEEPER_QUORUM_KEY ) ) ) {
+
+        if ( !doZookeeperQuorumInNamedClusterAndConfigMatch( zookeeperQuorum ) ) {
+          String message = BaseMessages.
+            getString( PKG, "CommonHBaseConnection.Error.MismatchZookeeperNamedClusterVsConfiguration", zookeeperQuorum, m_config.get( ZOOKEEPER_QUORUM_KEY ) );
+          log.logBasic( message );
+          //no throw exception here as for using some specific cases in host name - aliases that totally different from host name or ips, that case
+          //can be checked only ping ip which is too expensive
+        }
+      }
+
       if ( !isEmpty( zookeeperQuorum ) ) {
         m_config.set( ZOOKEEPER_QUORUM_KEY, zookeeperQuorum );
       }
@@ -152,6 +163,50 @@ public class CommonHBaseConnection extends HBaseConnection {
     } finally {
       Thread.currentThread().setContextClassLoader( cl );
     }
+  }
+
+  private boolean doZookeeperQuorumInNamedClusterAndConfigMatch( String zookeeperQuorum ) {
+    return
+      allZookeperHostsFromNameNodeInConfigQuorum( zookeeperQuorum ) || atLeastOneHostFromConfigInNameClusterZookeeperQuorum( zookeeperQuorum );
+  }
+
+  private boolean allZookeperHostsFromNameNodeInConfigQuorum( String zookeeperQuorum ) {
+    String[] quorum = zookeeperQuorum.toLowerCase().split( "," );
+    String configQuorum = m_config.get( ZOOKEEPER_QUORUM_KEY ).toLowerCase();
+    for ( String node : quorum ) {
+      node = node.trim();
+      //if zookeeper host contains port
+      if ( node.contains( ":" ) ) {
+        node = node.substring( 0, node.indexOf( ":" ) );
+      }
+      if ( !configQuorum.contains( node ) ) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * if short name is used only in config, but fully qualified in named cluster - we check whether at least zookeper
+   * host from config is contained in full string of named cluster quorum
+   *
+   * @param zookeeperQuorum string containing host of zookeeper with ports, separated by comma
+   * @return true if at least on host found
+   */
+  private boolean atLeastOneHostFromConfigInNameClusterZookeeperQuorum( String zookeeperQuorum ) {
+    String[] configZookeeperQuorum = m_config.get( ZOOKEEPER_QUORUM_KEY ).toLowerCase().split( "," );
+    String clientZookeeperQuorum = zookeeperQuorum.toLowerCase();
+    for ( String node : configZookeeperQuorum ) {
+      node = node.trim();
+      //if zookeeper host contains port
+      if ( node.contains( ":" ) ) {
+        node = node.substring( 0, node.indexOf( ":" ) );
+      }
+      if ( clientZookeeperQuorum.contains( node ) ) {
+        return true;
+      }
+    }
+    return false;
   }
 
   protected HBaseClientFactory getHBaseClientFactory( Configuration configuration ) {
