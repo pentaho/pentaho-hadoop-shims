@@ -22,6 +22,7 @@
 
 package org.pentaho.hadoop.shim.common;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs2.AllFileSelector;
 import org.apache.commons.vfs2.FileDepthSelector;
 import org.apache.commons.vfs2.FileObject;
@@ -32,6 +33,7 @@ import org.apache.commons.vfs2.FileType;
 import org.apache.commons.vfs2.FileTypeSelector;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.filecache.DistributedCache;
+import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -46,6 +48,7 @@ import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -102,6 +105,16 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.Dis
    * Name of the Big Data Plugin folder
    */
   public static final String PENTAHO_BIG_DATA_PLUGIN_FOLDER_NAME = "pentaho-big-data-plugin";
+
+  /**
+   * Name of the Shim configuration file
+   */
+  private static final String CONFIG_PROPERTIES = "config.properties";
+
+  /**
+   * Prefix for properties we want to omit when copying to the cluster
+   */
+  private static final String AUTH_PREFIX = "pentaho.authentication";
 
   /**
    * The Hadoop Configuration this Distributed Cache Utility is part of
@@ -408,10 +421,31 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.Dis
     // Use the same replication we'd use for submitting jobs
     short replication = (short) fs.getConf().getInt( "mapred.submit.replication", 10 );
 
-    Path local = new Path( source.getURL().getPath() );
-    fs.copyFromLocalFile( local, dest );
+    if ( source.getURL().toString().endsWith( CONFIG_PROPERTIES ) ) {
+      copyConfigProperties( source, fs, dest );
+    } else {
+      Path local = new Path( source.getURL().getPath() );
+      fs.copyFromLocalFile( local, dest );
+    }
+
     fs.setPermission( dest, CACHED_FILE_PERMISSION );
     fs.setReplication( dest, replication );
+  }
+
+  private void copyConfigProperties( FileObject source, FileSystem fs, Path dest ) {
+    try (FSDataOutputStream output = fs.create( dest );
+         InputStream input = source.getContent().getInputStream() ) {
+
+      List<String> lines = IOUtils.readLines( input );
+      for ( String line : lines ) {
+        if ( !line.startsWith( AUTH_PREFIX ) ) {
+          IOUtils.write( line, output );
+          IOUtils.write( String.format( "%n" ), output );
+        }
+      }
+    } catch ( IOException e ) {
+      throw new RuntimeException( "Error copying modified version of config.properties", e );
+    }
   }
 
   /**
