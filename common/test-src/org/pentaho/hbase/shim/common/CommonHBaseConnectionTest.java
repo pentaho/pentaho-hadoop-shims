@@ -3,21 +3,18 @@
  * <p/>
  * Pentaho Big Data
  * <p/>
- * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2016 by Pentaho : http://www.pentaho.com
  * <p/>
  * ******************************************************************************
  * <p/>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  * <p/>
  * http://www.apache.org/licenses/LICENSE-2.0
  * <p/>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  * <p/>
  * ****************************************************************************
  */
@@ -32,37 +29,38 @@ import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
-import org.apache.hadoop.hbase.filter.BinaryComparator;
 import org.apache.hadoop.hbase.filter.BinaryPrefixComparator;
 import org.apache.hadoop.hbase.filter.CompareFilter;
-import org.apache.hadoop.hbase.filter.FamilyFilter;
 import org.apache.hadoop.hbase.filter.FilterList;
 import org.apache.hadoop.hbase.filter.PrefixFilter;
-import org.apache.hadoop.hbase.filter.QualifierFilter;
-import org.apache.hadoop.hbase.filter.RowFilter;
-import org.apache.hadoop.hbase.filter.ValueFilter;
-import org.apache.hadoop.hbase.filter.WritableByteArrayComparable;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
-import org.apache.hadoop.hbase.io.hfile.Compression;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Matchers;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.pentaho.di.core.logging.KettleLogStore;
+import org.pentaho.di.core.logging.LogChannelInterface;
+import org.pentaho.di.core.logging.LogChannelInterfaceFactory;
 import org.pentaho.di.core.variables.VariableSpace;
+import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.hbase.factory.HBaseAdmin;
 import org.pentaho.hbase.factory.HBaseClientFactory;
 import org.pentaho.hbase.factory.HBasePut;
 import org.pentaho.hbase.factory.HBaseTable;
 import org.pentaho.hbase.shim.api.ColumnFilter;
 import org.pentaho.hbase.shim.api.HBaseValueMeta;
-import org.pentaho.hbase.shim.api.Mapping;
 import org.pentaho.hbase.shim.spi.HBaseBytesUtilShim;
+import org.pentaho.hbase.shim.spi.HBaseConnection;
 
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,19 +68,30 @@ import java.util.List;
 import java.util.NavigableMap;
 import java.util.Properties;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 public class CommonHBaseConnectionTest {
+  public static final String ZOOKEEPER_QUORUM_CONFIG_TEST_FILE = "otherHost1:7222,otherHost2:7222,otherHost3:7222";
   private CommonHBaseConnection commonHBaseConnection;
   private CommonHBaseConnection connectionSpy;
+  private static LogChannelInterfaceFactory oldLogChannelInterfaceFactory;
+  private static LogChannelInterface logChannelInterface;
+  private Class PKG = CommonHBaseConnection.class;
 
   @Rule
   public ExpectedException thrown = ExpectedException.none();
   private Properties properties;
   private HBaseAdmin hbaseAdminMock;
+  private static File confFile;
+
+  @BeforeClass
+  public static void beforeClass() throws Exception {
+    oldLogChannelInterfaceFactory = KettleLogStore.getLogChannelInterfaceFactory();
+    setKettleLogFactoryWithMock();
+    addToCustomHbaseConfigFile();
+  }
 
   @Before
   public void setUp() throws Exception {
@@ -107,6 +116,88 @@ public class CommonHBaseConnectionTest {
     assertEquals( hbaseAdmin, connectionSpy.m_admin );
   }
 
+  private static void addToCustomHbaseConfigFile() throws Exception {
+    Configuration configuration = new Configuration();
+    configuration.addResource( "hbase-default.xml" );
+    if ( configuration.get( HBaseConnection.HBASE_VERSION_KEY ) != null ) {
+      Configuration conf = new Configuration( false );
+      //if we don't set hbase version according to valid one in shim exception is thrown, so
+      //in new file we set the versio property read from default one from hadoop libraries for provider
+      conf.set( HBaseConnection.HBASE_VERSION_KEY, configuration.get( HBaseConnection.HBASE_VERSION_KEY ) );
+      conf.set( HBaseConnection.ZOOKEEPER_QUORUM_KEY, ZOOKEEPER_QUORUM_CONFIG_TEST_FILE );
+      confFile = new File( System.getProperty( "user.dir" ) + File.separator + "hbase-default-1.xml" );
+      FileOutputStream out = new FileOutputStream( confFile );
+      conf.writeXml( new DataOutputStream( out ) );
+      out.close();
+    }
+  }
+
+  private void useOverriddenConfigurationFile( Properties properties ) {
+    useMockForHBaseClientFactory();
+    if ( confFile != null && confFile.exists() ) {
+      //set custom configuration file place, as in default from provider library set zookeeper to localhost
+      properties.setProperty( HBaseConnection.DEFAULTS_KEY, confFile.toURI().getPath() );
+    }
+  }
+
+  @Test
+  public void testErrorMismatchClientZookeeperQuorumWithConfigurationQuorum() throws Exception {
+    String clientZookeeperQuorum = "testHost1:7222,testHost2:7222,testHost3:7222";
+    properties.put( "hbase.zookeeper.quorum", clientZookeeperQuorum );
+    useOverriddenConfigurationFile( properties );
+    connectionSpy.configureConnection( properties, null );
+    String errorMessageMismatch = BaseMessages.
+      getString( PKG, "CommonHBaseConnection.Error.MismatchZookeeperNamedClusterVsConfiguration", clientZookeeperQuorum,
+        ZOOKEEPER_QUORUM_CONFIG_TEST_FILE );
+    verify( logChannelInterface, atLeast( 1 ) ).logBasic( errorMessageMismatch );
+  }
+
+  @Test
+  public void testClientZookeeperQuorumWithoutPortsWithConfigurationQuorum() throws Exception {
+    String clientZookeeperQuorum =
+      "otherHost1.fullyQualified.com,otherHost2.fullyQualified.com,otherHost3.fullyQualified.com";
+    properties.put( "hbase.zookeeper.quorum", clientZookeeperQuorum );
+    useOverriddenConfigurationFile( properties );
+    connectionSpy.configureConnection( properties, null );
+    assertEquals( "otherHost1.fullyQualified.com,otherHost2.fullyQualified.com,otherHost3.fullyQualified.com",
+      connectionSpy.m_config.get( "hbase.zookeeper.quorum" ) );
+  }
+
+  @Test
+  public void testZookeeperValidQuorumOneServer() throws Exception {
+    properties.put( "hbase.zookeeper.quorum", "otherHost1:7222" );
+    useOverriddenConfigurationFile( properties );
+    connectionSpy.configureConnection( properties, null );
+    assertEquals( "otherHost1:7222", connectionSpy.m_config.get( "hbase.zookeeper.quorum" ) );
+  }
+
+  @Test
+  public void testZookeeperValidQuorumSeveralServers() throws Exception {
+    properties.put( "hbase.zookeeper.quorum", "otherHost1:7222,otherHost2:7222" );
+    useOverriddenConfigurationFile( properties );
+    connectionSpy.configureConnection( properties, null );
+    assertEquals( "otherHost1:7222,otherHost2:7222", connectionSpy.m_config.get( "hbase.zookeeper.quorum" ) );
+  }
+
+  @Test
+  public void testEmptyZookeeperServers() throws Exception {
+    useMockForHBaseClientFactory();
+    properties.put( "hbase.zookeeper.quorum", "" );
+    useOverriddenConfigurationFile( properties );
+    connectionSpy.configureConnection( properties, null );
+    assertEquals( ZOOKEEPER_QUORUM_CONFIG_TEST_FILE, connectionSpy.m_config.get( "hbase.zookeeper.quorum" ) );
+  }
+
+  /**
+   * set mock for log channel factory for skipping npe in tests
+   */
+  public static void setKettleLogFactoryWithMock() {
+    LogChannelInterfaceFactory logChannelInterfaceFactory = mock( LogChannelInterfaceFactory.class );
+    logChannelInterface = mock( LogChannelInterface.class );
+    when( logChannelInterfaceFactory.create( any() ) ).thenReturn( logChannelInterface );
+    KettleLogStore.setLogChannelInterfaceFactory( logChannelInterfaceFactory );
+  }
+
   @Test
   public void testConfigureConnectionIncorrectHbaseDefaultUrl() throws Exception {
     thrown.expect( IllegalArgumentException.class );
@@ -128,10 +219,11 @@ public class CommonHBaseConnectionTest {
   @Test
   public void testConfigureConnectionSetZookeeperQuorum() throws Exception {
     useMockForHBaseClientFactory();
-    properties.put( "hbase.zookeeper.quorum", "quorum" );
+    properties.put( "hbase.zookeeper.quorum", "otherHost2:7222" );
+    useOverriddenConfigurationFile( properties );
 
     connectionSpy.configureConnection( properties, null );
-    assertEquals( "quorum", connectionSpy.m_config.get( "hbase.zookeeper.quorum" ) );
+    assertEquals( "otherHost2:7222", connectionSpy.m_config.get( "hbase.zookeeper.quorum" ) );
   }
 
   @Test
@@ -166,17 +258,6 @@ public class CommonHBaseConnectionTest {
     thrown.expect( Exception.class );
     thrown.expectMessage( "Connection has not been configured yet" );
     commonHBaseConnection.checkConfiguration();
-  }
-
-  @Test
-  public void testListTableNames() throws Exception {
-    when( hbaseAdminMock.listTables() )
-        .thenReturn( new HTableDescriptor[] { new HTableDescriptor( "test" ) } );
-
-    List<String> tableNames = commonHBaseConnection.listTableNames();
-
-    assertThat( tableNames.size(), is( 1 ) );
-    assertThat( tableNames.get( 0 ), is( "test" ) );
   }
 
   @Test
@@ -251,14 +332,6 @@ public class CommonHBaseConnectionTest {
 
     commonHBaseConnection.configureColumnDescriptor( columnDescriptor, properties );
     verify( columnDescriptor ).setMaxVersions( 5 );
-  }
-
-  @Test
-  public void testConfigureColumnDescriptorWithColDescriptorCompressionKey() throws Exception {
-    HColumnDescriptor columnDescriptor = mock( HColumnDescriptor.class );
-    properties.put( CommonHBaseConnection.COL_DESCRIPTOR_COMPRESSION_KEY, "LZO" );
-    connectionSpy.configureColumnDescriptor( columnDescriptor, properties );
-    verify( columnDescriptor ).setCompressionType( Matchers.<Compression.Algorithm>anyObject() );
   }
 
   @Test
@@ -369,13 +442,13 @@ public class CommonHBaseConnectionTest {
     commonHBaseConnection.m_sourceTable = mock( HBaseTable.class );
 
     commonHBaseConnection.newSourceTableScan( null, null, 0 );
-    assertArrayEquals( commonHBaseConnection.m_sourceScan.getStartRow(), new byte[0] );
-    assertArrayEquals( commonHBaseConnection.m_sourceScan.getStopRow(), new byte[0] );
+    assertArrayEquals( commonHBaseConnection.m_sourceScan.getStartRow(), new byte[ 0 ] );
+    assertArrayEquals( commonHBaseConnection.m_sourceScan.getStopRow(), new byte[ 0 ] );
     assertEquals( commonHBaseConnection.m_sourceScan.getCaching(), -1 );
 
     commonHBaseConnection.newSourceTableScan( new byte[] { 1, 2 }, null, 100500 );
     assertArrayEquals( commonHBaseConnection.m_sourceScan.getStartRow(), new byte[] { 1, 2 } );
-    assertArrayEquals( commonHBaseConnection.m_sourceScan.getStopRow(), new byte[0] );
+    assertArrayEquals( commonHBaseConnection.m_sourceScan.getStopRow(), new byte[ 0 ] );
     assertEquals( commonHBaseConnection.m_sourceScan.getCaching(), 100500 );
 
     commonHBaseConnection.newSourceTableScan( new byte[] { 1 }, new byte[] { 2 }, 100501 );
@@ -423,44 +496,6 @@ public class CommonHBaseConnectionTest {
   }
 
   @Test
-  public void testAddColumnFilterToScanDate() throws Exception {
-    ColumnFilter cf = new ColumnFilter( "Family" );
-    cf.setComparisonOperator( ColumnFilter.ComparisonType.LESS_THAN );
-    cf.setConstant( "07/10/96 4:5 PM" );
-    cf.setSignedComparison( true );
-
-    VariableSpace space = mockVariableSpace();
-    connectionSpy.m_sourceScan = new Scan();
-    WritableByteArrayComparable comparator = mock( WritableByteArrayComparable.class );
-    doReturn( comparator ).when( connectionSpy ).getDateComparator( eq( cf ), eq( space ), anyString() );
-    HBaseValueMeta meta = new HBaseValueMeta( "colFamly,colname,Family", 3, 20, 1 );
-
-    connectionSpy.addColumnFilterToScan( cf, meta, space, true );
-    FilterList filter = (FilterList) connectionSpy.m_sourceScan.getFilter();
-    assertFalse( filter.getFilters().isEmpty() );
-    assertEquals( filter.getFilters().size(), 1 );
-  }
-
-  @Test
-  public void testAddColumnFilterToScanBoolean() throws Exception {
-    ColumnFilter cf = new ColumnFilter( "Family" );
-    cf.setComparisonOperator( ColumnFilter.ComparisonType.LESS_THAN );
-    cf.setConstant( "true" );
-    cf.setSignedComparison( true );
-
-    VariableSpace space = mockVariableSpace();
-    connectionSpy.m_sourceScan = new Scan();
-    WritableByteArrayComparable comparator = mock( WritableByteArrayComparable.class );
-    doReturn( comparator ).when( connectionSpy ).getBooleanComparator( anyBoolean() );
-    HBaseValueMeta meta = new HBaseValueMeta( "colFamly,colname,Family", 4, 20, 1 );
-
-    connectionSpy.addColumnFilterToScan( cf, meta, space, true );
-    FilterList filter = (FilterList) connectionSpy.m_sourceScan.getFilter();
-    assertFalse( filter.getFilters().isEmpty() );
-    assertEquals( filter.getFilters().size(), 1 );
-  }
-
-  @Test
   public void testAddColumnFilterToScanBooleanUnableToParse() throws Exception {
     ColumnFilter cf = new ColumnFilter( "Family" );
     cf.setComparisonOperator( ColumnFilter.ComparisonType.LESS_THAN );
@@ -474,26 +509,6 @@ public class CommonHBaseConnectionTest {
     commonHBaseConnection.addColumnFilterToScan( cf, meta, space, true );
     FilterList filter = (FilterList) commonHBaseConnection.m_sourceScan.getFilter();
     assertTrue( filter.getFilters().isEmpty() );
-  }
-
-  @Test
-  public void testAddColumnFilterToScanNumberSigned() throws Exception {
-    ColumnFilter cf = new ColumnFilter( "Family" );
-    cf.setComparisonOperator( ColumnFilter.ComparisonType.LESS_THAN );
-    cf.setConstant( "123" );
-    cf.setSignedComparison( true );
-
-    VariableSpace space = mockVariableSpace();
-    connectionSpy.m_sourceScan = new Scan();
-    HBaseValueMeta meta = new HBaseValueMeta( "colFamly,colname,Family", 1, 20, 1 );
-    meta.setIsLongOrDouble( true );
-    WritableByteArrayComparable comparator = mock( WritableByteArrayComparable.class );
-    doReturn( comparator ).when( connectionSpy ).getNumericComparator( eq( cf ), eq( meta ), eq( space ), anyString() );
-
-    connectionSpy.addColumnFilterToScan( cf, meta, space, true );
-    FilterList filter = (FilterList) connectionSpy.m_sourceScan.getFilter();
-    assertFalse( filter.getFilters().isEmpty() );
-    assertEquals( filter.getFilters().size(), 1 );
   }
 
   @Test
@@ -513,7 +528,7 @@ public class CommonHBaseConnectionTest {
     assertFalse( filter.getFilters().isEmpty() );
     assertEquals( filter.getFilters().size(), 1 );
     assertEquals( BinaryPrefixComparator.class,
-        ( (CompareFilter) filter.getFilters().get( 0 ) ).getComparator().getClass() );
+      ( (CompareFilter) filter.getFilters().get( 0 ) ).getComparator().getClass() );
   }
 
   @Test
@@ -537,24 +552,6 @@ public class CommonHBaseConnectionTest {
   }
 
   @Test
-  public void testAddFilterByMapping() throws Exception {
-    testAddFilterByMapping( Mapping.TupleMapping.KEY, RowFilter.class );
-    testAddFilterByMapping( Mapping.TupleMapping.FAMILY, FamilyFilter.class );
-    testAddFilterByMapping( Mapping.TupleMapping.COLUMN, QualifierFilter.class );
-    testAddFilterByMapping( Mapping.TupleMapping.VALUE, ValueFilter.class );
-  }
-
-  private <T> void testAddFilterByMapping( Mapping.TupleMapping mapping, Class<T> filterClass) throws Exception {
-    FilterList list = new FilterList( FilterList.Operator.MUST_PASS_ONE );
-    WritableByteArrayComparable comparator = new BinaryComparator( new byte[] { 1, 1, 1 } );
-
-    commonHBaseConnection.addFilterByMapping( list, CompareFilter.CompareOp.EQUAL, WritableByteArrayComparable.class,
-        comparator, mapping );
-    assertEquals( 1, list.getFilters().size() );
-    assertEquals( filterClass, list.getFilters().get( 0 ).getClass() );
-  }
-
-  @Test
   public void testCreateEmptyFilterIfNull() throws Exception {
     Scan scan = mock( Scan.class );
     when( scan.getFilter() ).thenReturn( null );
@@ -568,24 +565,6 @@ public class CommonHBaseConnectionTest {
     List<FilterList> allValues = captor.getAllValues();
     assertEquals( FilterList.Operator.MUST_PASS_ONE, allValues.get( 0 ).getOperator() );
     assertEquals( FilterList.Operator.MUST_PASS_ALL, allValues.get( 1 ).getOperator() );
-  }
-
-  @Test
-  public void testGetByteArrayComparableClass() throws Exception {
-    Class<?> byteArrayComparableClass = commonHBaseConnection.getByteArrayComparableClass();
-    assertEquals( "org.apache.hadoop.hbase.filter.WritableByteArrayComparable", byteArrayComparableClass.getName() );
-  }
-
-  @Test
-  public void testGetCompressionAlgorithmClass() throws Exception {
-    Class<?> compressionAlgorithmClass = commonHBaseConnection.getCompressionAlgorithmClass();
-    assertEquals( "org.apache.hadoop.hbase.io.hfile.Compression$Algorithm", compressionAlgorithmClass.getName() );
-  }
-
-  @Test
-  public void testGetBloomTypeClass() throws Exception {
-    Class<?> bloomTypeClass = commonHBaseConnection.getBloomTypeClass();
-    assertEquals( "org.apache.hadoop.hbase.regionserver.StoreFile$BloomType", bloomTypeClass.getName() );
   }
 
   @Test public void testCheckResultSet() throws Exception {
@@ -665,12 +644,12 @@ public class CommonHBaseConnectionTest {
     Result aRow = mock( Result.class );
     HBaseBytesUtilShim bytesUtil = commonHBaseConnection.m_bytesUtil;
     when( aRow.getValue( bytesUtil.toBytes( "colFamilyName" ), bytesUtil.toBytes( "colName" ) ) )
-        .thenReturn( new byte[] { 1, 2 } );
+      .thenReturn( new byte[] { 1, 2 } );
     byte[] rowColumnLatest = commonHBaseConnection.getRowColumnLatest( aRow, "colFamilyName", "colName", false );
     assertArrayEquals( new byte[] { 1, 2 }, rowColumnLatest );
 
     when( aRow.getValue( bytesUtil.toBytes( "colFamilyName" ), bytesUtil.toBytesBinary( "colName" ) ) )
-        .thenReturn( new byte[] { 1 } );
+      .thenReturn( new byte[] { 1 } );
     byte[] rowColumnLatestBinary = commonHBaseConnection.getRowColumnLatest( aRow, "colFamilyName", "colName", true );
     assertArrayEquals( new byte[] { 1 }, rowColumnLatestBinary );
   }
@@ -978,8 +957,8 @@ public class CommonHBaseConnectionTest {
     when( number.longValue() ).thenReturn( 5L );
 
     FakeDeserializedNumericComparator
-        signedComparisonComparator =
-        (FakeDeserializedNumericComparator) connectionSpy.getSignedComparisonComparator( meta, number );
+      signedComparisonComparator =
+      (FakeDeserializedNumericComparator) connectionSpy.getSignedComparisonComparator( meta, number );
     assertEquals( true, signedComparisonComparator.isInteger );
     assertEquals( true, signedComparisonComparator.isLongOrDouble );
     assertEquals( 5, signedComparisonComparator.longValue );
@@ -997,8 +976,8 @@ public class CommonHBaseConnectionTest {
     when( number.intValue() ).thenReturn( 1 );
 
     FakeDeserializedNumericComparator
-        signedComparisonComparator =
-        (FakeDeserializedNumericComparator) connectionSpy.getSignedComparisonComparator( meta, number );
+      signedComparisonComparator =
+      (FakeDeserializedNumericComparator) connectionSpy.getSignedComparisonComparator( meta, number );
     assertEquals( true, signedComparisonComparator.isInteger );
     assertEquals( false, signedComparisonComparator.isLongOrDouble );
     assertEquals( 1, signedComparisonComparator.longValue );
@@ -1015,8 +994,8 @@ public class CommonHBaseConnectionTest {
     when( number.doubleValue() ).thenReturn( 25D );
 
     FakeDeserializedNumericComparator
-        signedComparisonComparator =
-        (FakeDeserializedNumericComparator) connectionSpy.getSignedComparisonComparator( meta, number );
+      signedComparisonComparator =
+      (FakeDeserializedNumericComparator) connectionSpy.getSignedComparisonComparator( meta, number );
     assertEquals( false, signedComparisonComparator.isInteger );
     assertEquals( true, signedComparisonComparator.isLongOrDouble );
     assertEquals( 25D, signedComparisonComparator.doubleValue, 0 );
@@ -1033,8 +1012,8 @@ public class CommonHBaseConnectionTest {
     when( number.floatValue() ).thenReturn( 100F );
 
     FakeDeserializedNumericComparator
-        signedComparisonComparator =
-        (FakeDeserializedNumericComparator) connectionSpy.getSignedComparisonComparator( meta, number );
+      signedComparisonComparator =
+      (FakeDeserializedNumericComparator) connectionSpy.getSignedComparisonComparator( meta, number );
     assertEquals( false, signedComparisonComparator.isInteger );
     assertEquals( false, signedComparisonComparator.isLongOrDouble );
     assertEquals( 100F, signedComparisonComparator.doubleValue, 0 );
@@ -1044,8 +1023,8 @@ public class CommonHBaseConnectionTest {
   public void testGetBooleanComparator() throws Exception {
     doReturn( FakeDeserializedBooleanComparator.class ).when( connectionSpy ).getDeserializedBooleanComparatorClass();
     FakeDeserializedBooleanComparator
-        comparator =
-        (FakeDeserializedBooleanComparator) connectionSpy.getBooleanComparator( Boolean.FALSE );
+      comparator =
+      (FakeDeserializedBooleanComparator) connectionSpy.getBooleanComparator( Boolean.FALSE );
     assertFalse( comparator.value );
     comparator = (FakeDeserializedBooleanComparator) connectionSpy.getBooleanComparator( Boolean.TRUE );
     assertTrue( comparator.value );
@@ -1076,18 +1055,34 @@ public class CommonHBaseConnectionTest {
   @Test
   public void testGetCompareOpByComparisonType() throws Exception {
     assertEquals( CompareFilter.CompareOp.EQUAL,
-        commonHBaseConnection.getCompareOpByComparisonType( ColumnFilter.ComparisonType.EQUAL ) );
+      commonHBaseConnection.getCompareOpByComparisonType( ColumnFilter.ComparisonType.EQUAL ) );
     assertEquals( CompareFilter.CompareOp.NOT_EQUAL,
-        commonHBaseConnection.getCompareOpByComparisonType( ColumnFilter.ComparisonType.NOT_EQUAL ) );
+      commonHBaseConnection.getCompareOpByComparisonType( ColumnFilter.ComparisonType.NOT_EQUAL ) );
     assertEquals( CompareFilter.CompareOp.GREATER,
-        commonHBaseConnection.getCompareOpByComparisonType( ColumnFilter.ComparisonType.GREATER_THAN ) );
+      commonHBaseConnection.getCompareOpByComparisonType( ColumnFilter.ComparisonType.GREATER_THAN ) );
     assertEquals( CompareFilter.CompareOp.GREATER_OR_EQUAL,
-        commonHBaseConnection.getCompareOpByComparisonType( ColumnFilter.ComparisonType.GREATER_THAN_OR_EQUAL ) );
+      commonHBaseConnection.getCompareOpByComparisonType( ColumnFilter.ComparisonType.GREATER_THAN_OR_EQUAL ) );
     assertEquals( CompareFilter.CompareOp.LESS,
-        commonHBaseConnection.getCompareOpByComparisonType( ColumnFilter.ComparisonType.LESS_THAN ) );
+      commonHBaseConnection.getCompareOpByComparisonType( ColumnFilter.ComparisonType.LESS_THAN ) );
     assertEquals( CompareFilter.CompareOp.LESS_OR_EQUAL,
-        commonHBaseConnection.getCompareOpByComparisonType( ColumnFilter.ComparisonType.LESS_THAN_OR_EQUAL ) );
+      commonHBaseConnection.getCompareOpByComparisonType( ColumnFilter.ComparisonType.LESS_THAN_OR_EQUAL ) );
     assertNull( commonHBaseConnection.getCompareOpByComparisonType( ColumnFilter.ComparisonType.PREFIX ) );
+  }
+
+  private void useMockForHBaseClientFactory() {
+    doReturn( mock( HBaseClientFactory.class ) ).when( connectionSpy )
+      .getHBaseClientFactory( any( Configuration.class ) );
+  }
+
+  public static VariableSpace mockVariableSpace() {
+    VariableSpace space = mock( VariableSpace.class );
+    when( space.environmentSubstitute( anyString() ) ).thenAnswer( new Answer<String>() {
+      @Override
+      public String answer( InvocationOnMock invocation ) throws Throwable {
+        return (String) invocation.getArguments()[ 0 ];
+      }
+    } );
+    return space;
   }
 
   private static class FakeDeserializedNumericComparator {
@@ -1126,19 +1121,9 @@ public class CommonHBaseConnectionTest {
     }
   }
 
-  private void useMockForHBaseClientFactory() {
-    doReturn( mock( HBaseClientFactory.class ) ).when( connectionSpy )
-        .getHBaseClientFactory( any( Configuration.class ) );
+  @AfterClass
+  public static void tearDown() {
+    KettleLogStore.setLogChannelInterfaceFactory( oldLogChannelInterfaceFactory );
   }
 
-  private VariableSpace mockVariableSpace() {
-    VariableSpace space = mock( VariableSpace.class );
-    when( space.environmentSubstitute( anyString() ) ).thenAnswer( new Answer<String>() {
-      @Override
-      public String answer( InvocationOnMock invocation ) throws Throwable {
-        return (String) invocation.getArguments()[0];
-      }
-    } );
-    return space;
-  }
 }
