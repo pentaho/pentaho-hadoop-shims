@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2016 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -434,7 +434,7 @@ public class Mapping {
           XMLHandler.addTagValue( "column_name", vm.getColumnName() ) );
         retval.append( "\n          " ).append(
           XMLHandler.addTagValue( "type",
-            ValueMetaInterface.typeCodes[ vm.getType() ] ) );
+            vm.getHBaseTypeDesc() ) );
         if ( vm.getStorageType() == ValueMetaInterface.STORAGE_TYPE_INDEXED ) {
           String nomVals = HBaseValueMeta.objectIndexValuesToString( vm
             .getIndex() );
@@ -506,8 +506,9 @@ public class Mapping {
         String type = XMLHandler.getTagValue( fieldNode, "type" );
         String combined = colFam + HBaseValueMeta.SEPARATOR + colName
           + HBaseValueMeta.SEPARATOR + alias;
-        int iType = ValueMeta.getType( type );
-        HBaseValueMeta hbvm = new HBaseValueMeta( combined, iType, -1, -1 );
+        HBaseValueMeta hbvm = new HBaseValueMeta( combined, 0, -1, -1 );
+        hbvm.setHBaseTypeFromString( type );
+
         String indexedV = XMLHandler.getTagValue( fieldNode, "indexed_vals" );
         if ( !Const.isEmpty( indexedV ) ) {
           Object[] nomVals = HBaseValueMeta.stringIndexListToObjects( indexedV );
