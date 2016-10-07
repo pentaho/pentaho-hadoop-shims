@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2016 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -29,17 +29,19 @@ import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.di.core.xml.XMLHandler;
 import org.pentaho.di.repository.ObjectId;
 import org.pentaho.di.repository.Repository;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.ByteArrayInputStream;
 import java.util.HashMap;
+import java.util.Map;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
+import org.junit.Assert;
+import org.mockito.Matchers;
+import org.mockito.Mockito;
 
 /**
  * User: Dzmitry Stsiapanau Date: 10/16/2015 Time: 08:38
@@ -47,7 +49,7 @@ import static org.mockito.Mockito.mock;
 
 public class MappingTest {
 
-  public static final String XML_NODE = "<mapping>      <mapping_name>mapping_name</mapping_name>      <table_name>table_name</table_name>      <key>key</key>      <key_type>String</key_type>        <mapped_columns>        <mapped_column>          <alias>alias_2</alias>          <column_family>col_family_2</column_family>          <column_name>col_name_2</column_name>          <type>String</type>        </mapped_column>        <mapped_column>          <alias>alias_1</alias>          <column_family>col_family_1</column_family>          <column_name>col_name_1</column_name>          <type>Number</type>        </mapped_column>        </mapped_columns>    </mapping>";
+  public static final String XML_NODE = "<mapping>      <mapping_name>mapping_name</mapping_name>      <table_name>table_name</table_name>      <key>key</key>      <key_type>String</key_type>        <mapped_columns>        <mapped_column>          <alias>alias_2</alias>          <column_family>col_family_2</column_family>          <column_name>col_name_2</column_name>          <type>String</type>        </mapped_column>        <mapped_column>          <alias>alias_1</alias>          <column_family>col_family_1</column_family>          <column_name>col_name_1</column_name>          <type>Double</type>        </mapped_column>        </mapped_columns>    </mapping>";
   private static final String MAPPING_NAME = "mapping_name";
   private static final String TABLE_NAME = "table_name";
   private static final String KEY = "key";
@@ -55,7 +57,7 @@ public class MappingTest {
   private static final String[] ALIAS = new String[] { "alias_2", "alias_1" };
   private static final String[] COLUMN_FAMILY = new String[] { "col_family_2", "col_family_1" };
   private static final String[] COLUMN_NAME = new String[] { "col_name_2", "col_name_1" };
-  private static final String[] TYPE = new String[] { "String", "Number" };
+  private static final String[] TYPE = new String[] { "String", "Double" };
   private static final String[] INDEXED_VALS = new String[] { "", "" };
 
   private Mapping getMapping() throws Exception {
@@ -69,151 +71,176 @@ public class MappingTest {
     return mapping;
   }
 
+  private Mapping getMappingWithAllTypes() throws Exception {
+    Mapping mapping = new Mapping();
+    HBaseValueMeta hBaseValueMeta;
+    mapping.setMappingName( MAPPING_NAME );
+    mapping.setTableName( TABLE_NAME );
+    mapping.setKeyName( KEY );
+    mapping.setKeyType( KEY_TYPE );
+    mapping.addMappedColumn( new HBaseValueMeta( "column_family_1,LongColumnName,alias_1", 5, 0, 0 ), false );
+    hBaseValueMeta = new HBaseValueMeta( "column_family_2,IntegerColumnName,alias_2", 5, 0, 0 );
+    hBaseValueMeta.setIsLongOrDouble( false );
+    mapping.addMappedColumn( hBaseValueMeta, false );
+    mapping.addMappedColumn( new HBaseValueMeta( "column_family_4,DoubleColumnName,alias_4", 1, 0, 0 ), false );
+    hBaseValueMeta = new HBaseValueMeta( "column_family_3,FloatColumnName,alias_3", 1, 0, 0 );
+    hBaseValueMeta.setIsLongOrDouble( false );
+    mapping.addMappedColumn( hBaseValueMeta, false );
+    mapping.addMappedColumn( new HBaseValueMeta( "col_family_5,DateColumnName,alias_5", 3, 0, 0 ), false  );
+    mapping.addMappedColumn( new HBaseValueMeta( "col_family_6,SerializableColumnName,alias_6", 7, 0, 0 ), false  );
+    mapping.addMappedColumn( new HBaseValueMeta( "col_family_7,BooleanColumnName,alias_7", 4, 0, 0 ), false  );
+    mapping.addMappedColumn( new HBaseValueMeta( "col_family_8,BinaryColumnName,alias_8", 8, 0, 0 ), false  );
+    mapping.addMappedColumn( new HBaseValueMeta( "col_family_9,BigNumberColumnName,alias_9", 6, 0, 0 ), false  );
+    mapping.addMappedColumn( new HBaseValueMeta( "col_family_10,StringColumnName,alias_10", 2, 0, 0 ), false  );
+
+    return mapping;
+  }
+
   @Test
   public void testAddMappedColumn() throws Exception {
     Mapping mapping = new Mapping();
     HBaseValueMeta hbaseValueMeta = new HBaseValueMeta( "col_family,col_name,alias", 0, 0, 0 );
     HBaseValueMeta hbaseValueMeta2 = new HBaseValueMeta( "col_family,col_name2,alias", 0, 0, 0 );
     HBaseValueMeta hbaseValueMeta3 = new HBaseValueMeta( "col_family,col_name3,alias", 0, 0, 0 );
-    assertEquals( "alias", mapping.addMappedColumn( hbaseValueMeta, false ) );
-    assertEquals( 1, mapping.m_mappedColumnsByFamilyCol.size() );
+    Assert.assertEquals( "alias", mapping.addMappedColumn( hbaseValueMeta, false ) );
+    Assert.assertEquals( 1, mapping.m_mappedColumnsByFamilyCol.size() );
     try {
       mapping.addMappedColumn( hbaseValueMeta, false );
-      fail( "the same column" );
+      Assert.fail( "the same column" );
     } catch ( Exception e ) {
       //ignored
     }
-    assertEquals( "alias_1", mapping.addMappedColumn( hbaseValueMeta2, false ) );
-    assertEquals( 2, mapping.m_mappedColumnsByFamilyCol.size() );
+    Assert.assertEquals( "alias_1", mapping.addMappedColumn( hbaseValueMeta2, false ) );
+    Assert.assertEquals( 2, mapping.m_mappedColumnsByFamilyCol.size() );
 
-    assertEquals( "alias_1", mapping.addMappedColumn( hbaseValueMeta3, true ) );
-    assertEquals( 2, mapping.m_mappedColumnsByFamilyCol.size() );
+    Assert.assertEquals( "alias_1", mapping.addMappedColumn( hbaseValueMeta3, true ) );
+    Assert.assertEquals( 2, mapping.m_mappedColumnsByFamilyCol.size() );
   }
 
   @Test
   public void testSetTableName() throws Exception {
     Mapping mapping = getMapping();
     mapping.setTableName( "test" );
-    assertEquals( "test", mapping.m_tableName );
+    Assert.assertEquals( "test", mapping.m_tableName );
   }
 
   @Test
   public void testGetTableName() throws Exception {
     Mapping mapping = getMapping();
     mapping.m_tableName = "test";
-    assertEquals( "test", mapping.getTableName() );
+    Assert.assertEquals( "test", mapping.getTableName() );
   }
 
   @Test
   public void testSetMappingName() throws Exception {
     Mapping mapping = getMapping();
     mapping.setMappingName( "test" );
-    assertEquals( "test", mapping.m_mappingName );
+    Assert.assertEquals( "test", mapping.m_mappingName );
   }
 
   @Test
   public void testGetMappingName() throws Exception {
     Mapping mapping = getMapping();
     mapping.m_mappingName = "test";
-    assertEquals( "test", mapping.getMappingName() );
+    Assert.assertEquals( "test", mapping.getMappingName() );
   }
 
   @Test
   public void testSetKeyName() throws Exception {
     Mapping mapping = getMapping();
     mapping.setKeyName( "test" );
-    assertEquals( "test", mapping.m_keyName );
+    Assert.assertEquals( "test", mapping.m_keyName );
   }
 
   @Test
   public void testGetKeyName() throws Exception {
     Mapping mapping = getMapping();
     mapping.m_keyName = "test";
-    assertEquals( "test", mapping.getKeyName() );
+    Assert.assertEquals( "test", mapping.getKeyName() );
   }
 
   @Test
   public void testSetKeyType() throws Exception {
     Mapping mapping = getMapping();
     mapping.setKeyType( Mapping.KeyType.STRING );
-    assertEquals( Mapping.KeyType.STRING, mapping.m_keyType );
+    Assert.assertEquals( Mapping.KeyType.STRING, mapping.m_keyType );
   }
 
   @Test
   public void testSetKeyTypeAsString() throws Exception {
     Mapping mapping = getMapping();
     mapping.setKeyTypeAsString( "UnsignedLong" );
-    assertEquals( Mapping.KeyType.UNSIGNED_LONG, mapping.m_keyType );
+    Assert.assertEquals( Mapping.KeyType.UNSIGNED_LONG, mapping.m_keyType );
     mapping.setKeyTypeAsString( "Binary" );
-    assertEquals( Mapping.KeyType.BINARY, mapping.m_keyType );
+    Assert.assertEquals( Mapping.KeyType.BINARY, mapping.m_keyType );
     mapping.setKeyTypeAsString( "Date" );
-    assertEquals( Mapping.KeyType.DATE, mapping.m_keyType );
+    Assert.assertEquals( Mapping.KeyType.DATE, mapping.m_keyType );
     mapping.setKeyTypeAsString( "Integer" );
-    assertEquals( Mapping.KeyType.INTEGER, mapping.m_keyType );
+    Assert.assertEquals( Mapping.KeyType.INTEGER, mapping.m_keyType );
     mapping.setKeyTypeAsString( "Long" );
-    assertEquals( Mapping.KeyType.LONG, mapping.m_keyType );
+    Assert.assertEquals( Mapping.KeyType.LONG, mapping.m_keyType );
     mapping.setKeyTypeAsString( "String" );
-    assertEquals( Mapping.KeyType.STRING, mapping.m_keyType );
+    Assert.assertEquals( Mapping.KeyType.STRING, mapping.m_keyType );
     mapping.setKeyTypeAsString( "UnsignedDate" );
-    assertEquals( Mapping.KeyType.UNSIGNED_DATE, mapping.m_keyType );
+    Assert.assertEquals( Mapping.KeyType.UNSIGNED_DATE, mapping.m_keyType );
     mapping.setKeyTypeAsString( "UnsignedInteger" );
-    assertEquals( Mapping.KeyType.UNSIGNED_INTEGER, mapping.m_keyType );
+    Assert.assertEquals( Mapping.KeyType.UNSIGNED_INTEGER, mapping.m_keyType );
   }
 
   @Test
   public void testGetKeyType() throws Exception {
     Mapping mapping = getMapping();
     mapping.m_keyType = Mapping.KeyType.INTEGER;
-    assertEquals( Mapping.KeyType.INTEGER, mapping.getKeyType() );
+    Assert.assertEquals( Mapping.KeyType.INTEGER, mapping.getKeyType() );
   }
 
   @Test
   public void testIsTupleMapping() throws Exception {
     Mapping mapping = getMapping();
     mapping.m_tupleMapping = true;
-    assertTrue( mapping.isTupleMapping() );
+    Assert.assertTrue( mapping.isTupleMapping() );
   }
 
   @Test
   public void testSetTupleMapping() throws Exception {
     Mapping mapping = getMapping();
     mapping.setTupleMapping( true );
-    assertTrue( mapping.m_tupleMapping );
+    Assert.assertTrue( mapping.m_tupleMapping );
   }
 
   @Test
   public void testGetTupleFamilies() throws Exception {
     Mapping mapping = getMapping();
     mapping.m_tupleFamilies = "test";
-    assertEquals( "test", mapping.getTupleFamilies() );
+    Assert.assertEquals( "test", mapping.getTupleFamilies() );
   }
 
   @Test
   public void testSetTupleFamilies() throws Exception {
     Mapping mapping = getMapping();
     mapping.setTupleFamilies( "test" );
-    assertEquals( "test", mapping.m_tupleFamilies );
+    Assert.assertEquals( "test", mapping.m_tupleFamilies );
   }
 
   @Test
   public void testSetMappedColumns() throws Exception {
     Mapping mapping = getMapping();
     mapping.setMappedColumns( new HashMap<String, HBaseValueMeta>() );
-    assertEquals( new HashMap<String, HBaseValueMeta>(), mapping.m_mappedColumnsByAlias );
+    Assert.assertEquals( new HashMap<String, HBaseValueMeta>(), mapping.m_mappedColumnsByAlias );
   }
 
   @Test
   public void testGetMappedColumns() throws Exception {
     Mapping mapping = getMapping();
     mapping.m_mappedColumnsByAlias = new HashMap<>();
-    assertEquals( new HashMap<String, HBaseValueMeta>(), mapping.getMappedColumns() );
+    Assert.assertEquals( new HashMap<String, HBaseValueMeta>(), mapping.getMappedColumns() );
   }
 
   @Test
   public void testSaveRep() throws Exception {
     Mapping mapping = getMapping();
-    Repository rep = mock( Repository.class );
-    doAnswer( new Answer() {
+    Repository rep = Mockito.mock( Repository.class );
+    Mockito.doAnswer( new Answer() {
 
       @Override public Object answer( InvocationOnMock invocation ) throws Throwable {
         Integer i = (Integer) invocation.getArguments()[ 2 ];
@@ -221,38 +248,38 @@ public class MappingTest {
         String value = (String) invocation.getArguments()[ 4 ];
         switch ( code ) {
           case "mapping_name": {
-            assertEquals( MAPPING_NAME, value );
+            Assert.assertEquals( MAPPING_NAME, value );
             break;
           } case "table_name": {
-            assertEquals( TABLE_NAME, value );
+            Assert.assertEquals( TABLE_NAME, value );
             break;
           } case "key": {
-            assertEquals( KEY, value );
+            Assert.assertEquals( KEY, value );
             break;
           } case "key_type": {
-            assertEquals( KEY_TYPE.toString(), value ); break;
+            Assert.assertEquals( KEY_TYPE.toString(), value ); break;
           } case "alias": {
-            assertEquals( ALIAS[ i ], value );
+            Assert.assertEquals( ALIAS[ i ], value );
             break;
           } case "column_family": {
-            assertEquals( COLUMN_FAMILY[ i ], value );
+            Assert.assertEquals( COLUMN_FAMILY[ i ], value );
             break;
           } case "column_name": {
-            assertEquals( COLUMN_NAME[ i ], value );
+            Assert.assertEquals( COLUMN_NAME[ i ], value );
             break;
           } case "type": {
-            assertEquals( TYPE[ i ], value );
+            Assert.assertEquals( TYPE[ i ], value );
             break;
           } case "indexed_vals": {
-            assertEquals( INDEXED_VALS[ i ], value );
+            Assert.assertEquals( INDEXED_VALS[ i ], value );
             break;
           }
         }
         return null;
       }
     } ).when( rep )
-      .saveStepAttribute( (ObjectId) anyObject(), (ObjectId) anyObject(), anyInt(), anyString(), anyString() );
-    mapping.saveRep( rep, mock( ObjectId.class ), mock( ObjectId.class ) );
+      .saveStepAttribute( (ObjectId) Matchers.anyObject(), (ObjectId) Matchers.anyObject(), Matchers.anyInt(), Matchers.anyString(), Matchers.anyString() );
+    mapping.saveRep( rep, Mockito.mock( ObjectId.class ), Mockito.mock( ObjectId.class ) );
   }
 
   private String normalForTest( String str ) {
@@ -261,8 +288,9 @@ public class MappingTest {
 
   @Test
   public void testGetXML() throws Exception {
+    KettleEnvironment.init();
     Mapping mapping = getMapping();
-    assertEquals( normalForTest( XML_NODE ), ( normalForTest( mapping.getXML() ) ) );
+    Assert.assertEquals( normalForTest( XML_NODE ), ( normalForTest( mapping.getXML() ) ) );
   }
 
   @Test
@@ -272,8 +300,8 @@ public class MappingTest {
     Mapping loadMapping = new Mapping();
 
     Node node = XMLHandler.loadXMLString( XML_NODE );
-    assertTrue( loadMapping.loadXML( node ) );
-    assertEquals( mapping.toString(), loadMapping.toString() );
+    Assert.assertTrue( loadMapping.loadXML( node ) );
+    Assert.assertEquals( mapping.toString(), loadMapping.toString() );
   }
 
   @Test
@@ -282,8 +310,8 @@ public class MappingTest {
     Mapping mapping = getMapping();
     Mapping loadMapping = new Mapping();
 
-    Repository rep = mock( Repository.class );
-    doAnswer( new Answer() {
+    Repository rep = Mockito.mock( Repository.class );
+    Mockito.doAnswer( new Answer() {
       @Override public Object answer( InvocationOnMock invocation ) throws Throwable {
         Integer i = (Integer) invocation.getArguments()[ 1 ];
         String code = (String) invocation.getArguments()[ 2 ];
@@ -310,21 +338,41 @@ public class MappingTest {
         }
         return null;
       }
-    } ).when( rep ).getStepAttributeString( (ObjectId) anyObject(), anyInt(), anyString() );
-    doReturn( true ).when( rep ).getStepAttributeBoolean( (ObjectId) anyObject(), anyInt(), anyString() );
-    doReturn( 2 ).when( rep ).countNrStepAttributes( (ObjectId) anyObject(), anyString() );
-    assertTrue( loadMapping.readRep( rep, mock( ObjectId.class ) ) );
-    assertEquals( mapping.toString(), loadMapping.toString() );
+    } ).when( rep ).getStepAttributeString( (ObjectId) Matchers.anyObject(), Matchers.anyInt(), Matchers.anyString() );
+    Mockito.doReturn( true ).when( rep ).getStepAttributeBoolean( (ObjectId) Matchers.anyObject(), Matchers.anyInt(), Matchers.anyString() );
+    Mockito.doReturn( 2 ).when( rep ).countNrStepAttributes( (ObjectId) Matchers.anyObject(), Matchers.anyString() );
+    Assert.assertTrue( loadMapping.readRep( rep, Mockito.mock( ObjectId.class ) ) );
+    Assert.assertEquals( mapping.toString(), loadMapping.toString() );
   }
 
   @Test
   public void testToString() throws Exception {
     Mapping mapping = getMapping();
-    assertEquals( "Mapping \"mapping_name\" on table \"table_name\":\n"
+    Assert.assertEquals( "Mapping \"mapping_name\" on table \"table_name\":\n"
       + "\n"
       + "\tKEY (key): String\n"
       + "\n"
       + "\t\"alias_2\" (col_family_2,col_name_2): String\n"
       + "\t\"alias_1\" (col_family_1,col_name_1): Number\n", mapping.toString() );
   }
+
+  @Test
+  public void testGetXmlWithAllTypes() throws Exception {
+    KettleEnvironment.init();
+    Mapping mapping = getMappingWithAllTypes();
+    Map<String, HBaseValueMeta> columnsMap = mapping.getMappedColumns();
+    String xmlMapping = mapping.getXML();
+    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+    Document document = dbFactory.newDocumentBuilder().parse( new ByteArrayInputStream( xmlMapping.getBytes() ) );
+    Element rootElement = document.getDocumentElement();
+    NodeList nodeList = rootElement.getElementsByTagName( "mapped_column" );
+    for ( int i = 0; i < nodeList.getLength(); i++ ) {
+      NodeList childNotes = nodeList.item( i ).getChildNodes();
+      String rowKeyName = childNotes.item( 1 ).getTextContent();
+      String valueType = childNotes.item( 7 ).getTextContent();
+      HBaseValueMeta hBaseValueMeta = columnsMap.get( rowKeyName );
+      Assert.assertEquals( hBaseValueMeta.getHBaseTypeDesc(), valueType );
+    }
+  }
+
 }

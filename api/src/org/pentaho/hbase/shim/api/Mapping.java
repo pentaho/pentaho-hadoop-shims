@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2016 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -29,7 +29,6 @@ import java.util.Set;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.exception.KettleXMLException;
-import org.pentaho.di.core.row.ValueMeta;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.core.xml.XMLHandler;
 import org.pentaho.di.repository.ObjectId;
@@ -377,7 +376,7 @@ public class Mapping {
         rep.saveStepAttribute( id_transformation, id_step, i, "column_name",
           vm.getColumnName() );
         rep.saveStepAttribute( id_transformation, id_step, i, "type",
-          ValueMetaInterface.typeCodes[ vm.getType() ] );
+          vm.getHBaseTypeDesc() );
         if ( vm.getStorageType() == ValueMetaInterface.STORAGE_TYPE_INDEXED ) {
           String nomVals = HBaseValueMeta.objectIndexValuesToString( vm
             .getIndex() );
@@ -434,7 +433,7 @@ public class Mapping {
           XMLHandler.addTagValue( "column_name", vm.getColumnName() ) );
         retval.append( "\n          " ).append(
           XMLHandler.addTagValue( "type",
-            ValueMetaInterface.typeCodes[ vm.getType() ] ) );
+            vm.getHBaseTypeDesc() ) );
         if ( vm.getStorageType() == ValueMetaInterface.STORAGE_TYPE_INDEXED ) {
           String nomVals = HBaseValueMeta.objectIndexValuesToString( vm
             .getIndex() );
@@ -506,8 +505,9 @@ public class Mapping {
         String type = XMLHandler.getTagValue( fieldNode, "type" );
         String combined = colFam + HBaseValueMeta.SEPARATOR + colName
           + HBaseValueMeta.SEPARATOR + alias;
-        int iType = ValueMeta.getType( type );
-        HBaseValueMeta hbvm = new HBaseValueMeta( combined, iType, -1, -1 );
+        HBaseValueMeta hbvm = new HBaseValueMeta( combined, 0, -1, -1 );
+        hbvm.setHBaseTypeFromString( type );
+
         String indexedV = XMLHandler.getTagValue( fieldNode, "indexed_vals" );
         if ( !Const.isEmpty( indexedV ) ) {
           Object[] nomVals = HBaseValueMeta.stringIndexListToObjects( indexedV );
@@ -572,10 +572,10 @@ public class Mapping {
           colName = "";
         }
         String type = rep.getStepAttributeString( id_step, i, "type" );
-        int iType = ValueMeta.getType( type );
         String combined = colFam + HBaseValueMeta.SEPARATOR + colName
           + HBaseValueMeta.SEPARATOR + alias;
-        HBaseValueMeta hbvm = new HBaseValueMeta( combined, iType, -1, -1 );
+        HBaseValueMeta hbvm = new HBaseValueMeta( combined, 0, -1, -1 );
+        hbvm.setHBaseTypeFromString( type );
         String indexedV = rep
           .getStepAttributeString( id_step, i, "indexed_vals" );
         if ( !Const.isEmpty( indexedV ) ) {
