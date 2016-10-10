@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2016 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -29,9 +29,15 @@ import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.di.core.xml.XMLHandler;
 import org.pentaho.di.repository.ObjectId;
 import org.pentaho.di.repository.Repository;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.ByteArrayInputStream;
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyInt;
@@ -47,7 +53,7 @@ import static org.mockito.Mockito.mock;
 
 public class MappingTest {
 
-  public static final String XML_NODE = "<mapping>      <mapping_name>mapping_name</mapping_name>      <table_name>table_name</table_name>      <key>key</key>      <key_type>String</key_type>        <mapped_columns>        <mapped_column>          <alias>alias_2</alias>          <column_family>col_family_2</column_family>          <column_name>col_name_2</column_name>          <type>String</type>        </mapped_column>        <mapped_column>          <alias>alias_1</alias>          <column_family>col_family_1</column_family>          <column_name>col_name_1</column_name>          <type>Number</type>        </mapped_column>        </mapped_columns>    </mapping>";
+  public static final String XML_NODE = "<mapping>      <mapping_name>mapping_name</mapping_name>      <table_name>table_name</table_name>      <key>key</key>      <key_type>String</key_type>        <mapped_columns>        <mapped_column>          <alias>alias_2</alias>          <column_family>col_family_2</column_family>          <column_name>col_name_2</column_name>          <type>String</type>        </mapped_column>        <mapped_column>          <alias>alias_1</alias>          <column_family>col_family_1</column_family>          <column_name>col_name_1</column_name>          <type>Double</type>        </mapped_column>        </mapped_columns>    </mapping>";
   private static final String MAPPING_NAME = "mapping_name";
   private static final String TABLE_NAME = "table_name";
   private static final String KEY = "key";
@@ -66,6 +72,31 @@ public class MappingTest {
     mapping.setKeyType( KEY_TYPE );
     mapping.addMappedColumn( new HBaseValueMeta( "col_family_1,col_name_1,alias_1", 1, 0, 0 ), false );
     mapping.addMappedColumn( new HBaseValueMeta( "col_family_2,col_name_2,alias_2", 2, 0, 0 ), false );
+    return mapping;
+  }
+
+  private Mapping getMappingWithAllTypes() throws Exception {
+    Mapping mapping = new Mapping();
+    HBaseValueMeta hBaseValueMeta;
+    mapping.setMappingName( MAPPING_NAME );
+    mapping.setTableName( TABLE_NAME );
+    mapping.setKeyName( KEY );
+    mapping.setKeyType( KEY_TYPE );
+    mapping.addMappedColumn( new HBaseValueMeta( "column_family_1,LongColumnName,alias_1", 5, 0, 0 ), false );
+    hBaseValueMeta = new HBaseValueMeta( "column_family_2,IntegerColumnName,alias_2", 5, 0, 0 );
+    hBaseValueMeta.setIsLongOrDouble( false );
+    mapping.addMappedColumn( hBaseValueMeta, false );
+    mapping.addMappedColumn( new HBaseValueMeta( "column_family_4,DoubleColumnName,alias_4", 1, 0, 0 ), false );
+    hBaseValueMeta = new HBaseValueMeta( "column_family_3,FloatColumnName,alias_3", 1, 0, 0 );
+    hBaseValueMeta.setIsLongOrDouble( false );
+    mapping.addMappedColumn( hBaseValueMeta, false );
+    mapping.addMappedColumn( new HBaseValueMeta( "col_family_5,DateColumnName,alias_5", 3, 0, 0 ), false  );
+    mapping.addMappedColumn( new HBaseValueMeta( "col_family_6,SerializableColumnName,alias_6", 7, 0, 0 ), false  );
+    mapping.addMappedColumn( new HBaseValueMeta( "col_family_7,BooleanColumnName,alias_7", 4, 0, 0 ), false  );
+    mapping.addMappedColumn( new HBaseValueMeta( "col_family_8,BinaryColumnName,alias_8", 8, 0, 0 ), false  );
+    mapping.addMappedColumn( new HBaseValueMeta( "col_family_9,BigNumberColumnName,alias_9", 6, 0, 0 ), false  );
+    mapping.addMappedColumn( new HBaseValueMeta( "col_family_10,StringColumnName,alias_10", 2, 0, 0 ), false  );
+
     return mapping;
   }
 
@@ -261,6 +292,7 @@ public class MappingTest {
 
   @Test
   public void testGetXML() throws Exception {
+    KettleEnvironment.init();
     Mapping mapping = getMapping();
     assertEquals( normalForTest( XML_NODE ), ( normalForTest( mapping.getXML() ) ) );
   }
@@ -327,4 +359,24 @@ public class MappingTest {
       + "\t\"alias_2\" (col_family_2,col_name_2): String\n"
       + "\t\"alias_1\" (col_family_1,col_name_1): Number\n", mapping.toString() );
   }
+
+  @Test
+  public void testGetXmlWithAllTypes() throws Exception {
+    KettleEnvironment.init();
+    Mapping mapping = getMappingWithAllTypes();
+    Map<String, HBaseValueMeta> columnsMap = mapping.getMappedColumns();
+    String xmlMapping = mapping.getXML();
+    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+    Document document = dbFactory.newDocumentBuilder().parse( new ByteArrayInputStream( xmlMapping.getBytes() ) );
+    Element rootElement = document.getDocumentElement();
+    NodeList nodeList = rootElement.getElementsByTagName( "mapped_column" );
+    for ( int i = 0; i < nodeList.getLength(); i++ ) {
+      NodeList childNotes = nodeList.item( i ).getChildNodes();
+      String rowKeyName = childNotes.item( 1 ).getTextContent();
+      String valueType = childNotes.item( 7 ).getTextContent();
+      HBaseValueMeta hBaseValueMeta = columnsMap.get( rowKeyName );
+      assertEquals( hBaseValueMeta.getHBaseTypeDesc(), valueType );
+    }
+  }
+
 }
