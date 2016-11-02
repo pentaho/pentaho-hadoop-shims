@@ -61,7 +61,7 @@ public class MappingTest {
   private static final String[] ALIAS = new String[] { "alias_2", "alias_1" };
   private static final String[] COLUMN_FAMILY = new String[] { "col_family_2", "col_family_1" };
   private static final String[] COLUMN_NAME = new String[] { "col_name_2", "col_name_1" };
-  private static final String[] TYPE = new String[] { "String", "Number" };
+  private static final String[] TYPE = new String[] { "String", "Double" };
   private static final String[] INDEXED_VALS = new String[] { "", "" };
 
   private Mapping getMapping() throws Exception {
