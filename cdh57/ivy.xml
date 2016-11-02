@@ -76,6 +76,9 @@
         <exclude module="ST4"/>
         <!-- <exclude module="derby"/> -->
     </dependency>
+    <!-- [PPP-3571] Use of vulnerable component httpclient-4.2.5.jar - CVE-2014-3577 -->
+    <dependency conf="client->default" org="org.apache.httpcomponents" name="httpclient" rev="4.5.2" transitive="false"/>
+    <dependency org="org.apache.httpcomponents" name="httpclient" rev="4.5.2" transitive="false"/>
     <dependency org="org.apache.hive" name="hive-service" rev="${dependency.cloudera-hive-jdbc.revision}" changing="true"/>
     <dependency org="org.apache.hive" name="hive-serde" rev="${dependency.cloudera-hive-jdbc.revision}" changing="true"/>
     <dependency org="org.apache.hive" name="hive-metastore" rev="${dependency.cloudera-hive-jdbc.revision}" changing="true">
