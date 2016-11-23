@@ -1,0 +1,19 @@
+<configuration>
+  <property>
+    <name>hive.metastore.local</name>
+    <value>false</value>
+  </property>
+  <property>
+    <name>hive.metastore.uris</name>
+    <value>thrift://clouderamanager.cdh5.test:9083</value>
+  </property>
+  <property>
+    <name>hive.exec.reducers.bytes.per.reducer</name>
+    <value>1073741824</value>
+  </property>
+  <property>
+    <name>hive.support.concurrency</name>
+    <value>true</value>
+  </property>
+</configuration>
+
