@@ -49,7 +49,7 @@
     <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-yarn-server-web-proxy" rev="${dependency.hadoop.revision}" transitive="false"/>
 
     <dependency conf="client->default" org="dk.brics.automaton" name="automaton" rev="${dependency.automaton.revision}" transitive="false" />
-    <dependency conf="client->default" org="joda-time" name="joda-time" rev="${dependency.joda-time.revision}" transitive="false"/>
+    <dependency conf="client->default" org="joda-time" name="joda-time" rev="${dependency.joda-time.revision}" transitive="false" force ="true"/>
     <dependency conf="client->default" org="commons-configuration" name="commons-configuration" rev="${dependency.commons-configuration.revision}" transitive="false"/>
     <dependency conf="client->default" org="org.apache.commons" name="commons-exec" rev="${dependency.commons-exec.revision}" transitive="false"/>
     <dependency conf="client->default" org="commons-io" name="commons-io" rev="${dependency.commons-io.revision}" transitive="false"/>
