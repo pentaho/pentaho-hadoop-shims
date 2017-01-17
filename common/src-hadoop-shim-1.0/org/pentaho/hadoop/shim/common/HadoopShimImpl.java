@@ -1,23 +1,18 @@
 /*******************************************************************************
- *
  * Pentaho Big Data
- *
- * Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
- *
- *******************************************************************************
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with
+ * <p>
+ * Copyright (C) 2002-2017 by Pentaho : http://www.pentaho.com
+ * <p>
+ * ******************************************************************************
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  ******************************************************************************/
 
 package org.pentaho.hadoop.shim.common;
@@ -26,7 +21,6 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.filecache.DistributedCache;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.mapreduce.Job;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
 import org.pentaho.hadoop.shim.api.mapred.RunningJob;
@@ -34,6 +28,7 @@ import org.pentaho.hdfs.vfs.HDFSFileProvider;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.List;
 
 public class HadoopShimImpl extends CommonHadoopShim {
 
@@ -60,7 +55,7 @@ public class HadoopShimImpl extends CommonHadoopShim {
         String classpath = conf.get( "mapred.job.classpath.files" );
         conf.set( "mapred.job.classpath.files",
           classpath == null ? file.toString() : classpath + getClusterPathSeparator() + file.toString() );
-        FileSystem fs = FileSystem.get( conf );
+        FileSystem fs = FileSystem.get( file.toUri(), conf );
         URI uri = fs.makeQualified( file ).toUri();
 
         DistributedCache.addCacheFile( uri, conf );
@@ -101,4 +96,47 @@ public class HadoopShimImpl extends CommonHadoopShim {
     }
   }
 
+  @Override
+  public void configureConnectionInformation( String namenodeHost, String namenodePort, String jobtrackerHost,
+                                              String jobtrackerPort,
+                                              org.pentaho.hadoop.shim.api.Configuration conf,
+                                              List<String> logMessages ) throws Exception {
+
+    String runtimeFsDefaultName = conf.get( "pentaho.runtime.fs.default.name" );
+    String runtimeFsDefaultScheme = conf.get( "pentaho.runtime.fs.default.scheme", "hdfs" );
+    String runtimeJobTracker = conf.get( "pentaho.runtime.job.tracker" );
+    if ( runtimeFsDefaultName == null ) {
+      if ( namenodeHost == null || namenodeHost.trim().length() == 0 ) {
+        throw new Exception( "No hdfs host specified!" );
+      }
+
+      if ( namenodePort != null
+        && namenodePort.trim().length() != 0
+        && !"-1".equals( namenodePort.trim() ) ) {
+        namenodePort = ":" + namenodePort;
+      } else {
+        // it's been realized that this is pretty fine to have
+        // NameNode URL w/o port: e.g. HA mode (BAD-358)
+        namenodePort = "";
+        logMessages.add( "No hdfs port specified - HA? " );
+      }
+
+      runtimeFsDefaultName = runtimeFsDefaultScheme + "://" + namenodeHost + namenodePort;
+    }
+
+    if ( runtimeJobTracker == null ) {
+      if ( jobtrackerHost == null || jobtrackerHost.trim().length() == 0 ) {
+        throw new Exception( "No job tracker host specified!" );
+      }
+
+      if ( jobtrackerPort == null || jobtrackerPort.trim().length() == 0 ) {
+        jobtrackerPort = getDefaultJobtrackerPort();
+        logMessages.add( "No job tracker port specified - using default: " + jobtrackerPort );
+      }
+      runtimeJobTracker = jobtrackerHost + ":" + jobtrackerPort;
+    }
+
+    conf.set( "fs.default.name", runtimeFsDefaultName );
+    conf.set( "mapred.job.tracker", runtimeJobTracker );
+  }
 }
