@@ -1,0 +1,51 @@
+<!--===========================================================================
+  This is the build file for the HDP 1.3 Shim modules.
+  
+  See ../build-res/subfloor.xml for more details
+============================================================================-->
+<project name="pentaho-hadoop-shims-hdp21" basedir="." default="dist"
+  xmlns:ivy="antlib:org.apache.ivy.ant" >
+  
+  <description>
+    This build file is used to create the HDP1.3 Shim module for the Big Data plugin
+    and is based off Subfloor (../build-res/subfloor.xml)
+  </description>
+
+  <import file="../common-shims-build.xml"/>
+	
+  <target name="clean-jars" depends="subfloor.clean-jars" >
+    <delete dir="${lib.provided.dir}"/>
+  </target>
+
+  <target name="resolve" depends="subfloor.resolve">
+    <copy todir="lib" >
+      <fileset dir="lib-dist" />
+    </copy>
+  </target>
+	
+  <!--=======================================================================
+      create-dot-classpath
+ 
+      Creates the Eclipse .classpath file from the resolved
+      classpath from Ant.
+    ====================================================================-->
+  <target name="create-dot-classpath" depends="install-pentaho-ant-tasks,init">
+    <dot-classpath>
+      <!-- Include all lib dirs -->
+      <classpath>
+        <fileset dir="${devlib.dir}">
+          <include name="*.jar" />
+        </fileset>
+        <fileset dir="${testlib.dir}">
+          <include name="*.jar" />
+        </fileset>
+        <fileset dir="${lib.dir}">
+          <include name="**/*.jar" />
+        </fileset>
+      	<fileset dir="${lib.provided.dir}">
+          <include name="**/*.jar" />
+        </fileset>
+      </classpath>
+    </dot-classpath>
+  </target>
+</project>
