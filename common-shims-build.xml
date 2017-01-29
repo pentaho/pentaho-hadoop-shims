@@ -442,7 +442,7 @@
   </target>
 
   <!-- override assemble to copy common package resources into the staging directory -->
-  <target name="assemble" depends="common-assemble,subfloor-pkg.assemble">
+  <target name="assemble" depends="install-ivy,common-assemble,subfloor-pkg.assemble">
   	<if>
   		<isset property="oss-license.filename"/>
   		<then>
