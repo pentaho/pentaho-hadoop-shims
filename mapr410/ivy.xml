@@ -54,8 +54,6 @@
 
 
     <dependency conf="default" org="pentaho" name="pentaho-hdfs-vfs" rev="${dependency.pentaho-hdfs-vfs.revision}" transitive="false" changing="true"/>
-    <dependency conf="default" org="pentaho" name="pentaho-hadoop-snappy" rev="${dependency.pentaho-hadoop-snappy.revision}" changing="true" />
-
 
     <dependency conf="pmr->default" org="org.cloudera.htrace" name="htrace-core" rev="2.04" transitive="false" changing="true"/>
     <dependency conf="pmr->default" org="org.apache.zookeeper" name="zookeeper" rev="${dependency.apache-zookeeper.revision}" transitive="false"/>
