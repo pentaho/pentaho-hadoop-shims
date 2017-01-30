@@ -36,6 +36,7 @@ import org.pentaho.hadoop.shim.common.authorization.HasHadoopAuthorizationServic
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 
 import java.io.IOException;
+import java.net.URI;
 import java.sql.Driver;
 import java.util.List;
 
@@ -93,6 +94,11 @@ public class DelegatingHadoopShim implements HadoopShim, HasHadoopAuthorizationS
   @Override
   public FileSystem getFileSystem( Configuration conf ) throws IOException {
     return delegate.getFileSystem( conf );
+  }
+
+  @Override
+  public FileSystem getFileSystem( URI uri, Configuration conf, String user ) throws IOException, InterruptedException {
+    return delegate.getFileSystem( uri, conf, user );
   }
 
   @Override

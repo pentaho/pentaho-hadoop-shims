@@ -1,0 +1,6 @@
+  <configuration>
+    <property>
+      <name>pentaho.runtime.fs.default.name</name>
+      <value>wasb://clsuterName@storageName.blob.core.windows.net</value>
+    </property>
+  </configuration>

@@ -1,23 +1,18 @@
 /*******************************************************************************
- *
  * Pentaho Big Data
- *
- * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
- *
- *******************************************************************************
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with
+ * <p>
+ * Copyright (C) 2002-2017 by Pentaho : http://www.pentaho.com
+ * <p>
+ * ******************************************************************************
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  ******************************************************************************/
 
 package org.pentaho.hadoop.shim.spi;
@@ -35,6 +30,11 @@ import org.pentaho.hadoop.shim.api.DistributedCacheUtil;
 import org.pentaho.hadoop.shim.api.Required;
 import org.pentaho.hadoop.shim.api.fs.FileSystem;
 import org.pentaho.hadoop.shim.api.mapred.RunningJob;
+
+import java.io.IOException;
+import java.net.URI;
+import java.sql.Driver;
+import java.util.List;
 
 /**
  * Abstracts a Hadoop environment so that it may be swapped out at runtime. Users should obtain a shim implementation
@@ -110,6 +110,19 @@ public interface HadoopShim extends PentahoHadoopShim {
    * @throws IOException Error looking up/creating the file system
    */
   FileSystem getFileSystem( Configuration conf ) throws IOException;
+
+  /**
+   * Look up a file system abstraction using the configuration provided
+   *
+   * @param uri Uri of filesystem
+   * @param conf Configuration properties
+   * @param user User to run. Null -> currentUser()
+   * @return A File system abstraction configured with the properties found in {@code conf}
+   * @throws IOException Error looking up/creating the file system
+   */
+  default FileSystem getFileSystem( URI uri, Configuration conf, String user ) throws IOException, InterruptedException {
+    return getFileSystem( conf );
+  }
 
   /**
    * Setup the config object based on the supplied information with respect to the specific distribution
