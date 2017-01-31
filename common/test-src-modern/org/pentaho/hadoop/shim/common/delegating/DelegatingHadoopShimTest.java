@@ -187,6 +187,9 @@ public class DelegatingHadoopShimTest {
     Method[] methods = HadoopShim.class.getDeclaredMethods();
     System.out.println( "Methods:" + Arrays.toString( methods ) );
     for ( Method m : methods ) {
+      if ( !m.isAccessible() ) {
+        continue;
+      }
       called.set( false );
       m.invoke( dhs, DelegatingUtils.createArgs( m.getParameterTypes() ) );
       assertTrue( "Method was not delegated " + m.getName(), called.get() );
