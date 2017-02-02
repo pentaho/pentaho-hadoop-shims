@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2017 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -50,7 +50,7 @@ public class ColumnFilterTest extends ColumnFilter {
     + "\n"
     + "            <type>type</type>\n"
     + "\n"
-    + "            <comparison_opp>&#x3d;</comparison_opp>\n"
+    + "            <comparison_opp>=</comparison_opp>\n"
     + "\n"
     + "            <signed_comp>Y</signed_comp>\n"
     + "\n"
