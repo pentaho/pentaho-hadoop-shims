@@ -23,6 +23,7 @@
     <module>cdh59</module>
     <module>mapr510</module>
     <module>emr46</module>
+    <module>hdi35</module>
   </modules>
   <dependencyManagement>
     <dependencies>

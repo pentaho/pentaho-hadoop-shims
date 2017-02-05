@@ -1,0 +1,11 @@
+  <configuration>
+	<property>
+      <name>fs.azure.account.key.privateazure.blob.core.windows.net</name>
+      <value>Unencrypted value</value>
+    </property>
+    <!-- Below properties need to be deleted or commented -->
+    <!--<property>
+      <name>fs.azure.account.keyprovider.privateazure.blob.core.windows.net</name>
+      <value>org.apache.hadoop.fs.azure.ShellDecryptionKeyProvider</value>
+    </property>-->    
+  </configuration>
