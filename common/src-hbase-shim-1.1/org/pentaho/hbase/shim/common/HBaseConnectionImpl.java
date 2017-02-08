@@ -1,35 +1,31 @@
 /*******************************************************************************
- *
  * Pentaho Big Data
- *
- * Copyright (C) 2002-2014 by Pentaho : http://www.pentaho.com
- *
- *******************************************************************************
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with
+ * <p>
+ * Copyright (C) 2002-2017 by Pentaho : http://www.pentaho.com
+ * <p>
+ * ******************************************************************************
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  ******************************************************************************/
 
 package org.pentaho.hbase.shim.common;
 
+import org.apache.hadoop.hbase.util.Bytes;
+import org.pentaho.hadoop.shim.common.utils.OverloadedIterator;
+import org.pentaho.hadoop.shim.common.utils.OverloadedServiceLoader;
 import org.pentaho.hbase.shim.common.wrapper.HBaseConnectionInterface;
 import org.pentaho.hbase.shim.spi.IDeserializedBooleanComparator;
 import org.pentaho.hbase.shim.spi.IDeserializedNumericComparator;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import java.util.ServiceLoader;
 import java.util.concurrent.Callable;
 
 public class HBaseConnectionImpl extends CommonHBaseConnection implements HBaseConnectionInterface {
@@ -51,20 +47,22 @@ public class HBaseConnectionImpl extends CommonHBaseConnection implements HBaseC
 
   @Override
   public Class<?> getDeserializedNumericComparatorClass() throws ClassNotFoundException {
-    final Iterator<IDeserializedNumericComparator> providers =
-      ServiceLoader.load( IDeserializedNumericComparator.class ).iterator();
+    final OverloadedIterator<IDeserializedNumericComparator> providers =
+      (OverloadedIterator<IDeserializedNumericComparator>) OverloadedServiceLoader
+        .load( IDeserializedNumericComparator.class ).iterator();
     if ( providers.hasNext() ) {
-      return providers.next().getClass();
+      return providers.next( byte[].class, Bytes.toBytes( 1L ) ).getClass();
     }
     return Class.forName( "org.pentaho.hbase.shim.common.DeserializedNumericComparator" );
   }
 
   @Override
   public Class<?> getDeserializedBooleanComparatorClass() throws ClassNotFoundException {
-    final Iterator<IDeserializedBooleanComparator> providers =
-      ServiceLoader.load( IDeserializedBooleanComparator.class ).iterator();
+    final OverloadedIterator<IDeserializedBooleanComparator> providers =
+      (OverloadedIterator<IDeserializedBooleanComparator>) OverloadedServiceLoader
+        .load( IDeserializedBooleanComparator.class ).iterator();
     if ( providers.hasNext() ) {
-      return providers.next().getClass();
+      return providers.next( byte[].class, Bytes.toBytes( true ) ).getClass();
     }
     return Class.forName( "org.pentaho.hbase.shim.common.DeserializedBooleanComparator" );
   }
