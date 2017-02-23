@@ -29,7 +29,9 @@
           </execution>
         </executions>
         <configuration>
-          <descriptor>${project.basedir}/src/assembly/assembly.xml</descriptor>
+          <descriptors>
+            <descriptor>${project.basedir}/src/assembly/assembly.xml</descriptor>
+          </descriptors>
           <appendAssemblyId>false</appendAssemblyId>
         </configuration>
       </plugin>
