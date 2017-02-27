@@ -21,6 +21,7 @@
     <module>hdp25</module>
     <module>cdh58</module>
     <module>cdh59</module>
+    <module>cdh510</module>
     <module>mapr510</module>
     <module>mapr520</module>
     <module>emr46</module>
