@@ -24,6 +24,14 @@
       </includes>
     </dependencySet>
     <dependencySet>
+      <outputDirectory>external-libs</outputDirectory>
+      <useTransitiveDependencies>false</useTransitiveDependencies>
+      <useTransitiveFiltering>false</useTransitiveFiltering>
+      <includes>
+        <include>org.pentaho:pentaho-hadoop-shims-hbase-comparators</include>
+      </includes>
+    </dependencySet>
+    <dependencySet>
       <outputDirectory>lib</outputDirectory>
       <useTransitiveDependencies>true</useTransitiveDependencies>
       <useTransitiveFiltering>false</useTransitiveFiltering>
