@@ -36,7 +36,6 @@
     <org.tukaani.version>1.0</org.tukaani.version>
     <aopalliance.version>1.0</aopalliance.version>
     <com.thoughtworks.xstream.version>1.4.2</com.thoughtworks.xstream.version>
-    <org.apache.hadoop.version>2.7.0-mapr-1602</org.apache.hadoop.version>
     <org.codehaus.jettison.version>1.1</org.codehaus.jettison.version>
     <javax.activation.version>1.1</javax.activation.version>
     <com.google.inject.version>3.0</com.google.inject.version>
