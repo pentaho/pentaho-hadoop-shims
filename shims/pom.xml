@@ -19,7 +19,6 @@
   <modules>
     <module>hdp24</module>
     <module>hdp25</module>
-    <module>cdh58</module>
     <module>cdh59</module>
     <module>cdh510</module>
     <module>mapr510</module>
