@@ -14,6 +14,7 @@
   </properties>
   <modules>
     <module>impl</module>
+    <module>hbase-comparators</module>
     <module>assemblies</module>
   </modules>
 </project>

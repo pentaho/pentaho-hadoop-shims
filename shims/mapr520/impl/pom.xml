@@ -28,7 +28,6 @@
     <sqoop.version>1.4.6-mapr-1611</sqoop.version>
     <jetty-util.version>6.1.26</jetty-util.version>
     <htrace-core.version>3.1.0-incubating</htrace-core.version>
-    <org.apache.hadoop.version>2.7.0-mapr-1607</org.apache.hadoop.version>
     <jaxb-api.version>2.2.2</jaxb-api.version>
     <org.slf4j.version>1.7.10</org.slf4j.version>
     <hadoop2-windows-patch.version>08072014</hadoop2-windows-patch.version>

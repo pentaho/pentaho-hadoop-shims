@@ -190,6 +190,15 @@
                     <classifier>sources</classifier>
                     <overWrite>false</overWrite>
                     <outputDirectory>${project.build.directory}/src</outputDirectory>
+                    <excludes>**/IDeserializedBooleanComparator.java,**/IDeserializedNumericComparator.java</excludes>
+                  </artifactItem>
+                  <artifactItem>
+                    <groupId>org.pentaho</groupId>
+                    <artifactId>pentaho-hadoop-shims-hbase-comparators</artifactId>
+                    <classifier>sources</classifier>
+                    <overWrite>false</overWrite>
+                    <outputDirectory>${project.build.directory}/src</outputDirectory>
+                    <excludes>**/DeserializedBooleanComparator.java,**/DeserializedNumericComparator.java</excludes>
                   </artifactItem>
                   <artifactItem>
                     <groupId>org.pentaho</groupId>
@@ -208,13 +217,6 @@
                   <artifactItem>
                     <groupId>org.pentaho</groupId>
                     <artifactId>pentaho-hadoop-shims-common-hbase</artifactId>
-                    <classifier>sources</classifier>
-                    <overWrite>false</overWrite>
-                    <outputDirectory>${project.build.directory}/src</outputDirectory>
-                  </artifactItem>
-                  <artifactItem>
-                    <groupId>org.pentaho</groupId>
-                    <artifactId>pentaho-hadoop-shims-hbase-comparators</artifactId>
                     <classifier>sources</classifier>
                     <overWrite>false</overWrite>
                     <outputDirectory>${project.build.directory}/src</outputDirectory>

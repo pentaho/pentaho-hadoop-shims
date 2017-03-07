@@ -21,6 +21,7 @@
       <useTransitiveFiltering>false</useTransitiveFiltering>
       <includes>
         <include>org.pentaho:pentaho-hadoop-shims-emr46</include>
+        <include>org.pentaho:pentaho-hadoop-shims-emr46-hbase-comparators</include>
       </includes>
     </dependencySet>
     <dependencySet>
