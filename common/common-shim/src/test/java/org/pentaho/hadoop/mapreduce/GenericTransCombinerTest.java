@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2002-2016 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2017 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -40,6 +40,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.di.core.exception.KettleException;
+import org.pentaho.di.core.logging.LogLevel;
 import org.pentaho.di.core.logging.LoggingRegistry;
 import org.pentaho.di.trans.TransConfiguration;
 import org.pentaho.di.trans.TransMeta;
@@ -53,7 +54,7 @@ public class GenericTransCombinerTest {
   private static final String COMBINER_OUTPUT_STEPNAME = "combiner-output-stepname";
   private static final String COMBINER_INPUT_STEPNAME = "combiner-input-stepname";
   private static final String COMBINER_TRANS_META_NAME = "Combiner transformation";
-  private static final TransConfiguration COMBINER_TRANS_EXEC_CONFIG = MRTestUtil.getTransExecConfig( MRTestUtil.getTransMeta( COMBINER_TRANS_META_NAME ) );
+  private static TransConfiguration combinerTransExecConfig;
   /**
    * We expect 4 log channels per run. The total should never grow past logChannelsBefore + 4.
    */
@@ -72,17 +73,20 @@ public class GenericTransCombinerTest {
   @BeforeClass
   public static void before() throws KettleException {
     KettleEnvironment.init();
+    combinerTransExecConfig = MRTestUtil.getTransExecConfig( MRTestUtil.getTransMeta( COMBINER_TRANS_META_NAME ) );
   }
 
   @Before
   public void setUp() throws KettleException, IOException {
     genericTransCombiner = new GenericTransCombiner();
     mrJobConfig = new JobConf();
+  //Turn off all debug messages from PentahoMapRunnable to reduce unit test logs
+    mrJobConfig.set( "logLevel", LogLevel.ERROR.name() );
   }
 
   @Test
   public void testCombinerOutputClasses() throws IOException, KettleException {
-    mrJobConfig.set( MRTestUtil.TRANSFORMATION_COMBINER_XML, COMBINER_TRANS_EXEC_CONFIG.getXML() );
+    mrJobConfig.set( MRTestUtil.TRANSFORMATION_COMBINER_XML, combinerTransExecConfig.getXML() );
     mrJobConfig.setMapOutputKeyClass( Text.class );
     mrJobConfig.setMapOutputValueClass( IntWritable.class );
 
@@ -94,7 +98,7 @@ public class GenericTransCombinerTest {
 
   @Test
   public void testCombinerInputOutputSteps() throws IOException, KettleException {
-    mrJobConfig.set( MRTestUtil.TRANSFORMATION_COMBINER_XML, COMBINER_TRANS_EXEC_CONFIG.getXML() );
+    mrJobConfig.set( MRTestUtil.TRANSFORMATION_COMBINER_XML, combinerTransExecConfig.getXML() );
     mrJobConfig.set( MRTestUtil.TRANSFORMATION_COMBINER_INPUT_STEPNAME, COMBINER_INPUT_STEPNAME );
     mrJobConfig.set( MRTestUtil.TRANSFORMATION_COMBINER_OUTPUT_STEPNAME, COMBINER_OUTPUT_STEPNAME );
 

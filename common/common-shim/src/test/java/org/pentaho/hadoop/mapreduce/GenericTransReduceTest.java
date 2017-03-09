@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2002-2016 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2017 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -44,6 +44,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.di.core.exception.KettleException;
+import org.pentaho.di.core.logging.LogLevel;
 import org.pentaho.di.core.logging.LoggingRegistry;
 import org.pentaho.di.trans.TransConfiguration;
 import org.pentaho.di.trans.TransMeta;
@@ -64,7 +65,7 @@ public class GenericTransReduceTest {
    * Run the reducer this many times
    */
   final int RUNS = 10;
-  private static final TransConfiguration REDUCER_TRANS_EXEC_CONFIG = MRTestUtil.getTransExecConfig( MRTestUtil.getTransMeta( REDUCER_TRANS_META_NAME ) );
+  private static TransConfiguration reducerTransExecConfig;
 
   private Reporter reporterMock = mock( Reporter.class );
 
@@ -76,12 +77,15 @@ public class GenericTransReduceTest {
   @BeforeClass
   public static void before() throws KettleException {
     KettleEnvironment.init();
+    reducerTransExecConfig = MRTestUtil.getTransExecConfig( MRTestUtil.getTransMeta( REDUCER_TRANS_META_NAME ) );
   }
 
   @Before
   public void setUp() throws KettleException, IOException {
     genericTransReduce = new GenericTransReduce();
     mrJobConfig = new JobConf();
+    // Turn off all debug messages from PentahoMapRunnable to reduce unit test logs
+    mrJobConfig.set( "logLevel", LogLevel.ERROR.name() );
   }
 
   @Test
@@ -97,7 +101,7 @@ public class GenericTransReduceTest {
 
   @Test
   public void testReducerOutputClasses() throws IOException, KettleException {
-    mrJobConfig.set( MRTestUtil.TRANSFORMATION_REDUCE_XML, REDUCER_TRANS_EXEC_CONFIG.getXML() );
+    mrJobConfig.set( MRTestUtil.TRANSFORMATION_REDUCE_XML, reducerTransExecConfig.getXML() );
 
     mrJobConfig.setOutputKeyClass( Text.class );
     mrJobConfig.setOutputValueClass( LongWritable.class );
@@ -110,7 +114,7 @@ public class GenericTransReduceTest {
 
   @Test
   public void testReducerInputOutputSteps() throws IOException, KettleException {
-    mrJobConfig.set( MRTestUtil.TRANSFORMATION_REDUCE_XML, REDUCER_TRANS_EXEC_CONFIG.getXML() );
+    mrJobConfig.set( MRTestUtil.TRANSFORMATION_REDUCE_XML, reducerTransExecConfig.getXML() );
     mrJobConfig.set( MRTestUtil.TRANSFORMATION_REDUCE_INPUT_STEPNAME, REDUCE_INPUT_STEPNAME );
     mrJobConfig.set( MRTestUtil.TRANSFORMATION_REDUCE_OUTPUT_STEPNAME, REDUCE_OUTPUT_STEPNAME );
 
@@ -205,7 +209,9 @@ public class GenericTransReduceTest {
   }
 
   @Test
-  public void testReducerNoOutputStep() throws IOException, KettleException, URISyntaxException {
+  public void testReducerNoOutputStep() throws KettleException, URISyntaxException {
+    //Turn off displaying stack trace of expected exception to reduce unit test logs
+    mrJobConfig.set( "debug", "false" );
     try {
       transMeta = new TransMeta( getClass().getResource( MRTestUtil.PATH_TO_NO_OUTPUT_STEP_TEST_TRANSFORMATION ).toURI().getPath() );
       MRTestUtil.configJobReducerBaseCase( transMeta, mrJobConfig, genericTransReduce );
@@ -219,7 +225,9 @@ public class GenericTransReduceTest {
   }
 
   @Test
-  public void testReducerBadInjectorFields() throws IOException, KettleException, URISyntaxException {
+  public void testReducerBadInjectorFields() throws KettleException, URISyntaxException {
+    //Turn off displaying stack trace of expected exception to reduce unit test logs
+    mrJobConfig.set( "debug", "false" );
     try {
       transMeta = new TransMeta( getClass().getResource( MRTestUtil.PATH_TO_BAD_INJECTOR_STEP_TEST_TRANSFORMATION ).toURI().getPath() );
       MRTestUtil.configJobReducerBaseCase( transMeta, mrJobConfig, genericTransReduce );
@@ -233,6 +241,8 @@ public class GenericTransReduceTest {
 
   @Test
   public void testReducerNoInjectorStep() throws IOException, KettleException, URISyntaxException {
+    //Turn off displaying stack trace of expected exception to reduce unit test logs
+    mrJobConfig.set( "debug", "false" );
     try {
       transMeta = new TransMeta( getClass().getResource( MRTestUtil.PATH_TO_NO_INJECTOR_STEP_TEST_TRANSFORMATION ).toURI().getPath() );
       MRTestUtil.configJobReducerBaseCase( transMeta, mrJobConfig, genericTransReduce );

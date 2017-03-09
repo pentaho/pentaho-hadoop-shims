@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2002-2016 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2017 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -43,6 +43,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.di.core.exception.KettleException;
+import org.pentaho.di.core.logging.LogLevel;
 import org.pentaho.di.trans.TransMeta;
 
 /**
@@ -51,7 +52,8 @@ import org.pentaho.di.trans.TransMeta;
  */
 @SuppressWarnings( { "unchecked", "rawtypes" } )
 public class PentahoMapReduceIT {
-  private static final boolean DEBUG_MODE = true;
+  //Turn off debug messages for the tests.
+  private static final boolean DEBUG_MODE = false;
   private static final String WORDS_TO_CALCULATE = "zebra giraffe hippo elephant tiger";
   private Reporter reporterMock = mock( Reporter.class );
   private PentahoMapRunnable mapRunnable;
@@ -73,6 +75,8 @@ public class PentahoMapReduceIT {
     mapRunnable = new PentahoMapRunnable();
     genericTransReduce = new GenericTransReduce();
     mrJobConfig = new JobConf();
+  //Turn off all debug messages from PentahoMapRunnable to reduce unit test logs.Turn it on if it needs for debug.
+    mrJobConfig.set( "logLevel", LogLevel.ERROR.name() );
   }
 
   @Test
