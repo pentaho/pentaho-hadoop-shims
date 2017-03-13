@@ -52,7 +52,7 @@
     <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-jobclient" rev="${dependency.hadoop.revision}"/>
     <dependency conf="client->default" org="org.apache.hadoop" name="hadoop-mapreduce-client-shuffle" rev="${dependency.hadoop.revision}"/>
     <dependency conf="client->default" org="dk.brics.automaton" name="automaton" rev="${dependency.automaton.revision}" transitive="false" />
-    <dependency conf="client->default" org="joda-time" name="joda-time" rev="${dependency.joda-time.revision}" transitive="false" force ="true"/>
+    <dependency conf="client->default" org="joda-time" name="joda-time" rev="${dependency.joda-time.revision}" transitive="false"/>
 
     <dependency conf="default" org="org.apache.sqoop" name="sqoop" rev="${dependency.apache-sqoop.revision}"  changing="false" transitive="false" m:classifier="${dependency.apache-sqoop.classifier}"/>
     <!--<dependency conf="default" org="org.apache.pig" name="pig-withouthadoop" rev="${dependency.pig.revision}" changing="false" transitive="false" />-->
