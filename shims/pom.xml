@@ -19,6 +19,7 @@
     <modules>
         <module>hdp25</module>
         <module>cdh58</module>
+        <module>emr52</module>
     </modules>
     <dependencyManagement>
         <dependencies>
