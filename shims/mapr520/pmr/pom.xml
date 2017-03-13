@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.pentaho</groupId>
+    <artifactId>pentaho-hadoop-shims-mapr520-reactor</artifactId>
+    <version>7.1-SNAPSHOT</version>
+  </parent>
+  <groupId>org.pentaho</groupId>
+  <artifactId>pentaho-hadoop-shims-mapr520-scope-pmr</artifactId>
+  <version>7.1-SNAPSHOT</version>
+  <properties>
+    <htrace-core.version>3.1.0-incubating</htrace-core.version>
+    <zookeeper.version>3.4.5-mapr-1604</zookeeper.version>
+  </properties>
+  <packaging>pom</packaging>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.htrace</groupId>
+      <artifactId>htrace-core</artifactId>
+      <version>${htrace-core.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.zookeeper</groupId>
+      <artifactId>zookeeper</artifactId>
+      <version>${zookeeper.version}</version>
+    </dependency>
+  </dependencies>
+</project>
