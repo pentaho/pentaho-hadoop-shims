@@ -26,9 +26,6 @@
         <include>joda-time:joda-time</include>
         <include>commons-configuration:commons-configuration</include>
         <include>org.apache.commons:commons-exec</include>
-        <include>org.apache.hadoop:hadoop-common</include>
-        <include>org.apache.hadoop:hadoop-auth</include>
-        <include>org.apache.zookeeper:zookeeper</include>
       </includes>
     </dependencySet>
     <dependencySet>
@@ -36,6 +33,9 @@
       <useTransitiveDependencies>true</useTransitiveDependencies>
       <useTransitiveFiltering>true</useTransitiveFiltering>
       <includes>
+        <include>org.apache.hadoop:hadoop-common</include>
+        <include>org.apache.hadoop:hadoop-auth</include>
+        <include>org.apache.zookeeper:zookeeper</include>
         <include>org.apache.hadoop:hadoop-aws</include>
         <include>org.apache.hadoop:hadoop-mapreduce-client-app</include>
         <include>org.apache.hadoop:hadoop-mapreduce-client-core</include>
