@@ -7,12 +7,8 @@
     <artifactId>pentaho-hadoop-shims-cdh58-reactor</artifactId>
     <version>7.1-SNAPSHOT</version>
   </parent>
-  <groupId>org.pentaho</groupId>
   <artifactId>pentaho-hadoop-shims-cdh58-scope-client</artifactId>
   <version>7.1-SNAPSHOT</version>
-  <properties>
-    <org.apache.hadoop.version>2.6.0-cdh5.8.0</org.apache.hadoop.version>
-  </properties>
   <packaging>pom</packaging>
   <dependencies>
     <dependency>

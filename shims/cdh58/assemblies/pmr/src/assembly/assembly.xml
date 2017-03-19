@@ -22,6 +22,9 @@
         <include>com.yammer.metrics:metrics-core</include>
         <include>org.apache.zookeeper:zookeeper</include>
       </includes>
+      <excludes>
+        <exclude>*:tests:*</exclude>
+      </excludes>
     </dependencySet>
   </dependencySets>
 </assembly>

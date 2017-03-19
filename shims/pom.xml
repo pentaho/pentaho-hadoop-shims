@@ -15,7 +15,6 @@
     <org.safehaus.jug.version>2.0.0</org.safehaus.jug.version>
     <com.yammer.metrics.version>2.2.0</com.yammer.metrics.version>
     <commons-lang.version>2.6</commons-lang.version>
-    <hadoop.version>2.7.3.2.5.0.0-1245</hadoop.version>
   </properties>
   <modules>
     <module>hdp25</module>

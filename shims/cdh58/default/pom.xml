@@ -10,14 +10,6 @@
   <groupId>org.pentaho</groupId>
   <artifactId>pentaho-hadoop-shims-cdh58-scope-default</artifactId>
   <version>7.1-SNAPSHOT</version>
-  <properties>
-    <org.apache.hive.version>1.1.0-cdh5.8.0</org.apache.hive.version>
-    <pig.version>0.12.0-cdh5.8.0</pig.version>
-    <automaton.version>1.11-8</automaton.version>
-    <sqoop.version>1.4.6-cdh5.8.0</sqoop.version>
-    <org.apache.oozie.version>4.1.0-cdh5.8.0</org.apache.oozie.version>
-    <hadoop2-windows-patch.version>08072014</hadoop2-windows-patch.version>
-  </properties>
   <packaging>pom</packaging>
   <dependencies>
     <dependency>

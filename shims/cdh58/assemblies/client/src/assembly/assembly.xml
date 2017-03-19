@@ -30,6 +30,8 @@
         <exclude>commons-collections:commons-collections</exclude>
         <exclude>org.apache.zookeeper:zookeeper</exclude>
         <exclude>*:tests:*</exclude>
+        <exclude>com.google.guava:*</exclude>
+        <exclude>xml-apis:xml-apis</exclude>
       </excludes>
     </dependencySet>
   </dependencySets>

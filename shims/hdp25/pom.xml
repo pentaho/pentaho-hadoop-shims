@@ -10,6 +10,17 @@
   <packaging>pom</packaging>
   <properties>
     <shim.name>hdp25</shim.name>
+    <hadoop.version>2.7.3.2.5.0.0-1245</hadoop.version>
+    <pig.version>0.16.0.2.5.0.0-1245</pig.version>
+    <automaton.version>1.11-8</automaton.version>
+    <org.apache.oozie.version>4.2.0.2.5.0.0-1245</org.apache.oozie.version>
+    <hadoop2-windows-patch.version>08072014</hadoop2-windows-patch.version>
+    <sqoop.version>1.4.6.2.5.0.0-1245</sqoop.version>
+    <hive-jdbc.version>1.2.1000.2.5.0.0-1245</hive-jdbc.version>
+    <htrace-core.version>2.04</htrace-core.version>
+    <org.apache.hbase.version>1.1.2.2.5.0.0-1245</org.apache.hbase.version>
+    <zookeeper.version>3.4.6.2.5.0.0-1245</zookeeper.version>
+    <protobuf-java.version>2.5.0</protobuf-java.version>
   </properties>
   <modules>
     <module>client</module>

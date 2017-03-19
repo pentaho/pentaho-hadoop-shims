@@ -7,15 +7,8 @@
     <artifactId>pentaho-hadoop-shims-hdp25-reactor</artifactId>
     <version>7.1-SNAPSHOT</version>
   </parent>
-  <groupId>org.pentaho</groupId>
   <artifactId>pentaho-hadoop-shims-hdp25-scope-pmr</artifactId>
   <version>7.1-SNAPSHOT</version>
-  <properties>
-    <htrace-core.version>2.04</htrace-core.version>
-    <org.apache.hbase.version>1.1.2.2.5.0.0-1245</org.apache.hbase.version>
-    <zookeeper.version>3.4.6.2.5.0.0-1245</zookeeper.version>
-    <protobuf-java.version>2.5.0</protobuf-java.version>
-  </properties>
   <packaging>pom</packaging>
   <dependencies>
     <dependency>

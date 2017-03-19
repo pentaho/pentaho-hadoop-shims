@@ -7,7 +7,6 @@
     <artifactId>pentaho-hadoop-shims-hdp25-reactor</artifactId>
     <version>7.1-SNAPSHOT</version>
   </parent>
-  <groupId>org.pentaho</groupId>
   <artifactId>pentaho-hadoop-shims-hdp25-scope-client</artifactId>
   <version>7.1-SNAPSHOT</version>
   <packaging>pom</packaging>

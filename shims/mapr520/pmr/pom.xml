@@ -6,13 +6,8 @@
     <artifactId>pentaho-hadoop-shims-mapr520-reactor</artifactId>
     <version>7.1-SNAPSHOT</version>
   </parent>
-  <groupId>org.pentaho</groupId>
   <artifactId>pentaho-hadoop-shims-mapr520-scope-pmr</artifactId>
   <version>7.1-SNAPSHOT</version>
-  <properties>
-    <htrace-core.version>3.1.0-incubating</htrace-core.version>
-    <zookeeper.version>3.4.5-mapr-1604</zookeeper.version>
-  </properties>
   <packaging>pom</packaging>
   <dependencies>
     <dependency>

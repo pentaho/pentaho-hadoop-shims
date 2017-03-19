@@ -7,15 +7,9 @@
     <artifactId>pentaho-hadoop-shims-cdh58-reactor</artifactId>
     <version>7.1-SNAPSHOT</version>
   </parent>
-  <groupId>org.pentaho</groupId>
   <artifactId>pentaho-hadoop-shims-cdh58-scope-pmr</artifactId>
   <version>7.1-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <properties>
-    <org.apache.hbase.version>1.2.0-cdh5.8.0</org.apache.hbase.version>
-    <zookeeper.version>3.4.5-cdh5.8.0</zookeeper.version>
-    <htrace-core.version>3.2.0-incubating</htrace-core.version>
-  </properties>
   <dependencies>
     <dependency>
       <groupId>org.apache.hbase</groupId>

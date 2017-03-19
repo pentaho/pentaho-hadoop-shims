@@ -6,13 +6,8 @@
     <artifactId>pentaho-hadoop-shims-emr52-reactor</artifactId>
     <version>7.1-SNAPSHOT</version>
   </parent>
-  <groupId>org.pentaho</groupId>
   <artifactId>pentaho-hadoop-shims-emr52-scope-pmr</artifactId>
   <version>7.1-SNAPSHOT</version>
-  <properties>
-    <org.apache.hbase.version>1.2.3</org.apache.hbase.version>
-    <zookeeper.version>3.4.8</zookeeper.version>
-  </properties>
   <packaging>pom</packaging>
   <dependencies>
     <dependency>
