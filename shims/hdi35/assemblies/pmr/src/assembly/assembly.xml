@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly>
+  <id>plugin</id>
+  <baseDirectory>hdi35</baseDirectory>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory>lib/pmr</outputDirectory>
+      <useTransitiveDependencies>true</useTransitiveDependencies>
+      <useTransitiveFiltering>false</useTransitiveFiltering>
+      <includes>
+        <include>com.google.protobuf:protobuf-java</include>
+        <include>com.yammer.metrics:metrics-core</include>
+        <include>org.apache.hbase:hbase-server</include>
+        <include>org.apache.hbase:hbase-client</include>
+        <include>org.apache.hbase:hbase-prefix-tree</include>
+        <include>org.apache.hbase:hbase-protocol</include>
+        <include>org.apache.hbase:hbase-common</include>
+        <include>org.apache.hbase:hbase-hadoop-compat</include>
+        <include>org.cloudera.htrace:htrace-core</include>
+        <include>org.apache.zookeeper:zookeeper</include>
+      </includes>
+      <excludes>
+        <exclude>*:tests:*</exclude>
+      </excludes>
+    </dependencySet>
+  </dependencySets>
+</assembly>
