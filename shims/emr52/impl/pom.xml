@@ -10,11 +10,6 @@
   <artifactId>pentaho-hadoop-shims-emr52-impl</artifactId>
   <packaging>jar</packaging>
   <version>7.1-SNAPSHOT</version>
-  <properties>
-    <log4j.version>1.2.17</log4j.version>
-    <xstream.version>1.4.4</xstream.version>
-    <commons-io.version>2.4</commons-io.version>
-  </properties>
   <dependencies>
     <dependency>
       <groupId>org.pentaho</groupId>
@@ -69,18 +64,6 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>${log4j.version}</version>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>*</artifactId>
-          <groupId>*</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
       <groupId>pentaho-kettle</groupId>
       <artifactId>kettle-core</artifactId>
     </dependency>
@@ -93,18 +76,6 @@
       <artifactId>pentaho-hadoop-shims-common-pig-shim-1.1</artifactId>
       <version>${project.version}</version>
       <classifier>sources</classifier>
-    </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <version>${commons-io.version}</version>
-      <scope>compile</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
   </dependencies>
   <build>

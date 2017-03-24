@@ -7,7 +7,6 @@
     <artifactId>pentaho-hadoop-shims-hdp25-reactor</artifactId>
     <version>7.1-SNAPSHOT</version>
   </parent>
-  <groupId>org.pentaho</groupId>
   <artifactId>pentaho-hadoop-shims-hdp25-scope-default</artifactId>
   <version>7.1-SNAPSHOT</version>
   <packaging>pom</packaging>
@@ -26,6 +25,16 @@
           <groupId>*</groupId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.avro</groupId>
+      <artifactId>avro</artifactId>
+      <version>${org.apache.avro.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-common</artifactId>
+      <version>${hadoop.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.pig</groupId>

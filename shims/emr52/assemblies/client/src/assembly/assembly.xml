@@ -46,6 +46,7 @@
       </includes>
       <excludes>
         <exclude>xml-apis:*</exclude>
+        <exclude>*:stax-api:*</exclude>
         <exclude>commons-collections:*</exclude>
         <exclude>*:tests:*</exclude>
       </excludes>

@@ -28,6 +28,11 @@
       <artifactId>pentaho-hadoop-shims-emr52-scope-default-assembly</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>                                                            
+      <groupId>org.pentaho</groupId>                                        
+      <artifactId>pentaho-hadoop-shims-emr52-hbase-comparators</artifactId> 
+      <version>${project.version}</version>                                 
+    </dependency>                                                           
   </dependencies>
   <build>
     <plugins>

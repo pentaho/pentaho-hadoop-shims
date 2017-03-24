@@ -29,6 +29,11 @@
       <artifactId>pentaho-hadoop-shims-hdp25-scope-default-assembly</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>                                                           
+      <groupId>org.pentaho</groupId>                                       
+      <artifactId>pentaho-hadoop-shims-hdp25-hbase-comparators</artifactId>
+      <version>${project.version}</version>                                
+    </dependency>                                                          
   </dependencies>
   <build>
     <plugins>
