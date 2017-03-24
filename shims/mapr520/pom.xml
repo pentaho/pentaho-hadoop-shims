@@ -29,6 +29,7 @@
   <modules>
     <module>pmr</module>
     <module>default</module>
+    <module>hbase-comparators</module>     
     <module>impl</module>
     <module>assemblies</module>
   </modules>
