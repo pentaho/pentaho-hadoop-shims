@@ -1,17 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-list</artifactId>
     <version>7.1-SNAPSHOT</version>
   </parent>
-
   <artifactId>pentaho-hadoop-shims-emr52-reactor</artifactId>
   <packaging>pom</packaging>
-
   <properties>
     <shim.name>emr52</shim.name>
     <joda-time.version>2.9.5</joda-time.version>
@@ -21,6 +17,7 @@
     <zookeeper.version>3.4.8</zookeeper.version>
     <com.amazonaws.version>1.10.75.1</com.amazonaws.version>
     <com.fasterxml.jackson.core.version>2.5.3</com.fasterxml.jackson.core.version>
+    <org.codehaus.jackson>1.9.13</org.codehaus.jackson>
     <commons-configuration.version>1.6</commons-configuration.version>
     <org.apache.httpcomponents.version>4.4</org.apache.httpcomponents.version>
     <jscience.version>4.3.1</jscience.version>
@@ -34,7 +31,6 @@
     <org.apache.hbase.version>1.2.3</org.apache.hbase.version>
     <xstream.version>1.4.4</xstream.version>
   </properties>
-
   <modules>
     <module>client</module>
     <module>pmr</module>

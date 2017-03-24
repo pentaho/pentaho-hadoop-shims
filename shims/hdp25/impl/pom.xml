@@ -7,7 +7,7 @@
     <artifactId>pentaho-hadoop-shims-hdp25-reactor</artifactId>
     <version>7.1-SNAPSHOT</version>
   </parent>
-  <artifactId>pentaho-hadoop-shims-hdp25-impl</artifactId>
+  <artifactId>pentaho-hadoop-shims-hdp25</artifactId>
   <packaging>jar</packaging>
   <version>7.1-SNAPSHOT</version>
   <dependencies>
