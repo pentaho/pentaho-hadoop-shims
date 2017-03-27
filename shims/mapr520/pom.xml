@@ -24,6 +24,7 @@
     <hadoop2-windows-patch.version>08072014</hadoop2-windows-patch.version>
     <htrace-core.version>3.1.0-incubating</htrace-core.version>
     <zookeeper.version>3.4.5-mapr-1604</zookeeper.version>
+    <org.apache.hadoop.version>2.7.0-mapr-1607</org.apache.hadoop.version>
   </properties>
 
   <modules>

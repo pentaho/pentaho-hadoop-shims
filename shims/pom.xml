@@ -21,6 +21,7 @@
     <module>cdh58</module>
     <module>emr52</module>
     <module>mapr520</module>
+    <module>hdi35</module>
   </modules>
   <dependencyManagement>
     <dependencies>

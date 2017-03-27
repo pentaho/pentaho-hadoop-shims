@@ -20,7 +20,6 @@
     <jackson-xc.version>1.9.13</jackson-xc.version>
     <javaee-api.version>5.0-2</javaee-api.version>
     <jetty-util.version>6.1.26</jetty-util.version>
-    <org.apache.hadoop.version>2.7.0-mapr-1607</org.apache.hadoop.version>
     <jaxb-api.version>2.2.2</jaxb-api.version>
     <org.slf4j.version>1.7.10</org.slf4j.version>
     <protobuf-java.version>2.5.0</protobuf-java.version>
