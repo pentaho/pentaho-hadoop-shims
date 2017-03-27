@@ -25,6 +25,7 @@
             <useTransitiveFiltering>false</useTransitiveFiltering>
             <includes>
                 <include>org.pentaho:pentaho-hadoop-shims-hdi35</include>
+	        <include>org.pentaho:pentaho-hadoop-shims-hdi35-hbase-comparators</include>    
             </includes>
         </dependencySet>
     </dependencySets>

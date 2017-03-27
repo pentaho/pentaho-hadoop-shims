@@ -25,6 +25,7 @@
             <useTransitiveFiltering>false</useTransitiveFiltering>
             <includes>
                 <include>org.pentaho:pentaho-hadoop-shims-mapr520</include>
+                <include>org.pentaho:pentaho-hadoop-shims-mapr520-hbase-comparators</include>     
             </includes>
         </dependencySet>
     </dependencySets>

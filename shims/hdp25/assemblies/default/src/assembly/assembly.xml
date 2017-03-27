@@ -18,6 +18,9 @@
         <include>org.apache.sqoop:sqoop</include>
         <include>org.apache.oozie:oozie-core</include>
         <include>org.apache.oozie:oozie-client</include>
+        <include>org.codehaus.jackson:jackson-core-asl</include>
+        <include>org.codehaus.jackson:jackson-mapper-asl</include>
+        <include>org.apache.avro:avro</include>
       </includes>
     </dependencySet>
     <dependencySet>

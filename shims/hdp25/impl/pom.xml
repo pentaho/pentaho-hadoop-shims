@@ -10,10 +10,6 @@
   <artifactId>pentaho-hadoop-shims-hdp25-impl</artifactId>
   <packaging>jar</packaging>
   <version>7.1-SNAPSHOT</version>
-  <properties>
-    <log4j.version>1.2.14</log4j.version>
-    <xstream.version>1.4.9</xstream.version>
-  </properties>
   <dependencies>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
@@ -66,12 +62,6 @@
     <dependency>
       <groupId>pentaho-kettle</groupId>
       <artifactId>kettle-engine</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>${log4j.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

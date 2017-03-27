@@ -19,6 +19,7 @@
   <modules>
     <module>client</module>
     <module>pmr</module>
+    <module>hbase-comparators</module>  
     <module>default</module>
     <module>impl</module>
     <module>assemblies</module>

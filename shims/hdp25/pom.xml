@@ -20,11 +20,14 @@
     <org.apache.hbase.version>1.1.2.2.5.0.0-1245</org.apache.hbase.version>
     <zookeeper.version>3.4.6.2.5.0.0-1245</zookeeper.version>
     <protobuf-java.version>2.5.0</protobuf-java.version>
+    <org.apache.avro.version>1.8.0</org.apache.avro.version>
+    <xstream.version>1.4.9</xstream.version>
   </properties>
   <modules>
     <module>client</module>
     <module>pmr</module>
     <module>default</module>
+    <module>hbase-comparators</module>
     <module>impl</module>
     <module>assemblies</module>
   </modules>
