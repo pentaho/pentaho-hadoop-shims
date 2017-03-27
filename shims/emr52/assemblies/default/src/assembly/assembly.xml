@@ -26,6 +26,11 @@
         <include>pentaho:hadoop2-windows-patch</include>
         <include>commons-lang:commons-lang</include>
       </includes>
+      <excludes>
+        <exclude>javax.xml.stream:*</exclude>
+        <exclude>org.apache.calcite:*</exclude>
+        <exclude>*:tests:*</exclude>
+      </excludes>
     </dependencySet>
   </dependencySets>
 </assembly>

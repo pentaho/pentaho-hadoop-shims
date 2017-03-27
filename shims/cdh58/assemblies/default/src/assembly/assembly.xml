@@ -19,6 +19,28 @@
         <include>org.apache.sqoop:sqoop</include>
         <include>org.apache.pig:pig</include>
       </includes>
+      <excludes>
+        <exclude>log4j:log4j</exclude>
+        <exclude>org.mockito:mockito-all</exclude>
+        <exclude>junit:*</exclude>
+        <exclude>com.google.guava:*</exclude>
+        <exclude>xml-apis:xml-apis</exclude>
+        <exclude>commons-collections:commons-collections</exclude>
+        <exclude>org.apache.zookeeper:zookeeper</exclude>
+        <exclude>org.apache.hadoop:hadoop-annotations</exclude>
+        <exclude>org.apache.hadoop:hadoop-yarn-api</exclude>
+        <exclude>org.apache.hadoop:hadoop-yarn-common</exclude>
+        <exclude>org.apache.hadoop:hadoop-yarn-server-applicationhistoryservice</exclude>
+        <exclude>org.apache.hadoop:hadoop-yarn-server-common</exclude>
+        <exclude>org.apache.hadoop:hadoop-yarn-server-resourcemanager</exclude>
+        <exclude>org.apache.hadoop:hadoop-yarn-server-web-proxy</exclude>
+        <exclude>*:tests:*</exclude>
+        <!--hive-exec excludes-->
+        <exclude>*:logredactor:*</exclude>
+        <exclude>*:datanucleus-core:*</exclude>
+        <exclude>*:hbase-common:*</exclude>
+        <exclude>*:ST4:*</exclude>
+      </excludes>
     </dependencySet>
     <dependencySet>
       <outputDirectory>lib</outputDirectory>
@@ -48,6 +70,11 @@
         <exclude>org.apache.hadoop:hadoop-yarn-server-resourcemanager</exclude>
         <exclude>org.apache.hadoop:hadoop-yarn-server-web-proxy</exclude>
         <exclude>*:tests:*</exclude>
+        <!--hive-exec excludes-->
+        <exclude>*:logredactor:*</exclude>
+        <exclude>*:datanucleus-core:*</exclude>
+        <exclude>*:hbase-common:*</exclude>
+        <exclude>*:ST4:*</exclude>
       </excludes>
     </dependencySet>
   </dependencySets>
