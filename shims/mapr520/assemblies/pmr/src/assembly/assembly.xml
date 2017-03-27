@@ -11,6 +11,11 @@
       <useTransitiveDependencies>true</useTransitiveDependencies>
       <useTransitiveFiltering>false</useTransitiveFiltering>
       <includes>
+        <include>org.apache.hbase:hbase-client</include>
+        <include>org.apache.hbase:hbase-common</include>
+        <include>org.apache.hbase:hbase-server</include>
+        <include>org.apache.hbase:hbase-protocol</include>
+        <include>org.apache.hbase:hbase-hadoop-compat</include>
         <include>org.apache.htrace:htrace-core</include>
         <include>org.apache.zookeeper:zookeeper</include>
       </includes>

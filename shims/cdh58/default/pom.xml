@@ -128,6 +128,7 @@
     <dependency>
       <groupId>dk.brics.automaton</groupId>
       <artifactId>automaton</artifactId>
+      <version>${automaton.version}</version>
     </dependency>
   </dependencies>
 </project>

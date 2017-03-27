@@ -19,6 +19,7 @@
     <sqoop.version>1.4.6-cdh5.8.0</sqoop.version>
     <org.apache.oozie.version>4.1.0-cdh5.8.0</org.apache.oozie.version>
     <hadoop2-windows-patch.version>08072014</hadoop2-windows-patch.version>
+    <automaton.version>1.11-8</automaton.version>
   </properties>
   <modules>
     <module>client</module>
