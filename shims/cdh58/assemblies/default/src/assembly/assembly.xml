@@ -35,6 +35,8 @@
         <exclude>org.apache.hadoop:hadoop-yarn-server-resourcemanager</exclude>
         <exclude>org.apache.hadoop:hadoop-yarn-server-web-proxy</exclude>
         <exclude>*:tests:*</exclude>
+        <exclude>*:hive-exec:*:core</exclude>
+        <exclude>org.apache.curator:apache-curator:pom</exclude>
         <!--hive-exec excludes-->
         <exclude>*:logredactor:*</exclude>
         <exclude>*:datanucleus-core:*</exclude>
@@ -69,7 +71,10 @@
         <exclude>org.apache.hadoop:hadoop-yarn-server-common</exclude>
         <exclude>org.apache.hadoop:hadoop-yarn-server-resourcemanager</exclude>
         <exclude>org.apache.hadoop:hadoop-yarn-server-web-proxy</exclude>
+        <exclude>com.fasterxml.jackson.core:jackson-databind</exclude>
         <exclude>*:tests:*</exclude>
+        <exclude>*:hive-exec:*:core</exclude>
+        <exclude>org.apache.curator:apache-curator:pom</exclude>
         <!--hive-exec excludes-->
         <exclude>*:logredactor:*</exclude>
         <exclude>*:datanucleus-core:*</exclude>
