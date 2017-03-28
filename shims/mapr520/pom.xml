@@ -1,23 +1,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-list</artifactId>
     <version>7.1-SNAPSHOT</version>
   </parent>
-
   <artifactId>pentaho-hadoop-shims-mapr520-reactor</artifactId>
   <packaging>pom</packaging>
-
   <properties>
     <shim.name>mapr520</shim.name>
     <org.apache.hive.shims.version>1.2.0-mapr-1609</org.apache.hive.shims.version>
     <org.apache.hive.version>1.2.0-mapr-1609</org.apache.hive.version>
     <org.apache.oozie.version>4.2.0-mapr-1609</org.apache.oozie.version>
     <pig.version>0.15.0-mapr-1608</pig.version>
+    <automaton.version>1.11-8</automaton.version>
     <org.apache.thrift.version>0.9.2</org.apache.thrift.version>
     <org.apache.hbase.version>1.1.1-mapr-1602</org.apache.hbase.version>
     <sqoop.version>1.4.6-mapr-1611</sqoop.version>
@@ -26,11 +23,10 @@
     <zookeeper.version>3.4.5-mapr-1604</zookeeper.version>
     <org.apache.hadoop.version>2.7.0-mapr-1607</org.apache.hadoop.version>
   </properties>
-
   <modules>
     <module>pmr</module>
     <module>default</module>
-    <module>hbase-comparators</module>     
+    <module>hbase-comparators</module>
     <module>impl</module>
     <module>assemblies</module>
   </modules>

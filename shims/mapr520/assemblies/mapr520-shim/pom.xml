@@ -23,11 +23,11 @@
       <artifactId>pentaho-hadoop-shims-mapr520-scope-default-assembly</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <dependency>                                                               
+    <dependency>
       <groupId>org.pentaho</groupId>                                           
       <artifactId>pentaho-hadoop-shims-mapr520-hbase-comparators</artifactId>    
       <version>${project.version}</version>                                    
-    </dependency>                                                              
+    </dependency>
   </dependencies>
   <build>
     <plugins>

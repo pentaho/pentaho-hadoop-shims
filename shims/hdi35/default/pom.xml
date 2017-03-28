@@ -13,6 +13,7 @@
   <properties>
     <azure-storage.version>2.0.0</azure-storage.version>
     <pig.version>0.16.0.2.5.0.0-1245</pig.version>
+    <automaton.version>1.11-8</automaton.version>
     <org.apache.oozie.version>4.2.0.2.5.0.0-1245</org.apache.oozie.version>
     <hadoop-azure.version>2.7.1</hadoop-azure.version>
     <hadoop2-windows-patch.version>08072014</hadoop2-windows-patch.version>
@@ -51,6 +52,13 @@
     <dependency>
       <groupId>dk.brics.automaton</groupId>
       <artifactId>automaton</artifactId>
+      <version>${automaton.version}</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>*</artifactId>
+          <groupId>*</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.sqoop</groupId>

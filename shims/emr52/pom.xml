@@ -11,6 +11,7 @@
   <properties>
     <shim.name>emr52</shim.name>
     <joda-time.version>2.9.5</joda-time.version>
+    <automaton.version>1.11-8</automaton.version>
     <gson.version>2.2.4</gson.version>
     <commons-exec.version>1.2</commons-exec.version>
     <org.apache.hadoop.version>2.7.3</org.apache.hadoop.version>

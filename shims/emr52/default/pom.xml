@@ -14,6 +14,13 @@
     <dependency>
       <groupId>dk.brics.automaton</groupId>
       <artifactId>automaton</artifactId>
+      <version>${automaton.version}</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>*</artifactId>
+          <groupId>*</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hive</groupId>
