@@ -11,7 +11,6 @@
       <useTransitiveDependencies>true</useTransitiveDependencies>
       <useTransitiveFiltering>false</useTransitiveFiltering>
       <includes>
-        <include>dk.brics.automaton:automaton</include>
         <include>org.apache.hive:hive-jdbc</include>
         <include>org.apache.hive:hive-exec</include>
         <include>org.apache.hive:hive-service</include>
@@ -24,7 +23,6 @@
         <include>org.apache.pig:pig</include>
         <include>pentaho:pentaho-hdfs-vfs</include>
         <include>pentaho:hadoop2-windows-patch</include>
-        <include>commons-lang:commons-lang</include>
       </includes>
       <excludes>
         <exclude>javax.xml.stream:*</exclude>
