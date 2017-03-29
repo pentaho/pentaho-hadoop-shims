@@ -9,6 +9,24 @@
     <dependencySet>
       <outputDirectory>lib/client</outputDirectory>
       <useTransitiveDependencies>true</useTransitiveDependencies>
+      <useTransitiveFiltering>false</useTransitiveFiltering>
+      <includes>
+        <include>com.fasterxml.jackson.core:jackson-databind</include>
+        <include>com.fasterxml.jackson.core:jackson-core</include>
+        <include>com.fasterxml.jackson.core:jackson-annotations</include>
+      </includes>
+      <excludes>
+        <exclude>junit:*</exclude>
+        <exclude>commons-collections:commons-collections</exclude>
+        <exclude>org.apache.zookeeper:zookeeper</exclude>
+        <exclude>com.google.guava:*</exclude>
+        <exclude>xml-apis:xml-apis</exclude>
+        <exclude>*:tests:*</exclude>
+      </excludes>
+    </dependencySet>
+    <dependencySet>
+      <outputDirectory>lib/client</outputDirectory>
+      <useTransitiveDependencies>true</useTransitiveDependencies>
       <useTransitiveFiltering>true</useTransitiveFiltering>
       <includes>
         <include>org.apache.hadoop:hadoop-client</include>
