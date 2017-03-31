@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2017 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -149,11 +149,7 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.Dis
    */
   public boolean isKettleEnvironmentInstalledAt( FileSystem fs, Path root ) throws IOException {
     // These directories must exist
-    Path[] directories = new Path[] {
-        new Path( root, PATH_LIB ),
-        new Path( root, PATH_PLUGINS ),
-        new Path( new Path( root, PATH_PLUGINS ), PENTAHO_BIG_DATA_PLUGIN_FOLDER_NAME )
-    };
+    Path[] directories = new Path[] { new Path( root, PATH_LIB ), new Path( root, PATH_PLUGINS ), new Path( new Path( root, PATH_PLUGINS ), PENTAHO_BIG_DATA_PLUGIN_FOLDER_NAME ) };
     // This file must not exist
     Path lock = getLockFileAt( root );
     // These directories must exist
@@ -183,7 +179,9 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.Dis
 
     // Write lock file while we're installing
     Path lockFile = getLockFileAt( destination );
-    fs.create( lockFile, true );
+    FSDataOutputStream out = fs.create( lockFile, true );
+    //We should close output stream, otherwise the file will be locked on Windows
+    out.close();
 
     stageForCache( extracted, fs, destination, true );
 
@@ -433,8 +431,7 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.Dis
   }
 
   private void copyConfigProperties( FileObject source, FileSystem fs, Path dest ) {
-    try (FSDataOutputStream output = fs.create( dest );
-         InputStream input = source.getContent().getInputStream() ) {
+    try ( FSDataOutputStream output = fs.create( dest ); InputStream input = source.getContent().getInputStream() ) {
 
       List<String> lines = IOUtils.readLines( input );
       for ( String line : lines ) {

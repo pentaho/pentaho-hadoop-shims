@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2017 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -22,11 +22,36 @@
 
 package org.pentaho.hadoop.shim.common;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyShort;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
 import org.apache.commons.vfs2.AllFileSelector;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSelector;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.ContentSummary;
+import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.permission.FsPermission;
@@ -40,21 +65,6 @@ import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.common.fs.PathProxy;
 import org.pentaho.hadoop.shim.spi.MockHadoopShim;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
 
 /**
  * Test the DistributedCacheUtil
@@ -204,7 +214,7 @@ public class DistributedCacheUtilImplTest {
     ZipEntry e = new ZipEntry( "zipEntriesMixed" + "/" + "someFile.txt" );
     outputStream.putNextEntry( e );
     byte[] data = "someOutString".getBytes();
-    outputStream.write( data, 0, data.length);
+    outputStream.write( data, 0, data.length );
     outputStream.closeEntry();
     e = new ZipEntry(  "zipEntriesMixed" + "/" );
     outputStream.putNextEntry( e );
@@ -491,6 +501,8 @@ public class DistributedCacheUtilImplTest {
     Path bigDataPlugin = new Path( plugins, DistributedCacheUtilImpl.PENTAHO_BIG_DATA_PLUGIN_FOLDER_NAME );
 
     Path lockFile = ch.getLockFileAt( root );
+    FSDataOutputStream lockFileOut = null;
+    FSDataOutputStream bigDataPluginFileOut = null;
     try {
       // Create all directories (parent directories created automatically)
       fs.mkdirs( lib );
@@ -499,14 +511,16 @@ public class DistributedCacheUtilImplTest {
       assertTrue( ch.isKettleEnvironmentInstalledAt( fs, root ) );
 
       // If lock file is there pmr is not installed
-      fs.create( lockFile );
+      lockFileOut = fs.create( lockFile );
       assertFalse( ch.isKettleEnvironmentInstalledAt( fs, root ) );
 
       // Try to create a file instead of a directory for the pentaho-big-data-plugin. This should be detected.
       fs.delete( bigDataPlugin, true );
-      fs.create( bigDataPlugin );
+      bigDataPluginFileOut = fs.create( bigDataPlugin );
       assertFalse( ch.isKettleEnvironmentInstalledAt( fs, root ) );
     } finally {
+      lockFileOut.close();
+      bigDataPluginFileOut.close();
       fs.delete( root, true );
     }
   }
@@ -571,11 +585,10 @@ public class DistributedCacheUtilImplTest {
 
     // This "empty pmr" contains a lib/ folder but with no content
     FileObject pmrArchive = KettleVFS.getFileObject( getClass().getResource( "/empty-pmr.zip" ).toURI().getPath() );
+    FileObject bigDataPluginDir = createTestFolderWithContent( DistributedCacheUtilImpl.PENTAHO_BIG_DATA_PLUGIN_FOLDER_NAME );
 
-    FileObject bigDataPluginDir =
-      createTestFolderWithContent( DistributedCacheUtilImpl.PENTAHO_BIG_DATA_PLUGIN_FOLDER_NAME );
     String pluginName = "additional-plugin";
-    createTestFolderWithContent( pluginName );
+    FileObject additionalPluginDir = createTestFolderWithContent( pluginName );
     Path root = new Path( "bin/test/installKettleEnvironment" );
     try {
       ch.installKettleEnvironment( pmrArchive, fs, root, bigDataPluginDir, "bin/test/" + pluginName );
@@ -583,6 +596,7 @@ public class DistributedCacheUtilImplTest {
       assertTrue( fs.exists( new Path( root, "plugins/bin/test/" + pluginName ) ) );
     } finally {
       bigDataPluginDir.delete( new AllFileSelector() );
+      additionalPluginDir.delete( new AllFileSelector() );
       fs.delete( root, true );
     }
   }
