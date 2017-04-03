@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Pentaho Big Data
  * <p>
- * Copyright (C) 2002-2017 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2016 by Pentaho : http://www.pentaho.com
  * <p>
  * ******************************************************************************
  * <p>
@@ -18,7 +18,6 @@
 package org.pentaho.hadoop.shim;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ArrayList;
@@ -35,7 +34,6 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.common.annotations.VisibleForTesting;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSelectInfo;
 import org.apache.commons.vfs2.FileSelector;
@@ -70,8 +68,6 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
 
   private static final String CONFIG_PROPERTY_EXCLUDE_JARS = "exclude.jars";
 
-  private static final String CONFIG_PROPERTY_EXCLUDE_CLUSTER_JARS = "exclude.cluster.jars";
-
   private static final String SHIM_CLASSPATH_IGNORE = "classpath.ignore";
 
   private static final String CONFIG_PROPERTY_CLASSPATH = "classpath";
@@ -79,8 +75,6 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
   private static final String CONFIG_PROPERTY_LIBRARY_PATH = "library.path";
 
   private static final String CONFIG_PROPERTY_NAME = "name";
-
-  private static final String PMR_PROPERTIES = "pmr.properties";
 
   private static final URL[] EMPTY_URL_ARRAY = new URL[ 0 ];
 
@@ -332,54 +326,11 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
       //Exclude jars contained in exclude.jars property in config.properties file from the list of jars
       jars = filterJars( jars, configurationProperties.getProperty( CONFIG_PROPERTY_EXCLUDE_JARS ) );
 
-      //Exclude jars contained in exclude.cluster.jars property in config.properties file from the list of jars
-      jars = filterClusterJars( jars, configurationProperties.getProperty( CONFIG_PROPERTY_EXCLUDE_CLUSTER_JARS ) );
-
       return new HadoopConfigurationClassLoader( jars.toArray( EMPTY_URL_ARRAY ),
         parent, ignoredClasses );
     } catch ( Exception ex ) {
       throw new ConfigurationException( BaseMessages.getString( PKG, "Error.CreatingClassLoader" ), ex );
     }
-  }
-
-  private Properties getPmrProperties() {
-    InputStream pmrProperties = getClass().getClassLoader().getResourceAsStream(
-      PMR_PROPERTIES );
-    Properties properties = new Properties();
-    if ( pmrProperties != null ) {
-      try {
-        properties.load( pmrProperties );
-      } catch ( IOException ioe ) {
-        // pmr.properties not available
-      } finally {
-        if ( pmrProperties != null ) {
-          try {
-            pmrProperties.close();
-          } catch ( IOException e ) {
-            // pmr.properties not available
-          }
-        }
-      }
-    }
-    return properties;
-  }
-
-  /**
-   * Exclude jars contained in exclude.cluster.jars property in config.properties file from the list of URLs
-   *
-   * @param urls                        the list of all the URLs to add to the class loader
-   * @param excludedClusterJarsProperty exclude.cluster.jars property from a config.properties file
-   * @return The rest of the jars in {@code urls} after excluding the jars listed in {@code
-   * excludedClusterJarsProperty}.
-   */
-  @VisibleForTesting
-  List<URL> filterClusterJars( List<URL> urls, String excludedClusterJarsProperty ) {
-    Properties pmrProperties = getPmrProperties();
-    String isPmr = pmrProperties.getProperty( "isPmr", "false" );
-    if ( "true".equals( isPmr ) ) {
-      urls = filterJars( urls, excludedClusterJarsProperty );
-    }
-    return urls;
   }
 
   /**
