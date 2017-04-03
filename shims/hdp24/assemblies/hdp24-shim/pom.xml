@@ -8,6 +8,12 @@
     <version>7.1-SNAPSHOT</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-hdp24-package</artifactId>
+  <properties>
+    <eula-wrap_assign-deps-to-properties-phase>initialize</eula-wrap_assign-deps-to-properties-phase>
+    <eula-wrap_create-izpack-installer-jar-phase>verify</eula-wrap_create-izpack-installer-jar-phase>
+    <eula-wrap_create-dist-phase>verify</eula-wrap_create-dist-phase>
+    <eula-wrap_attach-dist-phase>verify</eula-wrap_attach-dist-phase>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>org.pentaho</groupId>
