@@ -38,11 +38,9 @@ import static org.mockito.Mockito.mock;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -50,8 +48,6 @@ import org.apache.commons.vfs2.AllFileSelector;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSelector;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.ContentSummary;
-import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.permission.FsPermission;
@@ -77,9 +73,7 @@ public class DistributedCacheUtilImplTest {
   @BeforeClass
   public static void setup() throws Exception {
     // Create some Hadoop configuration specific pmr libraries
-    TEST_CONFIG = new HadoopConfiguration(
-      createTestHadoopConfiguration( "bin/test/" + DistributedCacheUtilImplTest.class.getSimpleName() ), "test-config",
-      "name", new MockHadoopShim() );
+    TEST_CONFIG = new HadoopConfiguration( DistributedCacheTestUtil.createTestHadoopConfiguration( "bin/test/" + DistributedCacheUtilImplTest.class.getSimpleName() ), "test-config", "name", new MockHadoopShim() );
 
     PLUGIN_BASE = System.getProperty( Const.PLUGIN_BASE_FOLDERS_PROP );
     // Fake out the "plugins" directory for the project's root directory
@@ -91,50 +85,6 @@ public class DistributedCacheUtilImplTest {
     if ( PLUGIN_BASE != null ) {
       System.setProperty( Const.PLUGIN_BASE_FOLDERS_PROP, PLUGIN_BASE );
     }
-  }
-
-  private FileSystem getLocalFileSystem( Configuration conf ) throws IOException {
-    FileSystem fs = org.apache.hadoop.fs.FileSystem.getLocal( conf );
-    try {
-      Method setWriteChecksum = fs.getClass().getMethod( "setWriteChecksum", boolean.class );
-      setWriteChecksum.invoke( fs, false );
-    } catch ( Exception ex ) {
-      // ignore, this Hadoop implementation doesn't support checksum verification
-    }
-    return fs;
-  }
-
-  private FileObject createTestFolderWithContent() throws Exception {
-    return createTestFolderWithContent( "sample-folder" );
-  }
-
-  private FileObject createTestFolderWithContent( String rootFolderName ) throws Exception {
-    String rootName = "bin/test/" + rootFolderName;
-    FileObject root = KettleVFS.getFileObject( rootName );
-    root.resolveFile( "jar1.jar" ).createFile();
-    root.resolveFile( "jar2.jar" ).createFile();
-    root.resolveFile( "folder" ).resolveFile( "file.txt" ).createFile();
-    root.resolveFile( "pentaho-mapreduce-libraries.zip" ).createFile();
-
-    createTestHadoopConfiguration( rootName );
-
-    return root;
-  }
-
-  private static FileObject createTestHadoopConfiguration( String rootFolderName ) throws Exception {
-    FileObject location = KettleVFS.getFileObject( rootFolderName + "/hadoop-configurations/test-config" );
-
-    FileObject lib = location.resolveFile( "lib" );
-    FileObject libPmr = lib.resolveFile( "pmr" );
-    FileObject pmrLibJar = libPmr.resolveFile( "configuration-specific.jar" );
-
-    lib.createFolder();
-    lib.resolveFile( "required.jar" ).createFile();
-
-    libPmr.createFolder();
-    pmrLibJar.createFile();
-
-    return location;
   }
 
   @Test( expected = NullPointerException.class )
@@ -176,8 +126,7 @@ public class DistributedCacheUtilImplTest {
   public void extract_destination_exists() throws Exception {
     DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
 
-    FileObject archive =
-      KettleVFS.getFileObject( getClass().getResource( "/pentaho-mapreduce-sample.jar" ).toURI().getPath() );
+    FileObject archive = KettleVFS.getFileObject( getClass().getResource( "/pentaho-mapreduce-sample.jar" ).toURI().getPath() );
 
     try {
       ch.extract( archive, KettleVFS.getFileObject( "." ) );
@@ -190,8 +139,7 @@ public class DistributedCacheUtilImplTest {
   public void extractToTemp() throws Exception {
     DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
 
-    FileObject archive =
-      KettleVFS.getFileObject( getClass().getResource( "/pentaho-mapreduce-sample.jar" ).toURI().getPath() );
+    FileObject archive = KettleVFS.getFileObject( getClass().getResource( "/pentaho-mapreduce-sample.jar" ).toURI().getPath() );
     FileObject extracted = ch.extractToTemp( archive );
 
     assertNotNull( extracted );
@@ -216,7 +164,7 @@ public class DistributedCacheUtilImplTest {
     byte[] data = "someOutString".getBytes();
     outputStream.write( data, 0, data.length );
     outputStream.closeEntry();
-    e = new ZipEntry(  "zipEntriesMixed" + "/" );
+    e = new ZipEntry( "zipEntriesMixed" + "/" );
     outputStream.putNextEntry( e );
     outputStream.closeEntry();
     outputStream.close();
@@ -259,7 +207,7 @@ public class DistributedCacheUtilImplTest {
   public void findFiles_vfs() throws Exception {
     DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
 
-    FileObject testFolder = createTestFolderWithContent();
+    FileObject testFolder = DistributedCacheTestUtil.createTestFolderWithContent();
 
     try {
       // Simply test we can find the jar files in our test folder
@@ -321,91 +269,11 @@ public class DistributedCacheUtilImplTest {
   }
 
   @Test
-  public void findFiles_hdfs_native() throws Exception {
-    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
-
-    // Copy the contents of test folder
-    FileObject source = createTestFolderWithContent();
-    Path root = new Path( "bin/test/stageArchiveForCacheTest" );
-    Configuration conf = new Configuration();
-    FileSystem fs = getLocalFileSystem( conf );
-    Path dest = new Path( root, "org/pentaho/mapreduce/" );
-    try {
-      try {
-        ch.stageForCache( source, fs, dest, true );
-
-        List<Path> files = ch.findFiles( fs, dest, null );
-        assertEquals( 5, files.size() );
-
-        files = ch.findFiles( fs, dest, Pattern.compile( ".*jar$" ) );
-        assertEquals( 2, files.size() );
-
-        files = ch.findFiles( fs, dest, Pattern.compile( ".*folder$" ) );
-        assertEquals( 1, files.size() );
-      } finally {
-        fs.delete( root, true );
-      }
-    } finally {
-      source.delete( new AllFileSelector() );
-    }
-  }
-
-  /**
-   * Utility to attempt to stage a file to HDFS for use with Distributed Cache.
-   *
-   * @param ch                Distributed Cache Helper
-   * @param source            File or directory to stage
-   * @param fs                FileSystem to stage to
-   * @param root              Root directory to clean up when this test is complete
-   * @param dest              Destination path to stage to
-   * @param expectedFileCount Expected number of files to exist in the destination once staged
-   * @param expectedDirCount  Expected number of directories to exist in the destiation once staged
-   * @throws Exception
-   */
-  private void stageForCacheTester( DistributedCacheUtilImpl ch, FileObject source, FileSystem fs, Path root, Path dest,
-                                    int expectedFileCount, int expectedDirCount ) throws Exception {
-    try {
-      ch.stageForCache( source, fs, dest, true );
-
-      assertTrue( fs.exists( dest ) );
-      ContentSummary cs = fs.getContentSummary( dest );
-      assertEquals( expectedFileCount, cs.getFileCount() );
-      assertEquals( expectedDirCount, cs.getDirectoryCount() );
-      assertEquals( FsPermission.createImmutable( (short) 0755 ), fs.getFileStatus( dest ).getPermission() );
-    } finally {
-      // Clean up after ourself
-      if ( !fs.delete( root, true ) ) {
-        System.err.println( "error deleting FileSystem temp dir " + root );
-      }
-    }
-  }
-
-  @Test
-  public void stageForCache() throws Exception {
-    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
-
-    // Copy the contents of test folder
-    FileObject source = createTestFolderWithContent();
-
-    try {
-      Path root = new Path( "bin/test/stageArchiveForCacheTest" );
-      Path dest = new Path( root, "org/pentaho/mapreduce/" );
-
-      Configuration conf = new Configuration();
-      FileSystem fs = getLocalFileSystem( conf );
-
-      stageForCacheTester( ch, source, fs, root, dest, 6, 6 );
-    } finally {
-      source.delete( new AllFileSelector() );
-    }
-  }
-
-  @Test
   public void stageForCache_missing_source() throws Exception {
     DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
 
     Configuration conf = new Configuration();
-    FileSystem fs = getLocalFileSystem( conf );
+    FileSystem fs = DistributedCacheTestUtil.getLocalFileSystem( conf );
 
     Path dest = new Path( "bin/test/bogus-destination" );
     FileObject bogusSource = KettleVFS.getFileObject( "bogus" );
@@ -413,9 +281,7 @@ public class DistributedCacheUtilImplTest {
       ch.stageForCache( bogusSource, fs, dest, true );
       fail( "expected exception when source does not exist" );
     } catch ( KettleFileException ex ) {
-      assertEquals( BaseMessages
-          .getString( DistributedCacheUtilImpl.class, "DistributedCacheUtil.SourceDoesNotExist", bogusSource ),
-        ex.getMessage().trim() );
+      assertEquals( BaseMessages.getString( DistributedCacheUtilImpl.class, "DistributedCacheUtil.SourceDoesNotExist", bogusSource ), ex.getMessage().trim() );
     }
   }
 
@@ -424,9 +290,9 @@ public class DistributedCacheUtilImplTest {
     DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
 
     Configuration conf = new Configuration();
-    FileSystem fs = getLocalFileSystem( conf );
+    FileSystem fs = DistributedCacheTestUtil.getLocalFileSystem( conf );
 
-    FileObject source = createTestFolderWithContent();
+    FileObject source = DistributedCacheTestUtil.createTestFolderWithContent();
     try {
       Path root = new Path( "bin/test/stageForCache_destination_exists" );
       Path dest = new Path( root, "dest" );
@@ -441,28 +307,6 @@ public class DistributedCacheUtilImplTest {
       } finally {
         fs.delete( root, true );
       }
-    } finally {
-      source.delete( new AllFileSelector() );
-    }
-  }
-
-  @Test
-  public void stageForCache_destination_exists() throws Exception {
-    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
-
-    Configuration conf = new Configuration();
-    FileSystem fs = getLocalFileSystem( conf );
-
-    FileObject source = createTestFolderWithContent();
-    try {
-      Path root = new Path( "bin/test/stageForCache_destination_exists" );
-      Path dest = new Path( root, "dest" );
-
-      fs.mkdirs( dest );
-      assertTrue( fs.exists( dest ) );
-      assertTrue( fs.getFileStatus( dest ).isDir() );
-
-      stageForCacheTester( ch, source, fs, root, dest, 6, 6 );
     } finally {
       source.delete( new AllFileSelector() );
     }
@@ -489,43 +333,6 @@ public class DistributedCacheUtilImplTest {
   }
 
   @Test
-  public void isPmrInstalledAt() throws IOException {
-    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
-
-    Configuration conf = new Configuration();
-    FileSystem fs = getLocalFileSystem( conf );
-
-    Path root = new Path( "bin/test/ispmrInstalledAt" );
-    Path lib = new Path( root, "lib" );
-    Path plugins = new Path( root, "plugins" );
-    Path bigDataPlugin = new Path( plugins, DistributedCacheUtilImpl.PENTAHO_BIG_DATA_PLUGIN_FOLDER_NAME );
-
-    Path lockFile = ch.getLockFileAt( root );
-    FSDataOutputStream lockFileOut = null;
-    FSDataOutputStream bigDataPluginFileOut = null;
-    try {
-      // Create all directories (parent directories created automatically)
-      fs.mkdirs( lib );
-      fs.mkdirs( bigDataPlugin );
-
-      assertTrue( ch.isKettleEnvironmentInstalledAt( fs, root ) );
-
-      // If lock file is there pmr is not installed
-      lockFileOut = fs.create( lockFile );
-      assertFalse( ch.isKettleEnvironmentInstalledAt( fs, root ) );
-
-      // Try to create a file instead of a directory for the pentaho-big-data-plugin. This should be detected.
-      fs.delete( bigDataPlugin, true );
-      bigDataPluginFileOut = fs.create( bigDataPlugin );
-      assertFalse( ch.isKettleEnvironmentInstalledAt( fs, root ) );
-    } finally {
-      lockFileOut.close();
-      bigDataPluginFileOut.close();
-      fs.delete( root, true );
-    }
-  }
-
-  @Test
   public void installKettleEnvironment_missing_arguments() throws Exception {
     DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
 
@@ -537,152 +344,30 @@ public class DistributedCacheUtilImplTest {
     }
 
     try {
-      ch.installKettleEnvironment( KettleVFS.getFileObject( "." ), (org.pentaho.hadoop.shim.api.fs.FileSystem) null,
-        null, null, null );
+      ch.installKettleEnvironment( KettleVFS.getFileObject( "." ), (org.pentaho.hadoop.shim.api.fs.FileSystem) null, null, null, null );
       fail( "Expected exception on missing archive" );
     } catch ( NullPointerException ex ) {
       assertEquals( "destination is required", ex.getMessage() );
     }
 
     try {
-      ch.installKettleEnvironment( KettleVFS.getFileObject( "." ), (org.pentaho.hadoop.shim.api.fs.FileSystem) null,
-        new PathProxy( "." ), null, null );
+      ch.installKettleEnvironment( KettleVFS.getFileObject( "." ), (org.pentaho.hadoop.shim.api.fs.FileSystem) null, new PathProxy( "." ), null, null );
       fail( "Expected exception on missing archive" );
     } catch ( NullPointerException ex ) {
       assertEquals( "big data plugin required", ex.getMessage() );
     }
   }
 
-  @Test
-  public void installKettleEnvironment() throws Exception {
-    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
-
-    Configuration conf = new Configuration();
-    FileSystem fs = getLocalFileSystem( conf );
-
-    // This "empty pmr" contains a lib/ folder but with no content
-    FileObject pmrArchive = KettleVFS.getFileObject( getClass().getResource( "/empty-pmr.zip" ).toURI().getPath() );
-
-    FileObject bigDataPluginDir =
-      createTestFolderWithContent( DistributedCacheUtilImpl.PENTAHO_BIG_DATA_PLUGIN_FOLDER_NAME );
-
-    Path root = new Path( "bin/test/installKettleEnvironment" );
-    try {
-      ch.installKettleEnvironment( pmrArchive, fs, root, bigDataPluginDir, null );
-      assertTrue( ch.isKettleEnvironmentInstalledAt( fs, root ) );
-    } finally {
-      bigDataPluginDir.delete( new AllFileSelector() );
-      fs.delete( root, true );
-    }
-  }
-
-  @Test
-  public void installKettleEnvironment_additional_plugins() throws Exception {
-    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
-
-    Configuration conf = new Configuration();
-    FileSystem fs = getLocalFileSystem( conf );
-
-    // This "empty pmr" contains a lib/ folder but with no content
-    FileObject pmrArchive = KettleVFS.getFileObject( getClass().getResource( "/empty-pmr.zip" ).toURI().getPath() );
-    FileObject bigDataPluginDir = createTestFolderWithContent( DistributedCacheUtilImpl.PENTAHO_BIG_DATA_PLUGIN_FOLDER_NAME );
-
-    String pluginName = "additional-plugin";
-    FileObject additionalPluginDir = createTestFolderWithContent( pluginName );
-    Path root = new Path( "bin/test/installKettleEnvironment" );
-    try {
-      ch.installKettleEnvironment( pmrArchive, fs, root, bigDataPluginDir, "bin/test/" + pluginName );
-      assertTrue( ch.isKettleEnvironmentInstalledAt( fs, root ) );
-      assertTrue( fs.exists( new Path( root, "plugins/bin/test/" + pluginName ) ) );
-    } finally {
-      bigDataPluginDir.delete( new AllFileSelector() );
-      additionalPluginDir.delete( new AllFileSelector() );
-      fs.delete( root, true );
-    }
-  }
-
-  @Test
-  public void stagePluginsForCache() throws Exception {
-    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
-
-    Configuration conf = new Configuration();
-    FileSystem fs = getLocalFileSystem( conf );
-
-    Path pluginsDir = new Path( "bin/test/plugins-installation-dir" );
-
-    FileObject pluginDir = createTestFolderWithContent();
-
-    try {
-      ch.stagePluginsForCache( fs, pluginsDir, "bin/test/sample-folder" );
-      Path pluginInstallPath = new Path( pluginsDir, "bin/test/sample-folder" );
-      assertTrue( fs.exists( pluginInstallPath ) );
-      ContentSummary summary = fs.getContentSummary( pluginInstallPath );
-      assertEquals( 6, summary.getFileCount() );
-      assertEquals( 6, summary.getDirectoryCount() );
-    } finally {
-      pluginDir.delete( new AllFileSelector() );
-      fs.delete( pluginsDir, true );
-    }
-  }
-
   @Test( expected = IllegalArgumentException.class )
   public void stagePluginsForCache_no_folders() throws Exception {
     DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
-    ch.stagePluginsForCache( getLocalFileSystem( new Configuration() ), new Path( "bin/test/plugins-installation-dir" ),
-      null );
+    ch.stagePluginsForCache( DistributedCacheTestUtil.getLocalFileSystem( new Configuration() ), new Path( "bin/test/plugins-installation-dir" ), null );
   }
 
   @Test( expected = KettleFileException.class )
   public void stagePluginsForCache_invalid_folder() throws Exception {
     DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
-    ch.stagePluginsForCache( getLocalFileSystem( new Configuration() ), new Path( "bin/test/plugins-installation-dir" ),
-      "bin/bogus-plugin-name" );
-  }
-
-  @Test
-  public void configureWithPmr() throws Exception {
-    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
-
-    Configuration conf = new Configuration();
-    FileSystem fs = getLocalFileSystem( conf );
-
-    // This "empty pmr" contains a lib/ folder and some empty kettle-*.jar files but no actual content
-    FileObject pmrArchive = KettleVFS.getFileObject( getClass().getResource( "/empty-pmr.zip" ).toURI().getPath() );
-
-    FileObject bigDataPluginDir =
-      createTestFolderWithContent( DistributedCacheUtilImpl.PENTAHO_BIG_DATA_PLUGIN_FOLDER_NAME );
-
-    Path root = new Path( "bin/test/installKettleEnvironment" );
-    try {
-      ch.installKettleEnvironment( pmrArchive, fs, root, bigDataPluginDir, null );
-      assertTrue( ch.isKettleEnvironmentInstalledAt( fs, root ) );
-
-      ch.configureWithKettleEnvironment( conf, fs, root );
-
-      // Make sure our libraries are on the classpath
-      assertTrue( conf.get( "mapred.cache.files" ).contains( "lib/kettle-core.jar" ) );
-      assertTrue( conf.get( "mapred.cache.files" ).contains( "lib/kettle-engine.jar" ) );
-      assertTrue( conf.get( "mapred.job.classpath.files" ).contains( "lib/kettle-core.jar" ) );
-      assertTrue( conf.get( "mapred.job.classpath.files" ).contains( "lib/kettle-engine.jar" ) );
-
-      // Make sure the configuration specific jar made it!
-      assertTrue( conf.get( "mapred.cache.files" ).contains( "lib/configuration-specific.jar" ) );
-
-      // Make sure our plugins folder is registered
-      assertTrue( conf.get( "mapred.cache.files" ).contains( "#plugins" ) );
-
-      // Make sure our libraries aren't included twice
-      assertFalse( conf.get( "mapred.cache.files" ).contains( "#lib" ) );
-
-      // We should not have individual files registered
-      assertFalse( conf.get( "mapred.cache.files" ).contains( "pentaho-big-data-plugin/jar1.jar" ) );
-      assertFalse( conf.get( "mapred.cache.files" ).contains( "pentaho-big-data-plugin/jar2.jar" ) );
-      assertFalse( conf.get( "mapred.cache.files" ).contains( "pentaho-big-data-plugin/folder/file.txt" ) );
-
-    } finally {
-      bigDataPluginDir.delete( new AllFileSelector() );
-      fs.delete( root, true );
-    }
+    ch.stagePluginsForCache( DistributedCacheTestUtil.getLocalFileSystem( new Configuration() ), new Path( "bin/test/plugins-installation-dir" ), "bin/bogus-plugin-name" );
   }
 
   @Test
