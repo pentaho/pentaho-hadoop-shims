@@ -1,25 +1,40 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-list</artifactId>
     <version>7.1-SNAPSHOT</version>
   </parent>
-
   <artifactId>pentaho-hadoop-shims-hdi35-reactor</artifactId>
   <packaging>pom</packaging>
-
   <properties>
     <shim.name>hdi35</shim.name>
+    <!-- default folder -->
+    <sqoop.version>1.4.6.2.5.0.0-1245</sqoop.version>
+    <hive-jdbc.version>1.2.1000.2.5.0.0-1245</hive-jdbc.version>
+    <org.apache.oozie.version>4.2.0.2.5.0.0-1245</org.apache.oozie.version>
+    <pig.version>0.16.0.2.5.0.0-1245</pig.version>
+    <dependency.pig.classifier>h2</dependency.pig.classifier>
+    <azure-storage.version>2.0.0</azure-storage.version>
+    <automaton.version>1.11-8</automaton.version>
+    <hadoop-azure.version>2.7.1</hadoop-azure.version>
+    <hadoop2-windows-patch.version>08072014</hadoop2-windows-patch.version>
+    <avro.version>1.8.0</avro.version>
+    <org.codehaus.jackson>1.9.13</org.codehaus.jackson>
+    <org.apache.httpcomponents.version>4.4</org.apache.httpcomponents.version>
+    <!-- client folder -->
+    <hadoop-client.version>2.7.3.2.5.0.0-1245</hadoop-client.version>
+    <!-- pmr folder -->
+    <htrace-core.version>2.04</htrace-core.version>
+    <org.apache.hbase.version>1.1.2.2.5.0.0-1245</org.apache.hbase.version>
+    <zookeeper.version>3.4.6.2.5.0.0-1245</zookeeper.version>
+    <protobuf-java.version>2.5.0</protobuf-java.version>
   </properties>
-
   <modules>
     <module>client</module>
     <module>pmr</module>
-    <module>hbase-comparators</module>  
+    <module>hbase-comparators</module>
     <module>default</module>
     <module>impl</module>
     <module>assemblies</module>

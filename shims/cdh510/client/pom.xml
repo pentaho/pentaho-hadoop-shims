@@ -17,8 +17,8 @@
       <version>${org.apache.hadoop.version}</version>
       <exclusions>
         <exclusion>
-          <artifactId>jline</artifactId>
           <groupId>*</groupId>
+          <artifactId>jline</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -88,8 +88,8 @@
       <version>${com.fasterxml.jackson.core.version}</version>
       <exclusions>
         <exclusion>
-          <artifactId>*</artifactId>
           <groupId>*</groupId>
+          <artifactId>*</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -99,8 +99,8 @@
       <version>${com.fasterxml.jackson.core.version}</version>
       <exclusions>
         <exclusion>
-          <artifactId>*</artifactId>
           <groupId>*</groupId>
+          <artifactId>*</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -110,8 +110,8 @@
       <version>${com.fasterxml.jackson.core.version}</version>
       <exclusions>
         <exclusion>
-          <artifactId>*</artifactId>
           <groupId>*</groupId>
+          <artifactId>*</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
