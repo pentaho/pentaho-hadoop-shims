@@ -50,3 +50,26 @@ or
 ```
 $ mvn clean install -Dhadoop.home.dir="d:\TEMP_DIR"
 ```
+
+__Integration tests__
+In addition to the unit tests, there are integration tests in the core project.
+```
+$ mvn verify -DrunITs
+```
+
+To run a single integration test:
+```
+$ mvn verify -DrunITs -Dit.test=<<YourIT>>
+```
+
+To run a single integration test in debug mode (for remote debugging in an IDE) on the default port of 5005:
+```
+$ mvn verify -DrunITs -Dit.test=<<YourIT>> -Dmaven.failsafe.debug
+```
+PentahoMapReduceIT.java
+
+__IntelliJ__
+
+* Don't use IntelliJ's built-in maven. Make it use the same one you use from the commandline.
+  * Project Preferences -> Build, Execution, Deployment -> Build Tools -> Maven ==> Maven home directory
+````
