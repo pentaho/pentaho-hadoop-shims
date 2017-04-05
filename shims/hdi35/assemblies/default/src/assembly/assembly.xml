@@ -20,7 +20,14 @@
         <include>org.apache.oozie:oozie-client</include>
         <include>org.apache.hadoop:hadoop-azure</include>
         <include>com.microsoft.azure:azure-storage</include>
+        <include>org.apache.avro:avro</include>
+        <include>org.codehaus.jackson:jackson-core-asl</include>
+        <include>org.codehaus.jackson:jackson-mapper-asl</include>
+        <include>org.apache.httpcomponents:httpclient</include>
       </includes>
+      <excludes>
+        <exclude>*:tests:*</exclude>
+      </excludes>
     </dependencySet>
     <dependencySet>
       <outputDirectory>lib</outputDirectory>
