@@ -44,11 +44,9 @@
     <org.apache.hbase.version>1.2.3</org.apache.hbase.version>
     <commons-compress.version>1.4.1</commons-compress.version>
     <xz.version>1.0</xz.version>
-    <commons-beanutils.version>1.7.0</commons-beanutils.version>
     <xstream.version>1.4.4</xstream.version>
     <commons-exec.version>1.2</commons-exec.version>
     <jsp-api.version>2.1</jsp-api.version>
-    <commons-beanutils-core.version>1.8.0</commons-beanutils-core.version>
     <java-xmlbuilder.version>0.4</java-xmlbuilder.version>
     <commons-httpclient.version>3.1</commons-httpclient.version>
     <commons-net.version>3.1</commons-net.version>
