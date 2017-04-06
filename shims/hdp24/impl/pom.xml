@@ -36,8 +36,7 @@
     <org.xerial.snappy.version>1.0.5</org.xerial.snappy.version>
     <com.thoughtworks.xstream.version>1.4.2</com.thoughtworks.xstream.version>
     <org.tukaani.version>1.0</org.tukaani.version>
-    <org.apache.pig.version>0.15.0.2.4.0.0-169</org.apache.pig.version>
-    <commons-beanutils.version>1.7.0</commons-beanutils.version>
+    <org.apache.pig.version>0.15.0.2.4.0.0-169</org.apache.pig.version>    
     <javax.servlet.jsp.version>2.1</javax.servlet.jsp.version>
     <org.apache.hive.version>1.2.1000.2.4.0.0-169</org.apache.hive.version>
     <commons-pool.version>1.5.4</commons-pool.version>

@@ -13,8 +13,7 @@
   <properties>
     <log4j.version>1.2.17</log4j.version>
     <org.apache.hadoop.version>2.6.0-cdh5.10.0</org.apache.hadoop.version>
-    <org.codehaus.jackson.version>1.9.2</org.codehaus.jackson.version>
-    <commons-beanutils.version>1.9.2</commons-beanutils.version>
+    <org.codehaus.jackson.version>1.9.2</org.codehaus.jackson.version>    
     <jline.version>2.12</jline.version>
     <zookeeper.version>3.4.5-cdh5.10.0</zookeeper.version>
     <org.apache.httpcomponents.version>4.2.5</org.apache.httpcomponents.version>
