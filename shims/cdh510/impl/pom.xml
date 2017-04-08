@@ -104,6 +104,10 @@
           <groupId>com.fasterxml.jackson.core</groupId>
           <artifactId>jackson-databind</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>commons-beanutils</groupId>
+          <artifactId>commons-beanutils-core</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
