@@ -138,7 +138,6 @@
         <include>org.apache.directory.server:apacheds-kerberos-codec</include>
         <include>org.apache.directory.api:api-asn1-api</include>
         <include>org.apache.directory.api:api-util</include>
-        <include>commons-beanutils:commons-beanutils-core</include>
         <include>commons-configuration:commons-configuration</include>
         <include>commons-digester:commons-digester</include>
         <include>commons-httpclient:commons-httpclient</include>

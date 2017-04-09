@@ -135,8 +135,7 @@
         <include>org.apache.directory.api:api-util</include>
         <include>asm:asm</include>
         <include>org.sonatype.sisu.inject:cglib</include>
-        <include>commons-beanutils:commons-beanutils</include>
-        <include>commons-beanutils:commons-beanutils-core</include>
+        <include>commons-beanutils:commons-beanutils</include>        
         <include>commons-codec:commons-codec</include>
         <include>commons-configuration:commons-configuration</include>
         <include>commons-digester:commons-digester</include>

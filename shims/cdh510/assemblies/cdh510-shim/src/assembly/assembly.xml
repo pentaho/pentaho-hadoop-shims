@@ -172,7 +172,6 @@
         <include>com.amazonaws:aws-java-sdk-kms</include>
         <include>com.amazonaws:aws-java-sdk-s3</include>
         <include>com.amazonaws:aws-java-sdk-sts</include>
-        <include>commons-beanutils:commons-beanutils-core</include>
         <include>commons-configuration:commons-configuration</include>
         <include>commons-digester:commons-digester</include>
         <include>commons-httpclient:commons-httpclient</include>

@@ -66,8 +66,7 @@
         <include>com.amazonaws:aws-java-sdk-emr</include>
         <include>com.amazonaws:aws-java-sdk-s3</include>
         <include>org.sonatype.sisu.inject:cglib</include>
-        <include>commons-beanutils:commons-beanutils</include>
-        <include>commons-beanutils:commons-beanutils-core</include>
+        <include>commons-beanutils:commons-beanutils</include>        
         <include>commons-cli:commons-cli</include>
         <include>commons-codec:commons-codec</include>
         <include>org.apache.commons:commons-compress</include>
