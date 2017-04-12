@@ -242,6 +242,13 @@
                     <overWrite>false</overWrite>
                     <outputDirectory>${project.build.directory}/test-src</outputDirectory>
                   </artifactItem>
+                  <artifactItem>
+                    <groupId>org.pentaho</groupId>
+                    <artifactId>pentaho-hadoop-shims-common-hadoop-shim</artifactId>
+                    <classifier>test-sources</classifier>
+                    <overWrite>false</overWrite>
+                    <outputDirectory>${project.build.directory}/test-src</outputDirectory>
+                  </artifactItem>
                 </artifactItems>
               </configuration>
             </execution>
@@ -299,6 +306,7 @@
                       <include>**/*.ktr</include>
                       <include>**/*.zip</include>
                       <include>**/*.jar</include>
+                      <include>**/*.xml</include>
                     </includes>
                   </resource>
                 </resources>
