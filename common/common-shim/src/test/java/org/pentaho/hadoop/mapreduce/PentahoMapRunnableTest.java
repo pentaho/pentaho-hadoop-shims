@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2002-2016 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2017 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -47,6 +47,8 @@ import org.pentaho.di.core.logging.LoggingRegistry;
 import org.pentaho.di.trans.TransConfiguration;
 import org.pentaho.di.trans.TransMeta;
 
+import org.pentaho.di.core.logging.LogLevel;
+
 /**
  * @author Tatsiana_Kasiankova
  *
@@ -57,10 +59,11 @@ public class PentahoMapRunnableTest {
   private static final String INTERNAL_HADOOP_NODE_NUMBER = "Internal.Hadoop.NodeNumber";
   private static final String MAPRED_TASK_ID = "mapred.task.id";
   private static final String MAP_TRANS_META_NAME = "Map transformation";
+
   /**
    * Mock trans configuration: empty trans meta with name and empty trans execution configuration
    */
-  private static final TransConfiguration COMBINER_TRANS_EXEC_CONFIG = MRTestUtil.getTransExecConfig( MRTestUtil.getTransMeta( MAP_TRANS_META_NAME ) );
+  private static TransConfiguration combinerTransExecutionConfig;
   /**
    * We expect 5 log channels per run. The total should never grow past logChannelsBefore + 5.
    */
@@ -80,17 +83,20 @@ public class PentahoMapRunnableTest {
   @BeforeClass
   public static void before() throws KettleException {
     KettleEnvironment.init();
+    combinerTransExecutionConfig = MRTestUtil.getTransExecConfig( MRTestUtil.getTransMeta( MAP_TRANS_META_NAME ) );
   }
 
   @Before
   public void setUp() throws KettleException, IOException {
     mapRunnable = new PentahoMapRunnable();
     mrJobConfig = new JobConf();
+    //Turn off all debug messages from PentahoMapRunnable to reduce unit test logs
+    mrJobConfig.set( "logLevel", LogLevel.ERROR.name() );
   }
 
   @Test
   public void testTaskIdExtraction() throws Exception {
-    mrJobConfig.set( MRTestUtil.TRANSFORMATION_MAP_XML, COMBINER_TRANS_EXEC_CONFIG.getXML() );
+    mrJobConfig.set( MRTestUtil.TRANSFORMATION_MAP_XML, combinerTransExecutionConfig.getXML() );
     mrJobConfig.set( MAPRED_TASK_ID, "job_201208090841_0133" );
     mapRunnable.configure( mrJobConfig );
 
@@ -100,7 +106,7 @@ public class PentahoMapRunnableTest {
 
   @Test
   public void testTaskIdExtraction_over_10000() throws Exception {
-    mrJobConfig.set( MRTestUtil.TRANSFORMATION_MAP_XML, COMBINER_TRANS_EXEC_CONFIG.getXML() );
+    mrJobConfig.set( MRTestUtil.TRANSFORMATION_MAP_XML, combinerTransExecutionConfig.getXML() );
     mrJobConfig.set( MAPRED_TASK_ID, "job_201208090841_013302" );
     mapRunnable.configure( mrJobConfig );
 
@@ -123,7 +129,9 @@ public class PentahoMapRunnableTest {
   }
 
   @Test
-  public void testMapperNoOutputStep() throws IOException, KettleException, URISyntaxException {
+  public void testMapperNoOutputStep() throws KettleException, URISyntaxException {
+    //Turn off displaying stack trace of expected exception to reduce unit test logs
+    mrJobConfig.set( "debug", "false" );
     try {
       transMeta = new TransMeta( getClass().getResource( MRTestUtil.PATH_TO_NO_OUTPUT_STEP_TEST_TRANSFORMATION ).toURI().getPath() );
       MRTestUtil.configJobMapBaseCase( transMeta, mrJobConfig, mapRunnable );
@@ -137,7 +145,9 @@ public class PentahoMapRunnableTest {
   }
 
   @Test
-  public void testMapperBadInjectorFields() throws IOException, KettleException, URISyntaxException {
+  public void testMapperBadInjectorFields() throws KettleException, URISyntaxException {
+  //Turn off displaying stack trace of expected exception to reduce unit test logs
+    mrJobConfig.set( "debug", "false" );
     try {
       transMeta = new TransMeta( getClass().getResource( MRTestUtil.PATH_TO_BAD_INJECTOR_STEP_TEST_TRANSFORMATION ).toURI().getPath() );
       MRTestUtil.configJobMapBaseCase( transMeta, mrJobConfig, mapRunnable );
@@ -151,7 +161,9 @@ public class PentahoMapRunnableTest {
   }
 
   @Test
-  public void testMapperNoInjectorStep() throws IOException, KettleException, URISyntaxException {
+  public void testMapperNoInjectorStep() throws KettleException, URISyntaxException {
+  //Turn off displaying stack trace of expected exception to reduce unit test logs
+    mrJobConfig.set( "debug", "false" );
     try {
       transMeta = new TransMeta( getClass().getResource( MRTestUtil.PATH_TO_NO_INJECTOR_STEP_TEST_TRANSFORMATION ).toURI().getPath() );
       MRTestUtil.configJobMapBaseCase( transMeta, mrJobConfig, mapRunnable );

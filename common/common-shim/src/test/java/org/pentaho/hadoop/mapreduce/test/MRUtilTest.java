@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2016 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2017 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -29,9 +29,12 @@ import static org.junit.Assert.assertTrue;
 
 import org.apache.hadoop.conf.Configuration;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.exception.KettleException;
+import org.pentaho.di.core.plugins.PluginRegistry;
+import org.pentaho.di.core.row.value.ValueMetaPluginType;
 import org.pentaho.di.trans.Trans;
 import org.pentaho.di.trans.TransConfiguration;
 import org.pentaho.di.trans.TransExecutionConfiguration;
@@ -45,10 +48,18 @@ import org.pentaho.hadoop.mapreduce.MRUtil;
 public class MRUtilTest {
   private static final String USER_DIR = System.getProperty( "user.dir" );
   private static final String EXPECTED_DEFAULT_PLUGIN_DIR = USER_DIR + Const.FILE_SEPARATOR + "plugins";
-  private static final TransMeta TRANS_META = getTestTransMeta();
-  private static final TransConfiguration TRANS_EXEC_CONFIG = getTestTransExecConfig( TRANS_META );
+  private static TransMeta transMeta;
+  private static TransConfiguration transExecConfig;
   private Configuration c;
   private Trans trans;
+
+  @BeforeClass
+  public static void before() throws KettleException {
+    PluginRegistry.addPluginType( ValueMetaPluginType.getInstance() );
+    PluginRegistry.init( true );
+    transMeta = getTestTransMeta();
+    transExecConfig = getTestTransExecConfig( transMeta );
+  }
 
   @Before
   public void setUp() {
@@ -92,13 +103,13 @@ public class MRUtilTest {
   public void createTrans_normalEngine() throws Exception {
     // Reset transformationType from default value=TransformationType.Normal to the
     // TransformationType.SerialSingleThreaded to get more reliable use case
-    TRANS_META.setTransformationType( TransformationType.SerialSingleThreaded );
-    assertEquals( TransformationType.SerialSingleThreaded, TRANS_META.getTransformationType() );
+    transMeta.setTransformationType( TransformationType.SerialSingleThreaded );
+    assertEquals( TransformationType.SerialSingleThreaded, transMeta.getTransformationType() );
 
     // get transformation with singleThreaded=false
-    trans = MRUtil.getTrans( c, TRANS_EXEC_CONFIG.getXML(), false );
+    trans = MRUtil.getTrans( c, transExecConfig.getXML(), false );
     assertNotNull( trans );
-    assertEquals( TRANS_META.getName(), trans.getTransMeta().getName() );
+    assertEquals( transMeta.getName(), trans.getTransMeta().getName() );
     assertEquals( TransMeta.TransformationType.Normal, trans.getTransMeta().getTransformationType() );
   }
 
@@ -106,13 +117,13 @@ public class MRUtilTest {
   public void createTrans_singleThreaded() throws Exception {
     // Reset transformationType from default value=TransformationType.Normal to the
     // TransformationType.SerialSingleThreaded to get more reliable use case
-    TRANS_META.setTransformationType( TransformationType.SerialSingleThreaded );
-    assertEquals( TransformationType.SerialSingleThreaded, TRANS_META.getTransformationType() );
+    transMeta.setTransformationType( TransformationType.SerialSingleThreaded );
+    assertEquals( TransformationType.SerialSingleThreaded, transMeta.getTransformationType() );
 
     // get transformation with singleThreaded=true
-    trans = MRUtil.getTrans( c, TRANS_EXEC_CONFIG.getXML(), true );
+    trans = MRUtil.getTrans( c, transExecConfig.getXML(), true );
     assertNotNull( trans );
-    assertEquals( TRANS_META.getName(), trans.getTransMeta().getName() );
+    assertEquals( transMeta.getName(), trans.getTransMeta().getName() );
     assertEquals( TransMeta.TransformationType.SingleThreaded, trans.getTransMeta().getTransformationType() );
   }
 
