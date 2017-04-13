@@ -8,6 +8,12 @@
     <version>7.1-SNAPSHOT</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-cdh510-package</artifactId>
+  <properties>
+    <eula-wrap_assign-deps-to-properties-phase>initialize</eula-wrap_assign-deps-to-properties-phase>
+    <eula-wrap_create-izpack-installer-jar-phase>verify</eula-wrap_create-izpack-installer-jar-phase>
+    <eula-wrap_create-dist-phase>verify</eula-wrap_create-dist-phase>
+    <eula-wrap_attach-dist-phase>verify</eula-wrap_attach-dist-phase>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>org.pentaho</groupId>
@@ -16,9 +22,24 @@
     </dependency>
     <dependency>
       <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-cdh510-hbase-comparators</artifactId>
+      <artifactId>pentaho-hadoop-shims-cdh510-scope-client-assembly</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.pentaho</groupId>
+      <artifactId>pentaho-hadoop-shims-cdh510-scope-pmr-assembly</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.pentaho</groupId>
+      <artifactId>pentaho-hadoop-shims-cdh510-scope-default-assembly</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>                                                               
+      <groupId>org.pentaho</groupId>                                           
+      <artifactId>pentaho-hadoop-shims-cdh510-hbase-comparators</artifactId>
+      <version>${project.version}</version>                                    
+    </dependency>                                                              
   </dependencies>
   <build>
     <plugins>
@@ -63,6 +84,27 @@
                   <overWrite>false</overWrite>
                   <outputDirectory>${oss.license.directory}</outputDirectory>
                   <includes>*${shim.name}*</includes>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.pentaho</groupId>
+                  <artifactId>pentaho-hadoop-shims-${shim.name}-scope-pmr-assembly</artifactId>
+                  <type>zip</type>
+                  <overWrite>false</overWrite>
+                  <outputDirectory>${project.build.directory}/</outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.pentaho</groupId>
+                  <artifactId>pentaho-hadoop-shims-${shim.name}-scope-client-assembly</artifactId>
+                  <type>zip</type>
+                  <overWrite>false</overWrite>
+                  <outputDirectory>${project.build.directory}/</outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.pentaho</groupId>
+                  <artifactId>pentaho-hadoop-shims-${shim.name}-scope-default-assembly</artifactId>
+                  <type>zip</type>
+                  <overWrite>false</overWrite>
+                  <outputDirectory>${project.build.directory}/</outputDirectory>
                 </artifactItem>
               </artifactItems>
             </configuration>

@@ -17,14 +17,10 @@
     <commons-lang.version>2.6</commons-lang.version>
   </properties>
   <modules>
-    <module>hdp24</module>
     <module>hdp25</module>
-    <module>cdh59</module>
     <module>cdh510</module>
-    <module>mapr510</module>
-    <module>mapr520</module>
-    <module>emr46</module>
     <module>emr52</module>
+    <module>mapr520</module>
     <module>hdi35</module>
   </modules>
   <dependencyManagement>
@@ -111,6 +107,12 @@
       <version>${project.version}</version>
       <classifier>sources</classifier>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-io</groupId>
+          <artifactId>commons-io</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.pentaho</groupId>

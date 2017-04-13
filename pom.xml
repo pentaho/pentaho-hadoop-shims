@@ -10,6 +10,10 @@
   <artifactId>pentaho-hadoop-shims</artifactId>
   <packaging>pom</packaging>
   <properties>
+    <eula-wrap_assign-deps-to-properties-phase />
+    <eula-wrap_create-izpack-installer-jar-phase />
+    <eula-wrap_create-dist-phase />
+    <eula-wrap_attach-dist-phase />
     <xerces.version>2.8.1</xerces.version>
     <dependency.pentaho-hdfs-vfs.revision>7.1-SNAPSHOT</dependency.pentaho-hdfs-vfs.revision>
     <dependency.kettle.revision>7.1-SNAPSHOT</dependency.kettle.revision>
@@ -64,6 +68,12 @@
         </exclusions>
       </dependency>
       <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-all</artifactId>
         <version>${org.mockito.version}</version>
@@ -74,12 +84,6 @@
             <artifactId>*</artifactId>
           </exclusion>
         </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>${junit.version}</version>
-        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>

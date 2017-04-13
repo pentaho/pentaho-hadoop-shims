@@ -10,10 +10,27 @@
   <packaging>pom</packaging>
   <properties>
     <shim.name>cdh510</shim.name>
+    <!-- default folder -->
+    <org.apache.hive.version>1.1.0-cdh5.10.0</org.apache.hive.version>
+    <pig.version>0.12.0-cdh5.10.0</pig.version>
+    <sqoop.version>1.4.6-cdh5.10.0</sqoop.version>
+    <org.apache.oozie.version>4.1.0-cdh5.10.0</org.apache.oozie.version>
+    <hadoop2-windows-patch.version>08072014</hadoop2-windows-patch.version>
+    <automaton.version>1.11-8</automaton.version>
+    <!-- client folder -->
+    <org.apache.hadoop.version>2.6.0-cdh5.10.0</org.apache.hadoop.version>
+    <com.fasterxml.jackson.core.version>2.5.3</com.fasterxml.jackson.core.version>
+    <!-- pmr folder -->
+    <org.apache.hbase.version>1.2.0-cdh5.10.0</org.apache.hbase.version>
+    <htrace-core.version>3.2.0-incubating</htrace-core.version>
+    <zookeeper.version>3.4.5-cdh5.10.0</zookeeper.version>
   </properties>
   <modules>
-    <module>impl</module>
+    <module>client</module>
+    <module>default</module>
     <module>hbase-comparators</module>
+    <module>pmr</module>
+    <module>impl</module>
     <module>assemblies</module>
   </modules>
 </project>
