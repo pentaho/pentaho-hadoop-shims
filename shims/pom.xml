@@ -18,7 +18,6 @@
   </properties>
   <modules>
     <module>hdp25</module>
-    <module>cdh58</module>
     <module>cdh510</module>
     <module>emr52</module>
     <module>mapr520</module>
