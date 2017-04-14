@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2014 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2017 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -21,6 +21,7 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.common;
 
+import com.google.common.annotations.VisibleForTesting;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapreduce.Job;
@@ -28,7 +29,6 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.api.mapred.RunningJob;
-import org.pentaho.hadoop.shim.common.RunningJobProxyV2;
 
 import java.io.IOException;
 
@@ -41,8 +41,14 @@ public class ConfigurationProxyV2 implements Configuration {
 
   public ConfigurationProxyV2() throws IOException {
     job = Job.getInstance();
+    addConfigsForJobConf();
+  }
+
+  @VisibleForTesting
+  void addConfigsForJobConf() {
     job.getConfiguration().addResource( "hdfs-site.xml" );
     job.getConfiguration().addResource( "hive-site.xml" );
+    job.getConfiguration().addResource( "hbase-site.xml" );
   }
 
   public JobConf getJobConf() {

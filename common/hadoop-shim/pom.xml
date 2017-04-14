@@ -11,7 +11,7 @@
   <packaging>jar</packaging>
   <properties>
     <org.apache.hive.version>2.1.0</org.apache.hive.version>
-    <org.apache.hadoop.version>2.2.0</org.apache.hadoop.version>
+    <org.apache.hadoop.version>2.7.3</org.apache.hadoop.version>
   </properties>
   <dependencies>
     <dependency>
