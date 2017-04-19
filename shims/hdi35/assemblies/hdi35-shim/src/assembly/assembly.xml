@@ -10,7 +10,7 @@
       <outputDirectory>/</outputDirectory>
     </fileSet>
     <fileSet>
-      <directory>${oss.license.directory}</directory>
+      <directory>${oss.license.subdirectory}</directory>
       <outputDirectory>/</outputDirectory>
     </fileSet>
   </fileSets>

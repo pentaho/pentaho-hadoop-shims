@@ -67,8 +67,8 @@
                   <artifactId>oss-licenses</artifactId>
                   <type>zip</type>
                   <overWrite>false</overWrite>
-                  <outputDirectory>${oss.license.directory}</outputDirectory>
-                  <includes>*${shim.name}*</includes>
+                  <outputDirectory>${oss.license.unpack.directory}</outputDirectory>
+                  <includes>**/*${shim.name}*</includes>
                 </artifactItem>
               </artifactItems>
             </configuration>
