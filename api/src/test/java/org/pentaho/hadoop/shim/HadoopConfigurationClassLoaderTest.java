@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2017 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -68,4 +68,56 @@ public class HadoopConfigurationClassLoaderTest {
       new HadoopConfigurationClassLoader( new URL[] { workingDir, srcDir }, getClass().getClassLoader() );
     assertEquals( workingDir.getFile() + File.pathSeparator + srcDir.getFile(), hccl.generateClassPathString() );
   }
+
+  @Test
+  public void ignoreClusterClasses_multiple_classes() {
+    String ignoredClusterClasses = "org.apache.hadoop.security.rpcauth.MaprAuthMethod,com.mapr.baseutils.BaseUtilsHelper";
+    HadoopConfigurationClassLoader hccl =
+      new HadoopConfigurationClassLoader( ignoredClusterClasses, new URL[ 0 ], getClass().getClassLoader() );
+    assertTrue( hccl.ignoreClass( "org.apache.commons.log" ) );
+    assertTrue( hccl.ignoreClass( "org.apache.log4j" ) );
+    assertTrue( hccl.ignoreClass( "org.apache.log4j.Logger" ) );
+    assertTrue( hccl.ignoreClass( "org.apache.hadoop.security.rpcauth.MaprAuthMethod" ) );
+    assertTrue( hccl.ignoreClass( "com.mapr.baseutils.BaseUtilsHelper" ) );
+    assertFalse( hccl.ignoreClass( "bogus" ) );
+    assertTrue( hccl.ignoreClass( null ) );
+  }
+
+  @Test
+  public void ignoreClusterClasses_single_class() {
+    String ignoredClusterClasses = "org.apache.hadoop.security.rpcauth.MaprAuthMethod";
+    HadoopConfigurationClassLoader hccl =
+      new HadoopConfigurationClassLoader( ignoredClusterClasses, new URL[ 0 ], getClass().getClassLoader() );
+    assertTrue( hccl.ignoreClass( "org.apache.commons.log" ) );
+    assertTrue( hccl.ignoreClass( "org.apache.log4j" ) );
+    assertTrue( hccl.ignoreClass( "org.apache.log4j.Logger" ) );
+    assertTrue( hccl.ignoreClass( "org.apache.hadoop.security.rpcauth.MaprAuthMethod" ) );
+    assertFalse( hccl.ignoreClass( "bogus" ) );
+    assertTrue( hccl.ignoreClass( null ) );
+  }
+
+  @Test
+  public void ignoreClusterClasses_empty_first_arg() {
+    String ignoredClusterClasses = "";
+    HadoopConfigurationClassLoader hccl =
+      new HadoopConfigurationClassLoader( ignoredClusterClasses, new URL[ 0 ], getClass().getClassLoader() );
+    assertTrue( hccl.ignoreClass( "org.apache.commons.log" ) );
+    assertTrue( hccl.ignoreClass( "org.apache.log4j" ) );
+    assertTrue( hccl.ignoreClass( "org.apache.log4j.Logger" ) );
+    assertFalse( hccl.ignoreClass( "org.apache.hadoop.security.rpcauth.MaprAuthMethod" ) );
+    assertTrue( hccl.ignoreClass( null ) );
+  }
+
+  @Test
+  public void ignoreClusterClasses_null_first_arg() {
+    String ignoredClusterClasses = null;
+    HadoopConfigurationClassLoader hccl =
+      new HadoopConfigurationClassLoader( ignoredClusterClasses, new URL[ 0 ], getClass().getClassLoader() );
+    assertTrue( hccl.ignoreClass( "org.apache.commons.log" ) );
+    assertTrue( hccl.ignoreClass( "org.apache.log4j" ) );
+    assertTrue( hccl.ignoreClass( "org.apache.log4j.Logger" ) );
+    assertFalse( hccl.ignoreClass( "org.apache.hadoop.security.rpcauth.MaprAuthMethod" ) );
+    assertTrue( hccl.ignoreClass( null ) );
+  }
+
 }
