@@ -25,16 +25,19 @@
       <groupId>org.pentaho</groupId>
       <artifactId>pentaho-hadoop-shims-hdp26-scope-client-assembly</artifactId>
       <version>${project.version}</version>
+      <type>zip</type>
     </dependency>
     <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>pentaho-hadoop-shims-hdp26-scope-pmr-assembly</artifactId>
       <version>${project.version}</version>
+      <type>zip</type>
     </dependency>
     <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>pentaho-hadoop-shims-hdp26-scope-default-assembly</artifactId>
       <version>${project.version}</version>
+      <type>zip</type>
     </dependency>
     <dependency>                                                           
       <groupId>org.pentaho</groupId>                                       
