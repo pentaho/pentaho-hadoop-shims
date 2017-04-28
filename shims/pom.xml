@@ -11,7 +11,6 @@
   <version>8.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
-    <module>hdp24</module>
     <module>hdp25</module>
     <module>hdp26</module>
     <module>cdh59</module>
