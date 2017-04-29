@@ -5,9 +5,10 @@
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-hdp25-assemblies-reactor</artifactId>
-    <version>7.1-SNAPSHOT</version>
+    <version>8.0-SNAPSHOT</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-hdp25-package</artifactId>
+  <packaging>pom</packaging>
   <properties>
     <eula-wrap_assign-deps-to-properties-phase>initialize</eula-wrap_assign-deps-to-properties-phase>
     <eula-wrap_create-izpack-installer-jar-phase>verify</eula-wrap_create-izpack-installer-jar-phase>
@@ -24,16 +25,19 @@
       <groupId>org.pentaho</groupId>
       <artifactId>pentaho-hadoop-shims-hdp25-scope-client-assembly</artifactId>
       <version>${project.version}</version>
+      <type>zip</type>
     </dependency>
     <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>pentaho-hadoop-shims-hdp25-scope-pmr-assembly</artifactId>
       <version>${project.version}</version>
+      <type>zip</type>
     </dependency>
     <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>pentaho-hadoop-shims-hdp25-scope-default-assembly</artifactId>
       <version>${project.version}</version>
+      <type>zip</type>
     </dependency>
     <dependency>                                                           
       <groupId>org.pentaho</groupId>                                       

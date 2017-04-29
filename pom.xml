@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-ce-jar-parent-pom</artifactId>
-    <version>7.1-SNAPSHOT</version>
+    <version>8.0-SNAPSHOT</version>
   </parent>
   <artifactId>pentaho-hadoop-shims</artifactId>
   <packaging>pom</packaging>
@@ -15,10 +15,10 @@
     <eula-wrap_create-dist-phase />
     <eula-wrap_attach-dist-phase />
     <xerces.version>2.8.1</xerces.version>
-    <dependency.pentaho-hdfs-vfs.revision>7.1-SNAPSHOT</dependency.pentaho-hdfs-vfs.revision>
-    <dependency.kettle.revision>7.1-SNAPSHOT</dependency.kettle.revision>
-    <dependency.hadoop-shims-api.revision>7.1-SNAPSHOT</dependency.hadoop-shims-api.revision>
-    <dependency.oss-licenses.revision>7.1-SNAPSHOT</dependency.oss-licenses.revision>
+    <dependency.pentaho-hdfs-vfs.revision>8.0-SNAPSHOT</dependency.pentaho-hdfs-vfs.revision>
+    <dependency.kettle.revision>8.0-SNAPSHOT</dependency.kettle.revision>
+    <dependency.hadoop-shims-api.revision>8.0-SNAPSHOT</dependency.hadoop-shims-api.revision>
+    <dependency.oss-licenses.revision>8.0-SNAPSHOT</dependency.oss-licenses.revision>
     <org.hamcrest.version>1.3</org.hamcrest.version>
     <org.mockito.version>1.10.19</org.mockito.version>
     <junit.version>4.11</junit.version>

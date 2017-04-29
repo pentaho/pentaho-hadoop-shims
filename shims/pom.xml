@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims</artifactId>
-    <version>7.1-SNAPSHOT</version>
+    <version>8.0-SNAPSHOT</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-list</artifactId>
   <packaging>pom</packaging>
@@ -19,7 +19,7 @@
   <modules>
     <module>hdp25</module>
     <module>cdh510</module>
-    <module>emr52</module>
+    <module>emr531</module>
     <module>mapr520</module>
     <module>hdi35</module>
   </modules>
