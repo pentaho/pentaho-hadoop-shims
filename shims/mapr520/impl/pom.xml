@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.pentaho</groupId>
@@ -41,6 +42,7 @@
     <htrace-core.version>3.1.0-incubating</htrace-core.version>
     <org.apache.hive.shims.version>1.2.0-mapr-1609</org.apache.hive.shims.version>
     <org.apache.hbase.version>1.1.1-mapr-1602</org.apache.hbase.version>
+    <net.sf.flexjson>2.1</net.sf.flexjson>
     <jettison.version>1.1</jettison.version>
     <protobuf-java.version>2.5.0</protobuf-java.version>
     <org.apache.hive.version>1.2.0-mapr-1609</org.apache.hive.version>
@@ -236,6 +238,17 @@
       <artifactId>hbase-hadoop-compat</artifactId>
       <version>${org.apache.hbase.version}</version>
       <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>*</artifactId>
+          <groupId>*</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.flexjson</groupId>
+      <artifactId>flexjson</artifactId>
+      <version>${net.sf.flexjson}</version>
       <exclusions>
         <exclusion>
           <artifactId>*</artifactId>
