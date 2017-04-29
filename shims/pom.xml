@@ -25,6 +25,7 @@
     <module>mapr520</module>
     <module>emr46</module>
     <module>emr52</module>
+    <module>emr531</module>
     <module>hdi35</module>
   </modules>
   <dependencyManagement>
