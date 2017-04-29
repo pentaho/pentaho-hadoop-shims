@@ -23,7 +23,6 @@
     <module>cdh510</module>
     <module>mapr510</module>
     <module>mapr520</module>
-    <module>emr46</module>
     <module>emr52</module>
     <module>hdi35</module>
   </modules>
