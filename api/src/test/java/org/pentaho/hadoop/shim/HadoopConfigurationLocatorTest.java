@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2016 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2017 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -70,6 +70,7 @@ public class HadoopConfigurationLocatorTest {
     Properties p = new Properties();
     p.setProperty( "name", "Test Configuration A" );
     p.setProperty( "classpath", "" );
+    p.setProperty( "ignore.classes", "" );
     p.setProperty( "library.path", "" );
     p.setProperty( "required.classes", HadoopConfigurationLocatorTest.class.getName() );
     p.store( configFile.getContent().getOutputStream(), "Test Configuration A" );
@@ -282,6 +283,16 @@ public class HadoopConfigurationLocatorTest {
     buildProperties.createFile();
     assertEquals( FileType.FILE, buildProperties.getType() );
     locator.createConfigurationLoader( buildProperties, null, null, new ShimProperties() );
+  }
+
+  @Test
+  public void loadHadoopConfiguration_with_ignore_classes() throws Exception {
+    HadoopConfigurationLocator locator = new HadoopConfigurationLocator();
+
+    FileObject root = VFS.getManager().resolveFile( HADOOP_CONFIGURATIONS_PATH + "/a" );
+    HadoopConfiguration configuration = locator.loadHadoopConfiguration( root );
+
+    assertNotNull( configuration );
   }
 
   @Test
