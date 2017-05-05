@@ -1,0 +1,38 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.pentaho</groupId>
+    <artifactId>pentaho-hadoop-shims-list</artifactId>
+    <version>7.1-SNAPSHOT</version>
+  </parent>
+  <artifactId>pentaho-hadoop-shims-hdp26-reactor</artifactId>
+  <packaging>pom</packaging>
+  <properties>
+    <shim.name>hdp26</shim.name>
+    <!-- default folder -->
+    <automaton.version>1.11-8</automaton.version>
+    <pig.version>0.16.0.2.6.0.3-8</pig.version>
+    <dependency.pig.classifier>h2</dependency.pig.classifier>
+    <org.apache.oozie.version>4.2.0.2.6.0.3-8</org.apache.oozie.version>
+    <hadoop2-windows-patch.version>08072014</hadoop2-windows-patch.version>
+    <sqoop.version>1.4.6.2.6.0.3-8</sqoop.version>
+    <hive-jdbc.version>1.2.1000.2.6.0.3-8</hive-jdbc.version>
+    <org.apache.avro.version>1.8.0</org.apache.avro.version>
+    <!-- client and default folders -->
+    <hadoop.version>2.7.3.2.6.0.3-8</hadoop.version>
+    <!-- pmr folder -->
+    <org.apache.hbase.version>1.1.2.2.6.0.3-8</org.apache.hbase.version>
+    <zookeeper.version>3.4.6.2.6.0.3-8</zookeeper.version>
+    <htrace-core.version>2.04</htrace-core.version>
+    <protobuf-java.version>2.5.0</protobuf-java.version>
+  </properties>
+  <modules>
+    <module>client</module>
+    <module>pmr</module>
+    <module>default</module>
+    <module>hbase-comparators</module>
+    <module>impl</module>
+    <module>assemblies</module>
+  </modules>
+</project>

@@ -19,6 +19,7 @@
   <modules>
     <module>hdp24</module>
     <module>hdp25</module>
+    <module>hdp26</module>
     <module>cdh59</module>
     <module>cdh510</module>
     <module>mapr510</module>
@@ -107,12 +108,12 @@
   </dependencyManagement>
   <dependencies>
     <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-common-shim</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-      <scope>provided</scope>
-    </dependency>
+    <groupId>org.pentaho</groupId>
+    <artifactId>pentaho-hadoop-shims-common-shim</artifactId>
+    <version>${project.version}</version>
+    <classifier>sources</classifier>
+    <scope>provided</scope>
+  </dependency>
     <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>pentaho-hadoop-shims-common-hbase-comparators-api</artifactId>
