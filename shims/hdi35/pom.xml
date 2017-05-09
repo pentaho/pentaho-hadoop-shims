@@ -34,9 +34,9 @@
   <modules>
     <module>client</module>
     <module>pmr</module>
-    <module>hbase-comparators</module>
     <module>default</module>
     <module>impl</module>
+    <module>hbase-comparators</module>
     <module>assemblies</module>
   </modules>
 </project>
