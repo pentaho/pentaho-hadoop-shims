@@ -7,7 +7,7 @@
     <artifactId>pentaho-hadoop-shims-mapr520-reactor</artifactId>
     <version>8.0-SNAPSHOT</version>
   </parent>
-  <artifactId>pentaho-hadoop-shims-mapr520-impl</artifactId>
+  <artifactId>pentaho-hadoop-shims-mapr520</artifactId>
   <packaging>jar</packaging>
   <version>8.0-SNAPSHOT</version>
   <properties>
