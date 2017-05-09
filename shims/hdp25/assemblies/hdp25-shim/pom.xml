@@ -26,6 +26,17 @@
       <artifactId>pentaho-hadoop-shims-hdp25-hbase-comparators</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.knox</groupId>
+      <artifactId>gateway-shell</artifactId>
+      <version>0.12.0.2.6.0.3-8</version>
+    </dependency> 
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>4.4</version>
+      <scope>runtime</scope>
+    </dependency>  
   </dependencies>
   <build>
     <plugins>
