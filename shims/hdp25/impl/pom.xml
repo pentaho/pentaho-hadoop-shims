@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.pentaho</groupId>
@@ -48,6 +49,8 @@
     <org.javassist.version>3.18.1-GA</org.javassist.version>
     <log4j.version>1.2.17</log4j.version>
     <org.apache.derby.version>10.10.2.0</org.apache.derby.version>
+    <gateway-shell>0.12.0.2.6.0.3-8</gateway-shell>
+    <json-smart>1.1.1</json-smart>
   </properties>
   <dependencies>
     <dependency>
@@ -374,6 +377,28 @@
       <artifactId>xstream</artifactId>
       <version>${com.thoughtworks.xstream.version}</version>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>*</artifactId>
+          <groupId>*</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.knox</groupId>
+      <artifactId>gateway-shell</artifactId>
+      <version>${gateway-shell}</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>*</artifactId>
+          <groupId>*</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>net.minidev</groupId>
+      <artifactId>json-smart</artifactId>
+      <version>${json-smart}</version>
       <exclusions>
         <exclusion>
           <artifactId>*</artifactId>
