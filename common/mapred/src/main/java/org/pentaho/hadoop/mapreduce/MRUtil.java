@@ -50,6 +50,11 @@ public class MRUtil {
   public static final String PROPERTY_PENTAHO_KETTLE_PLUGINS_DIR = "pentaho.kettle.plugins.dir";
 
   /**
+   * Path to the directory to load plugins from. This must be accessible from all TaskTracker nodes.
+   */
+  public static final String PROPERTY_PENTAHO_KETTLE_METASTORE_DIR = "pentaho.kettle.metastore.dir";
+
+  /**
    * Hadoop Configuration for setting KETTLE_HOME. See {@link Const#getKettleDirectory()} for usage.
    */
   public static final String PROPERTY_PENTAHO_KETTLE_HOME = "pentaho.kettle.home";
@@ -93,11 +98,14 @@ public class MRUtil {
     if ( !KettleEnvironment.isInitialized() ) {
       String kettleHome = getKettleHomeProperty( conf );
       String pluginDir = getPluginDirProperty( conf );
+      String metaStoreDir = getMetastoreDirProperty( conf );
       System.setProperty( "KETTLE_HOME", kettleHome );
       System.setProperty( Const.PLUGIN_BASE_FOLDERS_PROP, pluginDir );
+      System.setProperty( Const.PENTAHO_METASTORE_FOLDER, metaStoreDir );
 
       System.out.println( BaseMessages.getString( MRUtil.class, "KettleHome.Info", kettleHome ) );
       System.out.println( BaseMessages.getString( MRUtil.class, "PluginDirectory.Info", pluginDir ) );
+      System.out.println( BaseMessages.getString( MRUtil.class, "MetasStoreDirectory.Info", metaStoreDir ) );
 
       KettleEnvironment.init();
     }
@@ -151,6 +159,14 @@ public class MRUtil {
    */
   public static String getKettleHomeProperty( Configuration conf ) {
     String kettleHome = conf.get( PROPERTY_PENTAHO_KETTLE_HOME );
+    if ( StringUtils.isEmpty( kettleHome ) ) {
+      return getWorkingDir();
+    }
+    return kettleHome;
+  }
+
+  public static String getMetastoreDirProperty( Configuration conf ) {
+    String kettleHome = conf.get( PROPERTY_PENTAHO_KETTLE_METASTORE_DIR );
     if ( StringUtils.isEmpty( kettleHome ) ) {
       return getWorkingDir();
     }
