@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Pentaho Big Data
  * <p>
- * Copyright (C) 2002-2016 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2017 by Pentaho : http://www.pentaho.com
  * <p>
  * ******************************************************************************
  * <p>
@@ -34,6 +34,7 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSelectInfo;
 import org.apache.commons.vfs2.FileSelector;
@@ -401,7 +402,7 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
       String ignoredClassesProperty = configurationProperties
         .getProperty( CONFIG_PROPERTY_IGNORE_CLASSES );
       String[] ignoredClasses = null;
-      if ( ignoredClassesProperty != null ) {
+      if ( !StringUtils.isEmpty( ignoredClassesProperty ) ) {
         ignoredClasses = ignoredClassesProperty.split( "," );
       }
 
