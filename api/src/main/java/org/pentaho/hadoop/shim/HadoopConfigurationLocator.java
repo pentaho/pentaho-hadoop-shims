@@ -18,6 +18,7 @@
 package org.pentaho.hadoop.shim;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.annotations.VisibleForTesting;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSelectInfo;
@@ -76,6 +78,8 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
   private static final String CONFIG_PROPERTY_LIBRARY_PATH = "library.path";
 
   private static final String CONFIG_PROPERTY_NAME = "name";
+
+  private static final String PMR_PROPERTIES = "pmr.properties";
 
   private static final URL[] EMPTY_URL_ARRAY = new URL[ 0 ];
 
@@ -334,6 +338,35 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
     }
   }
 
+  private Properties getPmrProperties() {
+    InputStream pmrProperties = getClass().getClassLoader().getResourceAsStream(
+      PMR_PROPERTIES );
+    Properties properties = new Properties();
+    if ( pmrProperties != null ) {
+      try {
+        properties.load( pmrProperties );
+      } catch ( IOException ioe ) {
+        // pmr.properties not available
+      } finally {
+        if ( pmrProperties != null ) {
+          try {
+            pmrProperties.close();
+          } catch ( IOException e ) {
+            // pmr.properties not available
+          }
+        }
+      }
+    }
+    return properties;
+  }
+
+  @VisibleForTesting
+  boolean isRunningOnCluster() {
+    Properties pmrProperties = getPmrProperties();
+    String isPmr = pmrProperties.getProperty( "isPmr", "false" );
+    return ( "true".equals( isPmr ) );
+  }
+
   /**
    * Parse a set of URLs from a comma-separated list of URLs. If the URL points to a directory all jar files within that
    * directory will be returned as well.
@@ -394,9 +427,12 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
     }
 
     try {
-      // Parse all URLs from an optional classpath from the configuration file
-      List<URL> classpathElements = parseURLs( folder,
-        configurationProperties.getProperty( CONFIG_PROPERTY_CLASSPATH ) );
+      List<URL> classpathElements = null;
+      if ( !isRunningOnCluster() ) {
+        // Parse all URLs from an optional classpath from the configuration file
+        classpathElements = parseURLs( folder,
+          configurationProperties.getProperty( CONFIG_PROPERTY_CLASSPATH ) );
+      }
 
       // Allow external configuration of classes to ignore
       String ignoredClassesProperty = configurationProperties
@@ -412,7 +448,8 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
       ClassLoader cl = createConfigurationLoader( folder, getClass()
         .getClassLoader(), classpathElements, configurationProperties, ignoredClasses );
       verifyClasses(
-        cl, configurationProperties.getProperty( "required.classes" ), configurationProperties.getProperty( "name" ) );
+        cl, configurationProperties.getProperty( "required.classes" ),
+        configurationProperties.getProperty( "name" ) );
 
       // Treat the Hadoop shim special. It is absolutely required for a Hadoop configuration.
       HadoopShim hadoopShim = null;

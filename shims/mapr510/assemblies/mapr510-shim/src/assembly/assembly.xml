@@ -31,11 +31,6 @@
       <includes>
         <include>dk.brics.automaton:automaton</include>
         <include>pentaho:hadoop2-windows-patch</include>
-        <include>org.apache.hbase:hbase-client</include>
-        <include>org.apache.hbase:hbase-common</include>
-        <include>org.apache.hbase:hbase-hadoop-compat</include>
-        <include>org.apache.hbase:hbase-protocol</include>
-        <include>org.apache.hbase:hbase-server</include>
         <include>org.apache.hive:hive-common</include>
         <include>org.apache.hive:hive-exec</include>
         <include>org.apache.hive:hive-jdbc</include>
@@ -63,6 +58,12 @@
       <includes>
         <include>org.apache.htrace:htrace-core</include>
         <include>org.apache.zookeeper:zookeeper</include>
+        <include>org.apache.hbase:hbase-client</include>
+        <include>org.apache.hbase:hbase-common</include>
+        <include>org.apache.hbase:hbase-hadoop-compat</include>
+        <include>org.apache.hbase:hbase-protocol</include>
+        <include>org.apache.hbase:hbase-server</include>
+        <include>net.sf.flexjson:flexjson</include>
       </includes>
       <excludes>
         <exclude>*:tests:*</exclude>
