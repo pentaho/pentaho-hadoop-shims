@@ -50,6 +50,7 @@
     <leveldbjni-all.version>1.8</leveldbjni-all.version>
     <jersey-guice.version>1.9</jersey-guice.version>
     <com.sun.jersey.version>1.9</com.sun.jersey.version>
+    <net.sf.flexjson>2.1</net.sf.flexjson>
   </properties>
   <dependencies>
     <dependency>
@@ -236,6 +237,18 @@
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-hadoop-compat</artifactId>
       <version>${org.apache.hbase.version}</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.flexjson</groupId>
+      <artifactId>flexjson</artifactId>
+      <version>${net.sf.flexjson}</version>
       <scope>compile</scope>
       <exclusions>
         <exclusion>
