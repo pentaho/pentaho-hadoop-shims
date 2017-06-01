@@ -34,7 +34,6 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSelectInfo;
 import org.apache.commons.vfs2.FileSelector;
@@ -402,7 +401,7 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
       String ignoredClassesProperty = configurationProperties
         .getProperty( CONFIG_PROPERTY_IGNORE_CLASSES );
       String[] ignoredClasses = null;
-      if ( !StringUtils.isEmpty( ignoredClassesProperty ) ) {
+      if ( ignoredClassesProperty != null ) {
         ignoredClasses = ignoredClassesProperty.split( "," );
       }
 

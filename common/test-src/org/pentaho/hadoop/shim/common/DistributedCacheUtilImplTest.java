@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2017 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -51,10 +51,9 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import org.mockito.Mockito;
+import org.mockito.Matchers;
+import org.junit.Assert;
 
 /**
  * Test the DistributedCacheUtil
@@ -140,7 +139,7 @@ public class DistributedCacheUtilImplTest {
     DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
     ch.deleteDirectory( test );
     try {
-      assertFalse( test.exists() );
+      Assert.assertFalse( test.exists() );
     } finally {
       // Delete the directory with java.io.File if it wasn't removed
       File f = new File( "bin/test/deleteDirectoryTest" );
@@ -156,9 +155,9 @@ public class DistributedCacheUtilImplTest {
 
     try {
       ch.extract( KettleVFS.getFileObject( "bogus" ), null );
-      fail( "expected exception" );
+      Assert.fail( "expected exception" );
     } catch ( IllegalArgumentException ex ) {
-      assertTrue( ex.getMessage().startsWith( "archive does not exist" ) );
+      Assert.assertTrue( ex.getMessage().startsWith( "archive does not exist" ) );
     }
   }
 
@@ -172,7 +171,7 @@ public class DistributedCacheUtilImplTest {
     try {
       ch.extract( archive, KettleVFS.getFileObject( "." ) );
     } catch ( IllegalArgumentException ex ) {
-      assertTrue( ex.getMessage(), "destination already exists".equals( ex.getMessage() ) );
+      Assert.assertTrue( ex.getMessage(), "destination already exists".equals( ex.getMessage() ) );
     }
   }
 
@@ -184,11 +183,11 @@ public class DistributedCacheUtilImplTest {
       KettleVFS.getFileObject( getClass().getResource( "/pentaho-mapreduce-sample.jar" ).toURI().getPath() );
     FileObject extracted = ch.extractToTemp( archive );
 
-    assertNotNull( extracted );
-    assertTrue( extracted.exists() );
+    Assert.assertNotNull( extracted );
+    Assert.assertTrue( extracted.exists() );
     try {
       // There should be 3 files and 5 directories inside the root folder (which is the 9th entry)
-      assertTrue( extracted.findFiles( new AllFileSelector() ).length == 9 );
+      Assert.assertTrue( extracted.findFiles( new AllFileSelector() ).length == 9 );
     } finally {
       // clean up after ourself
       ch.deleteDirectory( extracted );
@@ -204,7 +203,7 @@ public class DistributedCacheUtilImplTest {
     ZipEntry e = new ZipEntry( "zipEntriesMixed" + "/" + "someFile.txt" );
     outputStream.putNextEntry( e );
     byte[] data = "someOutString".getBytes();
-    outputStream.write( data, 0, data.length);
+    outputStream.write( data, 0, data.length );
     outputStream.closeEntry();
     e = new ZipEntry(  "zipEntriesMixed" + "/" );
     outputStream.putNextEntry( e );
@@ -218,14 +217,14 @@ public class DistributedCacheUtilImplTest {
       extracted = ch.extractToTemp( archive );
     } catch ( IOException | KettleFileException e1 ) {
       e1.printStackTrace();
-      fail( "Exception not expected in this case" );
+      Assert.fail( "Exception not expected in this case" );
     }
 
-    assertNotNull( extracted );
-    assertTrue( extracted.exists() );
+    Assert.assertNotNull( extracted );
+    Assert.assertTrue( extracted.exists() );
     try {
       // There should be 3 files and 5 directories inside the root folder (which is the 9th entry)
-      assertTrue( extracted.findFiles( new AllFileSelector() ).length == 3 );
+      Assert.assertTrue( extracted.findFiles( new AllFileSelector() ).length == 3 );
     } finally {
       // clean up after ourself
       ch.deleteDirectory( extracted );
@@ -239,9 +238,9 @@ public class DistributedCacheUtilImplTest {
 
     try {
       ch.extractToTemp( null );
-      fail( "Expected exception" );
+      Assert.fail( "Expected exception" );
     } catch ( NullPointerException ex ) {
-      assertEquals( "archive is required", ex.getMessage() );
+      Assert.assertEquals( "archive is required", ex.getMessage() );
     }
   }
 
@@ -254,11 +253,11 @@ public class DistributedCacheUtilImplTest {
     try {
       // Simply test we can find the jar files in our test folder
       List<String> jars = ch.findFiles( testFolder, "jar" );
-      assertEquals( 4, jars.size() );
+      Assert.assertEquals( 4, jars.size() );
 
       // Look for all files and folders
       List<String> all = ch.findFiles( testFolder, null );
-      assertEquals( 12, all.size() );
+      Assert.assertEquals( 12, all.size() );
     } finally {
       testFolder.delete( new AllFileSelector() );
     }
@@ -270,38 +269,38 @@ public class DistributedCacheUtilImplTest {
     DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
 
     URL url = new URL( "http://localhost:8020/path/to/file" );
-    Configuration conf = mock( Configuration.class );
-    FileSystem fs = mock( FileSystem.class );
-    FileObject source = mock( FileObject.class );
-    Path dest = mock( Path.class );
-    FileObject hdfsDest = mock( FileObject.class );
-    Path root = mock( Path.class );
+    Configuration conf = Mockito.mock( Configuration.class );
+    FileSystem fs = Mockito.mock( FileSystem.class );
+    FileObject source = Mockito.mock( FileObject.class );
+    Path dest = Mockito.mock( Path.class );
+    FileObject hdfsDest = Mockito.mock( FileObject.class );
+    Path root = Mockito.mock( Path.class );
 
     FileObject[] fileObjects = new FileObject[12];
     for ( int i = 0; i < fileObjects.length; i++ ) {
       URL fileUrl = new URL( "http://localhost:8020/path/to/file/" + i );
-      FileObject fileObject = mock( FileObject.class );
+      FileObject fileObject = Mockito.mock( FileObject.class );
       fileObjects[i] = fileObject;
-      doReturn( fileUrl ).when( fileObject ).getURL();
+      Mockito.doReturn( fileUrl ).when( fileObject ).getURL();
     }
 
-    doReturn( url ).when( source ).getURL();
-    doReturn( conf ).when( fs ).getConf();
-    doReturn( 0 ).when( conf ).getInt( any( String.class ), anyInt() );
-    doReturn( true ).when( source ).exists();
-    doReturn( fileObjects ).when( hdfsDest ).findFiles( any( FileSelector.class ) );
-    doReturn( true ).when( fs ).delete( root, true );
-    doReturn( fileObjects.length ).when( source ).delete( any( AllFileSelector.class ) );
-    doNothing().when( fs ).copyFromLocalFile( any( Path.class ), any( Path.class ) );
-    doNothing().when( fs ).setPermission( any( Path.class ), any( FsPermission.class ) );
-    doReturn( true ).when( fs ).setReplication( any( Path.class ), anyShort() );
+    Mockito.doReturn( url ).when( source ).getURL();
+    Mockito.doReturn( conf ).when( fs ).getConf();
+    Mockito.doReturn( 0 ).when( conf ).getInt( Matchers.any( String.class ), Mockito.anyInt() );
+    Mockito.doReturn( true ).when( source ).exists();
+    Mockito.doReturn( fileObjects ).when( hdfsDest ).findFiles( Matchers.any( FileSelector.class ) );
+    Mockito.doReturn( true ).when( fs ).delete( root, true );
+    Mockito.doReturn( fileObjects.length ).when( source ).delete( Matchers.any( AllFileSelector.class ) );
+    Mockito.doNothing().when( fs ).copyFromLocalFile( Matchers.any( Path.class ), Matchers.any( Path.class ) );
+    Mockito.doNothing().when( fs ).setPermission( Matchers.any( Path.class ), Matchers.any( FsPermission.class ) );
+    Mockito.doReturn( true ).when( fs ).setReplication( Matchers.any( Path.class ), Mockito.anyShort() );
 
     try {
       try {
         ch.stageForCache( source, fs, dest, true );
 
         List<String> files = ch.findFiles( hdfsDest, null );
-        assertEquals( 12, files.size() );
+        Assert.assertEquals( 12, files.size() );
       } finally {
         fs.delete( root, true );
       }
@@ -325,13 +324,13 @@ public class DistributedCacheUtilImplTest {
         ch.stageForCache( source, fs, dest, true );
 
         List<Path> files = ch.findFiles( fs, dest, null );
-        assertEquals( 5, files.size() );
+        Assert.assertEquals( 5, files.size() );
 
         files = ch.findFiles( fs, dest, Pattern.compile( ".*jar$" ) );
-        assertEquals( 2, files.size() );
+        Assert.assertEquals( 2, files.size() );
 
         files = ch.findFiles( fs, dest, Pattern.compile( ".*folder$" ) );
-        assertEquals( 1, files.size() );
+        Assert.assertEquals( 1, files.size() );
       } finally {
         fs.delete( root, true );
       }
@@ -357,11 +356,11 @@ public class DistributedCacheUtilImplTest {
     try {
       ch.stageForCache( source, fs, dest, true );
 
-      assertTrue( fs.exists( dest ) );
+      Assert.assertTrue( fs.exists( dest ) );
       ContentSummary cs = fs.getContentSummary( dest );
-      assertEquals( expectedFileCount, cs.getFileCount() );
-      assertEquals( expectedDirCount, cs.getDirectoryCount() );
-      assertEquals( FsPermission.createImmutable( (short) 0755 ), fs.getFileStatus( dest ).getPermission() );
+      Assert.assertEquals( expectedFileCount, cs.getFileCount() );
+      Assert.assertEquals( expectedDirCount, cs.getDirectoryCount() );
+      Assert.assertEquals( FsPermission.createImmutable( (short) 0755 ), fs.getFileStatus( dest ).getPermission() );
     } finally {
       // Clean up after ourself
       if ( !fs.delete( root, true ) ) {
@@ -401,9 +400,9 @@ public class DistributedCacheUtilImplTest {
     FileObject bogusSource = KettleVFS.getFileObject( "bogus" );
     try {
       ch.stageForCache( bogusSource, fs, dest, true );
-      fail( "expected exception when source does not exist" );
+      Assert.fail( "expected exception when source does not exist" );
     } catch ( KettleFileException ex ) {
-      assertEquals( BaseMessages
+      Assert.assertEquals( BaseMessages
           .getString( DistributedCacheUtilImpl.class, "DistributedCacheUtil.SourceDoesNotExist", bogusSource ),
         ex.getMessage().trim() );
     }
@@ -422,12 +421,12 @@ public class DistributedCacheUtilImplTest {
       Path dest = new Path( root, "dest" );
 
       fs.mkdirs( dest );
-      assertTrue( fs.exists( dest ) );
-      assertTrue( fs.getFileStatus( dest ).isDir() );
+      Assert.assertTrue( fs.exists( dest ) );
+      Assert.assertTrue( fs.getFileStatus( dest ).isDir() );
       try {
         ch.stageForCache( source, fs, dest, false );
       } catch ( KettleFileException ex ) {
-        assertTrue( ex.getMessage(), ex.getMessage().contains( "Destination exists" ) );
+        Assert.assertTrue( ex.getMessage(), ex.getMessage().contains( "Destination exists" ) );
       } finally {
         fs.delete( root, true );
       }
@@ -449,8 +448,8 @@ public class DistributedCacheUtilImplTest {
       Path dest = new Path( root, "dest" );
 
       fs.mkdirs( dest );
-      assertTrue( fs.exists( dest ) );
-      assertTrue( fs.getFileStatus( dest ).isDir() );
+      Assert.assertTrue( fs.exists( dest ) );
+      Assert.assertTrue( fs.getFileStatus( dest ).isDir() );
 
       stageForCacheTester( ch, source, fs, root, dest, 6, 6 );
     } finally {
@@ -469,12 +468,12 @@ public class DistributedCacheUtilImplTest {
 
     // this check is not needed for each and every shim
     if ( "true".equals( System.getProperty( "org.pentaho.hadoop.shims.check.symlink", "false" ) ) ) {
-      assertEquals( "yes", conf.get( "mapred.create.symlink" ) );
+      Assert.assertEquals( "yes", conf.get( "mapred.create.symlink" ) );
     }
 
     for ( Path file : files ) {
-      assertTrue( conf.get( "mapred.cache.files" ).contains( file.toString() ) );
-      assertTrue( conf.get( "mapred.job.classpath.files" ).contains( file.toString() ) );
+      Assert.assertTrue( conf.get( "mapred.cache.files" ).contains( file.toString() ) );
+      Assert.assertTrue( conf.get( "mapred.job.classpath.files" ).contains( file.toString() ) );
     }
   }
 
@@ -496,16 +495,16 @@ public class DistributedCacheUtilImplTest {
       fs.mkdirs( lib );
       fs.mkdirs( bigDataPlugin );
 
-      assertTrue( ch.isKettleEnvironmentInstalledAt( fs, root ) );
+      Assert.assertTrue( ch.isKettleEnvironmentInstalledAt( fs, root ) );
 
       // If lock file is there pmr is not installed
       fs.create( lockFile );
-      assertFalse( ch.isKettleEnvironmentInstalledAt( fs, root ) );
+      Assert.assertFalse( ch.isKettleEnvironmentInstalledAt( fs, root ) );
 
       // Try to create a file instead of a directory for the pentaho-big-data-plugin. This should be detected.
       fs.delete( bigDataPlugin, true );
       fs.create( bigDataPlugin );
-      assertFalse( ch.isKettleEnvironmentInstalledAt( fs, root ) );
+      Assert.assertFalse( ch.isKettleEnvironmentInstalledAt( fs, root ) );
     } finally {
       fs.delete( root, true );
     }
@@ -517,25 +516,25 @@ public class DistributedCacheUtilImplTest {
 
     try {
       ch.installKettleEnvironment( null, (org.pentaho.hadoop.shim.api.fs.FileSystem) null, null, null, null );
-      fail( "Expected exception on missing archive" );
+      Assert.fail( "Expected exception on missing archive" );
     } catch ( NullPointerException ex ) {
-      assertEquals( "pmrArchive is required", ex.getMessage() );
+      Assert.assertEquals( "pmrArchive is required", ex.getMessage() );
     }
 
     try {
       ch.installKettleEnvironment( KettleVFS.getFileObject( "." ), (org.pentaho.hadoop.shim.api.fs.FileSystem) null,
         null, null, null );
-      fail( "Expected exception on missing archive" );
+      Assert.fail( "Expected exception on missing archive" );
     } catch ( NullPointerException ex ) {
-      assertEquals( "destination is required", ex.getMessage() );
+      Assert.assertEquals( "destination is required", ex.getMessage() );
     }
 
     try {
       ch.installKettleEnvironment( KettleVFS.getFileObject( "." ), (org.pentaho.hadoop.shim.api.fs.FileSystem) null,
         new PathProxy( "." ), null, null );
-      fail( "Expected exception on missing archive" );
+      Assert.fail( "Expected exception on missing archive" );
     } catch ( NullPointerException ex ) {
-      assertEquals( "big data plugin required", ex.getMessage() );
+      Assert.assertEquals( "big data plugin required", ex.getMessage() );
     }
   }
 
@@ -555,7 +554,7 @@ public class DistributedCacheUtilImplTest {
     Path root = new Path( "bin/test/installKettleEnvironment" );
     try {
       ch.installKettleEnvironment( pmrArchive, fs, root, bigDataPluginDir, null );
-      assertTrue( ch.isKettleEnvironmentInstalledAt( fs, root ) );
+      Assert.assertTrue( ch.isKettleEnvironmentInstalledAt( fs, root ) );
     } finally {
       bigDataPluginDir.delete( new AllFileSelector() );
       fs.delete( root, true );
@@ -579,8 +578,8 @@ public class DistributedCacheUtilImplTest {
     Path root = new Path( "bin/test/installKettleEnvironment" );
     try {
       ch.installKettleEnvironment( pmrArchive, fs, root, bigDataPluginDir, "bin/test/" + pluginName );
-      assertTrue( ch.isKettleEnvironmentInstalledAt( fs, root ) );
-      assertTrue( fs.exists( new Path( root, "plugins/bin/test/" + pluginName ) ) );
+      Assert.assertTrue( ch.isKettleEnvironmentInstalledAt( fs, root ) );
+      Assert.assertTrue( fs.exists( new Path( root, "plugins/bin/test/" + pluginName ) ) );
     } finally {
       bigDataPluginDir.delete( new AllFileSelector() );
       fs.delete( root, true );
@@ -601,10 +600,10 @@ public class DistributedCacheUtilImplTest {
     try {
       ch.stagePluginsForCache( fs, pluginsDir, "bin/test/sample-folder" );
       Path pluginInstallPath = new Path( pluginsDir, "bin/test/sample-folder" );
-      assertTrue( fs.exists( pluginInstallPath ) );
+      Assert.assertTrue( fs.exists( pluginInstallPath ) );
       ContentSummary summary = fs.getContentSummary( pluginInstallPath );
-      assertEquals( 6, summary.getFileCount() );
-      assertEquals( 6, summary.getDirectoryCount() );
+      Assert.assertEquals( 6, summary.getFileCount() );
+      Assert.assertEquals( 6, summary.getDirectoryCount() );
     } finally {
       pluginDir.delete( new AllFileSelector() );
       fs.delete( pluginsDir, true );
@@ -641,29 +640,29 @@ public class DistributedCacheUtilImplTest {
     Path root = new Path( "bin/test/installKettleEnvironment" );
     try {
       ch.installKettleEnvironment( pmrArchive, fs, root, bigDataPluginDir, null );
-      assertTrue( ch.isKettleEnvironmentInstalledAt( fs, root ) );
+      Assert.assertTrue( ch.isKettleEnvironmentInstalledAt( fs, root ) );
 
       ch.configureWithKettleEnvironment( conf, fs, root );
 
       // Make sure our libraries are on the classpath
-      assertTrue( conf.get( "mapred.cache.files" ).contains( "lib/kettle-core.jar" ) );
-      assertTrue( conf.get( "mapred.cache.files" ).contains( "lib/kettle-engine.jar" ) );
-      assertTrue( conf.get( "mapred.job.classpath.files" ).contains( "lib/kettle-core.jar" ) );
-      assertTrue( conf.get( "mapred.job.classpath.files" ).contains( "lib/kettle-engine.jar" ) );
+      Assert.assertTrue( conf.get( "mapred.cache.files" ).contains( "lib/kettle-core.jar" ) );
+      Assert.assertTrue( conf.get( "mapred.cache.files" ).contains( "lib/kettle-engine.jar" ) );
+      Assert.assertTrue( conf.get( "mapred.job.classpath.files" ).contains( "lib/kettle-core.jar" ) );
+      Assert.assertTrue( conf.get( "mapred.job.classpath.files" ).contains( "lib/kettle-engine.jar" ) );
 
       // Make sure the configuration specific jar made it!
-      assertTrue( conf.get( "mapred.cache.files" ).contains( "lib/configuration-specific.jar" ) );
+      Assert.assertTrue( conf.get( "mapred.cache.files" ).contains( "lib/configuration-specific.jar" ) );
 
       // Make sure our plugins folder is registered
-      assertTrue( conf.get( "mapred.cache.files" ).contains( "#plugins" ) );
+      Assert.assertTrue( conf.get( "mapred.cache.files" ).contains( "#plugins" ) );
 
       // Make sure our libraries aren't included twice
-      assertFalse( conf.get( "mapred.cache.files" ).contains( "#lib" ) );
+      Assert.assertFalse( conf.get( "mapred.cache.files" ).contains( "#lib" ) );
 
       // We should not have individual files registered
-      assertFalse( conf.get( "mapred.cache.files" ).contains( "pentaho-big-data-plugin/jar1.jar" ) );
-      assertFalse( conf.get( "mapred.cache.files" ).contains( "pentaho-big-data-plugin/jar2.jar" ) );
-      assertFalse( conf.get( "mapred.cache.files" ).contains( "pentaho-big-data-plugin/folder/file.txt" ) );
+      Assert.assertFalse( conf.get( "mapred.cache.files" ).contains( "pentaho-big-data-plugin/jar1.jar" ) );
+      Assert.assertFalse( conf.get( "mapred.cache.files" ).contains( "pentaho-big-data-plugin/jar2.jar" ) );
+      Assert.assertFalse( conf.get( "mapred.cache.files" ).contains( "pentaho-big-data-plugin/folder/file.txt" ) );
 
     } finally {
       bigDataPluginDir.delete( new AllFileSelector() );
@@ -679,10 +678,10 @@ public class DistributedCacheUtilImplTest {
     String originalValue = System.getProperty( Const.PLUGIN_BASE_FOLDERS_PROP );
     System.setProperty( Const.PLUGIN_BASE_FOLDERS_PROP, KettleVFS.getFileObject( "." ).getURL().toURI().getPath() );
 
-    assertNotNull( "Should have found plugin dir: bin/", util.findPluginFolder( "bin" ) );
-    assertNotNull( "Should be able to find nested plugin dir: bin/test/", util.findPluginFolder( "bin/test" ) );
+    Assert.assertNotNull( "Should have found plugin dir: bin/", util.findPluginFolder( "bin" ) );
+    Assert.assertNotNull( "Should be able to find nested plugin dir: bin/test/", util.findPluginFolder( "bin/test" ) );
 
-    assertNull( "Should not have found plugin dir: org/", util.findPluginFolder( "org" ) );
+    Assert.assertNull( "Should not have found plugin dir: org/", util.findPluginFolder( "org" ) );
     System.setProperty( Const.PLUGIN_BASE_FOLDERS_PROP, originalValue );
   }
 
@@ -694,7 +693,7 @@ public class DistributedCacheUtilImplTest {
     Configuration conf = new Configuration();
     util.addFileToClassPath( p1, conf );
     util.addFileToClassPath( p2, conf );
-    assertEquals( "/testing1:/testing2", conf.get( "mapred.job.classpath.files" ) );
+    Assert.assertEquals( "/testing1:/testing2", conf.get( "mapred.job.classpath.files" ) );
   }
 
   @Test
@@ -708,7 +707,7 @@ public class DistributedCacheUtilImplTest {
 
     util.addFileToClassPath( p1, conf );
     util.addFileToClassPath( p2, conf );
-    assertEquals( "/testing1J/testing2", conf.get( "mapred.job.classpath.files" ) );
+    Assert.assertEquals( "/testing1J/testing2", conf.get( "mapred.job.classpath.files" ) );
     System.setProperty( "hadoop.cluster.path.separator", originalValue );
   }
 }

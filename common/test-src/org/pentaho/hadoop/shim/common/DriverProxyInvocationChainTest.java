@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2017 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -28,8 +28,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
 
+import org.mockito.Mockito;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
@@ -100,7 +100,7 @@ public class DriverProxyInvocationChainTest {
   public void testHiveConnectionIsReadOnly() throws SQLException {
     assertTrue( DriverProxyInvocationChain.isInitialized() );
     // Create Hive driver
-    Driver hiveDriver = mock( HiveDriver.class );
+    Driver hiveDriver = Mockito.mock( HiveDriver.class );
 
     // Create proxy to driver
     Driver proxiedDriver = DriverProxyInvocationChain.getProxy( Driver.class, hiveDriver );
@@ -108,13 +108,13 @@ public class DriverProxyInvocationChainTest {
     String URL = "jdbc:hive://localhost:8020/default";
 
     // Get mock of original connection, inject the usual SQLException (Method not supported)
-    Connection connectionMock = mock( Connection.class );
-    doReturn( mock( Statement.class ) ).when( connectionMock ).createStatement();
+    Connection connectionMock = Mockito.mock( Connection.class );
+    Mockito.doReturn( Mockito.mock( Statement.class ) ).when( connectionMock ).createStatement();
 
-    doReturn( connectionMock ).when( hiveDriver ).connect( URL, null );
+    Mockito.doReturn( connectionMock ).when( hiveDriver ).connect( URL, null );
     Connection hiveConnection = hiveDriver.connect( URL, null );
     assertNotNull( "The real Hive connection should be valid!", hiveConnection );
-    doThrow( new SQLException( "Method not supported" ) ).when( hiveConnection ).isReadOnly();
+    Mockito.doThrow( new SQLException( "Method not supported" ) ).when( hiveConnection ).isReadOnly();
 
     // Get connection via proxy
     Connection proxiedConnection = proxiedDriver.connect( URL, null );
@@ -137,16 +137,16 @@ public class DriverProxyInvocationChainTest {
 
   @Test
   public void testDatabaseSelected() throws SQLException {
-    Driver driverMock = mock( HiveDriver.class );
+    Driver driverMock = Mockito.mock( HiveDriver.class );
     Driver driverProxy = DriverProxyInvocationChain.getProxy( Driver.class, driverMock );
 
-    Connection connectionMock = mock( Connection.class );
-    doReturn( connectionMock ).when( driverMock ).connect( anyString(), (Properties) isNull() );
+    Connection connectionMock = Mockito.mock( Connection.class );
+    Mockito.doReturn( connectionMock ).when( driverMock ).connect( anyString(), (Properties) Mockito.isNull() );
 
-    Statement statementMock = mock( Statement.class );
-    doReturn( statementMock ).when( connectionMock ).createStatement();
+    Statement statementMock = Mockito.mock( Statement.class );
+    Mockito.doReturn( statementMock ).when( connectionMock ).createStatement();
 
     driverProxy.connect( "jdbc:hive://host:port/dbName", null );
-    verify( statementMock ).execute( "use dbName" );
+    Mockito.verify( statementMock ).execute( "use dbName" );
   }
 }
