@@ -11,17 +11,6 @@
   <artifactId>pentaho-hadoop-shims-list</artifactId>
   <version>8.0-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <modules>
-    <module>hdp25</module>
-    <module>hdp26</module>
-    <module>cdh510</module>
-    <module>cdh511</module>
-    <module>mapr510</module>
-    <module>mapr520</module>
-    <module>emr52</module>
-    <module>emr531</module>
-    <module>hdi35</module>
-  </modules>
   <properties>
     <oss.license.directory>${project.build.directory}/oss_license</oss.license.directory>
     <xerces.version>2.8.1</xerces.version>
@@ -330,4 +319,116 @@
       </plugins>
     </pluginManagement>
   </build>
+  
+  <profiles>
+  
+    <profile>
+      <id>hdp25</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+		    <module>hdp25</module>
+      </modules>
+    </profile>
+    
+    <profile>
+      <id>hdp26</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>hdp26</module>
+      </modules>
+    </profile>
+    
+    <profile>
+      <id>cdh510</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>cdh510</module>
+      </modules>
+    </profile>
+    
+    <profile>
+      <id>cdh511</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>cdh511</module>
+      </modules>
+    </profile>
+    
+    <profile>
+      <id>mapr510</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>mapr510</module>
+      </modules>
+    </profile>
+    
+    <profile>
+      <id>mapr520</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>mapr520</module>
+      </modules>
+    </profile>
+    
+    <profile>
+      <id>emr52</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>emr52</module>
+      </modules>
+    </profile>
+    
+    <profile>
+      <id>emr531</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>emr531</module>
+      </modules>
+    </profile>
+    
+    <profile>
+      <id>hdi35</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>hdi35</module>
+      </modules>
+    </profile>
+    
+  </profiles>
 </project>
