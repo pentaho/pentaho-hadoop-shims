@@ -16,20 +16,7 @@
     <com.yammer.metrics.version>2.2.0</com.yammer.metrics.version>
     <commons-lang.version>2.6</commons-lang.version>
   </properties>
-  <modules>
-    <module>hdp24</module>
-    <module>hdp25</module>
-    <module>hdp26</module>
-    <module>cdh59</module>
-    <module>cdh510</module>
-    <module>cdh511</module>
-    <module>mapr510</module>
-    <module>mapr520</module>
-    <module>emr46</module>
-    <module>emr52</module>
-    <module>emr531</module>
-    <module>hdi35</module>
-  </modules>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -332,4 +319,153 @@
       </plugins>
     </pluginManagement>
   </build>
+
+  <profiles>
+  
+    <profile>
+      <id>hdp24</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>hdp24</module>
+      </modules>
+    </profile>
+  
+    <profile>
+      <id>hdp25</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>hdp25</module>
+      </modules>
+    </profile>
+
+    <profile>
+      <id>hdp26</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>hdp26</module>
+      </modules>
+    </profile>
+    
+    <profile>
+      <id>cdh59</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>cdh59</module>
+      </modules>
+    </profile>
+    
+    <profile>
+      <id>cdh510</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>cdh510</module>
+      </modules>
+    </profile>
+    
+    <profile>
+      <id>cdh511</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>cdh511</module>
+      </modules>
+    </profile>
+    
+    <profile>
+      <id>mapr510</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>mapr510</module>
+      </modules>
+    </profile>
+    
+    <profile>
+      <id>mapr520</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>mapr520</module>
+      </modules>
+    </profile>
+    
+    <profile>
+      <id>emr46</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>emr46</module>
+      </modules>
+    </profile>
+    
+    <profile>
+      <id>emr52</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>emr52</module>
+      </modules>
+    </profile>
+    
+    <profile>
+      <id>emr531</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>emr531</module>
+      </modules>
+    </profile>
+    
+    <profile>
+      <id>hdi35</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>hdi35</module>
+      </modules>
+    </profile>
+    
+  </profiles>
+  
 </project>
