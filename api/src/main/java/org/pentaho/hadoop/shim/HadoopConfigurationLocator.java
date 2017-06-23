@@ -44,6 +44,7 @@ import org.apache.commons.vfs2.FileType;
 import org.apache.commons.vfs2.impl.DefaultFileSystemManager;
 import org.apache.log4j.Logger;
 import org.pentaho.di.core.Const;
+import org.pentaho.di.core.util.StringUtil;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.hadoop.shim.api.ActiveHadoopConfigurationLocator;
 import org.pentaho.hadoop.shim.api.Required;
@@ -437,7 +438,7 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
       String ignoredClassesProperty = configurationProperties
         .getProperty( CONFIG_PROPERTY_IGNORE_CLASSES );
       String[] ignoredClasses = null;
-      if ( ignoredClassesProperty != null ) {
+      if ( !StringUtil.isEmpty( ignoredClassesProperty ) ) {
         ignoredClasses = ignoredClassesProperty.split( "," );
       }
 
