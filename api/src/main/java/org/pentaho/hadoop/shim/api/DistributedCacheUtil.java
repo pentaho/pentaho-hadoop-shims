@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2017 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -22,13 +22,12 @@
 
 package org.pentaho.hadoop.shim.api;
 
+import java.io.IOException;
+import java.util.regex.Pattern;
+
 import org.apache.commons.vfs2.FileObject;
 import org.pentaho.hadoop.shim.api.fs.FileSystem;
 import org.pentaho.hadoop.shim.api.fs.Path;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * A collection of methods for working with Hadoop's Distributed Cache mechanism.
