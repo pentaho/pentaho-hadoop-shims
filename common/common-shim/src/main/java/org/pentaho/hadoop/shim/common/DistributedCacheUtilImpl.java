@@ -102,6 +102,15 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.Dis
   private static final FsPermission CACHED_FILE_PERMISSION = new FsPermission( (short) 0755 );
 
   /**
+   * Public permission for cached files  due to org.apache.hadoop.mapreduce.filecache
+   * .ClientDistributedCacheManager#isPublic(org.apache.hadoop.conf.Configuration,
+   * java.net.URI, java.util.Map)
+   * <p/>
+   * Not using FsPermission.createImmutable due to EOFExceptions when using it with Hadoop 0.20.2
+   */
+  private static final FsPermission PUBLIC_CACHED_FILE_PERMISSION = new FsPermission( (short) 0777 );
+
+  /**
    * Name of the Big Data Plugin folder
    */
   public static final String PENTAHO_BIG_DATA_PLUGIN_FOLDER_NAME = "pentaho-big-data-plugin";
@@ -149,7 +158,8 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.Dis
    */
   public boolean isKettleEnvironmentInstalledAt( FileSystem fs, Path root ) throws IOException {
     // These directories must exist
-    Path[] directories = new Path[] { new Path( root, PATH_LIB ), new Path( root, PATH_PLUGINS ), new Path( new Path( root, PATH_PLUGINS ), PENTAHO_BIG_DATA_PLUGIN_FOLDER_NAME ) };
+    Path[] directories = new Path[] { new Path( root, PATH_LIB ), new Path( root, PATH_PLUGINS ),
+      new Path( new Path( root, PATH_PLUGINS ), PENTAHO_BIG_DATA_PLUGIN_FOLDER_NAME ) };
     // This file must not exist
     Path lock = getLockFileAt( root );
     // These directories must exist
@@ -183,7 +193,7 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.Dis
     //We should close output stream, otherwise the file will be locked on Windows
     out.close();
 
-    stageForCache( extracted, fs, destination, true );
+    stageForCache( extracted, fs, destination, true, false );
 
     stageBigDataPlugin( fs, destination, bigDataPlugin );
 
@@ -215,7 +225,7 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.Dis
     for ( FileObject f : pluginFolder.findFiles( new FileDepthSelector( 1, 1 ) ) ) {
       if ( !"hadoop-configurations".equals( f.getName().getBaseName() )
         && !"pentaho-mapreduce-libraries.zip".equals( f.getName().getBaseName() ) ) {
-        stageForCache( f, fs, new Path( bigDataPluginDir, f.getName().getBaseName() ), true );
+        stageForCache( f, fs, new Path( bigDataPluginDir, f.getName().getBaseName() ), true, false );
       }
     }
 
@@ -238,13 +248,13 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.Dis
     } ) ) {
       // Create relative path to write to
       String relPath = configuration.getLocation().getName().getRelativeName( f.getName() );
-      stageForCache( f, fs, new Path( hadoopConfigDir, relPath ), true );
+      stageForCache( f, fs, new Path( hadoopConfigDir, relPath ), true, false );
     }
 
     // Stage all pmr libraries for the Hadoop configuration into the root library path for the Kettle environment
     for ( FileObject f : configuration.getLocation().resolveFile( PATH_LIB ).resolveFile( PATH_PMR )
       .findFiles( new FileTypeSelector( FileType.FILE ) ) ) {
-      stageForCache( f, fs, new Path( libDir, f.getName().getBaseName() ), true );
+      stageForCache( f, fs, new Path( libDir, f.getName().getBaseName() ), true, false );
     }
   }
 
@@ -277,7 +287,7 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.Dis
       FileObject localFile = (FileObject) localFileTuple[ 0 ];
       String relativePath = (String) localFileTuple[ 1 ];
       Path pluginDir = new Path( pluginsDir, relativePath );
-      stageForCache( localFile, fs, pluginDir, true );
+      stageForCache( localFile, fs, pluginDir, true, false );
     }
   }
 
@@ -383,6 +393,13 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.Dis
     return new Path( path.toUri().getPath() );
   }
 
+
+  @Deprecated
+  public void stageForCache( FileObject source, FileSystem fs, Path dest, boolean overwrite )
+    throws IOException, KettleFileException {
+    stageForCache( source, fs, dest, overwrite, false );
+  }
+
   /**
    * Stages the source file or folder to a Hadoop file system and sets their permission and replication value
    * appropriately to be used with the Distributed Cache. WARNING: This will delete the contents of dest before staging
@@ -398,7 +415,7 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.Dis
    * @throws IOException         Destination exists is not a directory
    * @throws KettleFileException Source does not exist or destination exists and overwrite is false.
    */
-  public void stageForCache( FileObject source, FileSystem fs, Path dest, boolean overwrite )
+  public void stageForCache( FileObject source, FileSystem fs, Path dest, boolean overwrite, boolean isPublic )
     throws IOException, KettleFileException {
     if ( !source.exists() ) {
       throw new KettleFileException(
@@ -426,7 +443,11 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.Dis
       fs.copyFromLocalFile( local, dest );
     }
 
-    fs.setPermission( dest, CACHED_FILE_PERMISSION );
+    if ( isPublic ) {
+      fs.setPermission( dest, PUBLIC_CACHED_FILE_PERMISSION );
+    } else {
+      fs.setPermission( dest, CACHED_FILE_PERMISSION );
+    }
     fs.setReplication( dest, replication );
   }
 
@@ -635,7 +656,7 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.Dis
             } );
             if ( files != null && files.length > 0 ) {
               return new Object[] { files[ 0 ],
-                  folder.getName().getRelativeName( files[ 0 ].getName() ) }; // Return the first match
+                folder.getName().getRelativeName( files[ 0 ].getName() ) }; // Return the first match
             }
           }
         } catch ( FileSystemException ex ) {
@@ -683,5 +704,34 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.Dis
     installKettleEnvironment( pmrLibArchive, ShimUtils.asFileSystem( fs ), ShimUtils.asPath( destination ),
       bigDataPluginFolder, additionalPlugins );
 
+  }
+
+  @Override public void stageForCache( FileObject source, org.pentaho.hadoop.shim.api.fs.FileSystem fs,
+                                       org.pentaho.hadoop.shim.api.fs.Path dest, boolean overwrite, boolean isPublic )
+    throws IOException {
+    try {
+      stageForCache( source, ShimUtils.asFileSystem( fs ), ShimUtils.asPath( dest ), overwrite, isPublic );
+    } catch ( KettleFileException e ) {
+      throw new IOException( e );
+    }
+  }
+
+  @Override
+  public void addCachedFilesToClasspath( org.pentaho.hadoop.shim.api.Configuration conf,
+                                         org.pentaho.hadoop.shim.api.fs.FileSystem fs,
+                                         org.pentaho.hadoop.shim.api.fs.Path source, Pattern fileNamePattern )
+    throws IOException {
+    List<Path> libraryJars = findFiles( ShimUtils.asFileSystem( fs ), ShimUtils.asPath( source ), fileNamePattern );
+    addCachedFilesToClasspath( libraryJars, ShimUtils.asConfiguration( conf ) );
+
+  }
+
+  @Override public void addCachedFiles( org.pentaho.hadoop.shim.api.Configuration conf,
+                                        org.pentaho.hadoop.shim.api.fs.FileSystem fs,
+                                        org.pentaho.hadoop.shim.api.fs.Path source, Pattern fileNamePattern )
+    throws IOException {
+
+    List<Path> nonLibFiles = findFiles( ShimUtils.asFileSystem( fs ), ShimUtils.asPath( source ), fileNamePattern );
+    addCachedFiles( nonLibFiles, ShimUtils.asConfiguration( conf ) );
   }
 }

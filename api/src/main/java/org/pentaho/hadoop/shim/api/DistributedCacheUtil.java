@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2017 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -22,11 +22,12 @@
 
 package org.pentaho.hadoop.shim.api;
 
+import java.io.IOException;
+import java.util.regex.Pattern;
+
 import org.apache.commons.vfs2.FileObject;
 import org.pentaho.hadoop.shim.api.fs.FileSystem;
 import org.pentaho.hadoop.shim.api.fs.Path;
-
-import java.io.IOException;
 
 /**
  * A collection of methods for working with Hadoop's Distributed Cache mechanism.
@@ -69,5 +70,41 @@ public interface DistributedCacheUtil {
    */
   void installKettleEnvironment( FileObject pmrLibArchive, FileSystem fs, Path destination,
                                  FileObject bigDataPluginFolder, String additionalPlugins ) throws Exception;
+
+  /**
+   * Stages the source file or folder to a Hadoop file system and sets their permission and replication value
+   * appropriately to be used with the Distributed Cache. WARNING: This will delete the contents of dest before staging
+   * the archive.
+   *
+   * @param source    File or folder to copy to the file system. If it is a folder all contents will be copied into
+   *                  dest.
+   * @param fs        Hadoop file system to store the contents of the archive in
+   * @param dest      Destination to copy source into. If source is a file, the new file name will be exactly dest. If
+   *                  source is a folder its contents will be copied into dest. For more info see {@link
+   *                  org.apache.hadoop.fs.FileSystem#copyFromLocalFile(org.apache.hadoop.fs.Path,
+   *                  org.apache.hadoop.fs.Path)}.
+   * @param overwrite Should an existing file or folder be overwritten? If not an exception will be thrown.
+   * @throws IOException Destination exists is not a directory, Source does not exist or destination exists and
+   *                     overwrite is false.
+   */
+  void stageForCache( FileObject source, FileSystem fs, Path dest, boolean overwrite, boolean isPublic ) throws IOException;
+
+  /**
+   * Register a list of files from a Hadoop file system to be available and placed on the classpath when the
+   * configuration is used to submit Hadoop jobs
+   *
+   * @param conf  Configuration to modify
+   * @throws IOException
+   */
+  void addCachedFilesToClasspath( Configuration conf, FileSystem fs, Path source, Pattern fileNamePattern ) throws IOException;
+
+  /**
+   * Register a list of paths from a Hadoop file system to be available when the configuration is used to submit Hadoop
+   * jobs
+   *
+   * @param conf  Configuration to modify
+   * @throws IOException
+   */
+  void addCachedFiles( Configuration conf, FileSystem fs, Path source, Pattern fileNamePattern ) throws IOException;
 
 }
