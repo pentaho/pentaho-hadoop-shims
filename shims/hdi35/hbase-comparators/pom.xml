@@ -1,18 +1,14 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-hdi35-reactor</artifactId>
-    <version>7.1-SNAPSHOT</version>
+    <version>71.2017.06.01-35</version>
   </parent>
-
   <artifactId>pentaho-hadoop-shims-hdi35-hbase-comparators</artifactId>
-  <packaging>jar</packaging>
-  <version>7.1-SNAPSHOT</version>
-
+  <version>71.2017.06.01-35</version>
   <dependencies>
     <dependency>
       <groupId>org.pentaho</groupId>
@@ -20,8 +16,8 @@
       <version>${project.version}</version>
       <exclusions>
         <exclusion>
-          <groupId>org.mockito</groupId>
           <artifactId>mockito-all</artifactId>
+          <groupId>org.mockito</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -31,19 +27,17 @@
       <version>${org.mockito.version}</version>
     </dependency>
   </dependencies>
-
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
           <execution>
             <id>unpack-common-sources</id>
+            <phase>process-sources</phase>
             <goals>
               <goal>unpack</goal>
             </goals>
-            <phase>process-sources</phase>
             <configuration>
               <artifactItems>
                 <artifactItem>
@@ -80,5 +74,4 @@
       </plugin>
     </plugins>
   </build>
-
 </project>
