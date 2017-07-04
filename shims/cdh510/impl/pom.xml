@@ -1,47 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-cdh510-reactor</artifactId>
-    <version>7.1-SNAPSHOT</version>
+    <version>71.2017.07.00-39</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-cdh510</artifactId>
-  <packaging>jar</packaging>
-  <version>7.1-SNAPSHOT</version>
+  <version>71.2017.07.00-39</version>
   <properties>
-    <log4j.version>1.2.17</log4j.version>
-    <org.apache.hadoop.version>2.6.0-cdh5.10.0</org.apache.hadoop.version>
-    <org.codehaus.jackson.version>1.9.2</org.codehaus.jackson.version>    
-    <jline.version>2.12</jline.version>
-    <zookeeper.version>3.4.5-cdh5.10.0</zookeeper.version>
-    <org.apache.httpcomponents.version>4.2.5</org.apache.httpcomponents.version>
-    <automaton.version>1.11-8</automaton.version>
-    <xercesImpl.version>2.9.1</xercesImpl.version>
-    <commons-httpclient.version>3.0.1</commons-httpclient.version>
     <sqoop.version>1.4.6-cdh5.10.0</sqoop.version>
-    <commons-collections.version>3.2.2</commons-collections.version>
-    <org.apache.hbase.version>1.2.0-cdh5.10.0</org.apache.hbase.version>
-    <org.apache.hive.version>1.1.0-cdh5.10.0</org.apache.hive.version>
-    <org.apache.curator.version>2.6.0</org.apache.curator.version>
-    <hadoop2-windows-patch.version>08072014</hadoop2-windows-patch.version>
-    <com.fasterxml.jackson.core.version>2.3.1</com.fasterxml.jackson.core.version>
-    <jamon-runtime.version>2.3.1</jamon-runtime.version>
-    <htrace-core.version>3.2.0-incubating</htrace-core.version>
-    <jackson-annotations.version>2.3.0</jackson-annotations.version>
-    <cglib.version>2.2.1-v20090111</cglib.version>
-    <commons-logging.version>1.1.3</commons-logging.version>
-    <mail.version>1.4.1</mail.version>
-    <xz.version>1.0</xz.version>
+    <org.apache.hadoop.version>2.6.0-cdh5.10.0</org.apache.hadoop.version>
     <xstream.version>1.4.4</xstream.version>
-    <commons-pool.version>1.5.4</commons-pool.version>
-    <org.apache.oozie.version>4.1.0-cdh5.10.0</org.apache.oozie.version>
-    <commons-codec.version>1.4</commons-codec.version>
-    <asm.version>3.2</asm.version>
-    <commons-io.version>2.4</commons-io.version>
+    <zookeeper.version>3.4.5-cdh5.10.0</zookeeper.version>
     <pig.version>0.12.0-cdh5.10.0</pig.version>
+    <jackson-annotations.version>2.3.0</jackson-annotations.version>
+    <commons-io.version>2.4</commons-io.version>
+    <automaton.version>1.11-8</automaton.version>
+    <cglib.version>2.2.1-v20090111</cglib.version>
+    <htrace-core.version>3.2.0-incubating</htrace-core.version>
+    <asm.version>3.2</asm.version>
+    <org.apache.curator.version>2.6.0</org.apache.curator.version>
+    <commons-httpclient.version>3.0.1</commons-httpclient.version>
+    <jamon-runtime.version>2.3.1</jamon-runtime.version>
+    <commons-pool.version>1.5.4</commons-pool.version>
+    <xz.version>1.0</xz.version>
+    <commons-collections.version>3.2.2</commons-collections.version>
+    <xercesImpl.version>2.9.1</xercesImpl.version>
+    <mail.version>1.4.1</mail.version>
+    <org.codehaus.jackson.version>1.9.2</org.codehaus.jackson.version>
+    <hadoop2-windows-patch.version>08072014</hadoop2-windows-patch.version>
+    <org.apache.hive.version>1.1.0-cdh5.10.0</org.apache.hive.version>
     <stax-api.version>1.0.1</stax-api.version>
+    <org.apache.oozie.version>4.1.0-cdh5.10.0</org.apache.oozie.version>
+    <org.apache.hbase.version>1.2.0-cdh5.10.0</org.apache.hbase.version>
+    <commons-logging.version>1.1.3</commons-logging.version>
+    <jline.version>2.12</jline.version>
+    <org.apache.httpcomponents.version>4.2.5</org.apache.httpcomponents.version>
+    <commons-codec.version>1.4</commons-codec.version>
+    <log4j.version>1.2.17</log4j.version>
+    <com.fasterxml.jackson.core.version>2.3.1</com.fasterxml.jackson.core.version>
   </properties>
   <dependencies>
     <dependency>
@@ -63,8 +62,8 @@
       <scope>provided</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -85,28 +84,28 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>jline</artifactId>
+          <groupId>*</groupId>
         </exclusion>
         <exclusion>
-          <groupId>com.google.code.findbugs</groupId>
           <artifactId>jsr305</artifactId>
+          <groupId>com.google.code.findbugs</groupId>
         </exclusion>
         <exclusion>
-          <groupId>com.google.code.gson</groupId>
           <artifactId>gson</artifactId>
+          <groupId>com.google.code.gson</groupId>
         </exclusion>
         <exclusion>
-          <groupId>org.apache.httpcomponents</groupId>
           <artifactId>httpclient</artifactId>
+          <groupId>org.apache.httpcomponents</groupId>
         </exclusion>
         <exclusion>
-          <groupId>com.fasterxml.jackson.core</groupId>
           <artifactId>jackson-databind</artifactId>
+          <groupId>com.fasterxml.jackson.core</groupId>
         </exclusion>
         <exclusion>
-          <groupId>commons-beanutils</groupId>
           <artifactId>commons-beanutils-core</artifactId>
+          <groupId>commons-beanutils</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -189,8 +188,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -201,8 +200,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -213,8 +212,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -225,8 +224,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -237,8 +236,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -249,8 +248,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -261,8 +260,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -273,8 +272,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -285,8 +284,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -301,8 +300,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -317,8 +316,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -335,20 +334,20 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>logredactor</artifactId>
+          <groupId>*</groupId>
         </exclusion>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>datanucleus-core</artifactId>
+          <groupId>*</groupId>
         </exclusion>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>hbase-common</artifactId>
+          <groupId>*</groupId>
         </exclusion>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>ST4</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -377,8 +376,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -389,8 +388,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -401,8 +400,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -413,8 +412,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -460,8 +459,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -472,8 +471,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -484,8 +483,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -496,8 +495,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -508,8 +507,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -520,8 +519,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -532,8 +531,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -544,8 +543,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -556,8 +555,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -568,8 +567,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -580,8 +579,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -592,8 +591,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -604,8 +603,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -616,8 +615,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -628,8 +627,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -640,8 +639,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -652,8 +651,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -664,8 +663,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -676,8 +675,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -688,8 +687,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -700,8 +699,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -712,8 +711,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -724,8 +723,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -736,8 +735,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -755,7 +754,6 @@
         <artifactId>build-helper-maven-plugin</artifactId>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
           <execution>

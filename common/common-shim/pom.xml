@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-common</artifactId>
-    <version>7.1-SNAPSHOT</version>
+    <version>71.2017.07.00-39</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-common-shim</artifactId>
-  <packaging>jar</packaging>
+  <version>71.2017.07.00-39</version>
   <dependencies>
     <dependency>
       <groupId>org.pentaho</groupId>
@@ -40,7 +40,6 @@
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <groupId>org.apache.maven.plugins</groupId>
         <executions>
           <execution>
             <id>default-testCompile</id>
