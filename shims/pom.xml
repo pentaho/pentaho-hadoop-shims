@@ -333,7 +333,7 @@
         <module>hdp24</module>
       </modules>
     </profile>
-  
+
     <profile>
       <id>hdp25</id>
       <activation>
@@ -369,7 +369,7 @@
         <module>cdh59</module>
       </modules>
     </profile>
-    
+
     <profile>
       <id>cdh510</id>
       <activation>
@@ -417,7 +417,7 @@
         <module>mapr520</module>
       </modules>
     </profile>
-    
+
     <profile>
       <id>emr46</id>
       <activation>
@@ -429,7 +429,7 @@
         <module>emr46</module>
       </modules>
     </profile>
-    
+
     <profile>
       <id>emr52</id>
       <activation>
@@ -453,7 +453,19 @@
         <module>emr531</module>
       </modules>
     </profile>
-    
+
+    <profile>
+      <id>emr56</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>emr56</module>
+      </modules>
+    </profile>
+
     <profile>
       <id>hdi35</id>
       <activation>
@@ -467,5 +479,5 @@
     </profile>
     
   </profiles>
-  
+
 </project>
