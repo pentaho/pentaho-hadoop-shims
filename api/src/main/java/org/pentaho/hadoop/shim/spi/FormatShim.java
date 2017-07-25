@@ -22,25 +22,15 @@
 
 package org.pentaho.hadoop.shim.spi;
 
-
-import org.pentaho.hadoop.shim.api.format.FormatSchema;
 import org.pentaho.hadoop.shim.api.format.InputFormat;
 import org.pentaho.hadoop.shim.api.format.OutputFormat;
-import org.pentaho.hadoop.shim.api.fs.Path;
 
 public interface FormatShim extends PentahoHadoopShim {
+  enum FormatType {
+    PARQUET, AVRO, ORC
+  };
 
-  InputFormat inputFormat();
+  InputFormat createInputFormat( FormatType type );
 
-  InputFormat inputFormat( FormatSchema formatSchema );
-
-  OutputFormat outputFormat();
-
-  OutputFormat outputFormat( FormatSchema formatSchema );
-
-  //TODO create configurable schema by calling this method?
-  //FormatSchema formatSchema();
-
-  FormatSchema formatSchema( Path path );
-
+  OutputFormat createOutputFormat( FormatType type );
 }

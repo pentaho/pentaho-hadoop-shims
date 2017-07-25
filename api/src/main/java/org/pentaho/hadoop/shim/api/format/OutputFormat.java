@@ -1,11 +1,11 @@
 package org.pentaho.hadoop.shim.api.format;
 
 
-import org.pentaho.hadoop.shim.api.fs.FileSystem;
-import org.pentaho.hadoop.shim.api.mapred.RecordWriter;
+import org.pentaho.hadoop.shim.api.Configuration;
 
-public interface OutputFormat<K, V> {
+public interface OutputFormat {
+  void setSchema( String schema );
 
-  RecordWriter<K, V> getRecordWriter( FileSystem fileSystem );
+  RecordWriter getRecordWriter( Configuration jobConfiguration );
 
 }
