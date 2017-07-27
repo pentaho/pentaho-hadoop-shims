@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Pentaho Big Data
  * <p>
- * Copyright (C) 2002-2016 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2017 by Pentaho : http://www.pentaho.com
  * <p>
  * ******************************************************************************
  * <p>
@@ -17,6 +17,7 @@
 
 package org.pentaho.hadoop.shim.common.authorization;
 
+import com.google.common.annotations.VisibleForTesting;
 import org.pentaho.di.core.auth.AuthenticationConsumerPluginType;
 import org.pentaho.di.core.auth.AuthenticationPersistenceManager;
 import org.pentaho.di.core.auth.NoAuthenticationAuthenticationProvider;
@@ -47,11 +48,7 @@ public class AuthenticatingHadoopShim extends DelegatingHadoopShim {
       for ( String className : activators.split( "," ) ) {
         className = className.trim();
         if ( className.length() > 0 ) {
-          try {
-            Class.forName( className ).newInstance();
-          } catch ( Exception e ) {
-            LogChannel.GENERAL.logError( e.getMessage(), e );
-          }
+          createActivatorInstance( className );
         }
       }
     }
@@ -86,5 +83,14 @@ public class AuthenticatingHadoopShim extends DelegatingHadoopShim {
       }
     }
     super.onLoad( config, fsm );
+  }
+
+  @VisibleForTesting
+  void createActivatorInstance( String className ) {
+    try {
+      Class.forName( className ).newInstance();
+    } catch ( Exception e ) {
+      LogChannel.GENERAL.logError( e.getMessage(), e );
+    }
   }
 }
