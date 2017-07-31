@@ -22,6 +22,7 @@
 
 package org.pentaho.hadoop.shim.spi;
 
+import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.api.format.InputFormat;
 import org.pentaho.hadoop.shim.api.format.OutputFormat;
 
@@ -30,7 +31,7 @@ public interface FormatShim extends PentahoHadoopShim {
     PARQUET, AVRO, ORC
   };
 
-  InputFormat createInputFormat( FormatType type );
+  InputFormat createInputFormat( FormatType type, Configuration configuration );
 
-  OutputFormat createOutputFormat( FormatType type );
+  OutputFormat createOutputFormat( FormatType type, Configuration configuration );
 }
