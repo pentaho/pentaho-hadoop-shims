@@ -17,12 +17,12 @@ import java.io.IOException;
 /**
  * Created by Vasilina_Terehova on 7/27/2017.
  */
-public class CommonFormatShimTest {
+public class CommonFormatShimTestIT {
 
     @Test
     public void testParquetReadSuccessLocalFileSystem() throws IOException, InterruptedException {
         ConfigurationProxy jobConfiguration = new ConfigurationProxy();
-        jobConfiguration.set(FileInputFormat.INPUT_DIR, CommonFormatShimTest.class.getClassLoader().getResource("sample.pqt").getFile());
+        jobConfiguration.set(FileInputFormat.INPUT_DIR, CommonFormatShimTestIT.class.getClassLoader().getResource("sample.pqt").getFile());
         SchemaDescription schemaDescription = makeScheme();
         String schemaString = "message PersonRecord {\n"
                 + "required binary name;\n"
@@ -72,7 +72,7 @@ public class CommonFormatShimTest {
             SchemaDescription schemaDescription = makeScheme();
 
             ConfigurationProxy jobConfiguration = new ConfigurationProxy();
-            jobConfiguration.set(FileInputFormat.INPUT_DIR, CommonFormatShimTest.class.getClassLoader().getResource(
+            jobConfiguration.set(FileInputFormat.INPUT_DIR, CommonFormatShimTestIT.class.getClassLoader().getResource(
                     "sample.pqt").getFile());
             PentahoParquetInputFormat pentahoParquetInputFormat =
                     new PentahoParquetInputFormat(jobConfiguration, schemaDescription, new FileSystemProxy(FileSystem.get(
