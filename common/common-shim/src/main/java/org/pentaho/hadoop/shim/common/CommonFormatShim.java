@@ -1,10 +1,14 @@
 package org.pentaho.hadoop.shim.common;
 
 
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.pentaho.hadoop.shim.ShimVersion;
 import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.api.format.InputFormat;
-import org.pentaho.hadoop.shim.api.format.OutputFormat;
+import org.pentaho.hadoop.shim.api.format.PentahoOutputFormat;
+import org.pentaho.hadoop.shim.common.format.PentahoParquetInputFormat;
+import org.pentaho.hadoop.shim.common.fs.FileSystemProxy;
 import org.pentaho.hadoop.shim.spi.FormatShim;
 
 public class CommonFormatShim implements FormatShim {
@@ -22,7 +26,10 @@ public class CommonFormatShim implements FormatShim {
     throw new IllegalArgumentException( "Not supported scheme format" );
   }
 
-  @Override public OutputFormat createOutputFormat( FormatType type, Configuration configuration ) {
+  @Override public PentahoOutputFormat createOutputFormat(FormatType type, Configuration configuration ) {
+    //configuration.set(FileInputFormat.INPUT_DIR, );
+//    return new PentahoParquetInputFormat(configuration, schemaDescription,
+//            new FileSystemProxy(FileSystem.get(configuration)));
     return null;
   }
 

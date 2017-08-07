@@ -24,7 +24,7 @@ package org.pentaho.hadoop.shim.spi;
 
 import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.api.format.InputFormat;
-import org.pentaho.hadoop.shim.api.format.OutputFormat;
+import org.pentaho.hadoop.shim.api.format.PentahoOutputFormat;
 
 public interface FormatShim extends PentahoHadoopShim {
   enum FormatType {
@@ -33,5 +33,5 @@ public interface FormatShim extends PentahoHadoopShim {
 
   InputFormat createInputFormat( FormatType type, Configuration configuration );
 
-  OutputFormat createOutputFormat( FormatType type, Configuration configuration );
+  PentahoOutputFormat createOutputFormat(FormatType type, Configuration configuration );
 }

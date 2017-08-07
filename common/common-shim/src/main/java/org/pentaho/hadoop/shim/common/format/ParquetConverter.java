@@ -89,7 +89,7 @@ public class ParquetConverter {
         consumer.addBoolean( row.getBoolean( field.pentahoFieldName, Boolean.parseBoolean( field.defaultValue ) ) );
         break;
       case ValueMetaInterface.TYPE_INTEGER:
-        consumer.addLong( row.getInteger( field.pentahoFieldName, Long.parseLong( field.defaultValue ) ) );
+        consumer.addLong( row.getInteger( field.pentahoFieldName, 0l ) );
         break;
       case ValueMetaInterface.TYPE_BIGNUMBER:
         consumer.addDouble( row.getNumber( field.pentahoFieldName, Double.parseDouble( field.defaultValue ) ) );

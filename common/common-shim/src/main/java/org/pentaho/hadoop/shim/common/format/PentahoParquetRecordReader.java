@@ -49,9 +49,7 @@ public class PentahoParquetRecordReader implements RecordReader {
       @Override
       public RowMetaAndData next() {
         try {
-          RowMetaAndData currentValue = nativeParquetRecordReader.getCurrentValue();
-
-          return currentValue;
+          return nativeParquetRecordReader.getCurrentValue();
         } catch ( IOException e ) {
           throw new IllegalArgumentException( "some error while reading parquet file", e );
         } catch ( InterruptedException e ) {
