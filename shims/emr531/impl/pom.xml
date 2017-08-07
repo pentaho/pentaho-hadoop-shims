@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-emr531-reactor</artifactId>
-    <version>7.1-SNAPSHOT</version>
+    <version>71.2017.08.00-51</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-emr531</artifactId>
-  <packaging>jar</packaging>
-  <version>7.1-SNAPSHOT</version>
+  <version>71.2017.08.00-51</version>
   <properties>
-    <log4j.version>1.2.17</log4j.version>
     <commons-io.version>2.4</commons-io.version>
+    <log4j.version>1.2.17</log4j.version>
     <xstream.version>1.4.4</xstream.version>
   </properties>
   <dependencies>
@@ -34,7 +33,6 @@
       <version>${project.version}</version>
       <type>pom</type>
     </dependency>
-    <!--here test dependencies-->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -63,8 +61,8 @@
       <scope>provided</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -75,8 +73,8 @@
       <scope>provided</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -101,8 +99,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -114,7 +112,6 @@
         <artifactId>build-helper-maven-plugin</artifactId>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
           <execution>
