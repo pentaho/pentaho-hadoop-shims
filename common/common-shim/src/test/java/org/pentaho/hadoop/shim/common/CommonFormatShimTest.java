@@ -9,8 +9,8 @@ import org.pentaho.di.core.exception.KettleValueException;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.hadoop.shim.api.format.RecordReader;
+import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 import org.pentaho.hadoop.shim.common.format.PentahoParquetInputFormat;
-import org.pentaho.hadoop.shim.common.format.SchemaDescription;
 import org.pentaho.hadoop.shim.common.fs.FileSystemProxy;
 
 /**

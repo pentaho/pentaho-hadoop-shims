@@ -34,6 +34,7 @@ import org.pentaho.di.core.row.value.ValueMetaInteger;
 import org.pentaho.di.core.row.value.ValueMetaNumber;
 import org.pentaho.di.core.row.value.ValueMetaSerializable;
 import org.pentaho.di.core.row.value.ValueMetaString;
+import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 
 /**
  * Converter for read/write Pentaho row from/into Parquet files.

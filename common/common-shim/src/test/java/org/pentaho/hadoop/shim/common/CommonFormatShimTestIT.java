@@ -12,9 +12,9 @@ import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.core.row.value.ValueMetaString;
 import org.pentaho.hadoop.shim.api.format.PentahoRecordWriter;
 import org.pentaho.hadoop.shim.api.format.RecordReader;
+import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 import org.pentaho.hadoop.shim.common.format.PentahoParquetInputFormat;
 import org.pentaho.hadoop.shim.common.format.PentahoParquetOutputFormat;
-import org.pentaho.hadoop.shim.common.format.SchemaDescription;
 import org.pentaho.hadoop.shim.common.fs.FileSystemProxy;
 import org.pentaho.hdfs.vfs.HadoopFileSystemImpl;
 

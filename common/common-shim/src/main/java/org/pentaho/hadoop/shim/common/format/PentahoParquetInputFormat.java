@@ -15,6 +15,7 @@ import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.api.format.InputFormat;
 import org.pentaho.hadoop.shim.api.format.PentahoInputSplit;
 import org.pentaho.hadoop.shim.api.format.RecordReader;
+import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 import org.pentaho.hadoop.shim.api.fs.FileSystem;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
 

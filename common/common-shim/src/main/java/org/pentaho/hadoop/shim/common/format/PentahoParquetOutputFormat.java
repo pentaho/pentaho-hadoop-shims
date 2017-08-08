@@ -12,6 +12,7 @@ import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.api.format.PentahoOutputFormat;
 import org.pentaho.hadoop.shim.api.format.PentahoRecordWriter;
+import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
 
 import java.io.IOException;
