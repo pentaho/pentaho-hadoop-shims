@@ -86,8 +86,6 @@
         <include>org.apache.ivy:ivy</include>
         <include>org.jamon:jamon-runtime</include>
         <include>org.codehaus.janino:janino</include>
-        <include>tomcat:jasper-compiler</include>
-        <include>tomcat:jasper-runtime</include>
         <include>javax.jdo:jdo-api</include>
         <include>com.sun.jersey:jersey-servlet</include>
         <include>org.eclipse.jetty.aggregate:jetty-all</include>
