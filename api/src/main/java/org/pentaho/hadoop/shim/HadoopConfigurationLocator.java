@@ -49,6 +49,7 @@ import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.hadoop.shim.api.ActiveHadoopConfigurationLocator;
 import org.pentaho.hadoop.shim.api.Required;
 import org.pentaho.hadoop.shim.api.ShimProperties;
+import org.pentaho.hadoop.shim.spi.FormatShim;
 import org.pentaho.hadoop.shim.spi.HadoopConfigurationProvider;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 import org.pentaho.hadoop.shim.spi.PentahoHadoopShim;
@@ -96,6 +97,7 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
     HadoopShim.class,
     HBaseShim.class,
     PigShim.class,
+    FormatShim.class,
     SnappyShim.class,
     SqoopShim.class,
     OozieClientFactory.class
