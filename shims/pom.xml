@@ -393,6 +393,18 @@
         <module>cdh511</module>
       </modules>
     </profile>
+
+    <profile>
+      <id>cdh512</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>cdh512</module>
+      </modules>
+    </profile>
     
     <profile>
       <id>mapr510</id>

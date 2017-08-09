@@ -1,0 +1,32 @@
+<assembly>
+  <id>plugin</id>
+  <baseDirectory>cdh512</baseDirectory>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <fileSets>
+    <fileSet>
+      <directory>${basedir}/src/main/resources</directory>
+      <outputDirectory>/</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>${oss.license.directory}</directory>
+      <outputDirectory>/</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>${project.build.directory}/cdh512</directory>
+      <outputDirectory>/</outputDirectory>
+    </fileSet>
+  </fileSets>
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory>/</outputDirectory>
+      <useTransitiveDependencies>false</useTransitiveDependencies>
+      <useTransitiveFiltering>false</useTransitiveFiltering>
+      <includes>
+        <include>org.pentaho:pentaho-hadoop-shims-cdh512</include>
+        <include>org.pentaho:pentaho-hadoop-shims-cdh512-hbase-comparators</include>
+      </includes>
+    </dependencySet>
+  </dependencySets>
+</assembly>

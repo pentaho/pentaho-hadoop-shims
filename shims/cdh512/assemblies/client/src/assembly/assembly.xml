@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly>
+  <id>plugin</id>
+  <baseDirectory>cdh512</baseDirectory>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory>lib/client</outputDirectory>
+      <useTransitiveDependencies>true</useTransitiveDependencies>
+      <useTransitiveFiltering>true</useTransitiveFiltering>
+      <includes>
+        <include>org.apache.hadoop:hadoop-client</include>
+        <include>org.apache.hadoop:hadoop-mapreduce-client-core</include>
+        <include>org.apache.hadoop:hadoop-mapreduce-client-app</include>
+        <include>org.apache.hadoop:hadoop-mapreduce-client-common</include>
+        <include>org.apache.hadoop:hadoop-mapreduce-client-jobclient</include>
+        <include>org.apache.hadoop:hadoop-mapreduce-client-shuffle</include>
+        <include>org.apache.hadoop:hadoop-annotations</include>
+        <include>org.apache.hadoop:hadoop-yarn-api</include>
+        <include>org.apache.hadoop:hadoop-yarn-common</include>
+        <include>org.apache.hadoop:hadoop-yarn-server-applicationhistoryservice</include>
+        <include>org.apache.hadoop:hadoop-yarn-server-common</include>
+        <include>org.apache.hadoop:hadoop-yarn-server-resourcemanager</include>
+        <include>org.apache.hadoop:hadoop-yarn-server-web-proxy</include>
+      </includes>
+      <excludes>
+        <exclude>junit:*</exclude>
+        <exclude>commons-collections:commons-collections</exclude>
+        <exclude>org.apache.zookeeper:zookeeper</exclude>
+        <exclude>com.google.guava:*</exclude>
+        <exclude>xml-apis:xml-apis</exclude>
+        <exclude>*:tests:*</exclude>
+      </excludes>
+    </dependencySet>
+  </dependencySets>
+</assembly>
