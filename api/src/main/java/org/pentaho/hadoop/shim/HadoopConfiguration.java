@@ -22,23 +22,24 @@
 
 package org.pentaho.hadoop.shim;
 
-import org.apache.commons.vfs2.FileObject;
-import org.pentaho.di.i18n.BaseMessages;
-import org.pentaho.hadoop.shim.api.Configuration;
-import org.pentaho.hadoop.shim.api.process.Processable;
-import org.pentaho.hadoop.shim.spi.HadoopShim;
-import org.pentaho.hadoop.shim.spi.PentahoHadoopShim;
-import org.pentaho.hadoop.shim.spi.PigShim;
-import org.pentaho.hadoop.shim.spi.SnappyShim;
-import org.pentaho.hadoop.shim.spi.SqoopShim;
-import org.pentaho.hbase.shim.spi.HBaseShim;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+
+import org.apache.commons.vfs2.FileObject;
+import org.pentaho.di.i18n.BaseMessages;
+import org.pentaho.hadoop.shim.api.Configuration;
+import org.pentaho.hadoop.shim.api.process.Processable;
+import org.pentaho.hadoop.shim.spi.FormatShim;
+import org.pentaho.hadoop.shim.spi.HadoopShim;
+import org.pentaho.hadoop.shim.spi.PentahoHadoopShim;
+import org.pentaho.hadoop.shim.spi.PigShim;
+import org.pentaho.hadoop.shim.spi.SnappyShim;
+import org.pentaho.hadoop.shim.spi.SqoopShim;
+import org.pentaho.hbase.shim.spi.HBaseShim;
 
 /**
  * A collection of Hadoop shim implementations for interactive with a Hadoop cluster.
@@ -176,6 +177,16 @@ public class HadoopConfiguration {
    */
   public SnappyShim getSnappyShim() throws ConfigurationException {
     return getShim( SnappyShim.class );
+  }
+
+  /**
+   * Retrieve the Format shim for this configuration if it's available
+   *
+   * @return the Format shim
+   * @throws ConfigurationException No Format shim available for this configuration
+   */
+  public FormatShim getFormatShim() throws ConfigurationException {
+    return getShim( FormatShim.class );
   }
 
   /**
