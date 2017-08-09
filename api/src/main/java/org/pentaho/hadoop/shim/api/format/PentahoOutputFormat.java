@@ -7,4 +7,5 @@ public interface PentahoOutputFormat {
 
   PentahoRecordWriter getRecordWriter( );
 
+  Configuration getActiveConfiguration( );
 }

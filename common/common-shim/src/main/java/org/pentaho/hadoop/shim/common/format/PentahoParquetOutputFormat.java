@@ -62,4 +62,8 @@ public class PentahoParquetOutputFormat implements PentahoOutputFormat {
       throw new RuntimeException( "This should never happen " + e );
     }
   }
+
+  @Override public Configuration getActiveConfiguration() {
+    return conf;
+  }
 }

@@ -4,7 +4,7 @@ package org.pentaho.hadoop.shim.common.format;
 /**
  * Created by Vasilina_Terehova on 7/25/2017.
  */
-public class AvroInputFormat { /*implements InputFormat { {
+public class AvroInputFormat { /*implements PentahoInputFormat { {
 
   @Override public void setSchema( String schema ) {
 

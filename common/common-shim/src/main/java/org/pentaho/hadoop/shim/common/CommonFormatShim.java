@@ -3,7 +3,7 @@ package org.pentaho.hadoop.shim.common;
 
 import org.pentaho.hadoop.shim.ShimVersion;
 import org.pentaho.hadoop.shim.api.Configuration;
-import org.pentaho.hadoop.shim.api.format.InputFormat;
+import org.pentaho.hadoop.shim.api.format.PentahoInputFormat;
 import org.pentaho.hadoop.shim.api.format.PentahoOutputFormat;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 import org.pentaho.hadoop.shim.common.format.PentahoParquetInputFormat;
@@ -13,7 +13,7 @@ import org.pentaho.hadoop.shim.spi.FormatShim;
 public class CommonFormatShim implements FormatShim {
 
 
-  @Override public InputFormat createInputFormat( FormatType type, Configuration configuration, SchemaDescription schema ) {
+  @Override public PentahoInputFormat createInputFormat( FormatType type, Configuration configuration, SchemaDescription schema ) {
     //here some factory that will create
     /*if ( type == FormatType.AVRO ) {
       return new AvroInputFormat();
