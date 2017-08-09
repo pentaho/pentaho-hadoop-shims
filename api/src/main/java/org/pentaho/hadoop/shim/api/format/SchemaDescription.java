@@ -1,4 +1,4 @@
-package org.pentaho.hadoop.shim.common.format;
+package org.pentaho.hadoop.shim.api.format;
 
 import java.util.ArrayList;
 import java.util.Iterator;

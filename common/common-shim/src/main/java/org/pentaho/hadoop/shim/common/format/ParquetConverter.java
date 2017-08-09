@@ -34,6 +34,7 @@ import org.pentaho.di.core.row.value.ValueMetaInteger;
 import org.pentaho.di.core.row.value.ValueMetaNumber;
 import org.pentaho.di.core.row.value.ValueMetaSerializable;
 import org.pentaho.di.core.row.value.ValueMetaString;
+import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 
 /**
  * Converter for read/write Pentaho row from/into Parquet files.
@@ -77,32 +78,41 @@ public class ParquetConverter {
     }
   }
 
-  private void writeValue( SchemaDescription.Field field, RowMetaAndData row, RecordConsumer consumer )
+  private void writeField( SchemaDescription.Field field, RowMetaAndData row, RecordConsumer consumer )
     throws KettleValueException {
+    int fieldIndex = row.getRowMeta().indexOfValue( field.pentahoFieldName );
+    if ( fieldIndex < 0 ) {
+      return;
+    }
+    if ( row.isEmptyValue( field.pentahoFieldName ) ) {
+      return;
+    }
+    consumer.startField( field.formatFieldName, 0 );
     switch ( field.pentahoValueMetaType ) {
       case ValueMetaInterface.TYPE_NUMBER:
-        consumer.addDouble( row.getNumber( field.pentahoFieldName, Double.parseDouble( field.defaultValue ) ) );
+        consumer.addDouble( row.getNumber( fieldIndex, Double.parseDouble( field.defaultValue ) ) );
       case ValueMetaInterface.TYPE_STRING:
         consumer.addBinary( Binary.fromString( row.getString( field.pentahoFieldName, field.defaultValue ) ) );
         break;
       case ValueMetaInterface.TYPE_BOOLEAN:
-        consumer.addBoolean( row.getBoolean( field.pentahoFieldName, Boolean.parseBoolean( field.defaultValue ) ) );
+        consumer.addBoolean( row.getBoolean( fieldIndex, Boolean.parseBoolean( field.defaultValue ) ) );
         break;
       case ValueMetaInterface.TYPE_INTEGER:
-        consumer.addLong( row.getInteger( field.pentahoFieldName, 0l ) );
+        consumer.addLong( row.getInteger( fieldIndex, Long.parseLong( field.defaultValue ) ) );
         break;
       case ValueMetaInterface.TYPE_BIGNUMBER:
-        consumer.addDouble( row.getNumber( field.pentahoFieldName, Double.parseDouble( field.defaultValue ) ) );
+        consumer.addDouble( row.getNumber( fieldIndex, Double.parseDouble( field.defaultValue ) ) );
         break;
       case ValueMetaInterface.TYPE_SERIALIZABLE:
-        consumer.addBinary( Binary.fromReusedByteArray( row.getBinary( field.pentahoFieldName, new byte[0] ) ) );
+        consumer.addBinary( Binary.fromReusedByteArray( row.getBinary( fieldIndex, new byte[0] ) ) );
         break;
       case ValueMetaInterface.TYPE_BINARY:
-        consumer.addBinary( Binary.fromReusedByteArray( row.getBinary( field.pentahoFieldName, new byte[0] ) ) );
+        consumer.addBinary( Binary.fromReusedByteArray( row.getBinary( fieldIndex, new byte[0] ) ) );
         break;
       default:
         throw new RuntimeException( "Undefined type: " + field.pentahoValueMetaType );
     }
+    consumer.endField( field.formatFieldName, 0 );
   }
 
   public void writeRow( RowMetaAndData row, RecordConsumer consumer ) {
@@ -111,18 +121,16 @@ public class ParquetConverter {
       if ( f.formatFieldName == null ) {
         continue;
       }
-      consumer.startField( f.formatFieldName, 0 );
       try {
-        writeValue( f, row, consumer );
+        writeField( f, row, consumer );
       } catch ( KettleValueException ex ) {
         throw new RuntimeException( ex );
       }
-      consumer.endField( f.formatFieldName, 0 );
     }
     consumer.endMessage();
   }
 
-  public RowMetaAndData readRow( RecordReader reader ) throws IOException, InterruptedException {
+  public RowMetaAndData readRow( RecordReader<Void, RowMetaAndData> reader ) throws IOException, InterruptedException {
     RowMeta rowMeta = new RowMeta();
     List<Object> data = new ArrayList<>();
 

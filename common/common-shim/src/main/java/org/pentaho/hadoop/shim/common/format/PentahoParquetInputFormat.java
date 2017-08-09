@@ -12,16 +12,17 @@ import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
 import org.apache.parquet.hadoop.ParquetInputFormat;
 import org.apache.parquet.hadoop.ParquetRecordReader;
 import org.pentaho.hadoop.shim.api.Configuration;
-import org.pentaho.hadoop.shim.api.format.InputFormat;
+import org.pentaho.hadoop.shim.api.format.PentahoInputFormat;
 import org.pentaho.hadoop.shim.api.format.PentahoInputSplit;
 import org.pentaho.hadoop.shim.api.format.RecordReader;
+import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 import org.pentaho.hadoop.shim.api.fs.FileSystem;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
 
 /**
  * Created by Vasilina_Terehova on 7/25/2017.
  */
-public class PentahoParquetInputFormat implements InputFormat {
+public class PentahoParquetInputFormat implements PentahoInputFormat {
   public static long SPLIT_SIZE = 128 * 1024 * 1024;
 
   public static final int JOB_ID = Integer.MAX_VALUE;
@@ -62,5 +63,9 @@ public class PentahoParquetInputFormat implements InputFormat {
     ParquetRecordReader rd = (ParquetRecordReader) nativeParquetInputFormat.createRecordReader( inputSplit, task );
     rd.initialize( inputSplit, task );
     return new PentahoParquetRecordReader( nativeParquetInputFormat, rd, jobContext );
+  }
+
+  @Override public Configuration getActiveConfiguration() {
+    return conf;
   }
 }
