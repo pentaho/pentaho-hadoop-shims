@@ -23,6 +23,7 @@
 package org.pentaho.hadoop.shim.common.authorization;
 
 import org.pentaho.hadoop.shim.common.ClassPathModifyingSqoopShim;
+import org.pentaho.hadoop.shim.common.CommonFormatShim;
 import org.pentaho.hadoop.shim.common.CommonHadoopShim;
 import org.pentaho.hadoop.shim.common.CommonPigShim;
 import org.pentaho.hadoop.shim.common.CommonSnappyShim;
@@ -30,6 +31,7 @@ import org.pentaho.hadoop.shim.common.CommonSqoopShim;
 import org.pentaho.hadoop.shim.common.HadoopShimImpl;
 import org.pentaho.hadoop.shim.common.PigShimImpl;
 import org.pentaho.hadoop.shim.common.SnappyShimImpl;
+import org.pentaho.hadoop.shim.spi.FormatShim;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 import org.pentaho.hadoop.shim.spi.PentahoHadoopShim;
 import org.pentaho.hadoop.shim.spi.PigShim;
@@ -51,6 +53,7 @@ public class NoOpHadoopAuthorizationService implements HadoopAuthorizationServic
     shimMap.put( HadoopShim.class, getHadoopShim() );
     shimMap.put( PigShim.class, getPigShim() );
     shimMap.put( SnappyShim.class, getSnappyShim() );
+    shimMap.put( FormatShim.class, getFormatShim() );
     shimMap.put( SqoopShim.class, getSqoopShim() );
     shimMap.put( HBaseShimInterface.class, getHbaseShim() );
     shimMap.put( OozieClientFactory.class, getOozieFactory() );
@@ -89,5 +92,9 @@ public class NoOpHadoopAuthorizationService implements HadoopAuthorizationServic
   @Override
   public synchronized <T extends PentahoHadoopShim> T getShim( Class<T> clazz ) {
     return (T) shimMap.get( clazz );
+  }
+
+  public PentahoHadoopShim getFormatShim() {
+    return new CommonFormatShim();
   }
 }
