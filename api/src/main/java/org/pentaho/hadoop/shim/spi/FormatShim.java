@@ -22,6 +22,7 @@
 
 package org.pentaho.hadoop.shim.spi;
 
+import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.api.format.PentahoInputFormat;
 import org.pentaho.hadoop.shim.api.format.PentahoOutputFormat;
@@ -35,4 +36,5 @@ public interface FormatShim extends PentahoHadoopShim {
   PentahoInputFormat createInputFormat( FormatType type, Configuration configuration, SchemaDescription schema );
 
   PentahoOutputFormat createOutputFormat( FormatType type, Configuration configuration, SchemaDescription schema );
+
 }

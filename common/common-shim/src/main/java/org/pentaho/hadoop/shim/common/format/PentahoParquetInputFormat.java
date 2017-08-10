@@ -9,6 +9,7 @@ import org.apache.hadoop.mapreduce.JobID;
 import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.mapreduce.task.JobContextImpl;
 import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
+import org.apache.log4j.Logger;
 import org.apache.parquet.hadoop.ParquetInputFormat;
 import org.apache.parquet.hadoop.ParquetRecordReader;
 import org.pentaho.hadoop.shim.api.Configuration;
@@ -26,13 +27,16 @@ public class PentahoParquetInputFormat implements PentahoInputFormat {
   public static long SPLIT_SIZE = 128 * 1024 * 1024;
 
   public static final int JOB_ID = Integer.MAX_VALUE;
-  private ConfigurationProxy conf;
+  private Configuration conf;
   private ParquetInputFormat<String> nativeParquetInputFormat;
   private JobContextImpl jobContext;
   private JobID jobId;
   private TaskAttemptID taskAttemptID;
+  private Logger logger = Logger.getLogger( getClass() );
 
   public PentahoParquetInputFormat( Configuration jobConfiguration, SchemaDescription schema, FileSystem path ) {
+    logger.error( "We are initializing parquet input format" );
+
     // make builder for configuration to set base params
     jobConfiguration.set( ParquetInputFormat.SPLIT_MAXSIZE, Long.toString( SPLIT_SIZE ) );
     jobConfiguration.set( ParquetInputFormat.TASK_SIDE_METADATA, "false" );
@@ -40,10 +44,12 @@ public class PentahoParquetInputFormat implements PentahoInputFormat {
         .getName() );
     jobConfiguration.set( "PentahoParquetSchema", schema.marshall() );
 
-    this.conf = (ConfigurationProxy) jobConfiguration;
+    this.conf = jobConfiguration;
+    org.apache.hadoop.conf.Configuration asDelegateConf =
+      conf.getAsDelegateConf( org.apache.hadoop.conf.Configuration.class );
 
     jobId = new JobID( "Job name", JOB_ID );
-    jobContext = new JobContextImpl( conf, jobId );
+    jobContext = new JobContextImpl( asDelegateConf, jobId );
     taskAttemptID = new TaskAttemptID();
     nativeParquetInputFormat = new ParquetInputFormat<>();
   }
@@ -57,7 +63,9 @@ public class PentahoParquetInputFormat implements PentahoInputFormat {
   // for parquet not actual to point split
   @Override
   public RecordReader getRecordReader( PentahoInputSplit split ) throws IOException, InterruptedException {
-    TaskAttemptContextImpl task = new TaskAttemptContextImpl( conf, taskAttemptID );
+    org.apache.hadoop.conf.Configuration asDelegateConf =
+      conf.getAsDelegateConf( org.apache.hadoop.conf.Configuration.class );
+    TaskAttemptContextImpl task = new TaskAttemptContextImpl( asDelegateConf, taskAttemptID );
     PentahoInputSplitImpl pentahoInputSplit = (PentahoInputSplitImpl) split;
     InputSplit inputSplit = pentahoInputSplit.getInputSplit();
     ParquetRecordReader rd = (ParquetRecordReader) nativeParquetInputFormat.createRecordReader( inputSplit, task );
