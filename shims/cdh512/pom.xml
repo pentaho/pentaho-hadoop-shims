@@ -1,0 +1,33 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.pentaho</groupId>
+    <artifactId>pentaho-hadoop-shims-list</artifactId>
+    <version>8.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>pentaho-hadoop-shims-cdh512-reactor</artifactId>
+  <packaging>pom</packaging>
+  <properties>
+    <shim.name>cdh512</shim.name>
+    <!-- default folder -->
+    <org.apache.hive.version>1.1.0-cdh5.12.0</org.apache.hive.version>
+    <pig.version>0.12.0-cdh5.12.0</pig.version>
+    <sqoop.version>1.4.6-cdh5.12.0</sqoop.version>
+    <org.apache.oozie.version>4.1.0-cdh5.12.0</org.apache.oozie.version>
+    <hadoop2-windows-patch.version>08072014</hadoop2-windows-patch.version>
+    <!-- client folder -->
+    <org.apache.hadoop.version>2.6.0-cdh5.12.0</org.apache.hadoop.version>
+    <!-- pmr folder -->
+    <org.apache.hbase.version>1.2.0-cdh5.12.0</org.apache.hbase.version>
+    <zookeeper.version>3.4.5-cdh5.12.0</zookeeper.version>
+  </properties>
+  <modules>
+    <module>client</module>
+    <module>default</module>
+    <module>pmr</module>
+    <module>impl</module>
+    <module>hbase-comparators</module>
+    <module>assemblies</module>
+  </modules>
+</project>
