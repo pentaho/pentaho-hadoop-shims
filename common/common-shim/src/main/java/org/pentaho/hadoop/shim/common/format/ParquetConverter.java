@@ -9,6 +9,7 @@ import java.util.TreeMap;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.RecordReader;
+//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_type=="MAPR"
 import org.apache.parquet.hadoop.api.InitContext;
 import org.apache.parquet.hadoop.api.ReadSupport;
 import org.apache.parquet.hadoop.api.WriteSupport;
@@ -23,6 +24,24 @@ import org.apache.parquet.schema.PrimitiveType;
 import org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName;
 import org.apache.parquet.schema.Type;
 import org.apache.parquet.schema.Type.Repetition;
+//#endif
+
+//#if shim_type=="CDH"
+//$import parquet.hadoop.api.InitContext;
+//$import parquet.hadoop.api.ReadSupport;
+//$import parquet.hadoop.api.WriteSupport;
+//$import parquet.io.api.Binary;
+//$import parquet.io.api.Converter;
+//$import parquet.io.api.GroupConverter;
+//$import parquet.io.api.PrimitiveConverter;
+//$import parquet.io.api.RecordConsumer;
+//$import parquet.io.api.RecordMaterializer;
+//$import parquet.schema.MessageType;
+//$import parquet.schema.PrimitiveType;
+//$import parquet.schema.PrimitiveType.PrimitiveTypeName;
+//$import parquet.schema.Type;
+//$import parquet.schema.Type.Repetition;
+//#endif
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.exception.KettleValueException;
 import org.pentaho.di.core.row.RowMeta;

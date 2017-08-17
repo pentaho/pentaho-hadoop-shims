@@ -4,8 +4,15 @@ import java.io.IOException;
 import java.util.Iterator;
 
 import org.apache.hadoop.mapreduce.JobContext;
+//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_type=="MAPR"
 import org.apache.parquet.hadoop.ParquetInputFormat;
 import org.apache.parquet.hadoop.ParquetRecordReader;
+//#endif
+
+//#if shim_type=="CDH"
+//$import parquet.hadoop.ParquetInputFormat;
+//$import parquet.hadoop.ParquetRecordReader;
+//#endif
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.hadoop.shim.api.format.RecordReader;
 
