@@ -5,9 +5,17 @@ import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.mapreduce.TaskType;
 import org.apache.hadoop.mapreduce.task.JobContextImpl;
 import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
+//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_type=="MAPR"
 import org.apache.parquet.hadoop.ParquetOutputFormat;
 import org.apache.parquet.hadoop.ParquetRecordWriter;
 import org.apache.parquet.hadoop.api.WriteSupport;
+//#endif
+
+//#if shim_type=="CDH"
+//$import parquet.hadoop.ParquetOutputFormat;
+//$import parquet.hadoop.ParquetRecordWriter;
+//$import parquet.hadoop.api.WriteSupport;
+//#endif
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.api.format.PentahoOutputFormat;
