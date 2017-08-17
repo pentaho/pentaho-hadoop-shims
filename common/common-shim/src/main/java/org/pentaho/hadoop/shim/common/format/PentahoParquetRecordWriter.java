@@ -1,8 +1,16 @@
 package org.pentaho.hadoop.shim.common.format;
 
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
+//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_type=="MAPR"
 import org.apache.parquet.hadoop.ParquetRecordWriter;
 import org.apache.parquet.hadoop.api.WriteSupport;
+//#endif
+
+//#if shim_type=="CDH"
+//$import parquet.hadoop.ParquetRecordWriter;
+//$import parquet.hadoop.api.WriteSupport;
+//#endif
+
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.hadoop.shim.api.format.PentahoRecordWriter;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
