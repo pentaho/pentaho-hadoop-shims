@@ -1,16 +1,25 @@
+/*! ******************************************************************************
+ *
+ * Pentaho Data Integration
+ *
+ * Copyright (C) 2017 by Pentaho : http://www.pentaho.com
+ *
+ *******************************************************************************
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ ******************************************************************************/
 package org.pentaho.hadoop.shim.common.format;
-
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.junit.Test;
-import org.pentaho.di.core.exception.KettleValueException;
-import org.pentaho.di.core.row.RowMetaInterface;
-import org.pentaho.hadoop.shim.api.format.RecordReader;
-import org.pentaho.hadoop.shim.common.ConfigurationProxy;
-import org.pentaho.hadoop.shim.common.fs.FileSystemProxy;
-import org.pentaho.hdfs.vfs.HadoopFileSystemImpl;
-
-import java.io.IOException;
 
 /**
  * Created by Vasilina_Terehova on 7/27/2017.
