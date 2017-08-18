@@ -51,6 +51,7 @@
     <org.apache.derby.version>10.10.2.0</org.apache.derby.version>
     <gateway-shell>0.12.0.2.6.0.3-8</gateway-shell>
     <json-smart>1.1.1</json-smart>
+    <shim.type>HDP</shim.type>
   </properties>
   <dependencies>
     <dependency>
@@ -822,6 +823,32 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.igormaznitsa</groupId>
+        <artifactId>jcp</artifactId>
+        <version>${com.igormaznitsa.jcp.version}</version>
+        <executions>
+          <execution>
+            <id>preprocessSources</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>preprocess</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <globalVars>
+            <property>
+              <name>shim_type</name>
+              <value>${shim.type}</value>
+            </property>
+            <property>
+              <name>shim_name</name>
+              <value>${shim.name}</value>
+            </property>
+          </globalVars>
+        </configuration>
       </plugin>
     </plugins>
   </build>

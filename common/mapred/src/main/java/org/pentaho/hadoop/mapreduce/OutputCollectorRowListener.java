@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2017 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -114,8 +114,7 @@ public class OutputCollectorRowListener<K, V> extends RowAdapter {
 
         if ( debug ) {
           setDebugStatus( reporter,
-            "Begin conversion of output value [from:" + ( row[ outOrdinals.getValueOrdinal() ] == null ? null
-              //$NON-NLS-1$
+            "Begin conversion of output value [from:" + ( row[ outOrdinals.getValueOrdinal() ] == null ? null //$NON-NLS-1$
               : row[ outOrdinals.getValueOrdinal() ].getClass() ) + "] [to:" + outClassV
               + "]" ); //$NON-NLS-1$ //$NON-NLS-2$
         }

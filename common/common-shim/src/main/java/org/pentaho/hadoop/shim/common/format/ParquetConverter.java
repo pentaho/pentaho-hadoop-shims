@@ -1,11 +1,25 @@
+/*******************************************************************************
+ *
+ * Pentaho Big Data
+ *
+ * Copyright (C) 2002-2017 by Pentaho : http://www.pentaho.com
+ *
+ *******************************************************************************
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ ******************************************************************************/
 package org.pentaho.hadoop.shim.common.format;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.RecordReader;
@@ -36,9 +50,35 @@ import org.pentaho.di.core.row.value.ValueMetaSerializable;
 import org.pentaho.di.core.row.value.ValueMetaString;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_type=="MAPR"
+//#endif
+//#if shim_type=="CDH"
+//$import parquet.hadoop.api.InitContext;
+//$import parquet.hadoop.api.ReadSupport;
+//$import parquet.hadoop.api.WriteSupport;
+//$import parquet.io.api.Binary;
+//$import parquet.io.api.Converter;
+//$import parquet.io.api.GroupConverter;
+//$import parquet.io.api.PrimitiveConverter;
+//$import parquet.io.api.RecordConsumer;
+//$import parquet.io.api.RecordMaterializer;
+//$import parquet.schema.MessageType;
+//$import parquet.schema.PrimitiveType;
+//$import parquet.schema.PrimitiveType.PrimitiveTypeName;
+//$import parquet.schema.Type;
+//$import parquet.schema.Type.Repetition;
+//#endif
+
 /**
  * Converter for read/write Pentaho row from/into Parquet files.
- * 
+ *
  * @author Alexander Buloichik
  */
 public class ParquetConverter {
@@ -58,7 +98,7 @@ public class ParquetConverter {
 
   private PrimitiveType convertField( SchemaDescription.Field f ) {
     Repetition rep = f.allowNull ? Repetition.OPTIONAL : Repetition.REQUIRED;
-    switch ( f.pentahoValueMetaType ) {
+    switch( f.pentahoValueMetaType ) {
       case ValueMetaInterface.TYPE_NUMBER:
         return new PrimitiveType( rep, PrimitiveTypeName.DOUBLE, f.formatFieldName );
       case ValueMetaInterface.TYPE_STRING:
@@ -88,7 +128,7 @@ public class ParquetConverter {
       return;
     }
     consumer.startField( field.formatFieldName, 0 );
-    switch ( field.pentahoValueMetaType ) {
+    switch( field.pentahoValueMetaType ) {
       case ValueMetaInterface.TYPE_NUMBER:
         consumer.addDouble( row.getNumber( fieldIndex, Double.parseDouble( field.defaultValue ) ) );
       case ValueMetaInterface.TYPE_STRING:
@@ -104,10 +144,10 @@ public class ParquetConverter {
         consumer.addDouble( row.getNumber( fieldIndex, Double.parseDouble( field.defaultValue ) ) );
         break;
       case ValueMetaInterface.TYPE_SERIALIZABLE:
-        consumer.addBinary( Binary.fromReusedByteArray( row.getBinary( fieldIndex, new byte[0] ) ) );
+        consumer.addBinary( Binary.fromReusedByteArray( row.getBinary( fieldIndex, new byte[ 0 ] ) ) );
         break;
       case ValueMetaInterface.TYPE_BINARY:
-        consumer.addBinary( Binary.fromReusedByteArray( row.getBinary( fieldIndex, new byte[0] ) ) );
+        consumer.addBinary( Binary.fromReusedByteArray( row.getBinary( fieldIndex, new byte[ 0 ] ) ) );
         break;
       default:
         throw new RuntimeException( "Undefined type: " + field.pentahoValueMetaType );
@@ -139,7 +179,7 @@ public class ParquetConverter {
       System.out.println( o );
     }
 
-    return new RowMetaAndData( rowMeta, data.toArray( new Object[data.size()] ) );
+    return new RowMetaAndData( rowMeta, data.toArray( new Object[ data.size() ] ) );
   }
 
   public static class MyParquetWriteSupport extends WriteSupport<RowMetaAndData> {
@@ -192,7 +232,8 @@ public class ParquetConverter {
 
     @Override
     public RecordMaterializer<RowMetaAndData> prepareForRead( Configuration configuration,
-        Map<String, String> keyValueMetaData, MessageType fileSchema, ReadContext readContext ) {
+                                                              Map<String, String> keyValueMetaData,
+                                                              MessageType fileSchema, ReadContext readContext ) {
       return new MyRecordMaterializer( converter );
     }
   }
@@ -226,16 +267,16 @@ public class ParquetConverter {
           count++;
         }
       }
-      converters = new Converter[count];
+      converters = new Converter[ count ];
       int i = 0;
       for ( SchemaDescription.Field f : converter.schema ) {
         if ( f.formatFieldName == null ) {
           continue;
         }
 
-        switch ( f.pentahoValueMetaType ) {
+        switch( f.pentahoValueMetaType ) {
           case ValueMetaInterface.TYPE_NUMBER:
-            converters[i] = new PrimitiveConverter() {
+            converters[ i ] = new PrimitiveConverter() {
               @Override
               public void addDouble( double value ) {
                 current.addValue( new ValueMetaNumber( f.pentahoFieldName ), value );
@@ -258,7 +299,7 @@ public class ParquetConverter {
             };
             break;
           case ValueMetaInterface.TYPE_INTEGER:
-            converters[i] = new PrimitiveConverter() {
+            converters[ i ] = new PrimitiveConverter() {
               @Override
               public void addDouble( double value ) {
                 current.addValue( new ValueMetaInteger( f.pentahoFieldName ), value );
@@ -281,7 +322,7 @@ public class ParquetConverter {
             };
             break;
           case ValueMetaInterface.TYPE_BIGNUMBER:
-            converters[i] = new PrimitiveConverter() {
+            converters[ i ] = new PrimitiveConverter() {
               @Override
               public void addDouble( double value ) {
                 current.addValue( new ValueMetaBigNumber( f.pentahoFieldName ), value );
@@ -304,7 +345,7 @@ public class ParquetConverter {
             };
             break;
           case ValueMetaInterface.TYPE_STRING:
-            converters[i] = new PrimitiveConverter() {
+            converters[ i ] = new PrimitiveConverter() {
               @Override
               public void addBinary( Binary value ) {
                 current.addValue( new ValueMetaString( f.pentahoFieldName ), value.toStringUsingUTF8() );
@@ -312,7 +353,7 @@ public class ParquetConverter {
             };
             break;
           case ValueMetaInterface.TYPE_BOOLEAN:
-            converters[i] = new PrimitiveConverter() {
+            converters[ i ] = new PrimitiveConverter() {
               @Override
               public void addBoolean( boolean value ) {
                 current.addValue( new ValueMetaBoolean( f.pentahoFieldName ), value );
@@ -320,7 +361,7 @@ public class ParquetConverter {
             };
             break;
           case ValueMetaInterface.TYPE_SERIALIZABLE:
-            converters[i] = new PrimitiveConverter() {
+            converters[ i ] = new PrimitiveConverter() {
               @Override
               public void addBinary( Binary value ) {
                 current.addValue( new ValueMetaSerializable( f.pentahoFieldName ), value.getBytes() );
@@ -328,7 +369,7 @@ public class ParquetConverter {
             };
             break;
           case ValueMetaInterface.TYPE_BINARY:
-            converters[i] = new PrimitiveConverter() {
+            converters[ i ] = new PrimitiveConverter() {
               @Override
               public void addBinary( Binary value ) {
                 current.addValue( new ValueMetaBinary( f.pentahoFieldName ), value.getBytes() );
@@ -349,7 +390,7 @@ public class ParquetConverter {
 
     @Override
     public Converter getConverter( int fieldIndex ) {
-      return converters[fieldIndex];
+      return converters[ fieldIndex ];
     }
 
     @Override
