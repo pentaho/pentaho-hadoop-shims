@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2014 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2017 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -25,7 +25,6 @@ package org.pentaho.hadoop.shim.common.delegating;
 import org.pentaho.hadoop.shim.ShimVersion;
 import org.pentaho.hadoop.shim.api.format.PentahoInputFormat;
 import org.pentaho.hadoop.shim.api.format.PentahoOutputFormat;
-import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 import org.pentaho.hadoop.shim.api.process.Processable;
 import org.pentaho.hadoop.shim.common.CommonFormatShim;
 import org.pentaho.hadoop.shim.common.authorization.HadoopAuthorizationService;
@@ -47,15 +46,12 @@ public class DelegatingFormatShim extends CommonFormatShim implements HasHadoopA
   }
 
   @Override
-  public PentahoInputFormat createInputFormat( FormatType type, org.pentaho.hadoop.shim.api.Configuration configuration,
-                                               SchemaDescription schema ) {
-    return delegate.createInputFormat( type, configuration, schema );
+  public PentahoInputFormat createInputFormat( FormatType type ) {
+    return delegate.createInputFormat( type );
   }
 
-  @Override public PentahoOutputFormat createOutputFormat( FormatType type,
-                                                           org.pentaho.hadoop.shim.api.Configuration configuration,
-                                                           SchemaDescription schema ) {
-    return delegate.createOutputFormat( type, configuration, schema );
+  @Override public PentahoOutputFormat createOutputFormat( FormatType type ) {
+    return delegate.createOutputFormat( type );
   }
 
   /*@Override
@@ -68,7 +64,7 @@ public class DelegatingFormatShim extends CommonFormatShim implements HasHadoopA
     delegate.setInfo( configuration );
   }*/
 
-  @Override public void process( org.pentaho.hadoop.shim.api.Configuration configuration ) {
+  @Override public void process( org.pentaho.hadoop.shim.api.Configuration configuration ) { //TODO remove conf ?
     Processable processable;
     if ( Processable.class.isInstance( delegate ) ) {
       processable = (Processable) delegate;
