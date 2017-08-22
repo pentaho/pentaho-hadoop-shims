@@ -12,6 +12,7 @@
   <version>8.0-SNAPSHOT</version>
   <properties>
     <xstream.version>1.4.9</xstream.version>
+    <shim.type>HDP</shim.type>
   </properties>
   <dependencies>
     <dependency>
@@ -119,6 +120,32 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.igormaznitsa</groupId>
+        <artifactId>jcp</artifactId>
+        <version>${com.igormaznitsa.jcp.version}</version>
+        <executions>
+          <execution>
+            <id>preprocessSources</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>preprocess</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <globalVars>
+            <property>
+              <name>shim_type</name>
+              <value>${shim.type}</value>
+            </property>
+            <property>
+              <name>shim_name</name>
+              <value>${shim.name}</value>
+            </property>
+          </globalVars>
+        </configuration>
       </plugin>
     </plugins>
   </build>

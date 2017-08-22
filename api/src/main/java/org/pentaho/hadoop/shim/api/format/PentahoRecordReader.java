@@ -1,6 +1,6 @@
-/*******************************************************************************
+/*! ******************************************************************************
  *
- * Pentaho Big Data
+ * Pentaho Data Integration
  *
  * Copyright (C) 2017 by Pentaho : http://www.pentaho.com
  *
@@ -19,21 +19,12 @@
  * limitations under the License.
  *
  ******************************************************************************/
+package org.pentaho.hadoop.shim.api.format;
 
-package org.pentaho.hadoop.shim.spi;
+import java.io.Closeable;
 
-import org.pentaho.hadoop.shim.api.format.IPentahoAvroInput;
-import org.pentaho.hadoop.shim.api.format.PentahoInputFormat;
-import org.pentaho.hadoop.shim.api.format.PentahoOutputFormat;
+import org.pentaho.di.core.RowMetaAndData;
 
-public interface FormatShim extends PentahoHadoopShim {
-  enum FormatType {
-    PARQUET, AVRO, ORC
-  };
+public interface PentahoRecordReader extends Iterable<RowMetaAndData>, Closeable {
 
-  PentahoInputFormat createInputFormat( FormatType type );
-
-  PentahoOutputFormat createOutputFormat( FormatType type );
-
-  IPentahoAvroInput createAvroInput();
 }

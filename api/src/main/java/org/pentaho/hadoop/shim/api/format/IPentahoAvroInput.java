@@ -1,6 +1,6 @@
-/*! ******************************************************************************
+/*******************************************************************************
  *
- * Pentaho Data Integration
+ * Pentaho Big Data
  *
  * Copyright (C) 2017 by Pentaho : http://www.pentaho.com
  *
@@ -21,28 +21,6 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.api.format;
 
-public interface PentahoOutputFormat {
-  enum VERSION {
-    VERSION_1_0, VERSION_2_0
-  }
+public interface IPentahoAvroInput {
 
-  enum ENCODING {
-    PLAIN, DICTIONARY, BIT_PACKED, RLE
-  }
-
-  void setSchema( SchemaDescription schema );
-
-  void setOutputFile( String file );
-
-  void setVersion( VERSION ver );
-
-  void setEncoding( ENCODING enc );
-
-  void setRowGroupSize( long size );
-
-  void setDataPageSize( long size );
-
-  void setDictionaryPageSize( long size );
-
-  PentahoRecordWriter createRecordWriter();
 }
