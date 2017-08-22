@@ -1,18 +1,33 @@
+/*! ******************************************************************************
+ *
+ * Pentaho Data Integration
+ *
+ * Copyright (C) 2017 by Pentaho : http://www.pentaho.com
+ *
+ *******************************************************************************
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ ******************************************************************************/
 package org.pentaho.hadoop.shim.common.format;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
-import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.RecordReader;
+
 //#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_type=="MAPR"
-import org.apache.parquet.hadoop.api.InitContext;
-import org.apache.parquet.hadoop.api.ReadSupport;
-import org.apache.parquet.hadoop.api.WriteSupport;
 import org.apache.parquet.io.api.Binary;
 import org.apache.parquet.io.api.Converter;
 import org.apache.parquet.io.api.GroupConverter;
@@ -25,11 +40,7 @@ import org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName;
 import org.apache.parquet.schema.Type;
 import org.apache.parquet.schema.Type.Repetition;
 //#endif
-
 //#if shim_type=="CDH"
-//$import parquet.hadoop.api.InitContext;
-//$import parquet.hadoop.api.ReadSupport;
-//$import parquet.hadoop.api.WriteSupport;
 //$import parquet.io.api.Binary;
 //$import parquet.io.api.Converter;
 //$import parquet.io.api.GroupConverter;
@@ -42,6 +53,7 @@ import org.apache.parquet.schema.Type.Repetition;
 //$import parquet.schema.Type;
 //$import parquet.schema.Type.Repetition;
 //#endif
+
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.exception.KettleValueException;
 import org.pentaho.di.core.row.RowMeta;
@@ -61,6 +73,9 @@ import org.pentaho.hadoop.shim.api.format.SchemaDescription;
  * @author Alexander Buloichik
  */
 public class ParquetConverter {
+  public static final int PARQUET_JOB_ID = Integer.MAX_VALUE;
+  public static final String PARQUET_SCHEMA_CONF_KEY = "PentahoParquetSchema";
+
   private final SchemaDescription schema;
 
   public ParquetConverter( SchemaDescription schema ) {
@@ -72,7 +87,7 @@ public class ParquetConverter {
 
     schema.forEach( f -> types.add( convertField( f ) ) );
 
-    return new MessageType( "parquet-scema", types );
+    return new MessageType( "parquet-schema", types );
   }
 
   private PrimitiveType convertField( SchemaDescription.Field f ) {
@@ -159,61 +174,6 @@ public class ParquetConverter {
     }
 
     return new RowMetaAndData( rowMeta, data.toArray( new Object[data.size()] ) );
-  }
-
-  public static class MyParquetWriteSupport extends WriteSupport<RowMetaAndData> {
-    ParquetConverter converter;
-    RecordConsumer consumer;
-
-    @Override
-    public WriteContext init( Configuration configuration ) {
-      String schemaStr = configuration.get( "PentahoParquetSchema" );
-      if ( schemaStr == null ) {
-        throw new RuntimeException( "Schema not defined in the PentahoParquetSchema key" );
-      }
-      converter = new ParquetConverter( SchemaDescription.unmarshall( schemaStr ) );
-
-      try {
-        WriteContext wc = new WriteContext( converter.createParquetSchema(), new TreeMap<>() );
-        return wc;
-      } catch ( Exception ex ) {
-        throw new RuntimeException( ex );
-      }
-    }
-
-    @Override
-    public void prepareForWrite( RecordConsumer recordConsumer ) {
-      consumer = recordConsumer;
-    }
-
-    @Override
-    public void write( RowMetaAndData record ) {
-      converter.writeRow( record, consumer );
-    }
-  }
-
-  public static class MyParquetReadSupport extends ReadSupport<RowMetaAndData> {
-    ParquetConverter converter;
-
-    @Override
-    public ReadContext init( InitContext context ) {
-
-      String schemaStr = context.getConfiguration().get( "PentahoParquetSchema" );
-      if ( schemaStr == null ) {
-        throw new RuntimeException( "Schema not defined in the PentahoParquetSchema key" );
-      }
-      converter = new ParquetConverter( SchemaDescription.unmarshall( schemaStr ) );
-
-      System.out.println( context.getFileSchema() );
-
-      return new ReadContext( converter.createParquetSchema(), new HashMap<String, String>() );
-    }
-
-    @Override
-    public RecordMaterializer<RowMetaAndData> prepareForRead( Configuration configuration,
-        Map<String, String> keyValueMetaData, MessageType fileSchema, ReadContext readContext ) {
-      return new MyRecordMaterializer( converter );
-    }
   }
 
   public static class MyRecordMaterializer extends RecordMaterializer<RowMetaAndData> {
