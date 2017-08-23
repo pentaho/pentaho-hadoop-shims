@@ -1,38 +1,11 @@
-/*******************************************************************************
- *
- * Pentaho Big Data
- *
- * Copyright (C) 2017 by Pentaho : http://www.pentaho.com
- *
- *******************************************************************************
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- ******************************************************************************/
 package org.pentaho.hadoop.shim.common.format;
 
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
-
-//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_type=="MAPR"
 import org.apache.parquet.hadoop.ParquetRecordWriter;
-//#endif
-
-//#if shim_type=="CDH"
-//$import parquet.hadoop.ParquetRecordWriter;
-//#endif
-
+import org.apache.parquet.hadoop.api.WriteSupport;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.hadoop.shim.api.format.PentahoRecordWriter;
+import org.pentaho.hadoop.shim.common.ConfigurationProxy;
 
 import java.io.IOException;
 
@@ -41,20 +14,23 @@ import java.io.IOException;
  */
 public class PentahoParquetRecordWriter implements PentahoRecordWriter {
   private final ParquetRecordWriter<RowMetaAndData> nativeParquetRecordWriter;
-
+  private final ConfigurationProxy configuration;
+  private final WriteSupport writeSupport;
   private final TaskAttemptContext taskAttemptContext;
 
-  public PentahoParquetRecordWriter( ParquetRecordWriter<RowMetaAndData> recordWriter,
-      TaskAttemptContext taskAttemptContext ) {
+  public PentahoParquetRecordWriter( ParquetRecordWriter<RowMetaAndData> recordWriter, ConfigurationProxy configuration,
+                                     WriteSupport writeSupport, TaskAttemptContext taskAttemptContext ) {
     this.nativeParquetRecordWriter = recordWriter;
-
+    this.configuration = configuration;
+    this.writeSupport = writeSupport;
     this.taskAttemptContext = taskAttemptContext;
   }
 
   @Override
   public void write( RowMetaAndData row ) {
+    Void key = null;
     try {
-      nativeParquetRecordWriter.write( null, row );
+      nativeParquetRecordWriter.write( key, row );
     } catch ( IOException e ) {
       throw new IllegalArgumentException( "some exception while writing ", e );
     } catch ( InterruptedException e ) {
