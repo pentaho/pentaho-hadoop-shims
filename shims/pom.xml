@@ -320,7 +320,28 @@
   </build>
   
   <profiles>
-  
+
+    <profile>
+      <id>all</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>hdp25</module>
+        <module>hdp26</module>
+        <module>cdh511</module>
+        <module>cdh512</module>
+        <module>mapr510</module>
+        <module>mapr520</module>
+        <module>emr52</module>
+        <module>emr531</module>
+        <module>emr56</module>
+        <module>hdi35</module>
+      </modules>
+    </profile>
+     
     <profile>
       <id>hdp25</id>
       <activation>
