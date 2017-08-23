@@ -41,6 +41,7 @@
         <include>pentaho:pentaho-hdfs-vfs</include>
         <include>org.apache.pig:pig</include>
         <include>org.apache.sqoop:sqoop</include>
+        <include>org.apache.parquet:parquet-hadoop-bundle</include>
       </includes>
       <excludes>
         <exclude>*:tests:*</exclude>

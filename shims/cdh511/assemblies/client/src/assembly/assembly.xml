@@ -24,9 +24,6 @@
         <include>org.apache.hadoop:hadoop-yarn-server-common</include>
         <include>org.apache.hadoop:hadoop-yarn-server-resourcemanager</include>
         <include>org.apache.hadoop:hadoop-yarn-server-web-proxy</include>
-        <include>com.twitter:parquet-hadoop</include>
-        <include>com.twitter:parquet-avro</include>
-        <include>com.twitter:parquet-common</include>
       </includes>
       <excludes>
         <exclude>junit:*</exclude>

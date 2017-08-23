@@ -24,6 +24,7 @@
         <include>org.codehaus.jackson:jackson-core-asl</include>
         <include>org.codehaus.jackson:jackson-mapper-asl</include>
         <include>org.apache.httpcomponents:httpclient</include>
+        <include>org.apache.parquet:parquet-hadoop-bundle</include>
       </includes>
       <excludes>
         <exclude>*:tests:*</exclude>

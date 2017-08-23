@@ -89,20 +89,5 @@
       <artifactId>hadoop-yarn-server-web-proxy</artifactId>
       <version>${org.apache.hadoop.version}</version>
     </dependency>
-    <dependency>
-      <groupId>com.twitter</groupId>
-      <artifactId>parquet-common</artifactId>
-      <version>${org.apache.parquet.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.twitter</groupId>
-      <artifactId>parquet-hadoop</artifactId>
-      <version>${org.apache.parquet.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.twitter</groupId>
-      <artifactId>parquet-avro</artifactId>
-      <version>${org.apache.parquet.version}</version>
-    </dependency>
   </dependencies>
 </project>

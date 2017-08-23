@@ -1,6 +1,6 @@
-/*! ******************************************************************************
+/*******************************************************************************
  *
- * Pentaho Data Integration
+ * Pentaho Big Data
  *
  * Copyright (C) 2017 by Pentaho : http://www.pentaho.com
  *
@@ -21,5 +21,6 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.api.format;
 
-public interface PentahoInputSplit {
+public interface IPentahoAvroInput {
+
 }
