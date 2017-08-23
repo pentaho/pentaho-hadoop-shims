@@ -24,10 +24,10 @@ package org.pentaho.hadoop.shim.common.format;
 import java.io.IOException;
 import java.util.Iterator;
 
-//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_type=="MAPR"
+//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
 import org.apache.parquet.hadoop.ParquetRecordReader;
 //#endif
-//#if shim_type=="CDH"
+//#if shim_type=="CDH" || shim_type=="MAPR"
 //$import parquet.hadoop.ParquetRecordReader;
 //#endif
 

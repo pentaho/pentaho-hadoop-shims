@@ -18,6 +18,7 @@
         <include>org.apache.oozie:oozie-client</include>
         <include>org.apache.sqoop:sqoop</include>
         <include>org.apache.pig:pig</include>
+        <include>com.twitter:parquet-hadoop-bundle</include>
       </includes>
       <excludes>
         <exclude>log4j:log4j</exclude>

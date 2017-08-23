@@ -25,11 +25,11 @@ import java.util.TreeMap;
 
 import org.apache.hadoop.conf.Configuration;
 
-//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_type=="MAPR"
+//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
 import org.apache.parquet.hadoop.api.WriteSupport;
 import org.apache.parquet.io.api.RecordConsumer;
 //#endif
-//#if shim_type=="CDH"
+//#if shim_type=="CDH" || shim_type=="MAPR"
 //$import parquet.hadoop.api.WriteSupport;
 //$import parquet.io.api.RecordConsumer;
 //#endif
@@ -48,8 +48,7 @@ public class PentahoParquetWriteSupport extends WriteSupport<RowMetaAndData> {
   @Override
   public WriteContext init( Configuration configuration ) {
     try {
-      WriteContext wc = new WriteContext( converter.createParquetSchema(), new TreeMap<>() );
-      return wc;
+      return new WriteContext( converter.createParquetSchema(), new TreeMap<>() );
     } catch ( Exception ex ) {
       throw new RuntimeException( ex );
     }

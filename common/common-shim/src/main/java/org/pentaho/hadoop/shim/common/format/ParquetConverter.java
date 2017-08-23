@@ -27,7 +27,7 @@ import java.util.List;
 
 import org.apache.hadoop.mapreduce.RecordReader;
 
-//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_type=="MAPR"
+//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
 import org.apache.parquet.io.api.Binary;
 import org.apache.parquet.io.api.Converter;
 import org.apache.parquet.io.api.GroupConverter;
@@ -40,7 +40,7 @@ import org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName;
 import org.apache.parquet.schema.Type;
 import org.apache.parquet.schema.Type.Repetition;
 //#endif
-//#if shim_type=="CDH"
+//#if shim_type=="CDH" || shim_type=="MAPR"
 //$import parquet.io.api.Binary;
 //$import parquet.io.api.Converter;
 //$import parquet.io.api.GroupConverter;
@@ -138,10 +138,12 @@ public class ParquetConverter {
         consumer.addDouble( row.getNumber( fieldIndex, Double.parseDouble( field.defaultValue ) ) );
         break;
       case ValueMetaInterface.TYPE_SERIALIZABLE:
-        consumer.addBinary( Binary.fromReusedByteArray( row.getBinary( fieldIndex, new byte[0] ) ) );
+        //todo: here for org.apache.hortonworks deprecated, for twitter in mapr shim
+        //fromReusedByteArray - not available, make separate impl here or add if
+        consumer.addBinary( Binary.fromByteArray( row.getBinary( fieldIndex, new byte[0] ) ) );
         break;
       case ValueMetaInterface.TYPE_BINARY:
-        consumer.addBinary( Binary.fromReusedByteArray( row.getBinary( fieldIndex, new byte[0] ) ) );
+        consumer.addBinary( Binary.fromByteArray( row.getBinary( fieldIndex, new byte[0] ) ) );
         break;
       default:
         throw new RuntimeException( "Undefined type: " + field.pentahoValueMetaType );

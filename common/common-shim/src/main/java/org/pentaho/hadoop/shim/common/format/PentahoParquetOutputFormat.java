@@ -31,12 +31,12 @@ import org.apache.hadoop.mapreduce.TaskType;
 import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
 import org.apache.log4j.Logger;
 
-//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_type=="MAPR"
+//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
 import org.apache.parquet.column.ParquetProperties;
 import org.apache.parquet.hadoop.ParquetOutputFormat;
 import org.apache.parquet.hadoop.ParquetRecordWriter;
 //#endif
-//#if shim_type=="CDH"
+//#if shim_type=="CDH" || shim_type=="MAPR"
 //$import parquet.column.ParquetProperties;
 //$import parquet.hadoop.ParquetOutputFormat;
 //$import parquet.hadoop.ParquetRecordWriter;

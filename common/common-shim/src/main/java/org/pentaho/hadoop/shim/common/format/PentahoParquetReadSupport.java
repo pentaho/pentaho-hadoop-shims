@@ -25,23 +25,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.hadoop.conf.Configuration;
+import org.pentaho.di.core.RowMetaAndData;
+import org.pentaho.hadoop.shim.api.format.SchemaDescription;
+import org.pentaho.hadoop.shim.common.format.ParquetConverter.MyRecordMaterializer;
 
-//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_type=="MAPR"
+//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
 import org.apache.parquet.hadoop.api.InitContext;
 import org.apache.parquet.hadoop.api.ReadSupport;
 import org.apache.parquet.io.api.RecordMaterializer;
 import org.apache.parquet.schema.MessageType;
 //#endif
-//#if shim_type=="CDH"
+//#if shim_type=="CDH" || shim_type=="MAPR"
 //$import parquet.hadoop.api.InitContext;
 //$import parquet.hadoop.api.ReadSupport;
 //$import parquet.io.api.RecordMaterializer;
 //$import parquet.schema.MessageType;
 //#endif
-
-import org.pentaho.di.core.RowMetaAndData;
-import org.pentaho.hadoop.shim.api.format.SchemaDescription;
-import org.pentaho.hadoop.shim.common.format.ParquetConverter.MyRecordMaterializer;
 
 public class PentahoParquetReadSupport extends ReadSupport<RowMetaAndData> {
   ParquetConverter converter;
@@ -56,7 +55,7 @@ public class PentahoParquetReadSupport extends ReadSupport<RowMetaAndData> {
 
     System.out.println( context.getFileSchema() );
 
-    return new ReadContext( converter.createParquetSchema(), new HashMap<String, String>() );
+    return new ReadContext( converter.createParquetSchema(), new HashMap<>() );
   }
 
   @Override
