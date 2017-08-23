@@ -1,6 +1,6 @@
-/*! ******************************************************************************
+/*******************************************************************************
  *
- * Pentaho Data Integration
+ * Pentaho Big Data
  *
  * Copyright (C) 2017 by Pentaho : http://www.pentaho.com
  *
@@ -19,30 +19,15 @@
  * limitations under the License.
  *
  ******************************************************************************/
-package org.pentaho.hadoop.shim.api.format;
+package org.pentaho.hadoop.shim.common.format.avro;
 
-public interface PentahoOutputFormat {
-  enum VERSION {
-    VERSION_1_0, VERSION_2_0
-  }
+import org.apache.log4j.Logger;
+import org.pentaho.hadoop.shim.api.format.IPentahoAvroInput;
 
-  enum ENCODING {
-    PLAIN, DICTIONARY, BIT_PACKED, RLE
-  }
+/**
+ * @author Alexander Buloichik
+ */
+public class PentahoAvroInputFormat implements IPentahoAvroInput {
 
-  void setSchema( SchemaDescription schema );
-
-  void setOutputFile( String file );
-
-  void setVersion( VERSION ver );
-
-  void setEncoding( ENCODING enc );
-
-  void setRowGroupSize( long size );
-
-  void setDataPageSize( long size );
-
-  void setDictionaryPageSize( long size );
-
-  PentahoRecordWriter createRecordWriter();
+  private static final Logger logger = Logger.getLogger( PentahoAvroInputFormat.class );
 }
