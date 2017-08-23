@@ -41,14 +41,12 @@ public class PentahoParquetWriteSupport extends WriteSupport<RowMetaAndData> {
   ParquetConverter converter;
   RecordConsumer consumer;
 
+  public PentahoParquetWriteSupport( SchemaDescription schema ) {
+    converter = new ParquetConverter( schema );
+  }
+
   @Override
   public WriteContext init( Configuration configuration ) {
-    String schemaStr = configuration.get( "PentahoParquetSchema" );
-    if ( schemaStr == null ) {
-      throw new RuntimeException( "Schema not defined in the PentahoParquetSchema key" );
-    }
-    converter = new ParquetConverter( SchemaDescription.unmarshall( schemaStr ) );
-
     try {
       WriteContext wc = new WriteContext( converter.createParquetSchema(), new TreeMap<>() );
       return wc;
