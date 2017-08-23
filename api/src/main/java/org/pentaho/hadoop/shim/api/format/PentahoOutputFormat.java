@@ -38,11 +38,26 @@ public interface PentahoOutputFormat {
 
   void setEncoding( ENCODING enc );
 
-  void setRowGroupSize( long size );
+  /**
+   * Sets row group size
+   *
+   * @param size size in bytes
+   */
+  void setRowGroupSize( int size );
 
-  void setDataPageSize( long size );
+  /**
+   * Sets page size for compression
+   *
+   * @param size size in bytes
+   */
+  void setDataPageSize( int size );
 
-  void setDictionaryPageSize( long size );
+  /**
+   *
+   *
+   * @param size size in bytes
+   */
+  void setDictionaryPageSize( int size );
 
   PentahoRecordWriter createRecordWriter();
 }

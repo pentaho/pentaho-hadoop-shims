@@ -31,6 +31,7 @@ import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
 import org.apache.log4j.Logger;
 
 //#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_type=="MAPR"
+import org.apache.parquet.column.ParquetProperties;
 import org.apache.parquet.hadoop.ParquetOutputFormat;
 import org.apache.parquet.hadoop.ParquetRecordWriter;
 //#endif
@@ -39,6 +40,7 @@ import org.apache.parquet.hadoop.ParquetRecordWriter;
 //$import parquet.hadoop.ParquetRecordWriter;
 //#endif
 
+import org.apache.parquet.io.ParquetEncodingException;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.hadoop.shim.api.format.PentahoOutputFormat;
 import org.pentaho.hadoop.shim.api.format.PentahoRecordWriter;
@@ -94,33 +96,32 @@ public class PentahoParquetOutputFormat implements PentahoOutputFormat {
   }
 
   @Override
-  public void setVersion( VERSION ver ) {
-    // TODO Auto-generated method stub
-
+  public void setVersion( VERSION version ) {
+    ParquetProperties.WriterVersion writerVersion = ParquetProperties.WriterVersion.PARQUET_1_0;
+    if ( VERSION.VERSION_2_0 == version ) {
+      writerVersion = ParquetProperties.WriterVersion.PARQUET_2_0;
+    }
+    job.getConfiguration().set( ParquetOutputFormat.WRITER_VERSION, writerVersion.toString() );
   }
 
   @Override
-  public void setEncoding( ENCODING enc ) {
-    // TODO Auto-generated method stub
-
+  public void setEncoding( ENCODING encoding ) {
+    //TODO implement encoding change
   }
 
   @Override
-  public void setRowGroupSize( long size ) {
-    // TODO Auto-generated method stub
-
+  public void setRowGroupSize( int size ) {
+    ParquetOutputFormat.setBlockSize( job, size );
   }
 
   @Override
-  public void setDataPageSize( long size ) {
-    // TODO Auto-generated method stub
-
+  public void setDataPageSize( int size ) {
+    ParquetOutputFormat.setPageSize( job, size );
   }
 
   @Override
-  public void setDictionaryPageSize( long size ) {
-    // TODO Auto-generated method stub
-
+  public void setDictionaryPageSize( int size ) {
+    ParquetOutputFormat.setDictionaryPageSize( job, size );
   }
 
   @Override
@@ -134,7 +135,7 @@ public class PentahoParquetOutputFormat implements PentahoOutputFormat {
           (ParquetRecordWriter<RowMetaAndData>) nativeParquetOutputFormat.getRecordWriter( task );
       return new PentahoParquetRecordWriter( recordWriter, task );
     } catch ( IOException e ) {
-      throw new RuntimeException( "some eror accessing parquet files", e );
+      throw new RuntimeException( "Some error accessing parquet files", e );
     } catch ( InterruptedException e ) {
       // logging here
       e.printStackTrace();
