@@ -1,24 +1,3 @@
-/*! ******************************************************************************
- *
- * Pentaho Data Integration
- *
- * Copyright (C) 2017 by Pentaho : http://www.pentaho.com
- *
- *******************************************************************************
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- ******************************************************************************/
 package org.pentaho.hadoop.shim.api.format;
 
 import java.util.ArrayList;
@@ -71,9 +50,9 @@ public class SchemaDescription implements Iterable<SchemaDescription.Field> {
     }
     values[4] = str.substring( prev );
 
-    Field r =
-        new Field( uc( values[0] ), uc( values[1] ), Integer.parseInt( values[2] ), Boolean.parseBoolean( values[4] ) );
+    Field r = new Field( uc( values[0] ), uc( values[1] ), Integer.parseInt( values[2] ) );
     r.defaultValue = uc( values[3] );
+    r.allowNull = Boolean.parseBoolean( values[4] );
     return r;
   }
 
@@ -99,13 +78,12 @@ public class SchemaDescription implements Iterable<SchemaDescription.Field> {
     public final int pentahoValueMetaType;
 
     public String defaultValue;
-    public final boolean allowNull;
+    public boolean allowNull;
 
-    public Field( String formatFieldName, String pentahoFieldName, int pentahoValueMetaType, boolean allowNull ) {
+    public Field( String formatFieldName, String pentahoFieldName, int pentahoValueMetaType ) {
       this.formatFieldName = formatFieldName;
       this.pentahoFieldName = pentahoFieldName;
       this.pentahoValueMetaType = pentahoValueMetaType;
-      this.allowNull = allowNull;
     }
 
     public String marshall() {
