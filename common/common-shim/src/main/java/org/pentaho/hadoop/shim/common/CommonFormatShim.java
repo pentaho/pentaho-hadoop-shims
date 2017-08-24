@@ -22,28 +22,36 @@
 package org.pentaho.hadoop.shim.common;
 
 import org.pentaho.hadoop.shim.ShimVersion;
-import org.pentaho.hadoop.shim.api.format.IPentahoAvroInput;
-import org.pentaho.hadoop.shim.api.format.PentahoInputFormat;
-import org.pentaho.hadoop.shim.api.format.PentahoOutputFormat;
+import org.pentaho.hadoop.shim.api.format.IPentahoAvroInputFormat;
+import org.pentaho.hadoop.shim.api.format.IPentahoAvroOutputFormat;
+import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat;
+import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat;
+import org.pentaho.hadoop.shim.api.format.IPentahoParquetInputFormat;
+import org.pentaho.hadoop.shim.api.format.IPentahoParquetOutputFormat;
 import org.pentaho.hadoop.shim.common.format.PentahoParquetInputFormat;
 import org.pentaho.hadoop.shim.common.format.PentahoParquetOutputFormat;
 import org.pentaho.hadoop.shim.common.format.avro.PentahoAvroInputFormat;
+import org.pentaho.hadoop.shim.common.format.avro.PentahoAvroOutputFormat;
 import org.pentaho.hadoop.shim.spi.FormatShim;
 
 public class CommonFormatShim implements FormatShim {
 
   @Override
-  public PentahoInputFormat createInputFormat( FormatType type ) {
-    if ( type == FormatType.PARQUET ) {
-      return new PentahoParquetInputFormat();
+  public <T extends IPentahoInputFormat> T createInputFormat( Class<T> type ) throws Exception {
+    if ( type.isAssignableFrom( IPentahoParquetInputFormat.class ) ) {
+      return (T) new PentahoParquetInputFormat();
+    } else if ( type.isAssignableFrom( IPentahoAvroInputFormat.class ) ) {
+      return (T) new PentahoAvroInputFormat();
     }
     throw new IllegalArgumentException( "Not supported scheme format" );
   }
 
   @Override
-  public PentahoOutputFormat createOutputFormat( FormatType type ) {
-    if ( type == FormatType.PARQUET ) {
-      return new PentahoParquetOutputFormat();
+  public <T extends IPentahoOutputFormat> T createOutputFormat( Class<T> type ) throws Exception {
+    if ( type.isAssignableFrom( IPentahoParquetOutputFormat.class ) ) {
+      return (T) new PentahoParquetOutputFormat();
+    } else if ( type.isAssignableFrom( IPentahoAvroOutputFormat.class ) ) {
+      return (T) new PentahoAvroOutputFormat();
     }
     throw new IllegalArgumentException( "Not supported scheme format" );
   }
@@ -51,11 +59,5 @@ public class CommonFormatShim implements FormatShim {
   @Override
   public ShimVersion getVersion() {
     return null;
-  }
-
-  @Override
-  public IPentahoAvroInput createAvroInput() {
-    // TODO Auto-generated method stub
-    return new PentahoAvroInputFormat();
   }
 }

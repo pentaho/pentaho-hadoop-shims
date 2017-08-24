@@ -19,7 +19,22 @@
  * limitations under the License.
  *
  ******************************************************************************/
-package org.pentaho.hadoop.shim.api.format;
+package org.pentaho.hadoop.shim.common.format.parquet;
 
-public interface PentahoInputSplit {
+import org.apache.hadoop.mapreduce.InputSplit;
+import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat.IPentahoInputSplit;
+
+/**
+ * Created by Vasilina_Terehova on 8/1/2017.
+ */
+public class PentahoInputSplitImpl implements IPentahoInputSplit {
+  InputSplit inputSplit;
+
+  public PentahoInputSplitImpl( InputSplit inputSplit ) {
+    this.inputSplit = inputSplit;
+  }
+
+  public InputSplit getInputSplit() {
+    return inputSplit;
+  }
 }

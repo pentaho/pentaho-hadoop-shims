@@ -19,22 +19,46 @@
  * limitations under the License.
  *
  ******************************************************************************/
-package org.pentaho.hadoop.shim.common.format;
+package org.pentaho.hadoop.shim.api.format;
 
-import org.apache.hadoop.mapreduce.InputSplit;
-import org.pentaho.hadoop.shim.api.format.PentahoInputSplit;
-
-/**
- * Created by Vasilina_Terehova on 8/1/2017.
- */
-public class PentahoInputSplitImpl implements PentahoInputSplit {
-  InputSplit inputSplit;
-
-  public PentahoInputSplitImpl( InputSplit inputSplit ) {
-    this.inputSplit = inputSplit;
+public interface IPentahoParquetOutputFormat extends IPentahoOutputFormat {
+  enum VERSION {
+    VERSION_1_0, VERSION_2_0
   }
 
-  InputSplit getInputSplit() {
-    return inputSplit;
+  enum ENCODING {
+    PLAIN, DICTIONARY, BIT_PACKED, RLE
   }
+
+  void setSchema( SchemaDescription schema ) throws Exception;
+
+  void setOutputFile( String file ) throws Exception;
+
+  void setVersion( VERSION ver ) throws Exception;
+
+  void setEncoding( ENCODING enc ) throws Exception;
+
+  /**
+   * Sets row group size
+   *
+   * @param size
+   *          size in bytes
+   */
+  void setRowGroupSize( int size ) throws Exception;
+
+  /**
+   * Sets page size for compression
+   *
+   * @param size
+   *          size in bytes
+   */
+  void setDataPageSize( int size ) throws Exception;
+
+  /**
+   *
+   *
+   * @param size
+   *          size in bytes
+   */
+  void setDictionaryPageSize( int size ) throws Exception;
 }

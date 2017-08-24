@@ -21,43 +21,8 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.api.format;
 
-public interface PentahoOutputFormat {
-  enum VERSION {
-    VERSION_1_0, VERSION_2_0
-  }
+public interface IPentahoAvroOutputFormat extends IPentahoOutputFormat {
+  void setSchema( SchemaDescription schema ) throws Exception;
 
-  enum ENCODING {
-    PLAIN, DICTIONARY, BIT_PACKED, RLE
-  }
-
-  void setSchema( SchemaDescription schema );
-
-  void setOutputFile( String file );
-
-  void setVersion( VERSION ver );
-
-  void setEncoding( ENCODING enc );
-
-  /**
-   * Sets row group size
-   *
-   * @param size size in bytes
-   */
-  void setRowGroupSize( int size );
-
-  /**
-   * Sets page size for compression
-   *
-   * @param size size in bytes
-   */
-  void setDataPageSize( int size );
-
-  /**
-   *
-   *
-   * @param size size in bytes
-   */
-  void setDictionaryPageSize( int size );
-
-  PentahoRecordWriter createRecordWriter();
+  void setOutputFile( String file ) throws Exception;
 }

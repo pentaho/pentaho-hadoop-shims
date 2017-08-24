@@ -21,33 +21,17 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.common.format.avro;
 
-import java.util.List;
-
-import org.apache.log4j.Logger;
-import org.pentaho.hadoop.shim.api.format.IPentahoAvroInputFormat;
+import org.pentaho.hadoop.shim.api.format.IPentahoAvroOutputFormat;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 
 /**
+ * 
  * @author Alexander Buloichik
  */
-public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
-
-  private static final Logger logger = Logger.getLogger( PentahoAvroInputFormat.class );
+public class PentahoAvroOutputFormat implements IPentahoAvroOutputFormat {
 
   @Override
-  public List<IPentahoInputSplit> getSplits() throws Exception {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public IPentahoRecordReader createRecordReader( IPentahoInputSplit split ) throws Exception {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public SchemaDescription readSchema( String file ) throws Exception {
+  public IPentahoRecordWriter createRecordWriter() throws Exception {
     // TODO Auto-generated method stub
     return null;
   }
@@ -55,15 +39,13 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
   @Override
   public void setSchema( SchemaDescription schema ) throws Exception {
     // TODO Auto-generated method stub
+
   }
 
   @Override
-  public void setInputFile( String file ) throws Exception {
+  public void setOutputFile( String file ) throws Exception {
     // TODO Auto-generated method stub
+
   }
 
-  @Override
-  public void setSplitSize( long blockSize ) throws Exception {
-    // TODO Auto-generated method stub
-  }
 }

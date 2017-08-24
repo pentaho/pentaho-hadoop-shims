@@ -21,7 +21,6 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.common.format;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,94 +32,96 @@ import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
 import org.apache.log4j.Logger;
 
 //#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
-import org.apache.parquet.hadoop.api.ReadSupport;
+import org.apache.parquet.format.converter.ParquetMetadataConverter;
+import org.apache.parquet.hadoop.ParquetFileReader;
 import org.apache.parquet.hadoop.ParquetInputFormat;
 import org.apache.parquet.hadoop.ParquetRecordReader;
+import org.apache.parquet.hadoop.api.ReadSupport;
+import org.apache.parquet.hadoop.metadata.ParquetMetadata;
+import org.apache.parquet.schema.MessageType;
 //#endif
 //#if shim_type=="CDH" || shim_type=="MAPR"
+//$import parquet.format.converter.ParquetMetadataConverter;
 //$import parquet.hadoop.api.ReadSupport;
+//$import parquet.hadoop.metadata.ParquetMetadata;
+//$import parquet.hadoop.ParquetFileReader;
 //$import parquet.hadoop.ParquetInputFormat;
 //$import parquet.hadoop.ParquetRecordReader;
+//$import parquet.schema.MessageType;
 //#endif
 
 import org.pentaho.di.core.RowMetaAndData;
-import org.pentaho.hadoop.shim.api.format.PentahoInputFormat;
-import org.pentaho.hadoop.shim.api.format.PentahoInputSplit;
-import org.pentaho.hadoop.shim.api.format.PentahoRecordReader;
+import org.pentaho.hadoop.shim.api.format.IPentahoParquetInputFormat;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
+import org.pentaho.hadoop.shim.common.format.parquet.ParquetConverter;
+import org.pentaho.hadoop.shim.common.format.parquet.PentahoInputSplitImpl;
+import org.pentaho.hadoop.shim.common.format.parquet.PentahoParquetReadSupport;
+import org.pentaho.hadoop.shim.common.format.parquet.PentahoParquetRecordReader;
 
 /**
  * Created by Vasilina_Terehova on 7/25/2017.
  */
-public class PentahoParquetInputFormat implements PentahoInputFormat {
+public class PentahoParquetInputFormat extends HadoopFormatBase implements IPentahoParquetInputFormat {
 
   private static final Logger logger = Logger.getLogger( PentahoParquetInputFormat.class );
 
-  private final ParquetInputFormat<RowMetaAndData> nativeParquetInputFormat;
-  private final Job job;
+  private ParquetInputFormat<RowMetaAndData> nativeParquetInputFormat;
+  private Job job;
 
-  public PentahoParquetInputFormat() {
+  public PentahoParquetInputFormat() throws Exception {
     logger.info( "We are initializing parquet input format" );
 
-    ConfigurationProxy conf;
-    ClassLoader cl = Thread.currentThread().getContextClassLoader();
-    try {
-      Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
-      conf = new ConfigurationProxy();
-    } finally {
-      Thread.currentThread().setContextClassLoader( cl );
-    }
+    inClassloader( () -> {
+      ConfigurationProxy conf = new ConfigurationProxy();
 
-    try {
       job = Job.getInstance( conf );
-    } catch ( IOException ex ) {
-      throw new RuntimeException( ex );
-    }
 
-    nativeParquetInputFormat = new ParquetInputFormat<>();
+      nativeParquetInputFormat = new ParquetInputFormat<>();
 
-    ParquetInputFormat.setReadSupportClass( job, PentahoParquetReadSupport.class );
-    ParquetInputFormat.setTaskSideMetaData( job, false );
+      ParquetInputFormat.setReadSupportClass( job, PentahoParquetReadSupport.class );
+      ParquetInputFormat.setTaskSideMetaData( job, false );
+    } );
   }
 
   @Override
-  public void setSchema( SchemaDescription schema ) {
-    job.getConfiguration().set( ParquetConverter.PARQUET_SCHEMA_CONF_KEY, schema.marshall() );
+  public void setSchema( SchemaDescription schema ) throws Exception {
+    inClassloader( () -> {
+      job.getConfiguration().set( ParquetConverter.PARQUET_SCHEMA_CONF_KEY, schema.marshall() );
+    } );
   }
 
   @Override
-  public void setInputFile( String file ) {
-    Path filePath = new Path( file );
-    try {
+  public void setInputFile( String file ) throws Exception {
+    inClassloader( () -> {
+      Path filePath = new Path( file );
       ParquetInputFormat.setInputPaths( job, filePath.getParent() );
-    } catch ( IOException ex ) {
-      throw new RuntimeException( ex );
-    }
-    ParquetInputFormat.setInputDirRecursive( job, false );
-    ParquetInputFormat.setInputPathFilter( job, ReadFileFilter.class );
-    job.getConfiguration().set( ReadFileFilter.FILTER_DIR, filePath.getParent().toString() );
-    job.getConfiguration().set( ReadFileFilter.FILTER_FILE, filePath.toString() );
+      ParquetInputFormat.setInputDirRecursive( job, false );
+      ParquetInputFormat.setInputPathFilter( job, ReadFileFilter.class );
+      job.getConfiguration().set( ReadFileFilter.FILTER_DIR, filePath.getParent().toString() );
+      job.getConfiguration().set( ReadFileFilter.FILTER_FILE, filePath.toString() );
+    } );
   }
 
   @Override
-  public void setSplitSize( long blockSize ) {
-    ParquetInputFormat.setMaxInputSplitSize( job, blockSize );
+  public void setSplitSize( long blockSize ) throws Exception {
+    inClassloader( () -> {
+      ParquetInputFormat.setMaxInputSplitSize( job, blockSize );
+    } );
   }
 
   @Override
-  public List<PentahoInputSplit> getSplits() throws IOException {
-    List<InputSplit> splits = nativeParquetInputFormat.getSplits( job );
-    return splits.stream().map( PentahoInputSplitImpl::new ).collect( Collectors.toList() );
+  public List<IPentahoInputSplit> getSplits() throws Exception {
+    return inClassloader( () -> {
+      List<InputSplit> splits = nativeParquetInputFormat.getSplits( job );
+      return splits.stream().map( PentahoInputSplitImpl::new ).collect( Collectors.toList() );
+    } );
   }
 
   // for parquet not actual to point split
   @Override
-  public PentahoRecordReader createRecordReader( PentahoInputSplit split ) throws IOException, InterruptedException {
-    ClassLoader cl = Thread.currentThread().getContextClassLoader();
-    try {
-      Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
-
+  public IPentahoRecordReader createRecordReader( IPentahoInputSplit split ) throws Exception {
+    return inClassloader( () -> {
       PentahoInputSplitImpl pentahoInputSplit = (PentahoInputSplitImpl) split;
       InputSplit inputSplit = pentahoInputSplit.getInputSplit();
 
@@ -133,8 +134,16 @@ public class PentahoParquetInputFormat implements PentahoInputFormat {
       nativeRecordReader.initialize( inputSplit, task );
 
       return new PentahoParquetRecordReader( nativeRecordReader );
-    } finally {
-      Thread.currentThread().setContextClassLoader( cl );
-    }
+    } );
+  }
+
+  @Override
+  public SchemaDescription readSchema( String file ) throws Exception {
+    return inClassloader( () -> {
+      ConfigurationProxy conf = new ConfigurationProxy();
+      ParquetMetadata meta = ParquetFileReader.readFooter( conf, new Path( file ), ParquetMetadataConverter.NO_FILTER );
+      MessageType schema = meta.getFileMetaData().getSchema();
+      return ParquetConverter.createSchemaDescription( schema );
+    } );
   }
 }
