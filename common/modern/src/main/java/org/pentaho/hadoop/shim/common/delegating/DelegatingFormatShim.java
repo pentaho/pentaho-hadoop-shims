@@ -23,8 +23,8 @@
 package org.pentaho.hadoop.shim.common.delegating;
 
 import org.pentaho.hadoop.shim.ShimVersion;
-import org.pentaho.hadoop.shim.api.format.PentahoInputFormat;
-import org.pentaho.hadoop.shim.api.format.PentahoOutputFormat;
+import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat;
+import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat;
 import org.pentaho.hadoop.shim.api.process.Processable;
 import org.pentaho.hadoop.shim.common.CommonFormatShim;
 import org.pentaho.hadoop.shim.common.authorization.HadoopAuthorizationService;
@@ -32,7 +32,7 @@ import org.pentaho.hadoop.shim.common.authorization.HasHadoopAuthorizationServic
 import org.pentaho.hadoop.shim.spi.FormatShim;
 
 public class DelegatingFormatShim extends CommonFormatShim implements HasHadoopAuthorizationService, FormatShim,
-  Processable {
+    Processable {
   private FormatShim delegate;
 
   @Override
@@ -46,25 +46,17 @@ public class DelegatingFormatShim extends CommonFormatShim implements HasHadoopA
   }
 
   @Override
-  public PentahoInputFormat createInputFormat( FormatType type ) {
+  public <T extends IPentahoInputFormat> T createInputFormat( Class<T> type ) throws Exception {
     return delegate.createInputFormat( type );
   }
 
-  @Override public PentahoOutputFormat createOutputFormat( FormatType type ) {
+  @Override
+  public <T extends IPentahoOutputFormat> T createOutputFormat( Class<T> type ) throws Exception {
     return delegate.createOutputFormat( type );
   }
 
-  /*@Override
-  public HBaseConnection getHBaseConnection() {
-    return delegate.getHBaseConnection();
-  }
-
   @Override
-  public void setInfo( Configuration configuration ) {
-    delegate.setInfo( configuration );
-  }*/
-
-  @Override public void process( org.pentaho.hadoop.shim.api.Configuration configuration ) { //TODO remove conf ?
+  public void process( org.pentaho.hadoop.shim.api.Configuration configuration ) { // TODO remove conf ?
     Processable processable;
     if ( Processable.class.isInstance( delegate ) ) {
       processable = (Processable) delegate;

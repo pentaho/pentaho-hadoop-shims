@@ -22,18 +22,11 @@
 
 package org.pentaho.hadoop.shim.spi;
 
-import org.pentaho.hadoop.shim.api.format.IPentahoAvroInput;
-import org.pentaho.hadoop.shim.api.format.PentahoInputFormat;
-import org.pentaho.hadoop.shim.api.format.PentahoOutputFormat;
+import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat;
+import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat;
 
 public interface FormatShim extends PentahoHadoopShim {
-  enum FormatType {
-    PARQUET, AVRO, ORC
-  };
+  <T extends IPentahoInputFormat> T createInputFormat( Class<T> type ) throws Exception;
 
-  PentahoInputFormat createInputFormat( FormatType type );
-
-  PentahoOutputFormat createOutputFormat( FormatType type );
-
-  IPentahoAvroInput createAvroInput();
+  <T extends IPentahoOutputFormat> T createOutputFormat( Class<T> type ) throws Exception;
 }

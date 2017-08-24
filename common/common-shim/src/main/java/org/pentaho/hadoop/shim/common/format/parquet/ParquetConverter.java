@@ -19,7 +19,7 @@
  * limitations under the License.
  *
  ******************************************************************************/
-package org.pentaho.hadoop.shim.common.format;
+package org.pentaho.hadoop.shim.common.format.parquet;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -90,6 +90,34 @@ public class ParquetConverter {
     return new MessageType( "parquet-schema", types );
   }
 
+  public static SchemaDescription createSchemaDescription( MessageType schema ) {
+    SchemaDescription r = new SchemaDescription();
+
+    schema.getFields().forEach( t -> r.addField( convertField( r, t ) ) );
+
+    return r;
+  }
+
+  private static SchemaDescription.Field convertField( SchemaDescription schema, Type t ) {
+    boolean allowNull = t.getRepetition() != Repetition.REQUIRED;
+    switch ( t.asPrimitiveType().getPrimitiveTypeName() ) {
+      case BINARY:
+        return schema.new Field( t.getName(), t.getName(), ValueMetaInterface.TYPE_STRING, allowNull );
+      case BOOLEAN:
+        return schema.new Field( t.getName(), t.getName(), ValueMetaInterface.TYPE_BOOLEAN, allowNull );
+      case DOUBLE:
+        return schema.new Field( t.getName(), t.getName(), ValueMetaInterface.TYPE_NUMBER, allowNull );
+      case FLOAT:
+        return schema.new Field( t.getName(), t.getName(), ValueMetaInterface.TYPE_NUMBER, allowNull );
+      case INT32:
+        return schema.new Field( t.getName(), t.getName(), ValueMetaInterface.TYPE_INTEGER, allowNull );
+      case INT64:
+        return schema.new Field( t.getName(), t.getName(), ValueMetaInterface.TYPE_INTEGER, allowNull );
+      default:
+        throw new RuntimeException( "Undefined type: " + t );
+    }
+  }
+
   private PrimitiveType convertField( SchemaDescription.Field f ) {
     Repetition rep = f.allowNull ? Repetition.OPTIONAL : Repetition.REQUIRED;
     switch ( f.pentahoValueMetaType ) {
@@ -138,12 +166,26 @@ public class ParquetConverter {
         consumer.addDouble( row.getNumber( fieldIndex, Double.parseDouble( field.defaultValue ) ) );
         break;
       case ValueMetaInterface.TYPE_SERIALIZABLE:
-        //todo: here for org.apache.hortonworks deprecated, for twitter in mapr shim
-        //fromReusedByteArray - not available, make separate impl here or add if
-        consumer.addBinary( Binary.fromByteArray( row.getBinary( fieldIndex, new byte[0] ) ) );
+        /**
+         * 'fromByteArray' deprecated in the HDP, but CDH doesn't have 'fromReusedByteArray' yet.
+         */
+//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
+        consumer.addBinary( Binary.fromReusedByteArray( row.getBinary( fieldIndex, new byte[0] ) ) );
+//#endif
+//$     consumer.addBinary( Binary.fromByteArray( row.getBinary( fieldIndex, new byte[0] ) ) );
+//#if shim_type=="CDH" || shim_type=="MAPR"
+//#endif
         break;
       case ValueMetaInterface.TYPE_BINARY:
-        consumer.addBinary( Binary.fromByteArray( row.getBinary( fieldIndex, new byte[0] ) ) );
+        /**
+         * 'fromByteArray' deprecated in the HDP, but CDH doesn't have 'fromReusedByteArray' yet.
+         */
+//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
+        consumer.addBinary( Binary.fromReusedByteArray( row.getBinary( fieldIndex, new byte[0] ) ) );
+//#endif
+//$     consumer.addBinary( Binary.fromByteArray( row.getBinary( fieldIndex, new byte[0] ) ) );
+//#if shim_type=="CDH" || shim_type=="MAPR"
+//#endif
         break;
       default:
         throw new RuntimeException( "Undefined type: " + field.pentahoValueMetaType );

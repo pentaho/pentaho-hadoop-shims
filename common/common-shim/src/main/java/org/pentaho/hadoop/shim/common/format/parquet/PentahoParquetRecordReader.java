@@ -19,7 +19,7 @@
  * limitations under the License.
  *
  ******************************************************************************/
-package org.pentaho.hadoop.shim.common.format;
+package org.pentaho.hadoop.shim.common.format.parquet;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -32,12 +32,12 @@ import org.apache.parquet.hadoop.ParquetRecordReader;
 //#endif
 
 import org.pentaho.di.core.RowMetaAndData;
-import org.pentaho.hadoop.shim.api.format.PentahoRecordReader;
+import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat.IPentahoRecordReader;
 
 /**
  * Created by Vasilina_Terehova on 7/29/2017.
  */
-public class PentahoParquetRecordReader implements PentahoRecordReader {
+public class PentahoParquetRecordReader implements IPentahoRecordReader {
 
   private final ParquetRecordReader<RowMetaAndData> nativeParquetRecordReader;
 

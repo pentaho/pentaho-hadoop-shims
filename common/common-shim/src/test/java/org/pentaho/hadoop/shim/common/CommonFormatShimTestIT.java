@@ -34,8 +34,8 @@ import org.pentaho.di.core.row.RowMeta;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.core.row.value.ValueMetaString;
-import org.pentaho.hadoop.shim.api.format.PentahoRecordReader;
-import org.pentaho.hadoop.shim.api.format.PentahoRecordWriter;
+import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat.IPentahoRecordReader;
+import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat.IPentahoRecordWriter;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 import org.pentaho.hadoop.shim.common.format.PentahoParquetInputFormat;
 import org.pentaho.hadoop.shim.common.format.PentahoParquetOutputFormat;
@@ -46,14 +46,14 @@ import org.pentaho.hadoop.shim.common.format.PentahoParquetOutputFormat;
 public class CommonFormatShimTestIT {
 
   @Test
-  public void testParquetReadSuccessLocalFileSystem() throws IOException, InterruptedException {
+  public void testParquetReadSuccessLocalFileSystem() throws Exception {
     SchemaDescription schemaDescription = makeScheme();
 
     PentahoParquetInputFormat pentahoParquetInputFormat = new PentahoParquetInputFormat();
     pentahoParquetInputFormat.setInputFile( CommonFormatShimTestIT.class.getClassLoader().getResource( "sample.pqt" )
         .toExternalForm() );
     pentahoParquetInputFormat.setSchema( schemaDescription );
-    PentahoRecordReader recordReader =
+    IPentahoRecordReader recordReader =
         pentahoParquetInputFormat.createRecordReader( pentahoParquetInputFormat.getSplits().get( 0 ) );
     recordReader.forEach( rowMetaAndData -> {
       RowMetaInterface rowMeta = rowMetaAndData.getRowMeta();
@@ -68,13 +68,13 @@ public class CommonFormatShimTestIT {
   }
 
   @Test
-  public void testParquetReadSuccessHdfsFileSystem() throws IOException, InterruptedException {
+  public void testParquetReadSuccessHdfsFileSystem() throws Exception {
 
     SchemaDescription schemaDescription = makeScheme();
     PentahoParquetInputFormat pentahoParquetInputFormat =
       new PentahoParquetInputFormat(  );
     pentahoParquetInputFormat.setInputFile( "hdfs://svqxbdcn6cdh510n1.pentahoqa.com:8020/user/devuser/parquet" );
-    PentahoRecordReader recordReader =
+    IPentahoRecordReader recordReader =
       pentahoParquetInputFormat.createRecordReader( pentahoParquetInputFormat.getSplits().get( 0 ) );
     recordReader.forEach( rowMetaAndData -> {
       RowMetaInterface rowMeta = rowMetaAndData.getRowMeta();
@@ -100,7 +100,7 @@ public class CommonFormatShimTestIT {
         "sample.pqt" ).getFile() );
       PentahoParquetInputFormat pentahoParquetInputFormat =
         new PentahoParquetInputFormat( );
-      PentahoRecordReader recordReader =
+      IPentahoRecordReader recordReader =
         pentahoParquetInputFormat.createRecordReader( pentahoParquetInputFormat.getSplits().get( 0 ) );
       recordReader.forEach( rowMetaAndData -> {
         RowMetaInterface rowMeta = rowMetaAndData.getRowMeta();
@@ -127,7 +127,7 @@ public class CommonFormatShimTestIT {
       jobConfiguration.set( FileOutputFormat.OUTDIR, tempFile.toString() );
       PentahoParquetOutputFormat pentahoParquetOutputFormat =
         new PentahoParquetOutputFormat(  );
-      PentahoRecordWriter recordWriter =
+      IPentahoRecordWriter recordWriter =
         pentahoParquetOutputFormat.createRecordWriter();
       RowMetaAndData
         row = new RowMetaAndData();

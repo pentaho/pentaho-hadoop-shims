@@ -22,9 +22,25 @@
 package org.pentaho.hadoop.shim.api.format;
 
 import java.io.Closeable;
+import java.util.List;
 
 import org.pentaho.di.core.RowMetaAndData;
 
-public interface PentahoRecordWriter extends Closeable {
-  void write( RowMetaAndData row );
+public interface IPentahoInputFormat {
+
+  /**
+   * Get split parts.
+   */
+  List<IPentahoInputSplit> getSplits() throws Exception;
+
+  /**
+   * Read one split part.
+   */
+  IPentahoRecordReader createRecordReader( IPentahoInputSplit split ) throws Exception;
+
+  public interface IPentahoInputSplit {
+  }
+
+  public interface IPentahoRecordReader extends Iterable<RowMetaAndData>, Closeable {
+  }
 }

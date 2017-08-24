@@ -21,19 +21,14 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.api.format;
 
-import java.util.List;
+import java.io.Closeable;
 
-public interface PentahoInputFormat {
-  void setSchema( SchemaDescription schema );
+import org.pentaho.di.core.RowMetaAndData;
 
-  void setInputFile( String file );
+public interface IPentahoOutputFormat {
+  IPentahoRecordWriter createRecordWriter() throws Exception;
 
-  /**
-   * Split size, bytes.
-   */
-  void setSplitSize( long blockSize );
-
-  List<PentahoInputSplit> getSplits() throws Exception;
-
-  PentahoRecordReader createRecordReader( PentahoInputSplit split ) throws Exception;
+  public interface IPentahoRecordWriter extends Closeable {
+    void write( RowMetaAndData row ) throws Exception;
+  }
 }

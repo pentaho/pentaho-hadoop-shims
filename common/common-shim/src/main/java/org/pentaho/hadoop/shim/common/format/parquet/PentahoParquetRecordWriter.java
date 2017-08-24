@@ -19,7 +19,7 @@
  * limitations under the License.
  *
  ******************************************************************************/
-package org.pentaho.hadoop.shim.common.format;
+package org.pentaho.hadoop.shim.common.format.parquet;
 
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 
@@ -32,14 +32,14 @@ import org.apache.parquet.hadoop.ParquetRecordWriter;
 //#endif
 
 import org.pentaho.di.core.RowMetaAndData;
-import org.pentaho.hadoop.shim.api.format.PentahoRecordWriter;
+import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat.IPentahoRecordWriter;
 
 import java.io.IOException;
 
 /**
  * Created by Vasilina_Terehova on 8/3/2017.
  */
-public class PentahoParquetRecordWriter implements PentahoRecordWriter {
+public class PentahoParquetRecordWriter implements IPentahoRecordWriter {
   private final ParquetRecordWriter<RowMetaAndData> nativeParquetRecordWriter;
 
   private final TaskAttemptContext taskAttemptContext;

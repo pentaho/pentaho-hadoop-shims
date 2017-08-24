@@ -19,7 +19,7 @@
  * limitations under the License.
  *
  ******************************************************************************/
-package org.pentaho.hadoop.shim.common.format;
+package org.pentaho.hadoop.shim.common.format.parquet;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,8 +27,7 @@ import java.util.Map;
 import org.apache.hadoop.conf.Configuration;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
-import org.pentaho.hadoop.shim.common.format.ParquetConverter.MyRecordMaterializer;
-
+import org.pentaho.hadoop.shim.common.format.parquet.ParquetConverter.MyRecordMaterializer;
 //#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
 import org.apache.parquet.hadoop.api.InitContext;
 import org.apache.parquet.hadoop.api.ReadSupport;

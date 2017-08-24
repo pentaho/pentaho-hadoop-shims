@@ -43,42 +43,34 @@ import org.apache.parquet.hadoop.ParquetRecordWriter;
 //#endif
 
 import org.pentaho.di.core.RowMetaAndData;
-import org.pentaho.hadoop.shim.api.format.PentahoOutputFormat;
-import org.pentaho.hadoop.shim.api.format.PentahoRecordWriter;
+import org.pentaho.hadoop.shim.api.format.IPentahoParquetOutputFormat;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
+import org.pentaho.hadoop.shim.common.format.parquet.PentahoParquetRecordWriter;
+import org.pentaho.hadoop.shim.common.format.parquet.PentahoParquetWriteSupport;
 
 /**
  * Created by Vasilina_Terehova on 8/3/2017.
  */
-public class PentahoParquetOutputFormat implements PentahoOutputFormat {
+public class PentahoParquetOutputFormat extends HadoopFormatBase implements IPentahoParquetOutputFormat {
 
   private static final Logger logger = Logger.getLogger( PentahoParquetInputFormat.class );
 
-  private final Job job;
+  private Job job;
   private Path outputFile;
   private SchemaDescription schema;
 
-  public PentahoParquetOutputFormat() {
+  public PentahoParquetOutputFormat() throws Exception {
     logger.info( "We are initializing parquet output format" );
 
-    ConfigurationProxy conf;
-    ClassLoader cl = Thread.currentThread().getContextClassLoader();
-    try {
-      Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
-      conf = new ConfigurationProxy();
-    } finally {
-      Thread.currentThread().setContextClassLoader( cl );
-    }
+    inClassloader( () -> {
+      ConfigurationProxy conf = new ConfigurationProxy();
 
-    try {
       job = Job.getInstance( conf );
-    } catch ( IOException ex ) {
-      throw new RuntimeException( ex );
-    }
 
-    job.getConfiguration().set( ParquetOutputFormat.ENABLE_JOB_SUMMARY, "false" );
-    ParquetOutputFormat.setEnableDictionary( job, false );
+      job.getConfiguration().set( ParquetOutputFormat.ENABLE_JOB_SUMMARY, "false" );
+      ParquetOutputFormat.setEnableDictionary( job, false );
+    } );
   }
 
   @Override
@@ -87,26 +79,30 @@ public class PentahoParquetOutputFormat implements PentahoOutputFormat {
   }
 
   @Override
-  public void setOutputFile( String file ) {
-    outputFile = new Path( file );
-    ParquetOutputFormat.setOutputPath( job, outputFile.getParent() );
+  public void setOutputFile( String file ) throws Exception {
+    inClassloader( () -> {
+      outputFile = new Path( file );
+      ParquetOutputFormat.setOutputPath( job, outputFile.getParent() );
+    } );
   }
 
   @Override
-  public void setVersion( VERSION version ) {
-    ParquetProperties.WriterVersion writerVersion;
-    switch ( version ) {
-      case VERSION_1_0:
-        writerVersion = ParquetProperties.WriterVersion.PARQUET_1_0;
-        break;
-      case VERSION_2_0:
-        writerVersion = ParquetProperties.WriterVersion.PARQUET_2_0;
-        break;
-      default:
-        writerVersion = ParquetProperties.WriterVersion.PARQUET_2_0;
-        break;
-    }
-    job.getConfiguration().set( ParquetOutputFormat.WRITER_VERSION, writerVersion.toString() );
+  public void setVersion( VERSION version ) throws Exception {
+    inClassloader( () -> {
+      ParquetProperties.WriterVersion writerVersion;
+      switch ( version ) {
+        case VERSION_1_0:
+          writerVersion = ParquetProperties.WriterVersion.PARQUET_1_0;
+          break;
+        case VERSION_2_0:
+          writerVersion = ParquetProperties.WriterVersion.PARQUET_2_0;
+          break;
+        default:
+          writerVersion = ParquetProperties.WriterVersion.PARQUET_2_0;
+          break;
+      }
+      job.getConfiguration().set( ParquetOutputFormat.WRITER_VERSION, writerVersion.toString() );
+    } );
   }
 
   @Override
@@ -115,22 +111,28 @@ public class PentahoParquetOutputFormat implements PentahoOutputFormat {
   }
 
   @Override
-  public void setRowGroupSize( int size ) {
-    ParquetOutputFormat.setBlockSize( job, size );
+  public void setRowGroupSize( int size ) throws Exception {
+    inClassloader( () -> {
+      ParquetOutputFormat.setBlockSize( job, size );
+    } );
   }
 
   @Override
-  public void setDataPageSize( int size ) {
-    ParquetOutputFormat.setPageSize( job, size );
+  public void setDataPageSize( int size ) throws Exception {
+    inClassloader( () -> {
+      ParquetOutputFormat.setPageSize( job, size );
+    } );
   }
 
   @Override
-  public void setDictionaryPageSize( int size ) {
-    ParquetOutputFormat.setDictionaryPageSize( job, size );
+  public void setDictionaryPageSize( int size ) throws Exception {
+    inClassloader( () -> {
+      ParquetOutputFormat.setDictionaryPageSize( job, size );
+    } );
   }
 
   @Override
-  public PentahoRecordWriter createRecordWriter() {
+  public IPentahoRecordWriter createRecordWriter() throws Exception {
     if ( outputFile == null ) {
       throw new RuntimeException( "Output file is not defined" );
     }
@@ -138,27 +140,25 @@ public class PentahoParquetOutputFormat implements PentahoOutputFormat {
       throw new RuntimeException( "Schema is not defined" );
     }
 
-    FixedParquetOutputFormat nativeParquetOutputFormat =
-        new FixedParquetOutputFormat( new PentahoParquetWriteSupport( schema ) );
+    return inClassloader( () -> {
+      FixedParquetOutputFormat nativeParquetOutputFormat =
+          new FixedParquetOutputFormat( new PentahoParquetWriteSupport( schema ) );
 
-    TaskAttemptID taskAttemptID = new TaskAttemptID( "qq", 111, TaskType.MAP, 11, 11 );
-    TaskAttemptContextImpl task = new TaskAttemptContextImpl( job.getConfiguration(), taskAttemptID );
-    ClassLoader cl = Thread.currentThread().getContextClassLoader();
-    try {
-      Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
+      TaskAttemptID taskAttemptID = new TaskAttemptID( "qq", 111, TaskType.MAP, 11, 11 );
+      TaskAttemptContextImpl task = new TaskAttemptContextImpl( job.getConfiguration(), taskAttemptID );
+      try {
 
-      ParquetRecordWriter<RowMetaAndData> recordWriter =
-          (ParquetRecordWriter<RowMetaAndData>) nativeParquetOutputFormat.getRecordWriter( task );
-      return new PentahoParquetRecordWriter( recordWriter, task );
-    } catch ( IOException e ) {
-      throw new RuntimeException( "Some error accessing parquet files", e );
-    } catch ( InterruptedException e ) {
-      // logging here
-      e.printStackTrace();
-      throw new RuntimeException( "This should never happen " + e );
-    } finally {
-      Thread.currentThread().setContextClassLoader( cl );
-    }
+        ParquetRecordWriter<RowMetaAndData> recordWriter =
+            (ParquetRecordWriter<RowMetaAndData>) nativeParquetOutputFormat.getRecordWriter( task );
+        return new PentahoParquetRecordWriter( recordWriter, task );
+      } catch ( IOException e ) {
+        throw new RuntimeException( "Some error accessing parquet files", e );
+      } catch ( InterruptedException e ) {
+        // logging here
+        e.printStackTrace();
+        throw new RuntimeException( "This should never happen " + e );
+      }
+    } );
   }
 
   public class FixedParquetOutputFormat extends ParquetOutputFormat<RowMetaAndData> {

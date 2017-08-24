@@ -1,6 +1,6 @@
-/*******************************************************************************
+/*! ******************************************************************************
  *
- * Pentaho Big Data
+ * Pentaho Data Integration
  *
  * Copyright (C) 2017 by Pentaho : http://www.pentaho.com
  *
@@ -21,6 +21,24 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.api.format;
 
-public interface IPentahoAvroInput {
+public interface IPentahoAvroInputFormat extends IPentahoInputFormat {
+  /**
+   * Read schema for display to user.
+   */
+  SchemaDescription readSchema( String file ) throws Exception;
 
+  /**
+   * Set schema for file reading.
+   */
+  void setSchema( SchemaDescription schema ) throws Exception;
+
+  /**
+   * Set input file.
+   */
+  void setInputFile( String file ) throws Exception;
+
+  /**
+   * Split size, bytes.
+   */
+  void setSplitSize( long blockSize ) throws Exception;
 }

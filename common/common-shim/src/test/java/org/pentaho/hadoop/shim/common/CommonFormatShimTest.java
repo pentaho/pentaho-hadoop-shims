@@ -27,7 +27,7 @@ import org.junit.Test;
 import org.pentaho.di.core.exception.KettleValueException;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.row.ValueMetaInterface;
-import org.pentaho.hadoop.shim.api.format.PentahoRecordReader;
+import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat.IPentahoRecordReader;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 import org.pentaho.hadoop.shim.common.format.PentahoParquetInputFormat;
 
@@ -47,7 +47,7 @@ public class CommonFormatShimTest {
       pentahoParquetInputFormat.setSchema( s );
       pentahoParquetInputFormat.setInputFile( CommonFormatShimTest.class.getClassLoader().getResource( "sample.pqt" )
           .toExternalForm() );
-      PentahoRecordReader recordReader =
+      IPentahoRecordReader recordReader =
           pentahoParquetInputFormat.createRecordReader( pentahoParquetInputFormat.getSplits().get( 0 ) );
       recordReader.forEach( rowMetaAndData -> {
         RowMetaInterface rowMeta = rowMetaAndData.getRowMeta();
