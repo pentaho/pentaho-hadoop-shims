@@ -30,14 +30,13 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
 import org.apache.log4j.Logger;
-
 //#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
 import org.apache.parquet.format.converter.ParquetMetadataConverter;
+import org.apache.parquet.hadoop.api.ReadSupport;
+import org.apache.parquet.hadoop.metadata.ParquetMetadata;
 import org.apache.parquet.hadoop.ParquetFileReader;
 import org.apache.parquet.hadoop.ParquetInputFormat;
 import org.apache.parquet.hadoop.ParquetRecordReader;
-import org.apache.parquet.hadoop.api.ReadSupport;
-import org.apache.parquet.hadoop.metadata.ParquetMetadata;
 import org.apache.parquet.schema.MessageType;
 //#endif
 //#if shim_type=="CDH" || shim_type=="MAPR"
@@ -106,7 +105,17 @@ public class PentahoParquetInputFormat extends HadoopFormatBase implements IPent
   @Override
   public void setSplitSize( long blockSize ) throws Exception {
     inClassloader( () -> {
-      ParquetInputFormat.setMaxInputSplitSize( job, blockSize );
+      /**
+       * TODO Files splitting is temporary disabled. We need some UI checkbox for allow it, because some parquet files
+       * can't be splitted by errors in previous implementation or other things. Parquet reports source of problem only
+       * to logs, not to exception. See CorruptDeltaByteArrays.requiresSequentialReads().
+       * 
+       * mapr510 and mapr520 doesn't support SPLIT_FILES property
+       */
+      // ParquetInputFormat.setMaxInputSplitSize( job, blockSize );
+//#if shim_type!="MAPR"
+      job.getConfiguration().setBoolean( ParquetInputFormat.SPLIT_FILES, false );
+//#endif
     } );
   }
 
