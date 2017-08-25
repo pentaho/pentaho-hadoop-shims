@@ -140,7 +140,7 @@ public class ParquetConverter {
     }
   }
 
-  private void writeField( SchemaDescription.Field field, RowMetaAndData row, RecordConsumer consumer )
+  private void writeField( SchemaDescription.Field field, int index, RowMetaAndData row, RecordConsumer consumer )
     throws KettleValueException {
     int fieldIndex = row.getRowMeta().indexOfValue( field.pentahoFieldName );
     if ( fieldIndex < 0 ) {
@@ -149,7 +149,7 @@ public class ParquetConverter {
     if ( row.isEmptyValue( field.pentahoFieldName ) ) {
       return;
     }
-    consumer.startField( field.formatFieldName, 0 );
+    consumer.startField( field.formatFieldName, index );
     switch ( field.pentahoValueMetaType ) {
       case ValueMetaInterface.TYPE_NUMBER:
         consumer.addDouble( row.getNumber( fieldIndex, Double.parseDouble( field.defaultValue ) ) );
@@ -190,17 +190,19 @@ public class ParquetConverter {
       default:
         throw new RuntimeException( "Undefined type: " + field.pentahoValueMetaType );
     }
-    consumer.endField( field.formatFieldName, 0 );
+    consumer.endField( field.formatFieldName, index );
   }
 
   public void writeRow( RowMetaAndData row, RecordConsumer consumer ) {
     consumer.startMessage();
+    int index = 0;
     for ( SchemaDescription.Field f : schema ) {
       if ( f.formatFieldName == null ) {
         continue;
       }
       try {
-        writeField( f, row, consumer );
+        writeField( f, index, row, consumer );
+        index++;
       } catch ( KettleValueException ex ) {
         throw new RuntimeException( ex );
       }
