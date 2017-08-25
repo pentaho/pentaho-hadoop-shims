@@ -8,14 +8,11 @@
     <artifactId>pentaho-ce-jar-parent-pom</artifactId>
     <version>8.0-SNAPSHOT</version>
   </parent>
+  
   <artifactId>pentaho-hadoop-shims</artifactId>
   <version>8.0-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <modules>
-    <module>api</module>
-    <module>common</module>
-    <module>shims</module>
-  </modules>
+
   <properties>
     <junit.version>4.11</junit.version>
     <eula-wrap_create-dist-phase></eula-wrap_create-dist-phase>
@@ -31,6 +28,7 @@
     <dependency.kettle.revision>8.0-SNAPSHOT</dependency.kettle.revision>
     <eula-wrap_assign-deps-to-properties-phase></eula-wrap_assign-deps-to-properties-phase>
   </properties>
+  
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -160,6 +158,7 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+  
   <build>
     <plugins>
       <plugin>
@@ -176,4 +175,33 @@
       </plugin>
     </plugins>
   </build>
+  
+  <profiles>
+  
+    <profile>
+      <id>api</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>api</module>
+      </modules>
+    </profile>
+    
+    <profile>
+      <id>shims</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>common</module>
+        <module>shims</module>
+      </modules>
+    </profile>
+    
+  </profiles>
 </project>
