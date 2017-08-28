@@ -427,6 +427,18 @@
         <module>emr56</module>
       </modules>
     </profile>
+
+    <profile>
+      <id>emr58</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>emr58</module>
+      </modules>
+    </profile>
     
     <profile>
       <id>hdi35</id>
