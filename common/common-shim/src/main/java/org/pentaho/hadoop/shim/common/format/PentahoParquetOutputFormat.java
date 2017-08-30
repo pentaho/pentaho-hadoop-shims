@@ -35,11 +35,13 @@ import org.apache.log4j.Logger;
 import org.apache.parquet.column.ParquetProperties;
 import org.apache.parquet.hadoop.ParquetOutputFormat;
 import org.apache.parquet.hadoop.ParquetRecordWriter;
+import org.apache.parquet.hadoop.metadata.CompressionCodecName;
 //#endif
 //#if shim_type=="CDH" || shim_type=="MAPR"
 //$import parquet.column.ParquetProperties;
 //$import parquet.hadoop.ParquetOutputFormat;
 //$import parquet.hadoop.ParquetRecordWriter;
+//$import parquet.hadoop.metadata.CompressionCodecName;
 //#endif
 
 import org.pentaho.di.core.RowMetaAndData;
@@ -106,8 +108,32 @@ public class PentahoParquetOutputFormat extends HadoopFormatBase implements IPen
   }
 
   @Override
-  public void setEncoding( ENCODING encoding ) {
-    // TODO implement encoding change
+  public void setCompression( COMPRESSION comp ) throws Exception {
+    inClassloader( () -> {
+      CompressionCodecName codec;
+      switch ( comp ) {
+        case SNAPPY:
+          codec = CompressionCodecName.SNAPPY;
+          break;
+        case GZIP:
+          codec = CompressionCodecName.GZIP;
+          break;
+        case LZO:
+          codec = CompressionCodecName.LZO;
+          break;
+        default:
+          codec = CompressionCodecName.UNCOMPRESSED;
+          break;
+      }
+      ParquetOutputFormat.setCompression( job, codec );
+    } );
+  }
+
+  @Override
+  public void enableDictionary( boolean useDictionary ) throws Exception {
+    inClassloader( () -> {
+      ParquetOutputFormat.setEnableDictionary( job, useDictionary );
+    } );
   }
 
   @Override

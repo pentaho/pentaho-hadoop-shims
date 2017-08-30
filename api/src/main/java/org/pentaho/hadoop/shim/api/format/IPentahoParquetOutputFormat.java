@@ -26,8 +26,8 @@ public interface IPentahoParquetOutputFormat extends IPentahoOutputFormat {
     VERSION_1_0, VERSION_2_0
   }
 
-  enum ENCODING {
-    PLAIN, DICTIONARY, BIT_PACKED, RLE
+  enum COMPRESSION {
+    UNCOMPRESSED, SNAPPY, GZIP, LZO
   }
 
   void setSchema( SchemaDescription schema ) throws Exception;
@@ -36,7 +36,9 @@ public interface IPentahoParquetOutputFormat extends IPentahoOutputFormat {
 
   void setVersion( VERSION ver ) throws Exception;
 
-  void setEncoding( ENCODING enc ) throws Exception;
+  void enableDictionary( boolean useDictionary ) throws Exception;
+
+  void setCompression( COMPRESSION comp ) throws Exception;
 
   /**
    * Sets row group size
