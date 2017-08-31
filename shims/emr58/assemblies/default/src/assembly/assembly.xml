@@ -23,6 +23,7 @@
         <include>org.apache.pig:pig</include>
         <include>pentaho:pentaho-hdfs-vfs</include>
         <include>pentaho:hadoop2-windows-patch</include>
+        <include>org.apache.parquet:parquet-hadoop-bundle</include>
       </includes>
       <excludes>
         <exclude>javax.xml.stream:*</exclude>
