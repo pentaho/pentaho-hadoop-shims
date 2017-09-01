@@ -16,7 +16,7 @@
     <org.apache.pig.version>0.15.0-mapr-1603</org.apache.pig.version>
     <com.sun.jersey.version>1.9</com.sun.jersey.version>
     <javax.inject.version>1</javax.inject.version>
-    <org.apache.avro.version>1.7.4</org.apache.avro.version>
+    <org.apache.avro.version>1.8.0</org.apache.avro.version>
     <org.apache.zookeeper.version>3.4.5-mapr-1503</org.apache.zookeeper.version>
     <org.apache.thrift.version>0.9.2</org.apache.thrift.version>
     <org.tukaani.version>1.0</org.tukaani.version>
@@ -42,6 +42,7 @@
     <javax.xml.stream.version>1.0-2</javax.xml.stream.version>
     <org.mortbay.jetty.version>6.1.26</org.mortbay.jetty.version>
     <org.apache.hbase.version>1.1.1-mapr-1602</org.apache.hbase.version>
+	<com.fasterxml.jackson.core.version>2.5.3</com.fasterxml.jackson.core.version>
     <net.sf.flexjson>2.1</net.sf.flexjson>
     <com.google.inject.extensions.version>3.0</com.google.inject.extensions.version>
     <com.google.inject.version>3.0</com.google.inject.version>
@@ -238,6 +239,42 @@
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-hadoop-compat</artifactId>
       <version>${org.apache.hbase.version}</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>*</artifactId>
+          <groupId>*</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${com.fasterxml.jackson.core.version}</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>*</artifactId>
+          <groupId>*</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>${com.fasterxml.jackson.core.version}</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>*</artifactId>
+          <groupId>*</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>${com.fasterxml.jackson.core.version}</version>
       <scope>compile</scope>
       <exclusions>
         <exclusion>

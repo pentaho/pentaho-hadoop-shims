@@ -12,6 +12,7 @@
   <version>8.0-SNAPSHOT</version>
   <properties>
     <log4j.version>1.2.15</log4j.version>
+    <com.fasterxml.jackson.core.version>2.5.3</com.fasterxml.jackson.core.version>
     <xstream.version>1.4.2</xstream.version>
     <maprfs.version>5.2.0-mapr</maprfs.version>
     <commons-configuration.version>1.6</commons-configuration.version>
@@ -29,6 +30,42 @@
       <artifactId>pentaho-hadoop-shims-mapr520-scope-default</artifactId>
       <version>${project.version}</version>
       <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${com.fasterxml.jackson.core.version}</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>*</artifactId>
+          <groupId>*</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>${com.fasterxml.jackson.core.version}</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>*</artifactId>
+          <groupId>*</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>${com.fasterxml.jackson.core.version}</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>*</artifactId>
+          <groupId>*</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <!--here test dependencies-->
     <dependency>
@@ -88,7 +125,7 @@
       <artifactId>hadoop-mapreduce-client-hs</artifactId>
       <version>${org.apache.hadoop.version}</version>
       <scope>provided</scope>
-    </dependency>
+     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-mapreduce-client-common</artifactId>
