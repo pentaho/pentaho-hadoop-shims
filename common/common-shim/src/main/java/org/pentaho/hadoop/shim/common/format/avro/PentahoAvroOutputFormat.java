@@ -39,11 +39,16 @@ public class PentahoAvroOutputFormat implements IPentahoAvroOutputFormat {
   @Override
   public void setSchema( SchemaDescription schema ) throws Exception {
     // TODO Auto-generated method stub
-
   }
 
   @Override
   public void setOutputFile( String file ) throws Exception {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void setCompression( COMPRESSION compression ) {
     // TODO Auto-generated method stub
 
   }
