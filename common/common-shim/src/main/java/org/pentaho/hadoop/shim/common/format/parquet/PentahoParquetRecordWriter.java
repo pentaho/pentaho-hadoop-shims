@@ -37,7 +37,7 @@ import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat.IPentahoRecordWri
 import java.io.IOException;
 
 /**
- * Created by Vasilina_Terehova on 8/3/2017.
+ * Created by tkafalas 9/1/2017.
  */
 public class PentahoParquetRecordWriter implements IPentahoRecordWriter {
   private final ParquetRecordWriter<RowMetaAndData> nativeParquetRecordWriter;

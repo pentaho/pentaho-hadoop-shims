@@ -21,31 +21,44 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.common.format.avro;
 
+import org.apache.avro.Schema;
+import org.apache.avro.file.DataFileWriter;
+import org.apache.avro.generic.GenericDatumWriter;
+import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.io.DatumWriter;
 import org.pentaho.hadoop.shim.api.format.IPentahoAvroOutputFormat;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 
+import java.io.File;
+
 /**
  * 
- * @author Alexander Buloichik
+ * @author tkafalas
  */
 public class PentahoAvroOutputFormat implements IPentahoAvroOutputFormat {
+  private Schema schema;
+  private String file;
+  private SchemaDescription schemaDescription;
 
   @Override
   public IPentahoRecordWriter createRecordWriter() throws Exception {
-    // TODO Auto-generated method stub
-    return null;
+    schema = ( new AvroSchemaConverter( schemaDescription ) ).createAvroSchema();
+    DatumWriter<GenericRecord> datumWriter = new GenericDatumWriter<GenericRecord>( schema );
+    DataFileWriter<GenericRecord> dataFileWriter = new DataFileWriter<GenericRecord>( datumWriter );
+    File contentFile = new File( file );
+    dataFileWriter.create( schema, contentFile );
+    return new PentahoAvroRecordWriter( dataFileWriter, schema, null );
   }
 
   @Override
-  public void setSchema( SchemaDescription schema ) throws Exception {
-    // TODO Auto-generated method stub
+  public void setSchema( SchemaDescription schemaDescription ) throws Exception {
+    this.schemaDescription = schemaDescription;
   }
 
   @Override
   public void setOutputFile( String file ) throws Exception {
-    // TODO Auto-generated method stub
-
-  }
+    this.file = file;
+ }
 
   @Override
   public void setCompression( COMPRESSION compression ) {
