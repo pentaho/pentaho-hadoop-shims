@@ -22,7 +22,14 @@
 package org.pentaho.hadoop.shim.api.format;
 
 public interface IPentahoAvroOutputFormat extends IPentahoOutputFormat {
+
+  enum COMPRESSION {
+    UNCOMPRESSED, SNAPPY, DEFLATE
+  }
+
   void setSchema( SchemaDescription schema ) throws Exception;
 
   void setOutputFile( String file ) throws Exception;
+
+  void setCompression( COMPRESSION compression );
 }
