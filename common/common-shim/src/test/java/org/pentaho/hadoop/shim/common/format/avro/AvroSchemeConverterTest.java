@@ -65,15 +65,14 @@ public class AvroSchemeConverterTest {
       field.defaultValue = fieldData[ i ][ DEFAULT_VALUE ];
       schemaDescription.addField( field );
     }
-    avroSchemaConverter = new AvroSchemaConverter( schemaDescription );
+    avroSchemaConverter = new AvroSchemaConverter( schemaDescription, "sampleName", "sampleRecord", "sampleDoc" );
   }
 
   @Test
   public void testCreateAvroSchema() {
-    Schema schema = avroSchemaConverter.createAvroSchema();
+    Schema schema = avroSchemaConverter.getAvroSchema();
     for ( int i = 0; i < fieldData.length; i++ ) {
       Schema.Field f = schema.getField( fieldData[ i ][ AVRO_FIELD_NAME ] );
-      Object o = f.defaultVal();
 
       //Check default values
       if ( convertDefault( i ) == null ) {
