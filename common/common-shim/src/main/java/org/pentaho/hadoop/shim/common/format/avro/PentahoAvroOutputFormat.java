@@ -32,7 +32,6 @@ import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 import java.io.File;
 
 /**
- * 
  * @author tkafalas
  */
 public class PentahoAvroOutputFormat implements IPentahoAvroOutputFormat {
@@ -58,7 +57,7 @@ public class PentahoAvroOutputFormat implements IPentahoAvroOutputFormat {
   @Override
   public void setOutputFile( String file ) throws Exception {
     this.file = file;
- }
+  }
 
   @Override
   public void setCompression( COMPRESSION compression ) {
