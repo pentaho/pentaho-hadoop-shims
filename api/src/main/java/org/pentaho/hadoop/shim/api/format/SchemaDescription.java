@@ -77,6 +77,10 @@ public class SchemaDescription implements Iterable<SchemaDescription.Field> {
     return r;
   }
 
+  public boolean isEmpty() {
+    return fields.isEmpty();
+  }
+
   @Override
   public Iterator<Field> iterator() {
     return fields.iterator();
