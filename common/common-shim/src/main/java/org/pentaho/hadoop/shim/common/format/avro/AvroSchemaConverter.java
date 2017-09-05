@@ -21,11 +21,20 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.common.format.avro;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import java.io.IOException;
+
 import org.apache.avro.Schema;
+import org.pentaho.di.core.exception.KettleFileException;
 import org.pentaho.di.core.row.ValueMetaInterface;
+import org.pentaho.di.core.vfs.KettleVFS;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 
 /**
@@ -33,8 +42,6 @@ import org.pentaho.hadoop.shim.api.format.SchemaDescription;
  * Created by tkafalas on 8/29/2017.
  */
 public class AvroSchemaConverter {
-  private SchemaDescription schemaDescription;
-  private ObjectMapper mapper = new ObjectMapper();
 
   private final String AVRO_TYPE_STRING = "string";
   private final String AVRO_TYPE_DOUBLE = "double";
@@ -45,32 +52,42 @@ public class AvroSchemaConverter {
   private final String AVRO_TYPE_TIMESTAMP = "long";
   private final String AVRO_TYPE_NULL = "null";
   private final String AVRO_TYPE_RECORD = "record";
+  private final String AVRO_DOC = "doc";
   private final String AVRO_FIELDS_NODE = "fields";
   private final String AVRO_LOGICAL_TYPE = "logicalType";
   private final String AVRO_NAMESPACE_NODE = "namespace";
   private final String AVRO_NAME_NODE = "name";
   private final String AVRO_TYPE_NODE = "type";
   private final String AVRO_DEFAULT_NODE = "default";
-  Schema schema;
 
-  public AvroSchemaConverter( SchemaDescription schemaDescription ) {
-    this.schemaDescription = schemaDescription;
+  private ObjectMapper mapper = new ObjectMapper();
+  private final ObjectNode avroSchema;
+
+  public AvroSchemaConverter( SchemaDescription schemaDescription, String nameSpace, String recordName, String docValue ) {
+    if ( schemaDescription != null ) {
+      avroSchema = mapper.createObjectNode();
+      ArrayNode fieldNodes = mapper.createArrayNode();
+
+      schemaDescription.forEach( f -> fieldNodes.add( convertField( f ) ) );
+      avroSchema.put( AVRO_NAMESPACE_NODE, nameSpace );
+      avroSchema.put( AVRO_TYPE_NODE, AVRO_TYPE_RECORD );
+      avroSchema.put( AVRO_NAME_NODE, recordName );
+      avroSchema.put( AVRO_DOC, docValue );
+      avroSchema.putPOJO( AVRO_FIELDS_NODE, fieldNodes );
+    } else {
+      avroSchema = null;
+    }
   }
 
-  public Schema createAvroSchema() {
-    if ( schemaDescription == null ) {
-      return null;
+  public void writeAvroSchemaToFile( String schemaFilename ) throws JsonGenerationException, JsonMappingException, KettleFileException, IOException {
+    if ( avroSchema != null && schemaFilename != null ) {
+      ObjectWriter writer = mapper.writer( new DefaultPrettyPrinter() );
+      writer.writeValue( KettleVFS.getOutputStream( schemaFilename, false ), avroSchema );
     }
-    ObjectNode rootNode = mapper.createObjectNode();
-    ArrayNode fieldNodes = mapper.createArrayNode();
+  }
 
-    schemaDescription.forEach( f -> fieldNodes.add( convertField( f ) ) );
-    rootNode.put( AVRO_NAMESPACE_NODE, "myNamespace" );
-    rootNode.put( AVRO_TYPE_NODE, AVRO_TYPE_RECORD );
-    rootNode.put( AVRO_NAME_NODE, "testRecord" );
-    rootNode.putPOJO( AVRO_FIELDS_NODE, fieldNodes );
-    Schema schema = new Schema.Parser().parse( rootNode.toString() );
-    return schema;
+  public Schema getAvroSchema() {
+    return avroSchema == null ? null : new Schema.Parser().parse( avroSchema.toString() );
   }
 
   private ObjectNode convertField( SchemaDescription.Field f ) {
