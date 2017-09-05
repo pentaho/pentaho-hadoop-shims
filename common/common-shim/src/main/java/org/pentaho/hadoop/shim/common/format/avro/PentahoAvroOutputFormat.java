@@ -33,7 +33,6 @@ import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 import java.io.File;
 
 /**
- * 
  * @author tkafalas
  */
 public class PentahoAvroOutputFormat implements IPentahoAvroOutputFormat {
