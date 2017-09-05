@@ -27,9 +27,17 @@ public interface IPentahoAvroOutputFormat extends IPentahoOutputFormat {
     UNCOMPRESSED, SNAPPY, DEFLATE
   }
 
-  void setSchema( SchemaDescription schema ) throws Exception;
+  void setSchemaDescription( SchemaDescription schema ) throws Exception;
 
   void setOutputFile( String file ) throws Exception;
 
   void setCompression( COMPRESSION compression );
+
+  void setNameSpace( String namespace );
+
+  void setRecordName( String recordName );
+
+  void setDocValue( String docValue );
+  
+  void setSchemaFilename( String schemaFilename );
 }
