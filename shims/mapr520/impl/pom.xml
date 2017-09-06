@@ -13,7 +13,7 @@
   <properties>
     <log4j.version>1.2.15</log4j.version>
     <com.fasterxml.jackson.core.version>2.5.3</com.fasterxml.jackson.core.version>
-    <xstream.version>1.4.2</xstream.version>
+    <xstream.version>1.4.9</xstream.version>
     <maprfs.version>5.2.0-mapr</maprfs.version>
     <commons-configuration.version>1.6</commons-configuration.version>
     <shim.type>MAPR</shim.type>
