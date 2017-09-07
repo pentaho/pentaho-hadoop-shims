@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-common</artifactId>
-    <version>7.1-SNAPSHOT</version>
+    <version>71.2017.09.00-62</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-common-pig-shim-1.1</artifactId>
-  <packaging>jar</packaging>
+  <version>71.2017.09.00-62</version>
   <properties>
     <org.apache.pig.version>0.13.0</org.apache.pig.version>
   </properties>

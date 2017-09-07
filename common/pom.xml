@@ -1,22 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims</artifactId>
-    <version>7.1-SNAPSHOT</version>
+    <version>71.2017.09.00-62</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-common</artifactId>
+  <version>71.2017.09.00-62</version>
   <packaging>pom</packaging>
-  <properties>
-    <org.apache.hbase.version>1.1.1</org.apache.hbase.version>
-    <org.apache.hadoop.version>0.20.2</org.apache.hadoop.version>
-    <org.apache.hive.version>0.13.1</org.apache.hive.version>
-    <org.apache.sqoop.version>1.4.6.2.4.0.0-169</org.apache.sqoop.version>
-    <org.apache.pig.version>0.8.0</org.apache.pig.version>
-    <com.thoughtworks.xstream.version>1.4.9</com.thoughtworks.xstream.version>
-  </properties>
   <modules>
     <module>common-shim</module>
     <module>common-hbase-comparators-api</module>
@@ -28,6 +21,14 @@
     <module>mapred</module>
     <module>hbase</module>
   </modules>
+  <properties>
+    <org.apache.hadoop.version>0.20.2</org.apache.hadoop.version>
+    <org.apache.hive.version>0.13.1</org.apache.hive.version>
+    <org.apache.sqoop.version>1.4.6.2.4.0.0-169</org.apache.sqoop.version>
+    <org.apache.pig.version>0.8.0</org.apache.pig.version>
+    <com.thoughtworks.xstream.version>1.4.9</com.thoughtworks.xstream.version>
+    <org.apache.hbase.version>1.1.1</org.apache.hbase.version>
+  </properties>
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -97,8 +98,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>hadoop-core</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -122,7 +123,6 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
         <executions>
           <execution>

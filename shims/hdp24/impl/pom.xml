@@ -1,49 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-hdp24-reactor</artifactId>
-    <version>7.1-SNAPSHOT</version>
+    <version>71.2017.09.00-62</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-hdp24</artifactId>
-  <packaging>jar</packaging>
-  <version>7.1-SNAPSHOT</version>
+  <version>71.2017.09.00-62</version>
   <properties>
-    <log4j.version>1.2.17</log4j.version>
+    <org.cloudera.htrace.version>2.04</org.cloudera.htrace.version>
+    <org.apache.pig.version>0.15.0.2.4.0.0-169</org.apache.pig.version>
+    <org.apache.hadoop.version>2.7.1.2.4.0.0-169</org.apache.hadoop.version>
+    <org.mortbay.jetty.version>6.1.26.hwx</org.mortbay.jetty.version>
+    <org.tukaani.version>1.0</org.tukaani.version>
+    <javax.mail.version>1.4.1</javax.mail.version>
+    <org.apache.zookeeper.version>3.4.6.2.4.0.0-169</org.apache.zookeeper.version>
+    <org.xerial.snappy.version>1.0.5</org.xerial.snappy.version>
+    <commons-io.version>2.4</commons-io.version>
+    <pentaho-hadoop2-windows-patch.version>08072014</pentaho-hadoop2-windows-patch.version>
+    <org.apache.derby.version>10.10.2.0</org.apache.derby.version>
+    <org.apache.curator.version>2.6.0</org.apache.curator.version>
+    <dk.brics.automaton.version>1.11-8</dk.brics.automaton.version>
+    <commons-pool.version>1.5.4</commons-pool.version>
     <org.codehaus.jackson.version>1.9.2</org.codehaus.jackson.version>
     <org.slf4j.version>1.7.5</org.slf4j.version>
-    <org.apache.avro.version>1.7.5</org.apache.avro.version>
-    <jline.version>2.12</jline.version>
-    <org.apache.hadoop.version>2.7.1.2.4.0.0-169</org.apache.hadoop.version>
-    <org.apache.zookeeper.version>3.4.6.2.4.0.0-169</org.apache.zookeeper.version>
-    <org.apache.derby.version>10.10.2.0</org.apache.derby.version>
-    <com.google.code.findbugs.version>3.0.0</com.google.code.findbugs.version>
-    <dk.brics.automaton.version>1.11-8</dk.brics.automaton.version>
-    <org.cloudera.htrace.version>2.04</org.cloudera.htrace.version>
-    <org.mortbay.jetty.version>6.1.26.hwx</org.mortbay.jetty.version>
-    <org.apache.hbase.version>1.1.2.2.4.0.0-169</org.apache.hbase.version>
-    <org.apache.sqoop.version>1.4.6.2.4.0.0-169</org.apache.sqoop.version>
-    <com.google.guava.version>14.0.1</com.google.guava.version>
-    <org.apache.oozie.version>4.2.0.2.4.0.0-169</org.apache.oozie.version>
-    <org.apache.curator.version>2.6.0</org.apache.curator.version>
-    <pentaho-hadoop2-windows-patch.version>08072014</pentaho-hadoop2-windows-patch.version>
-    <com.google.protobuf.version>2.5.0</com.google.protobuf.version>
-    <org.sonatype.sisu.inject.version>2.2.1-v20090111</org.sonatype.sisu.inject.version>
-    <commons-logging.version>1.1.3</commons-logging.version>
-    <javax.mail.version>1.4.1</javax.mail.version>
-    <org.xerial.snappy.version>1.0.5</org.xerial.snappy.version>
-    <com.thoughtworks.xstream.version>1.4.2</com.thoughtworks.xstream.version>
-    <org.tukaani.version>1.0</org.tukaani.version>
-    <org.apache.pig.version>0.15.0.2.4.0.0-169</org.apache.pig.version>    
-    <javax.servlet.jsp.version>2.1</javax.servlet.jsp.version>
-    <org.apache.hive.version>1.2.1000.2.4.0.0-169</org.apache.hive.version>
-    <commons-pool.version>1.5.4</commons-pool.version>
     <commons-net.version>3.1</commons-net.version>
-    <commons-codec.version>1.4</commons-codec.version>
-    <commons-io.version>2.4</commons-io.version>
+    <com.google.protobuf.version>2.5.0</com.google.protobuf.version>
+    <org.apache.avro.version>1.7.5</org.apache.avro.version>
+    <org.apache.hive.version>1.2.1000.2.4.0.0-169</org.apache.hive.version>
+    <com.thoughtworks.xstream.version>1.4.2</com.thoughtworks.xstream.version>
+    <org.apache.oozie.version>4.2.0.2.4.0.0-169</org.apache.oozie.version>
     <joda-time.version>2.5</joda-time.version>
+    <javax.servlet.jsp.version>2.1</javax.servlet.jsp.version>
+    <org.apache.hbase.version>1.1.2.2.4.0.0-169</org.apache.hbase.version>
+    <commons-logging.version>1.1.3</commons-logging.version>
+    <jline.version>2.12</jline.version>
+    <com.google.code.findbugs.version>3.0.0</com.google.code.findbugs.version>
+    <org.sonatype.sisu.inject.version>2.2.1-v20090111</org.sonatype.sisu.inject.version>
+    <commons-codec.version>1.4</commons-codec.version>
+    <com.google.guava.version>14.0.1</com.google.guava.version>
+    <log4j.version>1.2.17</log4j.version>
+    <org.apache.sqoop.version>1.4.6.2.4.0.0-169</org.apache.sqoop.version>
   </properties>
   <dependencies>
     <dependency>
@@ -69,108 +68,108 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>asm</groupId>
           <artifactId>asm</artifactId>
+          <groupId>asm</groupId>
         </exclusion>
         <exclusion>
-          <groupId>com.google.code.findbugs</groupId>
           <artifactId>jsr305</artifactId>
+          <groupId>com.google.code.findbugs</groupId>
         </exclusion>
         <exclusion>
-          <groupId>com.google.guava</groupId>
           <artifactId>guava</artifactId>
+          <groupId>com.google.guava</groupId>
         </exclusion>
         <exclusion>
-          <groupId>com.thoughtworks.paranamer</groupId>
           <artifactId>paranamer</artifactId>
+          <groupId>com.thoughtworks.paranamer</groupId>
         </exclusion>
         <exclusion>
-          <groupId>commons-cli</groupId>
           <artifactId>commons-cli</artifactId>
+          <groupId>commons-cli</groupId>
         </exclusion>
         <exclusion>
-          <groupId>commons-codec</groupId>
           <artifactId>commons-codec</artifactId>
+          <groupId>commons-codec</groupId>
         </exclusion>
         <exclusion>
-          <groupId>commons-lang</groupId>
           <artifactId>commons-lang</artifactId>
+          <groupId>commons-lang</groupId>
         </exclusion>
         <exclusion>
-          <groupId>commons-logging</groupId>
           <artifactId>commons-logging</artifactId>
+          <groupId>commons-logging</groupId>
         </exclusion>
         <exclusion>
-          <groupId>io.netty</groupId>
           <artifactId>netty</artifactId>
+          <groupId>io.netty</groupId>
         </exclusion>
         <exclusion>
-          <groupId>javax.activation</groupId>
           <artifactId>activation</artifactId>
+          <groupId>javax.activation</groupId>
         </exclusion>
         <exclusion>
-          <groupId>javax.servlet</groupId>
           <artifactId>servlet-api</artifactId>
+          <groupId>javax.servlet</groupId>
         </exclusion>
         <exclusion>
-          <groupId>jline</groupId>
           <artifactId>jline</artifactId>
+          <groupId>jline</groupId>
         </exclusion>
         <exclusion>
-          <groupId>org.apache.avro</groupId>
           <artifactId>avro</artifactId>
+          <groupId>org.apache.avro</groupId>
         </exclusion>
         <exclusion>
-          <groupId>org.apache.commons</groupId>
           <artifactId>commons-compress</artifactId>
+          <groupId>org.apache.commons</groupId>
         </exclusion>
         <exclusion>
-          <groupId>org.apache.curator</groupId>
           <artifactId>curator-client</artifactId>
+          <groupId>org.apache.curator</groupId>
         </exclusion>
         <exclusion>
-          <groupId>org.apache.curator</groupId>
           <artifactId>curator-framework</artifactId>
-        </exclusion>
-        <exclusion>
           <groupId>org.apache.curator</groupId>
+        </exclusion>
+        <exclusion>
           <artifactId>curator-recipes</artifactId>
+          <groupId>org.apache.curator</groupId>
         </exclusion>
         <exclusion>
-          <groupId>org.apache.httpcomponents</groupId>
           <artifactId>httpclient</artifactId>
-        </exclusion>
-        <exclusion>
           <groupId>org.apache.httpcomponents</groupId>
+        </exclusion>
+        <exclusion>
           <artifactId>httpcore</artifactId>
+          <groupId>org.apache.httpcomponents</groupId>
         </exclusion>
         <exclusion>
-          <groupId>org.codehaus.jackson</groupId>
           <artifactId>jackson-core-asl</artifactId>
-        </exclusion>
-        <exclusion>
           <groupId>org.codehaus.jackson</groupId>
+        </exclusion>
+        <exclusion>
           <artifactId>jackson-mapper-asl</artifactId>
+          <groupId>org.codehaus.jackson</groupId>
         </exclusion>
         <exclusion>
-          <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
-        </exclusion>
-        <exclusion>
           <groupId>org.slf4j</groupId>
+        </exclusion>
+        <exclusion>
           <artifactId>slf4j-log4j12</artifactId>
+          <groupId>org.slf4j</groupId>
         </exclusion>
         <exclusion>
-          <groupId>org.tukaani</groupId>
           <artifactId>xz</artifactId>
+          <groupId>org.tukaani</groupId>
         </exclusion>
         <exclusion>
-          <groupId>org.xerial.snappy</groupId>
           <artifactId>snappy-java</artifactId>
+          <groupId>org.xerial.snappy</groupId>
         </exclusion>
         <exclusion>
-          <groupId>commons-beanutils</groupId>
           <artifactId>commons-beanutils-core</artifactId>
+          <groupId>commons-beanutils</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -181,8 +180,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -194,8 +193,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -206,8 +205,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -218,8 +217,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -230,8 +229,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -246,8 +245,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -258,8 +257,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -270,8 +269,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -282,8 +281,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -294,8 +293,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -306,8 +305,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -318,8 +317,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -330,8 +329,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -342,8 +341,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -354,8 +353,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -372,8 +371,8 @@
       <scope>provided</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -416,8 +415,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -428,8 +427,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -440,8 +439,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -452,8 +451,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -464,8 +463,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -476,8 +475,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -488,8 +487,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -500,8 +499,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -512,8 +511,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -524,8 +523,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -536,8 +535,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -548,8 +547,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -560,8 +559,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -572,8 +571,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -584,8 +583,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -596,8 +595,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -608,8 +607,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -620,8 +619,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -632,8 +631,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -644,8 +643,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -656,8 +655,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -668,8 +667,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -680,8 +679,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -692,8 +691,8 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -712,7 +711,6 @@
         <artifactId>build-helper-maven-plugin</artifactId>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
           <execution>
