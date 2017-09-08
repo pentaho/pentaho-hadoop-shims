@@ -21,36 +21,87 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.common.format.avro;
 
+import org.apache.avro.Schema;
+import org.apache.avro.file.CodecFactory;
+import org.apache.avro.file.DataFileWriter;
+import org.apache.avro.generic.GenericDatumWriter;
+import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.io.DatumWriter;
+import org.pentaho.di.core.vfs.KettleVFS;
 import org.pentaho.hadoop.shim.api.format.IPentahoAvroOutputFormat;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 
+import java.util.zip.Deflater;
+
 /**
- * 
- * @author Alexander Buloichik
+ * @author tkafalas
  */
 public class PentahoAvroOutputFormat implements IPentahoAvroOutputFormat {
+  private Schema schema;
+  private String file;
+  private SchemaDescription schemaDescription;
+  private CodecFactory codecFactory;
+
+  private String nameSpace;
+  private String recordName;
+  private String docValue;
+  private String schemaFilename;
 
   @Override
   public IPentahoRecordWriter createRecordWriter() throws Exception {
-    // TODO Auto-generated method stub
-    return null;
+    AvroSchemaConverter converter = new AvroSchemaConverter( schemaDescription, nameSpace, recordName, docValue );
+    schema = converter.getAvroSchema();
+    converter.writeAvroSchemaToFile( schemaFilename );
+    DatumWriter<GenericRecord> datumWriter = new GenericDatumWriter<GenericRecord>( schema );
+    DataFileWriter<GenericRecord> dataFileWriter = new DataFileWriter<GenericRecord>( datumWriter );
+    dataFileWriter.setCodec( codecFactory );
+    dataFileWriter.create( schema, KettleVFS.getOutputStream( file, false ) );
+    return new PentahoAvroRecordWriter( dataFileWriter, schema, null );
   }
 
   @Override
-  public void setSchema( SchemaDescription schema ) throws Exception {
-    // TODO Auto-generated method stub
+  public void setSchemaDescription( SchemaDescription schemaDescription ) throws Exception {
+    this.schemaDescription = schemaDescription;
   }
 
   @Override
   public void setOutputFile( String file ) throws Exception {
-    // TODO Auto-generated method stub
-
+    this.file = file;
   }
 
   @Override
   public void setCompression( COMPRESSION compression ) {
-    // TODO Auto-generated method stub
+    switch ( compression ) {
+      case SNAPPY:
+        codecFactory = CodecFactory.snappyCodec();
+        break;
+      case DEFLATE:
+        codecFactory = CodecFactory.deflateCodec( Deflater.DEFAULT_COMPRESSION );
+        break;
+      default:
+        codecFactory = CodecFactory.nullCodec();
+        break;
+    }
+  }
 
+  @Override
+  public void setNameSpace( String namespace ) {
+    this.nameSpace = namespace;
+  }
+
+  @Override
+  public void setRecordName( String recordName ) {
+    this.recordName = recordName;
+  }
+
+  @Override
+  public void setDocValue( String docValue ) {
+    this.docValue = docValue;
+  }
+
+  @Override
+  public void setSchemaFilename( String schemaFilename ) {
+    this.schemaFilename = schemaFilename;
   }
 
 }

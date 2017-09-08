@@ -29,6 +29,7 @@
         <include>pentaho:pentaho-hdfs-vfs</include>
         <include>pentaho:hadoop2-windows-patch</include>
         <include>com.twitter:parquet-hadoop-bundle</include>
+        <include>org.apache.avro:avro</include>
       </includes>
       <excludes>
         <exclude>*:tests:*</exclude>

@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2017 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -40,8 +40,11 @@ import org.pentaho.hadoop.shim.api.fs.Path;
 public class FileSystemProxyTest {
 
   @Test( expected = NullPointerException.class )
-  public void instantiation_null_delegate() {
-    new FileSystemProxy( null );
+  public void instantiation_null_delegate() throws IOException {
+    FileSystemProxy proxy = new FileSystemProxy( null );
+    if ( proxy != null ) {
+      proxy.close();
+    }
   }
 
   private Configuration getLocalFileSystemConfiguration() {
@@ -55,6 +58,9 @@ public class FileSystemProxyTest {
     FileSystem delegate = FileSystem.get( new Configuration() );
     FileSystemProxy proxy = new FileSystemProxy( delegate );
     assertEquals( delegate, proxy.getDelegate() );
+    if ( proxy != null ) {
+      proxy.close();
+    }
   }
 
   @Test
@@ -65,6 +71,9 @@ public class FileSystemProxyTest {
     Path p = proxy.asPath( "/" );
     assertNotNull( p );
     assertEquals( new URI( "/" ), p.toUri() );
+    if ( proxy != null ) {
+      proxy.close();
+    }
   }
 
   @Test
@@ -79,6 +88,9 @@ public class FileSystemProxyTest {
     Path test = proxy.asPath( p, "test" );
     assertNotNull( test );
     assertEquals( new URI( "/test" ), test.toUri() );
+    if ( proxy != null ) {
+      proxy.close();
+    }
   }
 
   @Test
@@ -89,6 +101,9 @@ public class FileSystemProxyTest {
     Path p = proxy.asPath( "/", "test" );
     assertNotNull( p );
     assertEquals( new URI( "/test" ), p.toUri() );
+    if ( proxy != null ) {
+      proxy.close();
+    }
   }
 
   @Test
@@ -97,6 +112,9 @@ public class FileSystemProxyTest {
     FileSystem delegate = FileSystem.get( c );
     FileSystemProxy proxy = new FileSystemProxy( delegate );
     assertTrue( proxy.exists( proxy.asPath( "/" ) ) );
+    if ( proxy != null ) {
+      proxy.close();
+    }
   }
 
   @Test
@@ -112,5 +130,8 @@ public class FileSystemProxyTest {
     proxy.delete( p, true );
     assertFalse( proxy.exists( p ) );
     assertFalse( tmp.exists() );
+    if ( proxy != null ) {
+      proxy.close();
+    }
   }
 }

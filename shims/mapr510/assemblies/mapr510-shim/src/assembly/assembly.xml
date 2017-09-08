@@ -47,6 +47,10 @@
         <include>org.apache.pig:pig</include>
         <include>org.apache.sqoop:sqoop</include>
         <include>com.twitter:parquet-hadoop-bundle</include>
+        <include>org.apache.avro:avro</include>
+        <include>com.fasterxml.jackson.core:jackson-annotations</include>
+        <include>com.fasterxml.jackson.core:jackson-core</include>
+        <include>com.fasterxml.jackson.core:jackson-databind</include>
       </includes>
       <excludes>
         <exclude>*:tests:*</exclude>

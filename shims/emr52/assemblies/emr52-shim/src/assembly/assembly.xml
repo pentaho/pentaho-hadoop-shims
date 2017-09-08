@@ -42,6 +42,7 @@
         <include>org.apache.pig:pig</include>
         <include>org.apache.sqoop:sqoop</include>
         <include>org.apache.parquet:parquet-hadoop-bundle</include>
+        <include>org.apache.avro:avro</include>
       </includes>
       <excludes>
         <exclude>*:tests:*</exclude>
