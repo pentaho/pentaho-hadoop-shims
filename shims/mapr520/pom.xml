@@ -18,7 +18,6 @@
     <org.apache.oozie.version>4.2.0-mapr-1609</org.apache.oozie.version>
     <org.apache.thrift.version>0.9.2</org.apache.thrift.version>
     <sqoop.version>1.4.6-mapr-1611</sqoop.version>
-    <hadoop2-windows-patch.version>08072014</hadoop2-windows-patch.version>
     <!-- pmr folder -->
     <htrace-core.version>3.1.0-incubating</htrace-core.version>
     <net.sf.flexjson>2.1</net.sf.flexjson>

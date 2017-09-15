@@ -19,7 +19,6 @@
     <azure-storage.version>2.0.0</azure-storage.version>
     <automaton.version>1.11-8</automaton.version>
     <hadoop-azure.version>2.7.1</hadoop-azure.version>
-    <hadoop2-windows-patch.version>08072014</hadoop2-windows-patch.version>
     <avro.version>1.8.0</avro.version>
     <org.codehaus.jackson>1.9.13</org.codehaus.jackson>
     <org.apache.httpcomponents.version>4.4</org.apache.httpcomponents.version>
