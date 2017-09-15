@@ -25,7 +25,6 @@ import org.apache.avro.Schema;
 import org.apache.avro.file.DataFileWriter;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
-import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.exception.KettleValueException;
 import org.pentaho.di.core.row.RowMetaInterface;
@@ -40,13 +39,10 @@ import java.io.IOException;
 public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRecordWriter {
   private final DataFileWriter<GenericRecord> nativeAvroRecordWriter;
   private final Schema schema;
-  private final TaskAttemptContext taskAttemptContext;
 
-  public PentahoAvroRecordWriter( DataFileWriter<GenericRecord> recordWriter, Schema schema,
-                                  TaskAttemptContext taskAttemptContext ) {
+  public PentahoAvroRecordWriter( DataFileWriter<GenericRecord> recordWriter, Schema schema ) {
     this.nativeAvroRecordWriter = recordWriter;
     this.schema = schema;
-    this.taskAttemptContext = taskAttemptContext;
   }
 
   @Override
