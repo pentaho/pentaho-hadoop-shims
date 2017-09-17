@@ -38,7 +38,7 @@ import java.util.zip.Deflater;
  */
 public class PentahoAvroOutputFormat implements IPentahoAvroOutputFormat {
   private Schema schema;
-  private String file;
+  private String outputFile;
   private SchemaDescription schemaDescription;
   private CodecFactory codecFactory;
 
@@ -55,8 +55,8 @@ public class PentahoAvroOutputFormat implements IPentahoAvroOutputFormat {
     DatumWriter<GenericRecord> datumWriter = new GenericDatumWriter<GenericRecord>( schema );
     DataFileWriter<GenericRecord> dataFileWriter = new DataFileWriter<GenericRecord>( datumWriter );
     dataFileWriter.setCodec( codecFactory );
-    dataFileWriter.create( schema, KettleVFS.getOutputStream( file, false ) );
-    return new PentahoAvroRecordWriter( dataFileWriter, schema, null );
+    dataFileWriter.create( schema, KettleVFS.getOutputStream( outputFile, false ) );
+    return new PentahoAvroRecordWriter( dataFileWriter, schema );
   }
 
   @Override
@@ -66,7 +66,7 @@ public class PentahoAvroOutputFormat implements IPentahoAvroOutputFormat {
 
   @Override
   public void setOutputFile( String file ) throws Exception {
-    this.file = file;
+    this.outputFile = file;
   }
 
   @Override
