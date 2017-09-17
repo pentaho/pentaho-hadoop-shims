@@ -45,7 +45,7 @@ public class AvroSchemaConverter {
 
   private final String AVRO_TYPE_STRING = "string";
   private final String AVRO_TYPE_DOUBLE = "double";
-  private final String AVRO_TYPE_INTEGER = "int";
+  private final String AVRO_TYPE_LONG = "long";
   private final String AVRO_TYPE_BOOLEAN = "boolean";
   private final String AVRO_TYPE_BINARY = "bytes";
   private final String AVRO_TYPE_DATE = "int";
@@ -99,7 +99,7 @@ public class AvroSchemaConverter {
       case ValueMetaInterface.TYPE_BOOLEAN:
         return convertPrimitive( AVRO_TYPE_BOOLEAN, f );
       case ValueMetaInterface.TYPE_INTEGER:
-        return convertPrimitive( AVRO_TYPE_INTEGER, f );
+        return convertPrimitive( AVRO_TYPE_LONG, f );
       case ValueMetaInterface.TYPE_BIGNUMBER:
         return convertPrimitive( AVRO_TYPE_DOUBLE, f );
       case ValueMetaInterface.TYPE_SERIALIZABLE:
@@ -120,7 +120,7 @@ public class AvroSchemaConverter {
   private ObjectNode convertPrimitive( String type, SchemaDescription.Field f ) {
     ObjectNode fieldNode = mapper.createObjectNode();
 
-    fieldNode.put( AVRO_NAME_NODE, f.formatFieldName );
+    fieldNode.put( AVRO_NAME_NODE, f.pentahoFieldName );
     if ( f.allowNull ) {
       fieldNode.putPOJO( AVRO_TYPE_NODE, mapper.createArrayNode().add( AVRO_TYPE_NULL ).add( type ) );
     } else {

@@ -25,14 +25,15 @@ import org.apache.avro.Schema;
 import org.apache.avro.file.DataFileWriter;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
-import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.exception.KettleValueException;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 /**
  * Created by tkafalas on 8/28/2017.
@@ -40,13 +41,10 @@ import java.io.IOException;
 public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRecordWriter {
   private final DataFileWriter<GenericRecord> nativeAvroRecordWriter;
   private final Schema schema;
-  private final TaskAttemptContext taskAttemptContext;
 
-  public PentahoAvroRecordWriter( DataFileWriter<GenericRecord> recordWriter, Schema schema,
-                                  TaskAttemptContext taskAttemptContext ) {
+  public PentahoAvroRecordWriter( DataFileWriter<GenericRecord> recordWriter, Schema schema ) {
     this.nativeAvroRecordWriter = recordWriter;
     this.schema = schema;
-    this.taskAttemptContext = taskAttemptContext;
   }
 
   @Override
@@ -58,27 +56,48 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
       //Build the avro row
       for ( int i = 0; i < rmi.getValueMetaList().size(); i++ ) {
         ValueMetaInterface vmi = rmi.getValueMeta( i );
+        Schema.Field field = schema.getField( vmi.getName() );
+        Object defaultVal = field.defaultVal();
+
         switch ( vmi.getType() ) {
           case ValueMetaInterface.TYPE_STRING:
-            outputRecord.put( vmi.getName(), row.getString( i, null ) );
+            String defaultStringValue = String.valueOf( field.defaultVal() );
+            outputRecord.put( vmi.getName(), row.getString( i, defaultStringValue ) );
             break;
           case ValueMetaInterface.TYPE_INTEGER:
-            outputRecord.put( vmi.getName(), row.getInteger( i ) );
+            long defaultLong = -1;
+            if ( defaultVal != null ) {
+              if ( defaultVal instanceof String ) {
+                defaultLong = Long.parseLong( (String) defaultVal );
+              } else if ( defaultVal instanceof Long ) {
+                defaultLong = (Long) defaultVal;
+              }
+              outputRecord.put( vmi.getName(), row.getInteger( i, defaultLong ) );
+            } else {
+              outputRecord.put( vmi.getName(), row.getInteger( i ) );
+            }
             break;
           case ValueMetaInterface.TYPE_NUMBER:
-            outputRecord.put( vmi.getName(), row.getNumber( i, 0 ) );
+            double defaultDouble = ( defaultVal == null
+                || !( defaultVal instanceof Long ) ) ? 0 : (Double) defaultVal;
+            outputRecord.put( vmi.getName(), row.getNumber( i, defaultDouble ) );
             break;
           case ValueMetaInterface.TYPE_BIGNUMBER:
-            outputRecord.put( vmi.getName(), row.getBigNumber( i, null ) );
+            Double defaultBigDecimal = ( defaultVal == null
+                || !( defaultVal instanceof Double ) ) ? null : ( (Double) defaultVal );
+            outputRecord.put( vmi.getName(), row.getNumber( i, defaultBigDecimal ) );
             break;
           case ValueMetaInterface.TYPE_DATE:
             outputRecord.put( vmi.getName(), row.getInteger( i ) );
             break;
           case ValueMetaInterface.TYPE_BOOLEAN:
-            outputRecord.put( vmi.getName(), row.getBoolean( i, false ) );
+            boolean defaultBoolean =
+                defaultVal != null && ( !( defaultVal instanceof Boolean )
+                    ? Boolean.parseBoolean( (String) defaultVal ) : (Boolean) defaultVal );
+            outputRecord.put( vmi.getName(), row.getBoolean( i, defaultBoolean ) );
             break;
           case ValueMetaInterface.TYPE_BINARY:
-            outputRecord.put( vmi.getName(), row.getBinary( i, null ) );
+            outputRecord.put( vmi.getName(), row.getBinary( i, ObjectToByteArray( defaultVal ) ) );
             break;
           default:
             break;
@@ -96,5 +115,20 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
   @Override
   public void close() throws IOException {
     nativeAvroRecordWriter.close();
+  }
+
+  public  byte[] ObjectToByteArray( Object obj )  {
+    if ( obj == null ) {
+      return null;
+    }
+
+    try {
+      ByteArrayOutputStream out = new ByteArrayOutputStream();
+      ObjectOutputStream os = new ObjectOutputStream( out );
+      os.writeObject( obj );
+      return out.toByteArray();
+    } catch ( IOException ioex ) {
+      return null;
+    }
   }
 }
