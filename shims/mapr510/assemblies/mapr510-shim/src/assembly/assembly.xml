@@ -30,7 +30,6 @@
       <useTransitiveFiltering>false</useTransitiveFiltering>
       <includes>
         <include>dk.brics.automaton:automaton</include>
-        <include>pentaho:hadoop2-windows-patch</include>
         <include>org.apache.hive:hive-common</include>
         <include>org.apache.hive:hive-exec</include>
         <include>org.apache.hive:hive-jdbc</include>

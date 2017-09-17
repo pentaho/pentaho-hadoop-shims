@@ -15,7 +15,6 @@
     <pig.version>0.12.0-cdh5.12.0</pig.version>
     <sqoop.version>1.4.6-cdh5.12.0</sqoop.version>
     <org.apache.oozie.version>4.1.0-cdh5.12.0</org.apache.oozie.version>
-    <hadoop2-windows-patch.version>08072014</hadoop2-windows-patch.version>
     <!-- client folder -->
     <org.apache.hadoop.version>2.6.0-cdh5.12.0</org.apache.hadoop.version>
     <!-- pmr folder -->

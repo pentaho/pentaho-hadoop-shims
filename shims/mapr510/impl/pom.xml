@@ -31,7 +31,6 @@
     <javax.xml.bind.version>2.2.2</javax.xml.bind.version>
     <commons-io.version>2.4</commons-io.version>
     <javax.activation.version>1.1</javax.activation.version>
-    <pentaho-hadoop2-windows-patch.version>08072014</pentaho-hadoop2-windows-patch.version>
     <org.sonatype.sisu.inject.version>2.2.1-v20090111</org.sonatype.sisu.inject.version>
     <com.thoughtworks.paranamer.version>2.3</com.thoughtworks.paranamer.version>
     <org.codehaus.jettison.version>1.1</org.codehaus.jettison.version>
@@ -933,18 +932,6 @@
     <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>pentaho-hadoop-shims-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>pentaho</groupId>
-      <artifactId>hadoop2-windows-patch</artifactId>
-      <version>${pentaho-hadoop2-windows-patch.version}</version>
-      <scope>compile</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>*</artifactId>
-          <groupId>*</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>pentaho</groupId>

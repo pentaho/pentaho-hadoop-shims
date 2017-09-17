@@ -165,9 +165,6 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <workingDirectory>${project.build.directory}</workingDirectory>
-          <classpathDependencyExcludes>
-            <classpathDependencyExclude>pentaho:hadoop2-windows-patch</classpathDependencyExclude>
-          </classpathDependencyExcludes>
           <systemPropertyVariables>
             <org.pentaho.hadoop.shims.check.hive1>false</org.pentaho.hadoop.shims.check.hive1>
           </systemPropertyVariables>

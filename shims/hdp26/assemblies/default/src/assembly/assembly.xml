@@ -12,7 +12,6 @@
       <useTransitiveFiltering>false</useTransitiveFiltering>
       <includes>
         <include>pentaho:pentaho-hdfs-vfs</include>
-        <include>pentaho:hadoop2-windows-patch</include>
         <include>org.apache.pig:pig</include>
         <include>dk.brics.automaton:automaton</include>
         <include>org.apache.sqoop:sqoop</include>

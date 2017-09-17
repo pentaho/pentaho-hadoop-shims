@@ -22,7 +22,6 @@
         <include>org.apache.sqoop:sqoop</include>
         <include>org.apache.pig:pig</include>
         <include>pentaho:pentaho-hdfs-vfs</include>
-        <include>pentaho:hadoop2-windows-patch</include>
         <include>org.apache.parquet:parquet-hadoop-bundle</include>
         <include>org.apache.avro:avro</include>
       </includes>

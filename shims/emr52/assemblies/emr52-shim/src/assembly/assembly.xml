@@ -29,7 +29,6 @@
       <useTransitiveDependencies>true</useTransitiveDependencies>
       <useTransitiveFiltering>false</useTransitiveFiltering>
       <includes>
-        <include>pentaho:hadoop2-windows-patch</include>
         <include>org.apache.hive:hive-exec</include>
         <include>org.apache.hive:hive-jdbc</include>
         <include>org.apache.hive:hive-metastore</include>

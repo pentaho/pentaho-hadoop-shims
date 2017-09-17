@@ -31,7 +31,6 @@
       <includes>
         <include>dk.brics.automaton:automaton</include>
         <include>commons-lang:commons-lang</include>
-        <include>pentaho:hadoop2-windows-patch</include>
         <include>org.apache.oozie:oozie-client</include>
         <include>org.apache.oozie:oozie-core</include>
         <include>pentaho:pentaho-hdfs-vfs</include>
