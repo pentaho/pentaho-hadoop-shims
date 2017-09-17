@@ -120,7 +120,7 @@ public class AvroSchemaConverter {
   private ObjectNode convertPrimitive( String type, SchemaDescription.Field f ) {
     ObjectNode fieldNode = mapper.createObjectNode();
 
-    fieldNode.put( AVRO_NAME_NODE, f.formatFieldName );
+    fieldNode.put( AVRO_NAME_NODE, f.pentahoFieldName );
     if ( f.allowNull ) {
       fieldNode.putPOJO( AVRO_TYPE_NODE, mapper.createArrayNode().add( AVRO_TYPE_NULL ).add( type ) );
     } else {
