@@ -25,29 +25,21 @@ import org.apache.avro.Schema;
 import org.apache.avro.file.DataFileWriter;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
-import org.apache.avro.data.TimeConversions.DateConversion;
-import org.apache.avro.LogicalTypes;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.exception.KettleValueException;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat;
-import org.joda.time.LocalDate;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Created by tkafalas on 8/28/2017.
  */
 public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRecordWriter {
   private final DataFileWriter<GenericRecord> nativeAvroRecordWriter;
-  public static Schema DATE_SCHEMA;
   private final Schema schema;
 
   public PentahoAvroRecordWriter( DataFileWriter<GenericRecord> recordWriter, Schema schema ) {
@@ -91,52 +83,17 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
             outputRecord.put( vmi.getName(), row.getNumber( i, defaultDouble ) );
             break;
           case ValueMetaInterface.TYPE_BIGNUMBER:
-            BigDecimal defaultBigDecimal = null;
-            if ( defaultVal != null ) {
-              if ( defaultVal instanceof BigDecimal ) {
-                defaultBigDecimal = (BigDecimal) defaultVal;
-              } else if ( defaultVal instanceof String ) {
-                defaultBigDecimal = new BigDecimal( (String) defaultVal );
-              } else if ( defaultVal instanceof Double ) {
-                defaultBigDecimal = new BigDecimal( (Double) defaultVal );
-              }
-            }
-            BigDecimal bigDecimal = row.getBigNumber( i, defaultBigDecimal );
-            if ( bigDecimal != null ) {
-              outputRecord.put( vmi.getName(), bigDecimal.doubleValue() );
-            } else {
-              outputRecord.put( vmi.getName(), bigDecimal );
-            }
+            Double defaultBigDecimal = ( defaultVal == null
+                || !( defaultVal instanceof Double ) ) ? null : ( (Double) defaultVal );
+            outputRecord.put( vmi.getName(), row.getNumber( i, defaultBigDecimal ) );
             break;
           case ValueMetaInterface.TYPE_DATE:
-            DateConversion conversion = new DateConversion();
-            Date date;
-            Date defaultDate = null;
-            if ( defaultVal != null ) {
-              if ( defaultVal instanceof String ) {
-                DateFormat dateFormat = new SimpleDateFormat( "MM/dd/yyyy" );
-                try {
-                  defaultDate = dateFormat.parse( (String) defaultVal );
-                } catch ( ParseException pe ) {
-                  defaultDate = null;
-                }
-              } else if ( defaultVal instanceof Date ) {
-                defaultDate = (Date) defaultVal;
-              }
-            }
-            date =  row.getDate( i, defaultDate );
-            outputRecord.put( vmi.getName(), conversion.toInt( LocalDate.fromDateFields( date ),
-                DATE_SCHEMA, LogicalTypes.date() ) );
+            outputRecord.put( vmi.getName(), row.getInteger( i ) );
             break;
           case ValueMetaInterface.TYPE_BOOLEAN:
-            boolean defaultBoolean = false;
-            if ( defaultVal != null ) {
-              if ( defaultVal instanceof Boolean ) {
-                defaultBoolean = (Boolean) defaultVal;
-              } else if ( defaultVal instanceof String ) {
-                defaultBoolean = Boolean.parseBoolean( (String) defaultVal );
-              }
-            }
+            boolean defaultBoolean =
+                defaultVal != null && ( !( defaultVal instanceof Boolean )
+                    ? Boolean.parseBoolean( (String) defaultVal ) : (Boolean) defaultVal );
             outputRecord.put( vmi.getName(), row.getBoolean( i, defaultBoolean ) );
             break;
           case ValueMetaInterface.TYPE_BINARY:
@@ -164,12 +121,13 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
     if ( obj == null ) {
       return null;
     }
+
     try {
       ByteArrayOutputStream out = new ByteArrayOutputStream();
       ObjectOutputStream os = new ObjectOutputStream( out );
       os.writeObject( obj );
       return out.toByteArray();
-    } catch ( IOException ioException ) {
+    } catch ( IOException ioex ) {
       return null;
     }
   }
