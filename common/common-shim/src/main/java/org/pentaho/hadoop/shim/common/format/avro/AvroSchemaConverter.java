@@ -43,14 +43,17 @@ import org.pentaho.hadoop.shim.api.format.SchemaDescription;
  */
 public class AvroSchemaConverter {
 
-  private final String AVRO_TYPE_STRING = "string";
-  private final String AVRO_TYPE_DOUBLE = "double";
-  private final String AVRO_TYPE_INTEGER = "int";
-  private final String AVRO_TYPE_BOOLEAN = "boolean";
-  private final String AVRO_TYPE_BINARY = "bytes";
-  private final String AVRO_TYPE_DATE = "int";
-  private final String AVRO_TYPE_TIMESTAMP = "long";
+  //primitive types for schema
+  //https://docs.oracle.com/cd/E57769_01/html/GettingStartedGuide/avroschemas.html#avro-primitivedatatypes
   private final String AVRO_TYPE_NULL = "null";
+  private final String AVRO_TYPE_BOOLEAN = "boolean";
+  private final String AVRO_TYPE_INTEGER = "int";
+  private final String AVRO_TYPE_LONG = "long";
+  private final String AVRO_TYPE_FLOAT = "float";
+  private final String AVRO_TYPE_DOUBLE = "double";
+  private final String AVRO_TYPE_BINARY = "bytes";
+  private final String AVRO_TYPE_STRING = "string";
+
   private final String AVRO_TYPE_RECORD = "record";
   private final String AVRO_DOC = "doc";
   private final String AVRO_FIELDS_NODE = "fields";
@@ -92,24 +95,22 @@ public class AvroSchemaConverter {
 
   private ObjectNode convertField( SchemaDescription.Field f ) {
     switch ( f.pentahoValueMetaType ) {
-      case ValueMetaInterface.TYPE_NUMBER:
-        return convertPrimitive( AVRO_TYPE_DOUBLE, f );
       case ValueMetaInterface.TYPE_STRING:
         return convertPrimitive( AVRO_TYPE_STRING, f );
       case ValueMetaInterface.TYPE_BOOLEAN:
         return convertPrimitive( AVRO_TYPE_BOOLEAN, f );
       case ValueMetaInterface.TYPE_INTEGER:
-        return convertPrimitive( AVRO_TYPE_INTEGER, f );
+        return convertPrimitive( AVRO_TYPE_LONG, f );
+      case ValueMetaInterface.TYPE_NUMBER:
       case ValueMetaInterface.TYPE_BIGNUMBER:
         return convertPrimitive( AVRO_TYPE_DOUBLE, f );
       case ValueMetaInterface.TYPE_SERIALIZABLE:
-        return convertPrimitive( AVRO_TYPE_BINARY, f );
       case ValueMetaInterface.TYPE_BINARY:
         return convertPrimitive( AVRO_TYPE_BINARY, f );
       case ValueMetaInterface.TYPE_DATE:
-        return convertPrimitive( AVRO_TYPE_DATE, f );
+        return convertPrimitive( AVRO_TYPE_LONG, f );
       case ValueMetaInterface.TYPE_TIMESTAMP:
-        return convertPrimitive( AVRO_TYPE_TIMESTAMP, f );
+        return convertPrimitive( AVRO_TYPE_LONG, f );
       case ValueMetaInterface.TYPE_INET:
         return convertPrimitive( AVRO_TYPE_STRING, f );
       default:

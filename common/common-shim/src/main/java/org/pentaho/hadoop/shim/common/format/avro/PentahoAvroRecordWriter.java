@@ -25,60 +25,86 @@ import org.apache.avro.Schema;
 import org.apache.avro.file.DataFileWriter;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
-import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.exception.KettleValueException;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.row.ValueMetaInterface;
+import org.pentaho.di.core.row.value.ValueMetaBase;
+import org.pentaho.di.core.util.DateDetector;
 import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat;
+import org.pentaho.hadoop.shim.api.format.SchemaDescription;
+import org.pentaho.hadoop.shim.api.format.SchemaDescription.Field;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.util.Date;
 
 /**
  * Created by tkafalas on 8/28/2017.
  */
 public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRecordWriter {
+
   private final DataFileWriter<GenericRecord> nativeAvroRecordWriter;
   private final Schema schema;
-  private final TaskAttemptContext taskAttemptContext;
+  private final SchemaDescription schemaDescription;
 
-  public PentahoAvroRecordWriter( DataFileWriter<GenericRecord> recordWriter, Schema schema,
-                                  TaskAttemptContext taskAttemptContext ) {
+  public PentahoAvroRecordWriter( DataFileWriter<GenericRecord> recordWriter, Schema schema, SchemaDescription schemaDescription ) {
     this.nativeAvroRecordWriter = recordWriter;
     this.schema = schema;
-    this.taskAttemptContext = taskAttemptContext;
+    this.schemaDescription = schemaDescription;
   }
 
   @Override
   public void write( RowMetaAndData row ) {
     RowMetaInterface rmi = row.getRowMeta();
     GenericRecord outputRecord = new GenericData.Record( schema );
-
     try {
       //Build the avro row
-      for ( int i = 0; i < rmi.getValueMetaList().size(); i++ ) {
-        ValueMetaInterface vmi = rmi.getValueMeta( i );
+      for ( Field field : schemaDescription ) {
+        int fieldMetaIndex = rmi.indexOfValue( field.pentahoFieldName );
+        ValueMetaInterface vmi = rmi.getValueMeta( fieldMetaIndex );
         switch ( vmi.getType() ) {
           case ValueMetaInterface.TYPE_STRING:
-            outputRecord.put( vmi.getName(), row.getString( i, null ) );
-            break;
-          case ValueMetaInterface.TYPE_INTEGER:
-            outputRecord.put( vmi.getName(), row.getInteger( i ) );
-            break;
-          case ValueMetaInterface.TYPE_NUMBER:
-            outputRecord.put( vmi.getName(), row.getNumber( i, 0 ) );
-            break;
-          case ValueMetaInterface.TYPE_BIGNUMBER:
-            outputRecord.put( vmi.getName(), row.getBigNumber( i, null ) );
-            break;
-          case ValueMetaInterface.TYPE_DATE:
-            outputRecord.put( vmi.getName(), row.getInteger( i ) );
+            outputRecord.put( field.formatFieldName, row.getString( fieldMetaIndex, field.defaultValue ) );
             break;
           case ValueMetaInterface.TYPE_BOOLEAN:
-            outputRecord.put( vmi.getName(), row.getBoolean( i, false ) );
+            outputRecord.put( field.formatFieldName, row.getBoolean( fieldMetaIndex, ValueMetaBase.convertStringToBoolean( field.defaultValue ) ) );
             break;
+          case ValueMetaInterface.TYPE_INTEGER:
+            outputRecord.put( field.formatFieldName, row.getInteger( fieldMetaIndex, Long.parseLong( field.defaultValue ) ) );
+            break;
+          case ValueMetaInterface.TYPE_NUMBER:
+            outputRecord.put( field.formatFieldName, row.getNumber( fieldMetaIndex, Double.parseDouble( field.defaultValue ) ) );
+            break;
+          case ValueMetaInterface.TYPE_BIGNUMBER:
+            if ( field.defaultValue != null ) {
+              BigDecimal defaultBigDecimal = new BigDecimal( field.defaultValue );
+              BigDecimal bigDecimal = row.getBigNumber( fieldMetaIndex, defaultBigDecimal );
+              outputRecord.put( field.formatFieldName, bigDecimal.doubleValue() );
+            } else {
+              outputRecord.put( field.formatFieldName, row.getBigNumber( fieldMetaIndex, null ) );
+            }
+            break;
+          case ValueMetaInterface.TYPE_SERIALIZABLE:
           case ValueMetaInterface.TYPE_BINARY:
-            outputRecord.put( vmi.getName(), row.getBinary( i, null ) );
+            if ( field.defaultValue != null ) {
+              outputRecord.put( field.formatFieldName, row.getBinary( fieldMetaIndex, vmi.getBinary( field.defaultValue ) ) );
+            } else {
+              outputRecord.put( field.formatFieldName, row.getBinary( fieldMetaIndex, new byte[0] ) );
+            }
+            break;
+          case ValueMetaInterface.TYPE_TIMESTAMP:
+          case ValueMetaInterface.TYPE_DATE:
+            Date date = new Date();
+            if ( field.defaultValue != null ) {
+              try {
+                date = DateDetector.getDateFromString( field.defaultValue );
+              } catch ( ParseException e ) {
+                //we do not able to get default value from field, we keep now as default value
+              }
+            }
+            outputRecord.put( field.formatFieldName, row.getDate( fieldMetaIndex, date ).getTime() );
             break;
           default:
             break;
