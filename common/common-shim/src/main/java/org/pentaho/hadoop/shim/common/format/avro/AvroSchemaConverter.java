@@ -128,7 +128,7 @@ public class AvroSchemaConverter {
     }
     if ( f.pentahoValueMetaType == ValueMetaInterface.TYPE_DATE ) {
       fieldNode.put( AVRO_LOGICAL_TYPE, "date" );
-    } else if ( f.pentahoValueMetaType == ValueMetaInterface.TYPE_DATE ) {
+    } else if ( f.pentahoValueMetaType == ValueMetaInterface.TYPE_TIMESTAMP ) {
       fieldNode.put( AVRO_LOGICAL_TYPE, "timestamp-micros" );
     }
     if ( f.defaultValue != null ) {
