@@ -89,5 +89,10 @@
       <artifactId>hadoop-mapreduce-client-shuffle</artifactId>
       <version>${org.apache.hadoop.version}</version>
     </dependency>
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>${joda-time.version}</version>
+    </dependency>
   </dependencies>
 </project>

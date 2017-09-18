@@ -20,6 +20,7 @@
     <!-- client folder -->
     <automaton.version>1.11-8</automaton.version>
     <org.apache.hadoop.version>2.7.3</org.apache.hadoop.version>
+    <joda-time.version>2.5</joda-time.version>
     <com.amazonaws.version>1.10.75.1</com.amazonaws.version>
     <com.fasterxml.jackson.core.version>2.5.3</com.fasterxml.jackson.core.version>
     <org.apache.httpcomponents.version>4.4</org.apache.httpcomponents.version>
