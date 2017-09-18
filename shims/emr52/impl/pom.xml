@@ -11,7 +11,6 @@
   <version>8.0-SNAPSHOT</version>
   <properties>
     <org.codehaus.jackson.version>1.9.13</org.codehaus.jackson.version>
-    <hadoop2-windows-patch.version>08072014</hadoop2-windows-patch.version>
     <commons-configuration.version>1.6</commons-configuration.version>
     <cglib.version>2.2.1-v20090111</cglib.version>
     <pig.version>0.16.0</pig.version>
@@ -386,18 +385,6 @@
     <dependency>
       <groupId>pentaho</groupId>
       <artifactId>pentaho-hdfs-vfs</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>pentaho</groupId>
-      <artifactId>hadoop2-windows-patch</artifactId>
-      <version>${hadoop2-windows-patch.version}</version>
-      <scope>compile</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>*</artifactId>
-          <groupId>*</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
