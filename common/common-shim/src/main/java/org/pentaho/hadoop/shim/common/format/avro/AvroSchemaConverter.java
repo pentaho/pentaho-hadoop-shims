@@ -120,7 +120,7 @@ public class AvroSchemaConverter {
   private ObjectNode convertPrimitive( String type, SchemaDescription.Field f ) {
     ObjectNode fieldNode = mapper.createObjectNode();
 
-    fieldNode.put( AVRO_NAME_NODE, f.pentahoFieldName );
+    fieldNode.put( AVRO_NAME_NODE, f.formatFieldName );
     if ( f.allowNull ) {
       fieldNode.putPOJO( AVRO_TYPE_NODE, mapper.createArrayNode().add( AVRO_TYPE_NULL ).add( type ) );
     } else {
@@ -128,7 +128,7 @@ public class AvroSchemaConverter {
     }
     if ( f.pentahoValueMetaType == ValueMetaInterface.TYPE_DATE ) {
       fieldNode.put( AVRO_LOGICAL_TYPE, "date" );
-    } else if ( f.pentahoValueMetaType == ValueMetaInterface.TYPE_DATE ) {
+    } else if ( f.pentahoValueMetaType == ValueMetaInterface.TYPE_TIMESTAMP ) {
       fieldNode.put( AVRO_LOGICAL_TYPE, "timestamp-micros" );
     }
     if ( f.defaultValue != null ) {

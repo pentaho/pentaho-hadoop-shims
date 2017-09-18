@@ -26,16 +26,20 @@ import org.apache.avro.file.DataFileWriter;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.data.TimeConversions.DateConversion;
+import org.apache.avro.data.TimeConversions.TimestampConversion;
 import org.apache.avro.LogicalTypes;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.exception.KettleValueException;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat;
 import org.joda.time.LocalDate;
-import java.io.ByteArrayOutputStream;
+import org.pentaho.hadoop.shim.api.format.SchemaDescription;
+import org.pentaho.hadoop.shim.api.format.SchemaDescription.Field;
+
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -48,11 +52,16 @@ import java.util.Date;
 public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRecordWriter {
   private final DataFileWriter<GenericRecord> nativeAvroRecordWriter;
   public static Schema DATE_SCHEMA;
+  public static Schema TIMESTAMP_MICROS_SCHEMA;
   private final Schema schema;
+  private final SchemaDescription schemaDescription;
+  public static String DEFAULT_DATE_PATTERN = "MM/dd/yyyy";
+  public static String DEFAULT_DATETIME_PATTERN = "MM/dd/yyyy HH:mm:ss";
 
-  public PentahoAvroRecordWriter( DataFileWriter<GenericRecord> recordWriter, Schema schema ) {
+  public PentahoAvroRecordWriter( DataFileWriter<GenericRecord> recordWriter, Schema schema, SchemaDescription schemaDescription ) {
     this.nativeAvroRecordWriter = recordWriter;
     this.schema = schema;
+    this.schemaDescription = schemaDescription;
   }
 
   @Override
@@ -62,85 +71,70 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
 
     try {
       //Build the avro row
-      for ( int i = 0; i < rmi.getValueMetaList().size(); i++ ) {
-        ValueMetaInterface vmi = rmi.getValueMeta( i );
-        Schema.Field field = schema.getField( vmi.getName() );
-        Object defaultVal = field.defaultVal();
-
+      for ( Field field : schemaDescription ) {
+        int fieldMetaIndex = rmi.indexOfValue( field.pentahoFieldName );
+        ValueMetaInterface vmi = rmi.getValueMeta( fieldMetaIndex );
         switch ( vmi.getType() ) {
+          case ValueMetaInterface.TYPE_INET:
           case ValueMetaInterface.TYPE_STRING:
-            String defaultStringValue = String.valueOf( field.defaultVal() );
-            outputRecord.put( vmi.getName(), row.getString( i, defaultStringValue ) );
+            outputRecord.put( field.formatFieldName, row.getString( fieldMetaIndex,
+                String.valueOf( field.defaultValue ) ) );
             break;
           case ValueMetaInterface.TYPE_INTEGER:
-            long defaultLong = -1;
-            if ( defaultVal != null ) {
-              if ( defaultVal instanceof String ) {
-                defaultLong = Long.parseLong( (String) defaultVal );
-              } else if ( defaultVal instanceof Long ) {
-                defaultLong = (Long) defaultVal;
-              }
-              outputRecord.put( vmi.getName(), row.getInteger( i, defaultLong ) );
+            if ( field.defaultValue != null ) {
+              outputRecord.put( field.formatFieldName, row.getInteger( fieldMetaIndex,
+                  Long.parseLong( field.defaultValue ) ) );
             } else {
-              outputRecord.put( vmi.getName(), row.getInteger( i ) );
+              outputRecord.put( field.formatFieldName, row.getInteger( fieldMetaIndex ) );
             }
             break;
           case ValueMetaInterface.TYPE_NUMBER:
-            double defaultDouble = ( defaultVal == null
-                || !( defaultVal instanceof Long ) ) ? 0 : (Double) defaultVal;
-            outputRecord.put( vmi.getName(), row.getNumber( i, defaultDouble ) );
+            outputRecord.put( field.formatFieldName, row.getNumber( fieldMetaIndex,
+                Double.parseDouble( field.defaultValue ) ) );
             break;
           case ValueMetaInterface.TYPE_BIGNUMBER:
-            BigDecimal defaultBigDecimal = null;
-            if ( defaultVal != null ) {
-              if ( defaultVal instanceof BigDecimal ) {
-                defaultBigDecimal = (BigDecimal) defaultVal;
-              } else if ( defaultVal instanceof String ) {
-                defaultBigDecimal = new BigDecimal( (String) defaultVal );
-              } else if ( defaultVal instanceof Double ) {
-                defaultBigDecimal = new BigDecimal( (Double) defaultVal );
-              }
-            }
-            BigDecimal bigDecimal = row.getBigNumber( i, defaultBigDecimal );
-            if ( bigDecimal != null ) {
-              outputRecord.put( vmi.getName(), bigDecimal.doubleValue() );
+            if ( field.defaultValue != null ) {
+              BigDecimal defaultBigDecimal = new BigDecimal( field.defaultValue );
+              BigDecimal bigDecimal = row.getBigNumber( fieldMetaIndex, defaultBigDecimal );
+              outputRecord.put( field.formatFieldName, bigDecimal.doubleValue() );
             } else {
-              outputRecord.put( vmi.getName(), bigDecimal );
+              outputRecord.put( field.formatFieldName, row.getBigNumber( fieldMetaIndex, null ) );
             }
+            break;
+          case ValueMetaInterface.TYPE_TIMESTAMP:
+            TimestampConversion timeStampConversion = new TimestampConversion();
+            String dateTime;
+            dateTime =  row.getString( fieldMetaIndex, field.defaultValue );
+            outputRecord.put( field.formatFieldName, timeStampConversion.toLong( DateTime.parse( dateTime,
+                DateTimeFormat.forPattern( DEFAULT_DATETIME_PATTERN )  ), TIMESTAMP_MICROS_SCHEMA, LogicalTypes.timestampMicros() ) );
             break;
           case ValueMetaInterface.TYPE_DATE:
             DateConversion conversion = new DateConversion();
             Date date;
             Date defaultDate = null;
-            if ( defaultVal != null ) {
-              if ( defaultVal instanceof String ) {
-                DateFormat dateFormat = new SimpleDateFormat( "MM/dd/yyyy" );
-                try {
-                  defaultDate = dateFormat.parse( (String) defaultVal );
-                } catch ( ParseException pe ) {
-                  defaultDate = null;
-                }
-              } else if ( defaultVal instanceof Date ) {
-                defaultDate = (Date) defaultVal;
+            if ( field.defaultValue != null ) {
+              DateFormat dateFormat = new SimpleDateFormat( DEFAULT_DATE_PATTERN );
+              try {
+                defaultDate = dateFormat.parse( field.defaultValue );
+              } catch ( ParseException pe ) {
+                defaultDate = null;
               }
             }
-            date =  row.getDate( i, defaultDate );
-            outputRecord.put( vmi.getName(), conversion.toInt( LocalDate.fromDateFields( date ),
+            date =  row.getDate( fieldMetaIndex, defaultDate );
+            outputRecord.put( field.formatFieldName, conversion.toInt( LocalDate.fromDateFields( date ),
                 DATE_SCHEMA, LogicalTypes.date() ) );
             break;
           case ValueMetaInterface.TYPE_BOOLEAN:
-            boolean defaultBoolean = false;
-            if ( defaultVal != null ) {
-              if ( defaultVal instanceof Boolean ) {
-                defaultBoolean = (Boolean) defaultVal;
-              } else if ( defaultVal instanceof String ) {
-                defaultBoolean = Boolean.parseBoolean( (String) defaultVal );
-              }
-            }
-            outputRecord.put( vmi.getName(), row.getBoolean( i, defaultBoolean ) );
+            outputRecord.put( field.formatFieldName, row.getBoolean( fieldMetaIndex,
+                Boolean.parseBoolean( field.defaultValue ) ) );
             break;
           case ValueMetaInterface.TYPE_BINARY:
-            outputRecord.put( vmi.getName(), row.getBinary( i, ObjectToByteArray( defaultVal ) ) );
+            if ( field.defaultValue != null ) {
+              outputRecord.put( field.formatFieldName, row.getBinary( fieldMetaIndex,
+                  vmi.getBinary( field.defaultValue ) ) );
+            } else {
+              outputRecord.put( field.formatFieldName, row.getBinary( fieldMetaIndex, new byte[0] ) );
+            }
             break;
           default:
             break;
@@ -158,19 +152,5 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
   @Override
   public void close() throws IOException {
     nativeAvroRecordWriter.close();
-  }
-
-  public  byte[] ObjectToByteArray( Object obj )  {
-    if ( obj == null ) {
-      return null;
-    }
-    try {
-      ByteArrayOutputStream out = new ByteArrayOutputStream();
-      ObjectOutputStream os = new ObjectOutputStream( out );
-      os.writeObject( obj );
-      return out.toByteArray();
-    } catch ( IOException ioException ) {
-      return null;
-    }
   }
 }
