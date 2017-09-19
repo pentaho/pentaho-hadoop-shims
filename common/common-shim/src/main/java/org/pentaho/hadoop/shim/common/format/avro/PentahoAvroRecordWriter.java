@@ -33,6 +33,7 @@ import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription.Field;
 
+import java.nio.ByteBuffer;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -127,9 +128,10 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
             break;
           case ValueMetaInterface.TYPE_BINARY:
             if ( field.defaultValue != null ) {
-              outputRecord.put( field.formatFieldName, row.getBinary( fieldMetaIndex, vmi.getBinary( field.defaultValue ) ) );
+              outputRecord.put( field.formatFieldName, ByteBuffer.wrap( row.getBinary( fieldMetaIndex,
+                  vmi.getBinary( field.defaultValue.getBytes() ) ) ) );
             } else {
-              outputRecord.put( field.formatFieldName, row.getBinary( fieldMetaIndex, new byte[0] ) );
+              outputRecord.put( field.formatFieldName, ByteBuffer.wrap( row.getBinary( fieldMetaIndex, new byte[0] ) ) );
             }
             break;
           default:
