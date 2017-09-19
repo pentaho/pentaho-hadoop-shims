@@ -129,7 +129,8 @@ public class AvroSchemaConverter {
     if ( f.pentahoValueMetaType == ValueMetaInterface.TYPE_DATE ) {
       fieldNode.put( AVRO_LOGICAL_TYPE, "date" );
     } else if ( f.pentahoValueMetaType == ValueMetaInterface.TYPE_TIMESTAMP ) {
-      fieldNode.put( AVRO_LOGICAL_TYPE, "timestamp-micros" );
+      //we able to keep only timestamp-millis because we are using the old java date format which does not support microsecond
+      fieldNode.put( AVRO_LOGICAL_TYPE, "timestamp-millis" );
     }
     if ( f.defaultValue != null ) {
       fieldNode.put( AVRO_DEFAULT_NODE, f.defaultValue );
