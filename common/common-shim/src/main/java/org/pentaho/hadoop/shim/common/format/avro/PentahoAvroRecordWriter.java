@@ -90,7 +90,7 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
             break;
           case ValueMetaInterface.TYPE_NUMBER:
             outputRecord.put( field.formatFieldName, row.getNumber( fieldMetaIndex,
-                Double.parseDouble( field.defaultValue ) ) );
+              field.defaultValue == null ? 0 : Double.parseDouble( field.defaultValue ) ) );
             break;
           case ValueMetaInterface.TYPE_BIGNUMBER:
             if ( field.defaultValue != null ) {
