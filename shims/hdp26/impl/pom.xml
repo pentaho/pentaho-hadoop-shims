@@ -90,11 +90,6 @@
       <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
-    <dependency>
-      <groupId>org.apache.avro</groupId>
-      <artifactId>avro</artifactId>
-      <version>${org.apache.avro.version}</version>
-    </dependency>
   </dependencies>
   <build>
     <plugins>

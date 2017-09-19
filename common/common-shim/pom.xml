@@ -15,7 +15,6 @@
     <org.apache.parquet.version>1.8.1</org.apache.parquet.version>
     <org.apache.avro.version>1.8.1</org.apache.avro.version>
     <jackson.version>2.6.5</jackson.version>
-    <joda-time.version>2.5</joda-time.version>
   </properties>
   <dependencies>
     <dependency>
@@ -102,11 +101,6 @@
       <artifactId>avro</artifactId>
       <version>${org.apache.avro.version}</version>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>joda-time</groupId>
-      <artifactId>joda-time</artifactId>
-      <version>${joda-time.version}</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>

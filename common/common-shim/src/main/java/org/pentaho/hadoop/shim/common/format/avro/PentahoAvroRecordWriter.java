@@ -25,20 +25,17 @@ import org.apache.avro.Schema;
 import org.apache.avro.file.DataFileWriter;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
-import org.apache.avro.data.TimeConversions.DateConversion;
-import org.apache.avro.data.TimeConversions.TimestampConversion;
-import org.apache.avro.LogicalTypes;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.exception.KettleValueException;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat;
-import org.joda.time.LocalDate;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription.Field;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DateFormat;
@@ -51,12 +48,8 @@ import java.util.Date;
  */
 public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRecordWriter {
   private final DataFileWriter<GenericRecord> nativeAvroRecordWriter;
-  public static Schema DATE_SCHEMA;
-  public static Schema TIMESTAMP_MICROS_SCHEMA;
   private final Schema schema;
   private final SchemaDescription schemaDescription;
-  public static String DEFAULT_DATE_PATTERN = "MM/dd/yyyy";
-  public static String DEFAULT_DATETIME_PATTERN = "MM/dd/yyyy HH:mm:ss";
 
   public PentahoAvroRecordWriter( DataFileWriter<GenericRecord> recordWriter, Schema schema, SchemaDescription schemaDescription ) {
     this.nativeAvroRecordWriter = recordWriter;
@@ -102,27 +95,31 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
             }
             break;
           case ValueMetaInterface.TYPE_TIMESTAMP:
-            TimestampConversion timeStampConversion = new TimestampConversion();
-            String dateTime;
-            dateTime =  row.getString( fieldMetaIndex, field.defaultValue );
-            outputRecord.put( field.formatFieldName, timeStampConversion.toLong( DateTime.parse( dateTime,
-                DateTimeFormat.forPattern( DEFAULT_DATETIME_PATTERN )  ), TIMESTAMP_MICROS_SCHEMA, LogicalTypes.timestampMicros() ) );
+            Date defaultTimeStamp = null;
+            if ( field.defaultValue != null ) {
+              DateFormat dateFormat = new SimpleDateFormat( vmi.getConversionMask() );
+              try {
+                defaultTimeStamp = dateFormat.parse( field.defaultValue );
+              } catch ( ParseException pe ) {
+                defaultTimeStamp = null;
+              }
+            }
+            Date timeStamp =  row.getDate( fieldMetaIndex, defaultTimeStamp );
+            outputRecord.put( field.formatFieldName, timeStamp.getTime() );
             break;
           case ValueMetaInterface.TYPE_DATE:
-            DateConversion conversion = new DateConversion();
-            Date date;
             Date defaultDate = null;
             if ( field.defaultValue != null ) {
-              DateFormat dateFormat = new SimpleDateFormat( DEFAULT_DATE_PATTERN );
+              DateFormat dateFormat = new SimpleDateFormat( vmi.getConversionMask() );
               try {
                 defaultDate = dateFormat.parse( field.defaultValue );
               } catch ( ParseException pe ) {
                 defaultDate = null;
               }
             }
-            date =  row.getDate( fieldMetaIndex, defaultDate );
-            outputRecord.put( field.formatFieldName, conversion.toInt( LocalDate.fromDateFields( date ),
-                DATE_SCHEMA, LogicalTypes.date() ) );
+            Date dateFromRow =  row.getDate( fieldMetaIndex, defaultDate );
+            LocalDate rowDate = dateFromRow.toInstant().atZone( ZoneId.systemDefault() ).toLocalDate();
+            outputRecord.put( field.formatFieldName, Math.toIntExact( ChronoUnit.DAYS.between( LocalDate.ofEpochDay( 0 ), rowDate ) ) );
             break;
           case ValueMetaInterface.TYPE_BOOLEAN:
             outputRecord.put( field.formatFieldName, row.getBoolean( fieldMetaIndex,
@@ -130,8 +127,7 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
             break;
           case ValueMetaInterface.TYPE_BINARY:
             if ( field.defaultValue != null ) {
-              outputRecord.put( field.formatFieldName, row.getBinary( fieldMetaIndex,
-                  vmi.getBinary( field.defaultValue ) ) );
+              outputRecord.put( field.formatFieldName, row.getBinary( fieldMetaIndex, vmi.getBinary( field.defaultValue ) ) );
             } else {
               outputRecord.put( field.formatFieldName, row.getBinary( fieldMetaIndex, new byte[0] ) );
             }
@@ -142,6 +138,8 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
       }
       //Now Append the row to the file
       nativeAvroRecordWriter.append( outputRecord );
+    } catch ( ArithmeticException e ) {
+      throw new IllegalArgumentException( "The date has too much day from epoch day!", e );
     } catch ( IOException e ) {
       throw new IllegalArgumentException( "some exception while writing avro", e );
     } catch ( KettleValueException e ) {
