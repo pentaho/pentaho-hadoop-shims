@@ -27,6 +27,7 @@ import org.apache.avro.file.DataFileWriter;
 import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.io.DatumWriter;
+import org.apache.commons.lang.StringUtils;
 import org.pentaho.di.core.vfs.KettleVFS;
 import org.pentaho.hadoop.shim.api.format.IPentahoAvroOutputFormat;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
@@ -49,6 +50,9 @@ public class PentahoAvroOutputFormat implements IPentahoAvroOutputFormat {
 
   @Override
   public IPentahoRecordWriter createRecordWriter() throws Exception {
+    if ( schemaDescription == null || StringUtils.isEmpty( nameSpace ) || StringUtils.isEmpty( recordName ) || StringUtils.isEmpty( outputFilename ) ) {
+      throw new Exception( "Invalid state.  One of the followoing required fields is null:  'nameSpace', 'recordNum', or 'outputFileName" );
+    }
     AvroSchemaConverter converter = new AvroSchemaConverter( schemaDescription, nameSpace, recordName, docValue );
     schema = converter.getAvroSchema();
     converter.writeAvroSchemaToFile( schemaFilename );
