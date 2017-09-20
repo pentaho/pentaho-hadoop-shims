@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.IOException;
 
+import com.google.common.annotations.VisibleForTesting;
 import org.apache.avro.Schema;
 import org.pentaho.di.core.exception.KettleFileException;
 import org.pentaho.di.core.row.ValueMetaInterface;
@@ -90,7 +91,8 @@ public class AvroSchemaConverter {
     return avroSchema == null ? null : new Schema.Parser().parse( avroSchema.toString() );
   }
 
-  private ObjectNode convertField( SchemaDescription.Field f ) {
+  @VisibleForTesting
+  ObjectNode convertField( SchemaDescription.Field f ) {
     switch ( f.pentahoValueMetaType ) {
       case ValueMetaInterface.TYPE_NUMBER:
         return convertPrimitive( AVRO_TYPE_DOUBLE, f );
