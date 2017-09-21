@@ -75,7 +75,7 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
                 String.valueOf( field.defaultValue ) ) );
             break;
           case ValueMetaInterface.TYPE_INTEGER:
-            if ( field.defaultValue != null ) {
+            if ( field.defaultValue != null && field.defaultValue.length() > 0 ) {
               outputRecord.put( field.formatFieldName, row.getInteger( fieldMetaIndex,
                   Long.parseLong( field.defaultValue ) ) );
             } else {
@@ -84,20 +84,26 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
             break;
           case ValueMetaInterface.TYPE_NUMBER:
             outputRecord.put( field.formatFieldName, row.getNumber( fieldMetaIndex,
-              field.defaultValue == null ? 0 : Double.parseDouble( field.defaultValue ) ) );
+                ( field.defaultValue != null && field.defaultValue.length() > 0 )
+                    ? Double.parseDouble( field.defaultValue ) : 0 ) );
             break;
           case ValueMetaInterface.TYPE_BIGNUMBER:
-            if ( field.defaultValue != null ) {
+            if ( field.defaultValue != null && field.defaultValue.length() > 0 ) {
               BigDecimal defaultBigDecimal = new BigDecimal( field.defaultValue );
               BigDecimal bigDecimal = row.getBigNumber( fieldMetaIndex, defaultBigDecimal );
               outputRecord.put( field.formatFieldName, bigDecimal.doubleValue() );
             } else {
-              outputRecord.put( field.formatFieldName, row.getBigNumber( fieldMetaIndex, null ) );
+              BigDecimal bigDecimal = row.getBigNumber( fieldMetaIndex, null );
+              if ( bigDecimal != null ) {
+                outputRecord.put( field.formatFieldName, bigDecimal.doubleValue() );
+              } else {
+                outputRecord.put( field.formatFieldName, null );
+              }
             }
             break;
           case ValueMetaInterface.TYPE_TIMESTAMP:
             Date defaultTimeStamp = null;
-            if ( field.defaultValue != null ) {
+            if ( field.defaultValue != null && field.defaultValue.length() > 0 ) {
               DateFormat dateFormat = new SimpleDateFormat( vmi.getConversionMask() );
               try {
                 defaultTimeStamp = dateFormat.parse( field.defaultValue );
@@ -110,7 +116,7 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
             break;
           case ValueMetaInterface.TYPE_DATE:
             Date defaultDate = null;
-            if ( field.defaultValue != null ) {
+            if ( field.defaultValue != null && field.defaultValue.length() > 0 ) {
               DateFormat dateFormat = new SimpleDateFormat( vmi.getConversionMask() );
               try {
                 defaultDate = dateFormat.parse( field.defaultValue );
@@ -127,7 +133,7 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
                 Boolean.parseBoolean( field.defaultValue ) ) );
             break;
           case ValueMetaInterface.TYPE_BINARY:
-            if ( field.defaultValue != null ) {
+            if ( field.defaultValue != null && field.defaultValue.length() > 0 ) {
               outputRecord.put( field.formatFieldName, ByteBuffer.wrap( row.getBinary( fieldMetaIndex,
                   vmi.getBinary( field.defaultValue.getBytes() ) ) ) );
             } else {
