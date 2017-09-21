@@ -43,6 +43,7 @@ import org.apache.parquet.schema.MessageType;
 
 public class PentahoParquetReadSupport extends ReadSupport<RowMetaAndData> {
   ParquetConverter converter;
+  SchemaDescription schema;
 
   @Override
   public ReadContext init( InitContext context ) {
@@ -50,9 +51,8 @@ public class PentahoParquetReadSupport extends ReadSupport<RowMetaAndData> {
     if ( schemaStr == null ) {
       throw new RuntimeException( "Schema not defined in the PentahoParquetSchema key" );
     }
-    converter = new ParquetConverter( SchemaDescription.unmarshall( schemaStr ) );
-
-    System.out.println( context.getFileSchema() );
+    schema = SchemaDescription.unmarshall( schemaStr );
+    converter = new ParquetConverter( schema );
 
     return new ReadContext( converter.createParquetSchema(), new HashMap<>() );
   }
@@ -60,6 +60,6 @@ public class PentahoParquetReadSupport extends ReadSupport<RowMetaAndData> {
   @Override
   public RecordMaterializer<RowMetaAndData> prepareForRead( Configuration configuration,
       Map<String, String> keyValueMetaData, MessageType fileSchema, ReadContext readContext ) {
-    return new MyRecordMaterializer( converter );
+    return new MyRecordMaterializer( converter, schema );
   }
 }
