@@ -46,7 +46,7 @@
     <com.google.inject.extensions.version>3.0</com.google.inject.extensions.version>
     <com.google.inject.version>3.0</com.google.inject.version>
     <org.fusesource.leveldbjni.version>1.8</org.fusesource.leveldbjni.version>
-    <com.thoughtworks.xstream.version>1.4.2</com.thoughtworks.xstream.version>
+    <com.thoughtworks.xstream.version>1.4.9</com.thoughtworks.xstream.version>
     <com.sun.xml.bind.version>2.2.3-1</com.sun.xml.bind.version>
     <org.apache.hive.version>1.2.0-mapr-1605</org.apache.hive.version>
     <aopalliance.version>1.0</aopalliance.version>
