@@ -69,7 +69,7 @@ import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 
 /**
  * Converter for read/write Pentaho row from/into Parquet files.
- * 
+ *
  * @author Alexander Buloichik
  */
 public class ParquetConverter {
@@ -86,6 +86,10 @@ public class ParquetConverter {
     List<Type> types = new ArrayList<>();
 
     schema.forEach( f -> types.add( convertField( f ) ) );
+
+    if ( types.isEmpty() ) {
+      throw new IllegalArgumentException( "Schema should contain at least one field" );
+    }
 
     return new MessageType( "parquet-schema", types );
   }
@@ -225,23 +229,23 @@ public class ParquetConverter {
         /**
          * 'fromByteArray' deprecated in the HDP, but CDH doesn't have 'fromReusedByteArray' yet.
          */
-//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
-        consumer.addBinary( Binary.fromReusedByteArray( row.getBinary( fieldIndex, new byte[0] ) ) );
-//#endif
-//$     consumer.addBinary( Binary.fromByteArray( row.getBinary( fieldIndex, new byte[0] ) ) );
-//#if shim_type=="CDH" || shim_type=="MAPR"
-//#endif
+        //#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
+        consumer.addBinary( Binary.fromReusedByteArray( row.getBinary( fieldIndex, new byte[ 0 ] ) ) );
+        //#endif
+        //$     consumer.addBinary( Binary.fromByteArray( row.getBinary( fieldIndex, new byte[0] ) ) );
+        //#if shim_type=="CDH" || shim_type=="MAPR"
+        //#endif
         break;
       case ValueMetaInterface.TYPE_BINARY:
         /**
          * 'fromByteArray' deprecated in the HDP, but CDH doesn't have 'fromReusedByteArray' yet.
          */
-//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
-        consumer.addBinary( Binary.fromReusedByteArray( row.getBinary( fieldIndex, new byte[0] ) ) );
-//#endif
-//$     consumer.addBinary( Binary.fromByteArray( row.getBinary( fieldIndex, new byte[0] ) ) );
-//#if shim_type=="CDH" || shim_type=="MAPR"
-//#endif
+        //#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
+        consumer.addBinary( Binary.fromReusedByteArray( row.getBinary( fieldIndex, new byte[ 0 ] ) ) );
+        //#endif
+        //$     consumer.addBinary( Binary.fromByteArray( row.getBinary( fieldIndex, new byte[0] ) ) );
+        //#if shim_type=="CDH" || shim_type=="MAPR"
+        //#endif
         break;
       default:
         throw new RuntimeException( "Undefined type: " + field.pentahoValueMetaType );
@@ -275,7 +279,7 @@ public class ParquetConverter {
       System.out.println( o );
     }
 
-    return new RowMetaAndData( rowMeta, data.toArray( new Object[data.size()] ) );
+    return new RowMetaAndData( rowMeta, data.toArray( new Object[ data.size() ] ) );
   }
 
   public static class MyRecordMaterializer extends RecordMaterializer<RowMetaAndData> {
@@ -309,7 +313,7 @@ public class ParquetConverter {
           count++;
         }
       }
-      converters = new Converter[count];
+      converters = new Converter[ count ];
       int i = 0;
       for ( SchemaDescription.Field f : converter.schema ) {
         if ( f.formatFieldName == null ) {
@@ -320,109 +324,109 @@ public class ParquetConverter {
         switch ( f.pentahoValueMetaType ) {
           case ValueMetaInterface.TYPE_NUMBER:
             fields.addValueMeta( new ValueMetaNumber( f.pentahoFieldName ) );
-            converters[i] = new PrimitiveConverter() {
+            converters[ i ] = new PrimitiveConverter() {
               @Override
               public void addDouble( double value ) {
-                current.getData()[index] = value;
+                current.getData()[ index ] = value;
               }
 
               @Override
               public void addFloat( float value ) {
-                current.getData()[index] = value;
+                current.getData()[ index ] = value;
               }
 
               @Override
               public void addInt( int value ) {
-                current.getData()[index] = value;
+                current.getData()[ index ] = value;
               }
 
               @Override
               public void addLong( long value ) {
-                current.getData()[index] = value;
+                current.getData()[ index ] = value;
               }
             };
             break;
           case ValueMetaInterface.TYPE_INTEGER:
             fields.addValueMeta( new ValueMetaInteger( f.pentahoFieldName ) );
-            converters[i] = new PrimitiveConverter() {
+            converters[ i ] = new PrimitiveConverter() {
               @Override
               public void addDouble( double value ) {
-                current.getData()[index] = value;
+                current.getData()[ index ] = value;
               }
 
               @Override
               public void addFloat( float value ) {
-                current.getData()[index] = value;
+                current.getData()[ index ] = value;
               }
 
               @Override
               public void addInt( int value ) {
-                current.getData()[index] = value;
+                current.getData()[ index ] = value;
               }
 
               @Override
               public void addLong( long value ) {
-                current.getData()[index] = value;
+                current.getData()[ index ] = value;
               }
             };
             break;
           case ValueMetaInterface.TYPE_BIGNUMBER:
             fields.addValueMeta( new ValueMetaBigNumber( f.pentahoFieldName ) );
-            converters[i] = new PrimitiveConverter() {
+            converters[ i ] = new PrimitiveConverter() {
               @Override
               public void addDouble( double value ) {
-                current.getData()[index] = value;
+                current.getData()[ index ] = value;
               }
 
               @Override
               public void addFloat( float value ) {
-                current.getData()[index] = value;
+                current.getData()[ index ] = value;
               }
 
               @Override
               public void addInt( int value ) {
-                current.getData()[index] = value;
+                current.getData()[ index ] = value;
               }
 
               @Override
               public void addLong( long value ) {
-                current.getData()[index] = value;
+                current.getData()[ index ] = value;
               }
             };
             break;
           case ValueMetaInterface.TYPE_STRING:
             fields.addValueMeta( new ValueMetaString( f.pentahoFieldName ) );
-            converters[i] = new PrimitiveConverter() {
+            converters[ i ] = new PrimitiveConverter() {
               @Override
               public void addBinary( Binary value ) {
-                current.getData()[index] = value.toStringUsingUTF8();
+                current.getData()[ index ] = value.toStringUsingUTF8();
               }
             };
             break;
           case ValueMetaInterface.TYPE_BOOLEAN:
             fields.addValueMeta( new ValueMetaBoolean( f.pentahoFieldName ) );
-            converters[i] = new PrimitiveConverter() {
+            converters[ i ] = new PrimitiveConverter() {
               @Override
               public void addBoolean( boolean value ) {
-                current.getData()[index] = value;
+                current.getData()[ index ] = value;
               }
             };
             break;
           case ValueMetaInterface.TYPE_SERIALIZABLE:
             fields.addValueMeta( new ValueMetaSerializable( f.pentahoFieldName ) );
-            converters[i] = new PrimitiveConverter() {
+            converters[ i ] = new PrimitiveConverter() {
               @Override
               public void addBinary( Binary value ) {
-                current.getData()[index] = value.getBytes();
+                current.getData()[ index ] = value.getBytes();
               }
             };
             break;
           case ValueMetaInterface.TYPE_BINARY:
             fields.addValueMeta( new ValueMetaBinary( f.pentahoFieldName ) );
-            converters[i] = new PrimitiveConverter() {
+            converters[ i ] = new PrimitiveConverter() {
               @Override
               public void addBinary( Binary value ) {
-                current.getData()[index] = value.getBytes();
+                current.getData()[ index ] = value.getBytes();
               }
             };
             break;
@@ -436,12 +440,12 @@ public class ParquetConverter {
     @Override
     public void start() {
       current = new RowMetaAndData( fields );
-      current.setData( new Object[count] );
+      current.setData( new Object[ count ] );
     }
 
     @Override
     public Converter getConverter( int fieldIndex ) {
-      return converters[fieldIndex];
+      return converters[ fieldIndex ];
     }
 
     @Override

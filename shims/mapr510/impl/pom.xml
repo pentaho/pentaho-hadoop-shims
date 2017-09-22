@@ -41,7 +41,7 @@
     <javax.xml.stream.version>1.0-2</javax.xml.stream.version>
     <org.mortbay.jetty.version>6.1.26</org.mortbay.jetty.version>
     <org.apache.hbase.version>1.1.1-mapr-1602</org.apache.hbase.version>
-	<com.fasterxml.jackson.core.version>2.5.3</com.fasterxml.jackson.core.version>
+    <com.fasterxml.jackson.core.version>2.5.3</com.fasterxml.jackson.core.version>
     <net.sf.flexjson>2.1</net.sf.flexjson>
     <com.google.inject.extensions.version>3.0</com.google.inject.extensions.version>
     <com.google.inject.version>3.0</com.google.inject.version>
@@ -994,6 +994,17 @@
             <goals>
               <goal>preprocess</goal>
             </goals>
+          </execution>
+          <execution>
+            <id>preprocessTests</id>
+            <phase>process-test-sources</phase>
+            <goals>
+              <goal>preprocessTests</goal>
+            </goals>
+            <configuration>
+              <useTestSources>true</useTestSources>
+              <source>${project.build.directory}/test-src</source>
+            </configuration>
           </execution>
         </executions>
         <configuration>
