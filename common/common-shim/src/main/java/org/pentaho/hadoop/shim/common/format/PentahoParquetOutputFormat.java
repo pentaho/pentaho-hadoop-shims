@@ -22,7 +22,10 @@
 package org.pentaho.hadoop.shim.common.format;
 
 import java.io.IOException;
+import java.net.URI;
+import java.nio.file.FileAlreadyExistsException;
 
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
@@ -81,9 +84,17 @@ public class PentahoParquetOutputFormat extends HadoopFormatBase implements IPen
   }
 
   @Override
-  public void setOutputFile( String file ) throws Exception {
+  public void setOutputFile( String file, boolean override ) throws Exception {
     inClassloader( () -> {
+      FileSystem fs = FileSystem.get( new URI( file ), job.getConfiguration() );
       outputFile = new Path( file );
+      if ( fs.exists( outputFile ) ) {
+        if ( override ) {
+          fs.delete( outputFile, true );
+        } else {
+          throw new FileAlreadyExistsException( file );
+        }
+      }
       ParquetOutputFormat.setOutputPath( job, outputFile.getParent() );
     } );
   }

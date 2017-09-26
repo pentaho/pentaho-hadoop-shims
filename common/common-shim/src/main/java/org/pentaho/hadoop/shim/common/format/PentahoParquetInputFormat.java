@@ -21,9 +21,12 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.common.format;
 
+import java.net.URI;
+import java.nio.file.NoSuchFileException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.Job;
@@ -32,23 +35,22 @@ import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
 import org.apache.log4j.Logger;
 //#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
 import org.apache.parquet.format.converter.ParquetMetadataConverter;
-import org.apache.parquet.hadoop.api.ReadSupport;
-import org.apache.parquet.hadoop.metadata.ParquetMetadata;
 import org.apache.parquet.hadoop.ParquetFileReader;
 import org.apache.parquet.hadoop.ParquetInputFormat;
 import org.apache.parquet.hadoop.ParquetRecordReader;
+import org.apache.parquet.hadoop.api.ReadSupport;
+import org.apache.parquet.hadoop.metadata.ParquetMetadata;
 import org.apache.parquet.schema.MessageType;
 //#endif
 //#if shim_type=="CDH" || shim_type=="MAPR"
 //$import parquet.format.converter.ParquetMetadataConverter;
-//$import parquet.hadoop.api.ReadSupport;
-//$import parquet.hadoop.metadata.ParquetMetadata;
 //$import parquet.hadoop.ParquetFileReader;
 //$import parquet.hadoop.ParquetInputFormat;
 //$import parquet.hadoop.ParquetRecordReader;
+//$import parquet.hadoop.api.ReadSupport;
+//$import parquet.hadoop.metadata.ParquetMetadata;
 //$import parquet.schema.MessageType;
 //#endif
-
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.hadoop.shim.api.format.IPentahoParquetInputFormat;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
@@ -93,12 +95,21 @@ public class PentahoParquetInputFormat extends HadoopFormatBase implements IPent
   @Override
   public void setInputFile( String file ) throws Exception {
     inClassloader( () -> {
+      FileSystem fs = FileSystem.get( new URI( file ), job.getConfiguration() );
       Path filePath = new Path( file );
-      ParquetInputFormat.setInputPaths( job, filePath.getParent() );
-      ParquetInputFormat.setInputDirRecursive( job, false );
-      ParquetInputFormat.setInputPathFilter( job, ReadFileFilter.class );
-      job.getConfiguration().set( ReadFileFilter.FILTER_DIR, filePath.getParent().toString() );
-      job.getConfiguration().set( ReadFileFilter.FILTER_FILE, filePath.toString() );
+      if ( !fs.exists( filePath ) ) {
+        throw new NoSuchFileException( file );
+      }
+      if ( fs.getFileStatus( filePath ).isDirectory() ) { // directory
+        ParquetInputFormat.setInputPaths( job, filePath );
+        ParquetInputFormat.setInputDirRecursive( job, true );
+      } else { // file
+        ParquetInputFormat.setInputPaths( job, filePath.getParent() );
+        ParquetInputFormat.setInputDirRecursive( job, false );
+        ParquetInputFormat.setInputPathFilter( job, ReadFileFilter.class );
+        job.getConfiguration().set( ReadFileFilter.FILTER_DIR, filePath.getParent().toString() );
+        job.getConfiguration().set( ReadFileFilter.FILTER_FILE, filePath.toString() );
+      }
     } );
   }
 
