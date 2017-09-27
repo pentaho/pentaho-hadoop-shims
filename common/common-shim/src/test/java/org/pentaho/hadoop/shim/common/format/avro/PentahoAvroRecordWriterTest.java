@@ -37,6 +37,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 import org.apache.avro.Schema;
@@ -153,8 +156,10 @@ public class PentahoAvroRecordWriterTest {
 
   @Test
   public void testWrite_Date() throws KettleValueException, IOException {
-    doReturn( new Date( 0 ) ).when( rmd ).getDate( anyInt(), any( Date.class ) );
-    testWriteCommon( ValueMetaInterface.TYPE_DATE, "dateField", 0 );
+    Date dateFromRow = new Date( 0 );
+    LocalDate rowDate = dateFromRow.toInstant().atZone( ZoneId.systemDefault() ).toLocalDate();
+    doReturn( dateFromRow ).when( rmd ).getDate( anyInt(), any( Date.class ) );
+    testWriteCommon( ValueMetaInterface.TYPE_DATE, "dateField", Math.toIntExact( ChronoUnit.DAYS.between( LocalDate.ofEpochDay( 0 ), rowDate ) ) );
   }
 
   @Test
