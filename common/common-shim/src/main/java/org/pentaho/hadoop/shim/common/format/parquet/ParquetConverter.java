@@ -144,26 +144,82 @@ public class ParquetConverter {
     throws KettleValueException {
     int fieldIndex = row.getRowMeta().indexOfValue( field.pentahoFieldName );
     if ( fieldIndex < 0 ) {
-      return;
+      if ( field.allowNull ) {
+        return;
+      } else {
+        throw new KettleValueException( "Required field '" + field.pentahoFieldName + "' not found in rowset" );
+      }
     }
-    if ( field.allowNull && row.isEmptyValue( field.pentahoFieldName ) ) {
-      return;
+    if ( row.isEmptyValue( field.pentahoFieldName ) ) {
+      if ( field.allowNull ) {
+        return;
+      } else {
+        if ( field.defaultValue == null ) {
+          throw new KettleValueException(
+              "Required field '" + field.pentahoFieldName + "' contains no data and default values not defined" );
+        } else {
+          // put default value
+          consumer.startField( field.formatFieldName, index );
+          switch ( field.pentahoValueMetaType ) {
+            case ValueMetaInterface.TYPE_NUMBER:
+              consumer.addDouble( Double.parseDouble( field.defaultValue ) );
+            case ValueMetaInterface.TYPE_STRING:
+              consumer.addBinary( Binary.fromString( field.defaultValue ) );
+              break;
+            case ValueMetaInterface.TYPE_BOOLEAN:
+              consumer.addBoolean( Boolean.parseBoolean( field.defaultValue ) );
+              break;
+            case ValueMetaInterface.TYPE_INTEGER:
+              consumer.addLong( Long.parseLong( field.defaultValue ) );
+              break;
+            case ValueMetaInterface.TYPE_BIGNUMBER:
+              consumer.addDouble( Double.parseDouble( field.defaultValue ) );
+              break;
+            case ValueMetaInterface.TYPE_SERIALIZABLE:
+              /**
+               * 'fromByteArray' deprecated in the HDP, but CDH doesn't have 'fromReusedByteArray' yet.
+               */
+      //#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
+              consumer.addBinary( Binary.fromReusedByteArray( new byte[0] ) );
+      //#endif
+      //$     consumer.addBinary( Binary.fromByteArray( row.getBinary( fieldIndex, new byte[0] ) ) );
+      //#if shim_type=="CDH" || shim_type=="MAPR"
+      //#endif
+              break;
+            case ValueMetaInterface.TYPE_BINARY:
+              /**
+               * 'fromByteArray' deprecated in the HDP, but CDH doesn't have 'fromReusedByteArray' yet.
+               */
+      //#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
+              consumer.addBinary( Binary.fromReusedByteArray( new byte[0] ) );
+      //#endif
+      //$     consumer.addBinary( Binary.fromByteArray( row.getBinary( fieldIndex, new byte[0] ) ) );
+      //#if shim_type=="CDH" || shim_type=="MAPR"
+      //#endif
+              break;
+            default:
+              throw new RuntimeException( "Undefined type: " + field.pentahoValueMetaType );
+          }
+          consumer.endField( field.formatFieldName, index );
+          return;
+        }
+      }
     }
     consumer.startField( field.formatFieldName, index );
     switch ( field.pentahoValueMetaType ) {
       case ValueMetaInterface.TYPE_NUMBER:
-        consumer.addDouble( row.getNumber( fieldIndex, Double.parseDouble( field.defaultValue ) ) );
+        consumer.addDouble( row.getNumber( fieldIndex, 0 ) );
       case ValueMetaInterface.TYPE_STRING:
-        consumer.addBinary( Binary.fromString( row.getString( field.pentahoFieldName, field.defaultValue ) ) );
+        consumer.addBinary( Binary.fromString( row.getString( fieldIndex, null ) ) );
         break;
       case ValueMetaInterface.TYPE_BOOLEAN:
-        consumer.addBoolean( row.getBoolean( fieldIndex, Boolean.parseBoolean( field.defaultValue ) ) );
+        consumer.addBoolean( row.getBoolean( fieldIndex, false ) );
         break;
       case ValueMetaInterface.TYPE_INTEGER:
-        consumer.addLong( row.getInteger( fieldIndex, Long.parseLong( field.defaultValue ) ) );
+        consumer.addLong( row.getInteger( fieldIndex, 0 ) );
         break;
       case ValueMetaInterface.TYPE_BIGNUMBER:
-        consumer.addDouble( row.getNumber( fieldIndex, Double.parseDouble( field.defaultValue ) ) );
+        consumer.addDouble( row.getNumber( fieldIndex, 0 ) );
         break;
       case ValueMetaInterface.TYPE_SERIALIZABLE:
         /**
