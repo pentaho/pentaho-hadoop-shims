@@ -142,6 +142,17 @@
               <goal>preprocess</goal>
             </goals>
           </execution>
+          <execution>
+            <id>preprocessTests</id>
+            <phase>process-test-sources</phase>
+            <goals>
+              <goal>preprocessTests</goal>
+            </goals>
+            <configuration>
+              <useTestSources>true</useTestSources>
+              <source>${project.build.directory}/test-src</source>
+            </configuration>
+          </execution>
         </executions>
         <configuration>
           <globalVars>

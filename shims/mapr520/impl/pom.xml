@@ -125,7 +125,7 @@
       <artifactId>hadoop-mapreduce-client-hs</artifactId>
       <version>${org.apache.hadoop.version}</version>
       <scope>provided</scope>
-     </dependency>
+    </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-mapreduce-client-common</artifactId>
@@ -270,6 +270,17 @@
             <goals>
               <goal>preprocess</goal>
             </goals>
+          </execution>
+          <execution>
+            <id>preprocessTests</id>
+            <phase>process-test-sources</phase>
+            <goals>
+              <goal>preprocessTests</goal>
+            </goals>
+            <configuration>
+              <useTestSources>true</useTestSources>
+              <source>${project.build.directory}/test-src</source>
+            </configuration>
           </execution>
         </executions>
         <configuration>

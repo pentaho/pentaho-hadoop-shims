@@ -48,7 +48,7 @@ public class PentahoParquetReadSupport extends ReadSupport<RowMetaAndData> {
   @Override
   public ReadContext init( InitContext context ) {
     String schemaStr = context.getConfiguration().get( "PentahoParquetSchema" );
-    if ( schemaStr == null ) {
+    if ( schemaStr == null || schemaStr.trim().isEmpty() ) {
       throw new RuntimeException( "Schema not defined in the PentahoParquetSchema key" );
     }
     schema = SchemaDescription.unmarshall( schemaStr );
@@ -59,7 +59,8 @@ public class PentahoParquetReadSupport extends ReadSupport<RowMetaAndData> {
 
   @Override
   public RecordMaterializer<RowMetaAndData> prepareForRead( Configuration configuration,
-      Map<String, String> keyValueMetaData, MessageType fileSchema, ReadContext readContext ) {
+                                                            Map<String, String> keyValueMetaData,
+                                                            MessageType fileSchema, ReadContext readContext ) {
     return new MyRecordMaterializer( converter, schema );
   }
 }
