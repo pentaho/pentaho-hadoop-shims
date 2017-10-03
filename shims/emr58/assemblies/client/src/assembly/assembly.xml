@@ -11,6 +11,7 @@
       <useTransitiveDependencies>true</useTransitiveDependencies>
       <useTransitiveFiltering>false</useTransitiveFiltering>
       <includes>
+	    <include>org.xerial.snappy:snappy-java</include>
         <include>dk.brics.automaton:automaton</include>
         <include>com.google.code.gson:gson</include>
         <include>joda-time:joda-time</include>

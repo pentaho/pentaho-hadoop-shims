@@ -11,6 +11,7 @@
       <useTransitiveDependencies>true</useTransitiveDependencies>
       <useTransitiveFiltering>true</useTransitiveFiltering>
       <includes>
+	    <include>org.xerial.snappy:snappy-java</include>
         <include>org.apache.hadoop:hadoop-client</include>
         <include>org.apache.hadoop:hadoop-mapreduce-client-core</include>
         <include>org.apache.hadoop:hadoop-mapreduce-client-app</include>

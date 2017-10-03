@@ -29,6 +29,7 @@
       <useTransitiveDependencies>true</useTransitiveDependencies>
       <useTransitiveFiltering>false</useTransitiveFiltering>
       <includes>
+	    <include>org.xerial.snappy:snappy-java</include>
         <include>dk.brics.automaton:automaton</include>
         <include>commons-lang:commons-lang</include>
         <include>org.apache.oozie:oozie-client</include>

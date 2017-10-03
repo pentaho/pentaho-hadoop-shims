@@ -29,6 +29,7 @@
       <useTransitiveDependencies>true</useTransitiveDependencies>
       <useTransitiveFiltering>false</useTransitiveFiltering>
       <includes>
+	    <include>org.xerial.snappy:snappy-java</include>
         <include>dk.brics.automaton:automaton</include>
         <include>org.apache.hive:hive-common</include>
         <include>org.apache.hive:hive-exec</include>

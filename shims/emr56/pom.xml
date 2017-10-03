@@ -11,6 +11,7 @@
   <properties>
     <shim.name>emr56</shim.name>
     <!-- default folder -->
+	<org.xerial.snappy.version>1.1.1.3</org.xerial.snappy.version>
     <org.apache.hive.version>2.1.1</org.apache.hive.version>
     <pig.version>0.16.0</pig.version>
     <dependency.pig.classifier>h2</dependency.pig.classifier>

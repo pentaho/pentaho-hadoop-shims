@@ -11,6 +11,7 @@
       <useTransitiveDependencies>true</useTransitiveDependencies>
       <useTransitiveFiltering>false</useTransitiveFiltering>
       <includes>
+		<include>org.xerial.snappy:snappy-java</include>
         <include>pentaho:pentaho-hdfs-vfs</include>
         <include>org.apache.pig:pig</include>
         <include>dk.brics.automaton:automaton</include>
