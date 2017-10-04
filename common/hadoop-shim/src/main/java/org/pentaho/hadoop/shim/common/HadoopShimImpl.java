@@ -48,6 +48,7 @@ public class HadoopShimImpl extends CommonHadoopShim {
 
   @Override
   public void onLoad( HadoopConfiguration config, HadoopConfigurationFileSystemManager fsm ) throws Exception {
+    validateHadoopHomeWithWinutils();
     fsm.addProvider( config, "hdfs", config.getIdentifier(), new HDFSFileProvider() );
     setDistributedCacheUtil( new DistributedCacheUtilImpl( config ) {
 
