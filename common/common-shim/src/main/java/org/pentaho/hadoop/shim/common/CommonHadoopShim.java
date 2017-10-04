@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Pentaho Big Data
  * <p>
- * Copyright (C) 2002-2016 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2017 by Pentaho : http://www.pentaho.com
  * <p>
  * ******************************************************************************
  * <p>
@@ -54,6 +54,8 @@ import java.util.Properties;
 import java.util.logging.Logger;
 
 public class CommonHadoopShim implements HadoopShim {
+  private org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger( getClass() );
+
   public static class NotSupportedDriver implements Driver {
     public static SQLException notSupported =
       new SQLException( "Chosen driver is not supported in currently active Hadoop shim" );
@@ -104,7 +106,8 @@ public class CommonHadoopShim implements HadoopShim {
   static {
     JDBC_POSSIBLE_DRIVER_MAP.put( "hive2Simba", "org.pentaho.hadoop.shim.common.CommonHadoopShim$NotSupportedDriver" );
     JDBC_POSSIBLE_DRIVER_MAP.put( "ImpalaSimba", "org.pentaho.hadoop.shim.common.CommonHadoopShim$NotSupportedDriver" );
-    JDBC_POSSIBLE_DRIVER_MAP.put( "SparkSqlSimba", "org.pentaho.hadoop.shim.common.CommonHadoopShim$NotSupportedDriver" );
+    JDBC_POSSIBLE_DRIVER_MAP
+      .put( "SparkSqlSimba", "org.pentaho.hadoop.shim.common.CommonHadoopShim$NotSupportedDriver" );
     JDBC_POSSIBLE_DRIVER_MAP.put( "Impala", "org.apache.hive.jdbc.HiveDriver" );
   }
 
@@ -151,6 +154,15 @@ public class CommonHadoopShim implements HadoopShim {
       return new HiveDriver();
     } catch ( Exception ex ) {
       throw new RuntimeException( "Unable to load Hive JDBC driver", ex );
+    }
+  }
+
+  void validateHadoopHomeWithWinutils() {
+    try {
+      new ShellPrevalidator().doesWinutilsFileExist();
+    } catch ( IOException e ) {
+      logger.error( BaseMessages.getString( CommonHadoopShim.class,
+        "CommonHadoopShim.HadoopHomeNotSet" ), e );
     }
   }
 
