@@ -21,11 +21,9 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.common.format.parquet;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-
-import org.apache.hadoop.mapreduce.RecordReader;
 
 //#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
 import org.apache.parquet.io.api.Binary;
@@ -35,6 +33,7 @@ import org.apache.parquet.io.api.PrimitiveConverter;
 import org.apache.parquet.io.api.RecordConsumer;
 import org.apache.parquet.io.api.RecordMaterializer;
 import org.apache.parquet.schema.MessageType;
+import org.apache.parquet.schema.OriginalType;
 import org.apache.parquet.schema.PrimitiveType;
 import org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName;
 import org.apache.parquet.schema.Type;
@@ -48,6 +47,7 @@ import org.apache.parquet.schema.Type.Repetition;
 //$import parquet.io.api.RecordConsumer;
 //$import parquet.io.api.RecordMaterializer;
 //$import parquet.schema.MessageType;
+//$import parquet.schema.OriginalType;
 //$import parquet.schema.PrimitiveType;
 //$import parquet.schema.PrimitiveType.PrimitiveTypeName;
 //$import parquet.schema.Type;
@@ -61,10 +61,12 @@ import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.core.row.value.ValueMetaBigNumber;
 import org.pentaho.di.core.row.value.ValueMetaBinary;
 import org.pentaho.di.core.row.value.ValueMetaBoolean;
+import org.pentaho.di.core.row.value.ValueMetaDate;
 import org.pentaho.di.core.row.value.ValueMetaInteger;
 import org.pentaho.di.core.row.value.ValueMetaNumber;
 import org.pentaho.di.core.row.value.ValueMetaSerializable;
 import org.pentaho.di.core.row.value.ValueMetaString;
+import org.pentaho.di.core.row.value.ValueMetaTimestamp;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 
 /**
@@ -110,13 +112,16 @@ public class ParquetConverter {
       case BOOLEAN:
         return schema.new Field( t.getName(), t.getName(), ValueMetaInterface.TYPE_BOOLEAN, allowNull );
       case DOUBLE:
-        return schema.new Field( t.getName(), t.getName(), ValueMetaInterface.TYPE_NUMBER, allowNull );
       case FLOAT:
         return schema.new Field( t.getName(), t.getName(), ValueMetaInterface.TYPE_NUMBER, allowNull );
       case INT32:
-        return schema.new Field( t.getName(), t.getName(), ValueMetaInterface.TYPE_INTEGER, allowNull );
       case INT64:
-        return schema.new Field( t.getName(), t.getName(), ValueMetaInterface.TYPE_INTEGER, allowNull );
+        if ( t.getOriginalType() == OriginalType.DATE || t.getOriginalType() == OriginalType.TIME_MILLIS
+            || t.getOriginalType() == OriginalType.TIMESTAMP_MILLIS ) {
+          return schema.new Field( t.getName(), t.getName(), ValueMetaInterface.TYPE_DATE, allowNull );
+        } else {
+          return schema.new Field( t.getName(), t.getName(), ValueMetaInterface.TYPE_INTEGER, allowNull );
+        }
       default:
         throw new RuntimeException( "Undefined type: " + t );
     }
@@ -126,19 +131,21 @@ public class ParquetConverter {
     Repetition rep = f.allowNull ? Repetition.OPTIONAL : Repetition.REQUIRED;
     switch ( f.pentahoValueMetaType ) {
       case ValueMetaInterface.TYPE_NUMBER:
-        return new PrimitiveType( rep, PrimitiveTypeName.DOUBLE, f.formatFieldName );
+        return new PrimitiveType( rep, PrimitiveTypeName.DOUBLE, f.formatFieldName, OriginalType.DECIMAL );
       case ValueMetaInterface.TYPE_STRING:
-        return new PrimitiveType( rep, PrimitiveTypeName.BINARY, f.formatFieldName );
+        return new PrimitiveType( rep, PrimitiveTypeName.BINARY, f.formatFieldName, OriginalType.UTF8 );
       case ValueMetaInterface.TYPE_BOOLEAN:
         return new PrimitiveType( rep, PrimitiveTypeName.BOOLEAN, f.formatFieldName );
       case ValueMetaInterface.TYPE_INTEGER:
-        return new PrimitiveType( rep, PrimitiveTypeName.INT64, f.formatFieldName );
+        return new PrimitiveType( rep, PrimitiveTypeName.INT64, f.formatFieldName, OriginalType.INT_64 );
       case ValueMetaInterface.TYPE_BIGNUMBER:
-        return new PrimitiveType( rep, PrimitiveTypeName.DOUBLE, f.formatFieldName );
+        return new PrimitiveType( rep, PrimitiveTypeName.DOUBLE, f.formatFieldName, OriginalType.DECIMAL );
       case ValueMetaInterface.TYPE_SERIALIZABLE:
-        return new PrimitiveType( rep, PrimitiveTypeName.BINARY, f.formatFieldName );
       case ValueMetaInterface.TYPE_BINARY:
         return new PrimitiveType( rep, PrimitiveTypeName.BINARY, f.formatFieldName );
+      case ValueMetaInterface.TYPE_DATE:
+      case ValueMetaInterface.TYPE_TIMESTAMP:
+        return new PrimitiveType( rep, PrimitiveTypeName.INT64, f.formatFieldName, OriginalType.TIMESTAMP_MILLIS );
       default:
         throw new RuntimeException( "Undefined type: " + f.pentahoValueMetaType );
     }
@@ -167,6 +174,7 @@ public class ParquetConverter {
           switch ( field.pentahoValueMetaType ) {
             case ValueMetaInterface.TYPE_NUMBER:
               consumer.addDouble( Double.parseDouble( field.defaultValue ) );
+              break;
             case ValueMetaInterface.TYPE_STRING:
               consumer.addBinary( Binary.fromString( field.defaultValue ) );
               break;
@@ -201,6 +209,10 @@ public class ParquetConverter {
       //#if shim_type=="CDH" || shim_type=="MAPR"
       //#endif
               break;
+            case ValueMetaInterface.TYPE_DATE:
+            case ValueMetaInterface.TYPE_TIMESTAMP:
+              consumer.addLong( Long.parseLong( field.defaultValue ) );
+              break;
             default:
               throw new RuntimeException( "Undefined type: " + field.pentahoValueMetaType );
           }
@@ -213,6 +225,7 @@ public class ParquetConverter {
     switch ( field.pentahoValueMetaType ) {
       case ValueMetaInterface.TYPE_NUMBER:
         consumer.addDouble( row.getNumber( fieldIndex, 0 ) );
+        break;
       case ValueMetaInterface.TYPE_STRING:
         consumer.addBinary( Binary.fromString( row.getString( fieldIndex, null ) ) );
         break;
@@ -247,6 +260,10 @@ public class ParquetConverter {
         //#if shim_type=="CDH" || shim_type=="MAPR"
         //#endif
         break;
+      case ValueMetaInterface.TYPE_DATE:
+      case ValueMetaInterface.TYPE_TIMESTAMP:
+        consumer.addLong( row.getDate( fieldIndex, new Date( 0 ) ).getTime() );
+        break;
       default:
         throw new RuntimeException( "Undefined type: " + field.pentahoValueMetaType );
     }
@@ -268,18 +285,6 @@ public class ParquetConverter {
       }
     }
     consumer.endMessage();
-  }
-
-  public RowMetaAndData readRow( RecordReader<Void, RowMetaAndData> reader ) throws IOException, InterruptedException {
-    RowMeta rowMeta = new RowMeta();
-    List<Object> data = new ArrayList<>();
-
-    while ( reader.nextKeyValue() ) {
-      Object o = reader.getCurrentValue();
-      System.out.println( o );
-    }
-
-    return new RowMetaAndData( rowMeta, data.toArray( new Object[ data.size() ] ) );
   }
 
   public static class MyRecordMaterializer extends RecordMaterializer<RowMetaAndData> {
@@ -427,6 +432,24 @@ public class ParquetConverter {
               @Override
               public void addBinary( Binary value ) {
                 current.getData()[ index ] = value.getBytes();
+              }
+            };
+            break;
+          case ValueMetaInterface.TYPE_DATE:
+            fields.addValueMeta( new ValueMetaDate( f.pentahoFieldName ) );
+            converters[ i ] = new PrimitiveConverter() {
+              @Override
+              public void addLong( long value ) {
+                current.getData()[ index ] = new Date( value );
+              }
+            };
+            break;
+          case ValueMetaInterface.TYPE_TIMESTAMP:
+            fields.addValueMeta( new ValueMetaTimestamp( f.pentahoFieldName ) );
+            converters[ i ] = new PrimitiveConverter() {
+              @Override
+              public void addLong( long value ) {
+                current.getData()[ index ] = new Date( value );
               }
             };
             break;
