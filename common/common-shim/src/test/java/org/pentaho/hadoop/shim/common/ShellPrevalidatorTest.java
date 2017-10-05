@@ -49,6 +49,9 @@ public class ShellPrevalidatorTest {
     MemberModifier
       .stub( MemberModifier.method( ShellPrevalidator.class, "doesFileExist", String.class ) )
       .toReturn( false );
+    MemberModifier
+      .stub( MemberModifier.method( ShellPrevalidator.class, "isWindows" ) )
+      .toReturn( true );
     boolean exist = ShellPrevalidator.doesWinutilsFileExist();
     Assert.assertEquals( false, exist );
   }
