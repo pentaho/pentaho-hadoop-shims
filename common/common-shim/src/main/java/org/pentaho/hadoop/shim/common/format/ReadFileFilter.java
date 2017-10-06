@@ -52,6 +52,6 @@ public class ReadFileFilter implements PathFilter, Configurable {
     if ( requiredFile == null ) {
       throw new RuntimeException( "Required file not defined" );
     }
-    return requiredDir.equals( path.toString() ) || requiredFile.equals( path.toString() );
+    return path.equals( new Path( requiredDir ) ) || path.equals( new Path( requiredFile ) );
   }
 }
