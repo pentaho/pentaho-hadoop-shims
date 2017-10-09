@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2017 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -21,40 +21,43 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.common.format.avro;
 
-import org.apache.avro.Schema;
-import org.apache.avro.file.DataFileWriter;
+import org.apache.avro.file.DataFileStream;
 import org.apache.avro.generic.GenericRecord;
 import org.pentaho.di.core.RowMetaAndData;
-import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat;
+import org.pentaho.hadoop.shim.api.format.IPentahoAvroInputFormat;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 /**
- * Created by tkafalas on 8/28/2017.
+ * Created by rmansoor on 10/5/2017.
  */
-public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRecordWriter {
-  private final DataFileWriter<GenericRecord> nativeAvroRecordWriter;
-  private final Schema schema;
+public class PentahoAvroRecordReader implements IPentahoAvroInputFormat.IPentahoRecordReader {
+
+  private final DataFileStream<GenericRecord> nativeAvroRecordReader;
   private final SchemaDescription schemaDescription;
 
-  public PentahoAvroRecordWriter( DataFileWriter<GenericRecord> recordWriter, Schema schema, SchemaDescription schemaDescription ) {
-    this.nativeAvroRecordWriter = recordWriter;
-    this.schema = schema;
+  public PentahoAvroRecordReader( DataFileStream<GenericRecord> nativeAvroRecordReader,
+      SchemaDescription schemaDescription ) {
+    this.nativeAvroRecordReader = nativeAvroRecordReader;
     this.schemaDescription = schemaDescription;
   }
 
-  @Override
-  public void write( RowMetaAndData row ) {
-    try {
-      nativeAvroRecordWriter.append( AvroConverter.convertToAvro( row, schema, schemaDescription ) );
-    } catch ( IOException e ) {
-
-    }
+  @Override public void close() throws IOException {
+    nativeAvroRecordReader.close();
   }
 
-  @Override
-  public void close() throws IOException {
-    nativeAvroRecordWriter.close();
+  @Override public Iterator<RowMetaAndData> iterator() {
+    return new Iterator<RowMetaAndData>() {
+
+      @Override public boolean hasNext() {
+        return nativeAvroRecordReader.hasNext();
+      }
+
+      @Override public RowMetaAndData next() {
+        return AvroConverter.convertFromAvro(  nativeAvroRecordReader.next(), schemaDescription );
+      }
+    };
   }
 }

@@ -20,6 +20,11 @@
   </properties>
   <dependencies>
     <dependency>
+      <groupId>org.apache.avro</groupId>
+      <artifactId>avro</artifactId>
+      <version>${org.apache.avro.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>pentaho-hadoop-shims-mapr520-scope-pmr</artifactId>
       <version>${project.version}</version>
