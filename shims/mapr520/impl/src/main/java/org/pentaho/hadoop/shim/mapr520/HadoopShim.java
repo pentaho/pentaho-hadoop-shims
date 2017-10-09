@@ -108,6 +108,7 @@ public class HadoopShim extends CommonHadoopShim {
 
   @Override
   public void onLoad( HadoopConfiguration config, HadoopConfigurationFileSystemManager fsm ) throws Exception {
+    validateHadoopHomeWithWinutils();
     fsm.addProvider( config, MapRFileProvider.SCHEME, config.getIdentifier(), new MapRFileProvider() );
     setDistributedCacheUtil( new MapR5DistributedCacheUtilImpl( config ) );
   }

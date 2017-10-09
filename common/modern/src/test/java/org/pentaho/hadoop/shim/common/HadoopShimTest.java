@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2017 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -35,6 +35,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.*;
 
 public class HadoopShimTest {
 
@@ -66,12 +67,14 @@ public class HadoopShimTest {
     assertFalse( fsm.hasProvider( "hdfs" ) );
 
     HadoopShim shim = new HadoopShimImpl();
+    CommonHadoopShim shimSpy = (CommonHadoopShim) spy( shim );
     HadoopConfiguration config =
       new HadoopConfiguration( VFS.getManager().resolveFile( "ram:///" ), "id", "name", shim, null, null, null );
 
-    shim.onLoad( config, fsm );
+    shimSpy.onLoad( config, fsm );
 
-    assertNotNull( shim.getDistributedCacheUtil() );
+    verify( shimSpy, atLeast( 1 ) ).validateHadoopHomeWithWinutils();
+    assertNotNull( shimSpy.getDistributedCacheUtil() );
   }
 
 }

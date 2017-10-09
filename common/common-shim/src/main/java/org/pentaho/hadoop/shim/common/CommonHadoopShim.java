@@ -144,6 +144,7 @@ public class CommonHadoopShim implements HadoopShim {
 
   @Override
   public void onLoad( HadoopConfiguration config, HadoopConfigurationFileSystemManager fsm ) throws Exception {
+    validateHadoopHomeWithWinutils();
     fsm.addProvider( config, "hdfs", config.getIdentifier(), new HDFSFileProvider() );
     setDistributedCacheUtil( new DistributedCacheUtilImpl( config ) );
   }
@@ -157,9 +158,9 @@ public class CommonHadoopShim implements HadoopShim {
     }
   }
 
-  void validateHadoopHomeWithWinutils() {
+  protected void validateHadoopHomeWithWinutils() {
     try {
-      new ShellPrevalidator().doesWinutilsFileExist();
+      ShellPrevalidator.doesWinutilsFileExist();
     } catch ( IOException e ) {
       logger.error( BaseMessages.getString( CommonHadoopShim.class,
         "CommonHadoopShim.HadoopHomeNotSet" ), e );
