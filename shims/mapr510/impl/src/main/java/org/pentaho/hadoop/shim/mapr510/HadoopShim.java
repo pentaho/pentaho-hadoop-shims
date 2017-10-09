@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2016 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2017 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -108,6 +108,7 @@ public class HadoopShim extends CommonHadoopShim {
 
   @Override
   public void onLoad( HadoopConfiguration config, HadoopConfigurationFileSystemManager fsm ) throws Exception {
+    validateHadoopHomeWithWinutils();
     fsm.addProvider( config, MapRFileProvider.SCHEME, config.getIdentifier(), new MapRFileProvider() );
     setDistributedCacheUtil( new MapR5DistributedCacheUtilImpl( config ) );
   }
