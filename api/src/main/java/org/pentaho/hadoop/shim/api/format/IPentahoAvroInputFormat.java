@@ -22,10 +22,12 @@
 package org.pentaho.hadoop.shim.api.format;
 
 public interface IPentahoAvroInputFormat extends IPentahoInputFormat {
+
   /**
    * Read schema for display to user.
+   * @param dataPath 
    */
-  SchemaDescription readSchema( String file ) throws Exception;
+  SchemaDescription readSchema( String schemaPath, String dataPath ) throws Exception;
 
   /**
    * Set schema for file reading.
@@ -41,4 +43,5 @@ public interface IPentahoAvroInputFormat extends IPentahoInputFormat {
    * Split size, bytes.
    */
   void setSplitSize( long blockSize ) throws Exception;
+
 }

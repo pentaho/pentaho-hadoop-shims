@@ -47,12 +47,6 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
   }
 
   @Override
-  public SchemaDescription readSchema( String file ) throws Exception {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
   public void setSchema( SchemaDescription schema ) throws Exception {
     // TODO Auto-generated method stub
   }
@@ -66,4 +60,11 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
   public void setSplitSize( long blockSize ) throws Exception {
     // TODO Auto-generated method stub
   }
+
+  @Override
+  public SchemaDescription readSchema( String schemaPath, String dataPath ) throws Exception {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
 }
