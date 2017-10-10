@@ -22,23 +22,31 @@
 
 package org.pentaho.hadoop.shim.common;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.FileInputFormat;
 import org.apache.hadoop.mapred.FileOutputFormat;
 import org.apache.hadoop.mapred.InputFormat;
 import org.apache.hadoop.mapred.InputSplit;
+import org.apache.hadoop.mapred.JobClient;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.MapRunner;
 import org.apache.hadoop.mapred.Mapper;
+import org.apache.hadoop.mapred.MockQueueAclsInfo;
 import org.apache.hadoop.mapred.OutputFormat;
 import org.apache.hadoop.mapred.RecordReader;
 import org.apache.hadoop.mapred.RecordWriter;
 import org.apache.hadoop.mapred.Reducer;
 import org.apache.hadoop.mapred.Reporter;
+import org.apache.hadoop.mapred.RunningJob;
 import org.apache.hadoop.util.Progressable;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.pentaho.hadoop.mapreduce.YarnQueueAclsException;
+import org.pentaho.hadoop.mapreduce.YarnQueueAclsVerifier;
 import org.pentaho.hadoop.shim.common.fs.PathProxy;
 
 import java.io.IOException;
@@ -122,6 +130,44 @@ public class ConfigurationProxyTest {
     PathProxy path = new PathProxy( "file://output" );
     configurationProxy.setOutputPath( path );
     assertEquals( path, FileOutputFormat.getOutputPath( configurationProxy ) );
+  }
+
+  @Test(expected = YarnQueueAclsException.class)
+  public void testSubmitWhenUserHasNoPermissionsToSubmitJobInQueueShouldRaiseYarnQueueAclsException() throws IOException, InterruptedException, ClassNotFoundException{
+    Mockito.spy( YarnQueueAclsVerifier.class );
+    ConfigurationProxy configurationProxy = Mockito.mock( ConfigurationProxy.class );
+    JobClient jobClient = Mockito.mock( JobClient.class );
+
+    Mockito.when( configurationProxy.createJobClient() ).thenReturn( jobClient );
+    Mockito.when( configurationProxy.submit() ).thenCallRealMethod();
+    Mockito.when( jobClient.getQueueAclsForCurrentUser() ).thenReturn( new MockQueueAclsInfo[]{
+      new MockQueueAclsInfo( StringUtils.EMPTY, new String[]{
+        "ANOTHER_RIGHTS"
+      } ),
+      new MockQueueAclsInfo( StringUtils.EMPTY, new String[]{})
+    } );
+
+    configurationProxy.submit();
+  }
+
+  @Test
+  public void testSubmitWhenUserHasPermissionsToSubmitJobInQueueShouldExecuteSuccessfully() throws IOException, InterruptedException, ClassNotFoundException{
+    Mockito.spy( YarnQueueAclsVerifier.class );
+    ConfigurationProxy configurationProxy = Mockito.mock( ConfigurationProxy.class );
+    JobClient jobClient = Mockito.mock( JobClient.class );
+    RunningJob runningJob = Mockito.mock( RunningJob.class );
+
+    Mockito.when( configurationProxy.createJobClient() ).thenReturn( jobClient );
+    Mockito.when( configurationProxy.submit() ).thenCallRealMethod();
+    Mockito.when( jobClient.getQueueAclsForCurrentUser() ).thenReturn( new MockQueueAclsInfo[]{
+      new MockQueueAclsInfo( StringUtils.EMPTY, new String[]{
+        "SUBMIT_APPLICATIONS"
+      } ),
+      new MockQueueAclsInfo( StringUtils.EMPTY, new String[]{})
+    } );
+    Mockito.when( jobClient.submitJob( Mockito.any( JobConf.class ) ) ).thenReturn( runningJob );
+
+    Assert.assertNotNull( configurationProxy.submit() );
   }
 
   static class TestInputFormat implements InputFormat {
