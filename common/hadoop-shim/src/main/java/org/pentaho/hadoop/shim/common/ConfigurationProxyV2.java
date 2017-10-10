@@ -24,9 +24,14 @@ package org.pentaho.hadoop.shim.common;
 import com.google.common.annotations.VisibleForTesting;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.JobConf;
+import org.apache.hadoop.mapreduce.Cluster;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.security.UserGroupInformation;
+import org.pentaho.di.i18n.BaseMessages;
+import org.pentaho.hadoop.mapreduce.YarnQueueAclsException;
+import org.pentaho.hadoop.mapreduce.YarnQueueAclsVerifier;
 import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.api.mapred.RunningJob;
 
@@ -285,8 +290,7 @@ public class ConfigurationProxyV2 implements Configuration {
   }
 
   /**
-   * Hack
-   * Return this configuration as was asked with provided delegate class (If it is possible).
+   * Hack Return this configuration as was asked with provided delegate class (If it is possible).
    *
    * @param delegate class of desired return object
    * @return this configuration delegate object if possible
@@ -308,7 +312,17 @@ public class ConfigurationProxyV2 implements Configuration {
    * @return RunningJob implementation
    */
   @Override public RunningJob submit() throws IOException, ClassNotFoundException, InterruptedException {
-    getJob().submit();
-    return new RunningJobProxyV2( getJob() );
+    if ( YarnQueueAclsVerifier
+      .verify( ( createClusterDescription( getJob().getConfiguration() ) ).getQueueAclsForCurrentUser() ) ) {
+      getJob().submit();
+      return new RunningJobProxyV2( getJob() );
+    } else {
+      throw new YarnQueueAclsException( BaseMessages.getString( ConfigurationProxy.class,
+        "ConfigurationProxy.UserHasNoPermissions", UserGroupInformation.getCurrentUser().getUserName() ) );
+    }
+  }
+
+  Cluster createClusterDescription( org.apache.hadoop.conf.Configuration configuration ) throws IOException {
+    return new Cluster( configuration );
   }
 }

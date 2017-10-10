@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2017 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -31,6 +31,10 @@ import org.apache.hadoop.mapred.MapRunnable;
 import org.apache.hadoop.mapred.Mapper;
 import org.apache.hadoop.mapred.OutputFormat;
 import org.apache.hadoop.mapred.Reducer;
+import org.apache.hadoop.security.UserGroupInformation;
+import org.pentaho.di.i18n.BaseMessages;
+import org.pentaho.hadoop.mapreduce.YarnQueueAclsException;
+import org.pentaho.hadoop.mapreduce.YarnQueueAclsVerifier;
 import org.pentaho.hadoop.shim.api.mapred.RunningJob;
 import org.pentaho.hadoop.shim.common.mapred.RunningJobProxy;
 
@@ -111,8 +115,17 @@ public class ConfigurationProxy extends org.apache.hadoop.mapred.JobConf impleme
    * @return RunningJob implementation
    */
   @Override public RunningJob submit() throws IOException, ClassNotFoundException, InterruptedException {
-    JobClient jobClient = new JobClient( this );
-    return new RunningJobProxy( jobClient.submitJob( this ) );
+    JobClient jobClient = createJobClient();
+    if ( YarnQueueAclsVerifier.verify( jobClient.getQueueAclsForCurrentUser() ) ) {
+      return new RunningJobProxy( jobClient.submitJob( this ) );
+    } else {
+      throw new YarnQueueAclsException( BaseMessages.getString( ConfigurationProxy.class,
+        "ConfigurationProxy.UserHasNoPermissions", UserGroupInformation.getCurrentUser().getUserName() ) );
+    }
+  }
+
+  JobClient createJobClient() throws IOException {
+    return new JobClient( this );
   }
 
   @Override
