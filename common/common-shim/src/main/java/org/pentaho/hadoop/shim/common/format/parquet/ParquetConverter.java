@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2017 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -70,7 +70,7 @@ import org.pentaho.di.core.row.value.ValueMetaTimestamp;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 
 /**
- * Converter for read/write Pentaho row from/into Parquet files.
+ * Converter for read/write Hitachi Vantara row from/into Parquet files.
  *
  * @author Alexander Buloichik
  */
