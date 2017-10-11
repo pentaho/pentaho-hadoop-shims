@@ -33,6 +33,7 @@ import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 
 import java.math.BigDecimal;
 import java.nio.ByteBuffer;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -158,19 +159,27 @@ public class AvroConverter {
             rowMetaAndData.addValue( field.pentahoFieldName, ValueMetaInterface.TYPE_NUMBER, record.get( field.formatFieldName ) );
             break;
           case ValueMetaInterface.TYPE_BIGNUMBER:
-            rowMetaAndData.addValue( field.pentahoFieldName, ValueMetaInterface.TYPE_BIGNUMBER, record.get( field.formatFieldName ) );
+            BigDecimal bigDecimal = new BigDecimal( Double.parseDouble( (String) record.get( field.formatFieldName ) ) );
+            rowMetaAndData.addValue( field.pentahoFieldName, ValueMetaInterface.TYPE_BIGNUMBER, bigDecimal );
             break;
           case ValueMetaInterface.TYPE_TIMESTAMP:
-            rowMetaAndData.addValue( field.pentahoFieldName, ValueMetaInterface.TYPE_TIMESTAMP, record.get( field.formatFieldName ) );
+            Long longTimeStamp = (Long) record.get( field.formatFieldName );
+            rowMetaAndData.addValue( field.pentahoFieldName, ValueMetaInterface.TYPE_TIMESTAMP, new Timestamp( longTimeStamp ) );
             break;
           case ValueMetaInterface.TYPE_DATE:
-            rowMetaAndData.addValue( field.pentahoFieldName, ValueMetaInterface.TYPE_DATE, record.get( field.formatFieldName ) );
+            Integer dateAsInteger  = (Integer) record.get( field.formatFieldName );
+            LocalDate localDate = LocalDate.ofEpochDay( 0 ).plusDays( dateAsInteger );
+            rowMetaAndData.addValue( field.pentahoFieldName, ValueMetaInterface.TYPE_DATE,
+                Date.from( localDate.atStartOfDay( ZoneId.systemDefault() ).toInstant() ) );
             break;
           case ValueMetaInterface.TYPE_BOOLEAN:
             rowMetaAndData.addValue( field.pentahoFieldName, ValueMetaInterface.TYPE_BOOLEAN, record.get( field.formatFieldName ) );
             break;
           case ValueMetaInterface.TYPE_BINARY:
-            rowMetaAndData.addValue( field.pentahoFieldName, ValueMetaInterface.TYPE_BINARY, record.get( field.formatFieldName ) );
+            ByteBuffer byteBuffer  = (ByteBuffer) record.get( field.formatFieldName );
+            byte[] byteArray = new byte[byteBuffer.remaining()];
+            byteBuffer.get( byteArray );
+            rowMetaAndData.addValue( field.pentahoFieldName, ValueMetaInterface.TYPE_BINARY, byteArray );
             break;
           default:
             throw new RuntimeException( "Field: " + field.formatFieldName + "  Undefined type: " + field.pentahoValueMetaType );
