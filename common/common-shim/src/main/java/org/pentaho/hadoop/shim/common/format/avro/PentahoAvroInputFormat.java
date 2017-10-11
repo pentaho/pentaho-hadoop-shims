@@ -58,17 +58,17 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
     if ( schemaFile != null && schemaFile.length() > 0 ) {
       return AvroSchemaConverter.createSchemaDescription( readAvroSchema( schemaFile ) );
     } else if ( file != null && file.length() > 0 ) {
-        DataFileStream<GenericRecord> dataFileStream = createDataFileStream( schemaFile, file );
-        SchemaDescription schemaDescription = AvroSchemaConverter.createSchemaDescription( dataFileStream.getSchema() );
-        dataFileStream.close();
-        return  schemaDescription;
+      DataFileStream<GenericRecord> dataFileStream = createDataFileStream( schemaFile, file );
+      SchemaDescription schemaDescription = AvroSchemaConverter.createSchemaDescription( dataFileStream.getSchema() );
+      dataFileStream.close();
+      return  schemaDescription;
     } else {
       throw new Exception( "Data file and schema file cannot be null" );
     }
   }
 
-  private Schema readAvroSchema( String file ) throws KettleFileException, IOException{
-      return new Schema.Parser().parse( KettleVFS.getInputStream( file ) );
+  private Schema readAvroSchema( String file ) throws KettleFileException, IOException {
+    return new Schema.Parser().parse( KettleVFS.getInputStream( file ) );
   }
 
   @Override

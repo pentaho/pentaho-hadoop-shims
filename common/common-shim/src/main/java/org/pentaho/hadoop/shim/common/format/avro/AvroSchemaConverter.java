@@ -132,19 +132,19 @@ public class AvroSchemaConverter {
   private static SchemaDescription.Field convertField( SchemaDescription schema, Schema.Field f ) {
     boolean allowNull = f.defaultVal() == null;
     String defaultValue = null;
-    if( !allowNull ) {
+    if ( !allowNull ) {
       defaultValue = f.defaultVal().toString();
     }
 
     Schema.Type schemaType = null;
-    if( f.schema().getType().equals( Schema.Type.UNION ) ) {
-        List<Schema> schemas = f.schema().getTypes();
-        for ( Schema s: schemas ) {
-          if( !s.getName().equalsIgnoreCase( "null" )) {
-            schemaType = s.getType();
-            break;
-          }
+    if ( f.schema().getType().equals( Schema.Type.UNION ) ) {
+      List<Schema> schemas = f.schema().getTypes();
+      for ( Schema s: schemas ) {
+        if ( !s.getName().equalsIgnoreCase( "null" ) ) {
+          schemaType = s.getType();
+          break;
         }
+      }
     } else {
       schemaType = f.schema().getType();
     }
@@ -154,9 +154,9 @@ public class AvroSchemaConverter {
       case FLOAT:
         return schema.new Field( f.name(), f.name(), ValueMetaInterface.TYPE_NUMBER, allowNull );
       case LONG:
-        if( f.schema().getLogicalType() != null ) {
+        if ( f.schema().getLogicalType() != null ) {
           String logicalType = f.schema().getLogicalType().getName();
-          if( logicalType.equals( LogicalTypes.timeMillis() )) {
+          if ( logicalType.equals( LogicalTypes.timeMillis() ) ) {
             return schema.new Field( f.name(), f.name(), ValueMetaInterface.TYPE_TIMESTAMP, defaultValue, allowNull );
           }
         } else {
@@ -167,9 +167,9 @@ public class AvroSchemaConverter {
       case BYTES:
         return schema.new Field( f.name(), f.name(), ValueMetaInterface.TYPE_STRING, defaultValue, allowNull );
       case INT:
-        if( f.schema().getLogicalType() != null ) {
+        if ( f.schema().getLogicalType() != null ) {
           String logicalType = f.schema().getLogicalType().getName();
-          if( logicalType.equals( LogicalTypes.date() )) {
+          if ( logicalType.equals( LogicalTypes.date() ) ) {
             return schema.new Field( f.name(), f.name(), ValueMetaInterface.TYPE_DATE, defaultValue, allowNull );
           }
         }

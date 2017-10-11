@@ -143,7 +143,7 @@ public class AvroConverter {
     RowMetaAndData rowMetaAndData = new RowMetaAndData(  );
 
     for ( SchemaDescription.Field field : schemaDescription ) {
-      if( field != null ) {
+      if ( field != null ) {
         switch ( field.pentahoValueMetaType ) {
           case ValueMetaInterface.TYPE_INET:
             rowMetaAndData.addValue( field.pentahoFieldName, ValueMetaInterface.TYPE_INET, record.get( field.formatFieldName ) );
