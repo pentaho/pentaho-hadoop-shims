@@ -8,7 +8,7 @@
     <artifactId>pentaho-ce-jar-parent-pom</artifactId>
     <version>8.0-SNAPSHOT</version>
   </parent>
-  
+
   <artifactId>pentaho-hadoop-shims</artifactId>
   <version>8.0-SNAPSHOT</version>
   <packaging>pom</packaging>
@@ -29,7 +29,7 @@
     <org.powermock.version>1.6.2</org.powermock.version>
     <eula-wrap_assign-deps-to-properties-phase></eula-wrap_assign-deps-to-properties-phase>
   </properties>
-  
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -70,6 +70,10 @@
         <version>${dependency.kettle.revision}</version>
         <scope>provided</scope>
         <exclusions>
+          <exclusion>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+          </exclusion>
           <exclusion>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-client</artifactId>
@@ -231,7 +235,7 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-  
+
   <build>
     <plugins>
       <plugin>
@@ -245,9 +249,9 @@
       </plugin>
     </plugins>
   </build>
-  
+
   <profiles>
-  
+
     <profile>
       <id>api</id>
       <activation>
@@ -259,7 +263,7 @@
         <module>api</module>
       </modules>
     </profile>
-    
+
     <profile>
       <id>shims</id>
       <activation>
@@ -272,6 +276,6 @@
         <module>shims</module>
       </modules>
     </profile>
-    
+
   </profiles>
 </project>
