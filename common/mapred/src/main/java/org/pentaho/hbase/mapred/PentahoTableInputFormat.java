@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -41,7 +41,7 @@ import java.io.IOException;
  * than abusing the input path). Also adds more configuration properties (like those int the mapreduce package's
  * implementation).<p>
  * <p/>
- * The following properties can be set in Pentaho MR job to configure the split:<br><br>
+ * The following properties can be set in Hitachi Vantara MR job to configure the split:<br><br>
  * <p/>
  * <code> hbase.mapred.inputtable // name of the HBase table to read from hbase.mapred.tablecolumns // space delimited
  * list of columns in ColFam:ColName format (ColName can be ommitted to read all columns from a family)
