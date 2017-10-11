@@ -33,7 +33,6 @@ import java.io.IOException;
 import java.util.List;
 
 import com.google.common.annotations.VisibleForTesting;
-import org.apache.avro.LogicalTypes;
 import org.apache.avro.Schema;
 import org.pentaho.di.core.exception.KettleFileException;
 import org.pentaho.di.core.row.ValueMetaInterface;
@@ -57,11 +56,13 @@ public class AvroSchemaConverter {
   private final String AVRO_TYPE_RECORD = "record";
   private final String AVRO_DOC = "doc";
   private final String AVRO_FIELDS_NODE = "fields";
-  private final String AVRO_LOGICAL_TYPE = "logicalType";
+  private static final String AVRO_LOGICAL_TYPE = "logicalType";
   private final String AVRO_NAMESPACE_NODE = "namespace";
   private final String AVRO_NAME_NODE = "name";
   private final String AVRO_TYPE_NODE = "type";
   private final String AVRO_DEFAULT_NODE = "default";
+  private static final String DATE = "date";
+  private static final String TIMESTAMP_MILLIS = "timestamp-millis";
 
   private ObjectMapper mapper = new ObjectMapper();
   private final ObjectNode avroSchema;
@@ -152,34 +153,30 @@ public class AvroSchemaConverter {
     switch ( schemaType ) {
       case DOUBLE:
       case FLOAT:
-        return schema.new Field( f.name(), f.name(), ValueMetaInterface.TYPE_NUMBER, allowNull );
+        return schema.new Field( f.name(), f.name(), ValueMetaInterface.TYPE_NUMBER, defaultValue, allowNull );
       case LONG:
-        if ( f.schema().getLogicalType() != null ) {
-          String logicalType = f.schema().getLogicalType().getName();
-          if ( logicalType.equals( LogicalTypes.timeMillis() ) ) {
-            return schema.new Field( f.name(), f.name(), ValueMetaInterface.TYPE_TIMESTAMP, defaultValue, allowNull );
-          }
+        String logicalTimeStampType = f.getProp( AVRO_LOGICAL_TYPE );
+        if ( logicalTimeStampType != null && logicalTimeStampType.equalsIgnoreCase( TIMESTAMP_MILLIS ) ) {
+          return schema.new Field( f.name(), f.name(), ValueMetaInterface.TYPE_TIMESTAMP, defaultValue, allowNull );
         } else {
           return schema.new Field( f.name(), f.name(), ValueMetaInterface.TYPE_INTEGER, defaultValue, allowNull );
         }
       case BOOLEAN:
         return schema.new Field( f.name(), f.name(), ValueMetaInterface.TYPE_BOOLEAN, defaultValue, allowNull );
       case BYTES:
-        return schema.new Field( f.name(), f.name(), ValueMetaInterface.TYPE_STRING, defaultValue, allowNull );
+        return schema.new Field( f.name(), f.name(), ValueMetaInterface.TYPE_BINARY, defaultValue, allowNull );
       case INT:
-        if ( f.schema().getLogicalType() != null ) {
-          String logicalType = f.schema().getLogicalType().getName();
-          if ( logicalType.equals( LogicalTypes.date() ) ) {
-            return schema.new Field( f.name(), f.name(), ValueMetaInterface.TYPE_DATE, defaultValue, allowNull );
-          }
+        String logicalDateType = f.getProp( AVRO_LOGICAL_TYPE );
+        if ( logicalDateType != null && logicalDateType.equalsIgnoreCase( DATE ) ) {
+          return schema.new Field( f.name(), f.name(), ValueMetaInterface.TYPE_DATE, defaultValue, allowNull );
+        } else {
+          return schema.new Field( f.name(), f.name(), ValueMetaInterface.TYPE_INTEGER, defaultValue, allowNull );
         }
-        break;
       case STRING:
         return schema.new Field( f.name(), f.name(), ValueMetaInterface.TYPE_STRING, defaultValue, allowNull );
       default:
         throw new RuntimeException( "Field: " + f.name() + "  Undefined type: " + f.schema().getType() );
     }
-    return null;
   }
 
   private ObjectNode convertPrimitive( String type, SchemaDescription.Field f ) {
@@ -192,10 +189,10 @@ public class AvroSchemaConverter {
       fieldNode.put( AVRO_TYPE_NODE, type );
     }
     if ( f.pentahoValueMetaType == ValueMetaInterface.TYPE_DATE ) {
-      fieldNode.put( AVRO_LOGICAL_TYPE, "date" );
+      fieldNode.put( AVRO_LOGICAL_TYPE, DATE );
     } else if ( f.pentahoValueMetaType == ValueMetaInterface.TYPE_TIMESTAMP ) {
       //we able to keep only timestamp-millis because we are using the old java date format which does not support microsecond
-      fieldNode.put( AVRO_LOGICAL_TYPE, "timestamp-millis" );
+      fieldNode.put( AVRO_LOGICAL_TYPE, TIMESTAMP_MILLIS );
     }
     if ( f.defaultValue != null ) {
       fieldNode.put( AVRO_DEFAULT_NODE, f.defaultValue );
