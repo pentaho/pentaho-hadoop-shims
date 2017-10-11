@@ -112,6 +112,13 @@ public class SchemaDescription implements Iterable<SchemaDescription.Field> {
       this.allowNull = allowNull;
     }
 
+    public Field( String formatFieldName, String pentahoFieldName, int pentahoValueMetaType, String defaultValue, boolean allowNull ) {
+      this.formatFieldName = formatFieldName;
+      this.pentahoFieldName = pentahoFieldName;
+      this.pentahoValueMetaType = pentahoValueMetaType;
+      this.defaultValue = defaultValue;
+      this.allowNull = allowNull;
+    }
     public String marshall() {
       StringBuilder o = new StringBuilder( 256 );
       o.append( c( formatFieldName ) );
