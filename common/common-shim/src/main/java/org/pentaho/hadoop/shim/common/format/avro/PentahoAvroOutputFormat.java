@@ -51,7 +51,7 @@ public class PentahoAvroOutputFormat implements IPentahoAvroOutputFormat {
   @Override
   public IPentahoRecordWriter createRecordWriter() throws Exception {
     if ( schemaDescription == null || StringUtils.isEmpty( nameSpace ) || StringUtils.isEmpty( recordName ) || StringUtils.isEmpty( outputFilename ) ) {
-      throw new Exception( "Invalid state.  One of the followoing required fields is null:  'nameSpace', 'recordNum', or 'outputFileName" );
+      throw new Exception( "Invalid state.  One of the following required fields is null:  'nameSpace', 'recordNum', or 'outputFileName" );
     }
     AvroSchemaConverter converter = new AvroSchemaConverter( schemaDescription, nameSpace, recordName, docValue );
     schema = converter.getAvroSchema();

@@ -25,7 +25,7 @@ public interface IPentahoAvroInputFormat extends IPentahoInputFormat {
   /**
    * Read schema for display to user.
    */
-  SchemaDescription readSchema( String file ) throws Exception;
+  SchemaDescription readSchema( String schemaFile, String file ) throws Exception;
 
   /**
    * Set schema for file reading.
@@ -36,6 +36,11 @@ public interface IPentahoAvroInputFormat extends IPentahoInputFormat {
    * Set input file.
    */
   void setInputFile( String file ) throws Exception;
+
+  /**
+   * Set input file.
+   */
+  void setInputSchemaFile( String schemaFile ) throws Exception;
 
   /**
    * Split size, bytes.

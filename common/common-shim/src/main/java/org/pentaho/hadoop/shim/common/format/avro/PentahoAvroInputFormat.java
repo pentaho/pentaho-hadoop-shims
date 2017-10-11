@@ -21,49 +21,84 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.common.format.avro;
 
+import java.io.IOException;
 import java.util.List;
 
+import org.apache.avro.Schema;
+import org.apache.avro.file.DataFileStream;
+import org.apache.avro.generic.GenericDatumReader;
+import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.io.DatumReader;
 import org.apache.log4j.Logger;
+import org.pentaho.di.core.exception.KettleFileException;
+import org.pentaho.di.core.vfs.KettleVFS;
 import org.pentaho.hadoop.shim.api.format.IPentahoAvroInputFormat;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 
-/**
- * @author Alexander Buloichik
- */
 public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
 
   private static final Logger logger = Logger.getLogger( PentahoAvroInputFormat.class );
+  private String file;
+  private String schemaFile;
+  private SchemaDescription schema;
+  private long splitSize;
 
   @Override
   public List<IPentahoInputSplit> getSplits() throws Exception {
-    // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public IPentahoRecordReader createRecordReader( IPentahoInputSplit split ) throws Exception {
-    // TODO Auto-generated method stub
-    return null;
+    public IPentahoRecordReader createRecordReader( IPentahoInputSplit split ) throws Exception {
+    return new PentahoAvroRecordReader( createDataFileStream( schemaFile, file ), readSchema( schemaFile, file ) );
   }
 
   @Override
-  public SchemaDescription readSchema( String file ) throws Exception {
-    // TODO Auto-generated method stub
-    return null;
+  public SchemaDescription readSchema( String schemaFile, String file ) throws Exception {
+    if ( schemaFile != null && schemaFile.length() > 0 ) {
+      return AvroSchemaConverter.createSchemaDescription( readAvroSchema( schemaFile ) );
+    } else if ( file != null && file.length() > 0 ) {
+      DataFileStream<GenericRecord> dataFileStream = createDataFileStream( schemaFile, file );
+      SchemaDescription schemaDescription = AvroSchemaConverter.createSchemaDescription( dataFileStream.getSchema() );
+      dataFileStream.close();
+      return  schemaDescription;
+    } else {
+      throw new Exception( "Data file and schema file cannot be null" );
+    }
+  }
+
+  private Schema readAvroSchema( String file ) throws KettleFileException, IOException {
+    return new Schema.Parser().parse( KettleVFS.getInputStream( file ) );
   }
 
   @Override
   public void setSchema( SchemaDescription schema ) throws Exception {
-    // TODO Auto-generated method stub
+    this.schema = schema;
   }
 
   @Override
   public void setInputFile( String file ) throws Exception {
-    // TODO Auto-generated method stub
+    this.file = file;
   }
 
   @Override
+  public void setInputSchemaFile( String schemaFile ) throws Exception {
+    this.schemaFile = schemaFile;
+  }
+
+
+  @Override
   public void setSplitSize( long blockSize ) throws Exception {
-    // TODO Auto-generated method stub
+    this.splitSize = blockSize;
+  }
+
+  private DataFileStream<GenericRecord> createDataFileStream( String schemaFile, String file ) throws Exception {
+    DatumReader<GenericRecord> datumReader;
+    if ( schemaFile != null && schemaFile.length() > 0 ) {
+      datumReader = new GenericDatumReader<GenericRecord>( readAvroSchema( schemaFile ) );
+    } else {
+      datumReader = new GenericDatumReader<GenericRecord>(  );
+    }
+    return  new DataFileStream<GenericRecord>( KettleVFS.getInputStream( file ), datumReader );
   }
 }

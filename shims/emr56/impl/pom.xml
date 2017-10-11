@@ -17,6 +17,11 @@
     <shim.type>EMR</shim.type>
   </properties>
   <dependencies>
+  	<dependency>
+      <groupId>org.apache.avro</groupId>
+      <artifactId>avro</artifactId>
+      <version>${org.apache.avro.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>pentaho-hadoop-shims-emr56-scope-client</artifactId>
