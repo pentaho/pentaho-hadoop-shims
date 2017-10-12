@@ -63,7 +63,9 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
       dataFileStream.close();
       return  schemaDescription;
     } else {
-      throw new Exception( "Data file and schema file cannot be null" );
+      throw new Exception( "The file you provided does not contain a schema."
+          + "  Please choose a schema file, or another file that contains a schema." );
+
     }
   }
 
