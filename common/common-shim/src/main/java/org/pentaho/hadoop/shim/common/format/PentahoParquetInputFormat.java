@@ -26,6 +26,7 @@ import java.nio.file.NoSuchFileException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.InputSplit;
@@ -34,7 +35,7 @@ import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
 import org.apache.log4j.Logger;
 //#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
-import org.apache.parquet.format.converter.ParquetMetadataConverter;
+import org.apache.parquet.hadoop.Footer;
 import org.apache.parquet.hadoop.ParquetFileReader;
 import org.apache.parquet.hadoop.ParquetInputFormat;
 import org.apache.parquet.hadoop.ParquetRecordReader;
@@ -43,7 +44,7 @@ import org.apache.parquet.hadoop.metadata.ParquetMetadata;
 import org.apache.parquet.schema.MessageType;
 //#endif
 //#if shim_type=="CDH" || shim_type=="MAPR"
-//$import parquet.format.converter.ParquetMetadataConverter;
+//$import parquet.hadoop.Footer;
 //$import parquet.hadoop.ParquetFileReader;
 //$import parquet.hadoop.ParquetInputFormat;
 //$import parquet.hadoop.ParquetRecordReader;
@@ -161,9 +162,16 @@ public class PentahoParquetInputFormat extends HadoopFormatBase implements IPent
   public SchemaDescription readSchema( String file ) throws Exception {
     return inClassloader( () -> {
       ConfigurationProxy conf = new ConfigurationProxy();
-      ParquetMetadata meta = ParquetFileReader.readFooter( conf, new Path( file ), ParquetMetadataConverter.NO_FILTER );
-      MessageType schema = meta.getFileMetaData().getSchema();
-      return ParquetConverter.createSchemaDescription( schema );
+      FileSystem fs = FileSystem.get( new URI( file ), conf );
+      FileStatus fileStatus = fs.getFileStatus( new Path( file ) );
+      List<Footer> footers = ParquetFileReader.readFooters( conf, fileStatus, true );
+      if ( footers.isEmpty() ) {
+        return new SchemaDescription();
+      } else {
+        ParquetMetadata meta = footers.get( 0 ).getParquetMetadata();
+        MessageType schema = meta.getFileMetaData().getSchema();
+        return ParquetConverter.createSchemaDescription( schema );
+      }
     } );
   }
 }
