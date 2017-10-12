@@ -35,6 +35,7 @@ import static org.mockito.Matchers.anyBoolean;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.time.LocalDate;
@@ -61,8 +62,8 @@ import org.pentaho.hadoop.shim.api.format.SchemaDescription.Field;
 
 @RunWith( MockitoJUnitRunner.class )
 public class PentahoAvroRecordWriterTest {
-  
-  private String schemaString = 
+
+  private String schemaString =
       "{"
       + " \"namespace\" : \"TestNameSpace12\","
       + " \"type\" : \"record\","
@@ -80,6 +81,9 @@ public class PentahoAvroRecordWriterTest {
       + "                   \"type\" : [ \"null\", \"long\" ]"
       + "                }, {"
       + "                   \"name\" : \"numberField\","
+      + "                   \"type\" : [ \"null\", \"double\" ]"
+      + "                }, {"
+      + "                   \"name\" : \"bigNumberField\","
       + "                   \"type\" : [ \"null\", \"double\" ]"
       + "                }, {"
       + "                   \"name\" : \"timestampField\","
@@ -112,7 +116,7 @@ public class PentahoAvroRecordWriterTest {
 
   @Before
   public void setUp() throws IOException, URISyntaxException {
-    InputStream is = new ByteArrayInputStream( schemaString.getBytes("UTF-8") );
+    InputStream is = new ByteArrayInputStream( schemaString.getBytes( "UTF-8" ) );
     Schema schema = new Schema.Parser().parse( is );
 
     schemaDescription = new SchemaDescription();
@@ -146,6 +150,12 @@ public class PentahoAvroRecordWriterTest {
   public void testWrite_Number() throws KettleValueException, IOException {
     doReturn( 0d ).when( rmd ).getNumber( anyInt(), anyLong() );
     testWriteCommon( ValueMetaInterface.TYPE_NUMBER, "numberField", 0d );
+  }
+
+  @Test
+  public void testWrite_BigNumber() throws KettleValueException, IOException {
+    doReturn( new BigDecimal( 0d ) ).when( rmd ).getBigNumber( anyInt(), any( BigDecimal.class ) );
+    testWriteCommon( ValueMetaInterface.TYPE_BIGNUMBER, "bigNumberField", new BigDecimal( 0d ).doubleValue() );
   }
 
   @Test
@@ -219,6 +229,12 @@ public class PentahoAvroRecordWriterTest {
   }
 
   @Test
+  public void testWrite_BigNumber_Default() throws KettleValueException, IOException {
+    when( rmi.getBigNumber( any( Object[].class ), anyInt() ) ).thenReturn( null );
+    testWriteCommon_Default( ValueMetaInterface.TYPE_BIGNUMBER, "bigNumberField", 0d, String.valueOf( 1d ), 1d );
+  }
+
+  @Test
   public void testWrite_Timestamp_Default() throws KettleValueException, IOException {
     when( rmi.getDate( any( Object[].class ), anyInt() ) ).thenReturn( null );
     //will set time zone since we use strong equals to 1L
@@ -237,6 +253,12 @@ public class PentahoAvroRecordWriterTest {
   public void testWrite_Boolean_Default() throws KettleValueException, IOException {
     when( rmi.getBoolean( any( Object[].class ), anyInt() ) ).thenReturn( null );
     testWriteCommon_Default( ValueMetaInterface.TYPE_BOOLEAN, "booleanField", true, String.valueOf( false ), false );
+  }
+
+  @Test
+  public void shouldCloseNativeWriter() throws Exception {
+    writer.close();
+    verify( nativeAvroRecordWriter ).close();
   }
 
   private void testWriteCommon_Default( int type, String fieldName, Object writableObject, String defaultValue, Object defaultObject ) throws KettleValueException, IOException {

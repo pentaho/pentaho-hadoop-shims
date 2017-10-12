@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -26,11 +26,16 @@ import org.junit.Test;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 public class AvroSchemaConverterTest {
@@ -63,4 +68,19 @@ public class AvroSchemaConverterTest {
     assertEquals( "recordname", name );
   }
 
+  @Test
+  public void shouldCreateSchemaDescription() throws Exception {
+    Schema schema = mock( Schema.class );
+    when( schema.getType() ).thenReturn( Schema.Type.BOOLEAN );
+
+    Schema.Field f = mock( Schema.Field.class );
+    when( f.schema() ).thenReturn( schema );
+
+    when( schema.getFields() ).thenReturn( Arrays.asList( f ) );
+    SchemaDescription schemaDescription = AvroSchemaConverter.createSchemaDescription( schema );
+
+    List<SchemaDescription.Field> fields = StreamSupport
+      .stream( schemaDescription.spliterator(), false ).collect( Collectors.toList() );
+    assertEquals( 1, fields.size() );
+  }
 }

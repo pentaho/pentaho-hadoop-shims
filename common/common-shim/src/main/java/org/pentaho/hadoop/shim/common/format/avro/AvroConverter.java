@@ -22,6 +22,7 @@
 package org.pentaho.hadoop.shim.common.format.avro;
 
 
+import com.google.common.annotations.VisibleForTesting;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
@@ -141,8 +142,10 @@ public class AvroConverter {
   }
 
   public static RowMetaAndData convertFromAvro( GenericRecord record, SchemaDescription schemaDescription ) {
-    RowMetaAndData rowMetaAndData = new RowMetaAndData(  );
+    return convertFromAvro( new RowMetaAndData(), record, schemaDescription );
+  }
 
+  @VisibleForTesting static RowMetaAndData convertFromAvro( RowMetaAndData rowMetaAndData, GenericRecord record, SchemaDescription schemaDescription ) {
     for ( SchemaDescription.Field field : schemaDescription ) {
       if ( field != null ) {
         switch ( field.pentahoValueMetaType ) {
@@ -170,7 +173,7 @@ public class AvroConverter {
             Integer dateAsInteger  = (Integer) record.get( field.formatFieldName );
             LocalDate localDate = LocalDate.ofEpochDay( 0 ).plusDays( dateAsInteger );
             rowMetaAndData.addValue( field.pentahoFieldName, ValueMetaInterface.TYPE_DATE,
-                Date.from( localDate.atStartOfDay( ZoneId.systemDefault() ).toInstant() ) );
+              Date.from( localDate.atStartOfDay( ZoneId.systemDefault() ).toInstant() ) );
             break;
           case ValueMetaInterface.TYPE_BOOLEAN:
             rowMetaAndData.addValue( field.pentahoFieldName, ValueMetaInterface.TYPE_BOOLEAN, record.get( field.formatFieldName ) );
