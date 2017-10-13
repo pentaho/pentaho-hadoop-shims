@@ -324,8 +324,7 @@
                     <directory>${project.build.directory}/test-src</directory>
                     <targetPath>${project.build.directory}/it-classes</targetPath>
                     <includes>
-                      <include>**/*.pqt</include>
-                      <include>**/*.avro</include>
+                      <include>**/*</include>
                     </includes>
                   </resource>
                 </resources>
@@ -342,12 +341,7 @@
                   <resource>
                     <directory>${project.build.directory}/test-src</directory>
                     <includes>
-                      <include>**/*.ktr</include>
-                      <include>**/*.zip</include>
-                      <include>**/*.jar</include>
-                      <include>**/*.xml</include>
-                      <include>**/*.pqt</include>
-                      <include>**/*.avro</include>
+                      <include>**/*</include>
                     </includes>
                   </resource>
                 </resources>
