@@ -23,21 +23,27 @@ package org.pentaho.hadoop.shim.common;
 
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.junit.Assert;
 import org.junit.Test;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.row.RowMeta;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.core.row.value.ValueMetaString;
+import org.pentaho.hadoop.shim.api.format.IPentahoAvroOutputFormat;
 import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat.IPentahoRecordReader;
 import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat.IPentahoRecordWriter;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 import org.pentaho.hadoop.shim.common.format.ParquetUtils;
 import org.pentaho.hadoop.shim.common.format.PentahoParquetInputFormat;
 import org.pentaho.hadoop.shim.common.format.PentahoParquetOutputFormat;
+import org.pentaho.hadoop.shim.common.format.avro.PentahoAvroInputFormat;
+import org.pentaho.hadoop.shim.common.format.avro.PentahoAvroOutputFormat;
+
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by Vasilina_Terehova on 7/27/2017.
@@ -64,7 +70,7 @@ public class CommonFormatShimTestIT {
       dataSampleRows.add( rowMetaAndData.getData()[ 0 ].toString() + ";" + rowMetaAndData.getData()[ 1 ].toString() );
     } );
 
-    Assert.assertEquals( expectedRows, dataSampleRows );
+    assertEquals( expectedRows, dataSampleRows );
   }
 
   @Test
@@ -119,5 +125,59 @@ public class CommonFormatShimTestIT {
 
     return recordReader;
   }
+
+  @Test
+  public void testAvroReadLocalFileSystem() throws Exception {
+    List<String> expectedRows = Arrays.asList( "John;4074549921", "Leslie;4079302194" );
+    PentahoAvroInputFormat avroInputFormat = new PentahoAvroInputFormat();
+    avroInputFormat.setInputSchemaFile( getFilePath( "/sample-schema.avro" ) );
+    avroInputFormat.setInputFile( getFilePath( "/sample-data.avro" ) );
+    IPentahoRecordReader recordReader = avroInputFormat.createRecordReader( null );
+    List<String> dataSampleRows = new ArrayList<>();
+    recordReader.forEach( rowMetaAndData -> {
+      dataSampleRows.add( String.join( ";", rowMetaAndData.getData()[0].toString(), rowMetaAndData.getData()[1].toString() ) );
+    } );
+    assertEquals( expectedRows, dataSampleRows );
+  }
+
+  @Test
+  public void testAvroWriteLocalFileSystem() throws Exception {
+    String tempDir = Files.createTempDirectory( "avro" ).toUri().toString();
+    PentahoAvroOutputFormat outputFormat = new PentahoAvroOutputFormat();
+    SchemaDescription schemaDescription = new SchemaDescription();
+    schemaDescription.addField( schemaDescription.new Field( "name", "name", ValueMetaInterface.TYPE_STRING, false ) );
+    schemaDescription.addField( schemaDescription.new Field( "phone", "phone", ValueMetaInterface.TYPE_STRING, false ) );
+    outputFormat.setSchemaDescription( schemaDescription );
+    outputFormat.setSchemaFilename(  tempDir + "/avro-schema.out" );
+    outputFormat.setOutputFile( tempDir + "/avro.out" );
+    outputFormat.setNameSpace( "nameSpace" );
+    outputFormat.setRecordName( "recordName" );
+    outputFormat.setCompression( IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED );
+    IPentahoRecordWriter recordWriter = outputFormat.createRecordWriter();
+
+    RowMetaAndData row = new RowMetaAndData();
+    RowMeta rowMeta = new RowMeta();
+    rowMeta.addValueMeta( new ValueMetaString( "name" ) );
+    rowMeta.addValueMeta( new ValueMetaString( "phone" ) );
+    row.setRowMeta( rowMeta );
+
+    row.setData( new Object[] { "Alice", "987654321" } );
+    recordWriter.write( row );
+    recordWriter.close();
+
+    PentahoAvroInputFormat avroInputFormat = new PentahoAvroInputFormat();
+    avroInputFormat.setInputSchemaFile( tempDir + "/avro-schema.out" );
+    avroInputFormat.setInputFile( tempDir + "/avro.out" );
+    IPentahoRecordReader recordReader = avroInputFormat.createRecordReader( null );
+    recordReader.forEach( rowMetaAndData ->
+      assertArrayEquals( new Object[] { "Alice", "987654321" }, new Object[] { rowMetaAndData.getData()[0].toString(),
+        rowMetaAndData.getData()[1].toString() } ) );
+
+  }
+
+  private String getFilePath( String file ) {
+    return getClass().getResource( file ).getPath();
+  }
+
   //#endif
 }
