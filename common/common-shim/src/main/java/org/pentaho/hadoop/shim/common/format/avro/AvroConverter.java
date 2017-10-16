@@ -180,8 +180,11 @@ public class AvroConverter {
             break;
           case ValueMetaInterface.TYPE_BINARY:
             ByteBuffer byteBuffer  = (ByteBuffer) record.get( field.formatFieldName );
-            byte[] byteArray = new byte[byteBuffer.remaining()];
-            byteBuffer.get( byteArray );
+            byte[] byteArray = new byte[0];
+            if ( byteBuffer !=null ) {
+              byteArray = new byte[byteBuffer.remaining()];
+              byteBuffer.get( byteArray );
+            }
             rowMetaAndData.addValue( field.pentahoFieldName, ValueMetaInterface.TYPE_BINARY, byteArray );
             break;
           default:
