@@ -60,7 +60,7 @@ public class PentahoAvroInputFormatTest {
     SchemaDescription schemaDescription = format.readSchema( schemaFile, null );
     List<SchemaDescription.Field> fields =
       StreamSupport.stream( schemaDescription.spliterator(), false ).collect( Collectors.toList() );
-    assertEquals( 6, fields.size() );
+    assertEquals( 2, fields.size() );
   }
 
   @Test
@@ -69,7 +69,7 @@ public class PentahoAvroInputFormatTest {
     SchemaDescription schemaDescription = format.readSchema( null, dataFile );
     List<SchemaDescription.Field> fields =
       StreamSupport.stream( schemaDescription.spliterator(), false ).collect( Collectors.toList() );
-    assertEquals( 6, fields.size() );
+    assertEquals( 2, fields.size() );
   }
 
   private String getFilePath( String file ) {
