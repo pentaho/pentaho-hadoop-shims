@@ -72,9 +72,10 @@ public class AvroConverter {
             }
             break;
           case ValueMetaInterface.TYPE_NUMBER:
-            outputRecord.put( field.formatFieldName, row.getNumber( fieldMetaIndex,
+            Double data = row.getNumber( fieldMetaIndex,
                 ( field.defaultValue != null && field.defaultValue.length() > 0 )
-                    ? Double.parseDouble( field.defaultValue ) : 0 ) );
+                    ? Double.parseDouble( field.defaultValue ) : 0 );
+            outputRecord.put( field.formatFieldName, data.floatValue() );
             break;
           case ValueMetaInterface.TYPE_BIGNUMBER:
             if ( field.defaultValue != null && field.defaultValue.length() > 0 ) {
@@ -150,19 +151,44 @@ public class AvroConverter {
       if ( field != null ) {
         switch ( field.pentahoValueMetaType ) {
           case ValueMetaInterface.TYPE_INET:
-            rowMetaAndData.addValue( field.pentahoFieldName, ValueMetaInterface.TYPE_INET, record.get( field.formatFieldName ) );
+            rowMetaAndData
+                .addValue( field.pentahoFieldName, ValueMetaInterface.TYPE_INET, record.get( field.formatFieldName ) );
             break;
           case ValueMetaInterface.TYPE_STRING:
-            rowMetaAndData.addValue( field.pentahoFieldName, ValueMetaInterface.TYPE_STRING, record.get( field.formatFieldName ) );
+            rowMetaAndData.addValue( field.pentahoFieldName, ValueMetaInterface.TYPE_STRING,
+                record.get( field.formatFieldName ) );
             break;
           case ValueMetaInterface.TYPE_INTEGER:
-            rowMetaAndData.addValue( field.pentahoFieldName, ValueMetaInterface.TYPE_INTEGER, record.get( field.formatFieldName ) );
+            rowMetaAndData.addValue( field.pentahoFieldName, ValueMetaInterface.TYPE_INTEGER,
+                record.get( field.formatFieldName ) );
             break;
           case ValueMetaInterface.TYPE_NUMBER:
-            rowMetaAndData.addValue( field.pentahoFieldName, ValueMetaInterface.TYPE_NUMBER, record.get( field.formatFieldName ) );
+            Double doubleVal;
+            Object val = record.get( field.formatFieldName );
+            if ( val != null ) {
+              if ( val instanceof Float ) {
+                Float floatValue = (Float) val;
+                doubleVal = Double.parseDouble( floatValue.toString() );
+                rowMetaAndData.addValue( field.pentahoFieldName, ValueMetaInterface.TYPE_NUMBER, doubleVal );
+              }
+            } else {
+              rowMetaAndData.addValue( field.pentahoFieldName, ValueMetaInterface.TYPE_NUMBER, val );
+            }
             break;
           case ValueMetaInterface.TYPE_BIGNUMBER:
-            BigDecimal bigDecimal = new BigDecimal( Double.parseDouble( (String) record.get( field.formatFieldName ) ) );
+            BigDecimal bigDecimal = null;
+            Double doubleValue;
+            Object value = record.get( field.formatFieldName );
+            if ( value != null ) {
+              if ( value instanceof Double ) {
+                doubleValue = (Double) value;
+              } else if ( value instanceof String ) {
+                doubleValue = Double.parseDouble( (String) value );
+              } else {
+                throw new RuntimeException( "Unable to parse the value of Field: " + field.formatFieldName );
+              }
+              bigDecimal = new BigDecimal( doubleValue );
+            }
             rowMetaAndData.addValue( field.pentahoFieldName, ValueMetaInterface.TYPE_BIGNUMBER, bigDecimal );
             break;
           case ValueMetaInterface.TYPE_TIMESTAMP:
@@ -170,18 +196,22 @@ public class AvroConverter {
             rowMetaAndData.addValue( field.pentahoFieldName, ValueMetaInterface.TYPE_TIMESTAMP, new Timestamp( longTimeStamp ) );
             break;
           case ValueMetaInterface.TYPE_DATE:
-            Integer dateAsInteger  = (Integer) record.get( field.formatFieldName );
+            Integer dateAsInteger = (Integer) record.get( field.formatFieldName );
             LocalDate localDate = LocalDate.ofEpochDay( 0 ).plusDays( dateAsInteger );
             rowMetaAndData.addValue( field.pentahoFieldName, ValueMetaInterface.TYPE_DATE,
-              Date.from( localDate.atStartOfDay( ZoneId.systemDefault() ).toInstant() ) );
+                Date.from( localDate.atStartOfDay( ZoneId.systemDefault() ).toInstant() ) );
             break;
           case ValueMetaInterface.TYPE_BOOLEAN:
-            rowMetaAndData.addValue( field.pentahoFieldName, ValueMetaInterface.TYPE_BOOLEAN, record.get( field.formatFieldName ) );
+            rowMetaAndData.addValue( field.pentahoFieldName, ValueMetaInterface.TYPE_BOOLEAN, record.get( field
+                .formatFieldName ) );
             break;
           case ValueMetaInterface.TYPE_BINARY:
-            ByteBuffer byteBuffer  = (ByteBuffer) record.get( field.formatFieldName );
-            byte[] byteArray = new byte[byteBuffer.remaining()];
-            byteBuffer.get( byteArray );
+            ByteBuffer byteBuffer = (ByteBuffer) record.get( field.formatFieldName );
+            byte[] byteArray = new byte[0];
+            if ( byteBuffer != null ) {
+              byteArray = new byte[byteBuffer.remaining()];
+              byteBuffer.get( byteArray );
+            }
             rowMetaAndData.addValue( field.pentahoFieldName, ValueMetaInterface.TYPE_BINARY, byteArray );
             break;
           default:
