@@ -96,9 +96,15 @@
     </dependency>
     <dependency>
       <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-common-pig-shim-1.1</artifactId>
+      <artifactId>common-pig-shim</artifactId>
       <version>${project.version}</version>
       <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <version>4.3.1</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
   <build>
@@ -121,7 +127,7 @@
               <artifactItems>
                 <artifactItem>
                   <groupId>org.pentaho</groupId>
-                  <artifactId>pentaho-hadoop-shims-common-pig-shim-1.1</artifactId>
+                  <artifactId>common-pig-shim</artifactId>
                   <classifier>sources</classifier>
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}/src</outputDirectory>

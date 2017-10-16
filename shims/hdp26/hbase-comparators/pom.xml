@@ -16,7 +16,7 @@
   <dependencies>
     <dependency>
       <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-hdp26</artifactId>
+      <artifactId>pentaho-hadoop-shims-hdp26-hbase</artifactId>
       <version>${project.version}</version>
       <exclusions>
         <exclusion>
@@ -62,13 +62,13 @@
                   <outputDirectory>${project.build.directory}/src</outputDirectory>
                   <includes>**/DeserializedBooleanComparator.java,**/DeserializedNumericComparator.java</includes>
                 </artifactItem>
-                <artifactItem>
+                <!--<artifactItem>
                   <groupId>org.pentaho</groupId>
                   <artifactId>pentaho-hadoop-shims-hbase-comparators</artifactId>
                   <classifier>test-sources</classifier>
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}/test-src</outputDirectory>
-                </artifactItem>
+                </artifactItem>-->
               </artifactItems>
             </configuration>
           </execution>

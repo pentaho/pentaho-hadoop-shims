@@ -1,0 +1,39 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.pentaho</groupId>
+    <artifactId>pentaho-hadoop-shims-list</artifactId>
+    <version>8.1.0.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>pentaho-hadoop-shims-cdh513-reactor</artifactId>
+  <packaging>pom</packaging>
+  <properties>
+    <shim.name>cdh513</shim.name>
+    <shim.type>CDH</shim.type>
+    <bundle.export.version>8.0.513.cdh</bundle.export.version>
+    <!-- default folder -->
+    <org.xerial.snappy.version>1.1.1.3</org.xerial.snappy.version>
+    <org.apache.hive.version>1.1.0-cdh5.13.0</org.apache.hive.version>
+    <pig.version>0.12.0-cdh5.13.0</pig.version>
+    <org.antlr.version>3.5.2</org.antlr.version>
+    <parquet.version>1.5.0-cdh5.13.0</parquet.version>
+    <sqoop.version>1.4.6-cdh5.13.0</sqoop.version>
+    <org.apache.oozie.version>4.1.0-cdh5.13.0</org.apache.oozie.version>
+    <!-- client folder -->
+    <org.apache.hadoop.version>2.6.0-cdh5.13.0</org.apache.hadoop.version>
+    <!-- pmr folder -->
+    <org.apache.hbase.version>1.2.0-cdh5.13.0</org.apache.hbase.version>
+    <zookeeper.version>3.4.5-cdh5.13.0</zookeeper.version>
+  </properties>
+  <modules>
+    <module>common</module>
+    <module>default</module>
+    <module>hbase</module>
+    <module>hive</module>
+    <!--<module>impl</module>-->
+    <module>hbase-comparators</module>
+    <module>oozie</module>
+    <!--<module>assemblies</module>-->
+  </modules>
+</project>

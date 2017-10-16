@@ -31,7 +31,7 @@ import org.pentaho.hbase.shim.common.wrapper.HBaseShimInterface;
 import org.pentaho.hbase.shim.spi.HBaseConnection;
 import org.pentaho.hbase.shim.spi.HBaseShim;
 
-public class DelegatingHBaseShim extends HBaseShim implements HasHadoopAuthorizationService, HBaseShimInterface,
+public class DelegatingHBaseShim implements HBaseShim,HasHadoopAuthorizationService, HBaseShimInterface,
   Processable {
   private HBaseShimInterface delegate;
 

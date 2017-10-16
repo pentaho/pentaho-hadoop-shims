@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="
+            http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
+
+  <reference id="hadoopShim" interface="org.pentaho.hadoop.shim.spi.HadoopShim" filter="(shim=cdh513)"/>
+
+  <bean id="pigShim" class="org.pentaho.hadoop.shim.common.PigShimImpl">
+    <property name="bundleContext" ref="blueprintBundleContext" />
+  </bean>
+  <service ref="pigShim" interface="org.pentaho.hadoop.shim.spi.PigShim"/>
+
+  <bean id="sqoopShim" class="org.pentaho.hadoop.shim.common.CommonSqoopShim">
+    <property name="bundleContext" ref="blueprintBundleContext" />
+  </bean>
+  <service ref="sqoopShim" interface="org.pentaho.hadoop.shim.spi.SqoopShim"/>
+
+  <bean id="snappyShim" class="org.pentaho.hadoop.shim.common.SnappyShimImpl"/>
+  <service ref="snappyShim" interface="org.pentaho.hadoop.shim.spi.SnappyShim"/>
+
+  <bean id="oozieClientFactory" class="org.pentaho.hadoop.shim.common.delegating.DelegatingOozieClientFactory"/>
+  <service ref="oozieClientFactory" interface="org.pentaho.oozie.shim.api.OozieClientFactory"/>
+
+  <reference-list id="hadoopShims" interface="org.pentaho.hadoop.shim.spi.PentahoHadoopShim"
+                  availability="optional"/>
+
+  <reference id="hbaseShim" interface="org.pentaho.hbase.shim.spi.HBaseShim" filter="(shim=cdh513)(service=hbase)"/>
+
+  <bean id="cdh513HadoopConfiguration" class="org.pentaho.hadoop.shim.HadoopConfiguration">
+    <argument value="cdh513" />
+    <argument value="Cloudera CDH 5.11" />
+    <argument ref="cdh513Hadoop"/>
+    <!--<argument ref="hadoopConfigurationLocator"/>-->
+    <argument>
+      <list>
+        <ref component-id="hbaseShim"/>
+        <ref component-id="pigShim"/>
+        <ref component-id="sqoopShim"/>
+        <ref component-id="snappyShim"/>
+        <ref component-id="oozieClientFactory"/>
+      </list>
+    </argument>
+  </bean>
+
+  <service ref="cdh513HadoopConfiguration" interface="org.pentaho.hadoop.shim.api.HadoopConfigurationInterface">
+    <service-properties>
+      <entry key="shim">
+        <value type="java.lang.String">cdh513</value>
+      </entry>
+    </service-properties>
+  </service>
+
+  <!--<bean id="hadoopConfigurationLocator" class="org.pentaho.hadoop.shim.HadoopConfigurationLocatorBundle">
+    <argument>
+      <list>
+        <ref component-id="cdh513HadoopConfiguration"/>
+      </list>
+    </argument>
+  </bean>
+  <service ref="hadoopConfigurationLocator" interface="org.pentaho.hadoop.shim.spi.HadoopConfigurationProvider"/>-->
+
+  <bean id="hascdh513Configuration" class="org.pentaho.hadoop.shim.HasConfigurationImpl">
+    <argument ref="cdh513HadoopConfiguration"/>
+  </bean>
+
+  <service ref="hascdh513Configuration" interface="org.pentaho.hadoop.shim.api.HasConfiguration">
+    <service-properties>
+      <entry key="shim">
+        <value type="java.lang.String">cdh513</value>
+      </entry>
+    </service-properties>
+  </service>
+</blueprint>
