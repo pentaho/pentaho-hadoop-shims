@@ -47,6 +47,7 @@ public class AvroSchemaConverter {
 
   private final String AVRO_TYPE_STRING = "string";
   private final String AVRO_TYPE_DOUBLE = "double";
+  private final String AVRO_TYPE_FLOAT = "float";
   private final String AVRO_TYPE_LONG = "long";
   private final String AVRO_TYPE_BOOLEAN = "boolean";
   private final String AVRO_TYPE_BINARY = "bytes";
@@ -104,7 +105,7 @@ public class AvroSchemaConverter {
   ObjectNode convertField( SchemaDescription.Field f ) {
     switch ( f.pentahoValueMetaType ) {
       case ValueMetaInterface.TYPE_NUMBER:
-        return convertPrimitive( AVRO_TYPE_DOUBLE, f );
+        return convertPrimitive( AVRO_TYPE_FLOAT, f );
       case ValueMetaInterface.TYPE_STRING:
         return convertPrimitive( AVRO_TYPE_STRING, f );
       case ValueMetaInterface.TYPE_BOOLEAN:
@@ -152,6 +153,7 @@ public class AvroSchemaConverter {
 
     switch ( schemaType ) {
       case DOUBLE:
+        return schema.new Field( f.name(), f.name(), ValueMetaInterface.TYPE_BIGNUMBER, defaultValue, allowNull );
       case FLOAT:
         return schema.new Field( f.name(), f.name(), ValueMetaInterface.TYPE_NUMBER, defaultValue, allowNull );
       case LONG:
