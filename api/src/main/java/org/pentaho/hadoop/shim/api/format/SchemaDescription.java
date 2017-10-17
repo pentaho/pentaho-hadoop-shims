@@ -86,24 +86,29 @@ public class SchemaDescription implements Iterable<SchemaDescription.Field> {
     return fields.iterator();
   }
 
+  @Override
+  public String toString() {
+    return marshall();
+  }
+
   public class Field {
     /**
      * Field name in the Hadoop format file.
      */
-    public final String formatFieldName;
+    public String formatFieldName;
 
     /**
      * Field file in the Kettle row.
      */
-    public final String pentahoFieldName;
+    public String pentahoFieldName;
 
     /**
      * Type id from ValueMetaInterface.
      */
-    public final int pentahoValueMetaType;
+    public int pentahoValueMetaType;
 
     public String defaultValue;
-    public final boolean allowNull;
+    public boolean allowNull;
 
     public Field( String formatFieldName, String pentahoFieldName, int pentahoValueMetaType, boolean allowNull ) {
       this.formatFieldName = formatFieldName;
@@ -119,6 +124,7 @@ public class SchemaDescription implements Iterable<SchemaDescription.Field> {
       this.defaultValue = defaultValue;
       this.allowNull = allowNull;
     }
+
     public String marshall() {
       StringBuilder o = new StringBuilder( 256 );
       o.append( c( formatFieldName ) );
