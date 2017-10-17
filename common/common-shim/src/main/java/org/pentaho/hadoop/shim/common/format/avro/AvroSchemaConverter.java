@@ -47,7 +47,6 @@ public class AvroSchemaConverter {
 
   private final String AVRO_TYPE_STRING = "string";
   private final String AVRO_TYPE_DOUBLE = "double";
-  private final String AVRO_TYPE_FLOAT = "float";
   private final String AVRO_TYPE_LONG = "long";
   private final String AVRO_TYPE_BOOLEAN = "boolean";
   private final String AVRO_TYPE_BINARY = "bytes";
@@ -105,7 +104,7 @@ public class AvroSchemaConverter {
   ObjectNode convertField( SchemaDescription.Field f ) {
     switch ( f.pentahoValueMetaType ) {
       case ValueMetaInterface.TYPE_NUMBER:
-        return convertPrimitive( AVRO_TYPE_FLOAT, f );
+        return convertPrimitive( AVRO_TYPE_DOUBLE, f );
       case ValueMetaInterface.TYPE_STRING:
         return convertPrimitive( AVRO_TYPE_STRING, f );
       case ValueMetaInterface.TYPE_BOOLEAN:
@@ -132,10 +131,18 @@ public class AvroSchemaConverter {
 
   @VisibleForTesting
   private static SchemaDescription.Field convertField( SchemaDescription schema, Schema.Field f ) {
-    boolean allowNull = f.defaultVal() == null;
+    FieldName fieldName = split( f.name() );
+    boolean allowNull = true;
+
+    if ( fieldName == null ) {
+      allowNull = f.defaultVal() == null;
+    } else {
+      allowNull = fieldName.allowNull;
+    }
+
     String defaultValue = null;
-    if ( !allowNull ) {
-      defaultValue = f.defaultVal().toString();
+    if ( !allowNull && f.defaultVal() != null ) {
+        defaultValue = f.defaultVal().toString();
     }
 
     Schema.Type schemaType = null;
@@ -153,29 +160,68 @@ public class AvroSchemaConverter {
 
     switch ( schemaType ) {
       case DOUBLE:
-        return schema.new Field( f.name(), f.name(), ValueMetaInterface.TYPE_BIGNUMBER, defaultValue, allowNull );
       case FLOAT:
-        return schema.new Field( f.name(), f.name(), ValueMetaInterface.TYPE_NUMBER, defaultValue, allowNull );
+        if ( fieldName != null ) {
+          if( fieldName.type == ValueMetaInterface.TYPE_NUMBER ) {
+            return schema.new Field( fieldName.name, fieldName.name, ValueMetaInterface.TYPE_NUMBER, defaultValue, allowNull );
+          } else if( fieldName.type == ValueMetaInterface.TYPE_BIGNUMBER ) {
+            return schema.new Field( fieldName.name, fieldName.name, ValueMetaInterface.TYPE_BIGNUMBER, defaultValue, allowNull );
+          }
+        } else {
+          return schema.new Field( f.name(), f.name(), ValueMetaInterface.TYPE_NUMBER, defaultValue, allowNull );
+        }
       case LONG:
         String logicalTimeStampType = f.getProp( AVRO_LOGICAL_TYPE );
         if ( logicalTimeStampType != null && logicalTimeStampType.equalsIgnoreCase( TIMESTAMP_MILLIS ) ) {
-          return schema.new Field( f.name(), f.name(), ValueMetaInterface.TYPE_TIMESTAMP, defaultValue, allowNull );
+          return schema.new Field( fieldName.name, fieldName.name, ValueMetaInterface.TYPE_TIMESTAMP, defaultValue, allowNull );
         } else {
-          return schema.new Field( f.name(), f.name(), ValueMetaInterface.TYPE_INTEGER, defaultValue, allowNull );
+          if ( fieldName != null ) {
+            if( fieldName.type == ValueMetaInterface.TYPE_TIMESTAMP ) {
+              return schema.new Field( fieldName.name, fieldName.name, ValueMetaInterface.TYPE_TIMESTAMP, defaultValue, allowNull );
+            } else {
+              return schema.new Field( fieldName.name, fieldName.name, ValueMetaInterface.TYPE_INTEGER, defaultValue, allowNull );
+            }
+          } else {
+            return schema.new Field( f.name(), f.name(), ValueMetaInterface.TYPE_INTEGER, defaultValue, allowNull );
+          }
         }
       case BOOLEAN:
-        return schema.new Field( f.name(), f.name(), ValueMetaInterface.TYPE_BOOLEAN, defaultValue, allowNull );
+        if ( fieldName != null ) {
+          return schema.new Field( fieldName.name, fieldName.name, ValueMetaInterface.TYPE_BOOLEAN, defaultValue, allowNull );
+        } else {
+          return schema.new Field( f.name(), f.name(), ValueMetaInterface.TYPE_BOOLEAN, defaultValue, allowNull );
+        }
       case BYTES:
-        return schema.new Field( f.name(), f.name(), ValueMetaInterface.TYPE_BINARY, defaultValue, allowNull );
+        if ( fieldName != null ) {
+          return schema.new Field( fieldName.name, fieldName.name, ValueMetaInterface.TYPE_BINARY, defaultValue, allowNull );
+        } else {
+          return schema.new Field( f.name(), f.name(), ValueMetaInterface.TYPE_BINARY, defaultValue, allowNull );
+        }
       case INT:
         String logicalDateType = f.getProp( AVRO_LOGICAL_TYPE );
         if ( logicalDateType != null && logicalDateType.equalsIgnoreCase( DATE ) ) {
-          return schema.new Field( f.name(), f.name(), ValueMetaInterface.TYPE_DATE, defaultValue, allowNull );
+          return schema.new Field( fieldName.name, fieldName.name, ValueMetaInterface.TYPE_DATE, defaultValue, allowNull );
         } else {
-          return schema.new Field( f.name(), f.name(), ValueMetaInterface.TYPE_INTEGER, defaultValue, allowNull );
+          if ( fieldName != null ) {
+            if ( fieldName.type == ValueMetaInterface.TYPE_DATE ) {
+              return schema.new Field( fieldName.name, fieldName.name, ValueMetaInterface.TYPE_DATE, defaultValue, allowNull );
+            } else {
+              return schema.new Field( fieldName.name, fieldName.name, ValueMetaInterface.TYPE_INTEGER, defaultValue, allowNull );
+            }
+          } else {
+            return schema.new Field( f.name(), f.name(), ValueMetaInterface.TYPE_INTEGER, defaultValue, allowNull );
+          }
         }
       case STRING:
-        return schema.new Field( f.name(), f.name(), ValueMetaInterface.TYPE_STRING, defaultValue, allowNull );
+        if ( fieldName != null ) {
+          if ( fieldName.type == ValueMetaInterface.TYPE_INET ) {
+            return schema.new Field( fieldName.name, fieldName.name, ValueMetaInterface.TYPE_INET, defaultValue, allowNull );
+          } else {
+            return schema.new Field( fieldName.name, fieldName.name, ValueMetaInterface.TYPE_STRING, defaultValue, allowNull );
+          }
+        } else {
+          return schema.new Field( f.name(), f.name(), ValueMetaInterface.TYPE_STRING, defaultValue, allowNull );
+        }
       default:
         throw new RuntimeException( "Field: " + f.name() + "  Undefined type: " + f.schema().getType() );
     }
@@ -184,7 +230,9 @@ public class AvroSchemaConverter {
   private ObjectNode convertPrimitive( String type, SchemaDescription.Field f ) {
     ObjectNode fieldNode = mapper.createObjectNode();
 
-    fieldNode.put( AVRO_NAME_NODE, f.formatFieldName );
+    FieldName fieldName = new FieldName( f.formatFieldName, f.pentahoValueMetaType, f.allowNull );
+
+    fieldNode.put( AVRO_NAME_NODE, fieldName.toString() );
     if ( f.allowNull ) {
       fieldNode.putPOJO( AVRO_TYPE_NODE, mapper.createArrayNode().add( AVRO_TYPE_NULL ).add( type ) );
     } else {
@@ -200,5 +248,49 @@ public class AvroSchemaConverter {
       fieldNode.put( AVRO_DEFAULT_NODE, f.defaultValue );
     }
     return fieldNode;
+  }
+
+  private static FieldName split( String fieldName ) {
+    if ( fieldName == null && fieldName.length() <= 0 ) {
+      return null;
+    }
+    String[] splits = fieldName.split( FieldName.FIELDNAME_DELIMITER );
+    if( splits.length == 0 || splits.length > 3 ) {
+      return null;
+    } else {
+      return new FieldName( splits[0], Integer.valueOf( splits[1]), Boolean.parseBoolean( splits[2] ) );
+    }
+  }
+
+  public static class FieldName {
+    public final String name;
+    public final int type;
+    public final boolean allowNull;
+    public static final String FIELDNAME_DELIMITER = "_delimiter_";
+
+    public FieldName( String name, int type, boolean allowNull ) {
+      this.name = name;
+      this.type = type;
+      this.allowNull = allowNull;
+    }
+
+    public String toString() {
+      StringBuilder o = new StringBuilder( 256 );
+      o.append( c( name ) );
+      o.append( FIELDNAME_DELIMITER );
+      o.append( Integer.toString( type ) );
+      o.append( FIELDNAME_DELIMITER );
+      o.append( Boolean.toString( allowNull ) );
+      return o.toString();
+    }
+    String c( String s ) {
+      if ( s == null ) {
+        return "";
+      }
+      if ( s.contains( FIELDNAME_DELIMITER ) ) {
+        throw new RuntimeException( "Wrong value: " + s );
+      }
+      return s;
+    }
   }
 }
