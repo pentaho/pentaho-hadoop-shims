@@ -66,7 +66,7 @@ public class AvroConverterFromAvroTest {
       { "inetFormatField", "inetPentahoField", ValueMetaInterface.TYPE_INET, "inetData", "inetData" },
       { "stringFormatField", "stringPentahoField", ValueMetaInterface.TYPE_STRING, "stringData", "stringData" },
       { "integerFormatField", "integerPentahoField", ValueMetaInterface.TYPE_INTEGER, 5, 5 },
-      { "numberFormatField", "numberPentahoField", ValueMetaInterface.TYPE_NUMBER, 7d, 7.0 },
+      { "numberFormatField", "numberPentahoField", ValueMetaInterface.TYPE_NUMBER, 7f, 7.0 },
       { "bigNumberFormatField", "bigNumberPentahoField", ValueMetaInterface.TYPE_BIGNUMBER, "77d", new BigDecimal( 77d ) },
       { "tsFormatField", "tsPentahoField", ValueMetaInterface.TYPE_TIMESTAMP, 10L, new Timestamp( 10L ) },
       { "dateFormatField", "datePentahoField", ValueMetaInterface.TYPE_DATE,
