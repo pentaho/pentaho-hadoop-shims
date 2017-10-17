@@ -47,7 +47,7 @@ public class AvroSchemaConverterFieldsTest {
   @Parameterized.Parameters
   public static Collection values() {
     return Arrays.asList( new Object[][] {
-      { ValueMetaInterface.TYPE_NUMBER, "double" },
+      { ValueMetaInterface.TYPE_NUMBER, "float" },
       { ValueMetaInterface.TYPE_STRING, "string" },
       { ValueMetaInterface.TYPE_BOOLEAN, "boolean" },
       { ValueMetaInterface.TYPE_INTEGER, "long" },

@@ -149,7 +149,7 @@ public class PentahoAvroRecordWriterTest {
   @Test
   public void testWrite_Number() throws KettleValueException, IOException {
     doReturn( 0d ).when( rmd ).getNumber( anyInt(), anyLong() );
-    testWriteCommon( ValueMetaInterface.TYPE_NUMBER, "numberField", 0d );
+    testWriteCommon( ValueMetaInterface.TYPE_NUMBER, "numberField", 0f );
   }
 
   @Test
@@ -225,7 +225,7 @@ public class PentahoAvroRecordWriterTest {
   @Test
   public void testWrite_Number_Default() throws KettleValueException, IOException {
     when( rmi.getNumber( any( Object[].class ), anyInt() ) ).thenReturn( null );
-    testWriteCommon_Default( ValueMetaInterface.TYPE_NUMBER, "numberField", 0d, String.valueOf( 1d ), 1d );
+    testWriteCommon_Default( ValueMetaInterface.TYPE_NUMBER, "numberField", 0f, String.valueOf( 1f ), 1f );
   }
 
   @Test
