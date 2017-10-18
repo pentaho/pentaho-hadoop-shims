@@ -21,6 +21,7 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.common.format.parquet;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -131,7 +132,7 @@ public class ParquetConverter {
     Repetition rep = f.allowNull ? Repetition.OPTIONAL : Repetition.REQUIRED;
     switch ( f.pentahoValueMetaType ) {
       case ValueMetaInterface.TYPE_NUMBER:
-        return new PrimitiveType( rep, PrimitiveTypeName.DOUBLE, f.formatFieldName, OriginalType.DECIMAL );
+        return new PrimitiveType( rep, PrimitiveTypeName.DOUBLE, f.formatFieldName );
       case ValueMetaInterface.TYPE_STRING:
         return new PrimitiveType( rep, PrimitiveTypeName.BINARY, f.formatFieldName, OriginalType.UTF8 );
       case ValueMetaInterface.TYPE_BOOLEAN:
@@ -139,7 +140,7 @@ public class ParquetConverter {
       case ValueMetaInterface.TYPE_INTEGER:
         return new PrimitiveType( rep, PrimitiveTypeName.INT64, f.formatFieldName, OriginalType.INT_64 );
       case ValueMetaInterface.TYPE_BIGNUMBER:
-        return new PrimitiveType( rep, PrimitiveTypeName.DOUBLE, f.formatFieldName, OriginalType.DECIMAL );
+        return new PrimitiveType( rep, PrimitiveTypeName.DOUBLE, f.formatFieldName );
       case ValueMetaInterface.TYPE_SERIALIZABLE:
       case ValueMetaInterface.TYPE_BINARY:
         return new PrimitiveType( rep, PrimitiveTypeName.BINARY, f.formatFieldName );
@@ -449,7 +450,7 @@ public class ParquetConverter {
             converters[ i ] = new PrimitiveConverter() {
               @Override
               public void addLong( long value ) {
-                current.getData()[ index ] = new Date( value );
+                current.getData()[ index ] = new Timestamp( value );
               }
             };
             break;
