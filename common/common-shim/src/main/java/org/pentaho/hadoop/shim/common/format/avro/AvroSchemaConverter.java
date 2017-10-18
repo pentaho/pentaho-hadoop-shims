@@ -142,7 +142,7 @@ public class AvroSchemaConverter {
 
     String defaultValue = null;
     if ( !allowNull && f.defaultVal() != null ) {
-        defaultValue = f.defaultVal().toString();
+      defaultValue = f.defaultVal().toString();
     }
 
     Schema.Type schemaType = null;
@@ -162,9 +162,9 @@ public class AvroSchemaConverter {
       case DOUBLE:
       case FLOAT:
         if ( fieldName != null ) {
-          if( fieldName.type == ValueMetaInterface.TYPE_NUMBER ) {
+          if ( fieldName.type == ValueMetaInterface.TYPE_NUMBER ) {
             return schema.new Field( fieldName.name, fieldName.name, ValueMetaInterface.TYPE_NUMBER, defaultValue, allowNull );
-          } else if( fieldName.type == ValueMetaInterface.TYPE_BIGNUMBER ) {
+          } else if ( fieldName.type == ValueMetaInterface.TYPE_BIGNUMBER ) {
             return schema.new Field( fieldName.name, fieldName.name, ValueMetaInterface.TYPE_BIGNUMBER, defaultValue, allowNull );
           }
         } else {
@@ -176,7 +176,7 @@ public class AvroSchemaConverter {
           return schema.new Field( fieldName.name, fieldName.name, ValueMetaInterface.TYPE_TIMESTAMP, defaultValue, allowNull );
         } else {
           if ( fieldName != null ) {
-            if( fieldName.type == ValueMetaInterface.TYPE_TIMESTAMP ) {
+            if ( fieldName.type == ValueMetaInterface.TYPE_TIMESTAMP ) {
               return schema.new Field( fieldName.name, fieldName.name, ValueMetaInterface.TYPE_TIMESTAMP, defaultValue, allowNull );
             } else {
               return schema.new Field( fieldName.name, fieldName.name, ValueMetaInterface.TYPE_INTEGER, defaultValue, allowNull );
@@ -255,10 +255,10 @@ public class AvroSchemaConverter {
       return null;
     }
     String[] splits = fieldName.split( FieldName.FIELDNAME_DELIMITER );
-    if( splits.length == 0 || splits.length > 3 ) {
+    if ( splits.length == 0 || splits.length > 3 ) {
       return null;
     } else {
-      return new FieldName( splits[0], Integer.valueOf( splits[1]), Boolean.parseBoolean( splits[2] ) );
+      return new FieldName( splits[0], Integer.valueOf( splits[1] ), Boolean.parseBoolean( splits[2] ) );
     }
   }
 
