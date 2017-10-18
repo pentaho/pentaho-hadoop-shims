@@ -30,6 +30,7 @@ import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 
 import java.math.BigDecimal;
+import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -63,7 +64,7 @@ public class AvroConverterFromAvroTest {
   @Parameterized.Parameters
   public static Collection values() {
     return Arrays.asList( new Object[][] {
-      { "inetFormatField", "inetPentahoField", ValueMetaInterface.TYPE_INET, "inetData", "inetData" },
+      { "inetFormatField", "inetPentahoField", ValueMetaInterface.TYPE_INET, "127.0.0.1", InetAddress.getLoopbackAddress() },
       { "stringFormatField", "stringPentahoField", ValueMetaInterface.TYPE_STRING, "stringData", "stringData" },
       { "integerFormatField", "integerPentahoField", ValueMetaInterface.TYPE_INTEGER, 5, 5 },
       { "numberFormatField", "numberPentahoField", ValueMetaInterface.TYPE_NUMBER, 7d, 7.0 },
@@ -81,7 +82,7 @@ public class AvroConverterFromAvroTest {
   @Test
   public void convertFromAvro() throws Exception {
     GenericRecord record = mock( GenericRecord.class );
-    when( record.get( formatFieldName ) ).thenReturn( value );
+    when( record.get( formatField() ) ).thenReturn( value );
     SchemaDescription schemaDescription = new SchemaDescription();
     schemaDescription.addField( schemaDescription.new Field( formatFieldName, pentahoFieldName, type, true ) );
 
@@ -89,6 +90,10 @@ public class AvroConverterFromAvroTest {
     AvroConverter.convertFromAvro( rowMetaAndData, record, schemaDescription );
 
     verify( rowMetaAndData ).addValue( pentahoFieldName, type, expected );
+  }
+
+  private String formatField() {
+    return formatFieldName + "_delimiter_" + type + "_delimiter_" + true;
   }
 
 }
