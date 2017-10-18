@@ -59,7 +59,7 @@ public class AvroSchemaConverterTest {
 
     List<Schema.Field> fields = avroSchema.getFields();
     assertEquals( 1, fields.size() );
-    assertEquals( "formatFieldName", fields.get( 0 ).name() );
+    assertEquals( "formatFieldName_delimiter_2_delimiter_true", fields.get( 0 ).name() );
 
     String fullName = avroSchema.getFullName();
     assertEquals( "ns.recordname", fullName );

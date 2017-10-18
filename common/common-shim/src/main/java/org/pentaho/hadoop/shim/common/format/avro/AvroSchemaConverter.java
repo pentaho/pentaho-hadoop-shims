@@ -251,7 +251,7 @@ public class AvroSchemaConverter {
   }
 
   private static FieldName split( String fieldName ) {
-    if ( fieldName == null && fieldName.length() <= 0 ) {
+    if ( fieldName == null || fieldName.length() == 0 ) {
       return null;
     }
     String[] splits = fieldName.split( FieldName.FIELDNAME_DELIMITER );
