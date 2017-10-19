@@ -22,11 +22,6 @@
 package org.pentaho.hadoop.shim.common.format.avro;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.SequenceInputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.avro.Schema;
@@ -37,6 +32,7 @@ import org.apache.avro.io.DatumReader;
 import org.apache.commons.vfs2.FileExtensionSelector;
 import org.apache.commons.vfs2.FileObject;
 import org.pentaho.di.core.exception.KettleFileException;
+import org.pentaho.di.core.util.Utils;
 import org.pentaho.di.core.vfs.KettleVFS;
 import org.pentaho.hadoop.shim.api.format.IPentahoAvroInputFormat;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
@@ -53,7 +49,11 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
 
   @Override
     public IPentahoRecordReader createRecordReader( IPentahoInputSplit split ) throws Exception {
-    return new PentahoAvroRecordReader( createDataFileStream( schemaFileName, fileName ), readSchema( schemaFileName, fileName ) );
+    DataFileStream<GenericRecord> dfs = createDataFileStream( schemaFileName, fileName );
+    if ( dfs == null ) {
+      throw new Exception( "Unable to read data from file " + fileName );
+    }
+    return new PentahoAvroRecordReader( dfs, readSchema( schemaFileName, fileName ) );
   }
 
   @Override
@@ -108,13 +108,11 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
     if ( fileObject.isFile() ) {
       return  new DataFileStream<GenericRecord>( fileObject.getContent().getInputStream(), datumReader );
     } else {
-      ArrayList<InputStream> avroInputStreams = new ArrayList<InputStream>();
       FileObject[] avroFiles = fileObject.findFiles( new FileExtensionSelector( "avro" ) );
-      for ( FileObject avroFile : avroFiles ) {
-        avroInputStreams.add( avroFile.getContent().getInputStream() );
+      if ( !Utils.isEmpty( avroFiles ) ) {
+        return  new DataFileStream<GenericRecord>( avroFiles[0].getContent().getInputStream(), datumReader );
       }
-      SequenceInputStream sis = new SequenceInputStream( Collections.enumeration( avroInputStreams ) );
-      return  new DataFileStream<GenericRecord>( sis, datumReader );
+      return null;
     }
   }
 }
