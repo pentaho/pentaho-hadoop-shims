@@ -96,8 +96,8 @@ public class PentahoParquetInputFormat extends HadoopFormatBase implements IPent
   @Override
   public void setInputFile( String file ) throws Exception {
     inClassloader( () -> {
+      FileSystem fs = FileSystem.get( new URI( file ), job.getConfiguration() );
       Path filePath = new Path( file );
-      FileSystem fs = FileSystem.get( filePath.toUri(), job.getConfiguration() );
       if ( !fs.exists( filePath ) ) {
         throw new NoSuchFileException( file );
       }
