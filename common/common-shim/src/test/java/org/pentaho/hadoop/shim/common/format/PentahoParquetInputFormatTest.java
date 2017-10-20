@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.apache.hadoop.fs.Path;
 //#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
 import org.apache.parquet.hadoop.ParquetInputSplit;
@@ -97,7 +96,7 @@ public class PentahoParquetInputFormatTest {
     readData( "parquet/2_uncompressed_dict.par" );
   }
 
-  @Ignore
+  @Test
   public void testSpacesInFilePath() throws Exception {
     Exception exception = null;
     try {
