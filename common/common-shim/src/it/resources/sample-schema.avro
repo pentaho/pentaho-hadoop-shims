@@ -4,10 +4,10 @@
   "name" : "TestnameRecord",
   "doc" : "TestDocvalue",
   "fields" : [ {
-    "name" : "FirstName_delimiter_2_delimiter_true",
+    "name" : "FirstName",
     "type" : [ "null", "string" ]
   }, {
-    "name" : "Phone_delimiter_5_delimiter_true",
+    "name" : "Phone",
     "type" : [ "null", "long" ]
   } ]
 }
