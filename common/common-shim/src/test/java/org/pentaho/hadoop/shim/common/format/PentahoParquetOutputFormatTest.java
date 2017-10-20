@@ -121,19 +121,6 @@ public class PentahoParquetOutputFormatTest {
     }
   }
 
-  @Test
-  public void testSpacesInOutputFilePath() {
-    Exception exception = null;
-    try {
-      PentahoParquetOutputFormat pentahoParquetOutputFormat = new PentahoParquetOutputFormat();
-      pentahoParquetOutputFormat.setOutputFile( "/test test/output.parquet", true );
-    } catch (Exception e) {
-      exception = e;
-    }
-    //BACKLOG-19435: After this change URISyntaxException is not exceptied
-    Assert.assertNull( exception );
-  }
-
   private long writeData( String file, VERSION ver, COMPRESSION compr, boolean dictionary ) throws Exception {
     PentahoParquetOutputFormat of = new PentahoParquetOutputFormat();
     of.setVersion( ver );

@@ -22,6 +22,7 @@
 package org.pentaho.hadoop.shim.common.format;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.FileAlreadyExistsException;
 
 import org.apache.hadoop.fs.FileSystem;
@@ -85,8 +86,8 @@ public class PentahoParquetOutputFormat extends HadoopFormatBase implements IPen
   @Override
   public void setOutputFile( String file, boolean override ) throws Exception {
     inClassloader( () -> {
+      FileSystem fs = FileSystem.get( new URI( file ), job.getConfiguration() );
       outputFile = new Path( file );
-      FileSystem fs = FileSystem.get( outputFile.toUri(), job.getConfiguration() );
       if ( fs.exists( outputFile ) ) {
         if ( override ) {
           fs.delete( outputFile, true );
