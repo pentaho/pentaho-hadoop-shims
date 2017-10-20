@@ -75,6 +75,7 @@ public class AvroSchemaConverterTest {
 
     Schema.Field f = mock( Schema.Field.class );
     when( f.schema() ).thenReturn( schema );
+    when( f.name() ).thenReturn( "fieldName" );
 
     when( schema.getFields() ).thenReturn( Arrays.asList( f ) );
     SchemaDescription schemaDescription = AvroSchemaConverter.createSchemaDescription( schema );

@@ -57,85 +57,90 @@ public class AvroConverter {
     try {
       //Build the avro row
       for ( SchemaDescription.Field field : schemaDescription ) {
-        AvroSchemaConverter.FieldName fieldName = new AvroSchemaConverter.FieldName( field.formatFieldName,
-            field.pentahoValueMetaType, field.allowNull );
-        String fieldVal = fieldName.toString();
-        int fieldMetaIndex = rmi.indexOfValue( field.pentahoFieldName );
-        ValueMetaInterface vmi = rmi.getValueMeta( fieldMetaIndex );
-        switch ( vmi.getType() ) {
-          case ValueMetaInterface.TYPE_INET:
-          case ValueMetaInterface.TYPE_STRING:
-            outputRecord.put( fieldVal, row.getString( fieldMetaIndex,
-                String.valueOf( field.defaultValue ) ) );
-            break;
-          case ValueMetaInterface.TYPE_INTEGER:
-            if ( field.defaultValue != null && field.defaultValue.length() > 0 ) {
-              outputRecord.put( fieldVal, row.getInteger( fieldMetaIndex,
-                  Long.parseLong( field.defaultValue ) ) );
-            } else {
-              outputRecord.put( fieldVal, row.getInteger( fieldMetaIndex ) );
-            }
-            break;
-          case ValueMetaInterface.TYPE_NUMBER:
-            outputRecord.put( fieldVal, row.getNumber( fieldMetaIndex,
-                ( field.defaultValue != null && field.defaultValue.length() > 0 )
-                    ? Double.parseDouble( field.defaultValue ) : 0 ) );
-            break;
-          case ValueMetaInterface.TYPE_BIGNUMBER:
-            if ( field.defaultValue != null && field.defaultValue.length() > 0 ) {
-              BigDecimal defaultBigDecimal = new BigDecimal( field.defaultValue );
-              BigDecimal bigDecimal = row.getBigNumber( fieldMetaIndex, defaultBigDecimal );
-              outputRecord.put( fieldVal, bigDecimal.doubleValue() );
-            } else {
-              BigDecimal bigDecimal = row.getBigNumber( fieldMetaIndex, null );
-              if ( bigDecimal != null ) {
+        if ( field != null ) {
+          String fieldVal = field.formatFieldName;
+          // Does the field contains Pentaho field format NAME_DELIMITER_TYPE_DELIMETER_ALLOWNULL
+          AvroSchemaConverter.FieldName
+              fieldName =
+              new AvroSchemaConverter.FieldName( field.formatFieldName, field.pentahoValueMetaType, field.allowNull );
+          String name = fieldName.toString();
+          Schema.Field schemaField = schema.getField( name );
+
+          if ( schemaField != null ) {
+            fieldVal = schemaField.name();
+          }
+          int fieldMetaIndex = rmi.indexOfValue( field.pentahoFieldName );
+          ValueMetaInterface vmi = rmi.getValueMeta( fieldMetaIndex );
+          switch ( vmi.getType() ) {
+            case ValueMetaInterface.TYPE_INET:
+            case ValueMetaInterface.TYPE_STRING:
+              outputRecord.put( fieldVal, row.getString( fieldMetaIndex, String.valueOf( field.defaultValue ) ) );
+              break;
+            case ValueMetaInterface.TYPE_INTEGER:
+              if ( field.defaultValue != null && field.defaultValue.length() > 0 ) {
+                outputRecord.put( fieldVal, row.getInteger( fieldMetaIndex, Long.parseLong( field.defaultValue ) ) );
+              } else {
+                outputRecord.put( fieldVal, row.getInteger( fieldMetaIndex ) );
+              }
+              break;
+            case ValueMetaInterface.TYPE_NUMBER:
+              outputRecord.put( fieldVal, row.getNumber( fieldMetaIndex,
+                  ( field.defaultValue != null && field.defaultValue.length() > 0 ) ? Double.parseDouble( field.defaultValue ) : 0 ) );
+              break;
+            case ValueMetaInterface.TYPE_BIGNUMBER:
+              if ( field.defaultValue != null && field.defaultValue.length() > 0 ) {
+                BigDecimal defaultBigDecimal = new BigDecimal( field.defaultValue );
+                BigDecimal bigDecimal = row.getBigNumber( fieldMetaIndex, defaultBigDecimal );
                 outputRecord.put( fieldVal, bigDecimal.doubleValue() );
               } else {
-                outputRecord.put( fieldVal, null );
+                BigDecimal bigDecimal = row.getBigNumber( fieldMetaIndex, null );
+                if ( bigDecimal != null ) {
+                  outputRecord.put( fieldVal, bigDecimal.doubleValue() );
+                } else {
+                  outputRecord.put( fieldVal, null );
+                }
               }
-            }
-            break;
-          case ValueMetaInterface.TYPE_TIMESTAMP:
-            Date defaultTimeStamp = null;
-            if ( field.defaultValue != null && field.defaultValue.length() > 0 ) {
-              DateFormat dateFormat = new SimpleDateFormat( vmi.getConversionMask() );
-              try {
-                defaultTimeStamp = dateFormat.parse( field.defaultValue );
-              } catch ( ParseException pe ) {
-                defaultTimeStamp = null;
+              break;
+            case ValueMetaInterface.TYPE_TIMESTAMP:
+              Date defaultTimeStamp = null;
+              if ( field.defaultValue != null && field.defaultValue.length() > 0 ) {
+                DateFormat dateFormat = new SimpleDateFormat( vmi.getConversionMask() );
+                try {
+                  defaultTimeStamp = dateFormat.parse( field.defaultValue );
+                } catch ( ParseException pe ) {
+                  defaultTimeStamp = null;
+                }
               }
-            }
-            Date timeStamp =  row.getDate( fieldMetaIndex, defaultTimeStamp );
-            outputRecord.put( fieldVal, timeStamp.getTime() );
-            break;
-          case ValueMetaInterface.TYPE_DATE:
-            Date defaultDate = null;
-            if ( field.defaultValue != null && field.defaultValue.length() > 0 ) {
-              DateFormat dateFormat = new SimpleDateFormat( vmi.getConversionMask() );
-              try {
-                defaultDate = dateFormat.parse( field.defaultValue );
-              } catch ( ParseException pe ) {
-                defaultDate = null;
+              Date timeStamp =  row.getDate( fieldMetaIndex, defaultTimeStamp );
+              outputRecord.put( fieldVal, timeStamp.getTime() );
+              break;
+            case ValueMetaInterface.TYPE_DATE:
+              Date defaultDate = null;
+              if ( field.defaultValue != null && field.defaultValue.length() > 0 ) {
+                DateFormat dateFormat = new SimpleDateFormat( vmi.getConversionMask() );
+                try {
+                  defaultDate = dateFormat.parse( field.defaultValue );
+                } catch ( ParseException pe ) {
+                  defaultDate = null;
+                }
               }
-            }
-            Date dateFromRow =  row.getDate( fieldMetaIndex, defaultDate );
-            LocalDate rowDate = dateFromRow.toInstant().atZone( ZoneId.systemDefault() ).toLocalDate();
-            outputRecord.put( fieldVal, Math.toIntExact( ChronoUnit.DAYS.between( LocalDate.ofEpochDay( 0 ), rowDate ) ) );
-            break;
-          case ValueMetaInterface.TYPE_BOOLEAN:
-            outputRecord.put( fieldVal, row.getBoolean( fieldMetaIndex,
-                Boolean.parseBoolean( field.defaultValue ) ) );
-            break;
-          case ValueMetaInterface.TYPE_BINARY:
-            if ( field.defaultValue != null && field.defaultValue.length() > 0 ) {
-              outputRecord.put( fieldVal, ByteBuffer.wrap( row.getBinary( fieldMetaIndex,
-                  vmi.getBinary( field.defaultValue.getBytes() ) ) ) );
-            } else {
-              outputRecord.put( fieldVal, ByteBuffer.wrap( row.getBinary( fieldMetaIndex, new byte[0] ) ) );
-            }
-            break;
-          default:
-            break;
+              Date dateFromRow =  row.getDate( fieldMetaIndex, defaultDate );
+              LocalDate rowDate = dateFromRow.toInstant().atZone( ZoneId.systemDefault() ).toLocalDate();
+              outputRecord.put( fieldVal, Math.toIntExact( ChronoUnit.DAYS.between( LocalDate.ofEpochDay( 0 ), rowDate ) ) );
+              break;
+            case ValueMetaInterface.TYPE_BOOLEAN:
+              outputRecord.put( fieldVal, row.getBoolean( fieldMetaIndex, Boolean.parseBoolean( field.defaultValue ) ) );
+              break;
+            case ValueMetaInterface.TYPE_BINARY:
+              if ( field.defaultValue != null && field.defaultValue.length() > 0 ) {
+                outputRecord.put( fieldVal, ByteBuffer.wrap( row.getBinary( fieldMetaIndex, vmi.getBinary( field.defaultValue.getBytes() ) ) ) );
+              } else {
+                outputRecord.put( fieldVal, ByteBuffer.wrap( row.getBinary( fieldMetaIndex, new byte[0] ) ) );
+              }
+              break;
+            default:
+              break;
+          }
         }
       }
     } catch ( ArithmeticException e ) {
@@ -153,9 +158,17 @@ public class AvroConverter {
   @VisibleForTesting static RowMetaAndData convertFromAvro( RowMetaAndData rowMetaAndData, GenericRecord record, SchemaDescription schemaDescription ) {
     for ( SchemaDescription.Field field : schemaDescription ) {
       if ( field != null ) {
-        AvroSchemaConverter.FieldName fieldName = new AvroSchemaConverter.FieldName( field.formatFieldName,
-            field.pentahoValueMetaType, field.allowNull );
-        String fieldVal = fieldName.toString();
+        String fieldVal = field.formatFieldName;
+        // Does the field contains Pentaho field format NAME_DELIMITER_TYPE_DELIMETER_ALLOWNULL
+        AvroSchemaConverter.FieldName
+            fieldName =
+            new AvroSchemaConverter.FieldName( field.formatFieldName, field.pentahoValueMetaType, field.allowNull );
+        String name = fieldName.toString();
+        Object recordObject = record.get( name );
+        if ( recordObject != null ) {
+          fieldVal = name;
+        }
+
         switch ( field.pentahoValueMetaType ) {
           case ValueMetaInterface.TYPE_INET:
             InetAddress address = null;
