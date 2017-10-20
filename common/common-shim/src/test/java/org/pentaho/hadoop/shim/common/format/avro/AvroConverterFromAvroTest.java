@@ -82,7 +82,7 @@ public class AvroConverterFromAvroTest {
   @Test
   public void convertFromAvro() throws Exception {
     GenericRecord record = mock( GenericRecord.class );
-    when( record.get( formatField() ) ).thenReturn( value );
+    when( record.get( formatFieldName ) ).thenReturn( value );
     SchemaDescription schemaDescription = new SchemaDescription();
     schemaDescription.addField( schemaDescription.new Field( formatFieldName, pentahoFieldName, type, true ) );
 
@@ -90,10 +90,6 @@ public class AvroConverterFromAvroTest {
     AvroConverter.convertFromAvro( rowMetaAndData, record, schemaDescription );
 
     verify( rowMetaAndData ).addValue( pentahoFieldName, type, expected );
-  }
-
-  private String formatField() {
-    return formatFieldName + "_delimiter_" + type + "_delimiter_" + true;
   }
 
 }

@@ -60,11 +60,14 @@ public class AvroConverter {
         if ( field != null ) {
           String fieldVal = field.formatFieldName;
           // Does the field contains Pentaho field format NAME_DELIMITER_TYPE_DELIMETER_ALLOWNULL
-          if ( field.formatFieldName.contains( AvroSchemaConverter.FieldName.FIELDNAME_DELIMITER ) ) {
-            AvroSchemaConverter.FieldName
-                fieldName =
-                new AvroSchemaConverter.FieldName( field.formatFieldName, field.pentahoValueMetaType, field.allowNull );
-            fieldName.toString();
+          AvroSchemaConverter.FieldName
+              fieldName =
+              new AvroSchemaConverter.FieldName( field.formatFieldName, field.pentahoValueMetaType, field.allowNull );
+          String name = fieldName.toString();
+          Schema.Field schemaField = schema.getField( name );
+
+          if ( schemaField != null ) {
+            fieldVal = schemaField.name();
           }
           int fieldMetaIndex = rmi.indexOfValue( field.pentahoFieldName );
           ValueMetaInterface vmi = rmi.getValueMeta( fieldMetaIndex );
@@ -157,11 +160,13 @@ public class AvroConverter {
       if ( field != null ) {
         String fieldVal = field.formatFieldName;
         // Does the field contains Pentaho field format NAME_DELIMITER_TYPE_DELIMETER_ALLOWNULL
-        if ( field.formatFieldName.contains( AvroSchemaConverter.FieldName.FIELDNAME_DELIMITER ) ) {
-          AvroSchemaConverter.FieldName
-              fieldName =
-              new AvroSchemaConverter.FieldName( field.formatFieldName, field.pentahoValueMetaType, field.allowNull );
-          fieldVal = fieldName.toString();
+        AvroSchemaConverter.FieldName
+            fieldName =
+            new AvroSchemaConverter.FieldName( field.formatFieldName, field.pentahoValueMetaType, field.allowNull );
+        String name = fieldName.toString();
+        Object recordObject = record.get( name );
+        if ( recordObject != null ) {
+          fieldVal = name;
         }
 
         switch ( field.pentahoValueMetaType ) {
