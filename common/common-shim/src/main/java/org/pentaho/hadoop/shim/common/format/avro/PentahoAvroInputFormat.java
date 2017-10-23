@@ -41,6 +41,7 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
 
   private String fileName;
   private String schemaFileName;
+  private SchemaDescription schemaDescriptionFromMeta;
 
   @Override
   public List<IPentahoInputSplit> getSplits() throws Exception {
@@ -53,7 +54,15 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
     if ( dfs == null ) {
       throw new Exception( "Unable to read data from file " + fileName );
     }
-    return new PentahoAvroRecordReader( dfs, readSchema( schemaFileName, fileName ) );
+    SchemaDescription sd = null;
+    //we do not have schemaDescriptionFromMeta for some reason then we will read the schame from format, it is unexpected behaviour
+    if ( schemaDescriptionFromMeta == null ) {
+      sd = readSchema( schemaFileName, fileName );
+    } else {
+    // we provide the schemaDescriptionFromMeta from user data will use it. it is expected behaviour
+      sd = schemaDescriptionFromMeta;
+    }
+    return new PentahoAvroRecordReader( dfs, sd );
   }
 
   @Override
@@ -72,9 +81,14 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
     }
   }
 
+  /**
+   * Set schema from user's metadata
+   * 
+   * This schema will be used instead of schema from {@link #schemaFileName} since we allow user to override pentaho filed name
+   */
   @Override
   public void setSchema( SchemaDescription schema ) throws Exception {
-    //do nothing
+    schemaDescriptionFromMeta = schema;
   }
 
   @Override
@@ -82,6 +96,9 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
     this.fileName = fileName;
   }
 
+  /**
+   * Set schema filename. We will use it for retrive initial fields name and will use it if we do not provide updated schemaDescription {@link #setSchema(SchemaDescription)}
+   */
   @Override
   public void setInputSchemaFile( String schemaFileName ) throws Exception {
     this.schemaFileName = schemaFileName;
