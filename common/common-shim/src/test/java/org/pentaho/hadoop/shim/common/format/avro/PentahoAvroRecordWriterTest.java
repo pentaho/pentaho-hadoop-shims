@@ -46,13 +46,13 @@ import java.util.Date;
 import org.apache.avro.Schema;
 import org.apache.avro.file.DataFileWriter;
 import org.apache.avro.generic.GenericRecord;
-//import org.junit.Before;
+import org.junit.Before;
 import org.junit.Test;
-//import org.junit.runner.RunWith;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Spy;
-//import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.exception.KettleValueException;
 import org.pentaho.di.core.row.RowMetaInterface;
@@ -60,50 +60,50 @@ import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription.Field;
 
-//@RunWith( MockitoJUnitRunner.class )
+@RunWith( MockitoJUnitRunner.class )
 public class PentahoAvroRecordWriterTest {
 
   private String schemaString =
       "{"
-      + " \"namespace\" : \"TestNameSpace12\","
-      + " \"type\" : \"record\","
-      + " \"name\" : \"TestnameRecord12\","
-      + " \"doc\" : \"TestDocvalue12\","
-      + " \"fields\" : [ {"
-      + "                   \"name\" : \"stringField\","
-      + "                   \"type\" : [ \"null\", \"string\" ]"
-      + "                }, {"
-      + "                   \"name\" : \"inetField\","
-      + "                   \"type\" : \"string\","
-      + "                   \"default\" : \"www.uber.com\""
-      + "                }, {"
-      + "                   \"name\" : \"intField\","
-      + "                   \"type\" : [ \"null\", \"long\" ]"
-      + "                }, {"
-      + "                   \"name\" : \"numberField\","
-      + "                   \"type\" : [ \"null\", \"double\" ]"
-      + "                }, {"
-      + "                   \"name\" : \"bigNumberField\","
-      + "                   \"type\" : [ \"null\", \"double\" ]"
-      + "                }, {"
-      + "                   \"name\" : \"timestampField\","
-      + "                   \"type\" : \"long\","
-      + "                   \"logicalType\" : \"timestamp-millis\","
-      + "                   \"default\" : \"01/01/1970 04:00:00\""
-      + "                }, {"
-      + "                   \"name\" : \"dateField\","
-      + "                   \"type\" : \"int\","
-      + "                   \"logicalType\" : \"date\","
-      + "                   \"default\" : \"01/02/1970\""
-      + "                }, {"
-      + "                   \"name\" : \"booleanField\","
-      + "                   \"type\" : \"boolean\","
-      + "                   \"default\" : \"false\""
-      + "                }, {"
-      + "                   \"name\" : \"binField\","
-      + "                   \"type\" : \"bytes\""
-      + "               } ]"
-      + "}";
+          + " \"namespace\" : \"TestNameSpace12\","
+          + " \"type\" : \"record\","
+          + " \"name\" : \"TestnameRecord12\","
+          + " \"doc\" : \"TestDocvalue12\","
+          + " \"fields\" : [ {"
+          + "                   \"name\" : \"stringField_delimiter_2_delimiter_false\","
+          + "                   \"type\" : [ \"null\", \"string\" ]"
+          + "                }, {"
+          + "                   \"name\" : \"inetField_delimiter_10_delimiter_false\","
+          + "                   \"type\" : \"string\","
+          + "                   \"default\" : \"www.uber.com\""
+          + "                }, {"
+          + "                   \"name\" : \"intField_delimiter_5_delimiter_false\","
+          + "                   \"type\" : [ \"null\", \"long\" ]"
+          + "                }, {"
+          + "                   \"name\" : \"numberField_delimiter_1_delimiter_false\","
+          + "                   \"type\" : [ \"null\", \"double\" ]"
+          + "                }, {"
+          + "                   \"name\" : \"bigNumberField_delimiter_6_delimiter_false\","
+          + "                   \"type\" : [ \"null\", \"double\" ]"
+          + "                }, {"
+          + "                   \"name\" : \"timestampField_delimiter_9_delimiter_false\","
+          + "                   \"type\" : \"long\","
+          + "                   \"logicalType\" : \"timestamp-millis\","
+          + "                   \"default\" : \"01/01/1970 04:00:00\""
+          + "                }, {"
+          + "                   \"name\" : \"dateField_delimiter_3_delimiter_false\","
+          + "                   \"type\" : \"int\","
+          + "                   \"logicalType\" : \"date\","
+          + "                   \"default\" : \"01/02/1970\""
+          + "                }, {"
+          + "                   \"name\" : \"booleanField_delimiter_4_delimiter_false\","
+          + "                   \"type\" : \"boolean\","
+          + "                   \"default\" : \"false\""
+          + "                }, {"
+          + "                   \"name\" : \"binField_delimiter_8_delimiter_false\","
+          + "                   \"type\" : \"bytes\""
+          + "               } ]"
+          + "}";
 
   @Mock private DataFileWriter<GenericRecord> nativeAvroRecordWriter;
 
@@ -114,7 +114,7 @@ public class PentahoAvroRecordWriterTest {
   private SchemaDescription schemaDescription;
   private PentahoAvroRecordWriter writer;
 
-  //@Before
+  @Before
   public void setUp() throws IOException, URISyntaxException {
     InputStream is = new ByteArrayInputStream( schemaString.getBytes( "UTF-8" ) );
     Schema schema = new Schema.Parser().parse( is );
@@ -128,47 +128,43 @@ public class PentahoAvroRecordWriterTest {
   }
 
   @Test
-  public void dummy( ) {
-  }
-
-  //@Test
   public void testWrite_String() throws KettleValueException, IOException {
     doReturn( "sampleString" ).when( rmd ).getString( anyInt(), anyString() );
     testWriteCommon( ValueMetaInterface.TYPE_STRING, "stringField", "sampleString" );
   }
 
-  //@Test
+  @Test
   public void testWrite_Inet() throws KettleValueException, IOException {
     doReturn( "sampleInet" ).when( rmd ).getString( anyInt(), anyString() );
     testWriteCommon( ValueMetaInterface.TYPE_INET, "inetField", "sampleInet" );
   }
 
-  //@Test
+  @Test
   public void testWrite_Integer() throws KettleValueException, IOException {
     doReturn( 0L ).when( rmd ).getInteger( anyInt(), anyLong() );
     doReturn( 0L ).when( rmd ).getInteger( anyInt() );
     testWriteCommon( ValueMetaInterface.TYPE_INTEGER, "intField", 0L );
   }
 
-  //@Test
+  @Test
   public void testWrite_Number() throws KettleValueException, IOException {
     doReturn( 0d ).when( rmd ).getNumber( anyInt(), anyLong() );
     testWriteCommon( ValueMetaInterface.TYPE_NUMBER, "numberField", 0d );
   }
 
-  //@Test
+  @Test
   public void testWrite_BigNumber() throws KettleValueException, IOException {
     doReturn( new BigDecimal( 0d ) ).when( rmd ).getBigNumber( anyInt(), any( BigDecimal.class ) );
     testWriteCommon( ValueMetaInterface.TYPE_BIGNUMBER, "bigNumberField", new BigDecimal( 0d ).doubleValue() );
   }
 
-  //@Test
+  @Test
   public void testWrite_Timestamp() throws KettleValueException, IOException {
     doReturn( new Date( 0 ) ).when( rmd ).getDate( anyInt(), any( Date.class ) );
     testWriteCommon( ValueMetaInterface.TYPE_TIMESTAMP, "timestampField", 0L );
   }
 
-  //@Test
+  @Test
   public void testWrite_Date() throws KettleValueException, IOException {
     Date dateFromRow = new Date( 0 );
     LocalDate rowDate = dateFromRow.toInstant().atZone( ZoneId.systemDefault() ).toLocalDate();
@@ -176,13 +172,13 @@ public class PentahoAvroRecordWriterTest {
     testWriteCommon( ValueMetaInterface.TYPE_DATE, "dateField", Math.toIntExact( ChronoUnit.DAYS.between( LocalDate.ofEpochDay( 0 ), rowDate ) ) );
   }
 
-  //@Test
+  @Test
   public void testWrite_Boolean() throws KettleValueException, IOException {
     doReturn( true ).when( rmd ).getBoolean( anyInt(), anyBoolean() );
     testWriteCommon( ValueMetaInterface.TYPE_BOOLEAN, "booleanField", true );
   }
 
-  //@Test
+  @Test
   public void testWrite_Binary() throws KettleValueException, IOException {
     doReturn( new byte[0] ).when( rmd ).getBinary( anyInt(), any( byte[].class ) );
     when( vmi.getType() ).thenReturn( ValueMetaInterface.TYPE_BINARY );
@@ -193,7 +189,7 @@ public class PentahoAvroRecordWriterTest {
 
     ArgumentCaptor<GenericRecord> argument = ArgumentCaptor.forClass( GenericRecord.class );
     verify( nativeAvroRecordWriter ).append( argument.capture() );
-    assertEquals( ByteBuffer.wrap( new byte[0] ), argument.getValue().get( "binField" ) );
+    assertEquals( ByteBuffer.wrap( new byte[0] ), argument.getValue().get( "binField_delimiter_8_delimiter_false" ) );
   }
 
   private void testWriteCommon( int type, String fieldName, Object writableObject ) throws KettleValueException, IOException {
@@ -205,40 +201,40 @@ public class PentahoAvroRecordWriterTest {
 
     ArgumentCaptor<GenericRecord> argument = ArgumentCaptor.forClass( GenericRecord.class );
     verify( nativeAvroRecordWriter ).append( argument.capture() );
-    assertEquals( writableObject, argument.getValue().get( fieldName ) );
+    assertEquals( writableObject, argument.getValue().get( fieldName + "_delimiter_" + type + "_delimiter_" + false ) );
   }
 
-  //@Test
+  @Test
   public void testWrite_String_Default() throws KettleValueException, IOException {
     when( rmi.getString( any( Object[].class ), anyInt() ) ).thenReturn( null );
     testWriteCommon_Default( ValueMetaInterface.TYPE_STRING, "stringField", "sampleString", "defaultString", "defaultString" );
   }
 
-  //@Test
+  @Test
   public void testWrite_Inet_Default() throws KettleValueException, IOException {
     when( rmi.getString( any( Object[].class ), anyInt() ) ).thenReturn( null );
     testWriteCommon_Default( ValueMetaInterface.TYPE_INET, "inetField", "sampleInet", "defaultInet", "defaultInet" );
   }
 
-  //@Test
+  @Test
   public void testWrite_Integer_Default() throws KettleValueException, IOException {
     when( rmi.getInteger( any( Object[].class ), anyInt() ) ).thenReturn( null );
     testWriteCommon_Default( ValueMetaInterface.TYPE_INTEGER, "intField", 0L, String.valueOf( 1L ), 1L );
   }
 
-  //@Test
+  @Test
   public void testWrite_Number_Default() throws KettleValueException, IOException {
     when( rmi.getNumber( any( Object[].class ), anyInt() ) ).thenReturn( null );
     testWriteCommon_Default( ValueMetaInterface.TYPE_NUMBER, "numberField", 0d, String.valueOf( 1d ), 1d );
   }
 
-  //@Test
+  @Test
   public void testWrite_BigNumber_Default() throws KettleValueException, IOException {
     when( rmi.getBigNumber( any( Object[].class ), anyInt() ) ).thenReturn( null );
     testWriteCommon_Default( ValueMetaInterface.TYPE_BIGNUMBER, "bigNumberField", 0d, String.valueOf( 1d ), 1d );
   }
 
-  //@Test
+  @Test
   public void testWrite_Timestamp_Default() throws KettleValueException, IOException {
     when( rmi.getDate( any( Object[].class ), anyInt() ) ).thenReturn( null );
     //will set time zone since we use strong equals to 1L
@@ -246,20 +242,20 @@ public class PentahoAvroRecordWriterTest {
     testWriteCommon_Default( ValueMetaInterface.TYPE_TIMESTAMP, "timestampField", 0l, "01/01/1970 00:00:00.001 -0000", 1l );
   }
 
-  //@Test
+  @Test
   public void testWrite_Date_Default() throws KettleValueException, IOException {
     when( rmi.getDate( any( Object[].class ), anyInt() ) ).thenReturn( null );
     when( vmi.getConversionMask() ).thenReturn( "MM/dd/yyyy" );
     testWriteCommon_Default( ValueMetaInterface.TYPE_DATE, "dateField", 0, "01/02/1970", 1 );
   }
 
-  //@Test
+  @Test
   public void testWrite_Boolean_Default() throws KettleValueException, IOException {
     when( rmi.getBoolean( any( Object[].class ), anyInt() ) ).thenReturn( null );
     testWriteCommon_Default( ValueMetaInterface.TYPE_BOOLEAN, "booleanField", true, String.valueOf( false ), false );
   }
 
-  //@Test
+  @Test
   public void shouldCloseNativeWriter() throws Exception {
     writer.close();
     verify( nativeAvroRecordWriter ).close();
@@ -275,8 +271,8 @@ public class PentahoAvroRecordWriterTest {
 
     ArgumentCaptor<GenericRecord> argument = ArgumentCaptor.forClass( GenericRecord.class );
     verify( nativeAvroRecordWriter ).append( argument.capture() );
-    assertNotEquals( writableObject, argument.getValue().get( fieldName ) );
-    assertEquals( defaultObject, argument.getValue().get( fieldName ) );
+    assertNotEquals( writableObject, argument.getValue().get( fieldName + "_delimiter_" + type + "_delimiter_" + false ) );
+    assertEquals( defaultObject, argument.getValue().get( fieldName  + "_delimiter_" + type + "_delimiter_" + false ) );
   }
 
 }
