@@ -22,11 +22,6 @@
 package org.pentaho.hadoop.shim.common.format.avro;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.SequenceInputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.avro.Schema;
@@ -37,6 +32,7 @@ import org.apache.avro.io.DatumReader;
 import org.apache.commons.vfs2.FileExtensionSelector;
 import org.apache.commons.vfs2.FileObject;
 import org.pentaho.di.core.exception.KettleFileException;
+import org.pentaho.di.core.util.Utils;
 import org.pentaho.di.core.vfs.KettleVFS;
 import org.pentaho.hadoop.shim.api.format.IPentahoAvroInputFormat;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
@@ -45,6 +41,7 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
 
   private String fileName;
   private String schemaFileName;
+  private SchemaDescription schemaDescriptionFromMeta;
 
   @Override
   public List<IPentahoInputSplit> getSplits() throws Exception {
@@ -53,7 +50,19 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
 
   @Override
     public IPentahoRecordReader createRecordReader( IPentahoInputSplit split ) throws Exception {
-    return new PentahoAvroRecordReader( createDataFileStream( schemaFileName, fileName ), readSchema( schemaFileName, fileName ) );
+    DataFileStream<GenericRecord> dfs = createDataFileStream( schemaFileName, fileName );
+    if ( dfs == null ) {
+      throw new Exception( "Unable to read data from file " + fileName );
+    }
+    SchemaDescription sd = null;
+    //we do not have schemaDescriptionFromMeta for some reason then we will read the schame from format, it is unexpected behaviour
+    if ( schemaDescriptionFromMeta == null ) {
+      sd = readSchema( schemaFileName, fileName );
+    } else {
+    // we provide the schemaDescriptionFromMeta from user data will use it. it is expected behaviour
+      sd = schemaDescriptionFromMeta;
+    }
+    return new PentahoAvroRecordReader( dfs, sd );
   }
 
   @Override
@@ -72,9 +81,14 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
     }
   }
 
+  /**
+   * Set schema from user's metadata
+   * 
+   * This schema will be used instead of schema from {@link #schemaFileName} since we allow user to override pentaho filed name
+   */
   @Override
   public void setSchema( SchemaDescription schema ) throws Exception {
-    //do nothing
+    schemaDescriptionFromMeta = schema;
   }
 
   @Override
@@ -82,6 +96,9 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
     this.fileName = fileName;
   }
 
+  /**
+   * Set schema filename. We will use it for retrive initial fields name and will use it if we do not provide updated schemaDescription {@link #setSchema(SchemaDescription)}
+   */
   @Override
   public void setInputSchemaFile( String schemaFileName ) throws Exception {
     this.schemaFileName = schemaFileName;
@@ -108,13 +125,11 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
     if ( fileObject.isFile() ) {
       return  new DataFileStream<GenericRecord>( fileObject.getContent().getInputStream(), datumReader );
     } else {
-      ArrayList<InputStream> avroInputStreams = new ArrayList<InputStream>();
       FileObject[] avroFiles = fileObject.findFiles( new FileExtensionSelector( "avro" ) );
-      for ( FileObject avroFile : avroFiles ) {
-        avroInputStreams.add( avroFile.getContent().getInputStream() );
+      if ( !Utils.isEmpty( avroFiles ) ) {
+        return  new DataFileStream<GenericRecord>( avroFiles[0].getContent().getInputStream(), datumReader );
       }
-      SequenceInputStream sis = new SequenceInputStream( Collections.enumeration( avroInputStreams ) );
-      return  new DataFileStream<GenericRecord>( sis, datumReader );
+      return null;
     }
   }
 }
