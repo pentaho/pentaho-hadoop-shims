@@ -46,13 +46,13 @@ import java.util.Date;
 import org.apache.avro.Schema;
 import org.apache.avro.file.DataFileWriter;
 import org.apache.avro.generic.GenericRecord;
-//import org.junit.Before;
+import org.junit.Before;
 import org.junit.Test;
-//import org.junit.runner.RunWith;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Spy;
-//import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.exception.KettleValueException;
 import org.pentaho.di.core.row.RowMetaInterface;
@@ -60,7 +60,7 @@ import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription.Field;
 
-//@RunWith( MockitoJUnitRunner.class )
+@RunWith( MockitoJUnitRunner.class )
 public class PentahoAvroRecordWriterTest {
 
   private String schemaString =
@@ -114,7 +114,7 @@ public class PentahoAvroRecordWriterTest {
   private SchemaDescription schemaDescription;
   private PentahoAvroRecordWriter writer;
 
-  //@Before
+  @Before
   public void setUp() throws IOException, URISyntaxException {
     InputStream is = new ByteArrayInputStream( schemaString.getBytes( "UTF-8" ) );
     Schema schema = new Schema.Parser().parse( is );
@@ -128,47 +128,43 @@ public class PentahoAvroRecordWriterTest {
   }
 
   @Test
-  public void dummy( ) {
-  }
-
-  //@Test
   public void testWrite_String() throws KettleValueException, IOException {
     doReturn( "sampleString" ).when( rmd ).getString( anyInt(), anyString() );
     testWriteCommon( ValueMetaInterface.TYPE_STRING, "stringField", "sampleString" );
   }
 
-  //@Test
+  @Test
   public void testWrite_Inet() throws KettleValueException, IOException {
     doReturn( "sampleInet" ).when( rmd ).getString( anyInt(), anyString() );
     testWriteCommon( ValueMetaInterface.TYPE_INET, "inetField", "sampleInet" );
   }
 
-  //@Test
+  @Test
   public void testWrite_Integer() throws KettleValueException, IOException {
     doReturn( 0L ).when( rmd ).getInteger( anyInt(), anyLong() );
     doReturn( 0L ).when( rmd ).getInteger( anyInt() );
     testWriteCommon( ValueMetaInterface.TYPE_INTEGER, "intField", 0L );
   }
 
-  //@Test
+  @Test
   public void testWrite_Number() throws KettleValueException, IOException {
     doReturn( 0d ).when( rmd ).getNumber( anyInt(), anyLong() );
     testWriteCommon( ValueMetaInterface.TYPE_NUMBER, "numberField", 0d );
   }
 
-  //@Test
+  @Test
   public void testWrite_BigNumber() throws KettleValueException, IOException {
     doReturn( new BigDecimal( 0d ) ).when( rmd ).getBigNumber( anyInt(), any( BigDecimal.class ) );
     testWriteCommon( ValueMetaInterface.TYPE_BIGNUMBER, "bigNumberField", new BigDecimal( 0d ).doubleValue() );
   }
 
-  //@Test
+  @Test
   public void testWrite_Timestamp() throws KettleValueException, IOException {
     doReturn( new Date( 0 ) ).when( rmd ).getDate( anyInt(), any( Date.class ) );
     testWriteCommon( ValueMetaInterface.TYPE_TIMESTAMP, "timestampField", 0L );
   }
 
-  //@Test
+  @Test
   public void testWrite_Date() throws KettleValueException, IOException {
     Date dateFromRow = new Date( 0 );
     LocalDate rowDate = dateFromRow.toInstant().atZone( ZoneId.systemDefault() ).toLocalDate();
@@ -176,13 +172,13 @@ public class PentahoAvroRecordWriterTest {
     testWriteCommon( ValueMetaInterface.TYPE_DATE, "dateField", Math.toIntExact( ChronoUnit.DAYS.between( LocalDate.ofEpochDay( 0 ), rowDate ) ) );
   }
 
-  //@Test
+  @Test
   public void testWrite_Boolean() throws KettleValueException, IOException {
     doReturn( true ).when( rmd ).getBoolean( anyInt(), anyBoolean() );
     testWriteCommon( ValueMetaInterface.TYPE_BOOLEAN, "booleanField", true );
   }
 
-  //@Test
+  @Test
   public void testWrite_Binary() throws KettleValueException, IOException {
     doReturn( new byte[0] ).when( rmd ).getBinary( anyInt(), any( byte[].class ) );
     when( vmi.getType() ).thenReturn( ValueMetaInterface.TYPE_BINARY );
@@ -208,37 +204,37 @@ public class PentahoAvroRecordWriterTest {
     assertEquals( writableObject, argument.getValue().get( fieldName ) );
   }
 
-  //@Test
+  @Test
   public void testWrite_String_Default() throws KettleValueException, IOException {
     when( rmi.getString( any( Object[].class ), anyInt() ) ).thenReturn( null );
     testWriteCommon_Default( ValueMetaInterface.TYPE_STRING, "stringField", "sampleString", "defaultString", "defaultString" );
   }
 
-  //@Test
+  @Test
   public void testWrite_Inet_Default() throws KettleValueException, IOException {
     when( rmi.getString( any( Object[].class ), anyInt() ) ).thenReturn( null );
     testWriteCommon_Default( ValueMetaInterface.TYPE_INET, "inetField", "sampleInet", "defaultInet", "defaultInet" );
   }
 
-  //@Test
+  @Test
   public void testWrite_Integer_Default() throws KettleValueException, IOException {
     when( rmi.getInteger( any( Object[].class ), anyInt() ) ).thenReturn( null );
     testWriteCommon_Default( ValueMetaInterface.TYPE_INTEGER, "intField", 0L, String.valueOf( 1L ), 1L );
   }
 
-  //@Test
+  @Test
   public void testWrite_Number_Default() throws KettleValueException, IOException {
     when( rmi.getNumber( any( Object[].class ), anyInt() ) ).thenReturn( null );
     testWriteCommon_Default( ValueMetaInterface.TYPE_NUMBER, "numberField", 0d, String.valueOf( 1d ), 1d );
   }
 
-  //@Test
+  @Test
   public void testWrite_BigNumber_Default() throws KettleValueException, IOException {
     when( rmi.getBigNumber( any( Object[].class ), anyInt() ) ).thenReturn( null );
     testWriteCommon_Default( ValueMetaInterface.TYPE_BIGNUMBER, "bigNumberField", 0d, String.valueOf( 1d ), 1d );
   }
 
-  //@Test
+  @Test
   public void testWrite_Timestamp_Default() throws KettleValueException, IOException {
     when( rmi.getDate( any( Object[].class ), anyInt() ) ).thenReturn( null );
     //will set time zone since we use strong equals to 1L
@@ -246,20 +242,20 @@ public class PentahoAvroRecordWriterTest {
     testWriteCommon_Default( ValueMetaInterface.TYPE_TIMESTAMP, "timestampField", 0l, "01/01/1970 00:00:00.001 -0000", 1l );
   }
 
-  //@Test
+  @Test
   public void testWrite_Date_Default() throws KettleValueException, IOException {
     when( rmi.getDate( any( Object[].class ), anyInt() ) ).thenReturn( null );
     when( vmi.getConversionMask() ).thenReturn( "MM/dd/yyyy" );
     testWriteCommon_Default( ValueMetaInterface.TYPE_DATE, "dateField", 0, "01/02/1970", 1 );
   }
 
-  //@Test
+  @Test
   public void testWrite_Boolean_Default() throws KettleValueException, IOException {
     when( rmi.getBoolean( any( Object[].class ), anyInt() ) ).thenReturn( null );
     testWriteCommon_Default( ValueMetaInterface.TYPE_BOOLEAN, "booleanField", true, String.valueOf( false ), false );
   }
 
-  //@Test
+  @Test
   public void shouldCloseNativeWriter() throws Exception {
     writer.close();
     verify( nativeAvroRecordWriter ).close();
