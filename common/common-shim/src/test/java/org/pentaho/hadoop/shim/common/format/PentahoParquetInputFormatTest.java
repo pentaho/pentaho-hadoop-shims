@@ -23,10 +23,12 @@ package org.pentaho.hadoop.shim.common.format;
 
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.apache.hadoop.fs.Path;
 //#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
@@ -95,6 +97,8 @@ public class PentahoParquetInputFormatTest {
     // readData( "parquet/2_lzo_nodict.par");
     readData( "parquet/2_snappy_nodict.par" );
     readData( "parquet/2_uncompressed_dict.par" );
+
+    readData( "parquet/1_spark.par" );
   }
 
   @Test
@@ -149,7 +153,7 @@ public class PentahoParquetInputFormatTest {
     Assert.assertEquals( ValueMetaInterface.TYPE_DATE, fileFields.get( 6 ).pentahoValueMetaType );
     Assert.assertEquals( true, fileFields.get( 6 ).allowNull );
 
-    fileFields.get( 6 ).pentahoValueMetaType = ValueMetaInterface.TYPE_BIGNUMBER;
+    fileFields.get( 5 ).pentahoValueMetaType = ValueMetaInterface.TYPE_BIGNUMBER;
     fileFields.get( 6 ).pentahoValueMetaType = ValueMetaInterface.TYPE_TIMESTAMP;
 
     in.setInputFile( getClass().getClassLoader().getResource( file ).toExternalForm() );
@@ -188,10 +192,17 @@ public class PentahoParquetInputFormatTest {
       Assert.assertEquals( ValueMetaInterface.TYPE_TIMESTAMP, ftime.getType() );
     }
 
-    testRow( rows.get( 0 ).getData(), 2.1, "John", new Date( 456 ), true, 1L, 4.5, null );
-    testRow( rows.get( 1 ).getData(), null, "Paul", new Date( 456 ), false, 3L, null, new Timestamp( 123 ) );
-    testRow( rows.get( 2 ).getData(), 2.1, "George", null, true, null, 4.5, new Timestamp( 123 ) );
-    testRow( rows.get( 3 ).getData(), 2.1, "Ringo", new Date( 456 ), null, 4L, 4.5, new Timestamp( 123 ) );
+    SimpleDateFormat df = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+    df.setTimeZone( TimeZone.getTimeZone( "Europe/Minsk" ) );
+
+    testRow( rows.get( 0 ).getData(), 2.1, "John", df.parse( "2018-01-01 13:00:00" ), true, 1L, new BigDecimal( 4.5 ),
+      null );
+    testRow( rows.get( 1 ).getData(), null, "Paul", df.parse( "2018-01-01 09:10:15" ), false, 3L, null,
+      new Timestamp( df.parse( "2018-05-01 13:00:00" ).getTime() ) );
+    testRow( rows.get( 2 ).getData(), 2.1, "George", null, true, null, new BigDecimal( 4.5 ),
+      new Timestamp( df.parse( "2018-05-01 13:00:00" ).getTime() ) );
+    testRow( rows.get( 3 ).getData(), 2.1, "Ringo", df.parse( "2018-01-01 09:10:35" ), null, 4L, new BigDecimal( 4.5 ),
+      new Timestamp( df.parse( "2018-05-01 13:00:00" ).getTime() ) );
   }
 
   private void testRow( Object[] data, Object... expected ) {
