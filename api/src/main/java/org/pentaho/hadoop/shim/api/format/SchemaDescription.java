@@ -48,6 +48,9 @@ public class SchemaDescription implements Iterable<SchemaDescription.Field> {
 
   public static SchemaDescription unmarshall( String str ) {
     SchemaDescription r = new SchemaDescription();
+    if ( str.isEmpty() ) {
+      return r;
+    }
     String[] lines = str.split( "\n" );
     for ( String line : lines ) {
       r.addField( r.unmarshallField( line ) );
