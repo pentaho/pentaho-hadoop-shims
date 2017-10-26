@@ -36,12 +36,14 @@ import java.util.Iterator;
 public class PentahoAvroRecordReader implements IPentahoAvroInputFormat.IPentahoRecordReader {
 
   private final DataFileStream<GenericRecord> nativeAvroRecordReader;
-  private final SchemaDescription schemaDescription;
+  private final SchemaDescription avroSchemaDescription;
+  private final SchemaDescription metaSchemaDescription;
 
   public PentahoAvroRecordReader( DataFileStream<GenericRecord> nativeAvroRecordReader,
-      SchemaDescription schemaDescription ) {
+      SchemaDescription avroSchemaDescription, SchemaDescription metaSchemaDescription ) {
     this.nativeAvroRecordReader = nativeAvroRecordReader;
-    this.schemaDescription = schemaDescription;
+    this.avroSchemaDescription = avroSchemaDescription;
+    this.metaSchemaDescription = metaSchemaDescription;
   }
 
   @Override public void close() throws IOException {
@@ -56,7 +58,7 @@ public class PentahoAvroRecordReader implements IPentahoAvroInputFormat.IPentaho
       }
 
       @Override public RowMetaAndData next() {
-        return AvroConverter.convertFromAvro(  nativeAvroRecordReader.next(), schemaDescription );
+        return AvroConverter.convertFromAvro(  nativeAvroRecordReader.next(), avroSchemaDescription, metaSchemaDescription );
       }
     };
   }
