@@ -21,9 +21,10 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.common.format.parquet;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 //#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
 import org.apache.hadoop.conf.Configuration;
@@ -41,7 +42,6 @@ import org.apache.parquet.schema.Type;
 //$import parquet.schema.MessageType;
 //$import parquet.schema.Type;
 //#endif
-
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 import org.pentaho.hadoop.shim.common.format.parquet.ParquetConverter.MyRecordMaterializer;
@@ -62,23 +62,18 @@ public class PentahoParquetReadSupport extends ReadSupport<RowMetaAndData> {
 
     // get all fields from file's schema
     MessageType fileSchema = context.getFileSchema();
-    Map<String, Type> fileFields = new TreeMap<>();
-    for ( Type f : fileSchema.getFields() ) {
-      fileFields.put( f.getName(), f );
-    }
-    fileSchema.getFields().clear();
-
+    List<Type> newFields = new ArrayList<>();
     // use only required fields
     for ( SchemaDescription.Field f : schema ) {
-      Type ff = fileFields.get( f.formatFieldName );
-      if ( ff == null ) {
-        throw new RuntimeException( "Field " + f.formatFieldName + " not found in parquet file" );
-      } else {
-        fileSchema.getFields().add( ff );
-      }
+      Type origField = fileSchema.getFields().get( fileSchema.getFieldIndex( f.formatFieldName ) );
+      newFields.add( origField );
     }
+    if ( newFields.isEmpty() ) {
+      throw new RuntimeException( "Fields should be declared" );
+    }
+    MessageType newSchema = new MessageType( fileSchema.getName(), newFields );
 
-    return new ReadContext( fileSchema, new HashMap<>() );
+    return new ReadContext( newSchema, new HashMap<>() );
   }
 
   @Override

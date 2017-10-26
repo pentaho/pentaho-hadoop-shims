@@ -87,7 +87,7 @@ public class PentahoParquetRecordReaderTest {
     recordReader.close();
   }
 
-  @Test
+  @Test( expected = RuntimeException.class )
   public void iterateOverEmptyParquetFile() throws Exception {
     initEmpty();
     FileInputFormat.setInputPaths( job, getClass().getClassLoader().getResource( "empty.pqt" ).toExternalForm() );
