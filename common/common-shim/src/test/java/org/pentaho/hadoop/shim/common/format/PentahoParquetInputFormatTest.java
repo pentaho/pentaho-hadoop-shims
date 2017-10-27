@@ -23,10 +23,17 @@ package org.pentaho.hadoop.shim.common.format;
 
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.TimeZone;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.apache.hadoop.fs.Path;
 //#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
@@ -41,6 +48,7 @@ import org.mockito.Mockito;
 import org.mockito.internal.util.reflection.Whitebox;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.row.RowMeta;
+import org.pentaho.di.core.row.ValueMeta;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.core.row.value.ValueMetaBigNumber;
 import org.pentaho.di.core.row.value.ValueMetaBoolean;
@@ -95,6 +103,8 @@ public class PentahoParquetInputFormatTest {
     // readData( "parquet/2_lzo_nodict.par");
     readData( "parquet/2_snappy_nodict.par" );
     readData( "parquet/2_uncompressed_dict.par" );
+
+    readData( "parquet/1_spark.par" );
   }
 
   @Test
@@ -120,40 +130,90 @@ public class PentahoParquetInputFormatTest {
     expectedRowMeta.addValueMeta( new ValueMetaBigNumber( "fbignum" ) );
     expectedRowMeta.addValueMeta( new ValueMetaTimestamp( "ftime" ) );
 
-    PentahoParquetInputFormat in = new PentahoParquetInputFormat();
-    System.out.println( "Read file from " + getClass().getClassLoader().getResource( file ) );
-    SchemaDescription fileSchema = in.readSchema( getClass().getClassLoader().getResource( file ).toExternalForm() );
+    SimpleDateFormat df = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+    df.setTimeZone( TimeZone.getTimeZone( "Europe/Minsk" ) );
+
+    List<Object[]> expectedData = new ArrayList<>();
+    expectedData.add( new Object[] {
+      2.1, null, 2.1, 2.1 } );
+    expectedData.add( new Object[] {
+      "John", "Paul", "George", "Ringo" } );
+    expectedData.add( new Object[] {
+      df.parse( "2018-01-01 13:00:00" ), df.parse( "2018-01-01 09:10:15" ), null, df.parse( "2018-01-01 09:10:35" ) } );
+    expectedData.add( new Object[] {
+      true, false, true, null } );
+    expectedData.add( new Object[] {
+      1L, 3L, null, 4L } );
+    expectedData.add( new Object[] {
+      new BigDecimal( 4.5 ), null, new BigDecimal( 4.5 ), new BigDecimal( 4.5 ) } );
+    expectedData.add( new Object[] {
+      null, new Timestamp( df.parse( "2018-05-01 13:00:00" ).getTime() ),
+      new Timestamp( df.parse( "2018-05-01 13:00:00" ).getTime() ),
+      new Timestamp( df.parse( "2018-05-01 13:00:00" ).getTime() ) } );
+
+    PentahoParquetInputFormat inSchema = new PentahoParquetInputFormat();
+    SchemaDescription fileSchema =
+        inSchema.readSchema( getClass().getClassLoader().getResource( file ).toExternalForm() );
 
     List<SchemaDescription.Field> fileFields = new ArrayList<>();
     fileSchema.forEach( fileFields::add );
-    Assert.assertEquals( 7, fileFields.size() );
-    Assert.assertEquals( "fnum", fileFields.get( 0 ).formatFieldName );
-    Assert.assertEquals( ValueMetaInterface.TYPE_NUMBER, fileFields.get( 0 ).pentahoValueMetaType );
-    Assert.assertEquals( true, fileFields.get( 0 ).allowNull );
-    Assert.assertEquals( "fstring", fileFields.get( 1 ).formatFieldName );
-    Assert.assertEquals( ValueMetaInterface.TYPE_STRING, fileFields.get( 1 ).pentahoValueMetaType );
-    Assert.assertEquals( true, fileFields.get( 1 ).allowNull );
-    Assert.assertEquals( "fdate", fileFields.get( 2 ).formatFieldName );
-    Assert.assertEquals( ValueMetaInterface.TYPE_DATE, fileFields.get( 2 ).pentahoValueMetaType );
-    Assert.assertEquals( true, fileFields.get( 2 ).allowNull );
-    Assert.assertEquals( "fbool", fileFields.get( 3 ).formatFieldName );
-    Assert.assertEquals( ValueMetaInterface.TYPE_BOOLEAN, fileFields.get( 3 ).pentahoValueMetaType );
-    Assert.assertEquals( true, fileFields.get( 3 ).allowNull );
-    Assert.assertEquals( "fint", fileFields.get( 4 ).formatFieldName );
-    Assert.assertEquals( ValueMetaInterface.TYPE_INTEGER, fileFields.get( 4 ).pentahoValueMetaType );
-    Assert.assertEquals( true, fileFields.get( 4 ).allowNull );
-    Assert.assertEquals( "fbignum", fileFields.get( 5 ).formatFieldName );
-    Assert.assertEquals( ValueMetaInterface.TYPE_NUMBER, fileFields.get( 5 ).pentahoValueMetaType );
-    Assert.assertEquals( true, fileFields.get( 5 ).allowNull );
-    Assert.assertEquals( "ftime", fileFields.get( 6 ).formatFieldName );
-    Assert.assertEquals( ValueMetaInterface.TYPE_DATE, fileFields.get( 6 ).pentahoValueMetaType );
-    Assert.assertEquals( true, fileFields.get( 6 ).allowNull );
 
-    fileFields.get( 6 ).pentahoValueMetaType = ValueMetaInterface.TYPE_BIGNUMBER;
+    // fix after autodetection
+    Assert.assertEquals( ValueMetaInterface.TYPE_NUMBER, fileFields.get( 5 ).pentahoValueMetaType );
+    fileFields.get( 5 ).pentahoValueMetaType = ValueMetaInterface.TYPE_BIGNUMBER;
+    Assert.assertEquals( ValueMetaInterface.TYPE_DATE, fileFields.get( 6 ).pentahoValueMetaType );
     fileFields.get( 6 ).pentahoValueMetaType = ValueMetaInterface.TYPE_TIMESTAMP;
 
+    // check fields from file
+    Assert.assertEquals( expectedRowMeta.size(), fileFields.size() );
+    for ( int i = 0; i < expectedRowMeta.size(); i++ ) {
+      ValueMetaInterface vmExpected = expectedRowMeta.getValueMeta( i );
+      Assert.assertEquals( vmExpected.getName(), fileFields.get( i ).formatFieldName );
+      Assert.assertEquals( vmExpected.getType(), fileFields.get( i ).pentahoValueMetaType );
+      Assert.assertEquals( true, fileFields.get( i ).allowNull );
+    }
+
+    // check read by one field
+    for ( int i = 0; i < fileFields.size(); i++ ) {
+      List<ValueMetaInterface> expectedFields = new ArrayList<>();
+      List<Object[]> expectedRows = new ArrayList<>();
+      SchemaDescription readSchema = new SchemaDescription();
+
+      expectedFields.add( expectedRowMeta.getValueMeta( i ) );
+      expectedRows.add( expectedData.get( i ) );
+      readSchema.addField( fileFields.get( i ) );
+
+      List<RowMetaAndData> rows = readFile( file, readSchema );
+      checkRows( expectedFields, expectedRows, rows );
+    }
+    // check read in random fields order - 3 times
+    Random random = new Random();
+    for ( int r = 0; r < 5; r++ ) {
+      List<ValueMetaInterface> expectedFields = new ArrayList<>();
+      List<Object[]> expectedRows = new ArrayList<>();
+      SchemaDescription readSchema = new SchemaDescription();
+
+      int count = expectedRowMeta.getValueMetaList().size();
+      Set<Integer> used = new TreeSet<>();
+      for ( int i = 0; i < count; i++ ) {
+        int rv = random.nextInt( count );
+        if ( used.add( rv ) ) {
+          expectedFields.add( expectedRowMeta.getValueMeta( rv ) );
+          expectedRows.add( expectedData.get( rv ) );
+          readSchema.addField( fileFields.get( rv ) );
+        }
+      }
+
+      List<RowMetaAndData> rows = readFile( file, readSchema );
+      checkRows( expectedFields, expectedRows, rows );
+    }
+  }
+
+  private List<RowMetaAndData> readFile( String file, SchemaDescription readSchema ) throws Exception {
+    System.out.println( "Read '" + file + "' as schema: " + readSchema );
+    PentahoParquetInputFormat in = new PentahoParquetInputFormat();
     in.setInputFile( getClass().getClassLoader().getResource( file ).toExternalForm() );
-    in.setSchema( fileSchema );
+    in.setSchema( readSchema );
 
     List<RowMetaAndData> rows = new ArrayList<>();
     for ( IPentahoInputSplit split : in.getSplits() ) {
@@ -162,41 +222,24 @@ public class PentahoParquetInputFormatTest {
       rd.close();
     }
 
-    Assert.assertEquals( 4, rows.size() );
-    for ( RowMetaAndData row : rows ) {
-      ValueMetaInterface fnum = row.getRowMeta().getValueMeta( 0 );
-      ValueMetaInterface fstring = row.getRowMeta().getValueMeta( 1 );
-      ValueMetaInterface fdate = row.getRowMeta().getValueMeta( 2 );
-      ValueMetaInterface fbool = row.getRowMeta().getValueMeta( 3 );
-      ValueMetaInterface fint = row.getRowMeta().getValueMeta( 4 );
-      ValueMetaInterface fbignum = row.getRowMeta().getValueMeta( 5 );
-      ValueMetaInterface ftime = row.getRowMeta().getValueMeta( 6 );
-
-      Assert.assertEquals( "fnum", fnum.getName() );
-      Assert.assertEquals( ValueMetaInterface.TYPE_NUMBER, fnum.getType() );
-      Assert.assertEquals( "fstring", fstring.getName() );
-      Assert.assertEquals( ValueMetaInterface.TYPE_STRING, fstring.getType() );
-      Assert.assertEquals( "fdate", fdate.getName() );
-      Assert.assertEquals( ValueMetaInterface.TYPE_DATE, fdate.getType() );
-      Assert.assertEquals( "fbool", fbool.getName() );
-      Assert.assertEquals( ValueMetaInterface.TYPE_BOOLEAN, fbool.getType() );
-      Assert.assertEquals( "fint", fint.getName() );
-      Assert.assertEquals( ValueMetaInterface.TYPE_INTEGER, fint.getType() );
-      Assert.assertEquals( "fbignum", fbignum.getName() );
-      // Assert.assertEquals( ValueMetaInterface.TYPE_BIGNUMBER, fbignum.getType() ); -- double inside
-      Assert.assertEquals( "ftime", ftime.getName() );
-      Assert.assertEquals( ValueMetaInterface.TYPE_TIMESTAMP, ftime.getType() );
-    }
-
-    testRow( rows.get( 0 ).getData(), 2.1, "John", new Date( 456 ), true, 1L, 4.5, null );
-    testRow( rows.get( 1 ).getData(), null, "Paul", new Date( 456 ), false, 3L, null, new Timestamp( 123 ) );
-    testRow( rows.get( 2 ).getData(), 2.1, "George", null, true, null, 4.5, new Timestamp( 123 ) );
-    testRow( rows.get( 3 ).getData(), 2.1, "Ringo", new Date( 456 ), null, 4L, 4.5, new Timestamp( 123 ) );
+    return rows;
   }
 
-  private void testRow( Object[] data, Object... expected ) {
-    for ( int i = 0; i < expected.length; i++ ) {
-      Assert.assertEquals( expected[i], data[i] );
+  private void checkRows( List<ValueMetaInterface> expectedColumns, List<Object[]> expectedRows,
+      List<RowMetaAndData> rows ) {
+    Assert.assertEquals( 4, rows.size() );
+    for ( int r = 0; r < rows.size(); r++ ) {
+      RowMetaAndData row = rows.get( r );
+      Assert.assertEquals( expectedColumns.size(), row.getRowMeta().getValueMetaList().size() );
+      for ( int i = 0; i < expectedColumns.size(); i++ ) {
+        ValueMetaInterface vmExpected = expectedColumns.get( i );
+        ValueMetaInterface exist = row.getRowMeta().getValueMeta( i );
+        // check field
+        Assert.assertEquals( vmExpected.getName(), exist.getName() );
+        Assert.assertEquals( vmExpected.getType(), exist.getType() );
+        // check value
+        Assert.assertEquals( expectedRows.get( i )[r], row.getData()[i] );
+      }
     }
   }
 }

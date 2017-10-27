@@ -21,6 +21,7 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.common.format.parquet;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -72,6 +73,9 @@ import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 
 /**
  * Converter for read/write Hitachi Vantara row from/into Parquet files.
+ * 
+ * TYPE_DATE and TYPE_TIMESTAMP should be processed via Parquet's TIMESTAMP_MILLIS because Kettle's Date supports time
+ * also. TIMESTAMP_MICROS is defined not in all Parquet implementations.
  *
  * @author Alexander Buloichik
  */
@@ -123,6 +127,8 @@ public class ParquetConverter {
         } else {
           return schema.new Field( t.getName(), t.getName(), ValueMetaInterface.TYPE_INTEGER, allowNull );
         }
+      case INT96:
+        return schema.new Field( t.getName(), t.getName(), ValueMetaInterface.TYPE_DATE, allowNull );
       default:
         throw new RuntimeException( "Undefined type: " + t );
     }
@@ -291,8 +297,8 @@ public class ParquetConverter {
   public static class MyRecordMaterializer extends RecordMaterializer<RowMetaAndData> {
     private MyGroupConverter root;
 
-    public MyRecordMaterializer( ParquetConverter converter, SchemaDescription schema ) {
-      root = new MyGroupConverter( converter, schema );
+    public MyRecordMaterializer( ParquetConverter converter ) {
+      root = new MyGroupConverter( converter );
     }
 
     @Override
@@ -312,14 +318,14 @@ public class ParquetConverter {
     private Converter[] converters;
     private int count;
 
-    public MyGroupConverter( ParquetConverter converter, SchemaDescription schema ) {
+    public MyGroupConverter( ParquetConverter converter ) {
       count = 0;
       for ( SchemaDescription.Field f : converter.schema ) {
         if ( f.formatFieldName != null ) {
           count++;
         }
       }
-      converters = new Converter[ count ];
+      converters = new Converter[count];
       int i = 0;
       for ( SchemaDescription.Field f : converter.schema ) {
         if ( f.formatFieldName == null ) {
@@ -330,127 +336,198 @@ public class ParquetConverter {
         switch ( f.pentahoValueMetaType ) {
           case ValueMetaInterface.TYPE_NUMBER:
             fields.addValueMeta( new ValueMetaNumber( f.pentahoFieldName ) );
-            converters[ i ] = new PrimitiveConverter() {
+            converters[i] = new PrimitiveConverter() {
               @Override
               public void addDouble( double value ) {
-                current.getData()[ index ] = value;
+                current.getData()[index] = value;
               }
 
               @Override
               public void addFloat( float value ) {
-                current.getData()[ index ] = value;
+                current.getData()[index] = (double) value;
               }
 
               @Override
               public void addInt( int value ) {
-                current.getData()[ index ] = value;
+                current.getData()[index] = (double) value;
               }
 
               @Override
               public void addLong( long value ) {
-                current.getData()[ index ] = value;
+                current.getData()[index] = (double) value;
+              }
+
+              @Override
+              public void addBoolean( boolean value ) {
+                current.getData()[index] = value ? 1.0 : 0.0;
               }
             };
             break;
           case ValueMetaInterface.TYPE_INTEGER:
             fields.addValueMeta( new ValueMetaInteger( f.pentahoFieldName ) );
-            converters[ i ] = new PrimitiveConverter() {
+            converters[i] = new PrimitiveConverter() {
               @Override
               public void addDouble( double value ) {
-                current.getData()[ index ] = value;
+                current.getData()[index] = Math.round( value );
               }
 
               @Override
               public void addFloat( float value ) {
-                current.getData()[ index ] = value;
+                current.getData()[index] = (long) Math.round( value );
               }
 
               @Override
               public void addInt( int value ) {
-                current.getData()[ index ] = value;
+                current.getData()[index] = (long) value;
               }
 
               @Override
               public void addLong( long value ) {
-                current.getData()[ index ] = value;
+                current.getData()[index] = value;
+              }
+
+              @Override
+              public void addBoolean( boolean value ) {
+                current.getData()[index] = value ? 1L : 0L;
               }
             };
             break;
           case ValueMetaInterface.TYPE_BIGNUMBER:
             fields.addValueMeta( new ValueMetaBigNumber( f.pentahoFieldName ) );
-            converters[ i ] = new PrimitiveConverter() {
+            converters[i] = new PrimitiveConverter() {
               @Override
               public void addDouble( double value ) {
-                current.getData()[ index ] = value;
+                current.getData()[index] = new BigDecimal( value );
               }
 
               @Override
               public void addFloat( float value ) {
-                current.getData()[ index ] = value;
+                current.getData()[index] = new BigDecimal( value );
               }
 
               @Override
               public void addInt( int value ) {
-                current.getData()[ index ] = value;
+                current.getData()[index] = new BigDecimal( value );
               }
 
               @Override
               public void addLong( long value ) {
-                current.getData()[ index ] = value;
+                current.getData()[index] = new BigDecimal( value );
               }
             };
             break;
           case ValueMetaInterface.TYPE_STRING:
             fields.addValueMeta( new ValueMetaString( f.pentahoFieldName ) );
-            converters[ i ] = new PrimitiveConverter() {
+            converters[i] = new PrimitiveConverter() {
               @Override
               public void addBinary( Binary value ) {
-                current.getData()[ index ] = value.toStringUsingUTF8();
+                current.getData()[index] = value.toStringUsingUTF8();
+              }
+
+              @Override
+              public void addBoolean( boolean value ) {
+                current.getData()[index] = Boolean.toString( value );
+              }
+
+              @Override
+              public void addDouble( double value ) {
+                current.getData()[index] = Double.toString( value );
+              }
+
+              @Override
+              public void addFloat( float value ) {
+                current.getData()[index] = Float.toString( value );
+              }
+
+              @Override
+              public void addInt( int value ) {
+                current.getData()[index] = Integer.toString( value );
+              }
+
+              @Override
+              public void addLong( long value ) {
+                current.getData()[index] = Long.toString( value );
               }
             };
             break;
           case ValueMetaInterface.TYPE_BOOLEAN:
             fields.addValueMeta( new ValueMetaBoolean( f.pentahoFieldName ) );
-            converters[ i ] = new PrimitiveConverter() {
+            converters[i] = new PrimitiveConverter() {
+              public void addDouble( double value ) {
+                current.getData()[index] = Math.round( value ) != 0;
+              }
+
+              @Override
+              public void addFloat( float value ) {
+                current.getData()[index] = Math.round( value ) != 0;
+              }
+
+              @Override
+              public void addInt( int value ) {
+                current.getData()[index] = value != 0;
+              }
+
               @Override
               public void addBoolean( boolean value ) {
-                current.getData()[ index ] = value;
+                current.getData()[index] = value;
               }
             };
             break;
           case ValueMetaInterface.TYPE_SERIALIZABLE:
             fields.addValueMeta( new ValueMetaSerializable( f.pentahoFieldName ) );
-            converters[ i ] = new PrimitiveConverter() {
+            converters[i] = new PrimitiveConverter() {
               @Override
               public void addBinary( Binary value ) {
-                current.getData()[ index ] = value.getBytes();
+                current.getData()[index] = value.getBytes();
               }
             };
             break;
           case ValueMetaInterface.TYPE_BINARY:
             fields.addValueMeta( new ValueMetaBinary( f.pentahoFieldName ) );
-            converters[ i ] = new PrimitiveConverter() {
+            converters[i] = new PrimitiveConverter() {
               @Override
               public void addBinary( Binary value ) {
-                current.getData()[ index ] = value.getBytes();
+                current.getData()[index] = value.getBytes();
               }
             };
             break;
           case ValueMetaInterface.TYPE_DATE:
             fields.addValueMeta( new ValueMetaDate( f.pentahoFieldName ) );
-            converters[ i ] = new PrimitiveConverter() {
+            converters[i] = new PrimitiveConverter() {
               @Override
               public void addLong( long value ) {
-                current.getData()[ index ] = new Date( value );
+                current.getData()[index] = new Date( value );
+              }
+
+              // the number of days from the Unix epoch, 1 January 1970.
+              @Override
+              public void addInt( int value ) {
+                current.getData()[index] = new Date( value * 24L * 60L * 60L * 1000L );
+              }
+
+              @Override
+              public void addBinary( Binary value ) {
+                current.getData()[index] = new Date( dateFromInt96( value ) );
               }
             };
             break;
           case ValueMetaInterface.TYPE_TIMESTAMP:
             fields.addValueMeta( new ValueMetaTimestamp( f.pentahoFieldName ) );
-            converters[ i ] = new PrimitiveConverter() {
+            converters[i] = new PrimitiveConverter() {
               @Override
               public void addLong( long value ) {
-                current.getData()[ index ] = new Timestamp( value );
+                current.getData()[index] = new Timestamp( value );
+              }
+
+              // the number of days from the Unix epoch, 1 January 1970.
+              @Override
+              public void addInt( int value ) {
+                current.getData()[index] = new Timestamp( value * 24L * 60L * 60L * 1000L );
+              }
+
+              @Override
+              public void addBinary( Binary value ) {
+                current.getData()[index] = new Timestamp( dateFromInt96( value ) );
               }
             };
             break;
@@ -461,15 +538,36 @@ public class ParquetConverter {
       }
     }
 
+    private static final int JULIAN_DAY_OF_EPOCH = 2440588;
+
+    private static long dateFromInt96( Binary value ) {
+      byte[] readBuffer = value.getBytes();
+      if ( readBuffer.length != 12 ) {
+        throw new RuntimeException( "Invalid byte array length for INT96" );
+      }
+
+      long timeOfDayNanos =
+          ( ( (long) readBuffer[7] << 56 ) + ( (long) ( readBuffer[6] & 255 ) << 48 )
+              + ( (long) ( readBuffer[5] & 255 ) << 40 ) + ( (long) ( readBuffer[4] & 255 ) << 32 )
+              + ( (long) ( readBuffer[3] & 255 ) << 24 ) + ( ( readBuffer[2] & 255 ) << 16 )
+              + ( ( readBuffer[1] & 255 ) << 8 ) + ( ( readBuffer[0] & 255 ) << 0 ) );
+
+      int julianDay =
+          ( (int) ( readBuffer[11] & 255 ) << 24 ) + ( ( readBuffer[10] & 255 ) << 16 )
+              + ( ( readBuffer[9] & 255 ) << 8 ) + ( ( readBuffer[8] & 255 ) << 0 );
+
+      return ( julianDay - JULIAN_DAY_OF_EPOCH ) * 24L * 60L * 60L * 1000L + timeOfDayNanos / 1000000;
+    }
+
     @Override
     public void start() {
       current = new RowMetaAndData( fields );
-      current.setData( new Object[ count ] );
+      current.setData( new Object[count] );
     }
 
     @Override
     public Converter getConverter( int fieldIndex ) {
-      return converters[ fieldIndex ];
+      return converters[fieldIndex];
     }
 
     @Override

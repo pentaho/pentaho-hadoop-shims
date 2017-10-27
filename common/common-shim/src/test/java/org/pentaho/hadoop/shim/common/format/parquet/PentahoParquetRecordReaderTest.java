@@ -36,7 +36,6 @@ import org.apache.parquet.hadoop.api.ReadSupport;
 //$import parquet.hadoop.ParquetRecordReader;
 //$import parquet.hadoop.api.ReadSupport;
 //#endif
-import org.junit.Before;
 import org.junit.Test;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.row.ValueMetaInterface;
@@ -47,12 +46,11 @@ import org.pentaho.hadoop.shim.common.format.ParquetUtils;
 
 public class PentahoParquetRecordReaderTest {
 
-  private static Job job;
-  private static ParquetRecordReader<RowMetaAndData> nativeRecordReader;
-  private static ParquetInputFormat<RowMetaAndData> nativeParquetInputFormat;
+  private Job job;
+  private ParquetRecordReader<RowMetaAndData> nativeRecordReader;
+  private ParquetInputFormat<RowMetaAndData> nativeParquetInputFormat;
 
-  @Before
-  public void setUp() throws Exception {
+  public void initSample() throws Exception {
     ConfigurationProxy conf = new ConfigurationProxy();
     conf.set( "fs.defaultFS", "file:///" );
     job = Job.getInstance( conf );
@@ -60,13 +58,25 @@ public class PentahoParquetRecordReaderTest {
     job.getConfiguration().set( ParquetConverter.PARQUET_SCHEMA_CONF_KEY, schema.marshall() );
     ReadSupport<RowMetaAndData> readSupport = new PentahoParquetReadSupport();
     nativeRecordReader =
-      new ParquetRecordReader<>( readSupport, ParquetInputFormat.getFilter( job
-        .getConfiguration() ) );
+        new ParquetRecordReader<>( readSupport, ParquetInputFormat.getFilter( job.getConfiguration() ) );
+    nativeParquetInputFormat = new ParquetInputFormat<>();
+  }
+
+  public void initEmpty() throws Exception {
+    ConfigurationProxy conf = new ConfigurationProxy();
+    conf.set( "fs.defaultFS", "file:///" );
+    job = Job.getInstance( conf );
+    SchemaDescription schema = new SchemaDescription();
+    job.getConfiguration().set( ParquetConverter.PARQUET_SCHEMA_CONF_KEY, schema.marshall() );
+    ReadSupport<RowMetaAndData> readSupport = new PentahoParquetReadSupport();
+    nativeRecordReader =
+        new ParquetRecordReader<>( readSupport, ParquetInputFormat.getFilter( job.getConfiguration() ) );
     nativeParquetInputFormat = new ParquetInputFormat<>();
   }
 
   @Test
   public void iterateOverParquetFileWithData() throws Exception {
+    initSample();
     FileInputFormat.setInputPaths( job, getClass().getClassLoader().getResource( "sample.pqt" ).toExternalForm() );
     initializeRecordReader();
     PentahoParquetRecordReader recordReader = new PentahoParquetRecordReader( nativeRecordReader );
@@ -77,8 +87,9 @@ public class PentahoParquetRecordReaderTest {
     recordReader.close();
   }
 
-  @Test
+  @Test( expected = RuntimeException.class )
   public void iterateOverEmptyParquetFile() throws Exception {
+    initEmpty();
     FileInputFormat.setInputPaths( job, getClass().getClassLoader().getResource( "empty.pqt" ).toExternalForm() );
     initializeRecordReader();
     PentahoParquetRecordReader recordReader = new PentahoParquetRecordReader( nativeRecordReader );
