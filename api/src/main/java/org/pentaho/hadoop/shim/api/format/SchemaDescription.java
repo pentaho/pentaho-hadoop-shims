@@ -156,4 +156,18 @@ public class SchemaDescription implements Iterable<SchemaDescription.Field> {
     }
     return s;
   }
+
+  public Field getField( String pentahoFieldName ) {
+    if ( pentahoFieldName == null || pentahoFieldName.trim().isEmpty() ) {
+      return null;
+    }
+
+    for ( Field field : fields ) {
+      if ( field.pentahoFieldName.equals( pentahoFieldName ) ) {
+        return field;
+      }
+    }
+
+    return null;
+  }
 }
