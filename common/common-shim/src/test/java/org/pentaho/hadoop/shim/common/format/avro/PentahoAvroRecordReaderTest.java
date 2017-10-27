@@ -44,8 +44,9 @@ public class PentahoAvroRecordReaderTest {
 
   @Before
   public void setUp() throws Exception {
-    SchemaDescription schemaDescription = new SchemaDescription();
-    recordReader = new PentahoAvroRecordReader( nativeAvroRecordReader, schemaDescription );
+    SchemaDescription avroSchemaDescription = new SchemaDescription();
+    SchemaDescription metaSchemaDescription = new SchemaDescription();
+    recordReader = new PentahoAvroRecordReader( nativeAvroRecordReader, avroSchemaDescription, metaSchemaDescription );
   }
 
   @Test
