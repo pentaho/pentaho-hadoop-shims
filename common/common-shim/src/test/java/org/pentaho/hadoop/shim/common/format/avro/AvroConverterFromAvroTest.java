@@ -22,7 +22,6 @@
 package org.pentaho.hadoop.shim.common.format.avro;
 
 import org.apache.avro.generic.GenericRecord;
-import org.eclipse.jdt.internal.core.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -31,7 +30,6 @@ import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 
 import java.math.BigDecimal;
-import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.sql.Timestamp;
