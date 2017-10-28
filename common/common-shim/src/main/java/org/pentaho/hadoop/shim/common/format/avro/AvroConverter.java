@@ -117,7 +117,7 @@ public class AvroConverter {
                   defaultTimeStamp = null;
                 }
               }
-              Date timeStamp = row.getDate( fieldMetaIndex, defaultTimeStamp );
+              Date timeStamp =  row.getDate( fieldMetaIndex, defaultTimeStamp );
               outputRecord.put( fieldVal, timeStamp.getTime() );
               break;
             case ValueMetaInterface.TYPE_DATE:
@@ -130,7 +130,7 @@ public class AvroConverter {
                   defaultDate = null;
                 }
               }
-              Date dateFromRow = row.getDate( fieldMetaIndex, defaultDate );
+              Date dateFromRow =  row.getDate( fieldMetaIndex, defaultDate );
               LocalDate rowDate = dateFromRow.toInstant().atZone( ZoneId.systemDefault() ).toLocalDate();
               outputRecord.put( fieldVal, Math.toIntExact( ChronoUnit.DAYS.between( LocalDate.ofEpochDay( 0 ), rowDate ) ) );
               break;

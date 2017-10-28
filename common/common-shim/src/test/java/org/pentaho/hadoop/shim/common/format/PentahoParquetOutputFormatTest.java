@@ -25,7 +25,8 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.sql.Timestamp;
-import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -161,12 +162,17 @@ public class PentahoParquetOutputFormatTest {
     rowMeta.addValueMeta( new ValueMetaBigNumber( "fbignum" ) );
     rowMeta.addValueMeta( new ValueMetaTimestamp( "ftime" ) );
 
-    wr.write( new RowMetaAndData( rowMeta, 2.1, "John", new Date( 456 ), true, 1L, new BigDecimal( 4.5 ), null ) );
-    wr.write( new RowMetaAndData( rowMeta, null, "Paul", new Date( 456 ), false, 3L, null, new Timestamp( 123 ) ) );
-    wr.write(
-      new RowMetaAndData( rowMeta, 2.1, "George", null, true, null, new BigDecimal( 4.5 ), new Timestamp( 123 ) ) );
-    wr.write( new RowMetaAndData( rowMeta, 2.1, "Ringo", new Date( 456 ), null, 4L, new BigDecimal( 4.5 ),
-        new Timestamp( 123 ) ) );
+    SimpleDateFormat df = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+    df.setTimeZone( TimeZone.getTimeZone( "Europe/Minsk" ) );
+
+    wr.write( new RowMetaAndData( rowMeta, 2.1, "John", df.parse( "2018-01-01 13:00:00" ), true, 1L,
+        new BigDecimal( 4.5 ), null ) );
+    wr.write( new RowMetaAndData( rowMeta, null, "Paul", df.parse( "2018-01-01 09:10:15" ), false, 3L, null,
+        new Timestamp( df.parse( "2018-05-01 13:00:00" ).getTime() ) ) );
+    wr.write( new RowMetaAndData( rowMeta, 2.1, "George", null, true, null, new BigDecimal( 4.5 ),
+        new Timestamp( df.parse( "2018-05-01 13:00:00" ).getTime() ) ) );
+    wr.write( new RowMetaAndData( rowMeta, 2.1, "Ringo", df.parse( "2018-01-01 09:10:35" ), null, 4L,
+        new BigDecimal( 4.5 ), new Timestamp( df.parse( "2018-05-01 13:00:00" ).getTime() ) ) );
     wr.close();
 
     File f = new File( "testparquet/" + file );

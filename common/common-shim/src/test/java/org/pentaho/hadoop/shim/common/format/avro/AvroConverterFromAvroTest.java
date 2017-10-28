@@ -95,7 +95,6 @@ public class AvroConverterFromAvroTest {
 
     RowMetaAndData rowMetaAndData = mock( RowMetaAndData.class );
     AvroConverter.convertFromAvro( rowMetaAndData, record, avroSchemaDescription, metaSchemaDescription );
-
     verify( rowMetaAndData ).addValue( pentahoFieldName, metaType, expected );
   }
 
