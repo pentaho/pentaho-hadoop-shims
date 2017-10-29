@@ -54,15 +54,14 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
     if ( dfs == null ) {
       throw new Exception( "Unable to read data from file " + fileName );
     }
-    SchemaDescription sd = null;
-    //we do not have schemaDescriptionFromMeta for some reason then we will read the schame from format, it is unexpected behaviour
-    if ( schemaDescriptionFromMeta == null ) {
-      sd = readSchema( schemaFileName, fileName );
-    } else {
-    // we provide the schemaDescriptionFromMeta from user data will use it. it is expected behaviour
-      sd = schemaDescriptionFromMeta;
-    }
-    return new PentahoAvroRecordReader( dfs, sd );
+
+    SchemaDescription avroSchemaDescription = null;
+    SchemaDescription metaSchemaDescription = null;
+
+    avroSchemaDescription = readSchema( schemaFileName, fileName );
+    metaSchemaDescription = schemaDescriptionFromMeta;
+
+    return new PentahoAvroRecordReader( dfs, avroSchemaDescription, metaSchemaDescription );
   }
 
   @Override
