@@ -48,6 +48,9 @@ public class SchemaDescription implements Iterable<SchemaDescription.Field> {
 
   public static SchemaDescription unmarshall( String str ) {
     SchemaDescription r = new SchemaDescription();
+    if ( str.isEmpty() ) {
+      return r;
+    }
     String[] lines = str.split( "\n" );
     for ( String line : lines ) {
       r.addField( r.unmarshallField( line ) );
@@ -155,5 +158,19 @@ public class SchemaDescription implements Iterable<SchemaDescription.Field> {
       return null;
     }
     return s;
+  }
+
+  public Field getField( String pentahoFieldName ) {
+    if ( pentahoFieldName == null || pentahoFieldName.trim().isEmpty() ) {
+      return null;
+    }
+
+    for ( Field field : fields ) {
+      if ( field.pentahoFieldName.equals( pentahoFieldName ) ) {
+        return field;
+      }
+    }
+
+    return null;
   }
 }

@@ -70,37 +70,37 @@ public class PentahoAvroRecordWriterTest {
       + " \"name\" : \"TestnameRecord12\","
       + " \"doc\" : \"TestDocvalue12\","
       + " \"fields\" : [ {"
-      + "                   \"name\" : \"stringField_delimiter_2_delimiter_false\","
+      + "                   \"name\" : \"stringField\","
       + "                   \"type\" : [ \"null\", \"string\" ]"
       + "                }, {"
-      + "                   \"name\" : \"inetField_delimiter_10_delimiter_false\","
+      + "                   \"name\" : \"inetField\","
       + "                   \"type\" : \"string\","
       + "                   \"default\" : \"www.uber.com\""
       + "                }, {"
-      + "                   \"name\" : \"intField_delimiter_5_delimiter_false\","
+      + "                   \"name\" : \"intField\","
       + "                   \"type\" : [ \"null\", \"long\" ]"
       + "                }, {"
-      + "                   \"name\" : \"numberField_delimiter_1_delimiter_false\","
+      + "                   \"name\" : \"numberField\","
       + "                   \"type\" : [ \"null\", \"double\" ]"
       + "                }, {"
-      + "                   \"name\" : \"bigNumberField_delimiter_6_delimiter_false\","
+      + "                   \"name\" : \"bigNumberField\","
       + "                   \"type\" : [ \"null\", \"double\" ]"
       + "                }, {"
-      + "                   \"name\" : \"timestampField_delimiter_9_delimiter_false\","
+      + "                   \"name\" : \"timestampField\","
       + "                   \"type\" : \"long\","
       + "                   \"logicalType\" : \"timestamp-millis\","
       + "                   \"default\" : \"01/01/1970 04:00:00\""
       + "                }, {"
-      + "                   \"name\" : \"dateField_delimiter_3_delimiter_false\","
+      + "                   \"name\" : \"dateField\","
       + "                   \"type\" : \"int\","
       + "                   \"logicalType\" : \"date\","
       + "                   \"default\" : \"01/02/1970\""
       + "                }, {"
-      + "                   \"name\" : \"booleanField_delimiter_4_delimiter_false\","
+      + "                   \"name\" : \"booleanField\","
       + "                   \"type\" : \"boolean\","
       + "                   \"default\" : \"false\""
       + "                }, {"
-      + "                   \"name\" : \"binField_delimiter_8_delimiter_false\","
+      + "                   \"name\" : \"binField\","
       + "                   \"type\" : \"bytes\""
       + "               } ]"
       + "}";
@@ -189,7 +189,7 @@ public class PentahoAvroRecordWriterTest {
 
     ArgumentCaptor<GenericRecord> argument = ArgumentCaptor.forClass( GenericRecord.class );
     verify( nativeAvroRecordWriter ).append( argument.capture() );
-    assertEquals( ByteBuffer.wrap( new byte[0] ), argument.getValue().get( "binField_delimiter_8_delimiter_false" ) );
+    assertEquals( ByteBuffer.wrap( new byte[0] ), argument.getValue().get( "binField" ) );
   }
 
   private void testWriteCommon( int type, String fieldName, Object writableObject ) throws KettleValueException, IOException {
@@ -201,7 +201,7 @@ public class PentahoAvroRecordWriterTest {
 
     ArgumentCaptor<GenericRecord> argument = ArgumentCaptor.forClass( GenericRecord.class );
     verify( nativeAvroRecordWriter ).append( argument.capture() );
-    assertEquals( writableObject, argument.getValue().get( fieldName + "_delimiter_" + type + "_delimiter_" + false ) );
+    assertEquals( writableObject, argument.getValue().get( fieldName ) );
   }
 
   @Test
@@ -271,8 +271,8 @@ public class PentahoAvroRecordWriterTest {
 
     ArgumentCaptor<GenericRecord> argument = ArgumentCaptor.forClass( GenericRecord.class );
     verify( nativeAvroRecordWriter ).append( argument.capture() );
-    assertNotEquals( writableObject, argument.getValue().get( fieldName + "_delimiter_" + type + "_delimiter_" + false ) );
-    assertEquals( defaultObject, argument.getValue().get( fieldName  + "_delimiter_" + type + "_delimiter_" + false ) );
+    assertNotEquals( writableObject, argument.getValue().get( fieldName ) );
+    assertEquals( defaultObject, argument.getValue().get( fieldName ) );
   }
 
 }
