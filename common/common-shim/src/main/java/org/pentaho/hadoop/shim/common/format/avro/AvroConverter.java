@@ -92,6 +92,7 @@ public class AvroConverter {
             case ValueMetaInterface.TYPE_NUMBER:
               outputRecord.put( fieldVal, row.getNumber( fieldMetaIndex,
                     ( field.defaultValue != null && field.defaultValue.length() > 0 ) ? Double.parseDouble( field.defaultValue ) : 0 ) );
+
               break;
             case ValueMetaInterface.TYPE_BIGNUMBER:
               if ( field.defaultValue != null && field.defaultValue.length() > 0 ) {

@@ -54,6 +54,7 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
     if ( dfs == null ) {
       throw new Exception( "Unable to read data from file " + fileName );
     }
+
     SchemaDescription avroSchemaDescription = null;
     SchemaDescription metaSchemaDescription = null;
 

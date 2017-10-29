@@ -88,6 +88,7 @@ public class AvroConverterFromAvroTest {
   public void convertFromAvro() throws Exception {
     GenericRecord record = mock( GenericRecord.class );
     when( record.get( formatFieldName ) ).thenReturn( value );
+    
     SchemaDescription metaSchemaDescription = new SchemaDescription();
     SchemaDescription avroSchemaDescription = new SchemaDescription();
     metaSchemaDescription.addField( metaSchemaDescription.new Field( formatFieldName, pentahoFieldName, metaType, true ) );
