@@ -173,4 +173,17 @@ public class SchemaDescription implements Iterable<SchemaDescription.Field> {
 
     return null;
   }
+  public Field getFormatField( String formatFieldName ) {
+    if ( formatFieldName == null || formatFieldName.trim().isEmpty() ) {
+      return null;
+    }
+
+    for ( Field field : fields ) {
+      if ( field.formatFieldName.equals( formatFieldName ) ) {
+        return field;
+      }
+    }
+
+    return null;
+  }
 }
