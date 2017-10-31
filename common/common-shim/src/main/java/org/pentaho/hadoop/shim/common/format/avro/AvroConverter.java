@@ -50,11 +50,8 @@ import java.util.Date;
  * Created by rmansoor on 10/7/2017.
  */
 public class AvroConverter {
-  private static final String DEFAULT_DATE_FORMAT = "yyyy/MM/dd HH:mm:ss.SSS";
-  private static final String DEFAULT_TIMESTAMP_FORMAT = "yyyy/MM/dd HH:mm:ss.SSS";
-  private static final String DEFAULT_NUMBEW_FORMAT = "";
-  private static final String DEFAULT_INTEGER_FORMAT = "";
-  private static final String DEFAULT_BIG_DECIMAL_FORMAT = "";
+  private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
+  private static final String DEFAULT_TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
 
   public static GenericRecord convertToAvro( RowMetaAndData row, Schema schema, SchemaDescription schemaDescription ) {
     RowMetaInterface rmi = row.getRowMeta();
@@ -248,6 +245,7 @@ public class AvroConverter {
   protected static Object convertFromStringMetaInterface( int targetValueMetaInterface, Object value ) {
     Object returnVal = value;
     SimpleDateFormat datePattern = new SimpleDateFormat( DEFAULT_DATE_FORMAT );
+    SimpleDateFormat timestampPattern = new SimpleDateFormat( DEFAULT_TIMESTAMP_FORMAT );
 
     if ( value == null ) {
       return value;
@@ -285,7 +283,7 @@ public class AvroConverter {
           returnVal = new BigDecimal( doubleValue );
           break;
         case ValueMetaInterface.TYPE_TIMESTAMP:
-          returnVal = new Timestamp( ( datePattern.parse( (String) value ) ).getTime() );
+          returnVal = new Timestamp( ( timestampPattern.parse( (String) value ) ).getTime() );
 
           break;
         case ValueMetaInterface.TYPE_DATE:
@@ -587,9 +585,9 @@ public class AvroConverter {
         case ValueMetaInterface.TYPE_STRING:
           Date dateValue = new Date( (Long) value );
 
-          SimpleDateFormat datePattern = new SimpleDateFormat( DEFAULT_DATE_FORMAT );
+          SimpleDateFormat timestampPattern = new SimpleDateFormat( DEFAULT_TIMESTAMP_FORMAT );
 
-          returnVal = datePattern.format( dateValue );
+          returnVal = timestampPattern.format( dateValue );
 
           break;
 
