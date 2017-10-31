@@ -165,7 +165,7 @@ public class AvroConverter {
   @VisibleForTesting static RowMetaAndData convertFromAvro( RowMetaAndData rowMetaAndData, GenericRecord avroRecord,
                                                             SchemaDescription avroSchemaDescription, SchemaDescription metaSchemaDescription ) {
     for ( SchemaDescription.Field metaField : metaSchemaDescription ) {
-      SchemaDescription.Field avroField = avroSchemaDescription.getField( metaField.pentahoFieldName );
+      SchemaDescription.Field avroField = avroSchemaDescription.getFormatField( metaField.formatFieldName );
 
       if ( avroField == null ) {
         return (RowMetaAndData) handleConversionError( "Field: " + metaField.formatFieldName + "  Does not exist in the avro file or schema" );
