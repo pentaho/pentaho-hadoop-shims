@@ -132,6 +132,12 @@ public class CommonFormatShimTestIT {
     PentahoAvroInputFormat avroInputFormat = new PentahoAvroInputFormat();
     avroInputFormat.setInputSchemaFile( getFilePath( "/sample-schema.avro" ) );
     avroInputFormat.setInputFile( getFilePath( "/sample-data.avro" ) );
+
+    SchemaDescription schemaDescription = new SchemaDescription();
+    schemaDescription.addField( schemaDescription.new Field( "FirstName", "FirstName", ValueMetaInterface.TYPE_STRING, false ) );
+    schemaDescription.addField( schemaDescription.new Field( "Phone", "Phone", ValueMetaInterface.TYPE_STRING, false ) );
+    avroInputFormat.setSchema( schemaDescription );
+
     IPentahoRecordReader recordReader = avroInputFormat.createRecordReader( null );
     List<String> dataSampleRows = new ArrayList<>();
     recordReader.forEach( rowMetaAndData -> {
@@ -168,6 +174,7 @@ public class CommonFormatShimTestIT {
     PentahoAvroInputFormat avroInputFormat = new PentahoAvroInputFormat();
     avroInputFormat.setInputSchemaFile( tempDir + "/avro-schema.out" );
     avroInputFormat.setInputFile( tempDir + "/avro.out" );
+    avroInputFormat.setSchema( schemaDescription );
     IPentahoRecordReader recordReader = avroInputFormat.createRecordReader( null );
     recordReader.forEach( rowMetaAndData ->
       assertArrayEquals( new Object[] { "Alice", "987654321" }, new Object[] { rowMetaAndData.getData()[0].toString(),
