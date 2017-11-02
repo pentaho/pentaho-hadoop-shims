@@ -62,7 +62,7 @@ public class AvroConverter {
       for ( SchemaDescription.Field field : schemaDescription ) {
         if ( field != null ) {
           String fieldVal = field.formatFieldName;
-          // Does the field contains Pentaho field format NAME_DELIMITER_TYPE_DELIMETER_ALLOWNULL
+          // Does the field contains Hitachi Vantara field format NAME_DELIMITER_TYPE_DELIMETER_ALLOWNULL
           AvroSchemaConverter.FieldName
               fieldName =
               new AvroSchemaConverter.FieldName( field.formatFieldName, field.pentahoValueMetaType, field.allowNull );
@@ -170,7 +170,7 @@ public class AvroConverter {
 
       if ( metaField != null ) {
         String avroFieldVal = metaField.formatFieldName;
-        // Does the metaField contains Pentaho metaField format NAME_DELIMITER_TYPE_DELIMETER_ALLOWNULL
+        // Does the metaField contains Hitachi Vantara metaField format NAME_DELIMITER_TYPE_DELIMETER_ALLOWNULL
         AvroSchemaConverter.FieldName
             avroFieldName =
             new AvroSchemaConverter.FieldName( avroField.formatFieldName, avroField.pentahoValueMetaType, avroField.allowNull );
