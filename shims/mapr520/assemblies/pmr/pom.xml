@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-mapr520-assemblies-reactor</artifactId>
-    <version>8.1-SNAPSHOT</version>
+    <version>81.2017.04.00-79</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-mapr520-scope-pmr-assembly</artifactId>
   <packaging>pom</packaging>

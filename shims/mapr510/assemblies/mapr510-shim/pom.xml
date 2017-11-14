@@ -5,10 +5,10 @@
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-mapr510-assemblies-reactor</artifactId>
-    <version>8.1-SNAPSHOT</version>
+    <version>81.2017.04.00-79</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-mapr510-package</artifactId>
-  <version>8.1-SNAPSHOT</version>
+  <version>81.2017.04.00-79</version>
   <properties>
     <eula-wrap_create-dist-phase>verify</eula-wrap_create-dist-phase>
     <eula-wrap_assign-deps-to-properties-phase>initialize</eula-wrap_assign-deps-to-properties-phase>

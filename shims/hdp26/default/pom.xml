@@ -5,10 +5,10 @@
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-hdp26-reactor</artifactId>
-    <version>8.1-SNAPSHOT</version>
+    <version>81.2017.04.00-79</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-hdp26-scope-default</artifactId>
-  <version>8.1-SNAPSHOT</version>
+  <version>81.2017.04.00-79</version>
   <packaging>pom</packaging>
   <dependencies>
     <dependency>

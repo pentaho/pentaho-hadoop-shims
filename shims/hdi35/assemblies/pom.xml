@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-hdi35-reactor</artifactId>
-    <version>8.1-SNAPSHOT</version>
+    <version>81.2017.04.00-79</version>
   </parent>
 
   <artifactId>pentaho-hadoop-shims-hdi35-assemblies-reactor</artifactId>
