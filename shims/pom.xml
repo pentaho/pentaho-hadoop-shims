@@ -385,6 +385,7 @@
         <module>mapr520</module>
         <module>emr56</module>
         <module>emr58</module>
+        <module>emr59</module>
         <module>hdi35</module>
       </modules>
     </profile>
@@ -494,6 +495,18 @@
       </activation>
       <modules>
         <module>emr58</module>
+      </modules>
+    </profile>
+
+    <profile>
+      <id>emr59</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>emr59</module>
       </modules>
     </profile>
 
