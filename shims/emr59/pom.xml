@@ -1,0 +1,54 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.pentaho</groupId>
+    <artifactId>pentaho-hadoop-shims-list</artifactId>
+    <version>8.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>pentaho-hadoop-shims-emr59-reactor</artifactId>
+  <packaging>pom</packaging>
+  <properties>
+    <shim.name>emr59</shim.name>
+    <!-- default folder -->
+	<org.xerial.snappy.version>1.1.1.3</org.xerial.snappy.version>
+    <org.apache.hive.version>2.3.0</org.apache.hive.version>
+    <pig.version>0.17.0</pig.version>
+    <jython.version>2.5.3</jython.version>
+    <org.apache.thrift.version>0.9.2</org.apache.thrift.version>
+    <org.apache.oozie.version>4.3.0</org.apache.oozie.version>
+    <sqoop.version>1.4.6-pentaho-hbase120</sqoop.version>
+	<org.apache.avro.version>1.8.0</org.apache.avro.version>
+    <!-- client folder -->
+    <org.apache.hadoop.version>2.7.3</org.apache.hadoop.version>
+    <com.amazonaws.version>1.11.160</com.amazonaws.version>
+    <automaton.version>1.11-8</automaton.version>
+    <!-- pmr folder -->
+    <org.apache.hbase.version>1.3.1</org.apache.hbase.version>
+    <!-- pmr and client folders -->
+    <zookeeper.version>3.4.10</zookeeper.version>
+  </properties>
+  <modules>
+    <module>client</module>
+    <module>pmr</module>
+    <module>default</module>
+    <module>impl</module>
+    <module>hbase-comparators</module>
+    <module>assemblies</module>
+  </modules>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.zookeeper</groupId>
+        <artifactId>zookeeper</artifactId>
+        <version>${zookeeper.version}</version>
+        <exclusions>
+          <exclusion>
+            <artifactId>*</artifactId>
+            <groupId>*</groupId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+</project>
