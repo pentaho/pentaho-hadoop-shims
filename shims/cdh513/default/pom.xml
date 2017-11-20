@@ -82,6 +82,17 @@
       </exclusions>
     </dependency>
     <dependency>
+      <groupId>com.twitter</groupId>
+      <artifactId>parquet-pig</artifactId>
+      <version>${parquet-pig.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
       <groupId>org.apache.hive</groupId>
       <artifactId>hive-serde</artifactId>
       <version>${org.apache.hive.version}</version>
