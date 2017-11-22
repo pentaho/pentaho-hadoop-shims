@@ -15,6 +15,7 @@
     <httpcore.version>4.4.6</httpcore.version>
     <org.apache.parquet.version>1.8.1</org.apache.parquet.version>
     <org.apache.avro.version>1.8.1</org.apache.avro.version>
+    <org.apache.orc.version>1.2.3</org.apache.orc.version>
     <jackson.version>2.6.5</jackson.version>
     <integration-test.src>src/it/java</integration-test.src>
   </properties>
@@ -109,6 +110,16 @@
       <artifactId>jackson-databind</artifactId>
       <version>${jackson.version}</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.orc</groupId>
+      <artifactId>orc-core</artifactId>
+      <version>${org.apache.orc.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-hdfs</artifactId>
+      <version>2.5.1</version>
     </dependency>
     <dependency>
       <groupId>org.powermock</groupId>
