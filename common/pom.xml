@@ -23,7 +23,7 @@
   </modules>
   <properties>
     <org.apache.hadoop.version>0.20.2</org.apache.hadoop.version>
-    <org.apache.hive.version>0.13.1</org.apache.hive.version>
+    <org.apache.hive.version>1.2.1000.2.6.0.3-8</org.apache.hive.version>
     <org.apache.sqoop.version>1.4.6.2.4.0.0-169</org.apache.sqoop.version>
     <org.apache.pig.version>0.8.0</org.apache.pig.version>
     <com.thoughtworks.xstream.version>1.4.9</com.thoughtworks.xstream.version>

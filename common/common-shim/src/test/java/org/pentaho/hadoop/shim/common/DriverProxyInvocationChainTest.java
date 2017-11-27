@@ -38,7 +38,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
-import org.apache.hadoop.hive.jdbc.HiveDriver;
+import org.apache.hive.jdbc.HiveDriver;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

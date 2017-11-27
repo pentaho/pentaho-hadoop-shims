@@ -17,7 +17,7 @@
 
 package org.pentaho.hadoop.shim.common;
 
-import org.apache.hadoop.hive.jdbc.HiveDriver;
+import org.apache.hive.jdbc.HiveDriver;
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.net.NetUtils;
 import org.apache.hadoop.util.VersionInfo;
@@ -95,7 +95,7 @@ public class CommonHadoopShim implements HadoopShim {
   protected static Map<String, Class<? extends Driver>> JDBC_DRIVER_MAP =
     new HashMap<String, Class<? extends Driver>>() {
       {
-        put( "hive", org.apache.hadoop.hive.jdbc.HiveDriver.class );
+        put( "hive", org.apache.hive.jdbc.HiveDriver.class );
       }
     };
 
