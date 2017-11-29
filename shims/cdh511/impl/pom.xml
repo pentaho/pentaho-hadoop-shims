@@ -131,6 +131,15 @@
         </executions>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>**/PentahoOrcReadWriteTest.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>com.igormaznitsa</groupId>
         <artifactId>jcp</artifactId>
         <version>${com.igormaznitsa.jcp.version}</version>
