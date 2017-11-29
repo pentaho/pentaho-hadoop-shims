@@ -91,8 +91,6 @@ public class PentahoOrcInputFormat extends HadoopFormatBase implements IPentahoO
   }
 
   public TypeDescription readTypeDescription( Reader orcReader ) {
-    //OrcTail orcTail = new OrcTail( orcReader.getFileTail(), orcReader.getSerializedFileFooter() );
-    //return OrcUtils.convertTypeFromProtobuf( orcTail.getTypes(), 0 );
     return orcReader.getSchema();
   }
 

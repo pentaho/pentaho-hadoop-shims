@@ -101,8 +101,9 @@ public class PentahoOrcReadWriteTest {
       .addField( schemaDescription.new Field( "orcBytes10", "pentahoBinary10", ValueMetaInterface.TYPE_BINARY, true ) );
     // field with default value
     schemaDescription
-      .addField( schemaDescription.new Field( "orcField11", "pentahoString11", ValueMetaInterface.TYPE_STRING, "default",
-        false ) );
+      .addField(
+        schemaDescription.new Field( "orcField11", "pentahoString11", ValueMetaInterface.TYPE_STRING, "default",
+          false ) );
     orcOutputFormat.setSchemaDescription( schemaDescription );
 
     //Build the RowMeta
@@ -122,7 +123,8 @@ public class PentahoOrcReadWriteTest {
     // Create two rows of values
     rowData = new Object[][]
       { { "Row1Field1", "Row1Field2", 3.1, new BigDecimal( 4.1, MathContext.DECIMAL64 ),
-        InetAddress.getByName( "1.2.3.4" ), true, 1L, new Date( 789 ), new Timestamp( 789 ), "foobar".getBytes(), null },
+        InetAddress.getByName( "1.2.3.4" ), true, 1L, new Date( 789 ), new Timestamp( 789 ), "foobar".getBytes(),
+        null },
 
         { "Row2Field1", "Row2Field2", -3.2, new BigDecimal( -4.2, MathContext.DECIMAL64 ),
           InetAddress.getByName( "2.3.4.5" ), false, -2L, new Date( 789 ), new Timestamp( 789 ),
@@ -134,13 +136,17 @@ public class PentahoOrcReadWriteTest {
     doReadWrite( IPentahoOrcOutputFormat.COMPRESSION.NONE, "orcOutputNone.orc" );
     doReadWrite( IPentahoOrcOutputFormat.COMPRESSION.SNAPPY, "orcOutputSnappy.orc" );
     doReadWrite( IPentahoOrcOutputFormat.COMPRESSION.ZLIB, "orcOutputZlib.orc" );
-    doReadWrite( IPentahoOrcOutputFormat.COMPRESSION.LZO, "orcOutputLzo.orc" );
+    //#if shim_type!="EMR"
+    //$doReadWrite( IPentahoOrcOutputFormat.COMPRESSION.LZO, "orcOutputLzo.orc" );
+    //#endif
+
   }
 
   private void doReadWrite( IPentahoOrcOutputFormat.COMPRESSION compressionType, String outputFileName )
     throws Exception {
     orcOutputFormat.setCompression( compressionType );
     filePath = tempFolder.getRoot().toString().substring( 2 ) + "/" + outputFileName;
+    filePath = filePath.replace( "\\", "/" );
 
     try {
       orcOutputFormat.setOutputFile( filePath );
@@ -171,8 +177,8 @@ public class PentahoOrcReadWriteTest {
     orcRecordWriter.write( new RowMetaAndData( rowMeta, rowData[ 1 ] ) );
     try {
       orcRecordWriter.close();
-    } catch ( Exception e ){
-        e.printStackTrace();
+    } catch ( Exception e ) {
+      e.printStackTrace();
     }
   }
 
@@ -201,11 +207,11 @@ public class PentahoOrcReadWriteTest {
   private void testGetSchema() throws Exception {
     PentahoOrcInputFormat pentahoOrcInputFormat = new PentahoOrcInputFormat();
     pentahoOrcInputFormat.setInputFile( filePath );
-    TypeDescription typeDescription = pentahoOrcInputFormat.readTypeDescription( );
+    TypeDescription typeDescription = pentahoOrcInputFormat.readTypeDescription();
 
     assertNotNull( "Schema Description should be populated", schemaDescription );
     //If here we hopefully read the the TypeDescription out of the orc file
-    final SchemaDescription schemaDesc = pentahoOrcInputFormat.readSchema( );
+    final SchemaDescription schemaDesc = pentahoOrcInputFormat.readSchema();
     schemaDescription.forEach( field -> compareField( field, schemaDesc ) );
   }
 
@@ -220,10 +226,10 @@ public class PentahoOrcReadWriteTest {
       assertEquals( new String( (byte[]) rowData[ rowNum ][ fldNum ] ),
         new String( (byte[]) row.getData()[ fldNum ] ) );
     } else {
-      if ( rowData[rowNum][fldNum] == null && field.allowNull == false ){
+      if ( rowData[ rowNum ][ fldNum ] == null && field.allowNull == false ) {
         assertEquals( field.defaultValue, row.getData()[ fldNum ].toString() );
       } else {
-        assertEquals( rowData[rowNum][fldNum], row.getData()[ fldNum ] );
+        assertEquals( rowData[ rowNum ][ fldNum ], row.getData()[ fldNum ] );
       }
     }
   }

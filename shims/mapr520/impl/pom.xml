@@ -261,6 +261,7 @@
         <configuration>
           <excludes>
             <exclude>**/DistributedCacheUtilImplOSDependentTest.java</exclude>
+            <exclude>**/PentahoOrcReadWriteTest.java</exclude>
           </excludes>
         </configuration>
       </plugin>
