@@ -23,6 +23,16 @@ package org.pentaho.hadoop.shim.api.format;
 
 public interface IPentahoOrcOutputFormat extends IPentahoOutputFormat {
 
+  int DEFAULT_COMPRESS_SIZE = 256; // In kilobytes
+  int DEFAULT_STRIPE_SIZE = 64; // In megabytes
+  int DEFAULT_ROW_INDEX_STRIDE = 10000; // In rows
+
+  String STRIPE_SIZE_KEY = "orc.stripe.size";
+  String COMPRESSION_KEY = "orc.compress";
+  String COMPRESS_SIZE_KEY = "orc.compress.size";
+  String ROW_INDEX_STRIDE_KEY = "orc.row.index.stride";
+  String CREATE_INDEX_KEY = "orc.create.index";
+
   enum COMPRESSION {
     NONE, SNAPPY, ZLIB, LZO
   }
@@ -32,5 +42,11 @@ public interface IPentahoOrcOutputFormat extends IPentahoOutputFormat {
   void setOutputFile( String file ) throws Exception;
 
   void setCompression( COMPRESSION compression );
+
+  void setStripeSize( int megabytes );
+
+  void setRowIndexStride( int numRows );
+
+  void setCompressSize( int kilobytes );
 
 }
