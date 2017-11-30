@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-list</artifactId>
-    <version>8.1-SNAPSHOT</version>
+    <version>81.2018.04.00-102</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-emr56-reactor</artifactId>
   <packaging>pom</packaging>
