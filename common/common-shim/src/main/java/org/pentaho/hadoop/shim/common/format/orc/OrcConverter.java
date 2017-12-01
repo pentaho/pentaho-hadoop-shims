@@ -76,6 +76,10 @@ public class OrcConverter {
 
   protected static Object convertFromSourceToTargetDataType( ColumnVector columnVector, int currentBatchRow,
                                                              int valueMetaInterface ) {
+
+    if ( columnVector.isNull[currentBatchRow] ) {
+      return null;
+    }
     switch ( valueMetaInterface ) {
       case ValueMetaInterface.TYPE_INET:
         try {
