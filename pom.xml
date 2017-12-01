@@ -18,14 +18,14 @@
     <eula-wrap_create-dist-phase></eula-wrap_create-dist-phase>
     <org.mockito.version>1.10.19</org.mockito.version>
     <org.hamcrest.version>1.3</org.hamcrest.version>
-    <dependency.pentaho-hdfs-vfs.revision>8.1-SNAPSHOT</dependency.pentaho-hdfs-vfs.revision>
+    <pentaho-hdfs-vfs.version>8.1-SNAPSHOT</pentaho-hdfs-vfs.version>
     <eula-wrap_attach-dist-phase></eula-wrap_attach-dist-phase>
     <commons-beanutils.version>1.9.3</commons-beanutils.version>
-    <dependency.hadoop-shims-api.revision>8.1-SNAPSHOT</dependency.hadoop-shims-api.revision>
+    <pentaho-hadoop-shims-api.version>8.1-SNAPSHOT</pentaho-hadoop-shims-api.version>
     <xerces.version>2.8.1</xerces.version>
-    <dependency.oss-licenses.revision>8.1-SNAPSHOT</dependency.oss-licenses.revision>
+    <oss-licenses.version>8.1-SNAPSHOT</oss-licenses.version>
     <eula-wrap_create-izpack-installer-jar-phase></eula-wrap_create-izpack-installer-jar-phase>
-    <dependency.kettle.revision>8.1-SNAPSHOT</dependency.kettle.revision>
+    <pdi.version>8.1-SNAPSHOT</pdi.version>
     <org.powermock.version>1.6.2</org.powermock.version>
     <eula-wrap_assign-deps-to-properties-phase></eula-wrap_assign-deps-to-properties-phase>
   </properties>
@@ -35,7 +35,7 @@
       <dependency>
         <groupId>pentaho</groupId>
         <artifactId>pentaho-hdfs-vfs</artifactId>
-        <version>${dependency.pentaho-hdfs-vfs.revision}</version>
+        <version>${pentaho-hdfs-vfs.version}</version>
         <scope>compile</scope>
         <exclusions>
           <exclusion>
@@ -47,7 +47,7 @@
       <dependency>
         <groupId>pentaho-kettle</groupId>
         <artifactId>kettle-core</artifactId>
-        <version>${dependency.kettle.revision}</version>
+        <version>${pdi.version}</version>
         <scope>provided</scope>
         <exclusions>
           <exclusion>
@@ -67,7 +67,7 @@
       <dependency>
         <groupId>pentaho-kettle</groupId>
         <artifactId>kettle-engine</artifactId>
-        <version>${dependency.kettle.revision}</version>
+        <version>${pdi.version}</version>
         <scope>provided</scope>
         <exclusions>
           <exclusion>
@@ -127,7 +127,7 @@
       <dependency>
         <groupId>pentaho</groupId>
         <artifactId>oss-licenses</artifactId>
-        <version>${dependency.oss-licenses.revision}</version>
+        <version>${oss-licenses.version}</version>
         <type>zip</type>
         <optional>true</optional>
       </dependency>
