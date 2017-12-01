@@ -55,6 +55,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -67,6 +68,27 @@ public class PentahoOrcReadWriteTest {
   private PentahoOrcOutputFormat orcOutputFormat;
   private String filePath;
 
+  //This is the metadata and default values we will use to test with.  We'll create a file with two sets of these
+  // 10 fields.  The first set will allows nulls, the seconds set will not allow nulls and use the default values.
+  // The second set of fields will have "def" appended to all field names to keep them unique.
+  private final String[][] schemaData = new String[][] {
+    { "orcField1", "pentahoField1", String.valueOf( ValueMetaInterface.TYPE_STRING ), "default" },
+    { "orcField2", "pentahoField2", String.valueOf( ValueMetaInterface.TYPE_STRING ), "default2" },
+    { "orcDouble3", "pentahoNumber3", String.valueOf( ValueMetaInterface.TYPE_NUMBER ), "1234.0" },
+    { "orcDouble4", "pentahoBigNumber4", String.valueOf( ValueMetaInterface.TYPE_BIGNUMBER ), "123456789.98765" },
+    { "orcBytes5", "pentahoInet5", String.valueOf( ValueMetaInterface.TYPE_INET ), "www.pentaho.com" },
+    { "orcLong6", "pentahoBoolean6", String.valueOf( ValueMetaInterface.TYPE_BOOLEAN ), "true" },
+    { "orcInt7", "pentahoInt7", String.valueOf( ValueMetaInterface.TYPE_INTEGER ), "-33456" },
+    { "orcDate8", "pentahoDate8", String.valueOf( ValueMetaInterface.TYPE_DATE ), "10000" },
+    { "orcTimestamp9", "pentahoTimestamp9", String.valueOf( ValueMetaInterface.TYPE_TIMESTAMP ), "10000" },
+    { "orcBytes10", "pentahoBinary10", String.valueOf( ValueMetaInterface.TYPE_BINARY ), "binary" }
+  };
+  private final int ORC_NAME_INDEX = 0;
+  private final int PENTAHO_NAME_INDEX = 1;
+  private final int TYPE_INDEX = 2;
+  private final int DEFAULT_VALUE_INDEX = 3;
+
+
   public TemporaryFolder tempFolder = new TemporaryFolder();
 
   @Before
@@ -74,61 +96,45 @@ public class PentahoOrcReadWriteTest {
     tempFolder.create();
     orcOutputFormat = new PentahoOrcOutputFormat();
 
-    // Set up the Orc Schema Description and add fields to it.  Then set that schemaDescription on the orc output
-    // format.
+    // Set up the Orc Schema Description and rowMeta for the first set of fields.
     schemaDescription = new SchemaDescription();
-    schemaDescription
-      .addField( schemaDescription.new Field( "orcField1", "pentahoField1", ValueMetaInterface.TYPE_STRING, true ) );
-    schemaDescription
-      .addField( schemaDescription.new Field( "orcField2", "pentahoField2", ValueMetaInterface.TYPE_STRING, true ) );
-    schemaDescription
-      .addField( schemaDescription.new Field( "orcDouble3", "pentahoNumber3", ValueMetaInterface.TYPE_NUMBER, true ) );
-    schemaDescription
-      .addField(
-        schemaDescription.new Field( "orcDouble4", "pentahoBigNumber4", ValueMetaInterface.TYPE_BIGNUMBER, true ) );
-    schemaDescription
-      .addField( schemaDescription.new Field( "orcBytes5", "pentahoInet5", ValueMetaInterface.TYPE_INET, true ) );
-    schemaDescription
-      .addField( schemaDescription.new Field( "orcLong6", "pentahoBoolean6", ValueMetaInterface.TYPE_BOOLEAN, true ) );
-    schemaDescription
-      .addField( schemaDescription.new Field( "orcInt7", "pentahoInt7", ValueMetaInterface.TYPE_INTEGER, true ) );
-    schemaDescription
-      .addField( schemaDescription.new Field( "orcDate8", "pentahoDate8", ValueMetaInterface.TYPE_DATE, true ) );
-    schemaDescription
-      .addField(
-        schemaDescription.new Field( "orcTimestamp9", "pentahoTimestamp9", ValueMetaInterface.TYPE_TIMESTAMP, true ) );
-    schemaDescription
-      .addField( schemaDescription.new Field( "orcBytes10", "pentahoBinary10", ValueMetaInterface.TYPE_BINARY, true ) );
-    // field with default value
-    schemaDescription
-      .addField(
-        schemaDescription.new Field( "orcField11", "pentahoString11", ValueMetaInterface.TYPE_STRING, "default",
-          false ) );
+    rowMeta = new RowMeta();
+    for ( String[] schemaField : schemaData ) {
+      schemaDescription
+        .addField( schemaDescription.new Field( schemaField[ ORC_NAME_INDEX ], schemaField[ PENTAHO_NAME_INDEX ],
+          Integer.valueOf( schemaField[ TYPE_INDEX ] ), true ) );
+      addFieldToRowMeta( schemaField[ PENTAHO_NAME_INDEX ], Integer.valueOf( schemaField[ TYPE_INDEX ] ) );
+    }
+    // Set up the Orc Schema Description and rowMeta for the second set of fields.
+    for ( String[] schemaField : schemaData ) {
+      schemaDescription.addField( schemaDescription.new Field( schemaField[ ORC_NAME_INDEX ] + "Def",
+        schemaField[ PENTAHO_NAME_INDEX ] + "Def", Integer.valueOf( schemaField[ TYPE_INDEX ] ),
+        schemaField[ DEFAULT_VALUE_INDEX ], false ) );
+      addFieldToRowMeta( schemaField[ PENTAHO_NAME_INDEX ] + "Def", Integer.valueOf( schemaField[ TYPE_INDEX ] ) );
+    }
+
+    // Then set that schemaDescription on the orc output format.
     orcOutputFormat.setSchemaDescription( schemaDescription );
 
-    //Build the RowMeta
-    rowMeta = new RowMeta();
-    rowMeta.addValueMeta( new ValueMetaString( "pentahoField1" ) );
-    rowMeta.addValueMeta( new ValueMetaString( "pentahoField2" ) );
-    rowMeta.addValueMeta( new ValueMetaNumber( "pentahoNumber3" ) );
-    rowMeta.addValueMeta( new ValueMetaBigNumber( "pentahoBigNumber4" ) );
-    rowMeta.addValueMeta( new ValueMetaInternetAddress( "pentahoInet5" ) );
-    rowMeta.addValueMeta( new ValueMetaBoolean( "pentahoBoolean6" ) );
-    rowMeta.addValueMeta( new ValueMetaInteger( "pentahoInt7" ) );
-    rowMeta.addValueMeta( new ValueMetaDate( "pentahoDate8" ) );
-    rowMeta.addValueMeta( new ValueMetaTimestamp( "pentahoTimestamp9" ) );
-    rowMeta.addValueMeta( new ValueMetaBinary( "pentahoBinary10" ) );
-    rowMeta.addValueMeta( new ValueMetaString( "pentahoString11" ) );
-
-    // Create two rows of values
+    // Populate three rows of values.  These are values we will write rows with.  Whe we read back the rows from the
+    // file they will be compared with these values to know it made the round trip.
     rowData = new Object[][]
       { { "Row1Field1", "Row1Field2", 3.1, new BigDecimal( 4.1, MathContext.DECIMAL64 ),
         InetAddress.getByName( "1.2.3.4" ), true, 1L, new Date( 789 ), new Timestamp( 789 ), "foobar".getBytes(),
-        null },
+        "Row1Field3", "Row1Field4", 3.1, new BigDecimal( 4.1, MathContext.DECIMAL64 ),
+        InetAddress.getByName( "1.2.3.4" ), true, 1L, new Date( 789 ), new Timestamp( 789 ), "foobar".getBytes() },
 
         { "Row2Field1", "Row2Field2", -3.2, new BigDecimal( -4.2, MathContext.DECIMAL64 ),
-          InetAddress.getByName( "2.3.4.5" ), false, -2L, new Date( 789 ), new Timestamp( 789 ),
-          "Donald Duck".getBytes(), "notnull" } };
+          InetAddress.getByName( "2.3.4.5" ), false, -2L, new Date( 20789 ), new Timestamp( 20789 ),
+          "Donald Duck".getBytes(),
+          "Row2Field3", "Row2Field4", -3.2, new BigDecimal( -4.2, MathContext.DECIMAL64 ),
+          InetAddress.getByName( "2.3.4.5" ), false, -2L, new Date( 20789 ), new Timestamp( 20789 ),
+          "Donald Duck".getBytes()
+        },
+
+        { "Row3Field1", null, null, null, null, null, null, null, null, null,
+          "Row3Field4", null, null, null, null, null, null, null, null, null }
+      };
   }
 
   @Test
@@ -153,28 +159,31 @@ public class PentahoOrcReadWriteTest {
     } catch ( Exception e ) {
       e.printStackTrace();
     }
+    //Write the Orc File
     System.out.println( "Writing file " + filePath );
     testRecordWriter();
+    //Read it back and check values
     System.out.println( "Reading file " + filePath );
     testRecordReader();
+    //Test that we can extract the schema (TypeDescription) from the file
     System.out.println( "reading Schema " + filePath );
     testGetSchema();
   }
 
   /**
-   * Write two rows to orc file
+   * Write all the rows in the rowData array to an orc file
    *
    * @throws Exception
    */
-
   private void testRecordWriter() throws Exception {
     IPentahoOutputFormat.IPentahoRecordWriter orcRecordWriter = orcOutputFormat.createRecordWriter();
     Assert.assertNotNull( orcRecordWriter, "orcRecordWriter should NOT be null!" );
     Assert.assertTrue( orcRecordWriter instanceof PentahoOrcRecordWriter,
       "orcRecordWriter should be instance of PentahoOrcRecordWriter" );
 
-    orcRecordWriter.write( new RowMetaAndData( rowMeta, rowData[ 0 ] ) );
-    orcRecordWriter.write( new RowMetaAndData( rowMeta, rowData[ 1 ] ) );
+    for ( int i = 0; i < rowData.length; i++ ) {
+      orcRecordWriter.write( new RowMetaAndData( rowMeta, rowData[ i ] ) );
+    }
     try {
       orcRecordWriter.close();
     } catch ( Exception e ) {
@@ -219,17 +228,33 @@ public class PentahoOrcReadWriteTest {
                           AtomicInteger fieldNumber ) {
     int fldNum = fieldNumber.getAndIncrement();
     int rowNum = rowNumber.get();
-    if ( rowData[ rowNum ][ fldNum ] instanceof BigDecimal ) {
-      assert ( ( (BigDecimal) rowData[ rowNum ][ fldNum ] ).compareTo(
-        (BigDecimal) row.getData()[ fldNum ] ) == 0 );
-    } else if ( rowData[ rowNum ][ fldNum ] instanceof byte[] ) {
-      assertEquals( new String( (byte[]) rowData[ rowNum ][ fldNum ] ),
-        new String( (byte[]) row.getData()[ fldNum ] ) );
-    } else {
-      if ( rowData[ rowNum ][ fldNum ] == null && field.allowNull == false ) {
-        assertEquals( field.defaultValue, row.getData()[ fldNum ].toString() );
+    Object origValue = rowData[ rowNum ][ fldNum ];
+    Object readValue = row.getData()[ fldNum ];
+    String errMsg = "field " + fldNum + " does not match in " + row;
+
+    if ( origValue == null && field.allowNull == false ) {
+      //If here we are comparing the read value to the default value
+      if ( field.pentahoValueMetaType == ValueMetaInterface.TYPE_INET ) {
+        assertTrue( errMsg, readValue.toString().contains( field.defaultValue ) );
+      } else if ( field.pentahoValueMetaType == ValueMetaInterface.TYPE_DATE ) {
+        assertEquals( errMsg, new Date( Integer.valueOf( field.defaultValue ) ).toString(), readValue.toString() );
+      } else if ( field.pentahoValueMetaType == ValueMetaInterface.TYPE_TIMESTAMP ) {
+        assertEquals( errMsg, new Timestamp( Integer.valueOf( field.defaultValue ) ).toString(), readValue.toString() );
+      } else if ( field.pentahoValueMetaType == ValueMetaInterface.TYPE_BINARY ) {
+        assertEquals( errMsg, field.defaultValue, new String( (byte[]) readValue ) );
       } else {
-        assertEquals( rowData[ rowNum ][ fldNum ], row.getData()[ fldNum ] );
+        assertEquals( errMsg, field.defaultValue, readValue.toString() );
+      }
+    } else {
+      // If here we are comparing read value with the original value
+      if ( origValue instanceof BigDecimal ) {
+        assert ( ( (BigDecimal) origValue ).compareTo(
+          (BigDecimal) readValue ) == 0 );
+      } else if ( origValue instanceof byte[] ) {
+        assertEquals( errMsg, new String( (byte[]) origValue ),
+          new String( (byte[]) readValue ) );
+      } else {
+        assertEquals( errMsg, origValue, readValue );
       }
     }
   }
@@ -238,5 +263,33 @@ public class PentahoOrcReadWriteTest {
     SchemaDescription.Field readField = schemaDesc.getField( field.formatFieldName );
     assertNotNull( "Field " + field.formatFieldName + " should be found in the read schema", readField );
     assertEquals( "Field " + field.formatFieldName, field.pentahoValueMetaType, readField.pentahoValueMetaType );
+  }
+
+  private void addFieldToRowMeta( String fieldName, int fieldType ) {
+    rowMeta.addValueMeta( getValueMetaInterface( fieldName, fieldType ) );
+  }
+
+  private ValueMetaInterface getValueMetaInterface( String fieldName, int fieldType ) {
+    switch ( fieldType ) {
+      case ValueMetaInterface.TYPE_INET:
+        return new ValueMetaInternetAddress( fieldName );
+      case ValueMetaInterface.TYPE_STRING:
+        return new ValueMetaString( fieldName );
+      case ValueMetaInterface.TYPE_INTEGER:
+        return new ValueMetaInteger( fieldName );
+      case ValueMetaInterface.TYPE_NUMBER:
+        return new ValueMetaNumber( fieldName );
+      case ValueMetaInterface.TYPE_BIGNUMBER:
+        return new ValueMetaBigNumber( fieldName );
+      case ValueMetaInterface.TYPE_TIMESTAMP:
+        return new ValueMetaTimestamp( fieldName );
+      case ValueMetaInterface.TYPE_DATE:
+        return new ValueMetaDate( fieldName );
+      case ValueMetaInterface.TYPE_BOOLEAN:
+        return new ValueMetaBoolean( fieldName );
+      case ValueMetaInterface.TYPE_BINARY:
+        return new ValueMetaBinary( fieldName );
+    }
+    return null;
   }
 }

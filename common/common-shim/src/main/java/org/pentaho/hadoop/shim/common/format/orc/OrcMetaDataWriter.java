@@ -34,8 +34,6 @@ import java.nio.ByteBuffer;
  */
 public class OrcMetaDataWriter implements IOrcMetaData.Writer {
   private static final Logger logger = Logger.getLogger( OrcMetaDataWriter.class );
-  public static final String ORC_CUSTOM_METADATA_PREFIX = "pentaho";
-  public static final String ORC_CUSTOM_METADATA_PROPERTY_DELIMITER = ".";
   private Writer writer;
 
 

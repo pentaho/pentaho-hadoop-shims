@@ -45,6 +45,8 @@ import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -96,20 +98,31 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
                               RowMetaAndData rowMetaAndData ) {
     int fieldNo = fieldNumber.getAndIncrement();
     ColumnVector columnVector = batch.cols[ fieldNo ];
+    int rowMetaIndex = rowMetaAndData.getRowMeta().indexOfValue( field.pentahoFieldName );
+
+    if ( rowMetaAndData.getData()[ rowMetaIndex ] == null ) {
+      if ( field.allowNull ) {
+        columnVector.isNull[ batchRowNumber ] = true;
+        columnVector.noNulls = false;
+        return;
+      }
+    }
+    columnVector.isNull[ batchRowNumber ] = false;
     switch ( field.pentahoValueMetaType ) {
       case ValueMetaInterface.TYPE_NUMBER:
         try {
           ( (DoubleColumnVector) columnVector ).vector[ batchRowNumber ] =
-            rowMetaAndData.getNumber( field.pentahoFieldName, 0 );
+            rowMetaAndData.getNumber( field.pentahoFieldName,
+              field.defaultValue != null ? Double.valueOf( field.defaultValue ) : 0 );
         } catch ( KettleValueException e ) {
           e.printStackTrace();
         }
         break;
       case ValueMetaInterface.TYPE_BIGNUMBER:
         try {
-          BigDecimal b = new BigDecimal( 0 );
           ( (DecimalColumnVector) columnVector ).vector[ batchRowNumber ] = new HiveDecimalWritable( HiveDecimal.create(
-            rowMetaAndData.getBigNumber( field.pentahoFieldName, b ) ) );
+            rowMetaAndData.getBigNumber( field.pentahoFieldName,
+              field.defaultValue != null ? new BigDecimal( field.defaultValue ) : new BigDecimal( 0 ) ) ) );
         } catch ( KettleValueException e ) {
           e.printStackTrace();
         }
@@ -117,15 +130,16 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
       case ValueMetaInterface.TYPE_INET:
         try {
           setBytesColumnVector( ( (BytesColumnVector) columnVector ),
-            rowMetaAndData.getString( field.pentahoFieldName, null ) );
-        } catch ( KettleValueException e ) {
+            rowMetaAndData.getString( field.pentahoFieldName,
+              field.defaultValue != null ? field.defaultValue : InetAddress.getLocalHost().toString() ) );
+        } catch ( KettleValueException | UnknownHostException e ) {
           e.printStackTrace();
         }
         break;
       case ValueMetaInterface.TYPE_STRING:
         try {
           setBytesColumnVector( ( (BytesColumnVector) columnVector ),
-            rowMetaAndData.getString( field.pentahoFieldName, field.allowNull ? null : field.defaultValue ) );
+            rowMetaAndData.getString( field.pentahoFieldName, field.defaultValue != null ? field.defaultValue : "" ) );
         } catch ( KettleValueException e ) {
           e.printStackTrace();
         }
@@ -133,7 +147,8 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
       case ValueMetaInterface.TYPE_BOOLEAN:
         try {
           ( (LongColumnVector) columnVector ).vector[ batchRowNumber ] =
-            rowMetaAndData.getBoolean( field.pentahoFieldName, false ) ? 1L : 0L;
+            rowMetaAndData.getBoolean( field.pentahoFieldName,
+              field.defaultValue != null ? Boolean.valueOf( field.defaultValue ) : false ) ? 1L : 0L;
         } catch ( KettleValueException e ) {
           e.printStackTrace();
         }
@@ -141,7 +156,8 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
       case ValueMetaInterface.TYPE_INTEGER:
         try {
           ( (LongColumnVector) columnVector ).vector[ batchRowNumber ] =
-            rowMetaAndData.getInteger( field.pentahoFieldName, 0 );
+            rowMetaAndData.getInteger( field.pentahoFieldName,
+              field.defaultValue != null ? Long.parseLong( field.defaultValue ) : 0 );
         } catch ( KettleValueException e ) {
           e.printStackTrace();
         }
@@ -149,7 +165,8 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
       case ValueMetaInterface.TYPE_SERIALIZABLE:
         try {
           setBytesColumnVector( ( (BytesColumnVector) columnVector ),
-            rowMetaAndData.getBinary( field.pentahoFieldName, null ) );
+            rowMetaAndData.getBinary( field.pentahoFieldName,
+              field.defaultValue != null ? field.defaultValue.getBytes() : new byte[ 0 ] ) );
         } catch ( KettleValueException e ) {
           e.printStackTrace();
         }
@@ -157,25 +174,28 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
       case ValueMetaInterface.TYPE_BINARY:
         try {
           setBytesColumnVector( ( (BytesColumnVector) columnVector ),
-            rowMetaAndData.getBinary( field.pentahoFieldName, null ) );
+            rowMetaAndData.getBinary( field.pentahoFieldName,
+              field.defaultValue != null ? field.defaultValue.getBytes() : new byte[ 0 ] ) );
         } catch ( KettleValueException e ) {
           e.printStackTrace();
         }
         break;
       case ValueMetaInterface.TYPE_DATE:
         try {
-          Date today = new Date();
           ( (LongColumnVector) columnVector ).vector[ batchRowNumber ] =
-            rowMetaAndData.getDate( field.pentahoFieldName, today ).getTime();
+            rowMetaAndData.getDate( field.pentahoFieldName,
+              field.defaultValue != null ? new Date( Integer.valueOf( field.defaultValue ) ) : new Date( 0 ) )
+              .getTime();
         } catch ( KettleValueException e ) {
           e.printStackTrace();
         }
         break;
       case ValueMetaInterface.TYPE_TIMESTAMP:
         try {
-          Date todayTimestamp = new Date();
           ( (TimestampColumnVector) columnVector ).set( batchRowNumber,
-            new Timestamp( rowMetaAndData.getDate( field.pentahoFieldName, todayTimestamp ).getTime() ) );
+            new Timestamp( rowMetaAndData.getDate( field.pentahoFieldName,
+              field.defaultValue != null ? new Date( Integer.valueOf( field.defaultValue ) ) : new Date( 0 ) )
+              .getTime() ) );
         } catch ( KettleValueException e ) {
           e.printStackTrace();
         }
