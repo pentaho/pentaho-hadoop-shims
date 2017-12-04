@@ -84,6 +84,10 @@ public class SchemaDescription implements Iterable<SchemaDescription.Field> {
     return fields.isEmpty();
   }
 
+  public int getFieldsCount() {
+    return fields.size();
+  }
+
   @Override
   public Iterator<Field> iterator() {
     return fields.iterator();
