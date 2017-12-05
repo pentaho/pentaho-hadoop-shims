@@ -43,6 +43,11 @@
       <artifactId>avro</artifactId>
       <version>${org.apache.avro.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.orc</groupId>
+      <artifactId>orc-core</artifactId>
+      <version>${org.apache.orc.version}</version>
+    </dependency>
     <!--here test dependencies-->
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>

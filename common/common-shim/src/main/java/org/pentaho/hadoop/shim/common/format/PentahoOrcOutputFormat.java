@@ -21,12 +21,16 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.common.format;
 
+import java.nio.file.FileAlreadyExistsException;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.log4j.Logger;
 import org.apache.orc.TypeDescription;
 import org.pentaho.hadoop.shim.api.format.IPentahoOrcOutputFormat;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 
+import org.apache.hadoop.mapreduce.Job;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
 import org.pentaho.hadoop.shim.common.format.orc.OrcSchemaConverter;
 import org.pentaho.hadoop.shim.common.format.orc.PentahoOrcRecordWriter;
@@ -36,6 +40,7 @@ import org.pentaho.hadoop.shim.common.format.orc.PentahoOrcRecordWriter;
  */
 public class PentahoOrcOutputFormat extends HadoopFormatBase implements IPentahoOrcOutputFormat {
 
+  private Job job;
   private TypeDescription schema;
   private String outputFilename;
   private SchemaDescription schemaDescription;
@@ -50,6 +55,7 @@ public class PentahoOrcOutputFormat extends HadoopFormatBase implements IPentaho
   public PentahoOrcOutputFormat() throws Exception {
     conf = inClassloader( () -> {
       Configuration conf = new ConfigurationProxy();
+      job = Job.getInstance( conf );
       conf.addResource( "hive-site.xml" );
       return conf;
     } );
@@ -73,8 +79,20 @@ public class PentahoOrcOutputFormat extends HadoopFormatBase implements IPentaho
     schemaDescription = schema;
   }
 
-  @Override public void setOutputFile( String file ) throws Exception {
-    outputFilename = file;
+  @Override public void setOutputFile( String file, boolean override ) throws Exception {
+    inClassloader( () -> {
+      Path outputFile = new Path( file );
+      FileSystem fs = FileSystem.get( outputFile.toUri(), job.getConfiguration() );
+      if ( fs.exists( outputFile ) ) {
+        if ( override ) {
+          fs.delete( outputFile, true );
+        } else {
+          throw new FileAlreadyExistsException( file );
+        }
+      }
+
+      this.outputFilename = file;
+    } );
   }
 
   @Override public void setCompression( COMPRESSION compression ) {

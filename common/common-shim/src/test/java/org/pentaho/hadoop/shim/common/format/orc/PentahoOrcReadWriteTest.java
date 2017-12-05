@@ -49,6 +49,7 @@ import org.pentaho.hadoop.shim.common.format.PentahoOrcOutputFormat;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.net.InetAddress;
+import java.nio.file.FileAlreadyExistsException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -139,23 +140,37 @@ public class PentahoOrcReadWriteTest {
 
   @Test
   public void testOrcFileWriteAndRead() throws Exception {
-    doReadWrite( IPentahoOrcOutputFormat.COMPRESSION.NONE, "orcOutputNone.orc" );
-    doReadWrite( IPentahoOrcOutputFormat.COMPRESSION.SNAPPY, "orcOutputSnappy.orc" );
-    doReadWrite( IPentahoOrcOutputFormat.COMPRESSION.ZLIB, "orcOutputZlib.orc" );
+    doReadWrite( IPentahoOrcOutputFormat.COMPRESSION.NONE, "orcOutputNone.orc", false );
+    doReadWrite( IPentahoOrcOutputFormat.COMPRESSION.SNAPPY, "orcOutputSnappy.orc", false );
+    doReadWrite( IPentahoOrcOutputFormat.COMPRESSION.ZLIB, "orcOutputZlib.orc", false );
     //#if shim_type!="EMR"
     //$doReadWrite( IPentahoOrcOutputFormat.COMPRESSION.LZO, "orcOutputLzo.orc" );
     //#endif
 
   }
 
-  private void doReadWrite( IPentahoOrcOutputFormat.COMPRESSION compressionType, String outputFileName )
+  @Test(expected = FileAlreadyExistsException.class)
+  public void testOverwriteFileIsFalse() throws Exception {
+    doReadWrite( IPentahoOrcOutputFormat.COMPRESSION.NONE, "orcOutputNone.orc", false );
+    doReadWrite( IPentahoOrcOutputFormat.COMPRESSION.NONE, "orcOutputNone.orc", false );
+  }
+
+  @Test
+  public void testOverwriteFileIsTrue() throws Exception {
+    doReadWrite( IPentahoOrcOutputFormat.COMPRESSION.NONE, "orcOutputNone.orc", false );
+    doReadWrite( IPentahoOrcOutputFormat.COMPRESSION.NONE, "orcOutputNone.orc", true );
+  }
+
+  private void doReadWrite( IPentahoOrcOutputFormat.COMPRESSION compressionType, String outputFileName, boolean overwriteFile )
     throws Exception {
     orcOutputFormat.setCompression( compressionType );
     filePath = tempFolder.getRoot().toString().substring( 2 ) + "/" + outputFileName;
     filePath = filePath.replace( "\\", "/" );
 
     try {
-      orcOutputFormat.setOutputFile( filePath );
+      orcOutputFormat.setOutputFile( filePath, overwriteFile );
+    } catch ( FileAlreadyExistsException e) {
+      throw e;
     } catch ( Exception e ) {
       e.printStackTrace();
     }
@@ -216,7 +231,6 @@ public class PentahoOrcReadWriteTest {
   private void testGetSchema() throws Exception {
     PentahoOrcInputFormat pentahoOrcInputFormat = new PentahoOrcInputFormat();
     pentahoOrcInputFormat.setInputFile( filePath );
-    TypeDescription typeDescription = pentahoOrcInputFormat.readTypeDescription();
 
     assertNotNull( "Schema Description should be populated", schemaDescription );
     //If here we hopefully read the the TypeDescription out of the orc file
