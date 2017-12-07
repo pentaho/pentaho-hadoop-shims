@@ -39,7 +39,7 @@ public interface IPentahoOrcOutputFormat extends IPentahoOutputFormat {
 
   void setSchemaDescription( SchemaDescription schema ) throws Exception;
 
-  void setOutputFile( String file ) throws Exception;
+  void setOutputFile( String file, boolean override ) throws Exception;
 
   void setCompression( COMPRESSION compression );
 

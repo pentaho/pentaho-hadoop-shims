@@ -18,6 +18,7 @@
     <org.apache.pig.version>0.16.0.2.5.0.0-1245</org.apache.pig.version>
     <joda-time.version>2.5</joda-time.version>
     <org.apache.avro.version>1.8.0</org.apache.avro.version>
+    <org.apache.orc.version>1.2.3</org.apache.orc.version>
     <org.cloudera.htrace.version>2.04</org.cloudera.htrace.version>
     <org.apache.zookeeper.version>3.4.6.2.5.0.0-1245</org.apache.zookeeper.version>
     <org.apache.curator.version>2.6.0</org.apache.curator.version>

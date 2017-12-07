@@ -25,9 +25,11 @@ import org.pentaho.hadoop.shim.ShimVersion;
 import org.pentaho.hadoop.shim.api.format.IPentahoAvroInputFormat;
 import org.pentaho.hadoop.shim.api.format.IPentahoAvroOutputFormat;
 import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat;
+import org.pentaho.hadoop.shim.api.format.IPentahoOrcOutputFormat;
 import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat;
 import org.pentaho.hadoop.shim.api.format.IPentahoParquetInputFormat;
 import org.pentaho.hadoop.shim.api.format.IPentahoParquetOutputFormat;
+import org.pentaho.hadoop.shim.common.format.PentahoOrcOutputFormat;
 import org.pentaho.hadoop.shim.common.format.PentahoParquetInputFormat;
 import org.pentaho.hadoop.shim.common.format.PentahoParquetOutputFormat;
 import org.pentaho.hadoop.shim.common.format.avro.PentahoAvroInputFormat;
@@ -52,6 +54,8 @@ public class CommonFormatShim implements FormatShim {
       return (T) new PentahoParquetOutputFormat();
     } else if ( type.isAssignableFrom( IPentahoAvroOutputFormat.class ) ) {
       return (T) new PentahoAvroOutputFormat();
+    } else if ( type.isAssignableFrom( IPentahoOrcOutputFormat.class ) ) {
+      return (T) new PentahoOrcOutputFormat();
     }
     throw new IllegalArgumentException( "Not supported scheme format" );
   }
