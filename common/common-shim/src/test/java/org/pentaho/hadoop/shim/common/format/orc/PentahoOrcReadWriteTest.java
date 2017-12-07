@@ -144,7 +144,7 @@ public class PentahoOrcReadWriteTest {
     doReadWrite( IPentahoOrcOutputFormat.COMPRESSION.SNAPPY, "orcOutputSnappy.orc", false );
     doReadWrite( IPentahoOrcOutputFormat.COMPRESSION.ZLIB, "orcOutputZlib.orc", false );
     //#if shim_type!="EMR"
-    //$doReadWrite( IPentahoOrcOutputFormat.COMPRESSION.LZO, "orcOutputLzo.orc" );
+    //$doReadWrite( IPentahoOrcOutputFormat.COMPRESSION.LZO, "orcOutputLzo.orc", false );
     //#endif
 
   }
