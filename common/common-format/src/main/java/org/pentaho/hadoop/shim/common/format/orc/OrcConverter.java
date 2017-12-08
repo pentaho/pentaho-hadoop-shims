@@ -34,21 +34,28 @@ import org.apache.hadoop.hive.serde2.io.HiveDecimalWritable;
 import org.apache.orc.TypeDescription;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.row.ValueMetaInterface;
+import org.pentaho.di.core.row.value.ValueMetaConversionException;
+import org.pentaho.di.core.row.value.ValueMetaConverter;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
+import org.apache.log4j.Logger;
 
 /**
- * Created by tkafalaf 11/7/2017
+ * Created by tkafalas 11/7/2017
  */
 public class OrcConverter {
+  private ValueMetaConverter valueMetaConverter = new ValueMetaConverter();
+  private static final Logger logger = Logger.getLogger( OrcConverter.class );
 
-  public static RowMetaAndData convertFromOrc( VectorizedRowBatch batch, int currentBatchRow,
+  public RowMetaAndData convertFromOrc( VectorizedRowBatch batch, int currentBatchRow,
                                                SchemaDescription schemaDescription, TypeDescription typeDescription,
                                                Map<String, Integer> schemaToOrcSubcripts, SchemaDescription orcSchemaDescription ) {
     return convertFromOrc( new RowMetaAndData(), batch, currentBatchRow, schemaDescription, typeDescription,
@@ -56,7 +63,7 @@ public class OrcConverter {
   }
 
   @VisibleForTesting
-  static RowMetaAndData convertFromOrc( RowMetaAndData rowMetaAndData, VectorizedRowBatch batch, int currentBatchRow,
+  RowMetaAndData convertFromOrc( RowMetaAndData rowMetaAndData, VectorizedRowBatch batch, int currentBatchRow,
                                         SchemaDescription schemaDescription, TypeDescription typeDescription,
                                         Map<String, Integer> schemaToOrcSubcripts,
                                         SchemaDescription orcSchemaDescription ) {
@@ -66,8 +73,15 @@ public class OrcConverter {
       SchemaDescription.Field orcField = orcSchemaDescription.getField( field.formatFieldName );
       if ( field != null ) {
         ColumnVector columnVector = batch.cols[ schemaToOrcSubcripts.get( field.pentahoFieldName ) ];
-        Object data = convertFromSourceToTargetDataType( columnVector, currentBatchRow, field.pentahoValueMetaType );
-        rowMetaAndData.addValue( field.pentahoFieldName, field.pentahoValueMetaType, data );
+        Object orcToPentahoValue = convertFromSourceToTargetDataType( columnVector, currentBatchRow, orcField.pentahoValueMetaType );
+
+        Object convertToSchemaValue = null;
+        try {
+          convertToSchemaValue = valueMetaConverter.convertFromSourceToTargetDataType( orcField.pentahoValueMetaType, field.pentahoValueMetaType, orcToPentahoValue );
+        } catch ( ValueMetaConversionException e ) {
+          logger.error( e );
+        }
+        rowMetaAndData.addValue( field.pentahoFieldName, field.pentahoValueMetaType, convertToSchemaValue );
       }
     }
 
@@ -75,12 +89,12 @@ public class OrcConverter {
   }
 
   protected static Object convertFromSourceToTargetDataType( ColumnVector columnVector, int currentBatchRow,
-                                                             int valueMetaInterface ) {
+                                                             int orcValueMetaInterface ) {
 
     if ( columnVector.isNull[currentBatchRow] ) {
       return null;
     }
-    switch ( valueMetaInterface ) {
+    switch ( orcValueMetaInterface ) {
       case ValueMetaInterface.TYPE_INET:
         try {
           return InetAddress.getByName( new String( ( (BytesColumnVector) columnVector ).vector[ currentBatchRow ],
@@ -111,7 +125,9 @@ public class OrcConverter {
         return timestamp;
 
       case ValueMetaInterface.TYPE_DATE:
-        return new Date( ( (LongColumnVector) columnVector ).vector[ currentBatchRow ] );
+        LocalDate localDate = LocalDate.ofEpochDay( 0 ).plusDays( ( (LongColumnVector) columnVector ).vector[ currentBatchRow ] );
+        Date dateValue = Date.from( localDate.atStartOfDay( ZoneId.systemDefault() ).toInstant() );
+        return dateValue;
 
       case ValueMetaInterface.TYPE_BOOLEAN:
         return ( (LongColumnVector) columnVector ).vector[ currentBatchRow ] == 0 ? false : true;
