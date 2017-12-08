@@ -52,6 +52,7 @@
     <org.apache.derby.version>10.10.2.0</org.apache.derby.version>
     <gateway-shell>0.12.0.2.6.0.3-8</gateway-shell>
     <json-smart>1.1.1</json-smart>
+    <dependency.maven-bundle-plugin.version>3.2.0</dependency.maven-bundle-plugin.version>
     <shim.type>HDP</shim.type>
   </properties>
   <dependencies>
@@ -822,7 +823,110 @@
               </artifactItems>
             </configuration>
           </execution>
+          <execution>
+            <id>unpack-dependencies</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <markersDirectory>${project.build.directory}/dependencies/dependency-maven-plugin-markers
+              </markersDirectory>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.apache.hbase</groupId>
+                  <artifactId>hbase-common</artifactId>
+                  <version>${org.apache.hbase.version}</version>
+                  <type>jar</type>
+                  <outputDirectory>${project.build.directory}/dependencies/hbase-common</outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.hadoop</groupId>
+                  <artifactId>hadoop-mapreduce-client-jobclient</artifactId>
+                  <version>${org.apache.hadoop.version}</version>
+                  <type>jar</type>
+                  <outputDirectory>${project.build.directory}/dependencies/hadoop-common</outputDirectory>
+                  <includes>META-INF/services/**</includes>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>pentaho</groupId>
+                  <artifactId>pentaho-hdfs-vfs</artifactId>
+                  <version>${project.version}</version>
+                  <type>jar</type>
+                  <outputDirectory>${project.build.directory}/dependencies/hadoop-common</outputDirectory>
+                  <includes>META-INF/vfs-providers.xml</includes>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>${dependency.maven-bundle-plugin.version}</version>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+            <DynamicImport-Package>*</DynamicImport-Package>
+            <Import-Package>
+              org.pentaho.hadoop.shim.*;version=${pentaho-osgi-bundles.version},
+              org.pentaho.hbase.shim.spi.*;version=${pentaho-osgi-bundles.version},
+              org.apache.hadoop.ipc.*;resolution:=optional
+            </Import-Package>
+            <Export-Package>
+              org.apache.htrace,
+              org.apache.htrace.*,
+              org.apache.commons.logging.*,
+              com.google.common.annotations.*,
+              org.apache.hadoop.hbase.*,
+              org.apache.hadoop.hive.*,
+              org.codehaus.jackson.*,
+              org.apache.hadoop.security.*,
+              org.apache.hadoop.conf.*,
+              org.apache.hadoop.fs.*,
+              org.apache.hive.*,
+              org.apache.hadoop.hdfs.*,
+              com.google.protobuf.*,
+              org.apache.commons.codec.*,
+              org.apache.hadoop.classification.*,
+              org.apache.commons.cli.*,
+              <!--needed-->
+              org.apache.hadoop.io.*,
+              org.apache.hadoop.ipc.*,
+              org.apache.hadoop.ipc.metrics,org.apache.hadoop.ipc.proto,org.apache.hadoop.ipc.protobuf,org.apache.hadoop.ipc.protocolPB,
+              org.apache.hadoop.*,
+              org.apache.hadoop.gateway.*,
+              <!--needed hdfs-->
+              org.apache.hadoop.util.*,
+              org.apache.hadoop.metrics2.*,
+              org.apache.hadoop.mapred.*,
+              org.apache.hadoop.mapreduce.*,
+              org.apache.zookeeper.*,
+              org.pentaho.hadoop.shim.cdh57,
+              org.apache.avro.*,
+              org.apache.jute.*,
+              org.apache.hive.*,
+              org.pentaho.hdfs.vfs.*,
+              org.pentaho.hbase.shim.common.*,
+              org.pentaho.hadoop.shim.common.*,
+              org.pentaho.hadoop.hbase.factory,
+              org.pentaho.hbase.factory.*,
+              org.pentaho.hadoop.shim.common.delegating.*,
+              org.apache.hadoop.gateway.shell.*,
+              org.apache.oozie.client.*,
+              io.netty.*,
+              com.yammer.metrics.*
+            </Export-Package>
+            <Include-Resource>target/dependencies/hadoop-common,target/dependencies/hbase-common/hbase-default.xml,{maven-resources}</Include-Resource>
+            <Embed-Dependency>gateway-shell;libthrift;hive-jdbc;hadoop-common
+            </Embed-Dependency>
+            <!--;*;scope=compile|runtime;artifactId=!pentaho*|xerces*|xml-api*|guava-->
+            <!--<Embed-Transitive>true</Embed-Transitive>-->
+            <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
+          </instructions>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>com.igormaznitsa</groupId>

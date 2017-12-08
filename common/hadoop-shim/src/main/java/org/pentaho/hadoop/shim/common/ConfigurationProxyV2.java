@@ -34,6 +34,7 @@ import org.pentaho.hadoop.mapreduce.YarnQueueAclsException;
 import org.pentaho.hadoop.mapreduce.YarnQueueAclsVerifier;
 import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.api.mapred.RunningJob;
+import org.pentaho.hadoop.shim.ShimConfigsLoader;
 
 import java.io.IOException;
 
@@ -49,11 +50,26 @@ public class ConfigurationProxyV2 implements Configuration {
     addConfigsForJobConf();
   }
 
+  public ConfigurationProxyV2( String namedCluster ) throws IOException {
+    job = Job.getInstance();
+    addConfigsForJobConf( namedCluster );
+  }
+
   @VisibleForTesting
   void addConfigsForJobConf() {
     job.getConfiguration().addResource( "hdfs-site.xml" );
-    job.getConfiguration().addResource( "hive-site.xml" );
-    job.getConfiguration().addResource( "hbase-site.xml" );
+    job.getConfiguration().addResource( "core-site.xml" );
+    job.getConfiguration().addResource( "mapred-site.xml" );
+    job.getConfiguration().addResource( "yarn-site.xml" );
+  }
+
+  @VisibleForTesting
+  void addConfigsForJobConf( String additionalPath ) {
+    ShimConfigsLoader.addConfigsAsResources( additionalPath, getJob().getConfiguration()::addResource,
+      ShimConfigsLoader.ClusterConfigNames.CORE_SITE,
+      ShimConfigsLoader.ClusterConfigNames.MAPRED_SITE,
+      ShimConfigsLoader.ClusterConfigNames.HDFS_SITE,
+      ShimConfigsLoader.ClusterConfigNames.YARN_SITE );
   }
 
   public JobConf getJobConf() {

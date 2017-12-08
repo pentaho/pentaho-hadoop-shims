@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="
+            http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
+
+  <bean id="hdp25Hadoop" class="org.pentaho.hadoop.shim.hdp25.HadoopShim" scope="singleton"/>
+  <service ref="hdp25Hadoop" interface="org.pentaho.hadoop.shim.spi.HadoopShim"/>
+
+  <bean id="hbaseShim" class="org.pentaho.hbase.shim.common.CommonHBaseShim"/>
+  <service ref="hbaseShim" interface="org.pentaho.hadoop.shim.spi.PentahoHadoopShim"/>
+
+  <bean id="pigShim" class="org.pentaho.hadoop.shim.common.PigShimImpl"/>
+  <service ref="pigShim" interface="org.pentaho.hadoop.shim.spi.PigShim"/>
+
+  <bean id="sqoopShim" class="org.pentaho.hadoop.shim.common.sqoop.CommonSqoopShim"/>
+  <service ref="sqoopShim" interface="org.pentaho.hadoop.shim.spi.SqoopShim"/>
+
+  <bean id="snappyShim" class="org.pentaho.hadoop.shim.common.SnappyShimImpl"/>
+  <service ref="snappyShim" interface="org.pentaho.hadoop.shim.spi.SnappyShim"/>
+
+  <bean id="oozieClientFactory" class="org.pentaho.hadoop.shim.common.delegating.DelegatingOozieClientFactory"/>
+  <service ref="oozieClientFactory" interface="org.pentaho.oozie.shim.api.OozieClientFactory"/>
+
+  <reference-list id="hadoopShims" interface="org.pentaho.hadoop.shim.spi.PentahoHadoopShim"
+                  availability="optional"/>
+
+  <bean id="hdp25HadoopConfiguration" class="org.pentaho.hadoop.shim.HadoopConfiguration">
+    <argument value="hdp25"/>
+    <argument value="Hortonworks HDP 2.5"/>
+    <argument ref="hdp25Hadoop"/>
+    <!--<argument ref="hadoopConfigurationLocator"/>-->
+    <argument>
+      <list>
+        <ref component-id="hbaseShim"/>
+        <ref component-id="pigShim"/>
+        <ref component-id="sqoopShim"/>
+        <ref component-id="snappyShim"/>
+        <ref component-id="oozieClientFactory"/>
+      </list>
+    </argument>
+  </bean>
+
+  <service ref="hdp25HadoopConfiguration" interface="org.pentaho.hadoop.shim.api.HadoopConfigurationInterface">
+    <service-properties>
+      <entry key="shim">
+        <value type="java.lang.String">hdp25</value>
+      </entry>
+    </service-properties>
+  </service>
+
+  <!--<bean id="hadoopConfigurationLocator" class="org.pentaho.hadoop.shim.HadoopConfigurationLocatorBundle">
+    <argument>
+      <list>
+        <ref component-id="cdh511HadoopConfiguration"/>
+      </list>
+    </argument>
+  </bean>
+  <service ref="hadoopConfigurationLocator" interface="org.pentaho.hadoop.shim.spi.HadoopConfigurationProvider"/>-->
+
+  <bean id="hasHdp25Configuration" class="org.pentaho.hadoop.shim.HasConfigurationImpl">
+    <argument ref="hdp25HadoopConfiguration"/>
+  </bean>
+
+  <service ref="hasHdp25Configuration" interface="org.pentaho.hadoop.shim.api.HasConfiguration">
+    <service-properties>
+      <entry key="shim">
+        <value type="java.lang.String">hdp25</value>
+      </entry>
+    </service-properties>
+  </service>
+</blueprint>
