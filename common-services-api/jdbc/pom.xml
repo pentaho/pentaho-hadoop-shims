@@ -24,7 +24,7 @@
     <dependency>
       <groupId>pentaho</groupId>
       <artifactId>pentaho-metastore-locator-api</artifactId>
-      <version>${project.version}</version>
+      <version>${pentaho-osgi-bundles.version}</version>
     </dependency>
     <dependency>
       <groupId>org.osgi</groupId>
