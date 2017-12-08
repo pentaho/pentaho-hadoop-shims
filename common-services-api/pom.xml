@@ -33,7 +33,7 @@
     <org.apache.pig.version>0.8.0</org.apache.pig.version>
     <com.thoughtworks.xstream.version>1.4.9</com.thoughtworks.xstream.version>
     <org.apache.hbase.version>1.1.1</org.apache.hbase.version>
-    <dependency.metastore.revision>${project.version}</dependency.metastore.revision>
+    <metastore.version>${project.version}</metastore.version>
     <dependency.slf4j.revision>1.7.7</dependency.slf4j.revision>
   </properties>
   <dependencyManagement>
