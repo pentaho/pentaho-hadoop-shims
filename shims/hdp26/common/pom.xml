@@ -170,7 +170,7 @@
     <dependency>
       <groupId>org.pentaho.di.plugins</groupId>
       <artifactId>kettle-log4j-core</artifactId>
-      <version>${project.version}</version>
+      <version>${pdi.version}</version>
     </dependency>
   </dependencies>
   <build>
