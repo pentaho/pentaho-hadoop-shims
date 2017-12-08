@@ -57,6 +57,7 @@ public class PentahoOrcRecordReader implements IPentahoOrcInputFormat.IPentahoRe
   private Map<String, Integer> schemaToOrcSubcripts;
   private Path filePath;
   private FileSystem fs;
+  private OrcConverter orcConverter = new OrcConverter();
 
   public PentahoOrcRecordReader( String fileName, Configuration conf, SchemaDescription schemaDescription ) {
     this.conf = conf;
@@ -141,7 +142,7 @@ public class PentahoOrcRecordReader implements IPentahoOrcInputFormat.IPentahoRe
 
       @Override public RowMetaAndData next() {
         RowMetaAndData rowMeta =
-          OrcConverter.convertFromOrc( batch, currentBatchRow, schemaDescription, typeDescription, schemaToOrcSubcripts, orcSchemaDescription );
+          orcConverter.convertFromOrc( batch, currentBatchRow, schemaDescription, typeDescription, schemaToOrcSubcripts, orcSchemaDescription );
         currentBatchRow++;
         return rowMeta;
       }
