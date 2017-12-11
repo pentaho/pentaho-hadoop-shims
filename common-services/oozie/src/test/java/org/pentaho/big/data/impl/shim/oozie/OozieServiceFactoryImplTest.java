@@ -45,7 +45,7 @@ public class OozieServiceFactoryImplTest {
   private static final String OOZIE_URL = "http://oozieurl";
 
   @Before public void before() {
-//    serviceFactory = new OozieServiceFactoryImpl( true, configuration );
+    serviceFactory = new OozieServiceFactoryImpl(  );
 //    when( cluster.getOozieUrl() ).thenReturn( OOZIE_URL );
   }
 
