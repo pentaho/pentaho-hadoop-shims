@@ -175,6 +175,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.apache.orc</groupId>
+      <artifactId>orc-core</artifactId>
+      <version>${org.apache.orc.version}</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.sqoop</groupId>
       <artifactId>sqoop</artifactId>
       <version>${sqoop.version}</version>
@@ -378,7 +384,7 @@
             </resolverFilter>
             <resolverFilter>
               <include>
-                *:*java-protobuf,*:*metrics*,*:*pentaho-hdfs-vfs,*:sqoop,*:antlr-runtime,*:parquet*
+                *:*java-protobuf,*:*metrics*,*:*pentaho-hdfs-vfs,*:sqoop,*:antlr-runtime,*:parquet*,*:orc*
               </include>
               <exclude>*:*tests*</exclude>
               <transitive>false</transitive>
