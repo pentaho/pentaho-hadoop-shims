@@ -76,7 +76,7 @@ public class HiveDriverTest {
     assertNull( hiveDriver.connect( "jdbc:hive2//test;AuthMech=0", null ) );
   }
 
-  @Test( expected = SQLException.class )
+  @Test
   public void testConnectFailParse() throws SQLException, URISyntaxException {
     String url = "fake-url";
     when( jdbcUrlParser.parse( url ) ).thenThrow( new URISyntaxException( "", "" ) );
