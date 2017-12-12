@@ -73,6 +73,9 @@ public class HiveDriver implements Driver {
   }
 
   @Override public Connection connect( String url, Properties info ) throws SQLException {
+    if ( !checkBeforeAccepting( url ) ) {
+      return null;
+    }
     Driver driver = checkBeforeCallActiveDriver( url );
     JdbcUrl jdbcUrl;
     try {
@@ -144,11 +147,15 @@ public class HiveDriver implements Driver {
   }
 
   protected Driver checkBeforeCallActiveDriver( String url ) throws SQLException {
-    if ( url.contains( SIMBA_SPECIFIC_URL_PARAMETER ) ) {
+    if ( url.contains( SIMBA_SPECIFIC_URL_PARAMETER ) || !url.matches( ".+:hive2:.*" ) ) {
       // BAD-215 check required to distinguish Simba driver
       return null;
     }
     return delegate;
+  }
+
+  protected boolean checkBeforeAccepting( String url ) {
+    return url.matches( ".+:hive2:.*" );
   }
 
   @Override public DriverPropertyInfo[] getPropertyInfo( String url, Properties info ) throws SQLException {

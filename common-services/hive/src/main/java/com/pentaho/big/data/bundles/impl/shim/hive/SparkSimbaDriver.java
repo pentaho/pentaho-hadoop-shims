@@ -47,4 +47,8 @@ public class SparkSimbaDriver extends HiveSimbaDriver {
     }
     return delegate;
   }
+
+  protected boolean checkBeforeAccepting( String url ) {
+    return url.matches( ".+:spark:.*" );
+  }
 }

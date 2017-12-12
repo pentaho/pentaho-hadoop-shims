@@ -57,4 +57,8 @@ public class HiveSimbaDriver extends HiveDriver {
     }
     return delegate;
   }
+
+  protected boolean checkBeforeAccepting( String url ) {
+    return url.matches( ".+:hive2:.*" );
+  }
 }
