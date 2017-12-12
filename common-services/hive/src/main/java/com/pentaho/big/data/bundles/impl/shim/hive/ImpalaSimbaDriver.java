@@ -50,4 +50,8 @@ public class ImpalaSimbaDriver extends HiveSimbaDriver {
     }
     return delegate;
   }
+
+  protected boolean checkBeforeAccepting( String url ) {
+    return url.matches( ".+:impala:.*" );
+  }
 }
