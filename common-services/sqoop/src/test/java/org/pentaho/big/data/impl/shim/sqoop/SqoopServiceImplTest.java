@@ -58,6 +58,7 @@ public class SqoopServiceImplTest {
     sqoopService = new SqoopServiceImpl( hadoopShim, sqoopShim, namedCluster );
     configuration = mock( Configuration.class );
     when( hadoopShim.createConfiguration() ).thenReturn( configuration );
+    when( hadoopShim.createConfiguration( any() ) ).thenReturn( configuration );
   }
 
   @Test
@@ -71,8 +72,8 @@ public class SqoopServiceImplTest {
     String[] testArgs = { "testARgs" };
     assertEquals( 0, sqoopService.runTool( new ArrayList<>( Arrays.asList( testArgs ) ), properties ) );
 
-    verify( configuration ).set( testKey, testValue );
-    verify( hadoopShim )
+    verify( configuration, atLeastOnce() ).set( testKey, testValue );
+    verify( hadoopShim, atLeastOnce() )
       .configureConnectionInformation( eq( "" ), eq( "" ), eq( "" ), eq( "" ), eq( configuration ), any( List.class ) );
     verify( sqoopShim ).runTool( eq( testArgs ), eq( configuration ) );
     assertEquals( Boolean.toString( true ), System.getProperty( SqoopServiceImpl.SQOOP_THROW_ON_ERROR ) );

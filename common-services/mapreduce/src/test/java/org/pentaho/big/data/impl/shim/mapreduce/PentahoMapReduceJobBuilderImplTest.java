@@ -132,9 +132,9 @@ public class PentahoMapReduceJobBuilderImplTest {
     visitorServices.add( new MockVisitorService() );
     when( hadoopConfiguration.getHadoopShim() ).thenReturn( hadoopShim );
 
-//    pentahoMapReduceJobBuilder =
-//      new PentahoMapReduceJobBuilderImpl( namedCluster, hadoopConfiguration, logChannelInterface, variableSpace,
-//        pluginInterface, vfsPluginDirectory, pmrProperties, transFactory, pmrArchiveGetter, visitorServices );
+    pentahoMapReduceJobBuilder =
+      new PentahoMapReduceJobBuilderImpl( namedCluster, hadoopShim, logChannelInterface, variableSpace,
+        pluginInterface, vfsPluginDirectory, pmrProperties, transFactory, pmrArchiveGetter, visitorServices );
   }
 
   @Test
@@ -730,10 +730,10 @@ public class PentahoMapReduceJobBuilderImplTest {
       }
     } );
 
-//    PentahoMapReduceJobBuilderImpl builder =
-//      new PentahoMapReduceJobBuilderImpl( namedCluster, hadoopConfiguration, logChannelInterface, variableSpace,
-//        pluginInterface, vfsPluginDirectory, pmrProperties, transFactory, pmrArchiveGetter, badServices );
-//    builder.configure( configuration );
+    PentahoMapReduceJobBuilderImpl builder =
+      new PentahoMapReduceJobBuilderImpl( namedCluster, hadoopConfiguration.getHadoopShim(), logChannelInterface, variableSpace,
+        pluginInterface, vfsPluginDirectory, pmrProperties, transFactory, pmrArchiveGetter, badServices );
+    builder.configure( configuration );
   }
 
   @Test
