@@ -19,4 +19,33 @@
 
   <service ref="hadoopFileSystem" interface="org.pentaho.bigdata.api.hdfs.HadoopFileSystemFactory"/>
 
+  <bean id="hdp26FormatShim" class="org.pentaho.hadoop.shim.common.CommonFormatShim"/>
+
+  <service ref="hdp26FormatShim" auto-export="interfaces">
+    <service-properties>
+      <entry key="shim">
+        <value type="java.lang.String">hdp26</value>
+      </entry>
+      <entry key="service">
+        <value type="java.lang.String">format</value>
+      </entry>
+    </service-properties>
+  </service>
+
+  <bean id="hdp26FormatServiceFactory" class="org.pentaho.big.data.impl.shim.format.FormatServiceFactory">
+    <argument ref="hdp26FormatShim"/>
+  </bean>
+
+  <service ref="hdp26FormatServiceFactory"
+           interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
+    <service-properties>
+      <entry key="shim">
+        <value type="java.lang.String">hdp26</value>
+      </entry>
+      <entry key="service">
+        <value type="java.lang.String">format</value>
+      </entry>
+    </service-properties>
+  </service>
+
 </blueprint>
