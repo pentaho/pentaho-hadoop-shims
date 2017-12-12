@@ -6,12 +6,12 @@
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-emr56-reactor</artifactId>
-    <version>8.0-SNAPSHOT</version>
+    <version>80.2017.12.00-75</version>
   </parent>
 
   <artifactId>pentaho-hadoop-shims-emr56-hbase-comparators</artifactId>
   <packaging>jar</packaging>
-  <version>8.0-SNAPSHOT</version>
+  <version>80.2017.12.00-75</version>
 
   <dependencies>
     <dependency>
