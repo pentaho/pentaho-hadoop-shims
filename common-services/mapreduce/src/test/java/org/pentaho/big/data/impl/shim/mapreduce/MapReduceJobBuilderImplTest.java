@@ -46,11 +46,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isNull;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by bryan on 12/7/15.
@@ -95,6 +91,7 @@ public class MapReduceJobBuilderImplTest {
     when( runningJob.setupProgress() ).thenReturn( magicSetupNumber );
 
     when( hadoopShim.createConfiguration() ).thenReturn( configuration );
+    when( hadoopShim.createConfiguration( any() ) ).thenReturn( configuration );
     when( hadoopShim.getFileSystem( configuration ) ).thenReturn( fileSystem );
     when( hadoopShim.submitJob( configuration ) ).thenReturn( runningJob );
     fsUrl = "hdfs://";
@@ -140,7 +137,7 @@ public class MapReduceJobBuilderImplTest {
 
     assertEquals( magicSetupNumber, mapReduceJobBuilder.submit().getSetupProgress(), 0 );
 
-    verify( configuration ).setJobName( testJobName );
+    verify( configuration, atLeastOnce() ).setJobName( testJobName );
     verify( configuration ).setInputPaths( userPath1Path, userPath2Path );
     verify( configuration ).setNumMapTasks( numMapTasks );
     verify( configuration ).setNumReduceTasks( numReduceTasks );

@@ -54,9 +54,9 @@ public class MapReduceServiceFactoryImplTest {
     isActiveConfiguration = true;
     hadoopConfiguration = mock( HadoopConfiguration.class );
     executorService = mock( ExecutorService.class );
-//    mapReduceServiceFactory =
-//      new MapReduceServiceFactoryImpl( isActiveConfiguration, hadoopConfiguration, executorService, visitorServices );
-//    namedCluster = mock( NamedCluster.class );
+    mapReduceServiceFactory =
+      new MapReduceServiceFactoryImpl( hadoopConfiguration.getHadoopShim(), executorService, visitorServices );
+    namedCluster = mock( NamedCluster.class );
   }
 
   @Test
@@ -72,8 +72,8 @@ public class MapReduceServiceFactoryImplTest {
   @Test
   public void testCanHandleInactive() {
     isActiveConfiguration = false;
-//    mapReduceServiceFactory =
-//      new MapReduceServiceFactoryImpl( isActiveConfiguration, hadoopConfiguration, executorService, visitorServices );
+    mapReduceServiceFactory =
+      new MapReduceServiceFactoryImpl( hadoopConfiguration.getHadoopShim(), executorService, visitorServices );
 //    assertFalse( mapReduceServiceFactory.canHandle( namedCluster ) );
   }
 
