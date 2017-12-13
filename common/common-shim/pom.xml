@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.pentaho</groupId>
@@ -15,7 +15,6 @@
     <httpcore.version>4.4.6</httpcore.version>
     <org.apache.parquet.version>1.8.1</org.apache.parquet.version>
     <org.apache.avro.version>1.8.1</org.apache.avro.version>
-    <org.apache.orc.version>1.2.3</org.apache.orc.version>
     <jackson.version>2.6.5</jackson.version>
     <integration-test.src>src/it/java</integration-test.src>
   </properties>
@@ -115,6 +114,7 @@
       <groupId>org.apache.orc</groupId>
       <artifactId>orc-core</artifactId>
       <version>${org.apache.orc.version}</version>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.powermock</groupId>

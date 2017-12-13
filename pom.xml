@@ -28,6 +28,7 @@
     <pdi.version>8.1.0.0-SNAPSHOT</pdi.version>
     <org.powermock.version>1.6.2</org.powermock.version>
     <eula-wrap_assign-deps-to-properties-phase></eula-wrap_assign-deps-to-properties-phase>
+    <org.apache.orc.version>1.2.3</org.apache.orc.version>
   </properties>
 
   <dependencyManagement>
