@@ -51,6 +51,9 @@ import java.math.MathContext;
 import java.net.InetAddress;
 import java.nio.file.FileAlreadyExistsException;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -68,6 +71,17 @@ public class PentahoOrcReadWriteTest {
   private Object[][] rowData;
   private PentahoOrcOutputFormat orcOutputFormat;
   private String filePath;
+  private DateFormat dateFormat = new SimpleDateFormat( "yyyy/MM/dd HH:mm:ss.SSS" );
+
+  private InetAddress inetAddress1;
+
+  {
+    try {
+      inetAddress1 = InetAddress.getByName( "www.pentaho.com" );
+    } catch ( Exception e ){
+      //should not happen
+    }
+  }
 
   //This is the metadata and default values we will use to test with.  We'll create a file with two sets of these
   // 10 fields.  The first set will allows nulls, the seconds set will not allow nulls and use the default values.
@@ -77,11 +91,12 @@ public class PentahoOrcReadWriteTest {
     { "orcField2", "pentahoField2", String.valueOf( ValueMetaInterface.TYPE_STRING ), "default2" },
     { "orcDouble3", "pentahoNumber3", String.valueOf( ValueMetaInterface.TYPE_NUMBER ), "1234.0" },
     { "orcDouble4", "pentahoBigNumber4", String.valueOf( ValueMetaInterface.TYPE_BIGNUMBER ), "123456789.98765" },
-    { "orcBytes5", "pentahoInet5", String.valueOf( ValueMetaInterface.TYPE_INET ), "www.pentaho.com" },
+    { "orcBytes5", "pentahoInet5", String.valueOf( ValueMetaInterface.TYPE_INET ), inetAddress1.getHostAddress() },
     { "orcLong6", "pentahoBoolean6", String.valueOf( ValueMetaInterface.TYPE_BOOLEAN ), "true" },
     { "orcInt7", "pentahoInt7", String.valueOf( ValueMetaInterface.TYPE_INTEGER ), "-33456" },
-    { "orcDate8", "pentahoDate8", String.valueOf( ValueMetaInterface.TYPE_DATE ), "10000" },
-    { "orcTimestamp9", "pentahoTimestamp9", String.valueOf( ValueMetaInterface.TYPE_TIMESTAMP ), "10000" },
+    { "orcDate8", "pentahoDate8", String.valueOf( ValueMetaInterface.TYPE_DATE ), "1980/01/01 00:00:00.000" },
+    { "orcTimestamp9", "pentahoTimestamp9", String.valueOf( ValueMetaInterface.TYPE_TIMESTAMP ),
+      "1980/01/01 00:00:00.000" },
     { "orcBytes10", "pentahoBinary10", String.valueOf( ValueMetaInterface.TYPE_BINARY ), "binary" }
   };
   private final int ORC_NAME_INDEX = 0;
@@ -116,21 +131,23 @@ public class PentahoOrcReadWriteTest {
 
     // Then set that schemaDescription on the orc output format.
     orcOutputFormat.setSchemaDescription( schemaDescription );
+    Date date1 = ( dateFormat.parse( "2001/11/01 00:00:00.000" ) );
+    Date date2 = ( dateFormat.parse( "1999/12/31 00:00:00.000" ) );
+    Date timeStamp1 = new Timestamp( dateFormat.parse( "2001/11/01 20:30:15.123" ).getTime() );
+    Date timeStamp2 = new Timestamp( dateFormat.parse( "1999/12/31 23:59:59.999" ).getTime() );
 
     // Populate three rows of values.  These are values we will write rows with.  Whe we read back the rows from the
     // file they will be compared with these values to know it made the round trip.
     rowData = new Object[][]
       { { "Row1Field1", "Row1Field2", 3.1, new BigDecimal( 4.1, MathContext.DECIMAL64 ),
-        InetAddress.getByName( "1.2.3.4" ), true, 1L, new Date( 789 ), new Timestamp( 789 ), "foobar".getBytes(),
+        InetAddress.getByName( "www.microsoft.com" ), true, 1L, date1, timeStamp1, "foobar".getBytes(),
         "Row1Field3", "Row1Field4", 3.1, new BigDecimal( 4.1, MathContext.DECIMAL64 ),
-        InetAddress.getByName( "1.2.3.4" ), true, 1L, new Date( 789 ), new Timestamp( 789 ), "foobar".getBytes() },
+        InetAddress.getByName( "www.microsoft.com" ), true, 1L, date1, timeStamp2, "foobar".getBytes() },
 
         { "Row2Field1", "Row2Field2", -3.2, new BigDecimal( -4.2, MathContext.DECIMAL64 ),
-          InetAddress.getByName( "2.3.4.5" ), false, -2L, new Date( 20789 ), new Timestamp( 20789 ),
-          "Donald Duck".getBytes(),
+          InetAddress.getByName( "www.microsoft.com" ), false, -2L, date2, timeStamp2, "Donald Duck".getBytes(),
           "Row2Field3", "Row2Field4", -3.2, new BigDecimal( -4.2, MathContext.DECIMAL64 ),
-          InetAddress.getByName( "2.3.4.5" ), false, -2L, new Date( 20789 ), new Timestamp( 20789 ),
-          "Donald Duck".getBytes()
+          InetAddress.getByName( "www.microsoft.com" ), false, -2L, date2, timeStamp2, "Donald Duck".getBytes()
         },
 
         { "Row3Field1", null, null, null, null, null, null, null, null, null,
@@ -251,9 +268,18 @@ public class PentahoOrcReadWriteTest {
       if ( field.pentahoValueMetaType == ValueMetaInterface.TYPE_INET ) {
         assertTrue( errMsg, readValue.toString().contains( field.defaultValue ) );
       } else if ( field.pentahoValueMetaType == ValueMetaInterface.TYPE_DATE ) {
-        assertEquals( errMsg, new Date( Integer.valueOf( field.defaultValue ) ).toString(), readValue.toString() );
+        try {
+          assertEquals( errMsg, dateFormat.parse( field.defaultValue ).toString(), readValue.toString() );
+        } catch ( ParseException e ) {
+          e.printStackTrace();
+        }
       } else if ( field.pentahoValueMetaType == ValueMetaInterface.TYPE_TIMESTAMP ) {
-        assertEquals( errMsg, new Timestamp( Integer.valueOf( field.defaultValue ) ).toString(), readValue.toString() );
+        try {
+          assertEquals( errMsg, new Timestamp( dateFormat.parse( field.defaultValue ).getTime() ).toString(),
+            readValue.toString() );
+        } catch ( ParseException e ) {
+          e.printStackTrace();
+        }
       } else if ( field.pentahoValueMetaType == ValueMetaInterface.TYPE_BINARY ) {
         assertEquals( errMsg, field.defaultValue, new String( (byte[]) readValue ) );
       } else {

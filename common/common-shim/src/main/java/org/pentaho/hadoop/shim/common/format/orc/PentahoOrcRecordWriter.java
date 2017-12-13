@@ -38,17 +38,34 @@ import org.apache.orc.Writer;
 import org.pentaho.di.core.RowMetaAndData;
 import org.apache.hadoop.conf.Configuration;
 import org.pentaho.di.core.exception.KettleValueException;
+import org.pentaho.di.core.plugins.IValueMetaConverter;
+import org.pentaho.di.core.row.RowMeta;
 import org.pentaho.di.core.row.ValueMetaInterface;
+import org.pentaho.di.core.row.value.ValueMetaBase;
+import org.pentaho.di.core.row.value.ValueMetaBigNumber;
+import org.pentaho.di.core.row.value.ValueMetaBinary;
+import org.pentaho.di.core.row.value.ValueMetaBoolean;
+import org.pentaho.di.core.row.value.ValueMetaConversionException;
+import org.pentaho.di.core.row.value.ValueMetaConverter;
+import org.pentaho.di.core.row.value.ValueMetaDate;
+import org.pentaho.di.core.row.value.ValueMetaInteger;
+import org.pentaho.di.core.row.value.ValueMetaInternetAddress;
+import org.pentaho.di.core.row.value.ValueMetaNumber;
+import org.pentaho.di.core.row.value.ValueMetaString;
+import org.pentaho.di.core.row.value.ValueMetaTimestamp;
 import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -58,10 +75,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoRecordWriter {
   private final SchemaDescription schemaDescription;
   private final TypeDescription schema;
-  Configuration conf;
-  VectorizedRowBatch batch;
-  int batchRowNumber;
-  Writer writer;
+  private Configuration conf;
+  private VectorizedRowBatch batch;
+  private int batchRowNumber;
+  private Writer writer;
+  private final IValueMetaConverter valueMetaConverter = new ValueMetaConverter();
+  private final String dateFormatString = ValueMetaBase.DEFAULT_DATE_FORMAT_MASK; //TODO: Get this from UI
+  private SimpleDateFormat datePattern = new SimpleDateFormat( dateFormatString );
+  private RowMeta outputRowMeta = new RowMeta();
+  private RowMetaAndData outputRowMetaAndData;
+  private boolean isFirstRow = true;
   private static final Logger logger = Logger.getLogger( PentahoOrcRecordWriter.class );
 
   public int batchMaxSize = 10000;
@@ -71,22 +94,32 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
     this.schemaDescription = schemaDescription;
     this.schema = schema;
 
+    final AtomicInteger fieldNumber = new AtomicInteger();  //Mutable field count
+    schemaDescription.forEach( field -> setOutputMeta( fieldNumber, field ) );
+    outputRowMetaAndData = new RowMetaAndData( outputRowMeta, new Object[ fieldNumber.get() ] );
+
     try {
       writer = OrcFile.createWriter( new Path( filePath ),
         OrcFile.writerOptions( conf )
           .setSchema( schema ) );
       batch = schema.createRowBatch();
     } catch ( IOException e ) {
-      e.printStackTrace();
+      logger.error( e );
     }
 
     //Write the addition metadata for the fields
     new OrcMetaDataWriter( writer ).write( schemaDescription );
   }
 
+  private void setOutputMeta( AtomicInteger fieldNumber, SchemaDescription.Field field ) {
+    outputRowMeta.addValueMeta( getValueMetaInterface( field.pentahoFieldName, field.pentahoValueMetaType ) );
+    fieldNumber.getAndIncrement();
+  }
+
   @Override public void write( RowMetaAndData row ) throws Exception {
     final AtomicInteger fieldNumber = new AtomicInteger();  //Mutable field count
     batchRowNumber = batch.size++;
+
     schemaDescription.forEach( field -> setFieldValue( fieldNumber, field, row ) );
     if ( batch.size == batchMaxSize ) {
       writer.addRowBatch( batch );
@@ -108,6 +141,21 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
       }
     }
     columnVector.isNull[ batchRowNumber ] = false;
+
+    int inlineType = rowMetaAndData.getRowMeta().getValueMeta( rowMetaIndex ).getType();
+    Object inlineValue = rowMetaAndData.getData()[ rowMetaIndex ];
+
+    Object setValue = null;
+
+    try {
+      //Determine the value after converstion to the type specified in the schemaDescription
+      setValue = valueMetaConverter.convertFromSourceToTargetDataType( inlineType, field.pentahoValueMetaType, inlineValue );
+    } catch ( ValueMetaConversionException e ) {
+      logger.error( e );
+    }
+    //Set the final converted value
+    outputRowMetaAndData.getData()[ rowMetaIndex ] = setValue;
+
     switch ( field.pentahoValueMetaType ) {
       case ValueMetaInterface.TYPE_NUMBER:
         try {
@@ -115,7 +163,7 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
             rowMetaAndData.getNumber( field.pentahoFieldName,
               field.defaultValue != null ? Double.valueOf( field.defaultValue ) : 0 );
         } catch ( KettleValueException e ) {
-          e.printStackTrace();
+          logger.error( e );
         }
         break;
       case ValueMetaInterface.TYPE_BIGNUMBER:
@@ -124,16 +172,16 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
             rowMetaAndData.getBigNumber( field.pentahoFieldName,
               field.defaultValue != null ? new BigDecimal( field.defaultValue ) : new BigDecimal( 0 ) ) ) );
         } catch ( KettleValueException e ) {
-          e.printStackTrace();
+          logger.error( e );
         }
         break;
       case ValueMetaInterface.TYPE_INET:
         try {
           setBytesColumnVector( ( (BytesColumnVector) columnVector ),
             rowMetaAndData.getString( field.pentahoFieldName,
-              field.defaultValue != null ? field.defaultValue : InetAddress.getLocalHost().toString() ) );
-        } catch ( KettleValueException | UnknownHostException e ) {
-          e.printStackTrace();
+              field.defaultValue != null ? field.defaultValue : "www.google.com" ) );
+        } catch ( KettleValueException e ) {
+          logger.error( e );
         }
         break;
       case ValueMetaInterface.TYPE_STRING:
@@ -141,7 +189,7 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
           setBytesColumnVector( ( (BytesColumnVector) columnVector ),
             rowMetaAndData.getString( field.pentahoFieldName, field.defaultValue != null ? field.defaultValue : "" ) );
         } catch ( KettleValueException e ) {
-          e.printStackTrace();
+          logger.error( e );
         }
         break;
       case ValueMetaInterface.TYPE_BOOLEAN:
@@ -150,7 +198,7 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
             rowMetaAndData.getBoolean( field.pentahoFieldName,
               field.defaultValue != null ? Boolean.valueOf( field.defaultValue ) : false ) ? 1L : 0L;
         } catch ( KettleValueException e ) {
-          e.printStackTrace();
+          logger.error( e );
         }
         break;
       case ValueMetaInterface.TYPE_INTEGER:
@@ -159,7 +207,7 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
             rowMetaAndData.getInteger( field.pentahoFieldName,
               field.defaultValue != null ? Long.parseLong( field.defaultValue ) : 0 );
         } catch ( KettleValueException e ) {
-          e.printStackTrace();
+          logger.error( e );
         }
         break;
       case ValueMetaInterface.TYPE_SERIALIZABLE:
@@ -168,7 +216,7 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
             rowMetaAndData.getBinary( field.pentahoFieldName,
               field.defaultValue != null ? field.defaultValue.getBytes() : new byte[ 0 ] ) );
         } catch ( KettleValueException e ) {
-          e.printStackTrace();
+          logger.error( e );
         }
         break;
       case ValueMetaInterface.TYPE_BINARY:
@@ -177,27 +225,28 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
             rowMetaAndData.getBinary( field.pentahoFieldName,
               field.defaultValue != null ? field.defaultValue.getBytes() : new byte[ 0 ] ) );
         } catch ( KettleValueException e ) {
-          e.printStackTrace();
+          logger.error( e );
         }
         break;
       case ValueMetaInterface.TYPE_DATE:
+
         try {
-          ( (LongColumnVector) columnVector ).vector[ batchRowNumber ] =
+          ( (LongColumnVector) columnVector ).vector[ batchRowNumber ] = getOrcDate(
             rowMetaAndData.getDate( field.pentahoFieldName,
-              field.defaultValue != null ? new Date( Integer.valueOf( field.defaultValue ) ) : new Date( 0 ) )
-              .getTime();
-        } catch ( KettleValueException e ) {
-          e.printStackTrace();
+              field.defaultValue != null ? datePattern.parse( field.defaultValue ) : new Date( 0 ) )
+          );
+        } catch ( KettleValueException | ParseException e ) {
+          logger.error( e );
         }
         break;
       case ValueMetaInterface.TYPE_TIMESTAMP:
         try {
           ( (TimestampColumnVector) columnVector ).set( batchRowNumber,
             new Timestamp( rowMetaAndData.getDate( field.pentahoFieldName,
-              field.defaultValue != null ? new Date( Integer.valueOf( field.defaultValue ) ) : new Date( 0 ) )
+              field.defaultValue != null ? ( datePattern.parse( field.defaultValue ) ) : new Date( 0 ) )
               .getTime() ) );
-        } catch ( KettleValueException e ) {
-          e.printStackTrace();
+        } catch ( KettleValueException | ParseException e ) {
+          logger.error( e );
         }
         break;
       default:
@@ -205,6 +254,11 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
           "Field: " + field.formatFieldName + "  Undefined type: " + field.pentahoValueMetaType );
     }
 
+  }
+
+  private int getOrcDate( Date date ) {
+    LocalDate rowDate = date.toInstant().atZone( ZoneId.systemDefault() ).toLocalDate();
+    return Math.toIntExact( ChronoUnit.DAYS.between( LocalDate.ofEpochDay( 0 ), rowDate ) );
   }
 
   private void setBytesColumnVector( BytesColumnVector bytesColumnVector, String value ) {
@@ -238,5 +292,29 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
 
   private ByteBuffer toByteBuffer( boolean b ) throws UnsupportedEncodingException {
     return ByteBuffer.wrap( String.valueOf( b ).getBytes( "UTF-8" ) );
+  }
+
+  private ValueMetaInterface getValueMetaInterface( String fieldName, int fieldType ) {
+    switch ( fieldType ) {
+      case ValueMetaInterface.TYPE_INET:
+        return new ValueMetaInternetAddress( fieldName );
+      case ValueMetaInterface.TYPE_STRING:
+        return new ValueMetaString( fieldName );
+      case ValueMetaInterface.TYPE_INTEGER:
+        return new ValueMetaInteger( fieldName );
+      case ValueMetaInterface.TYPE_NUMBER:
+        return new ValueMetaNumber( fieldName );
+      case ValueMetaInterface.TYPE_BIGNUMBER:
+        return new ValueMetaBigNumber( fieldName );
+      case ValueMetaInterface.TYPE_TIMESTAMP:
+        return new ValueMetaTimestamp( fieldName );
+      case ValueMetaInterface.TYPE_DATE:
+        return new ValueMetaDate( fieldName );
+      case ValueMetaInterface.TYPE_BOOLEAN:
+        return new ValueMetaBoolean( fieldName );
+      case ValueMetaInterface.TYPE_BINARY:
+        return new ValueMetaBinary( fieldName );
+    }
+    return null;
   }
 }
