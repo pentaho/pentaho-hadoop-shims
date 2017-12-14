@@ -12,7 +12,10 @@
       <useTransitiveFiltering>true</useTransitiveFiltering>
       <includes>
 	    <include>org.xerial.snappy:snappy-java</include>
-        <include>org.apache.hadoop:hadoop-client</include>
+        <include>org.apache.hadoop:hadoop-aws</include>
+        <include>org.apache.hadoop:hadoop-hdfs</include>
+        <include>org.apache.hadoop:hadoop-common</include>
+        <include>org.apache.hadoop:hadoop-auth</include>
         <include>org.apache.hadoop:hadoop-mapreduce-client-core</include>
         <include>org.apache.hadoop:hadoop-mapreduce-client-app</include>
         <include>org.apache.hadoop:hadoop-mapreduce-client-common</include>
