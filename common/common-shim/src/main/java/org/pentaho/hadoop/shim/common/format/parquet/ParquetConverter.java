@@ -22,6 +22,7 @@
 package org.pentaho.hadoop.shim.common.format.parquet;
 
 import java.math.BigDecimal;
+import java.net.InetAddress;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -65,6 +66,7 @@ import org.pentaho.di.core.row.value.ValueMetaBinary;
 import org.pentaho.di.core.row.value.ValueMetaBoolean;
 import org.pentaho.di.core.row.value.ValueMetaDate;
 import org.pentaho.di.core.row.value.ValueMetaInteger;
+import org.pentaho.di.core.row.value.ValueMetaInternetAddress;
 import org.pentaho.di.core.row.value.ValueMetaNumber;
 import org.pentaho.di.core.row.value.ValueMetaSerializable;
 import org.pentaho.di.core.row.value.ValueMetaString;
@@ -153,6 +155,8 @@ public class ParquetConverter {
       case ValueMetaInterface.TYPE_DATE:
       case ValueMetaInterface.TYPE_TIMESTAMP:
         return new PrimitiveType( rep, PrimitiveTypeName.INT64, f.formatFieldName, OriginalType.TIMESTAMP_MILLIS );
+      case ValueMetaInterface.TYPE_INET:
+        return new PrimitiveType( rep, PrimitiveTypeName.BINARY, f.formatFieldName );
       default:
         throw new RuntimeException( "Undefined type: " + f.pentahoValueMetaType );
     }
@@ -201,19 +205,20 @@ public class ParquetConverter {
       //#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
               consumer.addBinary( Binary.fromReusedByteArray( new byte[0] ) );
       //#endif
-      //$     consumer.addBinary( Binary.fromByteArray( row.getBinary( fieldIndex, new byte[0] ) ) );
       //#if shim_type=="CDH" || shim_type=="MAPR"
+      //$     consumer.addBinary( Binary.fromByteArray( new byte[0] ) );
       //#endif
               break;
             case ValueMetaInterface.TYPE_BINARY:
+            case ValueMetaInterface.TYPE_INET:
               /**
                * 'fromByteArray' deprecated in the HDP, but CDH doesn't have 'fromReusedByteArray' yet.
                */
       //#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
               consumer.addBinary( Binary.fromReusedByteArray( new byte[0] ) );
       //#endif
-      //$     consumer.addBinary( Binary.fromByteArray( row.getBinary( fieldIndex, new byte[0] ) ) );
       //#if shim_type=="CDH" || shim_type=="MAPR"
+      //$     consumer.addBinary( Binary.fromByteArray( new byte[0] ) );
       //#endif
               break;
             case ValueMetaInterface.TYPE_DATE:
@@ -252,8 +257,8 @@ public class ParquetConverter {
         //#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
         consumer.addBinary( Binary.fromReusedByteArray( row.getBinary( fieldIndex, new byte[ 0 ] ) ) );
         //#endif
-        //$     consumer.addBinary( Binary.fromByteArray( row.getBinary( fieldIndex, new byte[0] ) ) );
         //#if shim_type=="CDH" || shim_type=="MAPR"
+        //$ consumer.addBinary( Binary.fromByteArray( row.getBinary( fieldIndex, new byte[0] ) ) );
         //#endif
         break;
       case ValueMetaInterface.TYPE_BINARY:
@@ -263,13 +268,25 @@ public class ParquetConverter {
         //#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
         consumer.addBinary( Binary.fromReusedByteArray( row.getBinary( fieldIndex, new byte[ 0 ] ) ) );
         //#endif
-        //$     consumer.addBinary( Binary.fromByteArray( row.getBinary( fieldIndex, new byte[0] ) ) );
         //#if shim_type=="CDH" || shim_type=="MAPR"
+        //$ consumer.addBinary( Binary.fromByteArray( row.getBinary( fieldIndex, new byte[0] ) ) );
         //#endif
         break;
       case ValueMetaInterface.TYPE_DATE:
       case ValueMetaInterface.TYPE_TIMESTAMP:
         consumer.addLong( row.getDate( fieldIndex, new Date( 0 ) ).getTime() );
+        break;
+      case ValueMetaInterface.TYPE_INET:
+        /**
+         * 'fromByteArray' deprecated in the HDP, but CDH doesn't have 'fromReusedByteArray' yet.
+         */
+        InetAddress addr = (InetAddress) row.getData()[fieldIndex];
+        //#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
+        consumer.addBinary( Binary.fromReusedByteArray( addr.getAddress() ) );
+        //#endif
+        //#if shim_type=="CDH" || shim_type=="MAPR"
+        //$ consumer.addBinary( Binary.fromByteArray( addr.getAddress() ) );
+        //#endif
         break;
       default:
         throw new RuntimeException( "Undefined type: " + field.pentahoValueMetaType );
@@ -528,6 +545,25 @@ public class ParquetConverter {
               @Override
               public void addBinary( Binary value ) {
                 current.getData()[index] = new Timestamp( dateFromInt96( value ) );
+              }
+            };
+            break;
+          case ValueMetaInterface.TYPE_INET:
+            ValueMetaInternetAddress field = new ValueMetaInternetAddress( f.pentahoFieldName );
+            fields.addValueMeta( field );
+            converters[i] = new PrimitiveConverter() {
+              @Override
+              public void addBinary( Binary value ) {
+                try {
+                  byte[] bytes = value.getBytes();
+                  if ( bytes == null || bytes.length == 0 ) {
+                    current.getData()[index] = null;
+                  } else {
+                    current.getData()[index] = InetAddress.getByAddress( bytes );
+                  }
+                } catch ( Exception ex ) {
+                  throw new RuntimeException( ex );
+                }
               }
             };
             break;
