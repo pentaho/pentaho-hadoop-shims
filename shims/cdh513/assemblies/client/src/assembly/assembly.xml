@@ -35,6 +35,7 @@
         <exclude>org.apache.zookeeper:zookeeper</exclude>
         <exclude>com.google.guava:*</exclude>
         <exclude>xml-apis:xml-apis</exclude>
+        <exclude>aws-java-sdk-bundle</exclude>
         <exclude>*:tests:*</exclude>
       </excludes>
     </dependencySet>
