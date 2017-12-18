@@ -43,7 +43,6 @@ import java.util.List;
 public class PentahoOrcInputFormat extends HadoopFormatBase implements IPentahoOrcInputFormat {
 
   private String fileName;
-  private String schemaFileName;
   private SchemaDescription schemaDescription;
   private Configuration conf;
 
@@ -66,7 +65,9 @@ public class PentahoOrcInputFormat extends HadoopFormatBase implements IPentahoO
       throw new IllegalStateException( "fileName or schemaDescription must not be null" );
     }
     conf = new Configuration();
-    return new PentahoOrcRecordReader( fileName, conf, schemaDescription );
+    return inClassloader( () -> {
+      return new PentahoOrcRecordReader( fileName, conf, schemaDescription );
+    } );
   }
 
   @Override
@@ -84,7 +85,7 @@ public class PentahoOrcInputFormat extends HadoopFormatBase implements IPentahoO
     return schemaDescription;
   }
 
-  public TypeDescription readTypeDescription( ) {
+  public TypeDescription readTypeDescription( ) throws Exception {
     checkNullFileName();
     Reader orcReader = getReader( );
     return readTypeDescription( orcReader );
@@ -94,23 +95,25 @@ public class PentahoOrcInputFormat extends HadoopFormatBase implements IPentahoO
     return orcReader.getSchema();
   }
 
-  private Reader getReader( ) {
-    checkNullFileName();
-    Path filePath;
-    FileSystem fs;
-    Reader orcReader;
-    try {
-      filePath = new Path( fileName );
-      fs = FileSystem.get( filePath.toUri(), conf );
-      if ( !fs.exists( filePath ) ) {
-        throw new NoSuchFileException( fileName );
+  private Reader getReader( ) throws Exception {
+    return inClassloader( () -> {
+      checkNullFileName();
+      Path filePath;
+      FileSystem fs;
+      Reader orcReader;
+      try {
+        filePath = new Path( fileName );
+        fs = FileSystem.get( filePath.toUri(), conf );
+        if ( !fs.exists( filePath ) ) {
+          throw new NoSuchFileException( fileName );
+        }
+        orcReader = OrcFile.createReader( filePath,
+          OrcFile.readerOptions( conf ).filesystem( fs ) );
+      } catch ( IOException e ) {
+        throw new RuntimeException( "Unable to read data from file " + fileName, e );
       }
-      orcReader = OrcFile.createReader( filePath,
-        OrcFile.readerOptions( conf ).filesystem( fs ) );
-    } catch ( IOException e ) {
-      throw new RuntimeException( "Unable to read data from file " + fileName, e );
-    }
-    return orcReader;
+      return orcReader;
+    } );
   }
 
   /**
