@@ -53,12 +53,10 @@ public class PentahoOrcOutputFormat extends HadoopFormatBase implements IPentaho
   private static final Logger logger = Logger.getLogger( PentahoOrcOutputFormat.class );
 
   public PentahoOrcOutputFormat() throws Exception {
-    conf = inClassloader( () -> {
-      Configuration conf = new ConfigurationProxy();
-      job = Job.getInstance( conf );
-      conf.addResource( "hive-site.xml" );
-      return conf;
-    } );
+    Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
+    conf = new ConfigurationProxy();
+    job = Job.getInstance( conf );
+    conf.addResource( "hive-site.xml" );
   }
 
   @Override public IPentahoRecordWriter createRecordWriter() throws Exception {
@@ -80,19 +78,17 @@ public class PentahoOrcOutputFormat extends HadoopFormatBase implements IPentaho
   }
 
   @Override public void setOutputFile( String file, boolean override ) throws Exception {
-    inClassloader( () -> {
-      Path outputFile = new Path( file );
-      FileSystem fs = FileSystem.get( outputFile.toUri(), job.getConfiguration() );
-      if ( fs.exists( outputFile ) ) {
-        if ( override ) {
-          fs.delete( outputFile, true );
-        } else {
-          throw new FileAlreadyExistsException( file );
-        }
+    Path outputFile = new Path( file );
+    FileSystem fs = FileSystem.get( outputFile.toUri(), job.getConfiguration() );
+    if ( fs.exists( outputFile ) ) {
+      if ( override ) {
+        fs.delete( outputFile, true );
+      } else {
+        throw new FileAlreadyExistsException( file );
       }
+    }
 
-      this.outputFilename = file;
-    } );
+    this.outputFilename = file;
   }
 
   @Override public void setCompression( COMPRESSION compression ) {
