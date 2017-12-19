@@ -87,8 +87,6 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
   private boolean isFirstRow = true;
   private static final Logger logger = Logger.getLogger( PentahoOrcRecordWriter.class );
 
-  public int batchMaxSize = 10000;
-
   public PentahoOrcRecordWriter( SchemaDescription schemaDescription, TypeDescription schema, String filePath,
                                  Configuration conf ) {
     this.schemaDescription = schemaDescription;
@@ -121,7 +119,7 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
     batchRowNumber = batch.size++;
 
     schemaDescription.forEach( field -> setFieldValue( fieldNumber, field, row ) );
-    if ( batch.size == batchMaxSize ) {
+    if ( batch.size == batch.getMaxSize() - 1 ) {
       writer.addRowBatch( batch );
       batch.reset();
     }
