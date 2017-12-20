@@ -62,8 +62,9 @@ public class OrcMetaDataReader implements IOrcMetaData.Reader {
     if ( reader.hasMetadataValue( propertyName ) ) {
       ByteBuffer b = reader.getMetadataValue( propertyName );
       return b == null ? null : byteBufferToString( b, Charset.forName( "UTF-8" ) );
+    } else {
+      return String.valueOf( field.pentahoValueMetaType );
     }
-    return null;
   }
 
   private int readInt( SchemaDescription.Field field, IOrcMetaData.propertyType metaField ) {
