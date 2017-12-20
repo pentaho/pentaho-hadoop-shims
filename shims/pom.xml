@@ -382,8 +382,8 @@
         <module>cdh512</module>
         <module>mapr510</module>
         <module>mapr520</module>
-        <module>emr56</module>
         <module>emr58</module>
+        <module>emr59</module>
         <module>hdi35</module>
       </modules>
     </profile>
@@ -461,18 +461,6 @@
     </profile>
 
     <profile>
-      <id>emr56</id>
-      <activation>
-        <property>
-          <name>!skipDefault</name>
-        </property>
-      </activation>
-      <modules>
-        <module>emr56</module>
-      </modules>
-    </profile>
-
-    <profile>
       <id>emr58</id>
       <activation>
         <property>
@@ -481,6 +469,18 @@
       </activation>
       <modules>
         <module>emr58</module>
+      </modules>
+    </profile>
+
+    <profile>
+      <id>emr59</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>emr59</module>
       </modules>
     </profile>
 
