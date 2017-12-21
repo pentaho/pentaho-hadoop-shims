@@ -378,8 +378,8 @@
       <modules>
         <module>hdp25</module>
         <module>hdp26</module>
-        <module>cdh511</module>
         <module>cdh512</module>
+        <module>cdh513</module>
         <module>mapr510</module>
         <module>mapr520</module>
         <module>emr58</module>
@@ -413,18 +413,6 @@
     </profile>
 
     <profile>
-      <id>cdh511</id>
-      <activation>
-        <property>
-          <name>!skipDefault</name>
-        </property>
-      </activation>
-      <modules>
-        <module>cdh511</module>
-      </modules>
-    </profile>
-
-    <profile>
       <id>cdh512</id>
       <activation>
         <property>
@@ -433,6 +421,18 @@
       </activation>
       <modules>
         <module>cdh512</module>
+      </modules>
+    </profile>
+
+    <profile>
+      <id>cdh513</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>cdh513</module>
       </modules>
     </profile>
 
