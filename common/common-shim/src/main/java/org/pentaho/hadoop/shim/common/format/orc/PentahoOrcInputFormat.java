@@ -23,7 +23,9 @@ package org.pentaho.hadoop.shim.common.format.orc;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.PathFilter;
 import org.apache.orc.Reader;
 import org.apache.orc.OrcFile;
 import org.apache.orc.TypeDescription;
@@ -107,6 +109,22 @@ public class PentahoOrcInputFormat extends HadoopFormatBase implements IPentahoO
         if ( !fs.exists( filePath ) ) {
           throw new NoSuchFileException( fileName );
         }
+
+        if ( fs.getFileStatus( filePath ).isDirectory() ) {
+          PathFilter pathFilter = new PathFilter() {
+            public boolean accept( Path file ) {
+              return file.getName().endsWith( ".orc" );
+            }
+          };
+
+          FileStatus[] fileStatuses = fs.listStatus( filePath, pathFilter );
+          if ( fileStatuses.length == 0 ) {
+            throw new NoSuchFileException( fileName );
+          }
+
+          filePath = fileStatuses[0].getPath();
+        }
+
         orcReader = OrcFile.createReader( filePath,
           OrcFile.readerOptions( conf ).filesystem( fs ) );
       } catch ( IOException e ) {
@@ -119,7 +137,7 @@ public class PentahoOrcInputFormat extends HadoopFormatBase implements IPentahoO
   /**
    * Set schema from user's metadata
    * <p>
-   * This schema will be used instead of schema from {@link #schemaFileName} since we allow user to override pentaho
+   * This schema will be used instead of schema from {@link #fileName} since we allow user to override pentaho
    * filed name
    */
   @Override
