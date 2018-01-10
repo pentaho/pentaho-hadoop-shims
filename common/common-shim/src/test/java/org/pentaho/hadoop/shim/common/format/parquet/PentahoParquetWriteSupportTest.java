@@ -22,10 +22,10 @@
 package org.pentaho.hadoop.shim.common.format.parquet;
 
 import org.apache.hadoop.conf.Configuration;
-//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
+//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_name=="mapr60"
 import org.apache.parquet.hadoop.api.WriteSupport;
 //#endif
-//#if shim_type=="CDH" || shim_type=="MAPR"
+//#if shim_type=="CDH" || shim_type=="MAPR" && shim_name!="mapr60"
 //$import parquet.hadoop.api.WriteSupport;
 //#endif
 import org.pentaho.di.core.util.Assert;
