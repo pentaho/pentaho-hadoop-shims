@@ -72,18 +72,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <dependency>
-      <groupId>pentaho</groupId>
-      <artifactId>pentaho-big-data-legacy</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
     <!--here test dependencies-->
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
