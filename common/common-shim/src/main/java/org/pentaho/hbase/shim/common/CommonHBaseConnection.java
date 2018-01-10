@@ -153,6 +153,8 @@ public class CommonHBaseConnection extends HBaseConnection {
         }
       }
 
+      verifyHBaseMapR60SpecificConfiguration( getActiveShimConfigurationId( connProps ) );
+
       if ( log.isDebug() ) {
         log.logDebug( "Opening HBase connection ..." );
       }
@@ -163,6 +165,31 @@ public class CommonHBaseConnection extends HBaseConnection {
     } finally {
       Thread.currentThread().setContextClassLoader( cl );
     }
+  }
+
+  private void verifyHBaseMapR60SpecificConfiguration( String shimConfigurationId ) {
+    if ( isMapR60OrAboveShim( shimConfigurationId ) && !isMapr60HBaseSpecificPropertySet() ) {
+      throw new IllegalArgumentException(
+              BaseMessages.getString( PKG, "CommonHBaseConnection.Error.HBaseMapR60SpecificPropertyNotSet" ) );
+    }
+  }
+
+  private boolean isMapr60HBaseSpecificPropertySet() {
+    return m_config.get( "hbase.table.namespace.mappings" ) != null;
+  }
+
+  private boolean isMapR60OrAboveShim( String shimConfigurationId ) {
+    return shimConfigurationId.toUpperCase().contains( "MAPR" )
+            && getMapRMajorVersion( shimConfigurationId.toUpperCase() ) > 5;
+  }
+
+  private int getMapRMajorVersion( String shimConfigurationId ) {
+    return shimConfigurationId.contains( "MAPR" )
+            ? shimConfigurationId.replace( "MAPR", "" ).trim().charAt( 0 ) : 0;
+  }
+
+  private String getActiveShimConfigurationId( Properties connectionProperties ) {
+    return connectionProperties.getProperty( ACTIVE_SHIM_VERSION, "" );
   }
 
   private boolean doZookeeperQuorumInNamedClusterAndConfigMatch( String zookeeperQuorum ) {
