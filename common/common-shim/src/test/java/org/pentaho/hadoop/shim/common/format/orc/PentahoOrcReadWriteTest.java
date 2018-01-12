@@ -181,7 +181,11 @@ public class PentahoOrcReadWriteTest {
   private void doReadWrite( IPentahoOrcOutputFormat.COMPRESSION compressionType, String outputFileName, boolean overwriteFile )
     throws Exception {
     orcOutputFormat.setCompression( compressionType );
-    filePath = tempFolder.getRoot().toString().substring( 2 ) + "/" + outputFileName;
+    if (tempFolder.getRoot().toString().substring( 1, 2 ).equals( ":" )) {
+      filePath = tempFolder.getRoot().toString().substring( 2 ) + "/" + outputFileName;
+    } else {
+      filePath = tempFolder.getRoot().toString() + "/" + outputFileName;
+    }
     filePath = filePath.replace( "\\", "/" );
 
     try {
