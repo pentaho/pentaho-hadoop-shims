@@ -21,9 +21,10 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.common.format.avro;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.annotations.VisibleForTesting;
 import org.apache.avro.Schema;
 import org.apache.avro.file.DataFileStream;
 import org.apache.avro.generic.GenericDatumReader;
@@ -31,17 +32,18 @@ import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.io.DatumReader;
 import org.apache.commons.vfs2.FileExtensionSelector;
 import org.apache.commons.vfs2.FileObject;
-import org.pentaho.di.core.exception.KettleFileException;
+import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.core.util.Utils;
 import org.pentaho.di.core.vfs.KettleVFS;
+import org.pentaho.hadoop.shim.api.format.AvroSpec;
+import org.pentaho.hadoop.shim.api.format.IAvroInputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoAvroInputFormat;
-import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 
 public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
 
   private String fileName;
   private String schemaFileName;
-  private SchemaDescription schemaDescriptionFromMeta;
+  private List<? extends IAvroInputField> inputFields;
 
   @Override
   public List<IPentahoInputSplit> getSplits() throws Exception {
@@ -50,43 +52,42 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
 
   @Override
     public IPentahoRecordReader createRecordReader( IPentahoInputSplit split ) throws Exception {
-    DataFileStream<GenericRecord> dfs = createDataFileStream( schemaFileName, fileName );
+    DataFileStream<GenericRecord> dfs = createDataFileStream(  );
     if ( dfs == null ) {
       throw new Exception( "Unable to read data from file " + fileName );
     }
-    SchemaDescription avroSchemaDescription = null;
-    SchemaDescription metaSchemaDescription = null;
+    Schema avroSchema = readAvroSchema( );
 
-    avroSchemaDescription = readSchema( schemaFileName, fileName );
-    metaSchemaDescription = schemaDescriptionFromMeta;
+    return new PentahoAvroRecordReader( dfs, avroSchema, getFields() );
+  }
 
-    return new PentahoAvroRecordReader( dfs, avroSchemaDescription, metaSchemaDescription );
+  @VisibleForTesting
+  public Schema readAvroSchema( ) throws Exception {
+    if ( schemaFileName != null && schemaFileName.length() > 0 ) {
+      return new Schema.Parser().parse( KettleVFS.getInputStream( schemaFileName ) );
+   } else if ( fileName != null && fileName.length() > 0 ) {
+      Schema schema = null;
+      DataFileStream<GenericRecord> dataFileStream = createDataFileStream(  );
+      schema = dataFileStream.getSchema();
+      dataFileStream.close();
+      return  schema;
+    }
+    throw new Exception( "The file you provided does not contain a schema."
+          + "  Please choose a schema file, or another file that contains a schema." );
   }
 
   @Override
-  public SchemaDescription readSchema( String schemaFileName, String fileName ) throws Exception {
-    if ( schemaFileName != null && schemaFileName.length() > 0 ) {
-      return AvroSchemaConverter.createSchemaDescription( readAvroSchema( schemaFileName ) );
-    } else if ( fileName != null && fileName.length() > 0 ) {
-      DataFileStream<GenericRecord> dataFileStream = createDataFileStream( schemaFileName, fileName );
-      SchemaDescription schemaDescription = AvroSchemaConverter.createSchemaDescription( dataFileStream.getSchema() );
-      dataFileStream.close();
-      return  schemaDescription;
+  public List<? extends IAvroInputField> getFields() throws Exception {
+    if (this.inputFields != null) {
+      return inputFields;
     } else {
-      throw new Exception( "The file you provided does not contain a schema."
-          + "  Please choose a schema file, or another file that contains a schema." );
-
+      return getDefaultFields();
     }
   }
 
-  /**
-   * Set schema from user's metadata
-   * 
-   * This schema will be used instead of schema from {@link #schemaFileName} since we allow user to override pentaho filed name
-   */
   @Override
-  public void setSchema( SchemaDescription schema ) throws Exception {
-    schemaDescriptionFromMeta = schema;
+  public void setInputFields( List<? extends IAvroInputField> fields ) throws Exception {
+    this.inputFields = fields;
   }
 
   @Override
@@ -94,9 +95,6 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
     this.fileName = fileName;
   }
 
-  /**
-   * Set schema filename. We will use it for retrive initial fields name and will use it if we do not provide updated schemaDescription {@link #setSchema(SchemaDescription)}
-   */
   @Override
   public void setInputSchemaFile( String schemaFileName ) throws Exception {
     this.schemaFileName = schemaFileName;
@@ -108,14 +106,11 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
     //do nothing 
   }
 
-  private Schema readAvroSchema( String schemaFile ) throws KettleFileException, IOException {
-    return new Schema.Parser().parse( KettleVFS.getInputStream( schemaFile ) );
-  }
-
-  private DataFileStream<GenericRecord> createDataFileStream( String schemaFileName, String fileName ) throws Exception {
+  private DataFileStream<GenericRecord> createDataFileStream(  ) throws Exception {
     DatumReader<GenericRecord> datumReader;
     if ( schemaFileName != null && schemaFileName.length() > 0 ) {
-      datumReader = new GenericDatumReader<GenericRecord>( readAvroSchema( schemaFileName ) );
+      Schema schema = new Schema.Parser().parse( KettleVFS.getInputStream( schemaFileName ) );
+      datumReader = new GenericDatumReader<GenericRecord>( schema );
     } else {
       datumReader = new GenericDatumReader<GenericRecord>(  );
     }
@@ -129,5 +124,99 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
       }
       return null;
     }
+  }
+
+  public List<? extends IAvroInputField> getDefaultFields( ) throws Exception {
+    ArrayList<AvroInputField> fields = new ArrayList<AvroInputField>();
+
+    Schema avroSchema = readAvroSchema();
+    for (Schema.Field f : avroSchema.getFields()) {
+
+      String logicalType = f.getProp( AvroSpec.LOGICAL_TYPE );
+      AvroSpec.DataType actualAvroType = null;
+      if (logicalType != null) {
+        for (AvroSpec.DataType tmpType : AvroSpec.DataType.values()) {
+          if (logicalType.equals( tmpType.getLogicalType() )) {
+            actualAvroType = tmpType;
+            break;
+          }
+        }
+      } else {
+        String primitiveType = null;
+        if ( f.schema().getType().equals( Schema.Type.UNION ) ) {
+          List<Schema> schemas = f.schema().getTypes();
+          for ( Schema s: schemas ) {
+            if ( !s.getName().equalsIgnoreCase( "null" ) ) {
+              primitiveType = s.getType().getName();
+              break;
+            }
+          }
+        } else {
+          primitiveType = f.schema().getType().getName();
+        }
+
+        for (AvroSpec.DataType tmpType : AvroSpec.DataType.values()) {
+          if (primitiveType.equals( tmpType.getBaseType() )) {
+            actualAvroType = tmpType;
+            break;
+          }
+        }
+      }
+
+      AvroSpec.DataType supportedAvroType = null;
+      if ((actualAvroType == AvroSpec.DataType.DATE)
+        || (actualAvroType == AvroSpec.DataType.DECIMAL)
+        || (actualAvroType == AvroSpec.DataType.TIME_MILLIS)
+        || actualAvroType.isPrimitiveType()) {
+        supportedAvroType = actualAvroType;
+      }
+
+      if (supportedAvroType == null) {
+        throw new RuntimeException( "Field: " + f.name() + "  Undefined type: " + f.schema().getType() );
+      }
+
+      int pentahoType = 0;
+      switch ( supportedAvroType ) {
+        case DATE:
+          pentahoType = ValueMetaInterface.TYPE_DATE;
+          break;
+        case DOUBLE:
+          pentahoType = ValueMetaInterface.TYPE_NUMBER;
+          break;
+        case FLOAT:
+          pentahoType = ValueMetaInterface.TYPE_NUMBER;
+          break;
+        case LONG:
+          pentahoType = ValueMetaInterface.TYPE_INTEGER;
+          break;
+        case BOOLEAN:
+          pentahoType = ValueMetaInterface.TYPE_BOOLEAN;
+          break;
+        case INTEGER:
+          pentahoType = ValueMetaInterface.TYPE_INTEGER;
+          break;
+        case STRING:
+          pentahoType = ValueMetaInterface.TYPE_STRING;
+          break;
+        case BYTES:
+          pentahoType = ValueMetaInterface.TYPE_BINARY;
+          break;
+        case DECIMAL:
+          pentahoType = ValueMetaInterface.TYPE_BIGNUMBER;
+          break;
+        case TIME_MILLIS:
+          pentahoType = ValueMetaInterface.TYPE_TIMESTAMP;
+          break;
+      }
+
+      AvroInputField avroInputField = new AvroInputField();
+      avroInputField.setAvroFieldName(f.name());
+      avroInputField.setPentahoFieldName(f.name());
+      avroInputField.setPentahoType(pentahoType);
+      avroInputField.setAvroType( actualAvroType );
+      fields.add( avroInputField );
+    }
+
+    return fields;
   }
 }

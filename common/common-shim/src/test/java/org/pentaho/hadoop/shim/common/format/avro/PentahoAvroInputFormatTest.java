@@ -21,16 +21,21 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.common.format.avro;
 
+import org.apache.avro.Schema;
 import org.junit.Before;
 import org.junit.Test;
+import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class PentahoAvroInputFormatTest {
 
@@ -51,25 +56,29 @@ public class PentahoAvroInputFormatTest {
 
   @Test( expected = Exception.class )
   public void readSchemaNoFiles() throws Exception {
-    format.readSchema( null, null );
+    format.setInputFile( null );
+    format.setInputSchemaFile( null );
+    format.setInputFields( null );
+
+    IPentahoInputFormat.IPentahoRecordReader reader = format.createRecordReader( null );
   }
 
   @Test
   public void readSchema() throws Exception {
     String schemaFile = getFilePath( SAMPLE_SCHEMA_AVRO );
-    SchemaDescription schemaDescription = format.readSchema( schemaFile, null );
-    List<SchemaDescription.Field> fields =
-      StreamSupport.stream( schemaDescription.spliterator(), false ).collect( Collectors.toList() );
-    assertEquals( 2, fields.size() );
+    format.setInputSchemaFile( schemaFile );
+    format.setInputFile( null );
+    Schema   schema = format.readAvroSchema( );
+    assertEquals( 2, schema.getFields().size() );
   }
 
   @Test
   public void readSchemaFromDataFile() throws Exception {
     String dataFile = getFilePath( SAMPLE_DATA_AVRO );
-    SchemaDescription schemaDescription = format.readSchema( null, dataFile );
-    List<SchemaDescription.Field> fields =
-      StreamSupport.stream( schemaDescription.spliterator(), false ).collect( Collectors.toList() );
-    assertEquals( 2, fields.size() );
+    format.setInputSchemaFile( null );
+    format.setInputFile( dataFile );
+    Schema   schema = format.readAvroSchema( );
+    assertEquals( 2, schema.getFields().size() );
   }
 
   private String getFilePath( String file ) {

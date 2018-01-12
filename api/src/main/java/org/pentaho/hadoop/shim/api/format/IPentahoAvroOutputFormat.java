@@ -21,13 +21,15 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.api.format;
 
+import java.util.List;
+
 public interface IPentahoAvroOutputFormat extends IPentahoOutputFormat {
 
   enum COMPRESSION {
     UNCOMPRESSED, SNAPPY, DEFLATE
   }
 
-  void setSchemaDescription( SchemaDescription schema ) throws Exception;
+  void setFields( List<? extends IAvroOutputField> fields ) throws Exception;
 
   void setOutputFile( String file ) throws Exception;
 
