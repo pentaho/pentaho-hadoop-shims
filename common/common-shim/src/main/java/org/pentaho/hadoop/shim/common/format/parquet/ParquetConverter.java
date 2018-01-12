@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
+//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_name=="mapr60"
 import org.apache.parquet.io.api.Binary;
 import org.apache.parquet.io.api.Converter;
 import org.apache.parquet.io.api.GroupConverter;
@@ -41,7 +41,7 @@ import org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName;
 import org.apache.parquet.schema.Type;
 import org.apache.parquet.schema.Type.Repetition;
 //#endif
-//#if shim_type=="CDH" || shim_type=="MAPR"
+//#if shim_type=="CDH" || shim_type=="MAPR" && shim_name!="mapr60"
 //$import parquet.io.api.Binary;
 //$import parquet.io.api.Converter;
 //$import parquet.io.api.GroupConverter;

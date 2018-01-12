@@ -36,10 +36,10 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.apache.hadoop.fs.Path;
-//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
+//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_name=="mapr60"
 import org.apache.parquet.hadoop.ParquetInputSplit;
 //#endif
-//#if shim_type=="CDH" || shim_type=="MAPR"
+//#if shim_type=="CDH" || shim_type=="MAPR" && shim_name!="mapr60"
 //$import parquet.hadoop.ParquetInputSplit;
 //#endif
 import org.junit.Test;

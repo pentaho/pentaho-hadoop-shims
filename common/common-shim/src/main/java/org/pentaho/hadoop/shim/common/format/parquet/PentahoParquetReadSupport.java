@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
+//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_name=="mapr60"
 import org.apache.hadoop.conf.Configuration;
 import org.apache.parquet.hadoop.api.InitContext;
 import org.apache.parquet.hadoop.api.ReadSupport;
@@ -34,7 +34,7 @@ import org.apache.parquet.io.api.RecordMaterializer;
 import org.apache.parquet.schema.MessageType;
 import org.apache.parquet.schema.Type;
 //#endif
-//#if shim_type=="CDH" || shim_type=="MAPR"
+//#if shim_type=="CDH" || shim_type=="MAPR" && shim_name!="mapr60"
 //$import org.apache.hadoop.conf.Configuration;
 //$import parquet.hadoop.api.InitContext;
 //$import parquet.hadoop.api.ReadSupport;
