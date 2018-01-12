@@ -198,6 +198,28 @@
       </exclusions>
     </dependency>
     <dependency>
+      <groupId>com.twitter</groupId>
+      <artifactId>parquet-hadoop-bundle</artifactId>
+      <version>${com.twitter.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.twitter</groupId>
+      <artifactId>parquet-pig-bundle</artifactId>
+      <version>${com.twitter.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
       <groupId>pentaho</groupId>
       <artifactId>pentaho-hdfs-vfs</artifactId>
     </dependency>

@@ -263,6 +263,12 @@
             <exclude>**/DistributedCacheUtilImplOSDependentTest.java</exclude>
             <exclude>**/PentahoOrcReadWriteTest.java</exclude>
           </excludes>
+          <systemProperties>
+            <property>
+              <name>hadoop.login</name>
+              <value>simple</value>
+            </property>
+          </systemProperties>
         </configuration>
       </plugin>
       <plugin>
