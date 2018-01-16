@@ -38,4 +38,6 @@ public interface IAvroInputField {
   public AvroSpec.DataType getAvroType();
 
   public void setAvroType( AvroSpec.DataType avroType );
+
+  public void setAvroType( String avroType );
 }
