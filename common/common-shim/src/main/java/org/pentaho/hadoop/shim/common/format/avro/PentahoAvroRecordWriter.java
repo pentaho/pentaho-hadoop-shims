@@ -41,7 +41,8 @@ import java.nio.ByteBuffer;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
@@ -80,7 +81,7 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
           int fieldMetaIndex = rmi.indexOfValue( field.getPentahoFieldName() );
           ValueMetaInterface vmi = rmi.getValueMeta( fieldMetaIndex );
           String fieldName = field.getAvroFieldName();
-          switch (avroType) {
+          switch ( avroType ) {
             case BOOLEAN:
               outputRecord.put( fieldName, row.getBoolean( fieldMetaIndex, Boolean.parseBoolean( field.getDefaultValue() ) ) );
               break;
@@ -97,14 +98,14 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
 
               Integer dateInDays = null;
               Date dateFromRow = row.getDate( fieldMetaIndex, defaultDate );
-
-              if (dateFromRow != null) {
-                dateInDays = (int)ChronoUnit.DAYS.between( Instant.EPOCH, dateFromRow.toInstant()  ) + 1;
+              if ( dateFromRow != null) {
+                LocalDate rowDate = dateFromRow != null ? dateFromRow.toInstant().atZone( ZoneId.systemDefault() ).toLocalDate() : null;
+                dateInDays = Math.toIntExact( ChronoUnit.DAYS.between( LocalDate.ofEpochDay( 0 ), rowDate ) );
               }
               outputRecord.put( fieldName,  dateInDays);
               break;
             case FLOAT:
-              outputRecord.put( fieldName, (float)row.getNumber( fieldMetaIndex,
+              outputRecord.put( fieldName, (float) row.getNumber( fieldMetaIndex,
                 ( field.getDefaultValue() != null && field.getDefaultValue().length() > 0 ) ? Float.parseFloat( field.getDefaultValue() ) : 0 ) );
               break;
             case DOUBLE:
@@ -145,7 +146,7 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
               } else {
                 longValue = row.getInteger( fieldMetaIndex );
               }
-              outputRecord.put( fieldName, longValue != null ? new Integer(longValue.intValue()) : null );
+              outputRecord.put( fieldName, longValue != null ? new Integer( longValue.intValue() ) : null );
               break;
             case STRING:
               outputRecord.put( fieldName, row.getString( fieldMetaIndex, String.valueOf( field.getDefaultValue() ) ) );

@@ -127,9 +127,9 @@ public class PentahoAvroOutputFormat implements IPentahoAvroOutputFormat {
   }
 
   protected Schema getSchema() {
-    if (schema == null) {
+    if ( schema == null ) {
         ObjectNode schemaObjectNode = getSchemaObjectNode();
-        if (schemaObjectNode != null) {
+        if ( schemaObjectNode != null ) {
           schema = new Schema.Parser().parse( schemaObjectNode.toString() );
         }
     }
@@ -149,9 +149,9 @@ public class PentahoAvroOutputFormat implements IPentahoAvroOutputFormat {
 
         ArrayNode fieldNodes = mapper.createArrayNode();
         Iterator<? extends IAvroOutputField> fields = this.fields.iterator();
-        while (fields.hasNext()) {
+        while ( fields.hasNext()) {
           IAvroOutputField f = fields.next();
-          if (f.getAvroType() == null) {
+          if ( f.getAvroType() == null ) {
             throw new RuntimeException( "Field: " + f.getAvroFieldName() + " has undefined type. " );
           }
 
@@ -159,7 +159,7 @@ public class PentahoAvroOutputFormat implements IPentahoAvroOutputFormat {
           ObjectNode fieldNode = mapper.createObjectNode();
 
           fieldNode.put( AvroSpec.NAME_NODE, f.getAvroFieldName() );
-          if (type.isPrimitiveType()) {
+          if ( type.isPrimitiveType()) {
             if ( f.getAllowNull() ) {
               ArrayNode arrayNode = mapper.createArrayNode().add( AvroSpec.DataType.NULL.getType() );
               arrayNode.add( type.getType() );

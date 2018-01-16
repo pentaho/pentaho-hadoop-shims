@@ -46,6 +46,6 @@ public class AvroInputField implements IAvroInputField{
 
   @Override
   public void setAvroType( AvroSpec.DataType avroType ) {
-
+    this.avroType = avroType;
   }
 }

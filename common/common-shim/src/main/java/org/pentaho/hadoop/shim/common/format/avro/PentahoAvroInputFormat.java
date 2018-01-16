@@ -78,7 +78,7 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
 
   @Override
   public List<? extends IAvroInputField> getFields() throws Exception {
-    if (this.inputFields != null) {
+    if ( this.inputFields != null ) {
       return inputFields;
     } else {
       return getDefaultFields();
@@ -130,13 +130,13 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
     ArrayList<AvroInputField> fields = new ArrayList<AvroInputField>();
 
     Schema avroSchema = readAvroSchema();
-    for (Schema.Field f : avroSchema.getFields()) {
+    for ( Schema.Field f : avroSchema.getFields() ) {
 
       String logicalType = f.getProp( AvroSpec.LOGICAL_TYPE );
       AvroSpec.DataType actualAvroType = null;
-      if (logicalType != null) {
-        for (AvroSpec.DataType tmpType : AvroSpec.DataType.values()) {
-          if (logicalType.equals( tmpType.getLogicalType() )) {
+      if ( logicalType != null ) {
+        for ( AvroSpec.DataType tmpType : AvroSpec.DataType.values() ) {
+          if ( logicalType.equals( tmpType.getLogicalType() ) ) {
             actualAvroType = tmpType;
             break;
           }
@@ -155,8 +155,8 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
           primitiveType = f.schema().getType().getName();
         }
 
-        for (AvroSpec.DataType tmpType : AvroSpec.DataType.values()) {
-          if (primitiveType.equals( tmpType.getBaseType() )) {
+        for ( AvroSpec.DataType tmpType : AvroSpec.DataType.values() ) {
+          if ( primitiveType.equals( tmpType.getBaseType() ) ) {
             actualAvroType = tmpType;
             break;
           }
@@ -164,14 +164,14 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
       }
 
       AvroSpec.DataType supportedAvroType = null;
-      if ((actualAvroType == AvroSpec.DataType.DATE)
-        || (actualAvroType == AvroSpec.DataType.DECIMAL)
-        || (actualAvroType == AvroSpec.DataType.TIME_MILLIS)
-        || actualAvroType.isPrimitiveType()) {
+      if ( ( actualAvroType == AvroSpec.DataType.DATE )
+        || ( actualAvroType == AvroSpec.DataType.DECIMAL )
+        || ( actualAvroType == AvroSpec.DataType.TIMESTAMP_MILLIS )
+        || actualAvroType.isPrimitiveType() ) {
         supportedAvroType = actualAvroType;
       }
 
-      if (supportedAvroType == null) {
+      if ( supportedAvroType == null ) {
         throw new RuntimeException( "Field: " + f.name() + "  Undefined type: " + f.schema().getType() );
       }
 
@@ -204,15 +204,15 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
         case DECIMAL:
           pentahoType = ValueMetaInterface.TYPE_BIGNUMBER;
           break;
-        case TIME_MILLIS:
+        case TIMESTAMP_MILLIS:
           pentahoType = ValueMetaInterface.TYPE_TIMESTAMP;
           break;
       }
 
       AvroInputField avroInputField = new AvroInputField();
-      avroInputField.setAvroFieldName(f.name());
-      avroInputField.setPentahoFieldName(f.name());
-      avroInputField.setPentahoType(pentahoType);
+      avroInputField.setAvroFieldName( f.name() );
+      avroInputField.setPentahoFieldName( f.name() );
+      avroInputField.setPentahoType( pentahoType );
       avroInputField.setAvroType( actualAvroType );
       fields.add( avroInputField );
     }
