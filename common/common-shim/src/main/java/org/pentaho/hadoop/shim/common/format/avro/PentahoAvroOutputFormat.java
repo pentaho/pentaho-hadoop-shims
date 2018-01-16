@@ -42,6 +42,8 @@ import org.pentaho.hadoop.shim.api.format.IPentahoAvroOutputFormat;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.zip.Deflater;
 
 /**
@@ -61,6 +63,7 @@ public class PentahoAvroOutputFormat implements IPentahoAvroOutputFormat {
 
   @Override
   public IPentahoRecordWriter createRecordWriter() throws Exception {
+    validate();
     if ( fields == null || StringUtils.isEmpty( nameSpace ) || StringUtils.isEmpty( recordName ) || StringUtils.isEmpty( outputFilename ) ) {
       throw new Exception( "Invalid state.  One of the following required fields is null:  'nameSpace', 'recordNum', or 'outputFileName" );
     }
@@ -71,6 +74,28 @@ public class PentahoAvroOutputFormat implements IPentahoAvroOutputFormat {
     dataFileWriter.setCodec( codecFactory );
     dataFileWriter.create( schema, KettleVFS.getOutputStream( outputFilename, false ) );
     return new PentahoAvroRecordWriter( dataFileWriter, schema, fields );
+  }
+
+  private void validate() throws Exception {
+    SimpleDateFormat dateFormat = new SimpleDateFormat( "yyyy/mm/dd HH:mm:ss" );
+    String date = dateFormat.format( new Date() );
+
+    StringBuffer errors = new StringBuffer();
+    if ( StringUtils.isEmpty( outputFilename ) ) {
+      errors.append( "\n" );
+      errors.append( date + " - Unable to run [TRANS_NAME]. Please set the Avro Output Folder/File name for [STEP_NAME]." );
+    }
+    if ( StringUtils.isEmpty( nameSpace ) ) {
+      errors.append( "\n" );
+      errors.append( date + " - Unable to run [TRANS_NAME]. Please set the Avro Schema Namespace for [STEP_NAME]." );
+    }
+    if ( StringUtils.isEmpty( recordName ) ) {
+      errors.append( "\n" );
+      errors.append( date + " - Unable to run [TRANS_NAME]. Please set the Avro Schema Record name for [STEP_NAME]." );
+    }
+    if ( !StringUtils.isEmpty( errors.toString() ) ) {
+      throw new Exception( errors.toString() );
+    }
   }
 
   @Override
