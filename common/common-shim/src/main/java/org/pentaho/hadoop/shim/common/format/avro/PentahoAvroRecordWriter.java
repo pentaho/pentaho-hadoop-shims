@@ -41,8 +41,7 @@ import java.nio.ByteBuffer;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
@@ -66,7 +65,7 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
     try {
       nativeAvroRecordWriter.append( createAvroRecord( row ) );
     } catch ( IOException e ) {
-
+      // Do nothing
     }
   }
 
@@ -80,96 +79,124 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
           AvroSpec.DataType avroType = field.getAvroType();
           int fieldMetaIndex = rmi.indexOfValue( field.getPentahoFieldName() );
           ValueMetaInterface vmi = rmi.getValueMeta( fieldMetaIndex );
-          String fieldName = field.getAvroFieldName();
+          String avroFieldName = field.getAvroFieldName();
+          String pentahoFieldName = field.getPentahoFieldName();
+          String defaultValue = null;
+          if ( !field.getAllowNull() ) {
+            defaultValue = field.getDefaultValue();
+          }
           switch ( avroType ) {
             case BOOLEAN:
-              outputRecord.put( fieldName, row.getBoolean( fieldMetaIndex, Boolean.parseBoolean( field.getDefaultValue() ) ) );
+              Boolean booleanValue = null;
+              if ( row.isEmptyValue( pentahoFieldName ) ) {
+                booleanValue = ( defaultValue != null && defaultValue.length() > 0 ) ? Boolean.parseBoolean( defaultValue ) : null;
+              } else {
+                booleanValue = row.getBoolean( fieldMetaIndex, false );
+              }
+              outputRecord.put( avroFieldName, booleanValue );
               break;
             case DATE:
               Date defaultDate = null;
-              if ( field.getDefaultValue() != null && field.getDefaultValue().length() > 0 ) {
+              if ( defaultValue != null && defaultValue.length() > 0 ) {
                 DateFormat dateFormat = new SimpleDateFormat( vmi.getConversionMask() );
                 try {
-                  defaultDate = dateFormat.parse( field.getDefaultValue() );
+                  defaultDate = dateFormat.parse( defaultValue );
                 } catch ( ParseException pe ) {
-                  defaultDate = null;
+                  // Do nothing
                 }
               }
 
               Integer dateInDays = null;
               Date dateFromRow = row.getDate( fieldMetaIndex, defaultDate );
-              if ( dateFromRow != null) {
-                LocalDate rowDate = dateFromRow != null ? dateFromRow.toInstant().atZone( ZoneId.systemDefault() ).toLocalDate() : null;
-                dateInDays = Math.toIntExact( ChronoUnit.DAYS.between( LocalDate.ofEpochDay( 0 ), rowDate ) );
+
+              if ( dateFromRow != null ) {
+                dateInDays = (int) ChronoUnit.DAYS.between( Instant.EPOCH, dateFromRow.toInstant()  ) + 1;
               }
-              outputRecord.put( fieldName,  dateInDays);
+              outputRecord.put( avroFieldName,  dateInDays );
               break;
             case FLOAT:
-              outputRecord.put( fieldName, (float) row.getNumber( fieldMetaIndex,
-                ( field.getDefaultValue() != null && field.getDefaultValue().length() > 0 ) ? Float.parseFloat( field.getDefaultValue() ) : 0 ) );
+              Float floatValue = null;
+              if ( row.isEmptyValue( pentahoFieldName ) ) {
+                floatValue = ( defaultValue != null && defaultValue.length() > 0 ) ? Float.parseFloat( defaultValue ) : null;
+              } else {
+                floatValue = (float) row.getNumber( fieldMetaIndex, 0 );
+              }
+              outputRecord.put( avroFieldName, floatValue );
               break;
             case DOUBLE:
-              outputRecord.put( fieldName, row.getNumber( fieldMetaIndex,
-                ( field.getDefaultValue() != null && field.getDefaultValue().length() > 0 ) ? Double.parseDouble( field.getDefaultValue() ) : 0 ) );
+              Double doubleValue = null;
+              if ( row.isEmptyValue( pentahoFieldName ) ) {
+                doubleValue = ( defaultValue != null && defaultValue.length() > 0 ) ? Double.parseDouble( defaultValue ) : null;
+              } else {
+                doubleValue = row.getNumber( fieldMetaIndex, 0 );
+              }
+              outputRecord.put( avroFieldName, doubleValue );
               break;
             case LONG:
-              if ( field.getDefaultValue() != null && field.getDefaultValue().length() > 0 ) {
-                outputRecord.put( fieldName, row.getInteger( fieldMetaIndex, Long.parseLong( field.getDefaultValue() ) ) );
+              Long longValue = null;
+              if ( row.isEmptyValue( pentahoFieldName ) ) {
+                longValue = ( defaultValue != null && defaultValue.length() > 0 ) ? Long.parseLong( defaultValue ) : null;
               } else {
-                outputRecord.put( fieldName, row.getInteger( fieldMetaIndex ) );
+                longValue = row.getInteger( fieldMetaIndex, 0 );
               }
+              outputRecord.put( avroFieldName, longValue );
               break;
             case DECIMAL:
               Conversions.DecimalConversion converter = new Conversions.DecimalConversion();
-              if ( field.getDefaultValue() != null && field.getDefaultValue().length() > 0 ) {
+              if ( defaultValue != null && defaultValue.length() > 0 ) {
                 BigDecimal defaultBigDecimal = new BigDecimal( field.getDefaultValue() );
                 BigDecimal bigDecimal = row.getBigNumber( fieldMetaIndex, defaultBigDecimal );
 
                 LogicalTypes.Decimal decimalType = LogicalTypes.decimal( bigDecimal.precision(), bigDecimal.scale() );
-                ByteBuffer byteBuffer = converter.toBytes( bigDecimal, schema, decimalType);
-                outputRecord.put( fieldName, byteBuffer );
+                ByteBuffer byteBuffer = converter.toBytes( bigDecimal, schema, decimalType );
+                outputRecord.put( avroFieldName, byteBuffer );
               } else {
                 BigDecimal bigDecimal = row.getBigNumber( fieldMetaIndex, null );
                 if ( bigDecimal != null ) {
                   LogicalTypes.Decimal decimalType = LogicalTypes.decimal( bigDecimal.precision(), bigDecimal.scale() );
-                  ByteBuffer byteBuffer = converter.toBytes( bigDecimal, schema, decimalType);
-                  outputRecord.put( fieldName, byteBuffer );
+                  ByteBuffer byteBuffer = converter.toBytes( bigDecimal, schema, decimalType );
+                  outputRecord.put( avroFieldName, byteBuffer );
                 } else {
-                  outputRecord.put( fieldName, null );
+                  outputRecord.put( avroFieldName, null );
                 }
               }
               break;
             case INTEGER:
-              Long longValue = null;
-              if ( field.getDefaultValue() != null && field.getDefaultValue().length() > 0 ) {
-                longValue = row.getInteger( fieldMetaIndex, Integer.parseInt( field.getDefaultValue() ) );
+              Long tmpLong = null;
+              if ( row.isEmptyValue( pentahoFieldName ) ) {
+                tmpLong = ( defaultValue != null && defaultValue.length() > 0 ) ? Long.parseLong( defaultValue ) : null;
               } else {
-                longValue = row.getInteger( fieldMetaIndex );
+                tmpLong = row.getInteger( fieldMetaIndex, 0 );
               }
-              outputRecord.put( fieldName, longValue != null ? new Integer( longValue.intValue() ) : null );
+              outputRecord.put( avroFieldName, tmpLong != null ? new Integer( tmpLong.intValue() ) : null );
               break;
             case STRING:
-              outputRecord.put( fieldName, row.getString( fieldMetaIndex, String.valueOf( field.getDefaultValue() ) ) );
+              if ( defaultValue != null ) {
+                outputRecord.put( avroFieldName, row.getString( fieldMetaIndex, String.valueOf( defaultValue ) ) );
+              } else {
+                outputRecord.put( avroFieldName, row.getString( fieldMetaIndex, null ) );
+              }
               break;
             case BYTES:
-              if ( field.getDefaultValue() != null && field.getDefaultValue().length() > 0 ) {
-                outputRecord.put( fieldName, ByteBuffer.wrap( row.getBinary( fieldMetaIndex, vmi.getBinary( field.getDefaultValue().getBytes() ) ) ) );
+              if ( defaultValue != null ) {
+                outputRecord.put( avroFieldName, ByteBuffer.wrap( row.getBinary( fieldMetaIndex, vmi.getBinary( defaultValue.getBytes() ) ) ) );
               } else {
-                outputRecord.put( fieldName, ByteBuffer.wrap( row.getBinary( fieldMetaIndex, new byte[0] ) ) );
+                byte[] bytes = row.getBinary( fieldMetaIndex, null );
+                outputRecord.put( avroFieldName, bytes != null ? ByteBuffer.wrap( bytes ) : null );
               }
               break;
             case TIMESTAMP_MILLIS:
               Date defaultTimeStamp = null;
-              if ( field.getDefaultValue() != null && field.getDefaultValue().length() > 0 ) {
-                  DateFormat dateFormat = new SimpleDateFormat( vmi.getConversionMask() );
+              if ( defaultValue != null && defaultValue.length() > 0 ) {
+                DateFormat dateFormat = new SimpleDateFormat( vmi.getConversionMask() );
                 try {
-                  defaultTimeStamp = dateFormat.parse( field.getDefaultValue() );
+                  defaultTimeStamp = dateFormat.parse( defaultValue );
                 } catch ( ParseException pe ) {
                   defaultTimeStamp = null;
                 }
               }
               Date timeStamp = row.getDate( fieldMetaIndex, defaultTimeStamp );
-              outputRecord.put( fieldName, timeStamp != null ? timeStamp.getTime() : null );
+              outputRecord.put( avroFieldName, timeStamp != null ? timeStamp.getTime() : null );
               break;
           }
 

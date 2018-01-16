@@ -22,7 +22,6 @@
 
 package org.pentaho.hadoop.shim.common.format.avro;
 
-import org.pentaho.di.core.injection.Injection;
 import org.pentaho.hadoop.shim.api.format.AvroSpec;
 import org.pentaho.hadoop.shim.api.format.IAvroOutputField;
 

@@ -153,10 +153,10 @@ public class PentahoAvroOutputFormat implements IPentahoAvroOutputFormat {
 
   protected Schema getSchema() {
     if ( schema == null ) {
-        ObjectNode schemaObjectNode = getSchemaObjectNode();
-        if ( schemaObjectNode != null ) {
-          schema = new Schema.Parser().parse( schemaObjectNode.toString() );
-        }
+      ObjectNode schemaObjectNode = getSchemaObjectNode();
+      if ( schemaObjectNode != null ) {
+        schema = new Schema.Parser().parse( schemaObjectNode.toString() );
+      }
     }
     return schema;
   }
@@ -174,7 +174,7 @@ public class PentahoAvroOutputFormat implements IPentahoAvroOutputFormat {
 
         ArrayNode fieldNodes = mapper.createArrayNode();
         Iterator<? extends IAvroOutputField> fields = this.fields.iterator();
-        while ( fields.hasNext()) {
+        while ( fields.hasNext() ) {
           IAvroOutputField f = fields.next();
           if ( f.getAvroType() == null ) {
             throw new RuntimeException( "Field: " + f.getAvroFieldName() + " has undefined type. " );
@@ -184,7 +184,7 @@ public class PentahoAvroOutputFormat implements IPentahoAvroOutputFormat {
           ObjectNode fieldNode = mapper.createObjectNode();
 
           fieldNode.put( AvroSpec.NAME_NODE, f.getAvroFieldName() );
-          if ( type.isPrimitiveType()) {
+          if ( type.isPrimitiveType() ) {
             if ( f.getAllowNull() ) {
               ArrayNode arrayNode = mapper.createArrayNode().add( AvroSpec.DataType.NULL.getType() );
               arrayNode.add( type.getType() );
@@ -194,9 +194,9 @@ public class PentahoAvroOutputFormat implements IPentahoAvroOutputFormat {
             }
           } else {
             fieldNode.put( AvroSpec.LOGICAL_TYPE, type.getLogicalType() );
-            if ( AvroSpec.DataType.DECIMAL == type) {
-              fieldNode.put( AvroSpec.DECIMAL_PRECISION, 16);
-              fieldNode.put( AvroSpec.DECIMAL_SCALE, 15);
+            if ( AvroSpec.DataType.DECIMAL == type ) {
+              fieldNode.put( AvroSpec.DECIMAL_PRECISION, 2 );
+              fieldNode.put( AvroSpec.DECIMAL_SCALE, 1  );
             }
             if ( f.getAllowNull() ) {
               ArrayNode arrayNode = mapper.createArrayNode().add( AvroSpec.DataType.NULL.getType() );
