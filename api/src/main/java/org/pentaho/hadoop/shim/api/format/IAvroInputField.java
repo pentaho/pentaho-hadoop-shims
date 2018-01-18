@@ -23,6 +23,8 @@
 package org.pentaho.hadoop.shim.api.format;
 
 public interface IAvroInputField {
+  public static final String FILENAME_DELIMITER = "_delimiter_";
+
   public String getAvroFieldName();
 
   public void setAvroFieldName( String avroFieldName );
@@ -40,4 +42,6 @@ public interface IAvroInputField {
   public void setAvroType( AvroSpec.DataType avroType );
 
   public void setAvroType( String avroType );
+
+  public String getDisplayableAvroFieldName();
 }
