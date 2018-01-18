@@ -66,7 +66,7 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
     if ( schemaFileName != null && schemaFileName.length() > 0 ) {
       return new Schema.Parser().parse( KettleVFS.getInputStream( schemaFileName ) );
     } else if ( fileName != null && fileName.length() > 0 ) {
-      Schema schema = null;
+      Schema schema;
       DataFileStream<GenericRecord> dataFileStream = createDataFileStream(  );
       schema = dataFileStream.getSchema();
       dataFileStream.close();
