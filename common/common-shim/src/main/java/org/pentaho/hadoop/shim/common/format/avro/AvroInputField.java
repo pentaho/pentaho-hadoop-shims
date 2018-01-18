@@ -3,7 +3,7 @@ package org.pentaho.hadoop.shim.common.format.avro;
 import org.pentaho.hadoop.shim.api.format.AvroSpec;
 import org.pentaho.hadoop.shim.api.format.IAvroInputField;
 
-public class AvroInputField implements IAvroInputField{
+public class AvroInputField implements IAvroInputField {
   protected String avroFieldName = null;
   private String pentahoFieldName = null;
   private int pentahoType;
@@ -57,5 +57,15 @@ public class AvroInputField implements IAvroInputField{
         break;
       }
     }
+  }
+
+  @Override
+  public String getDisplayableAvroFieldName() {
+    String displayableAvroFieldName = avroFieldName;
+    if ( avroFieldName.contains( FILENAME_DELIMITER ) ) {
+      displayableAvroFieldName = avroFieldName.split( FILENAME_DELIMITER )[0];
+    }
+
+    return displayableAvroFieldName;
   }
 }

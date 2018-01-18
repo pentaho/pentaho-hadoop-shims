@@ -65,7 +65,7 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
   public Schema readAvroSchema( ) throws Exception {
     if ( schemaFileName != null && schemaFileName.length() > 0 ) {
       return new Schema.Parser().parse( KettleVFS.getInputStream( schemaFileName ) );
-   } else if ( fileName != null && fileName.length() > 0 ) {
+    } else if ( fileName != null && fileName.length() > 0 ) {
       Schema schema = null;
       DataFileStream<GenericRecord> dataFileStream = createDataFileStream(  );
       schema = dataFileStream.getSchema();
@@ -127,7 +127,7 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
   }
 
   public List<? extends IAvroInputField> getDefaultFields( ) throws Exception {
-    ArrayList<AvroInputField> fields = new ArrayList<AvroInputField>();
+    ArrayList<AvroInputField> fields = new ArrayList<>();
 
     Schema avroSchema = readAvroSchema();
     for ( Schema.Field f : avroSchema.getFields() ) {
@@ -209,14 +209,48 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
           break;
       }
 
+      // If this is a Pentaho 8 Avro field name, use the ValueMetaInterface type encoded in the Avro field name instead
+      FieldName fieldName = parseFieldName( f.name() );
+      if ( fieldName != null ) {
+        pentahoType = fieldName.type;
+      }
+
       AvroInputField avroInputField = new AvroInputField();
       avroInputField.setAvroFieldName( f.name() );
-      avroInputField.setPentahoFieldName( f.name() );
+      avroInputField.setPentahoFieldName( avroInputField.getDisplayableAvroFieldName() );
+      avroInputField.setAvroFieldName( f.name() );
       avroInputField.setPentahoType( pentahoType );
       avroInputField.setAvroType( actualAvroType );
       fields.add( avroInputField );
     }
 
     return fields;
+  }
+
+  public static FieldName parseFieldName( String fieldName ) {
+    if ( fieldName == null || !fieldName.contains( FieldName.FIELDNAME_DELIMITER ) ) {
+      return null;
+    }
+
+    String[] splits = fieldName.split( FieldName.FIELDNAME_DELIMITER );
+
+    if ( splits.length == 0 || splits.length > 3 ) {
+      return null;
+    } else {
+      return new FieldName( splits[0], Integer.valueOf( splits[1] ), Boolean.parseBoolean( splits[2] ) );
+    }
+  }
+
+  public static class FieldName {
+    public final String name;
+    public final int type;
+    public final boolean allowNull;
+    public static final String FIELDNAME_DELIMITER = "_delimiter_";
+
+    public FieldName( String name, int type, boolean allowNull ) {
+      this.name = name;
+      this.type = type;
+      this.allowNull = allowNull;
+    }
   }
 }
