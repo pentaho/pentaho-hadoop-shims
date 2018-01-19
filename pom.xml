@@ -29,6 +29,7 @@
     <org.powermock.version>1.6.2</org.powermock.version>
     <eula-wrap_assign-deps-to-properties-phase></eula-wrap_assign-deps-to-properties-phase>
     <org.apache.orc.version>1.2.3</org.apache.orc.version>
+    <jets3t.version>0.9.4</jets3t.version>
   </properties>
 
   <dependencyManagement>
@@ -233,6 +234,11 @@
             <artifactId>*</artifactId>
           </exclusion>
         </exclusions>
+      </dependency>
+      <dependency>
+	<groupId>net.java.dev.jets3t</groupId>
+        <artifactId>jets3t</artifactId>
+        <version>${jets3t.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
