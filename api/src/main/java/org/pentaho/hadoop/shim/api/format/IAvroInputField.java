@@ -19,35 +19,29 @@
  * limitations under the License.
  *
  ******************************************************************************/
+
 package org.pentaho.hadoop.shim.api.format;
 
+public interface IAvroInputField {
+  public static final String FILENAME_DELIMITER = "_delimiter_";
 
-import java.util.List;
+  public String getAvroFieldName();
 
-public interface IPentahoAvroInputFormat extends IPentahoInputFormat {
+  public void setAvroFieldName( String avroFieldName );
 
-  /**
-   * Set schema for file reading.
-   */
-  List<? extends IAvroInputField> getFields(  ) throws Exception;
+  public String getPentahoFieldName();
 
-  /**
-     * Set schema for file reading.
-     */
-  void setInputFields( List<? extends IAvroInputField> fields ) throws Exception;
+  public void setPentahoFieldName( String pentahoFieldName );
 
-  /**
-   * Set input file.
-   */
-  void setInputFile( String file ) throws Exception;
+  public int getPentahoType();
 
-  /**
-   * Set input file.
-   */
-  void setInputSchemaFile( String schemaFile ) throws Exception;
+  public void setPentahoType( int pentahoType );
 
-  /**
-   * Split size, bytes.
-   */
-  void setSplitSize( long blockSize ) throws Exception;
+  public AvroSpec.DataType getAvroType();
+
+  public void setAvroType( AvroSpec.DataType avroType );
+
+  public void setAvroType( String avroType );
+
+  public String getDisplayableAvroFieldName();
 }

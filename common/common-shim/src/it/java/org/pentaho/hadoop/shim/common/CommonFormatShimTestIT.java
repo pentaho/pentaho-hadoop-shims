@@ -32,6 +32,7 @@ import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.row.RowMeta;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.core.row.value.ValueMetaString;
+import org.pentaho.hadoop.shim.api.format.AvroSpec;
 import org.pentaho.hadoop.shim.api.format.IPentahoAvroOutputFormat;
 import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat.IPentahoRecordReader;
 import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat.IPentahoRecordWriter;
@@ -39,6 +40,8 @@ import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 import org.pentaho.hadoop.shim.common.format.ParquetUtils;
 import org.pentaho.hadoop.shim.common.format.PentahoParquetInputFormat;
 import org.pentaho.hadoop.shim.common.format.PentahoParquetOutputFormat;
+import org.pentaho.hadoop.shim.common.format.avro.AvroInputField;
+import org.pentaho.hadoop.shim.common.format.avro.AvroOutputField;
 import org.pentaho.hadoop.shim.common.format.avro.PentahoAvroInputFormat;
 import org.pentaho.hadoop.shim.common.format.avro.PentahoAvroOutputFormat;
 
@@ -133,10 +136,23 @@ public class CommonFormatShimTestIT {
     avroInputFormat.setInputSchemaFile( getFilePath( "/sample-schema.avro" ) );
     avroInputFormat.setInputFile( getFilePath( "/sample-data.avro" ) );
 
-    SchemaDescription schemaDescription = new SchemaDescription();
-    schemaDescription.addField( schemaDescription.new Field( "FirstName", "FirstName", ValueMetaInterface.TYPE_STRING, false ) );
-    schemaDescription.addField( schemaDescription.new Field( "Phone", "Phone", ValueMetaInterface.TYPE_STRING, false ) );
-    avroInputFormat.setSchema( schemaDescription );
+    List<AvroInputField> inputFields = new ArrayList<AvroInputField>();
+
+    AvroInputField avroInputField = new AvroInputField();
+    avroInputField.setAvroFieldName( "FirstName" );
+    avroInputField.setPentahoFieldName( "FirstName" );
+    avroInputField.setAvroType( AvroSpec.DataType.STRING );
+    avroInputField.setPentahoType( ValueMetaInterface.TYPE_STRING );
+    inputFields.add( avroInputField );
+
+    avroInputField = new AvroInputField();
+    avroInputField.setAvroFieldName( "Phone" );
+    avroInputField.setPentahoFieldName( "Phone" );
+    avroInputField.setAvroType( AvroSpec.DataType.STRING );
+    avroInputField.setPentahoType( ValueMetaInterface.TYPE_STRING );
+    inputFields.add( avroInputField );
+
+    avroInputFormat.setInputFields( inputFields );
 
     IPentahoRecordReader recordReader = avroInputFormat.createRecordReader( null );
     List<String> dataSampleRows = new ArrayList<>();
@@ -149,11 +165,27 @@ public class CommonFormatShimTestIT {
   @Test
   public void testAvroWriteLocalFileSystem() throws Exception {
     String tempDir = Files.createTempDirectory( "avro" ).toUri().toString();
+
+    List<AvroOutputField> outputFields = new ArrayList<AvroOutputField>();
+
+    AvroOutputField avroOutputField = new AvroOutputField();
+    avroOutputField.setAvroFieldName( "name" );
+    avroOutputField.setPentahoFieldName( "name" );
+    avroOutputField.setAllowNull( false );
+    avroOutputField.setDefaultValue( null );
+    avroOutputField.setAvroType( AvroSpec.DataType.STRING );
+    outputFields.add( avroOutputField );
+
+    avroOutputField = new AvroOutputField();
+    avroOutputField.setAvroFieldName( "phone" );
+    avroOutputField.setPentahoFieldName( "phone" );
+    avroOutputField.setAllowNull( false );
+    avroOutputField.setDefaultValue( null );
+    avroOutputField.setAvroType( AvroSpec.DataType.STRING );
+    outputFields.add( avroOutputField );
+
     PentahoAvroOutputFormat outputFormat = new PentahoAvroOutputFormat();
-    SchemaDescription schemaDescription = new SchemaDescription();
-    schemaDescription.addField( schemaDescription.new Field( "name", "name", ValueMetaInterface.TYPE_STRING, false ) );
-    schemaDescription.addField( schemaDescription.new Field( "phone", "phone", ValueMetaInterface.TYPE_STRING, false ) );
-    outputFormat.setSchemaDescription( schemaDescription );
+    outputFormat.setFields( outputFields );
     outputFormat.setSchemaFilename(  tempDir + "/avro-schema.out" );
     outputFormat.setOutputFile( tempDir + "/avro.out" );
     outputFormat.setNameSpace( "nameSpace" );
@@ -172,9 +204,27 @@ public class CommonFormatShimTestIT {
     recordWriter.close();
 
     PentahoAvroInputFormat avroInputFormat = new PentahoAvroInputFormat();
+    List<AvroInputField> inputFields = new ArrayList<AvroInputField>();
+
+    AvroInputField avroInputField = new AvroInputField();
+    avroInputField.setAvroFieldName( "name" );
+    avroInputField.setPentahoFieldName( "name" );
+    avroInputField.setAvroType( AvroSpec.DataType.STRING );
+    avroInputField.setPentahoType( ValueMetaInterface.TYPE_STRING );
+    inputFields.add( avroInputField );
+
+    avroInputField = new AvroInputField();
+    avroInputField.setAvroFieldName( "phone" );
+    avroInputField.setPentahoFieldName( "phone" );
+    avroInputField.setAvroType( AvroSpec.DataType.STRING );
+    avroInputField.setPentahoType( ValueMetaInterface.TYPE_STRING );
+    inputFields.add( avroInputField );
+
+    avroInputFormat.setInputFields( inputFields );
+
     avroInputFormat.setInputSchemaFile( tempDir + "/avro-schema.out" );
     avroInputFormat.setInputFile( tempDir + "/avro.out" );
-    avroInputFormat.setSchema( schemaDescription );
+    avroInputFormat.setInputFields( inputFields );
     IPentahoRecordReader recordReader = avroInputFormat.createRecordReader( null );
     recordReader.forEach( rowMetaAndData ->
       assertArrayEquals( new Object[] { "Alice", "987654321" }, new Object[] { rowMetaAndData.getData()[0].toString(),
