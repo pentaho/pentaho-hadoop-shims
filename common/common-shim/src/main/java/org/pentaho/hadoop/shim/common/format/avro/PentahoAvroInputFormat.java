@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.annotations.VisibleForTesting;
+import org.apache.avro.LogicalType;
 import org.apache.avro.Schema;
 import org.apache.avro.file.DataFileStream;
 import org.apache.avro.generic.GenericDatumReader;
@@ -132,11 +133,11 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
     Schema avroSchema = readAvroSchema();
     for ( Schema.Field f : avroSchema.getFields() ) {
 
-      String logicalType = f.getProp( AvroSpec.LOGICAL_TYPE );
+      LogicalType logicalType = f.schema().getLogicalType();
       AvroSpec.DataType actualAvroType = null;
       if ( logicalType != null ) {
         for ( AvroSpec.DataType tmpType : AvroSpec.DataType.values() ) {
-          if ( logicalType.equals( tmpType.getLogicalType() ) ) {
+          if ( logicalType.getName().equals( tmpType.getLogicalType() ) ) {
             actualAvroType = tmpType;
             break;
           }
@@ -164,15 +165,13 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
       }
 
       AvroSpec.DataType supportedAvroType = null;
-      if ( ( actualAvroType == AvroSpec.DataType.DATE )
-        || ( actualAvroType == AvroSpec.DataType.DECIMAL )
-        || ( actualAvroType == AvroSpec.DataType.TIMESTAMP_MILLIS )
-        || actualAvroType.isPrimitiveType() ) {
+      if ( isSupported( actualAvroType, f.schema().getType().name() ) ) {
         supportedAvroType = actualAvroType;
       }
 
       if ( supportedAvroType == null ) {
-        throw new RuntimeException( "Field: " + f.name() + "  Undefined type: " + f.schema().getType() );
+        // Todo: log a message about skipping unsupported fields
+        continue;
       }
 
       int pentahoType = 0;
@@ -225,6 +224,15 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
     }
 
     return fields;
+  }
+
+  private boolean isSupported( AvroSpec.DataType actualAvroType, String type ) {
+    return ( actualAvroType == AvroSpec.DataType.DATE )
+      || ( actualAvroType == AvroSpec.DataType.DECIMAL
+           && "BYTES".equals( type ) )
+      || ( actualAvroType == AvroSpec.DataType.TIMESTAMP_MILLIS )
+      || ( actualAvroType.isPrimitiveType()
+           && actualAvroType != AvroSpec.DataType.NULL );
   }
 
   public static FieldName parseFieldName( String fieldName ) {
