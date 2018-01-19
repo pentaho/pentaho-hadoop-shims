@@ -86,4 +86,9 @@ public class AvroOutputField implements IAvroOutputField {
   public void setAvroType( AvroSpec.DataType avroType ) {
     this.avroType = avroType;
   }
+
+  @Override
+  public void setAvroType( int avroType ) {
+        this.avroType = AvroSpec.DataType.values()[ avroType ];
+  }
 }
