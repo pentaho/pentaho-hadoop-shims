@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -24,33 +24,33 @@ package org.pentaho.hadoop.shim.api.format;
 
 public class AvroSpec {
   public enum DataType {
-    NULL(true, "null", null, "Null"),
-    BOOLEAN(true, "boolean", null, "Boolean"),
-    INTEGER(true, "int", null, "Integer"),
-    LONG(true, "long", null, "Long"),
-    FLOAT(true, "float", null, "Float"),
-    DOUBLE(true, "double", null, "Double"),
-    BYTES(true, "bytes", null, "Bytes"),
-    STRING(true, "string", null, "String"),
-    RECORD(false, "record", null, "Record"),
-    ENUM(false, "enum", null, "Enum"),
-    ARRAY(false, "array", null, "Array"),
-    MAP(false, "map", null, "Map"),
-    FIXED(false, "fixed", null, "Fixed"),
-    DECIMAL(false, "bytes", "decimal", "Decimal"),
-    DATE(false, "int", "date", "Date"),
-    TIME_MILLIS(false, "int", "time-millis", "Time"),
-    TIME_MICROS(false, "long", "time-micros", "Time In Microseconds"),
-    TIMESTAMP_MILLIS(false, "long", "timestamp-millis", "Timestamp"),
-    TIMESTAMP_MICROS(false, "long", "timestamp-micros", "Timestamp In Microseconds"),
-    DURATION(false, "fixed", "duration", "Duration");
+    NULL( true, "null", null, "Null" ),
+    BOOLEAN( true, "boolean", null, "Boolean" ),
+    INTEGER( true, "int", null, "Integer" ),
+    LONG( true, "long", null, "Long" ),
+    FLOAT( true, "float", null, "Float" ),
+    DOUBLE( true, "double", null, "Double" ),
+    BYTES( true, "bytes", null, "Bytes" ),
+    STRING( true, "string", null, "String" ),
+    RECORD( false, "record", null, "Record" ),
+    ENUM( false, "enum", null, "Enum" ),
+    ARRAY( false, "array", null, "Array" ),
+    MAP( false, "map", null, "Map" ),
+    FIXED( false, "fixed", null, "Fixed" ),
+    DECIMAL( false, "bytes", "decimal", "Decimal" ),
+    DATE( false, "int", "date", "Date" ),
+    TIME_MILLIS( false, "int", "time-millis", "Time" ),
+    TIME_MICROS( false, "long", "time-micros", "Time In Microseconds" ),
+    TIMESTAMP_MILLIS( false, "long", "timestamp-millis", "Timestamp" ),
+    TIMESTAMP_MICROS( false, "long", "timestamp-micros", "Timestamp In Microseconds" ),
+    DURATION( false, "fixed", "duration", "Duration" );
 
     private final boolean isPrimitive;
     private final String baseType;
     private final String logicalType;
     private final String name;
 
-    DataType(boolean isPrimitiveType, String baseType, String logicalType, String name ) {
+    DataType( boolean isPrimitiveType, String baseType, String logicalType, String name ) {
       this.isPrimitive = isPrimitiveType;
       this.baseType = baseType;
       this.logicalType = logicalType;
@@ -62,7 +62,7 @@ public class AvroSpec {
     }
 
     public boolean isComplexType() {
-      return !isPrimitive && (logicalType == null);
+      return !isPrimitive && ( logicalType == null );
     }
 
     public boolean isLogicalType() {
@@ -70,22 +70,20 @@ public class AvroSpec {
     }
 
     public String getBaseType() {
-
       return baseType;
     }
 
     public String getLogicalType() {
-
       return logicalType;
     }
 
     public String getType() {
-
       return isLogicalType() ? logicalType : baseType;
     }
 
     public String getName() {
-      return name; }
+      return name;
+    }
 
   }
 
