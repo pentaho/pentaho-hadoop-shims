@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -89,6 +89,6 @@ public class AvroOutputField implements IAvroOutputField {
 
   @Override
   public void setAvroType( int avroType ) {
-        this.avroType = AvroSpec.DataType.values()[ avroType ];
+    this.avroType = AvroSpec.DataType.values()[ avroType ];
   }
 }
