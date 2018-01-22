@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.annotations.VisibleForTesting;
-import org.apache.avro.LogicalType;
 import org.apache.avro.Schema;
 import org.apache.avro.file.DataFileStream;
 import org.apache.avro.generic.GenericDatumReader;
@@ -133,11 +132,11 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
     Schema avroSchema = readAvroSchema();
     for ( Schema.Field f : avroSchema.getFields() ) {
 
-      LogicalType logicalType = f.schema().getLogicalType();
+      String logicalType = f.getProp( AvroSpec.LOGICAL_TYPE );
       AvroSpec.DataType actualAvroType = null;
       if ( logicalType != null ) {
         for ( AvroSpec.DataType tmpType : AvroSpec.DataType.values() ) {
-          if ( logicalType.getName().equals( tmpType.getLogicalType() ) ) {
+          if ( logicalType.equals( tmpType.getLogicalType() ) ) {
             actualAvroType = tmpType;
             break;
           }
