@@ -195,8 +195,8 @@ public class PentahoAvroOutputFormat implements IPentahoAvroOutputFormat {
           } else {
             fieldNode.put( AvroSpec.LOGICAL_TYPE, type.getLogicalType() );
             if ( AvroSpec.DataType.DECIMAL == type ) {
-              fieldNode.put( AvroSpec.DECIMAL_PRECISION, 2 );
-              fieldNode.put( AvroSpec.DECIMAL_SCALE, 1  );
+              fieldNode.put( AvroSpec.DECIMAL_PRECISION, f.getPrecision() );
+              fieldNode.put( AvroSpec.DECIMAL_SCALE, f.getScale() );
             }
             if ( f.getAllowNull() ) {
               ArrayNode arrayNode = mapper.createArrayNode().add( AvroSpec.DataType.NULL.getType() );
