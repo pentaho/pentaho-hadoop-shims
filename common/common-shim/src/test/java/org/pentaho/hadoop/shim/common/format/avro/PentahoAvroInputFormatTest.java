@@ -24,23 +24,25 @@ package org.pentaho.hadoop.shim.common.format.avro;
 import org.apache.avro.Schema;
 import org.junit.Before;
 import org.junit.Test;
+import org.pentaho.hadoop.shim.api.format.IAvroInputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat;
-import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
 
 public class PentahoAvroInputFormatTest {
 
   public static final String SAMPLE_SCHEMA_AVRO = "/sample-schema.avro";
   public static final String SAMPLE_DATA_AVRO = "/sample-data.avro";
+  public static final String TYPES_SCHEMA_AVRO = "/avro/avro-types-schema.json";
 
   private PentahoAvroInputFormat format;
 
@@ -79,6 +81,27 @@ public class PentahoAvroInputFormatTest {
     format.setInputFile( dataFile );
     Schema   schema = format.readAvroSchema( );
     assertEquals( 2, schema.getFields().size() );
+  }
+
+  @Test
+  public void testGetDefaultFields() throws Exception {
+    PentahoAvroInputFormat format = spy( new PentahoAvroInputFormat() );
+    Schema.Parser parser = new Schema.Parser();
+    Schema schema = parser.parse( new File( getClass().getResource( TYPES_SCHEMA_AVRO ).getFile() ) );
+    doReturn( schema ).when( format ).readAvroSchema();
+
+    List<? extends IAvroInputField> defaultFields = format.getDefaultFields();
+
+    List<String> expectedFields = Arrays.asList(
+      "boolean_field", "int_field", "long_field", "float_field",
+      "double_field", "bytes_field", "string_field", "union_string_field",
+      "decimal_bytes_field", "date_field", "timestamp_millis_field",
+      "address", "zip_code", "double", "date", "time", "active", "cost"
+    );
+    List<String> actualFields =
+      defaultFields.stream().map( IAvroInputField::getAvroFieldName ).collect( Collectors.toList() );
+    assertEquals( 18, defaultFields.size() );
+    assertTrue( expectedFields.equals( actualFields ) );
   }
 
   private String getFilePath( String file ) {

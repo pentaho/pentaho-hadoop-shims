@@ -131,40 +131,9 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
 
     Schema avroSchema = readAvroSchema();
     for ( Schema.Field f : avroSchema.getFields() ) {
-
-      String logicalType = f.getProp( AvroSpec.LOGICAL_TYPE );
-      AvroSpec.DataType actualAvroType = null;
-      if ( logicalType != null ) {
-        for ( AvroSpec.DataType tmpType : AvroSpec.DataType.values() ) {
-          if ( logicalType.equals( tmpType.getLogicalType() ) ) {
-            actualAvroType = tmpType;
-            break;
-          }
-        }
-      } else {
-        String primitiveType = null;
-        if ( f.schema().getType().equals( Schema.Type.UNION ) ) {
-          List<Schema> schemas = f.schema().getTypes();
-          for ( Schema s: schemas ) {
-            if ( !s.getName().equalsIgnoreCase( "null" ) ) {
-              primitiveType = s.getType().getName();
-              break;
-            }
-          }
-        } else {
-          primitiveType = f.schema().getType().getName();
-        }
-
-        for ( AvroSpec.DataType tmpType : AvroSpec.DataType.values() ) {
-          if ( primitiveType.equals( tmpType.getBaseType() ) ) {
-            actualAvroType = tmpType;
-            break;
-          }
-        }
-      }
-
+      AvroSpec.DataType actualAvroType = findActualDataType( f );
       AvroSpec.DataType supportedAvroType = null;
-      if ( isSupported( actualAvroType, f.schema().getType().name() ) ) {
+      if ( actualAvroType != null && isSupported( actualAvroType ) ) {
         supportedAvroType = actualAvroType;
       }
 
@@ -225,10 +194,57 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
     return fields;
   }
 
-  private boolean isSupported( AvroSpec.DataType actualAvroType, String type ) {
+  private AvroSpec.DataType findActualDataType( Schema.Field field ) {
+    String logicalType = getLogicalType( field );
+    if ( logicalType != null ) {
+      for ( AvroSpec.DataType tmpType : AvroSpec.DataType.values() ) {
+        if ( logicalType.equals( tmpType.getLogicalType() ) ) {
+          if ( field.schema().getType().equals( Schema.Type.UNION ) ) {
+            for ( Schema s: field.schema().getTypes() ) {
+              if ( tmpType.getBaseType().equals( s.getType().getName() ) ) {
+                return tmpType;
+              }
+            }
+          } else {
+            if ( tmpType.getBaseType().equals( field.schema().getType().getName() ) ) {
+              return tmpType;
+            }
+          }
+        }
+      }
+    } else {
+      String primitiveType = null;
+      if ( field.schema().getType().equals( Schema.Type.UNION ) ) {
+        for ( Schema s: field.schema().getTypes() ) {
+          if ( !s.getName().equalsIgnoreCase( "null" ) ) {
+            primitiveType = s.getType().getName();
+            break;
+          }
+        }
+      } else {
+        primitiveType = field.schema().getType().getName();
+      }
+
+      for ( AvroSpec.DataType tmpType : AvroSpec.DataType.values() ) {
+        if ( primitiveType.equals( tmpType.getBaseType() ) ) {
+          return  tmpType;
+        }
+      }
+    }
+    return null;
+  }
+
+  private String getLogicalType( Schema.Field f ) {
+    String logicalType = f.getProp( AvroSpec.LOGICAL_TYPE );
+    if ( Utils.isEmpty( logicalType ) ) {
+      logicalType = f.schema().getProp( AvroSpec.LOGICAL_TYPE );
+    }
+    return logicalType;
+  }
+
+  private boolean isSupported( AvroSpec.DataType actualAvroType ) {
     return ( actualAvroType == AvroSpec.DataType.DATE )
-      || ( actualAvroType == AvroSpec.DataType.DECIMAL
-           && "BYTES".equals( type ) )
+      || ( actualAvroType == AvroSpec.DataType.DECIMAL )
       || ( actualAvroType == AvroSpec.DataType.TIMESTAMP_MILLIS )
       || ( actualAvroType.isPrimitiveType()
            && actualAvroType != AvroSpec.DataType.NULL );
