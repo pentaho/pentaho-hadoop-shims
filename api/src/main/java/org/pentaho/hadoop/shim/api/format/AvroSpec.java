@@ -43,7 +43,8 @@ public class AvroSpec {
     TIME_MICROS( false, "long", "time-micros", "Time In Microseconds" ),
     TIMESTAMP_MILLIS( false, "long", "timestamp-millis", "Timestamp" ),
     TIMESTAMP_MICROS( false, "long", "timestamp-micros", "Timestamp In Microseconds" ),
-    DURATION( false, "fixed", "duration", "Duration" );
+    DURATION( false, "fixed", "duration", "Duration" ),
+    DECIMAL_FIXED( false, "fixed", "decimal", "Decimal Fixed" );
 
     private final boolean isPrimitive;
     private final String baseType;
