@@ -40,9 +40,8 @@ import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.sql.Timestamp;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Calendar;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -210,14 +209,9 @@ public class PentahoAvroRecordReader implements IPentahoAvroInputFormat.IPentaho
             pentahoData = new Timestamp( avroData.longValue() );
             break;
           case ValueMetaInterface.TYPE_DATE:
-            Instant instant = Instant.EPOCH.plus( avroData.longValue(), ChronoUnit.DAYS );
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime( Date.from( instant ) );
-            calendar.set( Calendar.HOUR_OF_DAY, 0 );
-            calendar.set( Calendar.MINUTE, 0 );
-            calendar.set( Calendar.SECOND, 0 );
-            calendar.set( Calendar.MILLISECOND, 0 );
-            pentahoData = calendar.getTime();
+            LocalDate localDate = LocalDate.ofEpochDay( 0 ).plusDays( avroData.longValue() );
+            Date dateValue = Date.from( localDate.atStartOfDay( ZoneId.systemDefault() ).toInstant() );
+            pentahoData = dateValue;
             break;
           case ValueMetaInterface.TYPE_BOOLEAN:
             pentahoData = ( avroData == 0 ? Boolean.FALSE : Boolean.TRUE );
@@ -276,14 +270,9 @@ public class PentahoAvroRecordReader implements IPentahoAvroInputFormat.IPentaho
             pentahoData = new Timestamp( avroData );
             break;
           case ValueMetaInterface.TYPE_DATE:
-            Instant instant = Instant.EPOCH.plus( avroData, ChronoUnit.DAYS );
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime( Date.from( instant ) );
-            calendar.set( Calendar.HOUR_OF_DAY, 0 );
-            calendar.set( Calendar.MINUTE, 0 );
-            calendar.set( Calendar.SECOND, 0 );
-            calendar.set( Calendar.MILLISECOND, 0 );
-            pentahoData = calendar.getTime();
+            LocalDate localDate = LocalDate.ofEpochDay( 0 ).plusDays( avroData );
+            Date dateValue = Date.from( localDate.atStartOfDay( ZoneId.systemDefault() ).toInstant() );
+            pentahoData = dateValue;
             break;
           case ValueMetaInterface.TYPE_BOOLEAN:
             pentahoData = ( avroData == 0 ? Boolean.FALSE : Boolean.TRUE );
@@ -317,14 +306,9 @@ public class PentahoAvroRecordReader implements IPentahoAvroInputFormat.IPentaho
             pentahoData = new Timestamp( avroData );
             break;
           case ValueMetaInterface.TYPE_DATE:
-            Instant instant = Instant.EPOCH.plus( avroData.longValue(), ChronoUnit.DAYS );
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime( Date.from( instant ) );
-            calendar.set( Calendar.HOUR_OF_DAY, 0 );
-            calendar.set( Calendar.MINUTE, 0 );
-            calendar.set( Calendar.SECOND, 0 );
-            calendar.set( Calendar.MILLISECOND, 0 );
-            pentahoData = calendar.getTime();
+            LocalDate localDate = LocalDate.ofEpochDay( 0 ).plusDays( avroData.longValue() );
+            Date dateValue = Date.from( localDate.atStartOfDay( ZoneId.systemDefault() ).toInstant() );
+            pentahoData = dateValue;
             break;
           case ValueMetaInterface.TYPE_BOOLEAN:
             pentahoData = ( avroData == 0 ? Boolean.FALSE : Boolean.TRUE );
@@ -358,14 +342,9 @@ public class PentahoAvroRecordReader implements IPentahoAvroInputFormat.IPentaho
             pentahoData = new Timestamp( avroData.longValue() );
             break;
           case ValueMetaInterface.TYPE_DATE:
-            Instant instant = Instant.EPOCH.plus( avroData.longValue(), ChronoUnit.DAYS );
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime( Date.from( instant ) );
-            calendar.set( Calendar.HOUR_OF_DAY, 0 );
-            calendar.set( Calendar.MINUTE, 0 );
-            calendar.set( Calendar.SECOND, 0 );
-            calendar.set( Calendar.MILLISECOND, 0 );
-            pentahoData = calendar.getTime();
+            LocalDate localDate = LocalDate.ofEpochDay( 0 ).plusDays( avroData.longValue() );
+            Date dateValue = Date.from( localDate.atStartOfDay( ZoneId.systemDefault() ).toInstant() );
+            pentahoData = dateValue;
             break;
           case ValueMetaInterface.TYPE_BOOLEAN:
             pentahoData = ( avroData == 0 ? Boolean.FALSE : Boolean.TRUE );
@@ -430,14 +409,9 @@ public class PentahoAvroRecordReader implements IPentahoAvroInputFormat.IPentaho
             pentahoData = new Timestamp( Long.parseLong( avroData ) );
             break;
           case ValueMetaInterface.TYPE_DATE:
-            Instant instant = Instant.EPOCH.plus( Long.parseLong( avroData ), ChronoUnit.DAYS );
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime( Date.from( instant ) );
-            calendar.set( Calendar.HOUR_OF_DAY, 0 );
-            calendar.set( Calendar.MINUTE, 0 );
-            calendar.set( Calendar.SECOND, 0 );
-            calendar.set( Calendar.MILLISECOND, 0 );
-            pentahoData = calendar.getTime();
+            LocalDate localDate = LocalDate.ofEpochDay( 0 ).plusDays( Long.parseLong( avroData ) );
+            Date dateValue = Date.from( localDate.atStartOfDay( ZoneId.systemDefault() ).toInstant() );
+            pentahoData = dateValue;
             break;
           case ValueMetaInterface.TYPE_BOOLEAN:
             pentahoData = Boolean.valueOf( "Y".equalsIgnoreCase( avroData ) || "TRUE".equalsIgnoreCase( avroData )
