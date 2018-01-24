@@ -17,6 +17,7 @@
     <org.apache.avro.version>1.8.1</org.apache.avro.version>
     <jackson.version>2.6.5</jackson.version>
     <integration-test.src>src/it/java</integration-test.src>
+    <joda-time.version>2.9.4</joda-time.version>
   </properties>
   <dependencies>
     <dependency>
@@ -150,6 +151,12 @@
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-hdfs</artifactId>
       <version>2.5.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>${joda-time.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

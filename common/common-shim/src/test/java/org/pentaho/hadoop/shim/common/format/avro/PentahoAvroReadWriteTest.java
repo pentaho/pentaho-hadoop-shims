@@ -22,6 +22,8 @@
 
 package org.pentaho.hadoop.shim.common.format.avro;
 
+import org.joda.time.DateTimeZone;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -63,6 +65,7 @@ import static org.junit.Assert.assertTrue;
 public class PentahoAvroReadWriteTest {
   private static InetAddress DEFAULT_INET_ADDR;
   private static String[][] DEFAULT_SCHEME_DESCRIPTION = null;
+  private DateTimeZone originalTimeZone = DateTimeZone.getDefault();
 
   {
     try {
@@ -102,11 +105,16 @@ public class PentahoAvroReadWriteTest {
   @Before
   public void setup() throws Exception {
     tempFolder.create();
-
+    DateTimeZone.setDefault( DateTimeZone.UTC );
     date1 = ( dateFormat.parse( "2001/11/01 00:00:00.000" ) );
     date2 = ( dateFormat.parse( "1999/12/31 00:00:00.000" ) );
     timeStamp1 = new Timestamp( dateFormat.parse( "2001/11/01 20:30:15.123" ).getTime() );
     timeStamp2 = new Timestamp( dateFormat.parse( "1999/12/31 23:59:59.999" ).getTime() );
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    DateTimeZone.setDefault( originalTimeZone );
   }
 
   private RowMeta buildRowMeta( String[][] schemaDescription ) {
