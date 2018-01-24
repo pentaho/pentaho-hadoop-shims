@@ -38,6 +38,7 @@ public class AvroSpec {
     MAP( false, "map", null, "Map" ),
     FIXED( false, "fixed", null, "Fixed" ),
     DECIMAL( false, "bytes", "decimal", "Decimal" ),
+    DECIMAL_FIXED( false, "fixed", "decimal", "Decimal Fixed" ),
     DATE( false, "int", "date", "Date" ),
     TIME_MILLIS( false, "int", "time-millis", "Time" ),
     TIME_MICROS( false, "long", "time-micros", "Time In Microseconds" ),
