@@ -41,7 +41,8 @@ import java.nio.ByteBuffer;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
@@ -110,7 +111,8 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
               Date dateFromRow = row.getDate( fieldMetaIndex, defaultDate );
 
               if ( dateFromRow != null ) {
-                dateInDays = (int) ChronoUnit.DAYS.between( Instant.EPOCH, dateFromRow.toInstant()  ) + 1;
+                LocalDate localDate = dateFromRow.toInstant().atZone( ZoneId.systemDefault() ).toLocalDate();
+                dateInDays = Math.toIntExact( ChronoUnit.DAYS.between( LocalDate.ofEpochDay( 0 ), localDate ) );
               }
               outputRecord.put( avroFieldName,  dateInDays );
               break;
