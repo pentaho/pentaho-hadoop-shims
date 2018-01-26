@@ -21,6 +21,7 @@
     <pentaho-hdfs-vfs.version>8.1.0.0-SNAPSHOT</pentaho-hdfs-vfs.version>
     <eula-wrap_attach-dist-phase></eula-wrap_attach-dist-phase>
     <commons-beanutils.version>1.9.3</commons-beanutils.version>
+    <commons-io.version>2.4</commons-io.version>
     <pentaho-hadoop-shims-api.version>8.1.0.0-SNAPSHOT</pentaho-hadoop-shims-api.version>
     <xerces.version>2.8.1</xerces.version>
     <oss-licenses.version>8.1.0.0-SNAPSHOT</oss-licenses.version>
@@ -236,9 +237,14 @@
         </exclusions>
       </dependency>
       <dependency>
-	<groupId>net.java.dev.jets3t</groupId>
+        <groupId>net.java.dev.jets3t</groupId>
         <artifactId>jets3t</artifactId>
         <version>${jets3t.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>${commons-io.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
