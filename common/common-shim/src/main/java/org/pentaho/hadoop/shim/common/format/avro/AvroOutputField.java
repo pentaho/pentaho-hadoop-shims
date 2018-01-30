@@ -36,6 +36,8 @@ public class AvroOutputField implements IAvroOutputField {
   private boolean allowNull;
   private String defaultValue;
   private AvroSpec.DataType avroType;
+  private int precision;
+  private int scale;
 
   @Override
   public String getAvroFieldName() {
@@ -90,5 +92,24 @@ public class AvroOutputField implements IAvroOutputField {
   @Override
   public void setAvroType( int avroType ) {
     this.avroType = AvroSpec.DataType.values()[ avroType ];
+  }
+
+  @Override
+  public int getPrecision() {
+    return precision;
+  }
+
+  @Override
+  public void setPrecision( String precision ) {
+    this.precision = Integer.valueOf( precision );
+  }
+
+  @Override
+  public int getScale() {
+    return scale;
+  }
+
+  public void setScale( String scale ) {
+    this.scale = Integer.valueOf( scale );
   }
 }

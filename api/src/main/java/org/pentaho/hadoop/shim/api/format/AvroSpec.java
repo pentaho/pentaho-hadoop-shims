@@ -98,4 +98,6 @@ public class AvroSpec {
   public static final String LOGICAL_TYPE = "logicalType";
   public static final String DECIMAL_PRECISION = "precision";
   public static final String DECIMAL_SCALE = "scale";
+  public static final int DEFAULT_DECIMAL_PRECISION = 10;
+  public static final int DEFAULT_DECIMAL_SCALE = 0;
 }

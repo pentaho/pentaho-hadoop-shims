@@ -37,6 +37,8 @@ import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.nio.ByteBuffer;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -148,13 +150,14 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
               if ( defaultValue != null && defaultValue.length() > 0 ) {
                 BigDecimal defaultBigDecimal = new BigDecimal( field.getDefaultValue() );
                 BigDecimal bigDecimal = row.getBigNumber( fieldMetaIndex, defaultBigDecimal );
-
                 LogicalTypes.Decimal decimalType = LogicalTypes.decimal( bigDecimal.precision(), bigDecimal.scale() );
                 ByteBuffer byteBuffer = converter.toBytes( bigDecimal, schema, decimalType );
                 outputRecord.put( avroFieldName, byteBuffer );
               } else {
                 BigDecimal bigDecimal = row.getBigNumber( fieldMetaIndex, null );
                 if ( bigDecimal != null ) {
+                  bigDecimal = bigDecimal.round( new MathContext( field.getPrecision(),
+                      RoundingMode.HALF_UP ) ).setScale( field.getScale(), RoundingMode.HALF_UP );
                   LogicalTypes.Decimal decimalType = LogicalTypes.decimal( bigDecimal.precision(), bigDecimal.scale() );
                   ByteBuffer byteBuffer = converter.toBytes( bigDecimal, schema, decimalType );
                   outputRecord.put( avroFieldName, byteBuffer );

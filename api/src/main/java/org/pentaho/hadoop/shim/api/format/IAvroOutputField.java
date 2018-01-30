@@ -45,4 +45,11 @@ public interface IAvroOutputField {
 
   public void setAvroType( int avroType );
 
+  public int getPrecision();
+
+  public void setPrecision(String precision);
+
+  public int getScale();
+
+  public void setScale(String scale);
 }
