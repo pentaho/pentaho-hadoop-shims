@@ -55,7 +55,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -69,19 +68,29 @@ public class PentahoAvroReadWriteTest {
       DEFAULT_INET_ADDR = InetAddress.getByName( "www.microsoft.com" );
 
       DEFAULT_SCHEME_DESCRIPTION = new String[][] {
-        { "avroField1", "pentahoField1", String.valueOf( AvroSpec.DataType.STRING.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_STRING ) },
-        { "avroField2", "pentahoField2", String.valueOf( AvroSpec.DataType.STRING.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_STRING )  },
-        { "avroDouble3", "pentahoNumber3", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_NUMBER )  },
-        { "avroDecimal4", "pentahoBigNumber4", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_BIGNUMBER ) },
-        { "avroString5", "pentahoInet5", String.valueOf( AvroSpec.DataType.STRING.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_INET ) },
-        { "avroBoolean6", "pentahoBoolean6", String.valueOf( AvroSpec.DataType.BOOLEAN.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_BOOLEAN )  },
-        { "avroInt7", "pentahoInt7", String.valueOf( AvroSpec.DataType.INTEGER.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_INTEGER )  },
-        { "avroDate8", "pentahoDate8", String.valueOf( AvroSpec.DataType.DATE.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_DATE ) },
-        { "avroTimestamp9", "pentahoTimestamp9", String.valueOf( AvroSpec.DataType.TIMESTAMP_MILLIS.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_TIMESTAMP )  },
-        { "avroBytes10", "pentahoBinary10", String.valueOf( AvroSpec.DataType.BYTES.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_BINARY )  }
+        { "avroField1", "pentahoField1", String.valueOf( AvroSpec.DataType.STRING.ordinal() ),
+          String.valueOf( ValueMetaInterface.TYPE_STRING ), "0", "0" },
+        { "avroField2", "pentahoField2", String.valueOf( AvroSpec.DataType.STRING.ordinal() ),
+          String.valueOf( ValueMetaInterface.TYPE_STRING ), "0", "0" },
+        { "avroDouble3", "pentahoNumber3", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ),
+          String.valueOf( ValueMetaInterface.TYPE_NUMBER ), "0", "0" },
+        { "avroDecimal4", "pentahoBigNumber4", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ),
+          String.valueOf( ValueMetaInterface.TYPE_BIGNUMBER ), "2", "1" },
+        { "avroString5", "pentahoInet5", String.valueOf( AvroSpec.DataType.STRING.ordinal() ),
+          String.valueOf( ValueMetaInterface.TYPE_INET ), "0", "0" },
+        { "avroBoolean6", "pentahoBoolean6", String.valueOf( AvroSpec.DataType.BOOLEAN.ordinal() ),
+          String.valueOf( ValueMetaInterface.TYPE_BOOLEAN ), "0", "0" },
+        { "avroInt7", "pentahoInt7", String.valueOf( AvroSpec.DataType.INTEGER.ordinal() ),
+          String.valueOf( ValueMetaInterface.TYPE_INTEGER ), "0", "0" },
+        { "avroDate8", "pentahoDate8", String.valueOf( AvroSpec.DataType.DATE.ordinal() ),
+          String.valueOf( ValueMetaInterface.TYPE_DATE ), "0", "0" },
+        { "avroTimestamp9", "pentahoTimestamp9", String.valueOf( AvroSpec.DataType.TIMESTAMP_MILLIS.ordinal() ),
+          String.valueOf( ValueMetaInterface.TYPE_TIMESTAMP ), "0", "0" },
+        { "avroBytes10", "pentahoBinary10", String.valueOf( AvroSpec.DataType.BYTES.ordinal() ),
+          String.valueOf( ValueMetaInterface.TYPE_BINARY ), "0", "0" }
       };
 
-    } catch ( Exception e ){
+    } catch ( Exception e ) {
       //should not happen
     }
   }
@@ -90,6 +99,8 @@ public class PentahoAvroReadWriteTest {
   private final int PENTAHO_NAME_INDEX = 1;
   private final int AVRO_TYPE_INDEX = 2;
   private final int PDI_TYPE_INDEX = 3;
+  private final int PRECISION_INDEX = 4;
+  private final int SCALE_INDEX = 5;
 
   public TemporaryFolder tempFolder = new TemporaryFolder();
 
@@ -113,36 +124,39 @@ public class PentahoAvroReadWriteTest {
     RowMeta rowMeta = new RowMeta();
 
     for ( String[] schemaField : schemaDescription ) {
-      rowMeta.addValueMeta( getValueMetaInterface( schemaField[ PENTAHO_NAME_INDEX ], Integer.valueOf( schemaField[PDI_TYPE_INDEX] ) ) );
+      rowMeta.addValueMeta(
+        getValueMetaInterface( schemaField[ PENTAHO_NAME_INDEX ], Integer.valueOf( schemaField[ PDI_TYPE_INDEX ] ) ) );
     }
 
     return rowMeta;
   }
 
-  private ArrayList<AvroInputField> buildAvroInputFields(String[][] schemaDescription) {
+  private ArrayList<AvroInputField> buildAvroInputFields( String[][] schemaDescription ) {
     ArrayList<AvroInputField> avroInputFields = new ArrayList<AvroInputField>();
 
     for ( String[] schemaField : schemaDescription ) {
       AvroInputField avroInputField = new AvroInputField();
-      avroInputField.setAvroFieldName( schemaField[AVRO_NAME_INDEX] );
+      avroInputField.setAvroFieldName( schemaField[ AVRO_NAME_INDEX ] );
       avroInputField.setPentahoFieldName( schemaField[ PENTAHO_NAME_INDEX ] );
-      avroInputField.setAvroType( AvroSpec.DataType.values()[Integer.parseInt( schemaField[AVRO_TYPE_INDEX] )] );
-      avroInputField.setPentahoType( Integer.valueOf( schemaField[PDI_TYPE_INDEX] ) );
+      avroInputField.setAvroType( AvroSpec.DataType.values()[ Integer.parseInt( schemaField[ AVRO_TYPE_INDEX ] ) ] );
+      avroInputField.setPentahoType( Integer.valueOf( schemaField[ PDI_TYPE_INDEX ] ) );
       avroInputFields.add( avroInputField );
     }
     return avroInputFields;
   }
 
-  private ArrayList<AvroOutputField> buildAvroOutputFields(String[][] schemaDescription) {
+  private ArrayList<AvroOutputField> buildAvroOutputFields( String[][] schemaDescription ) {
     ArrayList<AvroOutputField> avroOutputFields = new ArrayList<AvroOutputField>();
 
     for ( String[] schemaField : schemaDescription ) {
       AvroOutputField avroOutputField = new AvroOutputField();
-      avroOutputField.setAvroFieldName( schemaField[AVRO_NAME_INDEX] );
+      avroOutputField.setAvroFieldName( schemaField[ AVRO_NAME_INDEX ] );
       avroOutputField.setPentahoFieldName( schemaField[ PENTAHO_NAME_INDEX ] );
-      avroOutputField.setAvroType( AvroSpec.DataType.values()[Integer.parseInt( schemaField[AVRO_TYPE_INDEX] )] );
+      avroOutputField.setAvroType( AvroSpec.DataType.values()[ Integer.parseInt( schemaField[ AVRO_TYPE_INDEX ] ) ] );
       avroOutputField.setAllowNull( true );
       avroOutputField.setDefaultValue( null );
+      avroOutputField.setPrecision( schemaField[ PRECISION_INDEX ] );
+      avroOutputField.setScale( schemaField[ SCALE_INDEX ] );
       avroOutputFields.add( avroOutputField );
     }
     return avroOutputFields;
@@ -150,287 +164,416 @@ public class PentahoAvroReadWriteTest {
 
   @Test
   public void testAvroFileWriteAndRead() throws Exception {
-    Object[] rowData = new Object[] { "Row1Field1", "Row1Field2", new Double(3.1), new BigDecimal( "4.1" ), DEFAULT_INET_ADDR, Boolean.TRUE, new Long(1), date1, timeStamp1, "foobar".getBytes() };
+    Object[] rowData =
+      new Object[] { "Row1Field1", "Row1Field2", new Double( 3.1 ), new BigDecimal( "4.1" ), DEFAULT_INET_ADDR,
+        Boolean.TRUE, new Long( 1 ), date1, timeStamp1, "foobar".getBytes() };
 
-    doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.avro" );
-    doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.SNAPPY, "avroOutputSnappy.avro" );
-    doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.DEFLATE, "avroOutputDeflate.avro" );
+    doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED,
+      "avroOutputNone.avro" );
+    doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.SNAPPY,
+      "avroOutputSnappy.avro" );
+    doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.DEFLATE,
+      "avroOutputDeflate.avro" );
   }
 
   @Test
   public void testAvroFileWriteAndReadNegativeValues() throws Exception {
-    Object[] rowData = new Object[] { "Row2Field1", "Row2Field2", new Double(-3.2), new BigDecimal( "-4.2" ), DEFAULT_INET_ADDR, Boolean.FALSE, new Long(-2L), date2, timeStamp2, "Donald Duck".getBytes() };
-    doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.avro" );
+    Object[] rowData =
+      new Object[] { "Row2Field1", "Row2Field2", new Double( -3.2 ), new BigDecimal( "-4.2" ), DEFAULT_INET_ADDR,
+        Boolean.FALSE, new Long( -2L ), date2, timeStamp2, "Donald Duck".getBytes() };
+    doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED,
+      "avroOutputNone.avro" );
   }
 
   @Test
   public void testAvroFileWriteAndReadNullValues() throws Exception {
     Object[] rowData = new Object[] { "Row3Field1", null, null, null, null, null, null, null, null, null };
 
-    doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.avro" );
+    doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED,
+      "avroOutputNone.avro" );
   }
 
   @Test
   public void testAvroFileWriteAndReadDefaultValues() throws Exception {
     Object[] rowData = new Object[] { "Row3Field1", null, null, null, null, null, null, null, null, null };
 
-    String[] defaultValues = { "default", "default2", "1234.0","5.5", DEFAULT_INET_ADDR.getHostAddress(), "true", "-33456", "1980/01/01 00:00:00.000", "1980/01/01 00:00:00.000", "binary" };
+    String[] defaultValues =
+      { "default", "default2", "1234.0", "5.5", DEFAULT_INET_ADDR.getHostAddress(), "true", "-33456",
+        "1980/01/01 00:00:00.000", "1980/01/01 00:00:00.000", "binary" };
 
-    doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.avro", defaultValues, null );
+    doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED,
+      "avroOutputNone.avro", defaultValues, null );
   }
 
-  @Test(expected = org.apache.avro.file.DataFileWriter.AppendWriteException.class)
+  @Test( expected = org.apache.avro.file.DataFileWriter.AppendWriteException.class )
   public void testAvroFileNullsNotAllowed() throws Exception {
     Object[] rowData = new Object[] { "Row3Field1", null, null, null, null, null, null, null, null, null };
     String[] defaultValues = { null, null, null, null, null, null, null, null, null, null };
 
-    doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.avro", defaultValues, null );
+    doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED,
+      "avroOutputNone.avro", defaultValues, null );
   }
 
   @Test
   public void testOverwriteFileIsTrue() throws Exception {
-    Object[] rowData = new Object[] { "Row1Field1", "Row1Field2", new Double(3.1), new BigDecimal( "4.1" ), DEFAULT_INET_ADDR, Boolean.TRUE, new Long(1), date1, timeStamp1, "foobar".getBytes() };
+    Object[] rowData =
+      new Object[] { "Row1Field1", "Row1Field2", new Double( 3.1 ), new BigDecimal( "4.1" ), DEFAULT_INET_ADDR,
+        Boolean.TRUE, new Long( 1 ), date1, timeStamp1, "foobar".getBytes() };
 
-    doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.orc" );
-    doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.orc" );
+    doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED,
+      "avroOutputNone.orc" );
+    doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED,
+      "avroOutputNone.orc" );
   }
 
   @Test
   public void testConvertToStringOnOutput() throws Exception {
-    Object[] rowData = new Object[] { "Row1Field1", "Row1Field2", new Double(3.1), new BigDecimal( "4.1" ), DEFAULT_INET_ADDR, Boolean.TRUE, new Long(1), date1, timeStamp1, "foobar".getBytes() };
+    Object[] rowData =
+      new Object[] { "Row1Field1", "Row1Field2", new Double( 3.1 ), new BigDecimal( "4.1" ), DEFAULT_INET_ADDR,
+        Boolean.TRUE, new Long( 1 ), date1, timeStamp1, "foobar".getBytes() };
     String[][] outputSchemaDescription = new String[][] {
-      { "avroField1", "pentahoField1", String.valueOf( AvroSpec.DataType.STRING.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_STRING ) },
-      { "avroField2", "pentahoField2", String.valueOf( AvroSpec.DataType.STRING.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_STRING )  },
-      { "avroDouble3", "pentahoNumber3", String.valueOf( AvroSpec.DataType.STRING.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_NUMBER )  },
-      { "avroDecimal4", "pentahoBigNumber4", String.valueOf( AvroSpec.DataType.STRING.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_BIGNUMBER ) },
-      { "avroString5", "pentahoInet5", String.valueOf( AvroSpec.DataType.STRING.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_INET ) },
-      { "avroBoolean6", "pentahoBoolean6", String.valueOf( AvroSpec.DataType.STRING.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_BOOLEAN )  },
-      { "avroInt7", "pentahoInt7", String.valueOf( AvroSpec.DataType.STRING.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_INTEGER )  },
-      { "avroDate8", "pentahoDate8", String.valueOf( AvroSpec.DataType.STRING.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_DATE ) },
-      { "avroTimestamp9", "pentahoTimestamp9", String.valueOf( AvroSpec.DataType.STRING.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_TIMESTAMP )  },
-      { "avroBytes10", "pentahoBinary10", String.valueOf( AvroSpec.DataType.STRING.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_BINARY )  }
+      { "avroField1", "pentahoField1", String.valueOf( AvroSpec.DataType.STRING.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_STRING ), "0", "0" },
+      { "avroField2", "pentahoField2", String.valueOf( AvroSpec.DataType.STRING.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_STRING ), "0", "0" },
+      { "avroDouble3", "pentahoNumber3", String.valueOf( AvroSpec.DataType.STRING.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_NUMBER ), "0", "0" },
+      { "avroDecimal4", "pentahoBigNumber4", String.valueOf( AvroSpec.DataType.STRING.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_BIGNUMBER ), "2", "1" },
+      { "avroString5", "pentahoInet5", String.valueOf( AvroSpec.DataType.STRING.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_INET ), "0", "0" },
+      { "avroBoolean6", "pentahoBoolean6", String.valueOf( AvroSpec.DataType.STRING.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_BOOLEAN ), "0", "0" },
+      { "avroInt7", "pentahoInt7", String.valueOf( AvroSpec.DataType.STRING.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_INTEGER ), "0", "0" },
+      { "avroDate8", "pentahoDate8", String.valueOf( AvroSpec.DataType.STRING.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_DATE ), "0", "0" },
+      { "avroTimestamp9", "pentahoTimestamp9", String.valueOf( AvroSpec.DataType.STRING.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_TIMESTAMP ), "0", "0" },
+      { "avroBytes10", "pentahoBinary10", String.valueOf( AvroSpec.DataType.STRING.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_BINARY ), "0", "0" }
     };
 
     String[][] inputSchemaDescription = new String[][] {
-      { "avroField1", "pentahoField1", String.valueOf( AvroSpec.DataType.STRING.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_STRING ) },
-      { "avroField2", "pentahoField2", String.valueOf( AvroSpec.DataType.STRING.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_STRING )  },
-      { "avroDouble3", "pentahoNumber3", String.valueOf( AvroSpec.DataType.STRING.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_STRING )  },
-      { "avroDecimal4", "pentahoBigNumber4", String.valueOf( AvroSpec.DataType.STRING.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_STRING ) },
-      { "avroString5", "pentahoInet5", String.valueOf( AvroSpec.DataType.STRING.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_STRING ) },
-      { "avroBoolean6", "pentahoBoolean6", String.valueOf( AvroSpec.DataType.STRING.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_STRING )  },
-      { "avroInt7", "pentahoInt7", String.valueOf( AvroSpec.DataType.STRING.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_STRING )  },
-      { "avroDate8", "pentahoDate8", String.valueOf( AvroSpec.DataType.STRING.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_STRING ) },
-      { "avroTimestamp9", "pentahoTimestamp9", String.valueOf( AvroSpec.DataType.STRING.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_STRING )  },
-      { "avroBytes10", "pentahoBinary10", String.valueOf( AvroSpec.DataType.STRING.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_STRING )  }
+      { "avroField1", "pentahoField1", String.valueOf( AvroSpec.DataType.STRING.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_STRING ) },
+      { "avroField2", "pentahoField2", String.valueOf( AvroSpec.DataType.STRING.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_STRING ) },
+      { "avroDouble3", "pentahoNumber3", String.valueOf( AvroSpec.DataType.STRING.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_STRING ) },
+      { "avroDecimal4", "pentahoBigNumber4", String.valueOf( AvroSpec.DataType.STRING.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_STRING ) },
+      { "avroString5", "pentahoInet5", String.valueOf( AvroSpec.DataType.STRING.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_STRING ) },
+      { "avroBoolean6", "pentahoBoolean6", String.valueOf( AvroSpec.DataType.STRING.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_STRING ) },
+      { "avroInt7", "pentahoInt7", String.valueOf( AvroSpec.DataType.STRING.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_STRING ) },
+      { "avroDate8", "pentahoDate8", String.valueOf( AvroSpec.DataType.STRING.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_STRING ) },
+      { "avroTimestamp9", "pentahoTimestamp9", String.valueOf( AvroSpec.DataType.STRING.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_STRING ) },
+      { "avroBytes10", "pentahoBinary10", String.valueOf( AvroSpec.DataType.STRING.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_STRING ) }
     };
 
 
     RowMeta rowMeta = buildRowMeta( outputSchemaDescription );
     RowMetaAndData rowMetaAndData = new RowMetaAndData( rowMeta, rowData );
 
-    String[] expectedResults = new String[rowData.length];
-    for (int i = 0; i < rowMetaAndData.size(); i++) {
-      expectedResults[i] = rowMetaAndData.getString(i, null);
+    String[] expectedResults = new String[ rowData.length ];
+    for ( int i = 0; i < rowMetaAndData.size(); i++ ) {
+      expectedResults[ i ] = rowMetaAndData.getString( i, null );
     }
 
-    doReadWrite( inputSchemaDescription, outputSchemaDescription, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.orc", null, expectedResults );
+    doReadWrite( inputSchemaDescription, outputSchemaDescription, rowData,
+      IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.orc", null, expectedResults );
 
   }
 
   @Test
   public void testConvertToBooleanOnOutput() throws Exception {
-    Object[] rowData = new Object[] { "Y", "Row1Field2", new Double(3.1), new BigDecimal( "4.1", MathContext.DECIMAL64 ), true, new Long(0) };
+    Object[] rowData =
+      new Object[] { "Y", "Row1Field2", new Double( 3.1 ), new BigDecimal( "4.1", MathContext.DECIMAL64 ), true,
+        new Long( 0 ) };
     String[][] outputSchemaDescription = new String[][] {
-      { "avroField1", "pentahoField1", String.valueOf( AvroSpec.DataType.BOOLEAN.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_STRING ) },
-      { "avroField2", "pentahoField2", String.valueOf( AvroSpec.DataType.BOOLEAN.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_STRING )  },
-      { "avroDouble3", "pentahoNumber3", String.valueOf( AvroSpec.DataType.BOOLEAN.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_NUMBER )  },
-      { "avroDecimal4", "pentahoBigNumber4", String.valueOf( AvroSpec.DataType.BOOLEAN.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_BIGNUMBER ) },
-       { "avroBoolean6", "pentahoBoolean6", String.valueOf( AvroSpec.DataType.BOOLEAN.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_BOOLEAN )  },
-      { "avroInt7", "pentahoInt7", String.valueOf( AvroSpec.DataType.BOOLEAN.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_INTEGER )  }
+      { "avroField1", "pentahoField1", String.valueOf( AvroSpec.DataType.BOOLEAN.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_STRING ), "0", "0" },
+      { "avroField2", "pentahoField2", String.valueOf( AvroSpec.DataType.BOOLEAN.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_STRING ), "0", "0" },
+      { "avroDouble3", "pentahoNumber3", String.valueOf( AvroSpec.DataType.BOOLEAN.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_NUMBER ), "0", "0" },
+      { "avroDecimal4", "pentahoBigNumber4", String.valueOf( AvroSpec.DataType.BOOLEAN.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_BIGNUMBER ), "2", "1" },
+      { "avroBoolean6", "pentahoBoolean6", String.valueOf( AvroSpec.DataType.BOOLEAN.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_BOOLEAN ), "0", "0" },
+      { "avroInt7", "pentahoInt7", String.valueOf( AvroSpec.DataType.BOOLEAN.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_INTEGER ), "0", "0" }
     };
 
     String[][] inputSchemaDescription = new String[][] {
-      { "avroField1", "pentahoField1", String.valueOf( AvroSpec.DataType.BOOLEAN.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_BOOLEAN ) },
-      { "avroField2", "pentahoField2", String.valueOf( AvroSpec.DataType.BOOLEAN.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_BOOLEAN )  },
-      { "avroDouble3", "pentahoNumber3", String.valueOf( AvroSpec.DataType.BOOLEAN.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_BOOLEAN )  },
-      { "avroDecimal4", "pentahoBigNumber4", String.valueOf( AvroSpec.DataType.BOOLEAN.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_BOOLEAN ) },
-      { "avroBoolean6", "pentahoBoolean6", String.valueOf( AvroSpec.DataType.BOOLEAN.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_BOOLEAN )  },
-      { "avroInt7", "pentahoInt7", String.valueOf( AvroSpec.DataType.BOOLEAN.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_BOOLEAN )  }
+      { "avroField1", "pentahoField1", String.valueOf( AvroSpec.DataType.BOOLEAN.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_BOOLEAN ) },
+      { "avroField2", "pentahoField2", String.valueOf( AvroSpec.DataType.BOOLEAN.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_BOOLEAN ) },
+      { "avroDouble3", "pentahoNumber3", String.valueOf( AvroSpec.DataType.BOOLEAN.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_BOOLEAN ) },
+      { "avroDecimal4", "pentahoBigNumber4", String.valueOf( AvroSpec.DataType.BOOLEAN.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_BOOLEAN ) },
+      { "avroBoolean6", "pentahoBoolean6", String.valueOf( AvroSpec.DataType.BOOLEAN.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_BOOLEAN ) },
+      { "avroInt7", "pentahoInt7", String.valueOf( AvroSpec.DataType.BOOLEAN.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_BOOLEAN ) }
     };
 
 
     RowMeta rowMeta = buildRowMeta( outputSchemaDescription );
     RowMetaAndData rowMetaAndData = new RowMetaAndData( rowMeta, rowData );
 
-    Boolean[] expectedResults = new Boolean[rowData.length];
-    for (int i = 0; i < rowMetaAndData.size(); i++) {
-      expectedResults[i] = rowMetaAndData.getBoolean(i, true);
+    Boolean[] expectedResults = new Boolean[ rowData.length ];
+    for ( int i = 0; i < rowMetaAndData.size(); i++ ) {
+      expectedResults[ i ] = rowMetaAndData.getBoolean( i, true );
     }
 
-    doReadWrite( inputSchemaDescription, outputSchemaDescription, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.orc", null, expectedResults );
+    doReadWrite( inputSchemaDescription, outputSchemaDescription, rowData,
+      IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.orc", null, expectedResults );
   }
 
   @Test
   public void testConvertToLongOnOutput() throws Exception {
-    Object[] rowData = new Object[] { "1", "2", new Double(3.1), new BigDecimal( "4.1" ), DEFAULT_INET_ADDR, Boolean.TRUE, new Long(1), date1, timeStamp1};
+    Object[] rowData =
+      new Object[] { "1", "2", new Double( 3.1 ), new BigDecimal( "4.1" ), DEFAULT_INET_ADDR, Boolean.TRUE,
+        new Long( 1 ), date1, timeStamp1 };
     String[][] outputSchemaDescription = new String[][] {
-      { "avroField1", "pentahoField1", String.valueOf( AvroSpec.DataType.LONG.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_STRING ) },
-      { "avroField2", "pentahoField2", String.valueOf( AvroSpec.DataType.LONG.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_STRING )  },
-      { "avroDouble3", "pentahoNumber3", String.valueOf( AvroSpec.DataType.LONG.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_NUMBER )  },
-      { "avroDecimal4", "pentahoBigNumber4", String.valueOf( AvroSpec.DataType.LONG.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_BIGNUMBER ) },
-      { "avroString5", "pentahoInet5", String.valueOf( AvroSpec.DataType.LONG.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_INET ) },
-      { "avroBoolean6", "pentahoBoolean6", String.valueOf( AvroSpec.DataType.LONG.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_BOOLEAN )  },
-      { "avroInt7", "pentahoInt7", String.valueOf( AvroSpec.DataType.LONG.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_INTEGER )  },
-      { "avroDate8", "pentahoDate8", String.valueOf( AvroSpec.DataType.LONG.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_DATE ) },
-      { "avroTimestamp9", "pentahoTimestamp9", String.valueOf( AvroSpec.DataType.LONG.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_TIMESTAMP )  }
+      { "avroField1", "pentahoField1", String.valueOf( AvroSpec.DataType.LONG.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_STRING ), "0", "0" },
+      { "avroField2", "pentahoField2", String.valueOf( AvroSpec.DataType.LONG.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_STRING ), "0", "0" },
+      { "avroDouble3", "pentahoNumber3", String.valueOf( AvroSpec.DataType.LONG.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_NUMBER ), "0", "0" },
+      { "avroDecimal4", "pentahoBigNumber4", String.valueOf( AvroSpec.DataType.LONG.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_BIGNUMBER ), "2", "1" },
+      { "avroString5", "pentahoInet5", String.valueOf( AvroSpec.DataType.LONG.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_INET ), "0", "0" },
+      { "avroBoolean6", "pentahoBoolean6", String.valueOf( AvroSpec.DataType.LONG.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_BOOLEAN ), "0", "0" },
+      { "avroInt7", "pentahoInt7", String.valueOf( AvroSpec.DataType.LONG.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_INTEGER ), "0", "0" },
+      { "avroDate8", "pentahoDate8", String.valueOf( AvroSpec.DataType.LONG.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_DATE ), "0", "0" },
+      { "avroTimestamp9", "pentahoTimestamp9", String.valueOf( AvroSpec.DataType.LONG.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_TIMESTAMP ), "0", "0" }
     };
 
     String[][] inputSchemaDescription = new String[][] {
-      { "avroField1", "pentahoField1", String.valueOf( AvroSpec.DataType.LONG.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_INTEGER ) },
-      { "avroField2", "pentahoField2", String.valueOf( AvroSpec.DataType.LONG.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_INTEGER )  },
-      { "avroDouble3", "pentahoNumber3", String.valueOf( AvroSpec.DataType.LONG.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_INTEGER )  },
-      { "avroDecimal4", "pentahoBigNumber4", String.valueOf( AvroSpec.DataType.LONG.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_INTEGER ) },
-      { "avroString5", "pentahoInet5", String.valueOf( AvroSpec.DataType.LONG.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_INTEGER ) },
-      { "avroBoolean6", "pentahoBoolean6", String.valueOf( AvroSpec.DataType.LONG.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_INTEGER )  },
-      { "avroInt7", "pentahoInt7", String.valueOf( AvroSpec.DataType.LONG.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_INTEGER )  },
-      { "avroDate8", "pentahoDate8", String.valueOf( AvroSpec.DataType.LONG.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_INTEGER ) },
-      { "avroTimestamp9", "pentahoTimestamp9", String.valueOf( AvroSpec.DataType.LONG.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_INTEGER )  }
+      { "avroField1", "pentahoField1", String.valueOf( AvroSpec.DataType.LONG.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_INTEGER ) },
+      { "avroField2", "pentahoField2", String.valueOf( AvroSpec.DataType.LONG.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_INTEGER ) },
+      { "avroDouble3", "pentahoNumber3", String.valueOf( AvroSpec.DataType.LONG.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_INTEGER ) },
+      { "avroDecimal4", "pentahoBigNumber4", String.valueOf( AvroSpec.DataType.LONG.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_INTEGER ) },
+      { "avroString5", "pentahoInet5", String.valueOf( AvroSpec.DataType.LONG.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_INTEGER ) },
+      { "avroBoolean6", "pentahoBoolean6", String.valueOf( AvroSpec.DataType.LONG.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_INTEGER ) },
+      { "avroInt7", "pentahoInt7", String.valueOf( AvroSpec.DataType.LONG.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_INTEGER ) },
+      { "avroDate8", "pentahoDate8", String.valueOf( AvroSpec.DataType.LONG.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_INTEGER ) },
+      { "avroTimestamp9", "pentahoTimestamp9", String.valueOf( AvroSpec.DataType.LONG.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_INTEGER ) }
     };
 
 
     RowMeta rowMeta = buildRowMeta( outputSchemaDescription );
     RowMetaAndData rowMetaAndData = new RowMetaAndData( rowMeta, rowData );
 
-    Long[] expectedResults = new Long[rowData.length];
-    for (int i = 0; i < rowMetaAndData.size(); i++) {
-      expectedResults[i] = rowMetaAndData.getInteger(i, -999);
+    Long[] expectedResults = new Long[ rowData.length ];
+    for ( int i = 0; i < rowMetaAndData.size(); i++ ) {
+      expectedResults[ i ] = rowMetaAndData.getInteger( i, -999 );
     }
 
-    doReadWrite( inputSchemaDescription, outputSchemaDescription, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.orc", null, expectedResults );
+    doReadWrite( inputSchemaDescription, outputSchemaDescription, rowData,
+      IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.orc", null, expectedResults );
   }
 
   @Test
   public void testConvertToDoubleOnOutput() throws Exception {
-    Object[] rowData = new Object[] { "1", "2", new Double(3.1), new BigDecimal( "4.1" ), DEFAULT_INET_ADDR, Boolean.TRUE, new Long(1), date1, timeStamp1};
+    Object[] rowData =
+      new Object[] { "1", "2", new Double( 3.1 ), new BigDecimal( "4.1" ), DEFAULT_INET_ADDR, Boolean.TRUE,
+        new Long( 1 ), date1, timeStamp1 };
     String[][] outputSchemaDescription = new String[][] {
-      { "avroField1", "pentahoField1", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_STRING ) },
-      { "avroField2", "pentahoField2", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_STRING )  },
-      { "avroDouble3", "pentahoNumber3", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_NUMBER )  },
-      { "avroDecimal4", "pentahoBigNumber4", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_BIGNUMBER ) },
-      { "avroString5", "pentahoInet5", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_INET ) },
-      { "avroBoolean6", "pentahoBoolean6", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_BOOLEAN )  },
-      { "avroInt7", "pentahoInt7", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_INTEGER )  },
-      { "avroDate8", "pentahoDate8", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_DATE ) },
-      { "avroTimestamp9", "pentahoTimestamp9", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_TIMESTAMP )  }
+      { "avroField1", "pentahoField1", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_STRING ), "0", "0" },
+      { "avroField2", "pentahoField2", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_STRING ), "0", "0" },
+      { "avroDouble3", "pentahoNumber3", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_NUMBER ), "0", "0" },
+      { "avroDecimal4", "pentahoBigNumber4", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_BIGNUMBER ), "2", "1" },
+      { "avroString5", "pentahoInet5", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_INET ), "0", "0" },
+      { "avroBoolean6", "pentahoBoolean6", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_BOOLEAN ), "0", "0" },
+      { "avroInt7", "pentahoInt7", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_INTEGER ), "0", "0" },
+      { "avroDate8", "pentahoDate8", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_DATE ), "0", "0" },
+      { "avroTimestamp9", "pentahoTimestamp9", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_TIMESTAMP ), "0", "0" }
     };
 
     String[][] inputSchemaDescription = new String[][] {
-      { "avroField1", "pentahoField1", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_NUMBER ) },
-      { "avroField2", "pentahoField2", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_NUMBER )  },
-      { "avroDouble3", "pentahoNumber3", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_NUMBER )  },
-      { "avroDecimal4", "pentahoBigNumber4", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_NUMBER ) },
-      { "avroString5", "pentahoInet5", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_NUMBER ) },
-      { "avroBoolean6", "pentahoBoolean6", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_NUMBER )  },
-      { "avroInt7", "pentahoInt7", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_NUMBER )  },
-      { "avroDate8", "pentahoDate8", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_NUMBER ) },
-      { "avroTimestamp9", "pentahoTimestamp9", String.valueOf( AvroSpec.DataType.LONG.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_NUMBER )  }
+      { "avroField1", "pentahoField1", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_NUMBER ) },
+      { "avroField2", "pentahoField2", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_NUMBER ) },
+      { "avroDouble3", "pentahoNumber3", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_NUMBER ) },
+      { "avroDecimal4", "pentahoBigNumber4", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_NUMBER ) },
+      { "avroString5", "pentahoInet5", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_NUMBER ) },
+      { "avroBoolean6", "pentahoBoolean6", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_NUMBER ) },
+      { "avroInt7", "pentahoInt7", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_NUMBER ) },
+      { "avroDate8", "pentahoDate8", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_NUMBER ) },
+      { "avroTimestamp9", "pentahoTimestamp9", String.valueOf( AvroSpec.DataType.LONG.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_NUMBER ) }
     };
 
 
     RowMeta rowMeta = buildRowMeta( outputSchemaDescription );
     RowMetaAndData rowMetaAndData = new RowMetaAndData( rowMeta, rowData );
 
-    Double[] expectedResults = new Double[rowData.length];
-    for (int i = 0; i < rowMetaAndData.size(); i++) {
-      expectedResults[i] = rowMetaAndData.getNumber(i, -999);
+    Double[] expectedResults = new Double[ rowData.length ];
+    for ( int i = 0; i < rowMetaAndData.size(); i++ ) {
+      expectedResults[ i ] = rowMetaAndData.getNumber( i, -999 );
     }
 
-    doReadWrite( inputSchemaDescription, outputSchemaDescription, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.orc", null, expectedResults );
+    doReadWrite( inputSchemaDescription, outputSchemaDescription, rowData,
+      IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.orc", null, expectedResults );
   }
+
   @Test
   public void testConvertToBytesOnOutput() throws Exception {
     Object[] rowData = new Object[] { "Row1Field1", "Row1Field2", "foobar".getBytes() };
     String[][] outputSchemaDescription = new String[][] {
-      { "avroField1", "pentahoField1", String.valueOf( AvroSpec.DataType.BYTES.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_STRING ) },
-      { "avroField2", "pentahoField2", String.valueOf( AvroSpec.DataType.BYTES.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_STRING )  },
-      { "avroBytes10", "pentahoBinary10", String.valueOf( AvroSpec.DataType.BYTES.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_BINARY )  }
+      { "avroField1", "pentahoField1", String.valueOf( AvroSpec.DataType.BYTES.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_STRING ), "0", "0" },
+      { "avroField2", "pentahoField2", String.valueOf( AvroSpec.DataType.BYTES.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_STRING ), "0", "0" },
+      { "avroBytes10", "pentahoBinary10", String.valueOf( AvroSpec.DataType.BYTES.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_BINARY ), "0", "0" }
     };
 
     String[][] inputSchemaDescription = new String[][] {
-      { "avroField1", "pentahoField1", String.valueOf( AvroSpec.DataType.BYTES.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_BINARY ) },
-      { "avroField2", "pentahoField2", String.valueOf( AvroSpec.DataType.BYTES.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_BINARY )  },
-      { "avroBytes10", "pentahoBinary10", String.valueOf( AvroSpec.DataType.BYTES.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_BINARY )  }
+      { "avroField1", "pentahoField1", String.valueOf( AvroSpec.DataType.BYTES.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_BINARY ) },
+      { "avroField2", "pentahoField2", String.valueOf( AvroSpec.DataType.BYTES.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_BINARY ) },
+      { "avroBytes10", "pentahoBinary10", String.valueOf( AvroSpec.DataType.BYTES.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_BINARY ) }
     };
 
 
     RowMeta rowMeta = buildRowMeta( outputSchemaDescription );
     RowMetaAndData rowMetaAndData = new RowMetaAndData( rowMeta, rowData );
 
-    byte[][] expectedResults = new byte[rowData.length][];
-    for (int i = 0; i < rowMetaAndData.size(); i++) {
-      expectedResults[i] = rowMetaAndData.getBinary(i, null);
+    byte[][] expectedResults = new byte[ rowData.length ][];
+    for ( int i = 0; i < rowMetaAndData.size(); i++ ) {
+      expectedResults[ i ] = rowMetaAndData.getBinary( i, null );
     }
 
-    doReadWrite( inputSchemaDescription, outputSchemaDescription, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.orc", null, expectedResults );
+    doReadWrite( inputSchemaDescription, outputSchemaDescription, rowData,
+      IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.orc", null, expectedResults );
   }
 
-//  @Test
-//  public void testConvertToAvroDecimal() throws Exception {
-//    Object[] rowData = new Object[] { "1", "2", new Double(3.1), new BigDecimal( "4.1" ), DEFAULT_INET_ADDR, Boolean.TRUE, new Long(1), date1, timeStamp1};
-//    String[][] outputSchemaDescription = new String[][] {
-//      { "avroField1", "pentahoField1", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_STRING ) },
-//      { "avroField2", "pentahoField2", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_STRING )  },
-//      { "avroDouble3", "pentahoNumber3", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_NUMBER )  },
-//      { "avroDecimal4", "pentahoBigNumber4", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_BIGNUMBER ) },
-//      { "avroString5", "pentahoInet5", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_INET ) },
-//      { "avroBoolean6", "pentahoBoolean6", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_BOOLEAN )  },
-//      { "avroInt7", "pentahoInt7", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_INTEGER )  },
-//      { "avroDate8", "pentahoDate8", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_DATE ) },
-//      { "avroTimestamp9", "pentahoTimestamp9", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_TIMESTAMP )  }
-//    };
-//
-//    String[][] inputSchemaDescription = new String[][] {
-//      { "avroField1", "pentahoField1", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_BIGNUMBER ) },
-//      { "avroField2", "pentahoField2", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_BIGNUMBER )  },
-//      { "avroDouble3", "pentahoNumber3", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_BIGNUMBER )  },
-//      { "avroDecimal4", "pentahoBigNumber4", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_BIGNUMBER ) },
-//      { "avroString5", "pentahoInet5", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_BIGNUMBER ) },
-//      { "avroBoolean6", "pentahoBoolean6", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_BIGNUMBER )  },
-//      { "avroInt7", "pentahoInt7", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_BIGNUMBER )  },
-//      { "avroDate8", "pentahoDate8", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_BIGNUMBER ) },
-//      { "avroTimestamp9", "pentahoTimestamp9", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String.valueOf( ValueMetaInterface.TYPE_BIGNUMBER )  }
-//    };
-//
-//
-//    RowMeta rowMeta = buildRowMeta( outputSchemaDescription );
-//    RowMetaAndData rowMetaAndData = new RowMetaAndData( rowMeta, rowData );
-//
-//    BigDecimal[] expectedResults = new BigDecimal[rowData.length];
-//    for (int i = 0; i < rowMetaAndData.size(); i++) {
-//      expectedResults[i] = rowMetaAndData.getBigNumber(i, null);
-//    }
-//
-//    doReadWrite( inputSchemaDescription, outputSchemaDescription, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.orc", null, expectedResults );
-//  }
+  //  @Test
+  //  public void testConvertToAvroDecimal() throws Exception {
+  //    Object[] rowData = new Object[] { "1", "2", new Double(3.1), new BigDecimal( "4.1" ), DEFAULT_INET_ADDR,
+  // Boolean.TRUE, new Long(1), date1, timeStamp1};
+  //    String[][] outputSchemaDescription = new String[][] {
+  //      { "avroField1", "pentahoField1", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String.valueOf(
+  // ValueMetaInterface.TYPE_STRING ) },
+  //      { "avroField2", "pentahoField2", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String.valueOf(
+  // ValueMetaInterface.TYPE_STRING )  },
+  //      { "avroDouble3", "pentahoNumber3", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String.valueOf(
+  // ValueMetaInterface.TYPE_NUMBER )  },
+  //      { "avroDecimal4", "pentahoBigNumber4", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String
+  // .valueOf( ValueMetaInterface.TYPE_BIGNUMBER ) },
+  //      { "avroString5", "pentahoInet5", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String.valueOf(
+  // ValueMetaInterface.TYPE_INET ) },
+  //      { "avroBoolean6", "pentahoBoolean6", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String.valueOf(
+  // ValueMetaInterface.TYPE_BOOLEAN )  },
+  //      { "avroInt7", "pentahoInt7", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String.valueOf(
+  // ValueMetaInterface.TYPE_INTEGER )  },
+  //      { "avroDate8", "pentahoDate8", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String.valueOf(
+  // ValueMetaInterface.TYPE_DATE ) },
+  //      { "avroTimestamp9", "pentahoTimestamp9", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String
+  // .valueOf( ValueMetaInterface.TYPE_TIMESTAMP )  }
+  //    };
+  //
+  //    String[][] inputSchemaDescription = new String[][] {
+  //      { "avroField1", "pentahoField1", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String.valueOf(
+  // ValueMetaInterface.TYPE_BIGNUMBER ) },
+  //      { "avroField2", "pentahoField2", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String.valueOf(
+  // ValueMetaInterface.TYPE_BIGNUMBER )  },
+  //      { "avroDouble3", "pentahoNumber3", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String.valueOf(
+  // ValueMetaInterface.TYPE_BIGNUMBER )  },
+  //      { "avroDecimal4", "pentahoBigNumber4", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String
+  // .valueOf( ValueMetaInterface.TYPE_BIGNUMBER ) },
+  //      { "avroString5", "pentahoInet5", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String.valueOf(
+  // ValueMetaInterface.TYPE_BIGNUMBER ) },
+  //      { "avroBoolean6", "pentahoBoolean6", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String.valueOf(
+  // ValueMetaInterface.TYPE_BIGNUMBER )  },
+  //      { "avroInt7", "pentahoInt7", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String.valueOf(
+  // ValueMetaInterface.TYPE_BIGNUMBER )  },
+  //      { "avroDate8", "pentahoDate8", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String.valueOf(
+  // ValueMetaInterface.TYPE_BIGNUMBER ) },
+  //      { "avroTimestamp9", "pentahoTimestamp9", String.valueOf( AvroSpec.DataType.DECIMAL.ordinal() ), String
+  // .valueOf( ValueMetaInterface.TYPE_BIGNUMBER )  }
+  //    };
+  //
+  //
+  //    RowMeta rowMeta = buildRowMeta( outputSchemaDescription );
+  //    RowMetaAndData rowMetaAndData = new RowMetaAndData( rowMeta, rowData );
+  //
+  //    BigDecimal[] expectedResults = new BigDecimal[rowData.length];
+  //    for (int i = 0; i < rowMetaAndData.size(); i++) {
+  //      expectedResults[i] = rowMetaAndData.getBigNumber(i, null);
+  //    }
+  //
+  //    doReadWrite( inputSchemaDescription, outputSchemaDescription, rowData, IPentahoAvroOutputFormat.COMPRESSION
+  // .UNCOMPRESSED, "avroOutputNone.orc", null, expectedResults );
+  //  }
 
-//  @Test
-//  public void testConvertToAvroTimestamp() throws Exception {
-//    Object[] rowData = new Object[] { "Row1Field1", "Row1Field2", 3.1, new BigDecimal( "4.1", MathContext.DECIMAL64 ), DEFAULT_INET_ADDR, true, 1L, date1, timeStamp1, "foobar".getBytes() };
-//
-//    doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.orc" );
-//  }
-//
-//  @Test
-//  public void testConvertToAvroFloat() throws Exception {
-//    Object[] rowData = new Object[] { "Row1Field1", "Row1Field2", 3.1, new BigDecimal( "4.1", MathContext.DECIMAL64 ), DEFAULT_INET_ADDR, true, 1L, date1, timeStamp1, "foobar".getBytes() };
-//
-//    doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.orc" );
-//  }
-//
+  //  @Test
+  //  public void testConvertToAvroTimestamp() throws Exception {
+  //    Object[] rowData = new Object[] { "Row1Field1", "Row1Field2", 3.1, new BigDecimal( "4.1", MathContext
+  // .DECIMAL64 ), DEFAULT_INET_ADDR, true, 1L, date1, timeStamp1, "foobar".getBytes() };
+  //
+  //    doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED,
+  // "avroOutputNone.orc" );
+  //  }
+  //
+  //  @Test
+  //  public void testConvertToAvroFloat() throws Exception {
+  //    Object[] rowData = new Object[] { "Row1Field1", "Row1Field2", 3.1, new BigDecimal( "4.1", MathContext
+  // .DECIMAL64 ), DEFAULT_INET_ADDR, true, 1L, date1, timeStamp1, "foobar".getBytes() };
+  //
+  //    doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED,
+  // "avroOutputNone.orc" );
+  //  }
+  //
 
-  private String getFilePath(String fileName) {
+  private String getFilePath( String fileName ) {
     String filePath;
-    if (tempFolder.getRoot().toString().substring( 1, 2 ).equals( ":" )) {
+    if ( tempFolder.getRoot().toString().substring( 1, 2 ).equals( ":" ) ) {
       filePath = tempFolder.getRoot().toString().substring( 2 ) + "/" + fileName;
     } else {
       filePath = tempFolder.getRoot().toString() + "/" + fileName;
@@ -439,34 +582,43 @@ public class PentahoAvroReadWriteTest {
     return filePath;
   }
 
-  private void doReadWrite( String[][] inputSchemaDescription, String[][] outputSchemaDescription, Object[] rowData, IPentahoAvroOutputFormat.COMPRESSION compressionType, String outputFileName, String[] defaultValues, Object[] expectedResults ) throws Exception {
+  private void doReadWrite( String[][] inputSchemaDescription, String[][] outputSchemaDescription, Object[] rowData,
+                            IPentahoAvroOutputFormat.COMPRESSION compressionType, String outputFileName,
+                            String[] defaultValues, Object[] expectedResults ) throws Exception {
     List<AvroInputField> avroInputFields = buildAvroInputFields( inputSchemaDescription );
     List<AvroOutputField> avroOutputFields = buildAvroOutputFields( outputSchemaDescription );
     RowMeta rowMeta = buildRowMeta( outputSchemaDescription );
 
-    if (defaultValues != null) {
-      for (int i = 0; i < defaultValues.length; i++) {
-        avroOutputFields.get(i).setAllowNull( false );
+    if ( defaultValues != null ) {
+      for ( int i = 0; i < defaultValues.length; i++ ) {
+        avroOutputFields.get( i ).setAllowNull( false );
         avroOutputFields.get( i ).setDefaultValue( defaultValues[ i ] );
       }
     }
 
-    String filePath = getFilePath(outputFileName);
+    String filePath = getFilePath( outputFileName );
 
     testRecordWriter( avroOutputFields, rowMeta, rowData, compressionType, filePath );
     testRecordReader( avroInputFields, avroOutputFields, rowData, filePath, expectedResults );
 
   }
 
-  private void doReadWrite( String[][] schemaDescription, Object[] rowData, IPentahoAvroOutputFormat.COMPRESSION compressionType, String outputFileName, String[] defaultValues, Object[] expectedResults ) throws Exception {
-    doReadWrite( schemaDescription, schemaDescription, rowData, compressionType,outputFileName, defaultValues, expectedResults );
+  private void doReadWrite( String[][] schemaDescription, Object[] rowData,
+                            IPentahoAvroOutputFormat.COMPRESSION compressionType, String outputFileName,
+                            String[] defaultValues, Object[] expectedResults ) throws Exception {
+    doReadWrite( schemaDescription, schemaDescription, rowData, compressionType, outputFileName, defaultValues,
+      expectedResults );
   }
 
-  private void doReadWrite( String[][] schemaDescription, Object[] rowData, IPentahoAvroOutputFormat.COMPRESSION compressionType, String outputFileName ) throws Exception {
+  private void doReadWrite( String[][] schemaDescription, Object[] rowData,
+                            IPentahoAvroOutputFormat.COMPRESSION compressionType, String outputFileName )
+    throws Exception {
     doReadWrite( schemaDescription, schemaDescription, rowData, compressionType, outputFileName, null, null );
   }
 
-  private void testRecordWriter(List<AvroOutputField> avroOutputFields, RowMeta rowMeta, Object[] rowData, IPentahoAvroOutputFormat.COMPRESSION compressionType, String filePath) throws Exception {
+  private void testRecordWriter( List<AvroOutputField> avroOutputFields, RowMeta rowMeta, Object[] rowData,
+                                 IPentahoAvroOutputFormat.COMPRESSION compressionType, String filePath )
+    throws Exception {
 
     PentahoAvroOutputFormat avroOutputFormat = new PentahoAvroOutputFormat();
     avroOutputFormat.setNameSpace( "nameSpace" );
@@ -477,7 +629,8 @@ public class PentahoAvroReadWriteTest {
 
     IPentahoOutputFormat.IPentahoRecordWriter avroRecordWriter = avroOutputFormat.createRecordWriter();
     Assert.assertNotNull( avroRecordWriter, "avroRecordWriter should NOT be null!" );
-    Assert.assertTrue( avroRecordWriter instanceof PentahoAvroRecordWriter, "avroRecordWriter should be instance of PentahoAvroRecordWriter" );
+    Assert.assertTrue( avroRecordWriter instanceof PentahoAvroRecordWriter,
+      "avroRecordWriter should be instance of PentahoAvroRecordWriter" );
 
     avroRecordWriter.write( new RowMetaAndData( rowMeta, rowData ) );
 
@@ -488,7 +641,8 @@ public class PentahoAvroReadWriteTest {
     }
   }
 
-  private void testRecordReader(List<AvroInputField> avroInputFields, List<AvroOutputField> avroOutputFields, Object[] origValues, String filePath, Object[] expectedResults) throws Exception {
+  private void testRecordReader( List<AvroInputField> avroInputFields, List<AvroOutputField> avroOutputFields,
+                                 Object[] origValues, String filePath, Object[] expectedResults ) throws Exception {
 
     PluginRegistry.addPluginType( ValueMetaPluginType.getInstance() );
     PluginRegistry.init( true );
@@ -498,8 +652,8 @@ public class PentahoAvroReadWriteTest {
     pentahoAvroInputFormat.setInputFile( filePath );
     IPentahoInputFormat.IPentahoRecordReader pentahoRecordReader = pentahoAvroInputFormat.createRecordReader( null );
     for ( RowMetaAndData row : pentahoRecordReader ) {
-      for (int colNum = 0; colNum < avroInputFields.size(); colNum++) {
-        Object expectedValue = (expectedResults == null ? origValues[ colNum ] : expectedResults[colNum]);
+      for ( int colNum = 0; colNum < avroInputFields.size(); colNum++ ) {
+        Object expectedValue = ( expectedResults == null ? origValues[ colNum ] : expectedResults[ colNum ] );
         Object actualValue = row.getData()[ colNum ];
         AvroInputField avroInputField = avroInputFields.get( colNum );
         AvroOutputField avroOutputField = avroOutputFields.get( colNum );
@@ -538,9 +692,9 @@ public class PentahoAvroReadWriteTest {
             assertEquals( errMsg, new String( (byte[]) expectedValue ),
               new String( (byte[]) actualValue ) );
           } else if ( expectedValue instanceof InetAddress ) {
-            byte[] origAddress = ( (InetAddress)expectedValue).getAddress();
-            byte[] readAddress = ((InetAddress)actualValue).getAddress();
-            assertEquals( errMsg, new String( origAddress ) , new String( readAddress ) );
+            byte[] origAddress = ( (InetAddress) expectedValue ).getAddress();
+            byte[] readAddress = ( (InetAddress) actualValue ).getAddress();
+            assertEquals( errMsg, new String( origAddress ), new String( readAddress ) );
           } else {
             assertEquals( errMsg, expectedValue, actualValue );
           }
@@ -563,11 +717,11 @@ public class PentahoAvroReadWriteTest {
         return new ValueMetaBigNumber( fieldName );
       case ValueMetaInterface.TYPE_TIMESTAMP:
         ValueMetaTimestamp valueMetaTimestamp = new ValueMetaTimestamp( fieldName );
-        valueMetaTimestamp.setConversionMask( "yyyy/MM/dd HH:mm:ss.SSS"  );
+        valueMetaTimestamp.setConversionMask( "yyyy/MM/dd HH:mm:ss.SSS" );
         return valueMetaTimestamp;
       case ValueMetaInterface.TYPE_DATE:
         ValueMetaDate valueMetaDate = new ValueMetaDate( fieldName );
-        valueMetaDate.setConversionMask( "yyyy/MM/dd HH:mm:ss.SSS"  );
+        valueMetaDate.setConversionMask( "yyyy/MM/dd HH:mm:ss.SSS" );
         return valueMetaDate;
       case ValueMetaInterface.TYPE_BOOLEAN:
         return new ValueMetaBoolean( fieldName );
