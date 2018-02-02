@@ -193,17 +193,21 @@ public class PentahoAvroOutputFormat implements IPentahoAvroOutputFormat {
               fieldNode.put( AvroSpec.TYPE_NODE, type.getType() );
             }
           } else {
-            fieldNode.put( AvroSpec.LOGICAL_TYPE, type.getLogicalType() );
+            ObjectNode typeNode = mapper.createObjectNode();
+            typeNode.put( AvroSpec.LOGICAL_TYPE, type.getLogicalType() );
+            typeNode.put( AvroSpec.TYPE_NODE, type.getBaseType() );
+
             if ( AvroSpec.DataType.DECIMAL == type ) {
-              fieldNode.put( AvroSpec.DECIMAL_PRECISION, f.getPrecision() );
-              fieldNode.put( AvroSpec.DECIMAL_SCALE, f.getScale() );
+              typeNode.put( AvroSpec.DECIMAL_PRECISION, f.getPrecision() );
+              typeNode.put( AvroSpec.DECIMAL_SCALE, f.getScale() );
             }
+
             if ( f.getAllowNull() ) {
               ArrayNode arrayNode = mapper.createArrayNode().add( AvroSpec.DataType.NULL.getType() );
-              arrayNode.add( type.getBaseType() );
-              fieldNode.putPOJO( AvroSpec.TYPE_NODE, arrayNode );
+              arrayNode.add( typeNode );
+              fieldNode.set( AvroSpec.TYPE_NODE, arrayNode );
             } else {
-              fieldNode.put( AvroSpec.TYPE_NODE, type.getBaseType() );
+              fieldNode.set( AvroSpec.TYPE_NODE, typeNode );
             }
           }
           if ( f.getDefaultValue() != null ) {

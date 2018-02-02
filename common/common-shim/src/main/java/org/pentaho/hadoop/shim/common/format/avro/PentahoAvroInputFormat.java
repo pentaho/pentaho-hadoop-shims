@@ -235,11 +235,18 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
   }
 
   private String getLogicalType( Schema.Field f ) {
-    String logicalType = f.getProp( AvroSpec.LOGICAL_TYPE );
-    if ( Utils.isEmpty( logicalType ) ) {
-      logicalType = f.schema().getProp( AvroSpec.LOGICAL_TYPE );
+    Schema schema = f.schema();
+    if ( schema.getType().equals( Schema.Type.UNION ) ) {
+      List<Schema> schemas = f.schema().getTypes();
+      for ( Schema s : schemas ) {
+        if ( !s.getName().equalsIgnoreCase( "null" ) ) {
+          schema = s;
+          break;
+        }
+      }
     }
-    return logicalType;
+
+    return schema.getProp( AvroSpec.LOGICAL_TYPE );
   }
 
   private boolean isSupported( AvroSpec.DataType actualAvroType ) {
