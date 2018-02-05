@@ -31,6 +31,7 @@ import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.exception.KettleValueException;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.row.ValueMetaInterface;
+import org.pentaho.di.core.row.value.ValueMetaBase;
 import org.pentaho.hadoop.shim.api.format.AvroSpec;
 import org.pentaho.hadoop.shim.api.format.IAvroOutputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat;
@@ -101,7 +102,8 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
             case DATE:
               Date defaultDate = null;
               if ( defaultValue != null && defaultValue.length() > 0 ) {
-                DateFormat dateFormat = new SimpleDateFormat( vmi.getConversionMask() );
+                String conversionMask = ( vmi.getConversionMask() == null ) ? ValueMetaBase.DEFAULT_DATE_PARSE_MASK : vmi.getConversionMask();
+                DateFormat dateFormat = new SimpleDateFormat( conversionMask );
                 try {
                   defaultDate = dateFormat.parse( defaultValue );
                 } catch ( ParseException pe ) {
@@ -193,7 +195,8 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
             case TIMESTAMP_MILLIS:
               Date defaultTimeStamp = null;
               if ( defaultValue != null && defaultValue.length() > 0 ) {
-                DateFormat dateFormat = new SimpleDateFormat( vmi.getConversionMask() );
+                String conversionMask = ( vmi.getConversionMask() == null ) ? ValueMetaBase.DEFAULT_TIMESTAMP_PARSE_MASK : vmi.getConversionMask();
+                DateFormat dateFormat = new SimpleDateFormat( conversionMask );
                 try {
                   defaultTimeStamp = dateFormat.parse( defaultValue );
                 } catch ( ParseException pe ) {
