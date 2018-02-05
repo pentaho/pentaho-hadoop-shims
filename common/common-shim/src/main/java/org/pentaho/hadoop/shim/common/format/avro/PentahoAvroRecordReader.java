@@ -231,8 +231,18 @@ public class PentahoAvroRecordReader implements IPentahoAvroInputFormat.IPentaho
         switch ( pentahoType ) {
           case ValueMetaInterface.TYPE_BIGNUMBER:
             Conversions.DecimalConversion converter = new Conversions.DecimalConversion();
-            Object precision = field.getObjectProp( "precision" );
-            Object scale = field.getObjectProp( "scale" );
+            Schema schema = field.schema();
+            if ( schema.getType().equals( Schema.Type.UNION ) ) {
+              List<Schema> schemas = field.schema().getTypes();
+              for ( Schema s : schemas ) {
+                if ( !s.getName().equalsIgnoreCase( "null" ) ) {
+                  schema = s;
+                  break;
+                }
+              }
+            }
+            Object precision = schema.getObjectProp( AvroSpec.DECIMAL_PRECISION );
+            Object scale = schema.getObjectProp( AvroSpec.DECIMAL_SCALE );
             LogicalTypes.Decimal decimalType = LogicalTypes.decimal( Integer.parseInt( precision.toString() ), Integer.parseInt( scale.toString() ) );
             pentahoData = converter.fromBytes( avroData, avroSchema, decimalType );
             break;
