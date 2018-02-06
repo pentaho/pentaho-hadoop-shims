@@ -54,11 +54,13 @@ public class PentahoAvroRecordReader implements IPentahoAvroInputFormat.IPentaho
   private final DataFileStream<GenericRecord> nativeAvroRecordReader;
   private final Schema avroSchema;
   private final List<? extends IAvroInputField> fields;
+  private boolean legacySchema;
 
   public PentahoAvroRecordReader( DataFileStream<GenericRecord> nativeAvroRecordReader,
                                   Schema avroSchema, List<? extends IAvroInputField> fields ) {
     this.nativeAvroRecordReader = nativeAvroRecordReader;
     this.avroSchema = avroSchema;
+    this.legacySchema = isLegacySchema( avroSchema );
     this.fields = fields;
   }
 
@@ -82,11 +84,36 @@ public class PentahoAvroRecordReader implements IPentahoAvroInputFormat.IPentaho
   @VisibleForTesting
   public RowMetaAndData getRowMetaAndData( GenericRecord avroRecord ) {
     RowMetaAndData rowMetaAndData = new RowMetaAndData();
+    Schema.Field avroField = null;
+    String avroFieldName = null;
     for ( IAvroInputField metaField : fields ) {
-      Schema.Field avroField = avroSchema.getField( metaField.getAvroFieldName() );
+      // Check if the schema is generated using 8.0. If it is, then properly read the schema fields
+      if ( legacySchema ) {
+        avroFieldName = metaField.getAvroFieldName();
+        if ( !avroFieldName.contains( PentahoAvroInputFormat.FieldName.FIELDNAME_DELIMITER ) ) {
+          // First we will attempt to read it with allowsNull value of false.
+          PentahoAvroInputFormat.FieldName fieldName = new PentahoAvroInputFormat.FieldName( avroFieldName,
+              metaField.getPentahoType(), false );
+          avroFieldName = fieldName.getLegacyFieldName();
+          avroField = avroSchema.getField( avroFieldName );
+          if ( avroField == null ) {
+            // We were not able to find the field with allowsNull value of false. Trying true now.
+            fieldName = new PentahoAvroInputFormat.FieldName( avroFieldName,
+                metaField.getPentahoType(), true );
+            avroFieldName = fieldName.getLegacyFieldName();
+            avroField = avroSchema.getField( avroFieldName );
+          }
+        } else {
+          avroField = avroSchema.getField( avroFieldName );
+        }
+      } else {
+        // Schema was not generated using 8.0. Getting the field from the schema
+        avroFieldName = metaField.getAvroFieldName();
+        avroField = avroSchema.getField(  avroFieldName );
+      }
 
       if ( avroField == null ) {
-        return null;
+        continue;
       }
 
       if ( metaField != null ) {
@@ -140,7 +167,7 @@ public class PentahoAvroRecordReader implements IPentahoAvroInputFormat.IPentaho
 
         }
 
-        Object avroData = avroRecord.get( metaField.getAvroFieldName() );
+        Object avroData = avroRecord.get( avroFieldName );
         Object pentahoData = null;
 
         if ( avroData != null ) {
@@ -433,6 +460,16 @@ public class PentahoAvroRecordReader implements IPentahoAvroInputFormat.IPentaho
       }
     }
     return pentahoData;
+  }
+
+  private boolean isLegacySchema( Schema schema ) {
+    if ( schema.getFields().size() > 0 ) {
+      Schema.Field field = schema.getFields().get( 0 );
+      return field != null && field.name() != null && field.name()
+          .contains( PentahoAvroInputFormat.FieldName.FIELDNAME_DELIMITER );
+    } else {
+      return false;
+    }
   }
 
 }
