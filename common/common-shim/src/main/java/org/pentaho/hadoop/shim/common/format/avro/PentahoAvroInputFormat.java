@@ -271,6 +271,10 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
     }
   }
 
+  /**
+   *
+   * @deprecated This is only used to read the schema generated using 8.0
+   */
   public static class FieldName {
     public final String name;
     public final int type;
@@ -281,6 +285,10 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
       this.name = name;
       this.type = type;
       this.allowNull = allowNull;
+    }
+
+    public String getLegacyFieldName() {
+      return name + FIELDNAME_DELIMITER + type + FIELDNAME_DELIMITER + allowNull;
     }
   }
 }
