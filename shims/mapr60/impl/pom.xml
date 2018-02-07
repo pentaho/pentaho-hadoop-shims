@@ -259,6 +259,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
+          <skip>${isCentos6}</skip>
           <excludes>
             <exclude>**/DistributedCacheUtilImplOSDependentTest.java</exclude>
             <exclude>**/PentahoOrcReadWriteTest.java</exclude>
@@ -302,6 +303,37 @@
           </globalVars>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>custom property</id>
+            <phase>validate</phase>
+            <configuration>
+              <exportAntProperties>true</exportAntProperties>
+              <target>
+                <property name="fullReleaseOsVersion" value="${os.detected.release}${os.detected.release.version}"/>
+                <condition property="isCentos6" value="true" else="false" >
+                  <matches string="${fullReleaseOsVersion}" pattern="centos6"/>
+                </condition>
+                <echo message="OS: ${fullReleaseOsVersion}, ${isCentos6}"/>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
+    <extensions>
+      <!--extension to check centos 6 version - not compatible with mapr 60 according to matrix https://maprdocs.mapr.com/home/InteropMatrix/r_os_matrix_6.x.html -->
+      <extension>
+        <groupId>kr.motd.maven</groupId>
+        <artifactId>os-maven-plugin</artifactId>
+        <version>1.5.0.Final</version>
+      </extension>
+    </extensions>
   </build>
 </project>
