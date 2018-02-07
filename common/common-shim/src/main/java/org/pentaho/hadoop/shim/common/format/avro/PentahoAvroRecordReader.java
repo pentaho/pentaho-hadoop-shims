@@ -86,24 +86,26 @@ public class PentahoAvroRecordReader implements IPentahoAvroInputFormat.IPentaho
     RowMetaAndData rowMetaAndData = new RowMetaAndData();
     Schema.Field avroField = null;
     String avroFieldName = null;
+    String metaFieldName = null;
     for ( IAvroInputField metaField : fields ) {
       // Check if the schema is generated using 8.0. If it is, then properly read the schema fields
       if ( legacySchema ) {
-        avroFieldName = metaField.getAvroFieldName();
-        if ( !avroFieldName.contains( PentahoAvroInputFormat.FieldName.FIELDNAME_DELIMITER ) ) {
+        metaFieldName = metaField.getAvroFieldName();
+        if ( !metaFieldName.contains( PentahoAvroInputFormat.FieldName.FIELDNAME_DELIMITER ) ) {
           // First we will attempt to read it with allowsNull value of false.
-          PentahoAvroInputFormat.FieldName fieldName = new PentahoAvroInputFormat.FieldName( avroFieldName,
+          PentahoAvroInputFormat.FieldName fieldName = new PentahoAvroInputFormat.FieldName( metaFieldName,
               metaField.getPentahoType(), false );
           avroFieldName = fieldName.getLegacyFieldName();
           avroField = avroSchema.getField( avroFieldName );
           if ( avroField == null ) {
             // We were not able to find the field with allowsNull value of false. Trying true now.
-            fieldName = new PentahoAvroInputFormat.FieldName( avroFieldName,
+            fieldName = new PentahoAvroInputFormat.FieldName( metaFieldName,
                 metaField.getPentahoType(), true );
             avroFieldName = fieldName.getLegacyFieldName();
             avroField = avroSchema.getField( avroFieldName );
           }
         } else {
+          avroFieldName = metaField.getAvroFieldName();
           avroField = avroSchema.getField( avroFieldName );
         }
       } else {
