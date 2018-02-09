@@ -139,14 +139,14 @@ public class CommonFormatShimTestIT {
     List<AvroInputField> inputFields = new ArrayList<AvroInputField>();
 
     AvroInputField avroInputField = new AvroInputField();
-    avroInputField.setAvroFieldName( "FirstName" );
+    avroInputField.setFormatFieldName( "FirstName" );
     avroInputField.setPentahoFieldName( "FirstName" );
     avroInputField.setAvroType( AvroSpec.DataType.STRING );
     avroInputField.setPentahoType( ValueMetaInterface.TYPE_STRING );
     inputFields.add( avroInputField );
 
     avroInputField = new AvroInputField();
-    avroInputField.setAvroFieldName( "Phone" );
+    avroInputField.setFormatFieldName( "Phone" );
     avroInputField.setPentahoFieldName( "Phone" );
     avroInputField.setAvroType( AvroSpec.DataType.STRING );
     avroInputField.setPentahoType( ValueMetaInterface.TYPE_STRING );
@@ -169,19 +169,19 @@ public class CommonFormatShimTestIT {
     List<AvroOutputField> outputFields = new ArrayList<AvroOutputField>();
 
     AvroOutputField avroOutputField = new AvroOutputField();
-    avroOutputField.setAvroFieldName( "name" );
+    avroOutputField.setFormatFieldName( "name" );
     avroOutputField.setPentahoFieldName( "name" );
     avroOutputField.setAllowNull( false );
     avroOutputField.setDefaultValue( null );
-    avroOutputField.setAvroType( AvroSpec.DataType.STRING );
+    avroOutputField.setFormatType( AvroSpec.DataType.STRING );
     outputFields.add( avroOutputField );
 
     avroOutputField = new AvroOutputField();
-    avroOutputField.setAvroFieldName( "phone" );
+    avroOutputField.setFormatFieldName( "phone" );
     avroOutputField.setPentahoFieldName( "phone" );
     avroOutputField.setAllowNull( false );
     avroOutputField.setDefaultValue( null );
-    avroOutputField.setAvroType( AvroSpec.DataType.STRING );
+    avroOutputField.setFormatType( AvroSpec.DataType.STRING );
     outputFields.add( avroOutputField );
 
     PentahoAvroOutputFormat outputFormat = new PentahoAvroOutputFormat();
@@ -207,14 +207,14 @@ public class CommonFormatShimTestIT {
     List<AvroInputField> inputFields = new ArrayList<AvroInputField>();
 
     AvroInputField avroInputField = new AvroInputField();
-    avroInputField.setAvroFieldName( "name" );
+    avroInputField.setFormatFieldName( "name" );
     avroInputField.setPentahoFieldName( "name" );
     avroInputField.setAvroType( AvroSpec.DataType.STRING );
     avroInputField.setPentahoType( ValueMetaInterface.TYPE_STRING );
     inputFields.add( avroInputField );
 
     avroInputField = new AvroInputField();
-    avroInputField.setAvroFieldName( "phone" );
+    avroInputField.setFormatFieldName( "phone" );
     avroInputField.setPentahoFieldName( "phone" );
     avroInputField.setAvroType( AvroSpec.DataType.STRING );
     avroInputField.setPentahoType( ValueMetaInterface.TYPE_STRING );

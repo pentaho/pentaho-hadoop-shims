@@ -27,13 +27,15 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.log4j.Logger;
 import org.apache.orc.TypeDescription;
+import org.pentaho.hadoop.shim.api.format.IOrcOutputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoOrcOutputFormat;
-import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 
 import org.apache.hadoop.mapreduce.Job;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
 import org.pentaho.hadoop.shim.common.format.orc.OrcSchemaConverter;
 import org.pentaho.hadoop.shim.common.format.orc.PentahoOrcRecordWriter;
+
+import java.util.List;
 
 /**
  * Created by tkafalas on 11/3/2017.
@@ -43,12 +45,12 @@ public class PentahoOrcOutputFormat extends HadoopFormatBase implements IPentaho
   private Job job;
   private TypeDescription schema;
   private String outputFilename;
-  private SchemaDescription schemaDescription;
   private Configuration conf;
   private COMPRESSION compression = COMPRESSION.NONE;
   private int compressSize = 0;
   private int stripeSize = DEFAULT_STRIPE_SIZE;
   private int rowIndexStride = 0;
+  private List<? extends IOrcOutputField> fields;
 
   private static final Logger logger = Logger.getLogger( PentahoOrcOutputFormat.class );
 
@@ -61,20 +63,21 @@ public class PentahoOrcOutputFormat extends HadoopFormatBase implements IPentaho
 
   @Override public IPentahoRecordWriter createRecordWriter() throws Exception {
     logger.info( "Initializing Orc Writer" );
-    if ( schemaDescription == null ) {
-      throw new Exception( "Invalid state.  The schemaDescription is null" );
+    if ( fields == null ) {
+      throw new Exception( "Invalid state.  The fields to write are null" );
     }
     if ( outputFilename == null ) {
       throw new Exception( "Invalid state.  The outputFileName is null" );
     }
     OrcSchemaConverter converter = new OrcSchemaConverter( );
-    schema = converter.buildTypeDescription( schemaDescription );
+    schema = converter.buildTypeDescription( fields );
 
-    return new PentahoOrcRecordWriter( schemaDescription, schema, outputFilename, conf );
+    return new PentahoOrcRecordWriter( fields, schema, outputFilename, conf );
   }
 
-  @Override public void setSchemaDescription( SchemaDescription schema ) throws Exception {
-    schemaDescription = schema;
+  @Override
+  public void setFields( List<? extends IOrcOutputField> fields ) throws Exception {
+    this.fields = fields;
   }
 
   @Override public void setOutputFile( String file, boolean override ) throws Exception {

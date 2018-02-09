@@ -83,7 +83,7 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
           AvroSpec.DataType avroType = field.getAvroType();
           int fieldMetaIndex = rmi.indexOfValue( field.getPentahoFieldName() );
           ValueMetaInterface vmi = rmi.getValueMeta( fieldMetaIndex );
-          String avroFieldName = field.getAvroFieldName();
+          String avroFieldName = field.getFormatFieldName();
           String pentahoFieldName = field.getPentahoFieldName();
           String defaultValue = null;
           if ( !field.getAllowNull() ) {

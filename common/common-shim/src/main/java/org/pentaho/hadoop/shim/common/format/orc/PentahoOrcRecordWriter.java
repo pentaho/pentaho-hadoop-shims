@@ -53,8 +53,8 @@ import org.pentaho.di.core.row.value.ValueMetaInternetAddress;
 import org.pentaho.di.core.row.value.ValueMetaNumber;
 import org.pentaho.di.core.row.value.ValueMetaString;
 import org.pentaho.di.core.row.value.ValueMetaTimestamp;
+import org.pentaho.hadoop.shim.api.format.IOrcOutputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat;
-import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -67,15 +67,14 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by tkafalas on 11/3/2017.
  */
 public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoRecordWriter {
-  private final SchemaDescription schemaDescription;
   private final TypeDescription schema;
-  private Configuration conf;
   private VectorizedRowBatch batch;
   private int batchRowNumber;
   private Writer writer;
@@ -84,16 +83,15 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
   private SimpleDateFormat datePattern = new SimpleDateFormat( dateFormatString );
   private RowMeta outputRowMeta = new RowMeta();
   private RowMetaAndData outputRowMetaAndData;
-  private boolean isFirstRow = true;
   private static final Logger logger = Logger.getLogger( PentahoOrcRecordWriter.class );
+  private List<? extends IOrcOutputField> fields;
 
-  public PentahoOrcRecordWriter( SchemaDescription schemaDescription, TypeDescription schema, String filePath,
+  public PentahoOrcRecordWriter( List<? extends IOrcOutputField> fields, TypeDescription schema, String filePath,
                                  Configuration conf ) {
-    this.schemaDescription = schemaDescription;
+    this.fields = fields;
     this.schema = schema;
-
     final AtomicInteger fieldNumber = new AtomicInteger();  //Mutable field count
-    schemaDescription.forEach( field -> setOutputMeta( fieldNumber, field ) );
+    fields.forEach( field -> setOutputMeta( fieldNumber, field ) );
     outputRowMetaAndData = new RowMetaAndData( outputRowMeta, new Object[ fieldNumber.get() ] );
 
     try {
@@ -106,11 +104,11 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
     }
 
     //Write the addition metadata for the fields
-    new OrcMetaDataWriter( writer ).write( schemaDescription );
+    // new OrcMetaDataWriter( writer ).write( fields );
   }
 
-  private void setOutputMeta( AtomicInteger fieldNumber, SchemaDescription.Field field ) {
-    outputRowMeta.addValueMeta( getValueMetaInterface( field.pentahoFieldName, field.pentahoValueMetaType ) );
+  private void setOutputMeta( AtomicInteger fieldNumber, IOrcOutputField field ) {
+    outputRowMeta.addValueMeta( getValueMetaInterface( field.getPentahoFieldName(), field.getOrcType().getPentahoType() ) );
     fieldNumber.getAndIncrement();
   }
 
@@ -118,130 +116,116 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
     final AtomicInteger fieldNumber = new AtomicInteger();  //Mutable field count
     batchRowNumber = batch.size++;
 
-    schemaDescription.forEach( field -> setFieldValue( fieldNumber, field, row ) );
+    fields.forEach( field -> setFieldValue( fieldNumber, field, row ) );
     if ( batch.size == batch.getMaxSize() - 1 ) {
       writer.addRowBatch( batch );
       batch.reset();
     }
   }
 
-  private void setFieldValue( AtomicInteger fieldNumber, SchemaDescription.Field field,
+  private void setFieldValue( AtomicInteger fieldNumber, IOrcOutputField field,
                               RowMetaAndData rowMetaAndData ) {
     int fieldNo = fieldNumber.getAndIncrement();
     ColumnVector columnVector = batch.cols[ fieldNo ];
-    int rowMetaIndex = rowMetaAndData.getRowMeta().indexOfValue( field.pentahoFieldName );
+    int rowMetaIndex = rowMetaAndData.getRowMeta().indexOfValue( field.getPentahoFieldName() );
 
     if ( rowMetaAndData.getData()[ rowMetaIndex ] == null ) {
-      if ( field.allowNull ) {
+      if ( field.getAllowNull() ) {
         columnVector.isNull[ batchRowNumber ] = true;
         columnVector.noNulls = false;
         return;
       }
     }
-    columnVector.isNull[ batchRowNumber ] = false;
 
+    columnVector.isNull[ batchRowNumber ] = false;
     int inlineType = rowMetaAndData.getRowMeta().getValueMeta( rowMetaIndex ).getType();
     Object inlineValue = rowMetaAndData.getData()[ rowMetaIndex ];
-
     Object setValue = null;
 
     try {
-      //Determine the value after converstion to the type specified in the schemaDescription
-      setValue = valueMetaConverter.convertFromSourceToTargetDataType( inlineType, field.pentahoValueMetaType, inlineValue );
+      //Determine the value after conversion to the type specified in the schemaDescription
+      setValue = valueMetaConverter.convertFromSourceToTargetDataType( inlineType, field.getOrcType().getPentahoType(), inlineValue );
     } catch ( ValueMetaConversionException e ) {
       logger.error( e );
     }
     //Set the final converted value
     outputRowMetaAndData.getData()[ rowMetaIndex ] = setValue;
 
-    switch ( field.pentahoValueMetaType ) {
-      case ValueMetaInterface.TYPE_NUMBER:
+    switch ( field.getOrcType() ) {
+      case BOOLEAN:
+        try {
+          ( (LongColumnVector) columnVector ).vector[ batchRowNumber ] =
+            rowMetaAndData.getBoolean( field.getPentahoFieldName(),
+              field.getDefaultValue() != null ? Boolean.valueOf( field.getDefaultValue() ) : false ) ? 1L : 0L;
+        } catch ( KettleValueException e ) {
+          logger.error( e );
+        }
+        break;
+      case TINYINT:
+      case SMALLINT:
+      case INTEGER:
+      case BIGINT:
+        try {
+          ( (LongColumnVector) columnVector ).vector[ batchRowNumber ] =
+            rowMetaAndData.getInteger( field.getPentahoFieldName(),
+              field.getDefaultValue() != null ? Long.valueOf( field.getDefaultValue() ) : 0 );
+        } catch ( KettleValueException e ) {
+          logger.error( e );
+        }
+        break;
+      case BINARY:
+        try {
+          setBytesColumnVector( ( (BytesColumnVector) columnVector ),
+            rowMetaAndData.getBinary( field.getPentahoFieldName(),
+              field.getDefaultValue() != null ? field.getDefaultValue().getBytes() : new byte[ 0 ] ) );
+        } catch ( KettleValueException e ) {
+          logger.error( e );
+        }
+        break;
+      case FLOAT:
+      case DOUBLE:
         try {
           ( (DoubleColumnVector) columnVector ).vector[ batchRowNumber ] =
-            rowMetaAndData.getNumber( field.pentahoFieldName,
-              field.defaultValue != null ? Double.valueOf( field.defaultValue ) : 0 );
+            rowMetaAndData.getNumber( field.getPentahoFieldName(),
+              field.getDefaultValue() != null ? new Double( field.getDefaultValue() ) : new Double( 0 ) );
         } catch ( KettleValueException e ) {
           logger.error( e );
         }
         break;
-      case ValueMetaInterface.TYPE_BIGNUMBER:
+      case DECIMAL:
         try {
           ( (DecimalColumnVector) columnVector ).vector[ batchRowNumber ] = new HiveDecimalWritable( HiveDecimal.create(
-            rowMetaAndData.getBigNumber( field.pentahoFieldName,
-              field.defaultValue != null ? new BigDecimal( field.defaultValue ) : new BigDecimal( 0 ) ) ) );
+            rowMetaAndData.getBigNumber( field.getPentahoFieldName(),
+              field.getDefaultValue() != null ? new BigDecimal( field.getDefaultValue() ) : new BigDecimal( 0 ) ) ) );
         } catch ( KettleValueException e ) {
           logger.error( e );
         }
         break;
-      case ValueMetaInterface.TYPE_INET:
+      case CHAR:
+      case VARCHAR:
+      case STRING:
         try {
           setBytesColumnVector( ( (BytesColumnVector) columnVector ),
-            rowMetaAndData.getString( field.pentahoFieldName,
-              field.defaultValue != null ? field.defaultValue : "www.google.com" ) );
+            rowMetaAndData.getString( field.getPentahoFieldName(), field.getDefaultValue() != null ? field.getDefaultValue() : "" ) );
         } catch ( KettleValueException e ) {
           logger.error( e );
         }
         break;
-      case ValueMetaInterface.TYPE_STRING:
-        try {
-          setBytesColumnVector( ( (BytesColumnVector) columnVector ),
-            rowMetaAndData.getString( field.pentahoFieldName, field.defaultValue != null ? field.defaultValue : "" ) );
-        } catch ( KettleValueException e ) {
-          logger.error( e );
-        }
-        break;
-      case ValueMetaInterface.TYPE_BOOLEAN:
-        try {
-          ( (LongColumnVector) columnVector ).vector[ batchRowNumber ] =
-            rowMetaAndData.getBoolean( field.pentahoFieldName,
-              field.defaultValue != null ? Boolean.valueOf( field.defaultValue ) : false ) ? 1L : 0L;
-        } catch ( KettleValueException e ) {
-          logger.error( e );
-        }
-        break;
-      case ValueMetaInterface.TYPE_INTEGER:
-        try {
-          ( (LongColumnVector) columnVector ).vector[ batchRowNumber ] =
-            rowMetaAndData.getInteger( field.pentahoFieldName,
-              field.defaultValue != null ? Long.parseLong( field.defaultValue ) : 0 );
-        } catch ( KettleValueException e ) {
-          logger.error( e );
-        }
-        break;
-      case ValueMetaInterface.TYPE_SERIALIZABLE:
-        try {
-          setBytesColumnVector( ( (BytesColumnVector) columnVector ),
-            rowMetaAndData.getBinary( field.pentahoFieldName,
-              field.defaultValue != null ? field.defaultValue.getBytes() : new byte[ 0 ] ) );
-        } catch ( KettleValueException e ) {
-          logger.error( e );
-        }
-        break;
-      case ValueMetaInterface.TYPE_BINARY:
-        try {
-          setBytesColumnVector( ( (BytesColumnVector) columnVector ),
-            rowMetaAndData.getBinary( field.pentahoFieldName,
-              field.defaultValue != null ? field.defaultValue.getBytes() : new byte[ 0 ] ) );
-        } catch ( KettleValueException e ) {
-          logger.error( e );
-        }
-        break;
-      case ValueMetaInterface.TYPE_DATE:
-
+      case DATE:
         try {
           ( (LongColumnVector) columnVector ).vector[ batchRowNumber ] = getOrcDate(
-            rowMetaAndData.getDate( field.pentahoFieldName,
-              field.defaultValue != null ? datePattern.parse( field.defaultValue ) : new Date( 0 ) )
+            rowMetaAndData.getDate( field.getPentahoFieldName(),
+              field.getDefaultValue() != null ? datePattern.parse( field.getDefaultValue() ) : new Date( 0 ) )
           );
         } catch ( KettleValueException | ParseException e ) {
           logger.error( e );
         }
         break;
-      case ValueMetaInterface.TYPE_TIMESTAMP:
+      case TIMESTAMP:
         try {
           ( (TimestampColumnVector) columnVector ).set( batchRowNumber,
-            new Timestamp( rowMetaAndData.getDate( field.pentahoFieldName,
-              field.defaultValue != null ? ( datePattern.parse( field.defaultValue ) ) : new Date( 0 ) )
+            new Timestamp( rowMetaAndData.getDate( field.getPentahoFieldName(),
+              field.getDefaultValue() != null ? ( datePattern.parse( field.getDefaultValue() ) ) : new Date( 0 ) )
               .getTime() ) );
         } catch ( KettleValueException | ParseException e ) {
           logger.error( e );
@@ -249,9 +233,8 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
         break;
       default:
         throw new RuntimeException(
-          "Field: " + field.formatFieldName + "  Undefined type: " + field.pentahoValueMetaType );
+          "Field: " + field.getDefaultValue() + "  Undefined type: " + field.getOrcType().getName() );
     }
-
   }
 
   private int getOrcDate( Date date ) {

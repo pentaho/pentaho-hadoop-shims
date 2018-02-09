@@ -24,92 +24,31 @@ package org.pentaho.hadoop.shim.common.format.avro;
 
 import org.pentaho.hadoop.shim.api.format.AvroSpec;
 import org.pentaho.hadoop.shim.api.format.IAvroOutputField;
+import org.pentaho.hadoop.shim.common.format.BaseFormatOutputField;
 
 /**
  * Base class for format's input/output field - path added.
  * 
  * @author JRice <joseph.rice@hitachivantara.com>
  */
-public class AvroOutputField implements IAvroOutputField {
-  protected String avroFieldName;
-  private String pentahoFieldName;
-  private boolean allowNull;
-  private String defaultValue;
-  private AvroSpec.DataType avroType;
-  private int precision;
-  private int scale;
-
-  @Override
-  public String getAvroFieldName() {
-    return avroFieldName;
-  }
-
-  @Override
-  public void setAvroFieldName( String avroFieldName ) {
-    this.avroFieldName = avroFieldName;
-  }
-
-  @Override
-  public String getPentahoFieldName() {
-    return pentahoFieldName;
-  }
-
-  @Override
-  public void setPentahoFieldName( String pentahoFieldName ) {
-    this.pentahoFieldName = pentahoFieldName;
-  }
-
-  @Override
-  public boolean getAllowNull() {
-    return allowNull;
-  }
-
-  @Override
-  public void setAllowNull( boolean allowNull ) {
-    this.allowNull = allowNull;
-  }
-
-  @Override
-  public String getDefaultValue() {
-    return defaultValue;
-  }
-
-  @Override
-  public void setDefaultValue( String defaultValue ) {
-    this.defaultValue = defaultValue;
-  }
-
+public class AvroOutputField extends BaseFormatOutputField implements IAvroOutputField {
   @Override
   public AvroSpec.DataType getAvroType() {
-    return avroType;
+    return AvroSpec.DataType.values()[ formatType ];
   }
 
   @Override
-  public void setAvroType( AvroSpec.DataType avroType ) {
-    this.avroType = avroType;
+  public void setFormatType( AvroSpec.DataType avroType ) {
+    this.formatType = avroType.ordinal();
   }
 
   @Override
-  public void setAvroType( int avroType ) {
-    this.avroType = AvroSpec.DataType.values()[ avroType ];
+  public void setFormatType( int formatType ) {
+    this.formatType = AvroSpec.DataType.values()[ formatType ].ordinal();
   }
 
   @Override
-  public int getPrecision() {
-    return precision;
-  }
-
-  @Override
-  public void setPrecision( String precision ) {
-    this.precision = Integer.valueOf( precision );
-  }
-
-  @Override
-  public int getScale() {
-    return scale;
-  }
-
-  public void setScale( String scale ) {
-    this.scale = Integer.valueOf( scale );
+  public int getFormatType() {
+    return formatType;
   }
 }

@@ -24,10 +24,11 @@ package org.pentaho.hadoop.shim.common.format.orc;
 import org.apache.log4j.Logger;
 import org.apache.orc.Writer;
 import org.pentaho.hadoop.shim.api.format.IOrcMetaData;
-import org.pentaho.hadoop.shim.api.format.SchemaDescription;
+import org.pentaho.hadoop.shim.api.format.IOrcOutputField;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.util.List;
 
 /**
  * Created by tkafalas on 11/21/2017.
@@ -42,26 +43,26 @@ public class OrcMetaDataWriter implements IOrcMetaData.Writer {
   }
 
   @Override
-  public void write( SchemaDescription schemaDescription ) {
-    schemaDescription.forEach( field -> {
+  public void write( List<? extends IOrcOutputField> fields ) {
+    fields.forEach( field -> {
       try {
         setMetaData( field );
       } catch ( UnsupportedEncodingException e ) {
-        logger.error( "Field " + field.formatFieldName + ": cannot set Orc Metadata" );
+        logger.error( "Field " + field.getPentahoFieldName() + ": cannot set Orc Metadata" );
       }
     } );
   }
 
-  private void setMetaData( SchemaDescription.Field field ) throws UnsupportedEncodingException {
-    addMetaData( field, IOrcMetaData.propertyType.TYPE, toByteBuffer( field.pentahoValueMetaType ) );
-    addMetaData( field, IOrcMetaData.propertyType.NULLABLE, toByteBuffer( field.allowNull ) );
-    if ( field.defaultValue != null ) {
-      addMetaData( field, IOrcMetaData.propertyType.DEFAULT, toByteBuffer( field.defaultValue ) );
+  private void setMetaData( IOrcOutputField field ) throws UnsupportedEncodingException {
+    addMetaData( field, IOrcMetaData.propertyType.TYPE, toByteBuffer( field.getPentahoFieldName() ) );
+    addMetaData( field, IOrcMetaData.propertyType.NULLABLE, toByteBuffer( field.getAllowNull() ) );
+    if ( field.getDefaultValue() != null ) {
+      addMetaData( field, IOrcMetaData.propertyType.DEFAULT, toByteBuffer( field.getDefaultValue() ) );
     }
   }
 
-  private void addMetaData( SchemaDescription.Field field, IOrcMetaData.propertyType propertyType, ByteBuffer valueBuffer ) {
-    writer.addUserMetadata( IOrcMetaData.determinePropertyName( field.formatFieldName, propertyType.toString() ), valueBuffer );
+  private void addMetaData( IOrcOutputField field, IOrcMetaData.propertyType propertyType, ByteBuffer valueBuffer ) {
+    writer.addUserMetadata( IOrcMetaData.determinePropertyName( field.getPentahoFieldName(), propertyType.toString() ), valueBuffer );
   }
 
   private ByteBuffer toByteBuffer( int i ) throws UnsupportedEncodingException {

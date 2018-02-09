@@ -21,6 +21,8 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.api.format;
 
+import java.util.List;
+
 /**
  * Created by tkafalas on 11/22/2017.
  */
@@ -45,9 +47,9 @@ public interface IOrcMetaData {
     /**
      * Extracts data from the SchemaDescription that cannot be transferred to the native orc file and writes
      * that data as custom metaData to the orc file.
-     * @param schemaDescription
+     * @param fields
      */
-    void write( SchemaDescription schemaDescription );
+    void write( List<? extends IOrcOutputField> fields );
   }
 
   interface Reader {
@@ -61,6 +63,4 @@ public interface IOrcMetaData {
      */
     void read( SchemaDescription schemaDescription );
   }
-
-
 }

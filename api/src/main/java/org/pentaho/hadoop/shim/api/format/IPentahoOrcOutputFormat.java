@@ -21,8 +21,9 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.api.format;
 
-public interface IPentahoOrcOutputFormat extends IPentahoOutputFormat {
+import java.util.List;
 
+public interface IPentahoOrcOutputFormat extends IPentahoOutputFormat {
   int DEFAULT_COMPRESS_SIZE = 256; // In kilobytes
   int DEFAULT_STRIPE_SIZE = 64; // In megabytes
   int DEFAULT_ROW_INDEX_STRIDE = 10000; // In rows
@@ -37,7 +38,7 @@ public interface IPentahoOrcOutputFormat extends IPentahoOutputFormat {
     NONE, SNAPPY, ZLIB, LZO
   }
 
-  void setSchemaDescription( SchemaDescription schema ) throws Exception;
+  void setFields( List<? extends IOrcOutputField> fields ) throws Exception;
 
   void setOutputFile( String file, boolean override ) throws Exception;
 
@@ -48,5 +49,4 @@ public interface IPentahoOrcOutputFormat extends IPentahoOutputFormat {
   void setRowIndexStride( int numRows );
 
   void setCompressSize( int kilobytes );
-
 }
