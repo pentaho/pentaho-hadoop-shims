@@ -9,9 +9,6 @@
   <artifactId>pentaho-hadoop-shims-hdp26-assemblies-reactor</artifactId>
   <packaging>pom</packaging>
   <modules>
-    <module>client</module>
-    <module>pmr</module>
-    <module>default</module>
     <module>hdp26-shim</module>
   </modules>
 </project>

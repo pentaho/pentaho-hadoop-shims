@@ -13,8 +13,6 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>pmr</module>
-    <module>default</module>
     <module>mapr520-shim</module>
   </modules>
 </project>

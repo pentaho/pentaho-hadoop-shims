@@ -13,9 +13,6 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>client</module>
-    <module>pmr</module>
-    <module>default</module>
     <module>emr59-shim</module>
   </modules>
 </project>
