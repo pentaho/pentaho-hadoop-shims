@@ -5,10 +5,10 @@
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-mapr520-reactor</artifactId>
-    <version>8.1.0.0-SNAPSHOT</version>
+    <version>81.2018.04.00-236</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-mapr520-scope-pmr</artifactId>
-  <version>8.1.0.0-SNAPSHOT</version>
+  <version>81.2018.04.00-236</version>
   <packaging>pom</packaging>
   <dependencies>
     <dependency>
