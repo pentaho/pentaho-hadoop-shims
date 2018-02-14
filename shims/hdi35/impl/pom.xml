@@ -19,6 +19,11 @@
   </properties>
   <dependencies>
     <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-common</artifactId>
+      <version>${hadoop-client.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>pentaho-hadoop-shims-hdi35-scope-client</artifactId>
       <version>${project.version}</version>
