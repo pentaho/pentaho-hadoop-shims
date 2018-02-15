@@ -27,6 +27,7 @@
         <include>org.apache.hadoop:hadoop-yarn-server-web-proxy</include>
       </includes>
       <excludes>
+        <exclude>org.apache.hadoop:hadoop-yarn-server-nodemanager</exclude>
         <exclude>junit:*</exclude>
         <exclude>commons-collections:commons-collections</exclude>
         <exclude>org.apache.zookeeper:zookeeper</exclude>

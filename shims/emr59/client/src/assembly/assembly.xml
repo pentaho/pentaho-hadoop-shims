@@ -18,6 +18,7 @@
         <include>commons-configuration:commons-configuration</include>
       </includes>
       <excludes>
+        <exclude>org.apache.hadoop:hadoop-yarn-server-nodemanager</exclude>
         <exclude>xml-apis:*</exclude>
         <exclude>commons-collections:*</exclude>
         <exclude>javax.xml.stream:*</exclude>
@@ -42,6 +43,7 @@
         <include>org.apache.hadoop:hadoop-mapreduce-client-shuffle</include>
       </includes>
       <excludes>
+        <exclude>org.apache.hadoop:hadoop-yarn-server-nodemanager</exclude>
         <exclude>xml-apis:*</exclude>
         <exclude>*:stax-api:*</exclude>
         <exclude>commons-collections:*</exclude>
