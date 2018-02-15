@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -23,10 +23,12 @@ package org.pentaho.hadoop.shim.common.format.orc;
 
 import org.apache.orc.TypeDescription;
 import org.pentaho.di.core.row.ValueMetaInterface;
+import org.pentaho.hadoop.shim.api.format.IOrcInputField;
 import org.pentaho.hadoop.shim.api.format.IOrcOutputField;
 import org.pentaho.hadoop.shim.api.format.OrcSpec;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -82,36 +84,73 @@ public class OrcSchemaConverter {
     }
   }
 
-  /**
-   * Convert the Orc TypeDescription Object to our SchemaDescription
-   *
-   * @param typeDescription
-   * @return schemaDescription
-   */
-  public SchemaDescription buildSchemaDescription( TypeDescription typeDescription ) {
-    SchemaDescription schemaDesc = new SchemaDescription();
+  public List<IOrcInputField> buildInputFields( TypeDescription typeDescription ) {
+    List<IOrcInputField> inputFields = new ArrayList<IOrcInputField>();
     Iterator fieldNameIterator = typeDescription.getFieldNames().iterator();
     for ( TypeDescription subDescription : typeDescription.getChildren() ) {
       //Assume getFieldNames is 1:1 with getChildren
       String fieldName = (String) fieldNameIterator.next();
-      int metaType = determineMetaType( subDescription );
-      if ( metaType == -1 ) {
-        throw new IllegalStateException(
-          "Orc Field Name: " + fieldName + " - Could not find pdi field type for " + subDescription.getCategory()
-            .getName() );
+      int formatType = determineFormatType( subDescription );
+      if ( formatType != -1 ) { //Skip orc types we do not support
+        int metaType = determineMetaType( subDescription );
+        if ( metaType == -1 ) {
+          throw new IllegalStateException(
+            "Orc Field Name: " + fieldName + " - Could not find pdi field type for " + subDescription.getCategory()
+              .getName() );
+        }
+
+        OrcInputField inputField = new OrcInputField();
+        inputField.setFormatFieldName( fieldName );
+        inputField.setFormatType( formatType );
+        inputField.setPentahoType( metaType );
+        inputField.setPentahoFieldName( fieldName );
+        inputFields.add( inputField );
       }
-      schemaDesc.addField( schemaDesc.new Field( fieldName, fieldName + "",
-        determineMetaType( subDescription ), true ) );
     }
-    return schemaDesc;
+    return inputFields;
+  }
+
+  private int determineMetaType( TypeDescription subDescription ) {
+    switch ( subDescription.getCategory().getName() ) {
+      case "string":
+      case "char":
+      case "varchar":
+        return ValueMetaInterface.TYPE_STRING;
+      case "bigint":
+      case "tinyint":
+      case "smallint":
+      case "int":
+        return ValueMetaInterface.TYPE_INTEGER;
+      case "double":
+      case "float":
+        return ValueMetaInterface.TYPE_NUMBER;
+      case "decimal":
+        return ValueMetaInterface.TYPE_BIGNUMBER;
+      case "timestamp":
+        return ValueMetaInterface.TYPE_TIMESTAMP;
+      case "date":
+        return ValueMetaInterface.TYPE_DATE;
+      case "boolean":
+        return ValueMetaInterface.TYPE_BOOLEAN;
+      case "binary":
+        return ValueMetaInterface.TYPE_BINARY;
+    }
+    //if none of the cases match return a -1
+    return -1;
   }
 
   private int determineFormatType( TypeDescription subDescription ) {
     switch ( subDescription.getCategory().getName() ) {
       case "string":
         return OrcSpec.DataType.STRING.getId();
+      case "char":
+        return OrcSpec.DataType.CHAR.getId();
+      case "varchar":
+        return OrcSpec.DataType.VARCHAR.getId();
       case "bigint":
         return OrcSpec.DataType.BIGINT.getId();
+      case "float":
+        return OrcSpec.DataType.FLOAT.getId();
       case "double":
         return OrcSpec.DataType.DOUBLE.getId();
       case "decimal":
@@ -124,30 +163,12 @@ public class OrcSchemaConverter {
         return OrcSpec.DataType.BOOLEAN.getId();
       case "binary":
         return OrcSpec.DataType.BINARY.getId();
-    }
-    //if none of the cases match return a -1
-    return -1;
-  }
-
-  private int determineMetaType( TypeDescription subDescription ) {
-    switch ( subDescription.getCategory().getName() ) {
-      case "string":
-        return ValueMetaInterface.TYPE_STRING;
-      //TODO: Handle inet
-      case "bigint":
-        return ValueMetaInterface.TYPE_INTEGER;
-      case "double":
-        return ValueMetaInterface.TYPE_NUMBER;
-      case "decimal":
-        return ValueMetaInterface.TYPE_BIGNUMBER;
-      case "timestamp":
-        return ValueMetaInterface.TYPE_TIMESTAMP;
-      case "date":
-        return ValueMetaInterface.TYPE_DATE;
-      case "boolean":
-        return ValueMetaInterface.TYPE_BOOLEAN;
-      case "binary":
-        return ValueMetaInterface.TYPE_BINARY;
+      case "int":
+        return OrcSpec.DataType.INTEGER.getId();
+      case "tinyint":
+        return OrcSpec.DataType.TINYINT.getId();
+      case "smallint":
+        return OrcSpec.DataType.SMALLINT.getId();
     }
     //if none of the cases match return a -1
     return -1;

@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -34,14 +34,15 @@ import org.apache.orc.Reader;
 import org.apache.orc.RecordReader;
 import org.apache.orc.TypeDescription;
 import org.pentaho.di.core.RowMetaAndData;
+import org.pentaho.hadoop.shim.api.format.IOrcInputField;
 import org.pentaho.hadoop.shim.api.format.IOrcMetaData;
 import org.pentaho.hadoop.shim.api.format.IPentahoOrcInputFormat;
-import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -50,8 +51,8 @@ import java.util.Map;
 public class PentahoOrcRecordReader implements IPentahoOrcInputFormat.IPentahoRecordReader {
   private static final Logger logger = Logger.getLogger( PentahoOrcRecordReader.class );
   private final Configuration conf;
-  private final SchemaDescription schemaDescription;  //Comes from Dialog
-  private final SchemaDescription orcSchemaDescription;  //Comes from OrcFile combined with custom metadata
+  private final List<? extends IOrcInputField> dialogInputFields;  //Comes from Dialog
+  private final List<? extends IOrcInputField> orcInputFields;  //Comes from OrcFile combined with custom metadata
   private VectorizedRowBatch batch;
   private RecordReader recordReader;
   private int currentBatchRow;
@@ -61,9 +62,9 @@ public class PentahoOrcRecordReader implements IPentahoOrcInputFormat.IPentahoRe
   private FileSystem fs;
   private OrcConverter orcConverter = new OrcConverter();
 
-  public PentahoOrcRecordReader( String fileName, Configuration conf, SchemaDescription schemaDescription ) {
+  public PentahoOrcRecordReader( String fileName, Configuration conf, List<? extends IOrcInputField> dialogInputFields ) {
     this.conf = conf;
-    this.schemaDescription = schemaDescription;
+    this.dialogInputFields = dialogInputFields;
 
     Reader reader = null;
     try {
@@ -100,9 +101,9 @@ public class PentahoOrcRecordReader implements IPentahoOrcInputFormat.IPentahoRe
     }
     typeDescription = reader.getSchema();
     OrcSchemaConverter orcSchemaConverter = new OrcSchemaConverter();
-    orcSchemaDescription = orcSchemaConverter.buildSchemaDescription( typeDescription );
+    orcInputFields = orcSchemaConverter.buildInputFields( typeDescription );
     IOrcMetaData.Reader orcMetaDataReader = new OrcMetaDataReader( reader );
-    orcMetaDataReader.read( orcSchemaDescription );
+    orcMetaDataReader.read( orcInputFields );
     batch = typeDescription.createRowBatch();
 
     //Create a map of orc fields to meta columns
@@ -114,14 +115,14 @@ public class PentahoOrcRecordReader implements IPentahoOrcInputFormat.IPentahoRe
 
     //Create a map of schemaDescription fields to Orc Column numbers
     schemaToOrcSubcripts = new HashMap<String, Integer>();
-    for ( SchemaDescription.Field field : schemaDescription ) {
-      if ( field != null ) {
-        Integer colNumber = orcColumnNumberMap.get( field.formatFieldName );
+    for ( IOrcInputField inputField : dialogInputFields ) {
+      if ( inputField != null ) {
+        Integer colNumber = orcColumnNumberMap.get( inputField.getFormatFieldName() );
         if ( colNumber == null ) {
           throw new IllegalArgumentException(
-            "Column " + field.formatFieldName + " does not exist in the ORC file.  Please use the getFields button" );
+            "Column " + inputField.getFormatFieldName() + " does not exist in the ORC file.  Please use the getFields button" );
         } else {
-          schemaToOrcSubcripts.put( field.pentahoFieldName, colNumber );
+          schemaToOrcSubcripts.put( inputField.getPentahoFieldName(), colNumber );
         }
       }
     }
@@ -160,7 +161,7 @@ public class PentahoOrcRecordReader implements IPentahoOrcInputFormat.IPentahoRe
 
       @Override public RowMetaAndData next() {
         RowMetaAndData rowMeta =
-          orcConverter.convertFromOrc( batch, currentBatchRow, schemaDescription, typeDescription, schemaToOrcSubcripts, orcSchemaDescription );
+          orcConverter.convertFromOrc( batch, currentBatchRow, dialogInputFields, typeDescription, schemaToOrcSubcripts, orcInputFields );
         currentBatchRow++;
         return rowMeta;
       }

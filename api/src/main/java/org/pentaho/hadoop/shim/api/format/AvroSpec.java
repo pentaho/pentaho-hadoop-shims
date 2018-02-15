@@ -53,7 +53,8 @@ public class AvroSpec {
     private final String baseType;
     private final String logicalType;
     private final String name;
-    private static final ArrayList<DataType> enumValues = new ArrayList<>();
+
+    private static final ArrayList<DataType> enumValues = new ArrayList<DataType>();
 
     static {
       for ( DataType dataType : DataType.values() ) {

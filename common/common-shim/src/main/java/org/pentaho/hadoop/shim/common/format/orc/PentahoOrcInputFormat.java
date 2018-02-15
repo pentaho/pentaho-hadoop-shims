@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -29,9 +29,9 @@ import org.apache.hadoop.fs.PathFilter;
 import org.apache.orc.Reader;
 import org.apache.orc.OrcFile;
 import org.apache.orc.TypeDescription;
+import org.pentaho.hadoop.shim.api.format.IOrcInputField;
 import org.pentaho.hadoop.shim.api.format.IOrcMetaData;
 import org.pentaho.hadoop.shim.api.format.IPentahoOrcInputFormat;
-import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
 import org.pentaho.hadoop.shim.common.format.HadoopFormatBase;
 
@@ -45,7 +45,7 @@ import java.util.List;
 public class PentahoOrcInputFormat extends HadoopFormatBase implements IPentahoOrcInputFormat {
 
   private String fileName;
-  private SchemaDescription schemaDescription;
+  private List<? extends IOrcInputField> schemaDescription;
   private Configuration conf;
 
   public PentahoOrcInputFormat() throws Exception {
@@ -73,18 +73,18 @@ public class PentahoOrcInputFormat extends HadoopFormatBase implements IPentahoO
   }
 
   @Override
-  public SchemaDescription readSchema( ) throws Exception {
+  public List<IOrcInputField> readSchema( ) throws Exception {
     checkNullFileName();
     Reader orcReader = getReader( );
     return readSchema( orcReader );
   }
 
-  protected SchemaDescription readSchema( Reader orcReader ) throws Exception {
+  protected List<IOrcInputField> readSchema( Reader orcReader ) throws Exception {
     OrcSchemaConverter OrcSchemaConverter = new OrcSchemaConverter();
-    SchemaDescription schemaDescription = OrcSchemaConverter.buildSchemaDescription( readTypeDescription( orcReader ) );
+    List<IOrcInputField> inputFields = OrcSchemaConverter.buildInputFields( readTypeDescription( orcReader ) );
     IOrcMetaData.Reader orcMetaDataReader = new OrcMetaDataReader( orcReader );
-    orcMetaDataReader.read( schemaDescription );
-    return schemaDescription;
+    orcMetaDataReader.read( inputFields );
+    return inputFields;
   }
 
   public TypeDescription readTypeDescription( ) throws Exception {
@@ -141,8 +141,8 @@ public class PentahoOrcInputFormat extends HadoopFormatBase implements IPentahoO
    * filed name
    */
   @Override
-  public void setSchema( SchemaDescription schema ) throws Exception {
-    schemaDescription = schema;
+  public void setSchema( List<? extends IOrcInputField> inputFields ) throws Exception {
+    schemaDescription = inputFields;
   }
 
   @Override
