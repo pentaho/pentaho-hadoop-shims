@@ -19,33 +19,39 @@
  * limitations under the License.
  *
  ******************************************************************************/
+
 package org.pentaho.hadoop.shim.api.format;
 
-import java.util.List;
+public interface IFormatOutputField {
+  String getFormatFieldName();
 
-public interface IPentahoOrcInputFormat extends IPentahoInputFormat {
-  /**
-   * Read schema for display to user.
-   */
-  List<? extends IOrcInputField> readSchema( ) throws Exception;
+  void setFormatFieldName( String formatFieldName );
 
-  /**
-   * Set schema for file reading.
-   */
-  void setSchema( List<? extends IOrcInputField> OrcInputField ) throws Exception;
+  String getPentahoFieldName();
 
-  /**
-   * Set input file.
-   */
-  void setInputFile( String file ) throws Exception;
+  void setPentahoFieldName( String pentahoFieldName );
 
-  /**
-   * Set input file.
-   */
-  //void setInputSchemaFile( String schemaFile ) throws Exception;
+  boolean getAllowNull();
 
-  /**
-   * Split size, bytes.
-   */
-  void setSplitSize( long blockSize ) throws Exception;
+  void setAllowNull( boolean allowNull );
+
+  String getDefaultValue();
+
+  void setDefaultValue( String defaultValue );
+
+  int getPrecision();
+
+  void setPrecision( String precision );
+
+  int getScale();
+
+  void setScale( String scale );
+
+  int getFormatType();
+
+  void setFormatType( int formatType );
+
+  int getPentahoType();
+
+  void setPentahoType( int pentahoType );
 }

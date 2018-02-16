@@ -1,8 +1,8 @@
 /*! ******************************************************************************
  *
- * Pentaho Data Integration
+ * Pentaho Big Data
  *
- * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -19,33 +19,11 @@
  * limitations under the License.
  *
  ******************************************************************************/
+
 package org.pentaho.hadoop.shim.api.format;
 
-import java.util.List;
+public interface IOrcOutputField extends IFormatOutputField {
+  OrcSpec.DataType getOrcType();
 
-public interface IPentahoOrcInputFormat extends IPentahoInputFormat {
-  /**
-   * Read schema for display to user.
-   */
-  List<? extends IOrcInputField> readSchema( ) throws Exception;
-
-  /**
-   * Set schema for file reading.
-   */
-  void setSchema( List<? extends IOrcInputField> OrcInputField ) throws Exception;
-
-  /**
-   * Set input file.
-   */
-  void setInputFile( String file ) throws Exception;
-
-  /**
-   * Set input file.
-   */
-  //void setInputSchemaFile( String schemaFile ) throws Exception;
-
-  /**
-   * Split size, bytes.
-   */
-  void setSplitSize( long blockSize ) throws Exception;
+  void setFormatType( OrcSpec.DataType type );
 }

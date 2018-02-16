@@ -19,33 +19,13 @@
  * limitations under the License.
  *
  ******************************************************************************/
+
 package org.pentaho.hadoop.shim.api.format;
 
-import java.util.List;
+public interface IOrcInputField extends IFormatInputField {
+  public static final String FILENAME_DELIMITER = "_delimiter_";
 
-public interface IPentahoOrcInputFormat extends IPentahoInputFormat {
-  /**
-   * Read schema for display to user.
-   */
-  List<? extends IOrcInputField> readSchema( ) throws Exception;
+  void setOrcType( OrcSpec.DataType orcType );
 
-  /**
-   * Set schema for file reading.
-   */
-  void setSchema( List<? extends IOrcInputField> OrcInputField ) throws Exception;
-
-  /**
-   * Set input file.
-   */
-  void setInputFile( String file ) throws Exception;
-
-  /**
-   * Set input file.
-   */
-  //void setInputSchemaFile( String schemaFile ) throws Exception;
-
-  /**
-   * Split size, bytes.
-   */
-  void setSplitSize( long blockSize ) throws Exception;
+  void setOrcType( String orcType );
 }

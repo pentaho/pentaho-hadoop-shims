@@ -183,9 +183,9 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
       }
 
       AvroInputField avroInputField = new AvroInputField();
-      avroInputField.setAvroFieldName( f.name() );
+      avroInputField.setFormatFieldName( f.name() );
       avroInputField.setPentahoFieldName( avroInputField.getDisplayableAvroFieldName() );
-      avroInputField.setAvroFieldName( f.name() );
+      avroInputField.setFormatFieldName( f.name() );
       avroInputField.setPentahoType( pentahoType );
       avroInputField.setAvroType( actualAvroType );
       fields.add( avroInputField );

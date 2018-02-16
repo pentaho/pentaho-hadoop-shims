@@ -22,26 +22,19 @@
 
 package org.pentaho.hadoop.shim.api.format;
 
-public interface IAvroInputField {
-  public static final String FILENAME_DELIMITER = "_delimiter_";
+public interface IAvroInputField extends IFormatInputField {
+  static final String FILENAME_DELIMITER = "_delimiter_";
 
-  public String getAvroFieldName();
+  String getAvroFieldName();
 
-  public void setAvroFieldName( String avroFieldName );
+  void setAvroFieldName( String avroFieldName );
 
-  public String getPentahoFieldName();
+  AvroSpec.DataType getAvroType();
 
-  public void setPentahoFieldName( String pentahoFieldName );
+  void setAvroType( AvroSpec.DataType avroType );
 
-  public int getPentahoType();
+  void setAvroType( String avroType );
 
-  public void setPentahoType( int pentahoType );
+  String getDisplayableAvroFieldName();
 
-  public AvroSpec.DataType getAvroType();
-
-  public void setAvroType( AvroSpec.DataType avroType );
-
-  public void setAvroType( String avroType );
-
-  public String getDisplayableAvroFieldName();
 }

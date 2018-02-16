@@ -22,40 +22,60 @@
 
 package org.pentaho.hadoop.shim.api.format;
 
+import java.util.ArrayList;
+
 public class AvroSpec {
   public enum DataType {
-    NULL( true, "null", null, "Null" ),
-    BOOLEAN( true, "boolean", null, "Boolean" ),
-    INTEGER( true, "int", null, "Integer" ),
-    LONG( true, "long", null, "Long" ),
-    FLOAT( true, "float", null, "Float" ),
-    DOUBLE( true, "double", null, "Double" ),
-    BYTES( true, "bytes", null, "Bytes" ),
-    STRING( true, "string", null, "String" ),
-    RECORD( false, "record", null, "Record" ),
-    ENUM( false, "enum", null, "Enum" ),
-    ARRAY( false, "array", null, "Array" ),
-    MAP( false, "map", null, "Map" ),
-    FIXED( false, "fixed", null, "Fixed" ),
-    DECIMAL( false, "bytes", "decimal", "Decimal" ),
-    DATE( false, "int", "date", "Date" ),
-    TIME_MILLIS( false, "int", "time-millis", "Time" ),
-    TIME_MICROS( false, "long", "time-micros", "Time In Microseconds" ),
-    TIMESTAMP_MILLIS( false, "long", "timestamp-millis", "Timestamp" ),
-    TIMESTAMP_MICROS( false, "long", "timestamp-micros", "Timestamp In Microseconds" ),
-    DURATION( false, "fixed", "duration", "Duration" ),
-    DECIMAL_FIXED( false, "fixed", "decimal", "Decimal Fixed" );
+    NULL( 0, true, "null", null, "Null" ),
+    BOOLEAN( 1, true, "boolean", null, "Boolean" ),
+    INTEGER( 2, true, "int", null, "Integer" ),
+    LONG( 3, true, "long", null, "Long" ),
+    FLOAT( 4, true, "float", null, "Float" ),
+    DOUBLE( 5, true, "double", null, "Double" ),
+    BYTES( 6, true, "bytes", null, "Bytes" ),
+    STRING( 7, true, "string", null, "String" ),
+    RECORD( 8, false, "record", null, "Record" ),
+    ENUM( 9, false, "enum", null, "Enum" ),
+    ARRAY( 10, false, "array", null, "Array" ),
+    MAP( 11, false, "map", null, "Map" ),
+    FIXED( 12, false, "fixed", null, "Fixed" ),
+    DECIMAL( 13, false, "bytes", "decimal", "Decimal" ),
+    DATE( 14, false, "int", "date", "Date" ),
+    TIME_MILLIS( 15, false, "int", "time-millis", "Time" ),
+    TIME_MICROS( 16, false, "long", "time-micros", "Time In Microseconds" ),
+    TIMESTAMP_MILLIS( 17, false, "long", "timestamp-millis", "Timestamp" ),
+    TIMESTAMP_MICROS( 18, false, "long", "timestamp-micros", "Timestamp In Microseconds" ),
+    DURATION( 19, false, "fixed", "duration", "Duration" ),
+    DECIMAL_FIXED( 20, false, "fixed", "decimal", "Decimal Fixed" );
 
+    private final int id;
     private final boolean isPrimitive;
     private final String baseType;
     private final String logicalType;
     private final String name;
 
-    DataType( boolean isPrimitiveType, String baseType, String logicalType, String name ) {
+    private static final ArrayList<DataType> enumValues = new ArrayList<DataType>();
+
+    static {
+      for ( DataType dataType : DataType.values() ) {
+        enumValues.add( dataType.getId(), dataType );
+      }
+    }
+
+    DataType( int id, boolean isPrimitiveType, String baseType, String logicalType, String name ) {
+      this.id = id;
       this.isPrimitive = isPrimitiveType;
       this.baseType = baseType;
       this.logicalType = logicalType;
       this.name = name;
+    }
+
+    public static DataType getDataType( int id ) {
+      return enumValues.get( id );
+    }
+
+    public int getId() {
+      return id;
     }
 
     public boolean isPrimitiveType() {

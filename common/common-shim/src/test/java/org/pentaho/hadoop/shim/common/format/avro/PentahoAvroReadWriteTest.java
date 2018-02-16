@@ -136,7 +136,7 @@ public class PentahoAvroReadWriteTest {
 
     for ( String[] schemaField : schemaDescription ) {
       AvroInputField avroInputField = new AvroInputField();
-      avroInputField.setAvroFieldName( schemaField[ AVRO_NAME_INDEX ] );
+      avroInputField.setFormatFieldName( schemaField[ AVRO_NAME_INDEX ] );
       avroInputField.setPentahoFieldName( schemaField[ PENTAHO_NAME_INDEX ] );
       avroInputField.setAvroType( AvroSpec.DataType.values()[ Integer.parseInt( schemaField[ AVRO_TYPE_INDEX ] ) ] );
       avroInputField.setPentahoType( Integer.valueOf( schemaField[ PDI_TYPE_INDEX ] ) );
@@ -150,9 +150,9 @@ public class PentahoAvroReadWriteTest {
 
     for ( String[] schemaField : schemaDescription ) {
       AvroOutputField avroOutputField = new AvroOutputField();
-      avroOutputField.setAvroFieldName( schemaField[ AVRO_NAME_INDEX ] );
+      avroOutputField.setFormatFieldName( schemaField[ AVRO_NAME_INDEX ] );
       avroOutputField.setPentahoFieldName( schemaField[ PENTAHO_NAME_INDEX ] );
-      avroOutputField.setAvroType( AvroSpec.DataType.values()[ Integer.parseInt( schemaField[ AVRO_TYPE_INDEX ] ) ] );
+      avroOutputField.setFormatType( AvroSpec.DataType.values()[ Integer.parseInt( schemaField[ AVRO_TYPE_INDEX ] ) ] );
       avroOutputField.setAllowNull( true );
       avroOutputField.setDefaultValue( null );
       avroOutputField.setPrecision( schemaField[ PRECISION_INDEX ] );

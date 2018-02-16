@@ -22,34 +22,8 @@
 
 package org.pentaho.hadoop.shim.api.format;
 
-public interface IAvroOutputField {
-  public String getAvroFieldName();
+public interface IAvroOutputField extends IFormatOutputField {
+  AvroSpec.DataType getAvroType();
 
-  public void setAvroFieldName( String avroFieldName );
-
-  public String getPentahoFieldName();
-
-  public void setPentahoFieldName( String pentahoFieldName );
-
-  public boolean getAllowNull();
-
-  public void setAllowNull( boolean allowNull );
-
-  public String getDefaultValue();
-
-  public void setDefaultValue( String defaultValue );
-
-  public AvroSpec.DataType getAvroType();
-
-  public void setAvroType( AvroSpec.DataType type );
-
-  public void setAvroType( int avroType );
-
-  public int getPrecision();
-
-  public void setPrecision( String precision );
-
-  public int getScale();
-
-  public void setScale( String scale );
+  void setFormatType( AvroSpec.DataType type );
 }

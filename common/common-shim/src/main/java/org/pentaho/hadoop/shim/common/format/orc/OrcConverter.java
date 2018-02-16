@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -36,7 +36,7 @@ import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.core.row.value.ValueMetaConversionException;
 import org.pentaho.di.core.row.value.ValueMetaConverter;
-import org.pentaho.hadoop.shim.api.format.SchemaDescription;
+import org.pentaho.hadoop.shim.api.format.IOrcInputField;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -45,7 +45,9 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -56,32 +58,37 @@ public class OrcConverter {
   private static final Logger logger = Logger.getLogger( OrcConverter.class );
 
   public RowMetaAndData convertFromOrc( VectorizedRowBatch batch, int currentBatchRow,
-                                               SchemaDescription schemaDescription, TypeDescription typeDescription,
-                                               Map<String, Integer> schemaToOrcSubcripts, SchemaDescription orcSchemaDescription ) {
-    return convertFromOrc( new RowMetaAndData(), batch, currentBatchRow, schemaDescription, typeDescription,
-      schemaToOrcSubcripts, orcSchemaDescription );
+                                        List<? extends IOrcInputField> dialogInputFields,
+                                        TypeDescription typeDescription,
+                                        Map<String, Integer> schemaToOrcSubcripts,
+                                        List<? extends IOrcInputField> orcInputFields ) {
+    return convertFromOrc( new RowMetaAndData(), batch, currentBatchRow, dialogInputFields, typeDescription,
+      schemaToOrcSubcripts, orcInputFields );
   }
 
   @VisibleForTesting
   RowMetaAndData convertFromOrc( RowMetaAndData rowMetaAndData, VectorizedRowBatch batch, int currentBatchRow,
-                                        SchemaDescription schemaDescription, TypeDescription typeDescription,
-                                        Map<String, Integer> schemaToOrcSubcripts,
-                                        SchemaDescription orcSchemaDescription ) {
+                                 List<? extends IOrcInputField> dialogInputFields, TypeDescription typeDescription,
+                                 Map<String, Integer> schemaToOrcSubcripts,
+                                 List<? extends IOrcInputField> orcInputFields ) {
 
     int orcColumn;
-    for ( SchemaDescription.Field field : schemaDescription ) {
-      SchemaDescription.Field orcField = orcSchemaDescription.getField( field.formatFieldName );
-      if ( field != null ) {
-        ColumnVector columnVector = batch.cols[ schemaToOrcSubcripts.get( field.pentahoFieldName ) ];
-        Object orcToPentahoValue = convertFromSourceToTargetDataType( columnVector, currentBatchRow, orcField.pentahoValueMetaType );
+    for ( IOrcInputField inputField : dialogInputFields ) {
+      IOrcInputField orcField = getFormatField( inputField.getFormatFieldName(), orcInputFields );
+      if ( inputField != null ) {
+        ColumnVector columnVector = batch.cols[ schemaToOrcSubcripts.get( inputField.getPentahoFieldName() ) ];
+        Object orcToPentahoValue =
+          convertFromSourceToTargetDataType( columnVector, currentBatchRow, orcField.getPentahoType() );
 
         Object convertToSchemaValue = null;
         try {
-          convertToSchemaValue = valueMetaConverter.convertFromSourceToTargetDataType( orcField.pentahoValueMetaType, field.pentahoValueMetaType, orcToPentahoValue );
+          convertToSchemaValue = valueMetaConverter
+            .convertFromSourceToTargetDataType( orcField.getPentahoType(), inputField.getPentahoType(),
+              orcToPentahoValue );
         } catch ( ValueMetaConversionException e ) {
           logger.error( e );
         }
-        rowMetaAndData.addValue( field.pentahoFieldName, field.pentahoValueMetaType, convertToSchemaValue );
+        rowMetaAndData.addValue( inputField.getPentahoFieldName(), inputField.getPentahoType(), convertToSchemaValue );
       }
     }
 
@@ -91,7 +98,7 @@ public class OrcConverter {
   protected static Object convertFromSourceToTargetDataType( ColumnVector columnVector, int currentBatchRow,
                                                              int orcValueMetaInterface ) {
 
-    if ( columnVector.isNull[currentBatchRow] ) {
+    if ( columnVector.isNull[ currentBatchRow ] ) {
       return null;
     }
     switch ( orcValueMetaInterface ) {
@@ -125,7 +132,8 @@ public class OrcConverter {
         return timestamp;
 
       case ValueMetaInterface.TYPE_DATE:
-        LocalDate localDate = LocalDate.ofEpochDay( 0 ).plusDays( ( (LongColumnVector) columnVector ).vector[ currentBatchRow ] );
+        LocalDate localDate =
+          LocalDate.ofEpochDay( 0 ).plusDays( ( (LongColumnVector) columnVector ).vector[ currentBatchRow ] );
         Date dateValue = Date.from( localDate.atStartOfDay( ZoneId.systemDefault() ).toInstant() );
         return dateValue;
 
@@ -144,5 +152,18 @@ public class OrcConverter {
     return null;
   }
 
-}
+  public IOrcInputField getFormatField( String formatFieldName, List<? extends IOrcInputField> fields ) {
+    if ( formatFieldName == null || formatFieldName.trim().isEmpty() ) {
+      return null;
+    }
 
+    for ( IOrcInputField field : fields ) {
+      if ( field.getFormatFieldName().equals( formatFieldName ) ) {
+        return field;
+      }
+    }
+
+    return null;
+  }
+
+}

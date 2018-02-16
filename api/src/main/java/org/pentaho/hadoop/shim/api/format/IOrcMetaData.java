@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -20,6 +20,8 @@
  *
  ******************************************************************************/
 package org.pentaho.hadoop.shim.api.format;
+
+import java.util.List;
 
 /**
  * Created by tkafalas on 11/22/2017.
@@ -45,9 +47,9 @@ public interface IOrcMetaData {
     /**
      * Extracts data from the SchemaDescription that cannot be transferred to the native orc file and writes
      * that data as custom metaData to the orc file.
-     * @param schemaDescription
+     * @param fields
      */
-    void write( SchemaDescription schemaDescription );
+    void write( List<? extends IOrcOutputField> fields );
   }
 
   interface Reader {
@@ -56,11 +58,9 @@ public interface IOrcMetaData {
      * of the orc file.  This method extracts that data, if present, and adds it to a schemaDescription that was built
      * soley by the orc file TypeDescription.
      *
-     * @param schemaDescription Presumeably a schema description built from the typeDescription alone (eg. <code>
+     * @param orcInputFields Presumeably a list of OrcInputFields built from the typeDescription alone (eg. <code>
      *                          OrcSchemaConverter.buildSchemaDescription( TypeDescription ) </code>
      */
-    void read( SchemaDescription schemaDescription );
+    void read( List<? extends IOrcInputField> orcInputFields );
   }
-
-
 }

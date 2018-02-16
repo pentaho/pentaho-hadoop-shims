@@ -177,13 +177,13 @@ public class PentahoAvroOutputFormat implements IPentahoAvroOutputFormat {
         while ( fields.hasNext() ) {
           IAvroOutputField f = fields.next();
           if ( f.getAvroType() == null ) {
-            throw new RuntimeException( "Field: " + f.getAvroFieldName() + " has undefined type. " );
+            throw new RuntimeException( "Field: " + f.getFormatFieldName() + " has undefined type. " );
           }
 
           AvroSpec.DataType type = f.getAvroType();
           ObjectNode fieldNode = mapper.createObjectNode();
 
-          fieldNode.put( AvroSpec.NAME_NODE, f.getAvroFieldName() );
+          fieldNode.put( AvroSpec.NAME_NODE, f.getFormatFieldName() );
           if ( type.isPrimitiveType() ) {
             if ( f.getAllowNull() ) {
               ArrayNode arrayNode = mapper.createArrayNode().add( AvroSpec.DataType.NULL.getType() );

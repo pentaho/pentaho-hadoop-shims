@@ -19,41 +19,37 @@
  * limitations under the License.
  *
  ******************************************************************************/
+
 package org.pentaho.hadoop.shim.common.format.orc;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.pentaho.di.core.row.value.ValueMetaFactory;
 import org.pentaho.hadoop.shim.api.format.IOrcInputField;
-import org.pentaho.hadoop.shim.api.format.SchemaDescription;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.mockito.Mockito.mock;
+import org.pentaho.hadoop.shim.api.format.OrcSpec.DataType;
+import org.pentaho.hadoop.shim.common.format.BaseFormatInputField;
 
 /**
- * Created by tkafalas on 11/20/2017.
+ * @Author tkafalas
  */
-public class PentahoOrcInputFormatTest {
-  PentahoOrcInputFormat pentahoOrcInputFormat;
-  List<IOrcInputField> mockSchemaDescription;
-  String fileName = "testFile";
-
-  @Before
-  public void setup() throws Exception {
-    pentahoOrcInputFormat = new PentahoOrcInputFormat();
-    mockSchemaDescription = new ArrayList<IOrcInputField>();
+public class OrcInputField extends BaseFormatInputField implements IOrcInputField {
+  public DataType getOrcType( ) {
+    return DataType.getDataType( getFormatType() );
   }
 
-  @Test( expected = IllegalStateException.class )
-  public void testCreateRecordReaderWithNoFile() throws Exception {
-    pentahoOrcInputFormat.setSchema( mockSchemaDescription );
-    pentahoOrcInputFormat.createRecordReader( null );
+  public void setOrcType( DataType orcType ) {
+    setFormatType( orcType.getId() );
   }
 
-  @Test( expected = IllegalStateException.class )
-  public void testCreateRecordReaderWithNoSchema() throws Exception {
-    pentahoOrcInputFormat.setInputFile( fileName );
-    pentahoOrcInputFormat.createRecordReader( null );
+  public void setOrcType( String orcType ) {
+    for ( DataType tmpType : DataType.values() ) {
+      if ( tmpType.getName().equalsIgnoreCase( orcType ) ) {
+        setFormatType( tmpType.getId() );
+        break;
+      }
+    }
   }
+
+  public String getTypeDesc() {
+    return ValueMetaFactory.getValueMetaName( getPentahoType() );
+  }
+
 }
