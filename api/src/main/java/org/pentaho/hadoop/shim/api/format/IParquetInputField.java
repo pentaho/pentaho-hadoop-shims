@@ -21,8 +21,8 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.api.format;
 
-public interface IOrcInputField extends IFormatInputField {
-  void setOrcType( OrcSpec.DataType orcType );
+public interface IParquetInputField {
+  void setParquetType( ParquetSpec.DataType parquetType );
 
-  void setOrcType( String orcType );
+  void setParquetType( String parquetType );
 }

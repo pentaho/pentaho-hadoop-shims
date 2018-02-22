@@ -41,5 +41,4 @@ public interface IFormatInputField {
   int getFormatType();
 
   void setFormatType( int formatType );
-
 }

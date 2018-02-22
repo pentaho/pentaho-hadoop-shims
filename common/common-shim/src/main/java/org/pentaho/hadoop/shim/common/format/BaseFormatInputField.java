@@ -19,7 +19,6 @@
  * limitations under the License.
  *
  ******************************************************************************/
-
 package org.pentaho.hadoop.shim.common.format;
 
 import org.pentaho.di.core.row.value.ValueMetaFactory;
