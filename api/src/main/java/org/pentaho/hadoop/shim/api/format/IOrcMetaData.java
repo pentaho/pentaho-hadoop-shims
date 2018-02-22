@@ -45,7 +45,7 @@ public interface IOrcMetaData {
 
   interface Writer {
     /**
-     * Extracts data from the SchemaDescription that cannot be transferred to the native orc file and writes
+     * Extracts data from the output fields list that cannot be transferred to the native orc file and writes
      * that data as custom metaData to the orc file.
      * @param fields
      */
@@ -55,11 +55,11 @@ public interface IOrcMetaData {
   interface Reader {
     /**
      * If the orc file has been written by PDI, there will be additional metadata stored in the custom metaData area
-     * of the orc file.  This method extracts that data, if present, and adds it to a schemaDescription that was built
+     * of the orc file.  This method extracts that data, if present, and adds it to a field list that was built
      * soley by the orc file TypeDescription.
      *
      * @param orcInputFields Presumeably a list of OrcInputFields built from the typeDescription alone (eg. <code>
-     *                          OrcSchemaConverter.buildSchemaDescription( TypeDescription ) </code>
+     *                          OrcSchemaConverter.buildInputFields( TypeDescription ) </code>
      */
     void read( List<? extends IOrcInputField> orcInputFields );
   }

@@ -21,6 +21,8 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.api.format;
 
+import java.util.List;
+
 public interface IPentahoParquetOutputFormat extends IPentahoOutputFormat {
   enum VERSION {
     VERSION_1_0, VERSION_2_0
@@ -30,7 +32,7 @@ public interface IPentahoParquetOutputFormat extends IPentahoOutputFormat {
     UNCOMPRESSED, SNAPPY, GZIP, LZO
   }
 
-  void setSchema( SchemaDescription schema ) throws Exception;
+  void setFields( List<? extends IParquetOutputField> fields ) throws Exception;
 
   void setOutputFile( String file, boolean override ) throws Exception;
 
