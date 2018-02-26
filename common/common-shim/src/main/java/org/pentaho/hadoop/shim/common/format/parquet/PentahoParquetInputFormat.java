@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -19,7 +19,7 @@
  * limitations under the License.
  *
  ******************************************************************************/
-package org.pentaho.hadoop.shim.common.format;
+package org.pentaho.hadoop.shim.common.format.parquet;
 
 import java.net.URI;
 import java.nio.file.NoSuchFileException;
@@ -57,11 +57,8 @@ import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.hadoop.shim.api.format.IParquetInputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoParquetInputFormat;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
-import org.pentaho.hadoop.shim.common.format.parquet.ParquetConverter;
-import org.pentaho.hadoop.shim.common.format.parquet.ParquetInputFieldList;
-import org.pentaho.hadoop.shim.common.format.parquet.PentahoInputSplitImpl;
-import org.pentaho.hadoop.shim.common.format.parquet.PentahoParquetReadSupport;
-import org.pentaho.hadoop.shim.common.format.parquet.PentahoParquetRecordReader;
+import org.pentaho.hadoop.shim.common.format.HadoopFormatBase;
+import org.pentaho.hadoop.shim.common.format.ReadFileFilter;
 
 /**
  * Created by Vasilina_Terehova on 7/25/2017.

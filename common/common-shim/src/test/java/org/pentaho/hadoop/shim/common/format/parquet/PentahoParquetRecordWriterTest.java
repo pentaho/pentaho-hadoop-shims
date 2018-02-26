@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -48,15 +48,12 @@ import org.mockito.Mockito;
 import org.mockito.internal.util.reflection.Whitebox;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.row.RowMeta;
-import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.core.row.value.ValueMetaString;
 import org.pentaho.di.core.util.Assert;
 import org.pentaho.hadoop.shim.api.format.IParquetInputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat;
 import org.pentaho.hadoop.shim.api.format.ParquetSpec;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
-import org.pentaho.hadoop.shim.common.format.ParquetUtils;
-import org.pentaho.hadoop.shim.common.format.PentahoParquetInputFormat;
 
 import java.io.IOException;
 import java.nio.file.Files;

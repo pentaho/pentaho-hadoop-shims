@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -21,6 +21,9 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.common.format.parquet;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,6 +45,7 @@ import org.apache.parquet.schema.MessageType;
 import org.apache.parquet.schema.OriginalType;
 import org.apache.parquet.schema.PrimitiveType;
 import org.apache.parquet.schema.Type;
+import org.apache.parquet.schema.Types;
 //#endif
 //#if shim_type=="CDH" || shim_type=="MAPR" && shim_name!="mapr60"
 //$import parquet.hadoop.api.WriteSupport;
@@ -51,6 +55,7 @@ import org.apache.parquet.schema.Type;
 //$import parquet.schema.OriginalType;
 //$import parquet.schema.PrimitiveType;
 //$import parquet.schema.Type;
+//$import parquet.schema.Types;
 //#endif
 
 import org.pentaho.di.core.RowMetaAndData;
@@ -140,6 +145,7 @@ public class PentahoParquetWriteSupport extends WriteSupport<RowMetaAndData> {
             "Required field '" + field.getPentahoFieldName() + "' contains no data and default values not defined" );
         } else {
           // put default value
+          BigDecimal bigDecimal;
           consumer.startField( field.getFormatFieldName(), index );
           switch ( field.getParquetType() ) {
             case FLOAT:
@@ -163,7 +169,30 @@ public class PentahoParquetWriteSupport extends WriteSupport<RowMetaAndData> {
               consumer.addLong( Long.parseLong( field.getDefaultValue() ) );
               break;
             case DECIMAL:
-//              consumer.addBinary( ? );
+              bigDecimal = new BigDecimal( field.getDefaultValue() );
+              if ( bigDecimal != null ) {
+                bigDecimal = bigDecimal.round( new MathContext( field.getPrecision(), RoundingMode.HALF_UP ) ).setScale( field.getScale(), RoundingMode.HALF_UP );
+              }
+              //#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
+              consumer.addBinary( Binary.fromConstantByteArray( bigDecimal.unscaledValue().toByteArray() ) );
+              //#endif
+              //#if shim_type=="CDH" || shim_type=="MAPR"
+              //$     consumer.addBinary( Binary.fromByteArray( bigDecimal.unscaledValue().toByteArray() ) );
+              //#endif
+              break;
+            case DECIMAL_INT_32:
+              bigDecimal = new BigDecimal( field.getDefaultValue() );
+              if ( bigDecimal != null ) {
+                bigDecimal = bigDecimal.round( new MathContext( field.getPrecision(), RoundingMode.HALF_UP ) ).setScale( field.getScale(), RoundingMode.HALF_UP );
+              }
+              consumer.addInteger( bigDecimal.unscaledValue().intValue() );
+              break;
+            case DECIMAL_INT_64:
+              bigDecimal = new BigDecimal( field.getDefaultValue() );
+              if ( bigDecimal != null ) {
+                bigDecimal = bigDecimal.round( new MathContext( field.getPrecision(), RoundingMode.HALF_UP ) ).setScale( field.getScale(), RoundingMode.HALF_UP );
+              }
+              consumer.addLong( bigDecimal.unscaledValue().longValue() );
               break;
             case DATE:
               Date defaultDate = null;
@@ -222,7 +251,30 @@ public class PentahoParquetWriteSupport extends WriteSupport<RowMetaAndData> {
         consumer.addLong( row.getInteger( fieldIndex, 0 ) );
         break;
       case DECIMAL:
-//              consumer.addBinary( ? );
+        BigDecimal bigDecimal = row.getBigNumber( fieldIndex, null );
+        if ( bigDecimal != null ) {
+          bigDecimal = bigDecimal.round( new MathContext( field.getPrecision(), RoundingMode.HALF_UP ) ).setScale( field.getScale(), RoundingMode.HALF_UP );
+        }
+        //#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
+        consumer.addBinary( Binary.fromConstantByteArray( bigDecimal.unscaledValue().toByteArray() ) );
+        //#endif
+        //#if shim_type=="CDH" || shim_type=="MAPR"
+        //$     consumer.addBinary( Binary.fromByteArray( bigDecimal.unscaledValue().toByteArray() ) );
+        //#endif
+        break;
+      case DECIMAL_INT_32:
+        bigDecimal = row.getBigNumber( fieldIndex, null );
+        if ( bigDecimal != null ) {
+          bigDecimal = bigDecimal.round( new MathContext( field.getPrecision(), RoundingMode.HALF_UP ) ).setScale( field.getScale(), RoundingMode.HALF_UP );
+        }
+        consumer.addInteger( bigDecimal.unscaledValue().intValue() );
+        break;
+      case DECIMAL_INT_64:
+        bigDecimal = row.getBigNumber( fieldIndex, null );
+        if ( bigDecimal != null ) {
+          bigDecimal = bigDecimal.round( new MathContext( field.getPrecision(), RoundingMode.HALF_UP ) ).setScale( field.getScale(), RoundingMode.HALF_UP );
+        }
+        consumer.addLong( bigDecimal.unscaledValue().longValue() );
         break;
       case DATE:
         Date dateFromRow = row.getDate( fieldIndex, null );
@@ -236,39 +288,6 @@ public class PentahoParquetWriteSupport extends WriteSupport<RowMetaAndData> {
 
     consumer.endField( field.getFormatFieldName(), index );
   }
-
-
-
-
-
-//  public static BigDecimal binaryToDecimal( Binary value, int precision, int scale) {
-//    /*
-//     * Precision <= 18 checks for the max number of digits for an unscaled long,
-//     * else treat with big integer conversion
-//     */
-//    if (precision <= 18) {
-//      ByteBuffer buffer = value.toByteBuffer();
-//      byte[] bytes = buffer.array();
-//      int start = buffer.arrayOffset() + buffer.position();
-//      int end = buffer.arrayOffset() + buffer.limit();
-//      long unscaled = 0L;
-//      int i = start;
-//      while ( i < end ) {
-//        unscaled = ( unscaled << 8 | bytes[i] & 0xff );
-//        i++;
-//      }
-//      int bits = 8*(end - start);
-//      long unscaledNew = (unscaled << (64 - bits)) >> (64 - bits);
-//      if (unscaledNew <= -pow(10,18) || unscaledNew >= pow(10,18)) {
-//        return new BigDecimal(unscaledNew);
-//      } else {
-//        return BigDecimal.valueOf(unscaledNew / pow(10,scale));
-//      }
-//    } else {
-//      return new BigDecimal(new BigInteger(value.getBytes()), scale);
-//    }
-//  }
-
 
   private PrimitiveType convertToPrimitiveType( IParquetOutputField f ) {
     Type.Repetition rep = f.getAllowNull() ? Type.Repetition.OPTIONAL : Type.Repetition.REQUIRED;
@@ -291,7 +310,23 @@ public class PentahoParquetWriteSupport extends WriteSupport<RowMetaAndData> {
       case DATE:
         return new PrimitiveType( rep, PrimitiveType.PrimitiveTypeName.INT32, formatFieldName, OriginalType.DATE );
       case DECIMAL:
-        return new PrimitiveType( rep, PrimitiveType.PrimitiveTypeName.BINARY, formatFieldName, OriginalType.DECIMAL );
+        if ( f.getAllowNull() ) {
+          return Types.optional( PrimitiveType.PrimitiveTypeName.BINARY ).as( OriginalType.DECIMAL ).precision( f.getPrecision() ).scale( f.getScale() ).named( formatFieldName );
+        } else {
+          return Types.required( PrimitiveType.PrimitiveTypeName.BINARY ).as( OriginalType.DECIMAL ).precision( f.getPrecision() ).scale( f.getScale() ).named( formatFieldName );
+        }
+      case DECIMAL_INT_32:
+        if ( f.getAllowNull() ) {
+          return Types.optional( PrimitiveType.PrimitiveTypeName.INT32 ).as( OriginalType.DECIMAL ).precision( f.getPrecision() ).scale( f.getScale() ).named( formatFieldName );
+        } else {
+          return Types.required( PrimitiveType.PrimitiveTypeName.INT32 ).as( OriginalType.DECIMAL ).precision( f.getPrecision() ).scale( f.getScale() ).named( formatFieldName );
+        }
+      case DECIMAL_INT_64:
+        if ( f.getAllowNull() ) {
+          return Types.optional( PrimitiveType.PrimitiveTypeName.INT64 ).as( OriginalType.DECIMAL ).precision( f.getPrecision() ).scale( f.getScale() ).named( formatFieldName );
+        } else {
+          return Types.required( PrimitiveType.PrimitiveTypeName.INT64 ).as( OriginalType.DECIMAL ).precision( f.getPrecision() ).scale( f.getScale() ).named( formatFieldName );
+        }
       case TIMESTAMP_MILLIS:
         return new PrimitiveType( rep, PrimitiveType.PrimitiveTypeName.INT64, formatFieldName, OriginalType.TIMESTAMP_MILLIS );
       default:

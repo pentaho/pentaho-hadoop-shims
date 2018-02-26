@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -43,7 +43,6 @@ import org.pentaho.di.core.util.Assert;
 import org.pentaho.hadoop.shim.api.format.IParquetInputField;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
-import org.pentaho.hadoop.shim.common.format.ParquetUtils;
 
 import java.util.List;
 

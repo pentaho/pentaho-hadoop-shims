@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -19,14 +19,12 @@
  * limitations under the License.
  *
  ******************************************************************************/
-package org.pentaho.hadoop.shim.common.format;
+package org.pentaho.hadoop.shim.common.format.parquet;
 
 
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.hadoop.shim.api.format.IParquetInputField;
 import org.pentaho.hadoop.shim.api.format.ParquetSpec;
-import org.pentaho.hadoop.shim.common.format.parquet.ParquetInputField;
-import org.pentaho.hadoop.shim.common.format.parquet.ParquetOutputField;
 
 import java.util.ArrayList;
 import java.util.List;

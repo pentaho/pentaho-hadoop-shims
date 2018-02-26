@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -19,7 +19,7 @@
  * limitations under the License.
  *
  ******************************************************************************/
-package org.pentaho.hadoop.shim.common.format;
+package org.pentaho.hadoop.shim.common.format.parquet;
 
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
@@ -57,7 +57,6 @@ import org.pentaho.hadoop.shim.api.format.IParquetInputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat;
 import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat.IPentahoInputSplit;
 import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat.IPentahoRecordReader;
-import org.pentaho.hadoop.shim.common.format.parquet.PentahoInputSplitImpl;
 
 public class PentahoParquetInputFormatTest {
 

@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -31,9 +31,9 @@ import org.pentaho.hadoop.shim.api.format.IPentahoParquetOutputFormat;
 import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat;
 import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat;
 import org.pentaho.hadoop.shim.common.format.orc.PentahoOrcInputFormat;
-import org.pentaho.hadoop.shim.common.format.PentahoOrcOutputFormat;
-import org.pentaho.hadoop.shim.common.format.PentahoParquetInputFormat;
-import org.pentaho.hadoop.shim.common.format.PentahoParquetOutputFormat;
+import org.pentaho.hadoop.shim.common.format.orc.PentahoOrcOutputFormat;
+import org.pentaho.hadoop.shim.common.format.parquet.PentahoParquetInputFormat;
+import org.pentaho.hadoop.shim.common.format.parquet.PentahoParquetOutputFormat;
 import org.pentaho.hadoop.shim.common.format.avro.PentahoAvroInputFormat;
 import org.pentaho.hadoop.shim.common.format.avro.PentahoAvroOutputFormat;
 import org.pentaho.hadoop.shim.spi.FormatShim;

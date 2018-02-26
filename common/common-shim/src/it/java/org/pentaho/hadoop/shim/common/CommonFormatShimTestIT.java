@@ -39,9 +39,9 @@ import org.pentaho.hadoop.shim.api.format.IPentahoAvroOutputFormat;
 import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat.IPentahoRecordReader;
 import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat.IPentahoRecordWriter;
 import org.pentaho.hadoop.shim.api.format.ParquetSpec;
-import org.pentaho.hadoop.shim.common.format.ParquetUtils;
-import org.pentaho.hadoop.shim.common.format.PentahoParquetInputFormat;
-import org.pentaho.hadoop.shim.common.format.PentahoParquetOutputFormat;
+import org.pentaho.hadoop.shim.common.format.parquet.ParquetUtils;
+import org.pentaho.hadoop.shim.common.format.parquet.PentahoParquetInputFormat;
+import org.pentaho.hadoop.shim.common.format.parquet.PentahoParquetOutputFormat;
 import org.pentaho.hadoop.shim.common.format.avro.AvroInputField;
 import org.pentaho.hadoop.shim.common.format.avro.AvroOutputField;
 import org.pentaho.hadoop.shim.common.format.avro.PentahoAvroInputFormat;
@@ -79,8 +79,6 @@ public class CommonFormatShimTestIT {
 
   @Test
   public void testParquetWriteSuccessLocalFileSystem() throws Exception {
-    // TODO: FIXME
-    /*
     final String PARQUET_FILE_NAME = "test.parquet";
 
     String tempFile = Files.createTempDirectory( "parquet" ).toUri().toString();
@@ -116,7 +114,6 @@ public class CommonFormatShimTestIT {
 
     recordReader.forEach(
       rowMetaAndData -> org.junit.Assert.assertArrayEquals( rowMetaAndData.getData(), rowInputArr ) );
-    */
   }
 
   private IPentahoRecordReader readCreatedParquetFile( String parquetFilePath )
@@ -248,8 +245,8 @@ public class CommonFormatShimTestIT {
     overwriteTrueOutputFormat.setFields( outputFields );
     overwriteTrueOutputFormat.setSchemaFilename(  tempDir + "/avro-schema.out" );
     try {
-    overwriteTrueOutputFormat.setOutputFile( tempDir + "/avro.out", true );
-    assertTrue( true );
+      overwriteTrueOutputFormat.setOutputFile( tempDir + "/avro.out", true );
+      assertTrue( true );
     } catch ( FileAlreadyExistsException ex ) {
       fail( "Should not have thrown an exception" );
     }

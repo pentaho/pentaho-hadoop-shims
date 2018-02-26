@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -188,6 +188,8 @@ public class ParquetConverter {
         switch ( originalType ) {
           case DECIMAL:
             dataType = ParquetSpec.DataType.DECIMAL_INT_64;
+            precision = t.asPrimitiveType().getDecimalMetadata().getPrecision();
+            scale = t.asPrimitiveType().getDecimalMetadata().getScale();
             break;
           case TIMESTAMP_MILLIS:
             dataType = ParquetSpec.DataType.TIMESTAMP_MILLIS;
@@ -208,6 +210,8 @@ public class ParquetConverter {
         switch ( originalType ) {
           case DECIMAL:
             dataType = ParquetSpec.DataType.DECIMAL_FIXED_LEN_BYTE_ARRAY;
+            precision = t.asPrimitiveType().getDecimalMetadata().getPrecision();
+            scale = t.asPrimitiveType().getDecimalMetadata().getScale();
             break;
           default:
             dataType = ParquetSpec.DataType.FIXED_LEN_BYTE_ARRAY;
@@ -358,14 +362,14 @@ public class ParquetConverter {
 
               @Override
               public void addInt( int value ) {
-                current.getData()[ index ] = new BigDecimal( value );
+                current.getData()[ index ] = new BigDecimal( BigInteger.valueOf( value ), f.getScale() );
                 current.getData()[ index ] =
                   convertFromSourceToTargetType( valueMetaConverter, current.getData()[ index ], f );
               }
 
               @Override
               public void addLong( long value ) {
-                current.getData()[ index ] = new BigDecimal( value );
+                current.getData()[ index ] = new BigDecimal( BigInteger.valueOf( value ), f.getScale() );
                 current.getData()[ index ] =
                   convertFromSourceToTargetType( valueMetaConverter, current.getData()[ index ], f );
               }

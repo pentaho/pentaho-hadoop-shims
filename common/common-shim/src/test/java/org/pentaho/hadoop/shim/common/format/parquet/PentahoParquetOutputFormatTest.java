@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -19,7 +19,7 @@
  * limitations under the License.
  *
  ******************************************************************************/
-package org.pentaho.hadoop.shim.common.format;
+package org.pentaho.hadoop.shim.common.format.parquet;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -31,10 +31,8 @@ import java.util.List;
 import java.util.TimeZone;
 
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.row.RowMeta;
-import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.core.row.value.ValueMetaBigNumber;
 import org.pentaho.di.core.row.value.ValueMetaBoolean;
 import org.pentaho.di.core.row.value.ValueMetaDate;
@@ -48,7 +46,6 @@ import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat.IPentahoRecordWri
 import org.pentaho.hadoop.shim.api.format.IPentahoParquetOutputFormat.COMPRESSION;
 import org.pentaho.hadoop.shim.api.format.IPentahoParquetOutputFormat.VERSION;
 import org.pentaho.hadoop.shim.api.format.ParquetSpec;
-import org.pentaho.hadoop.shim.common.format.parquet.ParquetOutputField;
 
 public class PentahoParquetOutputFormatTest {
 
@@ -98,8 +95,6 @@ public class PentahoParquetOutputFormatTest {
 //#if shim_type!="MAPR"
   @Test
   public void testFileOutput() throws Exception {
-    // TODO: FIXME
-    /*
     long sz1un = writeData( "1_uncompressed_nodict.par", VERSION.VERSION_1_0, COMPRESSION.UNCOMPRESSED, true );
     long sz1gn = writeData( "1_gzip_nodict.par", VERSION.VERSION_1_0, COMPRESSION.GZIP, true );
     // long sz1ln=writeData( "1_lzo_nodict.par", VERSION.VERSION_1_0, COMPRESSION.LZO, false );
@@ -123,7 +118,6 @@ public class PentahoParquetOutputFormatTest {
     if ( sz2un == sz2sn ) {
       throw new Exception( "Snapped file should have different length than uncompressed" );
     }
-    */
   }
 
   @Test
@@ -132,7 +126,7 @@ public class PentahoParquetOutputFormatTest {
     try {
       PentahoParquetOutputFormat pentahoParquetOutputFormat = new PentahoParquetOutputFormat();
       pentahoParquetOutputFormat.setOutputFile( "/test test/output.parquet", true );
-    } catch (Exception e) {
+    } catch ( Exception e ) {
       exception = e;
     }
     //BACKLOG-19435: After this change URISyntaxException is not exceptied
@@ -186,6 +180,9 @@ public class PentahoParquetOutputFormatTest {
     outputField.setFormatFieldName( "fbignum" );
     outputField.setPentahoFieldName( "fbignum" );
     outputField.setFormatType( ParquetSpec.DataType.DECIMAL );
+    outputField.setScale( "2" );
+    outputField.setPrecision( "10" );
+
     outputField.setAllowNull( true );
     fields.add( outputField );
 
