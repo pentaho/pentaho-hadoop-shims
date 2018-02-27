@@ -61,6 +61,7 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -213,9 +214,14 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
         break;
       case DATE:
         try {
+          String conversionMask = rowMetaAndData.getValueMeta( rowMetaIndex ).getConversionMask();
+          if ( conversionMask == null ) {
+            conversionMask = ValueMetaBase.DEFAULT_DATE_PARSE_MASK;
+          }
+          DateFormat dateFormat = new SimpleDateFormat( conversionMask );
           ( (LongColumnVector) columnVector ).vector[ batchRowNumber ] = getOrcDate(
             rowMetaAndData.getDate( field.getPentahoFieldName(),
-              field.getDefaultValue() != null ? datePattern.parse( field.getDefaultValue() ) : new Date( 0 ) )
+              field.getDefaultValue() != null ? dateFormat.parse( field.getDefaultValue() ) : new Date( 0 ) )
           );
         } catch ( KettleValueException | ParseException e ) {
           logger.error( e );
@@ -223,9 +229,14 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
         break;
       case TIMESTAMP:
         try {
+          String conversionMask = rowMetaAndData.getValueMeta( rowMetaIndex ).getConversionMask();
+          if ( conversionMask == null ) {
+            conversionMask = ValueMetaBase.DEFAULT_DATE_PARSE_MASK;
+          }
+          DateFormat dateFormat = new SimpleDateFormat( conversionMask );
           ( (TimestampColumnVector) columnVector ).set( batchRowNumber,
             new Timestamp( rowMetaAndData.getDate( field.getPentahoFieldName(),
-              field.getDefaultValue() != null ? ( datePattern.parse( field.getDefaultValue() ) ) : new Date( 0 ) )
+              field.getDefaultValue() != null ? ( dateFormat.parse( field.getDefaultValue() ) ) : new Date( 0 ) )
               .getTime() ) );
         } catch ( KettleValueException | ParseException e ) {
           logger.error( e );
