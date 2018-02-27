@@ -40,11 +40,6 @@ public interface IPentahoOrcInputFormat extends IPentahoInputFormat {
   void setInputFile( String file ) throws Exception;
 
   /**
-   * Set input file.
-   */
-  //void setInputSchemaFile( String schemaFile ) throws Exception;
-
-  /**
    * Split size, bytes.
    */
   void setSplitSize( long blockSize ) throws Exception;

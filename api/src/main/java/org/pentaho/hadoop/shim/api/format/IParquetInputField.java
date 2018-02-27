@@ -21,8 +21,12 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.api.format;
 
-public interface IParquetInputField {
+public interface IParquetInputField extends IFormatInputField {
   void setParquetType( ParquetSpec.DataType parquetType );
 
   void setParquetType( String parquetType );
+
+  ParquetSpec.DataType getParquetType( );
+
+  String marshall();
 }

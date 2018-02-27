@@ -41,4 +41,12 @@ public interface IFormatInputField {
   int getFormatType();
 
   void setFormatType( int formatType );
+
+  int getPrecision();
+
+  void setPrecision( int precision );
+
+  int getScale();
+
+  void setScale( int scale );
 }

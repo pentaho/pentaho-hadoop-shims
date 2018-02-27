@@ -27,6 +27,15 @@ import org.pentaho.hadoop.shim.common.format.BaseFormatInputField;
 import org.pentaho.hadoop.shim.api.format.IParquetInputField;
 
 public class ParquetInputField extends BaseFormatInputField implements IParquetInputField {
+  public ParquetInputField() { }
+
+  public ParquetInputField( String formatFieldName, DataType dataType, String pentahoFieldName, int pentahoType ) {
+    setFormatFieldName( formatFieldName );
+    setParquetType( dataType );
+    setPentahoFieldName( pentahoFieldName );
+    setPentahoType( pentahoType );
+  }
+
   public DataType getParquetType( ) {
     return DataType.getDataType( getFormatType() );
   }
@@ -46,5 +55,65 @@ public class ParquetInputField extends BaseFormatInputField implements IParquetI
 
   public String getTypeDesc() {
     return ValueMetaFactory.getValueMetaName( getPentahoType() );
+  }
+
+  @Override
+  public String marshall() {
+    StringBuilder sb = new StringBuilder( 256 );
+    sb.append( c( getFormatFieldName() ) );
+    sb.append( "|" );
+    sb.append( c( getPentahoFieldName() ) );
+    sb.append( "|" );
+    sb.append( Integer.toString( getFormatType() ) );
+    sb.append( "|" );
+    sb.append( Integer.toString( getPentahoType() ) );
+    sb.append( "|" );
+    sb.append( Integer.toString( getPrecision() ) );
+    sb.append( "|" );
+    sb.append( Integer.toString( getScale() ) );
+    return sb.toString();
+  }
+
+  public static IParquetInputField unmarshallField( String str ) {
+    String[] values = new String[6];
+    int prev = 0;
+    for ( int i = 0; i < 5; i++ ) {
+      int pos = str.indexOf( '|', prev );
+      if ( pos < 0 ) {
+        throw new RuntimeException( "Wrong field: " + str );
+      }
+      values[i] = str.substring( prev, pos );
+      prev = pos + 1;
+    }
+    if ( str.indexOf( '|', prev ) >= 0 ) {
+      throw new RuntimeException( "Wrong field: " + str );
+    }
+    values[5] = str.substring( prev );
+
+    ParquetInputField field = new ParquetInputField();
+    field.setFormatFieldName( uc( values[ 0 ] ) );
+    field.setPentahoFieldName( uc( values[ 1 ] ) );
+    field.setFormatType( Integer.parseInt( values[ 2 ] ) );
+    field.setPentahoType( Integer.parseInt( values[ 3 ] ) );
+    field.setPrecision( Integer.parseInt( values[ 4 ] ) );
+    field.setScale( Integer.parseInt( values[ 5 ] ) );
+    return field;
+  }
+
+  private static String c( String s ) {
+    if ( s == null ) {
+      return "";
+    }
+    if ( s.contains( "|" ) ) {
+      throw new RuntimeException( "Wrong value: " + s );
+    }
+    return s;
+  }
+
+  private static String uc( String s ) {
+    if ( s != null && s.isEmpty() ) {
+      return null;
+    }
+    return s;
   }
 }
