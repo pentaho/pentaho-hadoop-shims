@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -23,29 +23,55 @@ package org.pentaho.hadoop.shim.common.format;
 
 
 import org.pentaho.di.core.row.ValueMetaInterface;
-import org.pentaho.hadoop.shim.api.format.SchemaDescription;
+import org.pentaho.hadoop.shim.api.format.IParquetInputField;
+import org.pentaho.hadoop.shim.api.format.ParquetSpec;
+import org.pentaho.hadoop.shim.common.format.parquet.ParquetInputField;
+import org.pentaho.hadoop.shim.common.format.parquet.ParquetOutputField;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ParquetUtils {
-
-  public static SchemaDescription createSchema() {
-    SchemaDescription s = new SchemaDescription();
-    s.addField( s.new Field( "Name", "Name", ValueMetaInterface.TYPE_STRING, true ) );
-    s.addField( s.new Field( "Age", "Age", ValueMetaInterface.TYPE_STRING, true ) );
-    return s;
+  public static List<IParquetInputField> createSchema( int ageType ) {
+    List<IParquetInputField> fields = new ArrayList<>(  );
+    fields.add( new ParquetInputField( "Name", ParquetSpec.DataType.UTF8, "Name", ValueMetaInterface.TYPE_STRING ) );
+    fields.add( new ParquetInputField( "Age", ParquetSpec.DataType.INT_64, "Age", ageType ) );
+    return fields;
   }
 
-  public static SchemaDescription createSchema( int ageType ) {
-    SchemaDescription s = new SchemaDescription();
-    s.addField( s.new Field( "Name", "Name", ValueMetaInterface.TYPE_STRING, true ) );
-    s.addField( s.new Field( "Age", "Age", ageType, true ) );
-    return s;
+  public static List<ParquetOutputField> createOutputFields(  ) {
+    return createOutputFields( ParquetSpec.DataType.UTF8 );
   }
 
-  public static SchemaDescription createSchema( int nameType, boolean nameAllowNull, int ageType,
-                                                boolean ageAllowNull ) {
-    SchemaDescription s = new SchemaDescription();
-    s.addField( s.new Field( "Name", "Name", nameType, nameAllowNull ) );
-    s.addField( s.new Field( "Age", "Age", ageType, ageAllowNull ) );
-    return s;
+
+  public static List<ParquetOutputField> createOutputFields( ParquetSpec.DataType ageType ) {
+    return createOutputFields( ParquetSpec.DataType.UTF8, true, ageType, true );
+  }
+
+  public static List<ParquetOutputField> createOutputFields( ParquetSpec.DataType nameType, boolean nameAllowNull, ParquetSpec.DataType ageType, boolean ageAllowNull ) {
+    List<ParquetOutputField> fields = new ArrayList<>();
+
+    ParquetOutputField outputField = new ParquetOutputField();
+    outputField.setFormatFieldName( "Name" );
+    outputField.setPentahoFieldName( "Name" );
+    outputField.setFormatType( nameType );
+    outputField.setAllowNull( nameAllowNull );
+    fields.add( outputField );
+
+    outputField = new ParquetOutputField();
+    outputField.setFormatFieldName( "Age" );
+    outputField.setPentahoFieldName( "Age" );
+    outputField.setFormatType( ageType );
+    outputField.setAllowNull( ageAllowNull );
+    fields.add( outputField );
+
+    return fields;
+  }
+
+  public static List<IParquetInputField> createSchema( int nameType, int ageType ) {
+    List<IParquetInputField> fields = new ArrayList<>(  );
+    fields.add( new ParquetInputField( "Name", ParquetSpec.DataType.UTF8, "Name", nameType ) );
+    fields.add( new ParquetInputField( "Age", ParquetSpec.DataType.INT_64, "Age", ageType ) );
+    return fields;
   }
 }

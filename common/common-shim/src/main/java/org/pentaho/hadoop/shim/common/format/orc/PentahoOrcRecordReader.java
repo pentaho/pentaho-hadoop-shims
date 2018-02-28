@@ -113,7 +113,7 @@ public class PentahoOrcRecordReader implements IPentahoOrcInputFormat.IPentahoRe
       orcColumnNumberMap.put( orcFieldName, orcFieldNumber++ );
     }
 
-    //Create a map of schemaDescription fields to Orc Column numbers
+    //Create a map of input fields to Orc Column numbers
     schemaToOrcSubcripts = new HashMap<String, Integer>();
     for ( IOrcInputField inputField : dialogInputFields ) {
       if ( inputField != null ) {

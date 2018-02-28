@@ -19,7 +19,6 @@
  * limitations under the License.
  *
  ******************************************************************************/
-
 package org.pentaho.hadoop.shim.common.format;
 
 import org.pentaho.di.core.row.value.ValueMetaFactory;
@@ -30,6 +29,8 @@ public class BaseFormatInputField implements IFormatInputField {
   private String pentahoFieldName = null;
   private int pentahoType;
   private int formatType;
+  private int scale = 0;
+  private int precision = 0;
 
   @Override
   public String getFormatFieldName() {
@@ -49,6 +50,26 @@ public class BaseFormatInputField implements IFormatInputField {
   @Override
   public void setPentahoFieldName( String pentahoFieldName ) {
     this.pentahoFieldName = pentahoFieldName;
+  }
+
+  @Override
+  public int getPrecision() {
+    return precision;
+  }
+
+  @Override
+  public void setPrecision( int precision ) {
+    this.precision = precision;
+  }
+
+  @Override
+  public int getScale() {
+    return scale;
+  }
+
+  @Override
+  public void setScale( int scale ) {
+    this.scale = scale;
   }
 
   @Override

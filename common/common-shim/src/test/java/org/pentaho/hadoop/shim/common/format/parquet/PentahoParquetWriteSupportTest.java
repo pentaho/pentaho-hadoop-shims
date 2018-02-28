@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -30,6 +30,7 @@ import org.apache.parquet.hadoop.api.WriteSupport;
 //#endif
 import org.pentaho.di.core.util.Assert;
 import org.junit.Test;
+import org.pentaho.hadoop.shim.api.format.ParquetSpec;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 import org.pentaho.hadoop.shim.common.format.ParquetUtils;
 
@@ -38,8 +39,7 @@ public class PentahoParquetWriteSupportTest {
 
   @Test( expected = RuntimeException.class )
   public void initParquetWriteSupportWhenSchemaIsNull() {
-    SchemaDescription schema = new SchemaDescription();
-    PentahoParquetWriteSupport writeSupport = new PentahoParquetWriteSupport( schema );
+    PentahoParquetWriteSupport writeSupport = new PentahoParquetWriteSupport( null );
 
     Configuration conf = new Configuration();
     conf.set( "fs.defaultFS", "file:///" );
@@ -50,17 +50,7 @@ public class PentahoParquetWriteSupportTest {
   @Test
   public void initParquetWriteSupportWhenSchemaIsNotNull() {
 
-    int pentahoValueMetaTypeFirstRow = 2;
-    boolean allowNullFirstRow = false;
-    int pentahoValueMetaTypeSecondRow = 5;
-    boolean allowNullSecondRow = false;
-
-    String schemaFromString = ParquetUtils
-      .createSchema( pentahoValueMetaTypeFirstRow, allowNullFirstRow, pentahoValueMetaTypeSecondRow,
-        allowNullSecondRow ).marshall();
-
-    SchemaDescription schema = SchemaDescription.unmarshall( schemaFromString );
-    PentahoParquetWriteSupport writeSupport = new PentahoParquetWriteSupport( schema );
+    PentahoParquetWriteSupport writeSupport = new PentahoParquetWriteSupport( ParquetUtils.createOutputFields( ParquetSpec.DataType.UTF8, false, ParquetSpec.DataType.INT_64, false ) );
 
     Configuration conf = new Configuration();
     conf.set( "fs.defaultFS", "file:///" );

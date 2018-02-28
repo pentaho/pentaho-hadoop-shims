@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -21,16 +21,18 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.api.format;
 
+import java.util.List;
+
 public interface IPentahoParquetInputFormat extends IPentahoInputFormat {
   /**
    * Read schema for display to user.
    */
-  SchemaDescription readSchema( String file ) throws Exception;
+  List<? extends IParquetInputField> readSchema( String file ) throws Exception;
 
   /**
    * Set schema for file reading.
    */
-  void setSchema( SchemaDescription schema ) throws Exception;
+  void setSchema( List<IParquetInputField> inputFields ) throws Exception;
 
   /**
    * Set input file.

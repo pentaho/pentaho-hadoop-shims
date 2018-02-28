@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -40,9 +40,12 @@ import org.junit.Test;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.core.util.Assert;
+import org.pentaho.hadoop.shim.api.format.IParquetInputField;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
 import org.pentaho.hadoop.shim.common.format.ParquetUtils;
+
+import java.util.List;
 
 public class PentahoParquetRecordReaderTest {
 
@@ -54,8 +57,8 @@ public class PentahoParquetRecordReaderTest {
     ConfigurationProxy conf = new ConfigurationProxy();
     conf.set( "fs.defaultFS", "file:///" );
     job = Job.getInstance( conf );
-    SchemaDescription schema = ParquetUtils.createSchema( ValueMetaInterface.TYPE_INTEGER );
-    job.getConfiguration().set( ParquetConverter.PARQUET_SCHEMA_CONF_KEY, schema.marshall() );
+    List<IParquetInputField> schema = ParquetUtils.createSchema( ValueMetaInterface.TYPE_INTEGER );
+    job.getConfiguration().set( ParquetConverter.PARQUET_SCHEMA_CONF_KEY, new ParquetInputFieldList( schema ).marshall() );
     ReadSupport<RowMetaAndData> readSupport = new PentahoParquetReadSupport();
     nativeRecordReader =
         new ParquetRecordReader<>( readSupport, ParquetInputFormat.getFilter( job.getConfiguration() ) );

@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -43,12 +43,12 @@ import org.apache.parquet.schema.Type;
 //$import parquet.schema.Type;
 //#endif
 import org.pentaho.di.core.RowMetaAndData;
-import org.pentaho.hadoop.shim.api.format.SchemaDescription;
+import org.pentaho.hadoop.shim.api.format.IParquetInputField;
 import org.pentaho.hadoop.shim.common.format.parquet.ParquetConverter.MyRecordMaterializer;
 
 public class PentahoParquetReadSupport extends ReadSupport<RowMetaAndData> {
   ParquetConverter converter;
-  SchemaDescription schema;
+  List<? extends IParquetInputField> fields;
 
   @Override
   public ReadContext init( InitContext context ) {
@@ -56,16 +56,16 @@ public class PentahoParquetReadSupport extends ReadSupport<RowMetaAndData> {
     if ( schemaStr == null ) {
       throw new RuntimeException( "Schema not defined in the PentahoParquetSchema key" );
     }
-    schema = SchemaDescription.unmarshall( schemaStr );
 
-    converter = new ParquetConverter( schema );
+    ParquetInputFieldList schema = ParquetInputFieldList.unmarshall( schemaStr );
+    converter = new ParquetConverter( schema.getFields() );
 
     // get all fields from file's schema
     MessageType fileSchema = context.getFileSchema();
     List<Type> newFields = new ArrayList<>();
     // use only required fields
-    for ( SchemaDescription.Field f : schema ) {
-      Type origField = fileSchema.getFields().get( fileSchema.getFieldIndex( f.formatFieldName ) );
+    for ( IParquetInputField f : schema ) {
+      Type origField = fileSchema.getFields().get( fileSchema.getFieldIndex( f.getFormatFieldName() ) );
       newFields.add( origField );
     }
     if ( newFields.isEmpty() ) {

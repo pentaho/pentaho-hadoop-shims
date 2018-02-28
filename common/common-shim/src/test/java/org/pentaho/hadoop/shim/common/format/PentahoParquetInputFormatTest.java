@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -27,12 +27,10 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.TimeZone;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.apache.hadoop.fs.Path;
@@ -48,19 +46,17 @@ import org.mockito.Mockito;
 import org.mockito.internal.util.reflection.Whitebox;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.row.RowMeta;
-import org.pentaho.di.core.row.ValueMeta;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.core.row.value.ValueMetaBigNumber;
 import org.pentaho.di.core.row.value.ValueMetaBoolean;
-import org.pentaho.di.core.row.value.ValueMetaDate;
 import org.pentaho.di.core.row.value.ValueMetaInteger;
 import org.pentaho.di.core.row.value.ValueMetaNumber;
 import org.pentaho.di.core.row.value.ValueMetaString;
 import org.pentaho.di.core.row.value.ValueMetaTimestamp;
+import org.pentaho.hadoop.shim.api.format.IParquetInputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat;
 import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat.IPentahoInputSplit;
 import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat.IPentahoRecordReader;
-import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 import org.pentaho.hadoop.shim.common.format.parquet.PentahoInputSplitImpl;
 
 public class PentahoParquetInputFormatTest {
@@ -72,7 +68,7 @@ public class PentahoParquetInputFormatTest {
 
     PentahoParquetInputFormat pentahoParquetInputFormat = new PentahoParquetInputFormat();
     pentahoParquetInputFormat.setInputFile( getClass().getClassLoader().getResource( "sample.pqt" ).toExternalForm() );
-    SchemaDescription schema = pentahoParquetInputFormat.readSchema( parquetFilePath );
+    List<IParquetInputField> schema = pentahoParquetInputFormat.readSchema( parquetFilePath );
 
     pentahoParquetInputFormat.setSchema( schema );
 
@@ -124,7 +120,7 @@ public class PentahoParquetInputFormatTest {
     RowMeta expectedRowMeta = new RowMeta();
     expectedRowMeta.addValueMeta( new ValueMetaNumber( "fnum" ) );
     expectedRowMeta.addValueMeta( new ValueMetaString( "fstring" ) );
-    expectedRowMeta.addValueMeta( new ValueMetaDate( "fdate" ) );
+    expectedRowMeta.addValueMeta( new ValueMetaTimestamp( "fdate" ) );
     expectedRowMeta.addValueMeta( new ValueMetaBoolean( "fbool" ) );
     expectedRowMeta.addValueMeta( new ValueMetaInteger( "fint" ) );
     expectedRowMeta.addValueMeta( new ValueMetaBigNumber( "fbignum" ) );
@@ -152,36 +148,31 @@ public class PentahoParquetInputFormatTest {
       new Timestamp( df.parse( "2018-05-01 13:00:00" ).getTime() ) } );
 
     PentahoParquetInputFormat inSchema = new PentahoParquetInputFormat();
-    SchemaDescription fileSchema =
-        inSchema.readSchema( getClass().getClassLoader().getResource( file ).toExternalForm() );
-
-    List<SchemaDescription.Field> fileFields = new ArrayList<>();
-    fileSchema.forEach( fileFields::add );
+    List<? extends IParquetInputField> fileFields =
+      inSchema.readSchema( getClass().getClassLoader().getResource( file ).toExternalForm() );
 
     // fix after autodetection
-    Assert.assertEquals( ValueMetaInterface.TYPE_NUMBER, fileFields.get( 5 ).pentahoValueMetaType );
-    fileFields.get( 5 ).pentahoValueMetaType = ValueMetaInterface.TYPE_BIGNUMBER;
-    Assert.assertEquals( ValueMetaInterface.TYPE_DATE, fileFields.get( 6 ).pentahoValueMetaType );
-    fileFields.get( 6 ).pentahoValueMetaType = ValueMetaInterface.TYPE_TIMESTAMP;
+    Assert.assertEquals( ValueMetaInterface.TYPE_NUMBER, fileFields.get( 5 ).getPentahoType() );
+    fileFields.get( 5 ).setPentahoType( ValueMetaInterface.TYPE_BIGNUMBER );
+    Assert.assertEquals( ValueMetaInterface.TYPE_TIMESTAMP, fileFields.get( 6 ).getPentahoType() );
 
     // check fields from file
     Assert.assertEquals( expectedRowMeta.size(), fileFields.size() );
     for ( int i = 0; i < expectedRowMeta.size(); i++ ) {
       ValueMetaInterface vmExpected = expectedRowMeta.getValueMeta( i );
-      Assert.assertEquals( vmExpected.getName(), fileFields.get( i ).formatFieldName );
-      Assert.assertEquals( vmExpected.getType(), fileFields.get( i ).pentahoValueMetaType );
-      Assert.assertEquals( true, fileFields.get( i ).allowNull );
+      Assert.assertEquals( vmExpected.getName(), fileFields.get( i ).getFormatFieldName() );
+      Assert.assertEquals( vmExpected.getType(), fileFields.get( i ).getPentahoType() );
     }
 
     // check read by one field
     for ( int i = 0; i < fileFields.size(); i++ ) {
       List<ValueMetaInterface> expectedFields = new ArrayList<>();
       List<Object[]> expectedRows = new ArrayList<>();
-      SchemaDescription readSchema = new SchemaDescription();
+      List<IParquetInputField> readSchema = new ArrayList<>(  );
 
       expectedFields.add( expectedRowMeta.getValueMeta( i ) );
       expectedRows.add( expectedData.get( i ) );
-      readSchema.addField( fileFields.get( i ) );
+      readSchema.add( fileFields.get( i ) );
 
       List<RowMetaAndData> rows = readFile( file, readSchema );
       checkRows( expectedFields, expectedRows, rows );
@@ -191,7 +182,7 @@ public class PentahoParquetInputFormatTest {
     for ( int r = 0; r < 5; r++ ) {
       List<ValueMetaInterface> expectedFields = new ArrayList<>();
       List<Object[]> expectedRows = new ArrayList<>();
-      SchemaDescription readSchema = new SchemaDescription();
+      List<IParquetInputField> readSchema = new ArrayList<>(  );
 
       int count = expectedRowMeta.getValueMetaList().size();
       Set<Integer> used = new TreeSet<>();
@@ -200,7 +191,7 @@ public class PentahoParquetInputFormatTest {
         if ( used.add( rv ) ) {
           expectedFields.add( expectedRowMeta.getValueMeta( rv ) );
           expectedRows.add( expectedData.get( rv ) );
-          readSchema.addField( fileFields.get( rv ) );
+          readSchema.add( fileFields.get( rv ) );
         }
       }
 
@@ -209,7 +200,7 @@ public class PentahoParquetInputFormatTest {
     }
   }
 
-  private List<RowMetaAndData> readFile( String file, SchemaDescription readSchema ) throws Exception {
+  private List<RowMetaAndData> readFile( String file, List<IParquetInputField> readSchema ) throws Exception {
     System.out.println( "Read '" + file + "' as schema: " + readSchema );
     PentahoParquetInputFormat in = new PentahoParquetInputFormat();
     in.setInputFile( getClass().getClassLoader().getResource( file ).toExternalForm() );
