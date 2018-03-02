@@ -40,6 +40,7 @@ import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
@@ -51,6 +52,11 @@ import java.util.List;
  */
 public class PentahoAvroRecordReader implements IPentahoAvroInputFormat.IPentahoRecordReader {
 
+  private final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
+  private final String DEFAULT_TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
+  //Cache the DateFormats for speed since they currently can't be changed
+  private SimpleDateFormat datePattern = new SimpleDateFormat( DEFAULT_DATE_FORMAT );
+  private SimpleDateFormat timeStampPattern = new SimpleDateFormat( DEFAULT_TIMESTAMP_FORMAT );
   private final DataFileStream<GenericRecord> nativeAvroRecordReader;
   private final Schema avroSchema;
   private final List<? extends IAvroInputField> fields;
@@ -122,10 +128,12 @@ public class PentahoAvroRecordReader implements IPentahoAvroInputFormat.IPentaho
         AvroSpec.DataType avroDataType = null;
 
         String logicalType = avroField.getProp( AvroSpec.LOGICAL_TYPE );
-        for ( AvroSpec.DataType tmpType : AvroSpec.DataType.values() ) {
-          if ( !tmpType.isPrimitiveType() && tmpType.getType().equals( logicalType ) ) {
-            avroDataType = tmpType;
-            break;
+        if ( logicalType != null ) {
+          for ( AvroSpec.DataType tmpType : AvroSpec.DataType.values() ) {
+            if ( !tmpType.isPrimitiveType() && tmpType.getType().equals( logicalType ) ) {
+              avroDataType = tmpType;
+              break;
+            }
           }
         }
 
@@ -445,12 +453,10 @@ public class PentahoAvroRecordReader implements IPentahoAvroInputFormat.IPentaho
             pentahoData = new BigDecimal( avroData );
             break;
           case ValueMetaInterface.TYPE_TIMESTAMP:
-            pentahoData = new Timestamp( Long.parseLong( avroData ) );
+            pentahoData = new Timestamp( timeStampPattern.parse( avroData ).getTime() );
             break;
           case ValueMetaInterface.TYPE_DATE:
-            LocalDate localDate = LocalDate.ofEpochDay( 0 ).plusDays( Long.parseLong( avroData ) );
-            Date dateValue = Date.from( localDate.atStartOfDay( ZoneId.systemDefault() ).toInstant() );
-            pentahoData = dateValue;
+            pentahoData = datePattern.parse( avroData );
             break;
           case ValueMetaInterface.TYPE_BOOLEAN:
             pentahoData = Boolean.valueOf( "Y".equalsIgnoreCase( avroData ) || "TRUE".equalsIgnoreCase( avroData )
