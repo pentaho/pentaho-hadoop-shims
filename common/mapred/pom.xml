@@ -5,10 +5,10 @@
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-common</artifactId>
-    <version>8.0-SNAPSHOT</version>
+    <version>80.2018.03.00-212</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-common-mapred</artifactId>
-  <version>8.0-SNAPSHOT</version>
+  <version>80.2018.03.00-212</version>
   <properties>
     <mapred-test.src>src/test/java</mapred-test.src>
   </properties>
