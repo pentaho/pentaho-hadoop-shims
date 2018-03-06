@@ -21,6 +21,7 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.common;
 
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,8 +46,7 @@ import org.pentaho.hadoop.shim.common.format.avro.AvroOutputField;
 import org.pentaho.hadoop.shim.common.format.avro.PentahoAvroInputFormat;
 import org.pentaho.hadoop.shim.common.format.avro.PentahoAvroOutputFormat;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * Created by Vasilina_Terehova on 7/27/2017.
@@ -187,7 +187,7 @@ public class CommonFormatShimTestIT {
     PentahoAvroOutputFormat outputFormat = new PentahoAvroOutputFormat();
     outputFormat.setFields( outputFields );
     outputFormat.setSchemaFilename(  tempDir + "/avro-schema.out" );
-    outputFormat.setOutputFile( tempDir + "/avro.out" );
+    outputFormat.setOutputFile( tempDir + "/avro.out", false );
     outputFormat.setNameSpace( "nameSpace" );
     outputFormat.setRecordName( "recordName" );
     outputFormat.setCompression( IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED );
@@ -227,7 +227,69 @@ public class CommonFormatShimTestIT {
     avroInputFormat.setInputFields( inputFields );
     IPentahoRecordReader recordReader = avroInputFormat.createRecordReader( null );
     recordReader.forEach( rowMetaAndData ->
-      assertArrayEquals( new Object[] { "Alice", "987654321" }, new Object[] { rowMetaAndData.getData()[0].toString(),
+        assertArrayEquals( new Object[] { "Alice", "987654321" }, new Object[] { rowMetaAndData.getData()[0].toString(),
+            rowMetaAndData.getData()[1].toString() } ) );
+
+    PentahoAvroOutputFormat overwriteFalseOutputFormat = new PentahoAvroOutputFormat();
+    overwriteFalseOutputFormat.setFields( outputFields );
+    overwriteFalseOutputFormat.setSchemaFilename(  tempDir + "/avro-schema.out" );
+    try {
+      overwriteFalseOutputFormat.setOutputFile( tempDir + "/avro.out", false );
+      fail( "Should have thrown an exception" );
+    } catch ( FileAlreadyExistsException ex ) {
+      assertTrue( ex != null );
+    }
+
+    PentahoAvroOutputFormat overwriteTrueOutputFormat = new PentahoAvroOutputFormat();
+    overwriteTrueOutputFormat.setFields( outputFields );
+    overwriteTrueOutputFormat.setSchemaFilename(  tempDir + "/avro-schema.out" );
+    try {
+    overwriteTrueOutputFormat.setOutputFile( tempDir + "/avro.out", true );
+    assertTrue( true );
+    } catch ( FileAlreadyExistsException ex ) {
+      fail( "Should not have thrown an exception" );
+    }
+    overwriteTrueOutputFormat.setNameSpace( "nameSpace" );
+    overwriteTrueOutputFormat.setRecordName( "recordName" );
+    overwriteTrueOutputFormat.setCompression( IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED );
+    IPentahoRecordWriter overwriteTrueRecordWriter = outputFormat.createRecordWriter();
+
+    RowMetaAndData newRow = new RowMetaAndData();
+    RowMeta newRowMeta = new RowMeta();
+    newRowMeta.addValueMeta( new ValueMetaString( "name" ) );
+    newRowMeta.addValueMeta( new ValueMetaString( "phone" ) );
+    newRow.setRowMeta( newRowMeta );
+
+    newRow.setData( new Object[] { "John", "123456789" } );
+    overwriteTrueRecordWriter.write( newRow );
+    overwriteTrueRecordWriter.close();
+
+
+    avroInputFormat = new PentahoAvroInputFormat();
+    inputFields = new ArrayList<AvroInputField>();
+
+    avroInputField = new AvroInputField();
+    avroInputField.setFormatFieldName( "name" );
+    avroInputField.setPentahoFieldName( "name" );
+    avroInputField.setAvroType( AvroSpec.DataType.STRING );
+    avroInputField.setPentahoType( ValueMetaInterface.TYPE_STRING );
+    inputFields.add( avroInputField );
+
+    avroInputField = new AvroInputField();
+    avroInputField.setFormatFieldName( "phone" );
+    avroInputField.setPentahoFieldName( "phone" );
+    avroInputField.setAvroType( AvroSpec.DataType.STRING );
+    avroInputField.setPentahoType( ValueMetaInterface.TYPE_STRING );
+    inputFields.add( avroInputField );
+
+    avroInputFormat.setInputFields( inputFields );
+
+    avroInputFormat.setInputSchemaFile( tempDir + "/avro-schema.out" );
+    avroInputFormat.setInputFile( tempDir + "/avro.out" );
+    avroInputFormat.setInputFields( inputFields );
+    recordReader = avroInputFormat.createRecordReader( null );
+    recordReader.forEach( rowMetaAndData ->
+      assertArrayEquals( new Object[] { "John", "123456789" }, new Object[] { rowMetaAndData.getData()[0].toString(),
         rowMetaAndData.getData()[1].toString() } ) );
 
   }

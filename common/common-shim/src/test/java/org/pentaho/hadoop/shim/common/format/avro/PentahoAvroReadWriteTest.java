@@ -48,6 +48,7 @@ import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.net.InetAddress;
+import java.nio.file.FileAlreadyExistsException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -56,6 +57,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -169,11 +171,13 @@ public class PentahoAvroReadWriteTest {
         Boolean.TRUE, new Long( 1 ), date1, timeStamp1, "foobar".getBytes() };
 
     doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED,
-      "avroOutputNone.avro" );
+      "avroOutputNone.avro", false );
+    doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED,
+        "avroOutputNone.avro", true );
     doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.SNAPPY,
-      "avroOutputSnappy.avro" );
+      "avroOutputSnappy.avro", false );
     doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.DEFLATE,
-      "avroOutputDeflate.avro" );
+      "avroOutputDeflate.avro", false );
   }
 
   @Test
@@ -182,7 +186,7 @@ public class PentahoAvroReadWriteTest {
       new Object[] { "Row2Field1", "Row2Field2", new Double( -3.2 ), new BigDecimal( "-4.2" ), DEFAULT_INET_ADDR,
         Boolean.FALSE, new Long( -2L ), date2, timeStamp2, "Donald Duck".getBytes() };
     doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED,
-      "avroOutputNone.avro" );
+      "avroOutputNone.avro", true );
   }
 
   @Test
@@ -190,7 +194,7 @@ public class PentahoAvroReadWriteTest {
     Object[] rowData = new Object[] { "Row3Field1", null, null, null, null, null, null, null, null, null };
 
     doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED,
-      "avroOutputNone.avro" );
+      "avroOutputNone.avro", true );
   }
 
   @Test
@@ -202,7 +206,7 @@ public class PentahoAvroReadWriteTest {
         "1980/01/01 00:00:00.000", "1980/01/01 00:00:00.000", "binary" };
 
     doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED,
-      "avroOutputNone.avro", defaultValues, null );
+      "avroOutputNone.avro", defaultValues, null, true );
   }
 
   @Test( expected = org.apache.avro.file.DataFileWriter.AppendWriteException.class )
@@ -211,7 +215,7 @@ public class PentahoAvroReadWriteTest {
     String[] defaultValues = { null, null, null, null, null, null, null, null, null, null };
 
     doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED,
-      "avroOutputNone.avro", defaultValues, null );
+      "avroOutputNone.avro", defaultValues, null, true );
   }
 
   @Test
@@ -221,11 +225,26 @@ public class PentahoAvroReadWriteTest {
         Boolean.TRUE, new Long( 1 ), date1, timeStamp1, "foobar".getBytes() };
 
     doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED,
-      "avroOutputNone.orc" );
+      "avroOutputNone.avro", true );
     doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED,
-      "avroOutputNone.orc" );
+      "avroOutputNone.avro", true );
   }
 
+  @Test
+  public void testOverwriteFileIsFalse() throws Exception {
+    Object[] rowData = new Object[] { "Row1Field1", "Row1Field2", new Double( 3.1 ), new BigDecimal( "4.1" ),
+      DEFAULT_INET_ADDR, Boolean.TRUE, new Long( 1 ), date1, timeStamp1, "foobar".getBytes() };
+
+    doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED,
+        "avroOutputNone.avro", false );
+    try {
+      doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED,
+          "avroOutputNone.avro", false );
+      fail();
+    } catch ( FileAlreadyExistsException ex ) {
+      assertTrue( ex != null );
+    }
+  }
   @Test
   public void testConvertToStringOnOutput() throws Exception {
     Object[] rowData =
@@ -287,7 +306,7 @@ public class PentahoAvroReadWriteTest {
     }
 
     doReadWrite( inputSchemaDescription, outputSchemaDescription, rowData,
-      IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.orc", null, expectedResults );
+      IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.avro", null, expectedResults, true );
 
   }
 
@@ -336,7 +355,7 @@ public class PentahoAvroReadWriteTest {
     }
 
     doReadWrite( inputSchemaDescription, outputSchemaDescription, rowData,
-      IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.orc", null, expectedResults );
+      IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.avro", null, expectedResults, true );
   }
 
   @Test
@@ -396,7 +415,7 @@ public class PentahoAvroReadWriteTest {
     }
 
     doReadWrite( inputSchemaDescription, outputSchemaDescription, rowData,
-      IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.orc", null, expectedResults );
+      IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.avro", null, expectedResults, true );
   }
 
   @Test
@@ -456,7 +475,7 @@ public class PentahoAvroReadWriteTest {
     }
 
     doReadWrite( inputSchemaDescription, outputSchemaDescription, rowData,
-      IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.orc", null, expectedResults );
+      IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.avro", null, expectedResults, true );
   }
 
   @Test
@@ -490,7 +509,7 @@ public class PentahoAvroReadWriteTest {
     }
 
     doReadWrite( inputSchemaDescription, outputSchemaDescription, rowData,
-      IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.orc", null, expectedResults );
+      IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.avro", null, expectedResults, true );
   }
 
   //  @Test
@@ -549,7 +568,7 @@ public class PentahoAvroReadWriteTest {
   //    }
   //
   //    doReadWrite( inputSchemaDescription, outputSchemaDescription, rowData, IPentahoAvroOutputFormat.COMPRESSION
-  // .UNCOMPRESSED, "avroOutputNone.orc", null, expectedResults );
+  // .UNCOMPRESSED, "avroOutputNone.avro", null, expectedResults );
   //  }
 
   //  @Test
@@ -558,7 +577,7 @@ public class PentahoAvroReadWriteTest {
   // .DECIMAL64 ), DEFAULT_INET_ADDR, true, 1L, date1, timeStamp1, "foobar".getBytes() };
   //
   //    doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED,
-  // "avroOutputNone.orc" );
+  // "avroOutputNone.avro" );
   //  }
   //
   //  @Test
@@ -567,7 +586,7 @@ public class PentahoAvroReadWriteTest {
   // .DECIMAL64 ), DEFAULT_INET_ADDR, true, 1L, date1, timeStamp1, "foobar".getBytes() };
   //
   //    doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED,
-  // "avroOutputNone.orc" );
+  // "avroOutputNone.avro" );
   //  }
   //
 
@@ -584,7 +603,7 @@ public class PentahoAvroReadWriteTest {
 
   private void doReadWrite( String[][] inputSchemaDescription, String[][] outputSchemaDescription, Object[] rowData,
                             IPentahoAvroOutputFormat.COMPRESSION compressionType, String outputFileName,
-                            String[] defaultValues, Object[] expectedResults ) throws Exception {
+                            String[] defaultValues, Object[] expectedResults, boolean overwrite ) throws Exception {
     List<AvroInputField> avroInputFields = buildAvroInputFields( inputSchemaDescription );
     List<AvroOutputField> avroOutputFields = buildAvroOutputFields( outputSchemaDescription );
     RowMeta rowMeta = buildRowMeta( outputSchemaDescription );
@@ -598,26 +617,26 @@ public class PentahoAvroReadWriteTest {
 
     String filePath = getFilePath( outputFileName );
 
-    testRecordWriter( avroOutputFields, rowMeta, rowData, compressionType, filePath );
+    testRecordWriter( avroOutputFields, rowMeta, rowData, compressionType, filePath, overwrite );
     testRecordReader( avroInputFields, avroOutputFields, rowData, filePath, expectedResults );
 
   }
 
   private void doReadWrite( String[][] schemaDescription, Object[] rowData,
                             IPentahoAvroOutputFormat.COMPRESSION compressionType, String outputFileName,
-                            String[] defaultValues, Object[] expectedResults ) throws Exception {
+                            String[] defaultValues, Object[] expectedResults, boolean overwrite ) throws Exception {
     doReadWrite( schemaDescription, schemaDescription, rowData, compressionType, outputFileName, defaultValues,
-      expectedResults );
+      expectedResults, overwrite );
   }
 
   private void doReadWrite( String[][] schemaDescription, Object[] rowData,
-                            IPentahoAvroOutputFormat.COMPRESSION compressionType, String outputFileName )
+                            IPentahoAvroOutputFormat.COMPRESSION compressionType, String outputFileName, boolean overwrite )
     throws Exception {
-    doReadWrite( schemaDescription, schemaDescription, rowData, compressionType, outputFileName, null, null );
+    doReadWrite( schemaDescription, schemaDescription, rowData, compressionType, outputFileName, null, null, overwrite );
   }
 
   private void testRecordWriter( List<AvroOutputField> avroOutputFields, RowMeta rowMeta, Object[] rowData,
-                                 IPentahoAvroOutputFormat.COMPRESSION compressionType, String filePath )
+                                 IPentahoAvroOutputFormat.COMPRESSION compressionType, String filePath, boolean overwrite )
     throws Exception {
 
     PentahoAvroOutputFormat avroOutputFormat = new PentahoAvroOutputFormat();
@@ -625,7 +644,7 @@ public class PentahoAvroReadWriteTest {
     avroOutputFormat.setRecordName( "recordName" );
     avroOutputFormat.setFields( avroOutputFields );
     avroOutputFormat.setCompression( compressionType );
-    avroOutputFormat.setOutputFile( filePath );
+    avroOutputFormat.setOutputFile( filePath, overwrite );
 
     IPentahoOutputFormat.IPentahoRecordWriter avroRecordWriter = avroOutputFormat.createRecordWriter();
     Assert.assertNotNull( avroRecordWriter, "avroRecordWriter should NOT be null!" );
