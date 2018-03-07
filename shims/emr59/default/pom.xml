@@ -5,10 +5,10 @@
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-emr59-reactor</artifactId>
-    <version>8.0-SNAPSHOT</version>
+    <version>80.2018.03.02-221</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-emr59-scope-default</artifactId>
-  <version>8.0-SNAPSHOT</version>
+  <version>80.2018.03.02-221</version>
   <packaging>pom</packaging>
   <dependencies>
   	<dependency>
