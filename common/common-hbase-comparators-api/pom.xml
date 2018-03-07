@@ -5,10 +5,10 @@
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-common</artifactId>
-    <version>8.0-SNAPSHOT</version>
+    <version>80.2018.03.05-226</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-common-hbase-comparators-api</artifactId>
-  <version>8.0-SNAPSHOT</version>
+  <version>80.2018.03.05-226</version>
   <dependencies>
     <dependency>
       <groupId>org.pentaho</groupId>
