@@ -31,7 +31,7 @@ public interface IPentahoAvroOutputFormat extends IPentahoOutputFormat {
 
   void setFields( List<? extends IAvroOutputField> fields ) throws Exception;
 
-  void setOutputFile( String file ) throws Exception;
+  void setOutputFile( String file, boolean override ) throws Exception;
 
   void setCompression( COMPRESSION compression );
 

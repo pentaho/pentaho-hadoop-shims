@@ -40,6 +40,7 @@ import org.pentaho.hadoop.shim.api.format.IAvroOutputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoAvroOutputFormat;
 
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.util.Iterator;
 import java.util.List;
 import java.text.SimpleDateFormat;
@@ -83,15 +84,15 @@ public class PentahoAvroOutputFormat implements IPentahoAvroOutputFormat {
     StringBuffer errors = new StringBuffer();
     if ( StringUtils.isEmpty( outputFilename ) ) {
       errors.append( "\n" );
-      errors.append( date + " - Unable to run [TRANS_NAME]. Please set the Avro Output Folder/File name for [STEP_NAME]." );
+      errors.append( date + " - Please set Folder/File name" );
     }
     if ( StringUtils.isEmpty( nameSpace ) ) {
       errors.append( "\n" );
-      errors.append( date + " - Unable to run [TRANS_NAME]. Please set the Avro Schema Namespace for [STEP_NAME]." );
+      errors.append( date + " - Please set the Avro Schema Namespace" );
     }
     if ( StringUtils.isEmpty( recordName ) ) {
       errors.append( "\n" );
-      errors.append( date + " - Unable to run [TRANS_NAME]. Please set the Avro Schema Record name for [STEP_NAME]." );
+      errors.append( date + " - Please set the Avro Schema Record name." );
     }
     if ( !StringUtils.isEmpty( errors.toString() ) ) {
       throw new Exception( errors.toString() );
@@ -105,10 +106,15 @@ public class PentahoAvroOutputFormat implements IPentahoAvroOutputFormat {
     schemaObjectNode = null;
   }
 
-  @Override
-  public void setOutputFile( String file ) throws Exception {
+
+  @Override public void setOutputFile( String file, boolean override ) throws Exception {
+    if ( !override  && KettleVFS.fileExists( file ) ) {
+      throw new FileAlreadyExistsException( file );
+    }
+
     this.outputFilename = file;
   }
+
 
   @Override
   public void setCompression( COMPRESSION compression ) {
