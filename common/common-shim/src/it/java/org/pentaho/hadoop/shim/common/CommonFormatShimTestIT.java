@@ -34,13 +34,14 @@ import org.pentaho.di.core.row.RowMeta;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.core.row.value.ValueMetaString;
 import org.pentaho.hadoop.shim.api.format.AvroSpec;
+import org.pentaho.hadoop.shim.api.format.IParquetInputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoAvroOutputFormat;
 import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat.IPentahoRecordReader;
 import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat.IPentahoRecordWriter;
-import org.pentaho.hadoop.shim.api.format.SchemaDescription;
-import org.pentaho.hadoop.shim.common.format.ParquetUtils;
-import org.pentaho.hadoop.shim.common.format.PentahoParquetInputFormat;
-import org.pentaho.hadoop.shim.common.format.PentahoParquetOutputFormat;
+import org.pentaho.hadoop.shim.api.format.ParquetSpec;
+import org.pentaho.hadoop.shim.common.format.parquet.ParquetUtils;
+import org.pentaho.hadoop.shim.common.format.parquet.PentahoParquetInputFormat;
+import org.pentaho.hadoop.shim.common.format.parquet.PentahoParquetOutputFormat;
 import org.pentaho.hadoop.shim.common.format.avro.AvroInputField;
 import org.pentaho.hadoop.shim.common.format.avro.AvroOutputField;
 import org.pentaho.hadoop.shim.common.format.avro.PentahoAvroInputFormat;
@@ -92,7 +93,7 @@ public class CommonFormatShimTestIT {
 
     pentahoParquetOutputFormat.setOutputFile( parquetFilePath, true );
 
-    pentahoParquetOutputFormat.setSchema( ParquetUtils.createSchema( ValueMetaInterface.TYPE_INTEGER ) );
+    pentahoParquetOutputFormat.setFields( ParquetUtils.createOutputFields( ParquetSpec.DataType.INT_64 ) );
 
     IPentahoRecordWriter recordWriter = pentahoParquetOutputFormat.createRecordWriter();
     RowMetaAndData rowInput = new RowMetaAndData();
@@ -120,7 +121,7 @@ public class CommonFormatShimTestIT {
     PentahoParquetInputFormat pentahoParquetInputFormat = new PentahoParquetInputFormat();
 
     pentahoParquetInputFormat.setInputFile( parquetFilePath );
-    SchemaDescription schema = pentahoParquetInputFormat.readSchema( parquetFilePath );
+    List<IParquetInputField> schema = pentahoParquetInputFormat.readSchema( parquetFilePath );
 
     pentahoParquetInputFormat.setSchema( schema );
     IPentahoRecordReader recordReader =
@@ -244,8 +245,8 @@ public class CommonFormatShimTestIT {
     overwriteTrueOutputFormat.setFields( outputFields );
     overwriteTrueOutputFormat.setSchemaFilename(  tempDir + "/avro-schema.out" );
     try {
-    overwriteTrueOutputFormat.setOutputFile( tempDir + "/avro.out", true );
-    assertTrue( true );
+      overwriteTrueOutputFormat.setOutputFile( tempDir + "/avro.out", true );
+      assertTrue( true );
     } catch ( FileAlreadyExistsException ex ) {
       fail( "Should not have thrown an exception" );
     }

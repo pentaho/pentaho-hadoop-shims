@@ -45,7 +45,7 @@ import java.util.List;
 public class PentahoOrcInputFormat extends HadoopFormatBase implements IPentahoOrcInputFormat {
 
   private String fileName;
-  private List<? extends IOrcInputField> schemaDescription;
+  private List<? extends IOrcInputField> inputFields;
   private Configuration conf;
 
   public PentahoOrcInputFormat() throws Exception {
@@ -63,12 +63,12 @@ public class PentahoOrcInputFormat extends HadoopFormatBase implements IPentahoO
 
   @Override
   public IPentahoRecordReader createRecordReader( IPentahoInputSplit split ) throws Exception {
-    if ( fileName == null || schemaDescription == null ) {
-      throw new IllegalStateException( "fileName or schemaDescription must not be null" );
+    if ( fileName == null || inputFields == null ) {
+      throw new IllegalStateException( "fileName or inputFields must not be null" );
     }
     conf = new Configuration();
     return inClassloader( () -> {
-      return new PentahoOrcRecordReader( fileName, conf, schemaDescription );
+      return new PentahoOrcRecordReader( fileName, conf, inputFields );
     } );
   }
 
@@ -142,7 +142,7 @@ public class PentahoOrcInputFormat extends HadoopFormatBase implements IPentahoO
    */
   @Override
   public void setSchema( List<? extends IOrcInputField> inputFields ) throws Exception {
-    schemaDescription = inputFields;
+    this.inputFields = inputFields;
   }
 
   @Override

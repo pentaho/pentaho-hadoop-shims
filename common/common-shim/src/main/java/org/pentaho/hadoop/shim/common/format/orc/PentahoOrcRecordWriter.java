@@ -109,7 +109,7 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
   }
 
   private void setOutputMeta( AtomicInteger fieldNumber, IOrcOutputField field ) {
-    outputRowMeta.addValueMeta( getValueMetaInterface( field.getPentahoFieldName(), field.getOrcType().getPentahoType() ) );
+    outputRowMeta.addValueMeta( getValueMetaInterface( field.getPentahoFieldName(), field.getOrcType().getPdiType() ) );
     fieldNumber.getAndIncrement();
   }
 
@@ -144,8 +144,7 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
     Object setValue = null;
 
     try {
-      //Determine the value after conversion to the type specified in the schemaDescription
-      setValue = valueMetaConverter.convertFromSourceToTargetDataType( inlineType, field.getOrcType().getPentahoType(), inlineValue );
+      setValue = valueMetaConverter.convertFromSourceToTargetDataType( inlineType, field.getOrcType().getPdiType(), inlineValue );
     } catch ( ValueMetaConversionException e ) {
       logger.error( e );
     }

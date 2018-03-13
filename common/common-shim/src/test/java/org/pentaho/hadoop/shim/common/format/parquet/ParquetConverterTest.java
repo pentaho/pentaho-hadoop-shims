@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -36,12 +36,12 @@ import org.apache.parquet.schema.MessageType;
 //#endif
 import org.junit.Assert;
 import org.junit.Test;
-import org.pentaho.hadoop.shim.api.format.SchemaDescription;
+import org.pentaho.hadoop.shim.api.format.IParquetInputField;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
-import org.pentaho.hadoop.shim.common.format.ParquetUtils;
 
 import java.net.URL;
 import java.nio.file.Paths;
+import java.util.List;
 
 
 public class ParquetConverterTest {
@@ -53,13 +53,11 @@ public class ParquetConverterTest {
   public void convertParquetSchemaToKettleWithTwoValidRows() throws Exception {
 
     int pentahoValueMetaTypeFirstRow = 2;
-    boolean allowNullFirstRow = false;
     int pentahoValueMetaTypeSecondRow = 5;
-    boolean allowNullSecondRow = false;
 
-    String expectedKettleSchema = ParquetUtils
-      .createSchema( pentahoValueMetaTypeFirstRow, allowNullFirstRow, pentahoValueMetaTypeSecondRow,
-        allowNullSecondRow ).marshall();
+    List<IParquetInputField> fields = ParquetUtils
+      .createSchema( pentahoValueMetaTypeFirstRow, pentahoValueMetaTypeSecondRow );
+    String expectedKettleSchema = new ParquetInputFieldList( fields ).marshall();
 
     urlTestResources = Thread.currentThread().getContextClassLoader().getResource( PARQUET_FILE );
 
@@ -70,43 +68,8 @@ public class ParquetConverterTest {
         ParquetMetadataConverter.NO_FILTER );
     MessageType schema = meta.getFileMetaData().getSchema();
 
-    SchemaDescription kettleSchema = ParquetConverter.createSchemaDescription( schema );
-    String marshallKettleSchema = kettleSchema.marshall();
+    List<IParquetInputField> kettleSchema = ParquetConverter.buildInputFields( schema );
+    String marshallKettleSchema = new ParquetInputFieldList( kettleSchema ).marshall();
     Assert.assertEquals( marshallKettleSchema, expectedKettleSchema );
-  }
-
-  @Test
-  public void convertKettleSchemaWithTwoRowsToParquet() {
-
-    int pentahoValueMetaTypeFirstRow = 2;
-    boolean allowNullFirstRow = false;
-    int pentahoValueMetaTypeSecondRow = 5;
-    boolean allowNullSecondRow = false;
-
-    SchemaDescription kettleSchema = ParquetUtils
-      .createSchema( pentahoValueMetaTypeFirstRow, allowNullFirstRow, pentahoValueMetaTypeSecondRow,
-        allowNullSecondRow );
-
-    ParquetConverter parquetConverter = new ParquetConverter( kettleSchema );
-
-    MessageType messageType = parquetConverter.createParquetSchema();
-    Assert.assertEquals( messageType.getFieldCount(), 2 );
-  }
-
-  @Test( expected = RuntimeException.class )
-  public void convertKettleSchemaWithWrongRowTypeToParquet() {
-
-    int pentahoValueMetaTypeFirstRow = 100;
-    boolean allowNullFirstRow = false;
-    int pentahoValueMetaTypeSecondRow = 5;
-    boolean allowNullSecondRow = false;
-
-    SchemaDescription kettleSchema = ParquetUtils
-      .createSchema( pentahoValueMetaTypeFirstRow, allowNullFirstRow, pentahoValueMetaTypeSecondRow,
-        allowNullSecondRow );
-
-    ParquetConverter parquetConverter = new ParquetConverter( kettleSchema );
-
-    parquetConverter.createParquetSchema();
   }
 }

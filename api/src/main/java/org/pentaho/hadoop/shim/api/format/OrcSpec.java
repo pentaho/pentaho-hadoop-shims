@@ -54,7 +54,7 @@ public class OrcSpec {
     private final String logicalType;
     private final boolean displayable;
     private final String name;
-    private final int pentahoType;
+    private final int pdiType;
     private static final ArrayList<DataType> enumValues = new ArrayList<DataType>() {
       {
         for ( DataType dataType : DataType.values() ) {
@@ -63,14 +63,14 @@ public class OrcSpec {
       }
     };
 
-    DataType( int id, boolean isPrimitiveType, String baseType, String logicalType, boolean displayable, String name, int pentahoType ) {
+    DataType( int id, boolean isPrimitiveType, String baseType, String logicalType, boolean displayable, String name, int pdiType ) {
       this.id = id;
       this.isPrimitive = isPrimitiveType;
       this.baseType = baseType;
       this.logicalType = logicalType;
       this.displayable = displayable;
       this.name = name;
-      this.pentahoType = pentahoType;
+      this.pdiType = pdiType;
     }
 
     public static DataType getDataType( int id ) {
@@ -113,8 +113,8 @@ public class OrcSpec {
       return name;
     }
 
-    public int getPentahoType() {
-      return pentahoType;
+    public int getPdiType() {
+      return pdiType;
     }
 
     public static String[] getDisplayableTypeNames() {

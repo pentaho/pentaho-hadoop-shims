@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -19,10 +19,11 @@
  * limitations under the License.
  *
  ******************************************************************************/
-package org.pentaho.hadoop.shim.common.format;
+package org.pentaho.hadoop.shim.common.format.parquet;
 
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
+import java.util.List;
 
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -47,11 +48,10 @@ import org.apache.parquet.hadoop.metadata.CompressionCodecName;
 //#endif
 
 import org.pentaho.di.core.RowMetaAndData;
+import org.pentaho.hadoop.shim.api.format.IParquetOutputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoParquetOutputFormat;
-import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
-import org.pentaho.hadoop.shim.common.format.parquet.PentahoParquetRecordWriter;
-import org.pentaho.hadoop.shim.common.format.parquet.PentahoParquetWriteSupport;
+import org.pentaho.hadoop.shim.common.format.HadoopFormatBase;
 
 /**
  * Created by Vasilina_Terehova on 8/3/2017.
@@ -62,7 +62,7 @@ public class PentahoParquetOutputFormat extends HadoopFormatBase implements IPen
 
   private Job job;
   private Path outputFile;
-  private SchemaDescription schema;
+  private List<? extends IParquetOutputField> outputFields;
 
   public PentahoParquetOutputFormat() throws Exception {
     logger.info( "We are initializing parquet output format" );
@@ -78,8 +78,8 @@ public class PentahoParquetOutputFormat extends HadoopFormatBase implements IPen
   }
 
   @Override
-  public void setSchema( SchemaDescription schema ) {
-    this.schema = schema;
+  public void setFields( List<? extends IParquetOutputField> fields ) throws Exception {
+    this.outputFields = fields;
   }
 
   @Override
@@ -172,13 +172,13 @@ public class PentahoParquetOutputFormat extends HadoopFormatBase implements IPen
     if ( outputFile == null ) {
       throw new RuntimeException( "Output file is not defined" );
     }
-    if ( schema == null ) {
+    if ( ( outputFields == null ) || ( outputFields.size() == 0 ) ) {
       throw new RuntimeException( "Schema is not defined" );
     }
 
     return inClassloader( () -> {
       FixedParquetOutputFormat nativeParquetOutputFormat =
-          new FixedParquetOutputFormat( new PentahoParquetWriteSupport( schema ) );
+          new FixedParquetOutputFormat( new PentahoParquetWriteSupport( outputFields ) );
 
       TaskAttemptID taskAttemptID = new TaskAttemptID( "qq", 111, TaskType.MAP, 11, 11 );
       TaskAttemptContextImpl task = new TaskAttemptContextImpl( job.getConfiguration(), taskAttemptID );

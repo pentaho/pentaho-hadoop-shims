@@ -26,19 +26,15 @@ import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.hadoop.shim.api.format.IOrcInputField;
 import org.pentaho.hadoop.shim.api.format.IOrcOutputField;
 import org.pentaho.hadoop.shim.api.format.OrcSpec;
-import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 /**
- * Converts a SchemaDescription to a Orc Structure
  * Created by tkafalas on 11/3/2017.
  */
 public class OrcSchemaConverter {
-  private SchemaDescription schemaDescription;
-
   public TypeDescription buildTypeDescription( List<? extends IOrcOutputField> fields ) {
     TypeDescription typeDescription = TypeDescription.createStruct();
     fields.forEach( field -> addStructField( typeDescription, field ) );

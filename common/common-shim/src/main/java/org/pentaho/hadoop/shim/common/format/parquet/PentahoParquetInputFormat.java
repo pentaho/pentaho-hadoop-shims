@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -19,10 +19,11 @@
  * limitations under the License.
  *
  ******************************************************************************/
-package org.pentaho.hadoop.shim.common.format;
+package org.pentaho.hadoop.shim.common.format.parquet;
 
 import java.net.URI;
 import java.nio.file.NoSuchFileException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,13 +54,11 @@ import org.apache.parquet.schema.MessageType;
 //$import parquet.schema.MessageType;
 //#endif
 import org.pentaho.di.core.RowMetaAndData;
+import org.pentaho.hadoop.shim.api.format.IParquetInputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoParquetInputFormat;
-import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
-import org.pentaho.hadoop.shim.common.format.parquet.ParquetConverter;
-import org.pentaho.hadoop.shim.common.format.parquet.PentahoInputSplitImpl;
-import org.pentaho.hadoop.shim.common.format.parquet.PentahoParquetReadSupport;
-import org.pentaho.hadoop.shim.common.format.parquet.PentahoParquetRecordReader;
+import org.pentaho.hadoop.shim.common.format.HadoopFormatBase;
+import org.pentaho.hadoop.shim.common.format.ReadFileFilter;
 
 /**
  * Created by Vasilina_Terehova on 7/25/2017.
@@ -87,9 +86,10 @@ public class PentahoParquetInputFormat extends HadoopFormatBase implements IPent
   }
 
   @Override
-  public void setSchema( SchemaDescription schema ) throws Exception {
+  public void setSchema( List<IParquetInputField> inputFields ) throws Exception {
+    ParquetInputFieldList fieldList = new ParquetInputFieldList( inputFields );
     inClassloader( () -> {
-      job.getConfiguration().set( ParquetConverter.PARQUET_SCHEMA_CONF_KEY, schema.marshall() );
+      job.getConfiguration().set( ParquetConverter.PARQUET_SCHEMA_CONF_KEY, fieldList.marshall() );
     } );
   }
 
@@ -159,18 +159,18 @@ public class PentahoParquetInputFormat extends HadoopFormatBase implements IPent
   }
 
   @Override
-  public SchemaDescription readSchema( String file ) throws Exception {
+  public List<IParquetInputField> readSchema( String file ) throws Exception {
     return inClassloader( () -> {
       ConfigurationProxy conf = new ConfigurationProxy();
       FileSystem fs = FileSystem.get( new URI( file ), conf );
       FileStatus fileStatus = fs.getFileStatus( new Path( file ) );
       List<Footer> footers = ParquetFileReader.readFooters( conf, fileStatus, true );
       if ( footers.isEmpty() ) {
-        return new SchemaDescription();
+        return new ArrayList<IParquetInputField>();
       } else {
         ParquetMetadata meta = footers.get( 0 ).getParquetMetadata();
         MessageType schema = meta.getFileMetaData().getSchema();
-        return ParquetConverter.createSchemaDescription( schema );
+        return ParquetConverter.buildInputFields( schema );
       }
     } );
   }

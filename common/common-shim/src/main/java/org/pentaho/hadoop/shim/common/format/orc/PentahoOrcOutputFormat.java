@@ -19,7 +19,7 @@
  * limitations under the License.
  *
  ******************************************************************************/
-package org.pentaho.hadoop.shim.common.format;
+package org.pentaho.hadoop.shim.common.format.orc;
 
 import java.nio.file.FileAlreadyExistsException;
 import org.apache.hadoop.conf.Configuration;
@@ -32,8 +32,7 @@ import org.pentaho.hadoop.shim.api.format.IPentahoOrcOutputFormat;
 
 import org.apache.hadoop.mapreduce.Job;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
-import org.pentaho.hadoop.shim.common.format.orc.OrcSchemaConverter;
-import org.pentaho.hadoop.shim.common.format.orc.PentahoOrcRecordWriter;
+import org.pentaho.hadoop.shim.common.format.HadoopFormatBase;
 
 import java.util.List;
 

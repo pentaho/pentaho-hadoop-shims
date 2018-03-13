@@ -19,12 +19,9 @@
  * limitations under the License.
  *
  ******************************************************************************/
-
 package org.pentaho.hadoop.shim.api.format;
 
 public interface IOrcInputField extends IFormatInputField {
-  public static final String FILENAME_DELIMITER = "_delimiter_";
-
   void setOrcType( OrcSpec.DataType orcType );
 
   void setOrcType( String orcType );

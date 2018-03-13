@@ -46,7 +46,6 @@ import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat;
 import org.pentaho.hadoop.shim.api.format.IPentahoOrcOutputFormat;
 import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat;
 import org.pentaho.hadoop.shim.api.format.OrcSpec;
-import org.pentaho.hadoop.shim.common.format.PentahoOrcOutputFormat;
 
 import java.math.BigDecimal;
 import java.math.MathContext;

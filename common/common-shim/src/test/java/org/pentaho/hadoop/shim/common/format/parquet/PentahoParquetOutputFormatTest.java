@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -19,20 +19,20 @@
  * limitations under the License.
  *
  ******************************************************************************/
-package org.pentaho.hadoop.shim.common.format;
+package org.pentaho.hadoop.shim.common.format.parquet;
 
 import java.io.File;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.TimeZone;
 
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.row.RowMeta;
-import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.core.row.value.ValueMetaBigNumber;
 import org.pentaho.di.core.row.value.ValueMetaBoolean;
 import org.pentaho.di.core.row.value.ValueMetaDate;
@@ -45,7 +45,7 @@ import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat;
 import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat.IPentahoRecordWriter;
 import org.pentaho.hadoop.shim.api.format.IPentahoParquetOutputFormat.COMPRESSION;
 import org.pentaho.hadoop.shim.api.format.IPentahoParquetOutputFormat.VERSION;
-import org.pentaho.hadoop.shim.api.format.SchemaDescription;
+import org.pentaho.hadoop.shim.api.format.ParquetSpec;
 
 public class PentahoParquetOutputFormatTest {
 
@@ -56,7 +56,7 @@ public class PentahoParquetOutputFormatTest {
 
     String tempFile = Files.createTempDirectory( "parquet" ).toUri().toString();
     pentahoParquetOutputFormat.setOutputFile( tempFile.toString() + "test", true );
-    pentahoParquetOutputFormat.setSchema( ParquetUtils.createSchema() );
+    pentahoParquetOutputFormat.setFields( ParquetUtils.createOutputFields() );
 
     IPentahoOutputFormat.IPentahoRecordWriter recordWriter = pentahoParquetOutputFormat.createRecordWriter();
 
@@ -69,14 +69,12 @@ public class PentahoParquetOutputFormatTest {
   @Test( expected = RuntimeException.class )
   public void createRecordWriterWhenSchemaIsNull() throws Exception {
 
-    SchemaDescription schema = Mockito.mock( SchemaDescription.class );
-
     String tempFile = Files.createTempDirectory( "parquet" ).toUri().toString();
 
     PentahoParquetOutputFormat pentahoParquetOutputFormat = new PentahoParquetOutputFormat();
 
     pentahoParquetOutputFormat.setOutputFile( tempFile.toString() + "test1", true );
-    pentahoParquetOutputFormat.setSchema( schema );
+    pentahoParquetOutputFormat.setFields( null );
 
     pentahoParquetOutputFormat.createRecordWriter();
   }
@@ -89,7 +87,7 @@ public class PentahoParquetOutputFormatTest {
     PentahoParquetOutputFormat pentahoParquetOutputFormat = new PentahoParquetOutputFormat();
 
     pentahoParquetOutputFormat.setOutputFile( tempFile, true );
-    pentahoParquetOutputFormat.setSchema( ParquetUtils.createSchema() );
+    pentahoParquetOutputFormat.setFields( ParquetUtils.createOutputFields() );
 
     pentahoParquetOutputFormat.createRecordWriter();
   }
@@ -128,7 +126,7 @@ public class PentahoParquetOutputFormatTest {
     try {
       PentahoParquetOutputFormat pentahoParquetOutputFormat = new PentahoParquetOutputFormat();
       pentahoParquetOutputFormat.setOutputFile( "/test test/output.parquet", true );
-    } catch (Exception e) {
+    } catch ( Exception e ) {
       exception = e;
     }
     //BACKLOG-19435: After this change URISyntaxException is not exceptied
@@ -141,16 +139,61 @@ public class PentahoParquetOutputFormatTest {
     of.setCompression( compr );
     of.enableDictionary( dictionary );
 
-    SchemaDescription schema = new SchemaDescription();
-    schema.addField( schema.new Field( "fnum", "fnum", ValueMetaInterface.TYPE_NUMBER, true ) );
-    schema.addField( schema.new Field( "fstring", "fstring", ValueMetaInterface.TYPE_STRING, true ) );
-    schema.addField( schema.new Field( "fdate", "fdate", ValueMetaInterface.TYPE_DATE, true ) );
-    schema.addField( schema.new Field( "fbool", "fbool", ValueMetaInterface.TYPE_BOOLEAN, true ) );
-    schema.addField( schema.new Field( "fint", "fint", ValueMetaInterface.TYPE_INTEGER, true ) );
-    schema.addField( schema.new Field( "fbignum", "fbignum", ValueMetaInterface.TYPE_BIGNUMBER, true ) );
-    schema.addField( schema.new Field( "ftime", "ftime", ValueMetaInterface.TYPE_TIMESTAMP, true ) );
+    List<ParquetOutputField> fields = new ArrayList<>();
 
-    of.setSchema( schema );
+    ParquetOutputField outputField = new ParquetOutputField();
+    outputField.setFormatFieldName( "fnum" );
+    outputField.setPentahoFieldName( "fnum" );
+    outputField.setFormatType( ParquetSpec.DataType.UTF8 );
+    outputField.setAllowNull( true );
+    fields.add( outputField );
+
+    outputField = new ParquetOutputField();
+    outputField.setFormatFieldName( "fstring" );
+    outputField.setPentahoFieldName( "fstring" );
+    outputField.setFormatType( ParquetSpec.DataType.UTF8 );
+    outputField.setAllowNull( true );
+    fields.add( outputField );
+
+    outputField = new ParquetOutputField();
+    outputField.setFormatFieldName( "fdate" );
+    outputField.setPentahoFieldName( "fdate" );
+    outputField.setFormatType( ParquetSpec.DataType.DATE );
+    outputField.setAllowNull( true );
+    fields.add( outputField );
+
+    outputField = new ParquetOutputField();
+    outputField.setFormatFieldName( "fbool" );
+    outputField.setPentahoFieldName( "fbool" );
+    outputField.setFormatType( ParquetSpec.DataType.BOOLEAN );
+    outputField.setAllowNull( true );
+    fields.add( outputField );
+
+    outputField = new ParquetOutputField();
+    outputField.setFormatFieldName( "fint" );
+    outputField.setPentahoFieldName( "fint" );
+    outputField.setFormatType( ParquetSpec.DataType.INT_64 );
+    outputField.setAllowNull( true );
+    fields.add( outputField );
+
+    outputField = new ParquetOutputField();
+    outputField.setFormatFieldName( "fbignum" );
+    outputField.setPentahoFieldName( "fbignum" );
+    outputField.setFormatType( ParquetSpec.DataType.DECIMAL );
+    outputField.setScale( "2" );
+    outputField.setPrecision( "10" );
+
+    outputField.setAllowNull( true );
+    fields.add( outputField );
+
+    outputField = new ParquetOutputField();
+    outputField.setFormatFieldName( "ftime" );
+    outputField.setPentahoFieldName( "ftime" );
+    outputField.setFormatType( ParquetSpec.DataType.TIMESTAMP_MILLIS );
+    outputField.setAllowNull( true );
+    fields.add( outputField );
+
+    of.setFields( fields );
     of.setOutputFile( "testparquet/" + file, true );
     IPentahoRecordWriter wr = of.createRecordWriter();
     RowMeta rowMeta = new RowMeta();

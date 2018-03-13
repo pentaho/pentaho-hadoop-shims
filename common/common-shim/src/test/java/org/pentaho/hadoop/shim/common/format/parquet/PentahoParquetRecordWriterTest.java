@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -48,19 +48,18 @@ import org.mockito.Mockito;
 import org.mockito.internal.util.reflection.Whitebox;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.row.RowMeta;
-import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.core.row.value.ValueMetaString;
 import org.pentaho.di.core.util.Assert;
+import org.pentaho.hadoop.shim.api.format.IParquetInputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat;
-import org.pentaho.hadoop.shim.api.format.SchemaDescription;
+import org.pentaho.hadoop.shim.api.format.ParquetSpec;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
-import org.pentaho.hadoop.shim.common.format.ParquetUtils;
-import org.pentaho.hadoop.shim.common.format.PentahoParquetInputFormat;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 
 public class PentahoParquetRecordWriterTest {
@@ -98,7 +97,7 @@ public class PentahoParquetRecordWriterTest {
   public void recordWriterCreateFileWithData() throws Exception {
 
     WriteSupport support =
-      new PentahoParquetWriteSupport( ParquetUtils.createSchema( ValueMetaInterface.TYPE_INTEGER ) );
+      new PentahoParquetWriteSupport( ParquetUtils.createOutputFields( ParquetSpec.DataType.INT_64 ) );
 
     ParquetOutputFormat nativeParquetOutputFormat = new ParquetOutputFormat<>( support );
 
@@ -135,7 +134,7 @@ public class PentahoParquetRecordWriterTest {
   public void recordWriterCreateFileWithoutData() throws Exception {
 
     WriteSupport support =
-      new PentahoParquetWriteSupport( ParquetUtils.createSchema( ValueMetaInterface.TYPE_INTEGER ) );
+      new PentahoParquetWriteSupport( ParquetUtils.createOutputFields( ParquetSpec.DataType.INT_64 ) );
 
     ParquetOutputFormat nativeParquetOutputFormat = new ParquetOutputFormat<>( support );
 
@@ -175,7 +174,7 @@ public class PentahoParquetRecordWriterTest {
     try {
       PentahoParquetInputFormat pentahoParquetInputFormat = new PentahoParquetInputFormat();
       pentahoParquetInputFormat.setInputFile( parquetFilePath );
-      SchemaDescription schema = pentahoParquetInputFormat.readSchema( parquetFilePath );
+      List<IParquetInputField> schema = pentahoParquetInputFormat.readSchema( parquetFilePath );
       pentahoParquetInputFormat.setSchema( schema );
 
       ParquetInputSplit parquetInputSplit = Mockito.spy( ParquetInputSplit.class );
