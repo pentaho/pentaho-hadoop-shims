@@ -21,7 +21,6 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.common.format.parquet;
 
-import java.net.URI;
 import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.List;
@@ -162,7 +161,8 @@ public class PentahoParquetInputFormat extends HadoopFormatBase implements IPent
   public List<IParquetInputField> readSchema( String file ) throws Exception {
     return inClassloader( () -> {
       ConfigurationProxy conf = new ConfigurationProxy();
-      FileSystem fs = FileSystem.get( new URI( file ), conf );
+      Path filePath = new Path( file );
+      FileSystem fs = FileSystem.get( filePath.toUri(), conf );
       FileStatus fileStatus = fs.getFileStatus( new Path( file ) );
       List<Footer> footers = ParquetFileReader.readFooters( conf, fileStatus, true );
       if ( footers.isEmpty() ) {
