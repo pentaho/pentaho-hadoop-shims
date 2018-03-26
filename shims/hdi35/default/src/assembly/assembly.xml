@@ -22,6 +22,9 @@
         <include>com.microsoft.azure:azure-storage</include>
         <include>org.apache.avro:avro</include>
         <include>org.apache.orc:orc-core</include>
+        <include>io.airlift:aircompressor</include>
+        <include>org.apache.hive:hive-storage-api</include>
+        <include>org.apache.hive:hive-exec</include>
         <include>org.codehaus.jackson:jackson-core-asl</include>
         <include>org.codehaus.jackson:jackson-mapper-asl</include>
         <include>org.apache.httpcomponents:httpclient</include>
