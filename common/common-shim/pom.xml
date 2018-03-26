@@ -117,6 +117,11 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
+      <groupId>org.pentaho</groupId>
+      <artifactId>pentaho-hadoop-shims-api</artifactId>
+      <version>${pentaho-hadoop-shims-api.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.powermock</groupId>
       <artifactId>powermock-reflect</artifactId>
       <scope>test</scope>
