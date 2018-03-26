@@ -22,6 +22,7 @@
 package org.pentaho.hadoop.shim.api.format;
 
 
+import java.io.InputStream;
 import java.util.List;
 
 public interface IPentahoAvroInputFormat extends IPentahoInputFormat {
@@ -50,4 +51,12 @@ public interface IPentahoAvroInputFormat extends IPentahoInputFormat {
    * Split size, bytes.
    */
   void setSplitSize( long blockSize ) throws Exception;
+
+  String getInputStreamFieldName();
+
+  void setInputStreamFieldName( String inputStreamFieldName );
+
+  boolean isUseFieldAsInputStream();
+
+  void setInputStream( InputStream inputStream );
 }
