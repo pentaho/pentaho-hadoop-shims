@@ -1,1 +1,1 @@
-org.pentaho.hadoop.shim.cdh514.authorization.ShimNoOpHadoopAuthorizationService
+cdh514.authorization.ShimNoOpHadoopAuthorizationService
