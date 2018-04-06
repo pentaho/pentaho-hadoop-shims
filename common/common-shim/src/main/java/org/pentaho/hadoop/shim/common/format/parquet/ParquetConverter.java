@@ -67,6 +67,8 @@ import java.math.BigInteger;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -431,9 +433,9 @@ public class ParquetConverter {
               // the number of days from the Unix epoch, 1 January 1970.
               @Override
               public void addInt( int value ) {
-                current.getData()[ index ] = new Date( value * 24L * 60L * 60L * 1000L );
-                current.getData()[ index ] =
-                  convertFromSourceToTargetType( valueMetaConverter, current.getData()[ index ], f );
+                LocalDate localDate = LocalDate.ofEpochDay( 0 ).plusDays( value );
+                current.getData()[ index ] = Date.from( localDate.atStartOfDay( ZoneId.systemDefault() ).toInstant() );
+                current.getData()[ index ] = convertFromSourceToTargetType( valueMetaConverter, current.getData()[ index ], f );
               }
 
               @Override

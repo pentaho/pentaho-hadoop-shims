@@ -95,12 +95,12 @@ public class PentahoAvroInputFormatTest {
     List<String> expectedFields = Arrays.asList(
       "boolean_field", "int_field", "long_field", "float_field",
       "double_field", "bytes_field", "string_field", "union_string_field",
-      "decimal_bytes_field", "date_field", "timestamp_millis_field",
+      "decimal_bytes_field", "decimal_fixed_field", "date_field", "timestamp_millis_field",
       "address", "zip_code", "double", "date", "time", "active", "cost"
     );
     List<String> actualFields =
       defaultFields.stream().map( IAvroInputField::getAvroFieldName ).collect( Collectors.toList() );
-    assertEquals( 18, defaultFields.size() );
+    assertEquals( 19, defaultFields.size() );
     assertTrue( expectedFields.equals( actualFields ) );
   }
 

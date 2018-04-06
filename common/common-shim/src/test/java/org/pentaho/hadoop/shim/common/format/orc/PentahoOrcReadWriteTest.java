@@ -104,7 +104,7 @@ public class PentahoOrcReadWriteTest {
     fields = new ArrayList<>();
     rowMeta = new RowMeta();
 
-    Date date1 = ( dateFormat.parse( "2001/11/01 00:00:00.000" ) );
+    Date date1 = ( dateFormat.parse( "2000/01/01 00:00:00.000" ) );
     Date date2 = ( dateFormat.parse( "1999/12/31 00:00:00.000" ) );
     Date timeStamp1 = new Timestamp( dateFormat.parse( "2001/11/01 20:30:15.123" ).getTime() );
     Date timeStamp2 = new Timestamp( dateFormat.parse( "1999/12/31 23:59:59.999" ).getTime() );
@@ -183,23 +183,24 @@ public class PentahoOrcReadWriteTest {
         2057.01D, 5068.537109375D, new Timestamp( date1.getTime() ), new Timestamp( date1.getTime() )
       },
 
-        { "Row2Field1", "Row2Field2", -3.2, new BigDecimal( -4.2, MathContext.DECIMAL64 ),
-          InetAddress.getByName( "www.microsoft.com" ), false, -2L, date2, timeStamp2, "Donald Duck".getBytes(), "-124",
-          "-64001", "-66666", "-5432.10888671875", "-26789.222", date2, -30572L, -62612L, -105L, -15607L, -7433L,
-          102.0D, -457.3D, -5074.1D, -3278.2080078125D, new Timestamp( date2.getTime() ),
-          new Timestamp( date2.getTime() ),
-          "Row2Field3", "Row2Field4", -3.2, new BigDecimal( -4.2, MathContext.DECIMAL64 ),
-          InetAddress.getByName( "www.microsoft.com" ), false, -2L, date2, timeStamp2, "Donald Duck".getBytes(), "-124",
-          "-64001", "-66666", "-5432.10888671875", "-26789.222", date2, -30572L, -62612L, -105L, -15607L, -7433L,
-          -102.0D, -457.3D, -5074.1D, -3278.2080078125D, new Timestamp( date2.getTime() ),
-          new Timestamp( date2.getTime() )
-        },
+      { "Row2Field1", "Row2Field2", -3.2, new BigDecimal( -4.2, MathContext.DECIMAL64 ),
+        InetAddress.getByName( "www.microsoft.com" ), false, -2L, date2, timeStamp2, "Donald Duck".getBytes(), "-124",
+        "-64001", "-66666", "-5432.10888671875", "-26789.222", date2, -30572L, -62612L, -105L, -15607L, -7433L,
+        102.0D, -457.3D, -5074.1D, -3278.2080078125D, new Timestamp( date2.getTime() ),
+        new Timestamp( date2.getTime() ),
+        "Row2Field3", "Row2Field4", -3.2, new BigDecimal( -4.2, MathContext.DECIMAL64 ),
+        InetAddress.getByName( "www.microsoft.com" ), false, -2L, date2, timeStamp2, "Donald Duck".getBytes(), "-124",
+        "-64001", "-66666", "-5432.10888671875", "-26789.222", date2, -30572L, -62612L, -105L, -15607L, -7433L,
+        -102.0D, -457.3D, -5074.1D, -3278.2080078125D, new Timestamp( date2.getTime() ),
+        new Timestamp( date2.getTime() )
+      },
 
-        { "Row3Field1", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-          null, null, null, null, null, null, null, null, null, null, null,
-          "Row3Field4", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-          null, null, null, null, null, null, null, null, null, null, null }
-      };
+      { "Row3Field1", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null,
+        "Row3Field4", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null
+      }
+    };
 
     for ( String[] schemaField : fieldData ) {
       OrcOutputField field = new OrcOutputField();

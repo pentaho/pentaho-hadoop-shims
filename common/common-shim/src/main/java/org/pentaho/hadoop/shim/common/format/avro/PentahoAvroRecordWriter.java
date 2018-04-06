@@ -45,10 +45,10 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * Created by tkafalas on 8/28/2017.
@@ -115,7 +115,12 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
               Date dateFromRow = row.getDate( fieldMetaIndex, defaultDate );
 
               if ( dateFromRow != null ) {
-                LocalDate localDate = dateFromRow.toInstant().atZone( ZoneId.systemDefault() ).toLocalDate();
+                ValueMetaInterface valueMeta = row.getValueMeta( fieldMetaIndex );
+                TimeZone timeZone = valueMeta.getDateFormatTimeZone();
+                if ( timeZone == null ) {
+                  timeZone = TimeZone.getDefault();
+                }
+                LocalDate localDate = dateFromRow.toInstant().atZone( timeZone.toZoneId() ).toLocalDate();
                 dateInDays = Math.toIntExact( ChronoUnit.DAYS.between( LocalDate.ofEpochDay( 0 ), localDate ) );
               }
               outputRecord.put( avroFieldName,  dateInDays );

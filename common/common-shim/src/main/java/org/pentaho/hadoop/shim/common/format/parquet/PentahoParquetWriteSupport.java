@@ -28,11 +28,11 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.TreeMap;
 
 import org.apache.hadoop.conf.Configuration;
@@ -204,7 +204,11 @@ public class PentahoParquetWriteSupport extends WriteSupport<RowMetaAndData> {
               } catch ( ParseException pe ) {
                 // Do nothing
               }
-              LocalDate localDate = defaultDate.toInstant().atZone( ZoneId.systemDefault() ).toLocalDate();
+              TimeZone timeZone = vmi.getDateFormatTimeZone();
+              if ( timeZone == null ) {
+                timeZone = TimeZone.getDefault();
+              }
+              LocalDate localDate = defaultDate.toInstant().atZone( timeZone.toZoneId() ).toLocalDate();
               Integer dateInDays = Math.toIntExact( ChronoUnit.DAYS.between( LocalDate.ofEpochDay( 0 ), localDate ) );
               consumer.addInteger( dateInDays );
               break;
@@ -278,7 +282,11 @@ public class PentahoParquetWriteSupport extends WriteSupport<RowMetaAndData> {
         break;
       case DATE:
         Date dateFromRow = row.getDate( fieldIndex, null );
-        LocalDate localDate = dateFromRow.toInstant().atZone( ZoneId.systemDefault() ).toLocalDate();
+        TimeZone timeZone = vmi.getDateFormatTimeZone();
+        if ( timeZone == null ) {
+          timeZone = TimeZone.getDefault();
+        }
+        LocalDate localDate = dateFromRow.toInstant().atZone( timeZone.toZoneId() ).toLocalDate();
         Integer dateInDays = Math.toIntExact( ChronoUnit.DAYS.between( LocalDate.ofEpochDay( 0 ), localDate ) );
         consumer.addInteger( dateInDays );
         break;
