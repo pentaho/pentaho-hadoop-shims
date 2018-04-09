@@ -21,6 +21,20 @@
         <include>org.codehaus.jackson:jackson-core-asl</include>
         <include>org.codehaus.jackson:jackson-mapper-asl</include>
         <include>org.apache.avro:avro</include>
+        <!-- Dependencies needed to support Google Cloud Hadoop File System -->
+        <include>com.google.cloud.bigdataoss:gcs-connector</include>
+        <include>com.google.cloud.bigdataoss:gcsio</include>
+        <include>com.google.api-client:google-api-client</include>
+        <include>com.google.apis:google-api-services-oauth2</include>
+        <include>com.google.apis:google-api-services-storage</include>
+        <include>com.google.http-client:google-http-client</include>
+        <include>com.google.http-client:google-http-client-jackson2</include>
+        <include>com.google.oauth-client:google-oauth-client</include>
+        <include>com.google.oauth-client:google-oauth-client-java6</include>
+        <include>com.google.guava:guava</include>
+        <include>com.google.cloud.bigdataoss:util</include>
+        <include>com.google.cloud.bigdataoss:util-hadoop</include>
+        <!-- End Dependencies needed to support Google Cloud Hadoop File System -->
         <include>org.apache.orc:orc-core</include>
         <include>io.airlift:aircompressor</include>
         <include>org.apache.hive:hive-storage-api</include>
