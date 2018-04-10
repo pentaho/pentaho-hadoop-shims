@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Pentaho Big Data
  * <p/>
- * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  * <p/>
  * ******************************************************************************
  * <p/>
@@ -17,6 +17,7 @@
 
 package org.pentaho.hbase.shim.common;
 
+import com.google.common.annotations.VisibleForTesting;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
@@ -99,6 +100,23 @@ public class CommonHBaseConnection extends HBaseConnection {
     }
   }
 
+  @VisibleForTesting
+  public static boolean isMapR60OrAboveShim( String shimConfigurationId ) {
+    return shimConfigurationId.toUpperCase().contains( "MAPR" )
+      && getMapRMajorVersion( shimConfigurationId ) > 5;
+  }
+
+  @VisibleForTesting
+  public static int getMapRMajorVersion( String shimConfigurationId ) {
+    return shimConfigurationId.toUpperCase().contains( "MAPR" )
+      ? getMajorVersionNumber( shimConfigurationId ) : 0;
+  }
+
+  @VisibleForTesting
+  public static Integer getMajorVersionNumber( String shimConfigurationId ) {
+    return new Integer( shimConfigurationId.replaceAll( "\\D", "" ).substring( 0, 1 ) );
+  }
+
   @Override
   public void configureConnection( Properties connProps, List<String> logMessages ) throws Exception {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
@@ -124,16 +142,18 @@ public class CommonHBaseConnection extends HBaseConnection {
         }
       } catch ( MalformedURLException e ) {
         throw new IllegalArgumentException(
-            BaseMessages.getString( PKG, "CommonHBaseConnection.Error.MalformedConfigURL" ) );
+          BaseMessages.getString( PKG, "CommonHBaseConnection.Error.MalformedConfigURL" ) );
       }
 
       if ( !isEmpty( zookeeperQuorum ) && !isEmpty( m_config.get( ZOOKEEPER_QUORUM_KEY ) ) ) {
 
         if ( !doZookeeperQuorumInNamedClusterAndConfigMatch( zookeeperQuorum ) ) {
           String message = BaseMessages.
-            getString( PKG, "CommonHBaseConnection.Error.MismatchZookeeperNamedClusterVsConfiguration", zookeeperQuorum, m_config.get( ZOOKEEPER_QUORUM_KEY ) );
+            getString( PKG, "CommonHBaseConnection.Error.MismatchZookeeperNamedClusterVsConfiguration", zookeeperQuorum,
+              m_config.get( ZOOKEEPER_QUORUM_KEY ) );
           log.logBasic( message );
-          //no throw exception here as for using some specific cases in host name - aliases that totally different from host name or ips, that case
+          //no throw exception here as for using some specific cases in host name - aliases that totally different
+          // from host name or ips, that case
           //can be checked only ping ip which is too expensive
         }
       }
@@ -170,22 +190,12 @@ public class CommonHBaseConnection extends HBaseConnection {
   private void verifyHBaseMapR60SpecificConfiguration( String shimConfigurationId ) {
     if ( isMapR60OrAboveShim( shimConfigurationId ) && !isMapr60HBaseSpecificPropertySet() ) {
       throw new IllegalArgumentException(
-              BaseMessages.getString( PKG, "CommonHBaseConnection.Error.HBaseMapR60SpecificPropertyNotSet" ) );
+        BaseMessages.getString( PKG, "CommonHBaseConnection.Error.HBaseMapR60SpecificPropertyNotSet" ) );
     }
   }
 
   private boolean isMapr60HBaseSpecificPropertySet() {
     return m_config.get( "hbase.table.namespace.mappings" ) != null;
-  }
-
-  private boolean isMapR60OrAboveShim( String shimConfigurationId ) {
-    return shimConfigurationId.toUpperCase().contains( "MAPR" )
-            && getMapRMajorVersion( shimConfigurationId.toUpperCase() ) > 5;
-  }
-
-  private int getMapRMajorVersion( String shimConfigurationId ) {
-    return shimConfigurationId.contains( "MAPR" )
-            ? shimConfigurationId.replace( "MAPR", "" ).trim().charAt( 0 ) : 0;
   }
 
   private String getActiveShimConfigurationId( Properties connectionProperties ) {
@@ -194,7 +204,8 @@ public class CommonHBaseConnection extends HBaseConnection {
 
   private boolean doZookeeperQuorumInNamedClusterAndConfigMatch( String zookeeperQuorum ) {
     return
-      allZookeperHostsFromNameNodeInConfigQuorum( zookeeperQuorum ) || atLeastOneHostFromConfigInNameClusterZookeeperQuorum( zookeeperQuorum );
+      allZookeperHostsFromNameNodeInConfigQuorum( zookeeperQuorum )
+        || atLeastOneHostFromConfigInNameClusterZookeeperQuorum( zookeeperQuorum );
   }
 
   private boolean allZookeperHostsFromNameNodeInConfigQuorum( String zookeeperQuorum ) {
@@ -252,7 +263,7 @@ public class CommonHBaseConnection extends HBaseConnection {
   protected void checkConfiguration() throws Exception {
     if ( m_admin == null ) {
       throw new Exception(
-          BaseMessages.getString( PKG, "CommonHBaseConnection.Error.ConnectionHasNotBeenConfigured" ) );
+        BaseMessages.getString( PKG, "CommonHBaseConnection.Error.ConnectionHasNotBeenConfigured" ) );
     }
   }
 
@@ -453,7 +464,7 @@ public class CommonHBaseConnection extends HBaseConnection {
     checkSourceScan();
 
     m_sourceScan.addColumn( m_bytesUtil.toBytes( colFamilyName ),
-        ( colNameIsBinary ) ? m_bytesUtil.toBytesBinary( colName ) : m_bytesUtil.toBytes( colName ) );
+      ( colNameIsBinary ) ? m_bytesUtil.toBytesBinary( colName ) : m_bytesUtil.toBytes( colName ) );
   }
 
   /**
@@ -468,7 +479,7 @@ public class CommonHBaseConnection extends HBaseConnection {
    */
   @Override
   public void addColumnFilterToScan( ColumnFilter cf, HBaseValueMeta columnMeta, VariableSpace vars, boolean matchAny )
-      throws Exception {
+    throws Exception {
 
     checkSourceScan();
 
@@ -540,9 +551,9 @@ public class CommonHBaseConnection extends HBaseConnection {
         byte[] qualifier = m_bytesUtil.toBytes( columnMeta.getColumnName() );
 
         Constructor<SingleColumnValueFilter>
-            scvfCtor =
-            SingleColumnValueFilter.class
-                .getConstructor( byte[].class, byte[].class, CompareFilter.CompareOp.class, comparatorClass );
+          scvfCtor =
+          SingleColumnValueFilter.class
+            .getConstructor( byte[].class, byte[].class, CompareFilter.CompareOp.class, comparatorClass );
         SingleColumnValueFilter scf = scvfCtor.newInstance( family, qualifier, comp, comparator );
         scf.setFilterIfMissing( true );
         fl.addFilter( scf );
@@ -559,7 +570,7 @@ public class CommonHBaseConnection extends HBaseConnection {
   }
 
   protected Object getNumericComparator( ColumnFilter cf, HBaseValueMeta columnMeta, VariableSpace vars,
-      String comparisonString ) throws Exception {
+                                         String comparisonString ) throws Exception {
     DecimalFormat df = new DecimalFormat();
     String formatS = vars.environmentSubstitute( cf.getFormat() );
     if ( !isEmpty( formatS ) ) {
@@ -588,16 +599,16 @@ public class CommonHBaseConnection extends HBaseConnection {
   }
 
   protected Object getBooleanComparator( Boolean decodedB )
-      throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException,
-      java.lang.reflect.InvocationTargetException {
+    throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException,
+    java.lang.reflect.InvocationTargetException {
     Class<?> deserializedBooleanComparatorClass = getDeserializedBooleanComparatorClass();
     Constructor<?> ctor = deserializedBooleanComparatorClass.getConstructor( boolean.class );
     return ctor.newInstance( decodedB );
   }
 
   protected Object getDateComparator( ColumnFilter cf, VariableSpace vars, String comparisonString )
-      throws ParseException, ClassNotFoundException, NoSuchMethodException, InstantiationException,
-      IllegalAccessException, java.lang.reflect.InvocationTargetException {
+    throws ParseException, ClassNotFoundException, NoSuchMethodException, InstantiationException,
+    IllegalAccessException, java.lang.reflect.InvocationTargetException {
     SimpleDateFormat sdf = new SimpleDateFormat();
     String formatS = vars.environmentSubstitute( cf.getFormat() );
     if ( !isEmpty( formatS ) ) {
@@ -613,8 +624,8 @@ public class CommonHBaseConnection extends HBaseConnection {
       // custom comparator for signed comparison
       Class<?> deserializedNumericComparatorClass = getDeserializedNumericComparatorClass();
       Constructor<?>
-          ctor =
-          deserializedNumericComparatorClass.getConstructor( boolean.class, boolean.class, long.class );
+        ctor =
+        deserializedNumericComparatorClass.getConstructor( boolean.class, boolean.class, long.class );
       comparator = ctor.newInstance( true, true, dateAsMillis );
     }
     return comparator;
@@ -626,8 +637,8 @@ public class CommonHBaseConnection extends HBaseConnection {
     Object comparator;
     if ( columnMeta.isInteger() ) {
       Constructor<?>
-          ctor =
-          deserializedNumericComparatorClass.getConstructor( boolean.class, boolean.class, long.class );
+        ctor =
+        deserializedNumericComparatorClass.getConstructor( boolean.class, boolean.class, long.class );
       if ( columnMeta.getIsLongOrDouble() ) {
         comparator = ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), num.longValue() );
       } else {
@@ -635,21 +646,22 @@ public class CommonHBaseConnection extends HBaseConnection {
       }
     } else {
       Constructor<?>
-          ctor =
-          deserializedNumericComparatorClass.getConstructor( boolean.class, boolean.class, double.class );
+        ctor =
+        deserializedNumericComparatorClass.getConstructor( boolean.class, boolean.class, double.class );
       if ( columnMeta.getIsLongOrDouble() ) {
         comparator = ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), num.doubleValue() );
       } else {
         comparator =
-            ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), (double) num.floatValue() );
+          ctor.newInstance( columnMeta.isInteger(), columnMeta.getIsLongOrDouble(), (double) num.floatValue() );
       }
     }
     return comparator;
   }
 
   void addFilterByMapping( FilterList fl, CompareFilter.CompareOp comp, Class<?> comparatorClass, Object comparator,
-      Mapping.TupleMapping tupleMapping ) throws NoSuchMethodException, InstantiationException, IllegalAccessException,
-      java.lang.reflect.InvocationTargetException {
+                           Mapping.TupleMapping tupleMapping )
+    throws NoSuchMethodException, InstantiationException, IllegalAccessException,
+    java.lang.reflect.InvocationTargetException {
     switch ( tupleMapping ) {
       case KEY: {
         addFilter( RowFilter.class, fl, comp, comparatorClass, comparator );
@@ -681,9 +693,9 @@ public class CommonHBaseConnection extends HBaseConnection {
   }
 
   protected <T extends Filter> void addFilter( Class<T> filterClass, FilterList fl, CompareFilter.CompareOp comp,
-      Class<?> comparatorClass, Object comparator )
-      throws NoSuchMethodException, InstantiationException, IllegalAccessException,
-      java.lang.reflect.InvocationTargetException {
+                                               Class<?> comparatorClass, Object comparator )
+    throws NoSuchMethodException, InstantiationException, IllegalAccessException,
+    java.lang.reflect.InvocationTargetException {
     Constructor<T> constructor = filterClass.getConstructor( CompareFilter.CompareOp.class, comparatorClass );
     T scf = constructor.newInstance( comp, comparator );
     fl.addFilter( scf );
@@ -703,8 +715,8 @@ public class CommonHBaseConnection extends HBaseConnection {
     if ( m_sourceScan.getFilter() == null ) {
       // create a new FilterList
       FilterList
-          fl =
-          new FilterList( matchAny ? FilterList.Operator.MUST_PASS_ONE : FilterList.Operator.MUST_PASS_ALL );
+        fl =
+        new FilterList( matchAny ? FilterList.Operator.MUST_PASS_ONE : FilterList.Operator.MUST_PASS_ALL );
       m_sourceScan.setFilter( fl );
     }
   }
@@ -833,23 +845,23 @@ public class CommonHBaseConnection extends HBaseConnection {
 
   @Override
   public byte[] getRowColumnLatest( Object aRow, String colFamilyName, String colName, boolean colNameIsBinary )
-      throws Exception {
+    throws Exception {
 
     if ( !checkForHBaseRow( aRow ) ) {
       throw new Exception( BaseMessages.getString( PKG, "CommonHBaseConnection.Error.ObjectIsNotAnHBaseRow" ) );
     }
 
     byte[]
-        result =
-        ( (Result) aRow ).getValue( m_bytesUtil.toBytes( colFamilyName ),
-            colNameIsBinary ? m_bytesUtil.toBytesBinary( colName ) : m_bytesUtil.toBytes( colName ) );
+      result =
+      ( (Result) aRow ).getValue( m_bytesUtil.toBytes( colFamilyName ),
+        colNameIsBinary ? m_bytesUtil.toBytesBinary( colName ) : m_bytesUtil.toBytes( colName ) );
 
     return result;
   }
 
   @Override
   public byte[] getResultSetCurrentRowColumnLatest( String colFamilyName, String colName, boolean colNameIsBinary )
-      throws Exception {
+    throws Exception {
     checkSourceScan();
     checkResultSet();
     checkForCurrentResultSetRow();
@@ -878,7 +890,7 @@ public class CommonHBaseConnection extends HBaseConnection {
 
   @Override
   public NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> getRowMap( Object aRow )
-      throws Exception {
+    throws Exception {
     if ( !checkForHBaseRow( aRow ) ) {
       throw new Exception( BaseMessages.getString( PKG, "CommonHBaseConnection.Error.ObjectIsNotAnHBaseRow" ) );
     }
@@ -888,7 +900,7 @@ public class CommonHBaseConnection extends HBaseConnection {
 
   @Override
   public NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> getResultSetCurrentRowMap()
-      throws Exception {
+    throws Exception {
     checkSourceScan();
     checkResultSet();
     checkForCurrentResultSetRow();
@@ -971,13 +983,13 @@ public class CommonHBaseConnection extends HBaseConnection {
 
   @Override
   public void addColumnToTargetPut( String columnFamily, String columnName, boolean colNameIsBinary, byte[] colValue )
-      throws Exception {
+    throws Exception {
 
     checkTargetTable();
     checkTargetPut();
 
     m_currentTargetPut.addColumn( m_bytesUtil.toBytes( columnFamily ),
-        colNameIsBinary ? m_bytesUtil.toBytesBinary( columnName ) : m_bytesUtil.toBytes( columnName ), colValue );
+      colNameIsBinary ? m_bytesUtil.toBytesBinary( columnName ) : m_bytesUtil.toBytes( columnName ), colValue );
   }
 
   @Override
@@ -1046,7 +1058,7 @@ public class CommonHBaseConnection extends HBaseConnection {
 
   protected boolean toBoolean( String value ) {
     return value.toLowerCase().equals( "y" ) || value.toLowerCase().equals( "yes" ) || value.toLowerCase()
-        .equals( "true" );
+      .equals( "true" );
   }
 
   @Override
