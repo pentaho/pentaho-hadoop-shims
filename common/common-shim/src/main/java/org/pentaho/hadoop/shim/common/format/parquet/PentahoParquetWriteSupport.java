@@ -149,10 +149,10 @@ public class PentahoParquetWriteSupport extends WriteSupport<RowMetaAndData> {
           consumer.startField( field.getFormatFieldName(), index );
           switch ( field.getParquetType() ) {
             case FLOAT:
-              consumer.addFloat( Float.parseFloat( field.getDefaultValue() ) );
+              consumer.addFloat( applyScale( Float.parseFloat( field.getDefaultValue() ), field ) );
               break;
             case DOUBLE:
-              consumer.addDouble( Double.parseDouble( field.getDefaultValue() ) );
+              consumer.addDouble( applyScale( Double.parseDouble( field.getDefaultValue() ), field ) );
               break;
             case BINARY:
             case UTF8:
@@ -223,10 +223,10 @@ public class PentahoParquetWriteSupport extends WriteSupport<RowMetaAndData> {
     consumer.startField( field.getFormatFieldName(), index );
     switch ( field.getParquetType() ) {
       case FLOAT:
-        consumer.addFloat( (float) row.getNumber( fieldIndex, 0 ) );
+        consumer.addFloat( applyScale( (float) row.getNumber( fieldIndex, 0 ), field ) );
         break;
       case DOUBLE:
-        consumer.addDouble( row.getNumber( fieldIndex, 0 ) );
+        consumer.addDouble( applyScale( row.getNumber( fieldIndex, 0 ), field ) );
         break;
       case BINARY:
         byte[] bytes = row.getBinary( fieldIndex, null );
@@ -295,6 +295,24 @@ public class PentahoParquetWriteSupport extends WriteSupport<RowMetaAndData> {
     }
 
     consumer.endField( field.getFormatFieldName(), index );
+  }
+
+  private double applyScale( double number, IParquetOutputField outputField ) {
+    if ( outputField.getScale() > 0 ) {
+      BigDecimal bd = new BigDecimal( number );
+      bd = bd.setScale( outputField.getScale(), BigDecimal.ROUND_HALF_UP );
+      number = bd.doubleValue();
+    }
+    return number;
+  }
+
+  private float applyScale( float number, IParquetOutputField outputField ) {
+    if ( outputField.getScale() > 0 ) {
+      BigDecimal bd = new BigDecimal( number );
+      bd = bd.setScale( outputField.getScale(), BigDecimal.ROUND_HALF_UP );
+      number = bd.floatValue();
+    }
+    return number;
   }
 
   private PrimitiveType convertToPrimitiveType( IParquetOutputField f ) {

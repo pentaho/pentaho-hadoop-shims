@@ -132,6 +132,7 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
               } else {
                 floatValue = (float) row.getNumber( fieldMetaIndex, 0 );
               }
+              floatValue = applyScale( floatValue, field  );
               outputRecord.put( avroFieldName, floatValue );
               break;
             case DOUBLE:
@@ -141,6 +142,7 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
               } else {
                 doubleValue = row.getNumber( fieldMetaIndex, 0 );
               }
+              doubleValue = applyScale( doubleValue, field );
               outputRecord.put( avroFieldName, doubleValue );
               break;
             case LONG:
@@ -223,6 +225,23 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
     return outputRecord;
   }
 
+  private double applyScale( double number, IAvroOutputField outputField ) {
+    if ( outputField.getScale() > 0 ) {
+      BigDecimal bd = new BigDecimal( number );
+      bd = bd.setScale( outputField.getScale(), BigDecimal.ROUND_HALF_UP );
+      number = bd.doubleValue();
+    }
+    return number;
+  }
+
+  private float applyScale( float number, IAvroOutputField outputField ) {
+    if ( outputField.getScale() > 0 ) {
+      BigDecimal bd = new BigDecimal( number );
+      bd = bd.setScale( outputField.getScale(), BigDecimal.ROUND_HALF_UP );
+      number = bd.floatValue();
+    }
+    return number;
+  }
 
   @Override
   public void close() throws IOException {
