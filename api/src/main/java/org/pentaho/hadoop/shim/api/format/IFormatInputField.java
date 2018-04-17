@@ -49,4 +49,9 @@ public interface IFormatInputField {
   int getScale();
 
   void setScale( int scale );
+
+  String getStringFormat();
+
+  void setStringFormat( String stringFormat );
+
 }

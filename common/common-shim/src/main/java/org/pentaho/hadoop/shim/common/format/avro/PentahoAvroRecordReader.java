@@ -32,6 +32,7 @@ import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.util.Utf8;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.row.ValueMetaInterface;
+import org.pentaho.di.core.row.value.ValueMetaBase;
 import org.pentaho.hadoop.shim.api.format.AvroSpec;
 import org.pentaho.hadoop.shim.api.format.IAvroInputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoAvroInputFormat;
@@ -53,9 +54,6 @@ import java.util.List;
  */
 public class PentahoAvroRecordReader implements IPentahoAvroInputFormat.IPentahoRecordReader {
 
-  private final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
-  //Cache the DateFormats for speed since they currently can't be changed
-  private SimpleDateFormat datePattern = new SimpleDateFormat( DEFAULT_DATE_FORMAT );
   private final DataFileStream<GenericRecord> nativeAvroRecordReader;
   private final Schema avroSchema;
   private final List<? extends IAvroInputField> fields;
@@ -206,7 +204,7 @@ public class PentahoAvroRecordReader implements IPentahoAvroInputFormat.IPentaho
               pentahoData = convertToPentahoType( pentahoType, (Integer) avroData );
               break;
             case STRING:
-              pentahoData = convertToPentahoType( pentahoType, (String) avroData );
+              pentahoData = convertToPentahoType( pentahoType, (String) avroData, metaField );
               break;
             case BYTES:
               pentahoData = convertToPentahoType( pentahoType, (ByteBuffer) avroData, avroField );
@@ -217,6 +215,10 @@ public class PentahoAvroRecordReader implements IPentahoAvroInputFormat.IPentaho
           }
         }
         rowMetaAndData.addValue( metaField.getPentahoFieldName(), metaField.getPentahoType(), pentahoData );
+        String stringFormat = metaField.getStringFormat();
+        if ( ( stringFormat != null ) && ( stringFormat.trim().length() > 0 ) ) {
+          rowMetaAndData.getValueMeta( rowMetaAndData.size() - 1 ).setConversionMask( stringFormat );
+        }
       }
     }
     return rowMetaAndData;
@@ -422,7 +424,7 @@ public class PentahoAvroRecordReader implements IPentahoAvroInputFormat.IPentaho
     return pentahoData;
   }
 
-  private Object convertToPentahoType( int pentahoType, String avroData ) {
+  private Object convertToPentahoType( int pentahoType, String avroData, IAvroInputField avroInputField ) {
     Object pentahoData = null;
     if ( avroData != null ) {
       try {
@@ -446,6 +448,11 @@ public class PentahoAvroRecordReader implements IPentahoAvroInputFormat.IPentaho
             pentahoData = new Timestamp( Long.parseLong( avroData ) );
             break;
           case ValueMetaInterface.TYPE_DATE:
+            String dateFormatStr = avroInputField.getStringFormat();
+            if ( ( dateFormatStr == null ) || ( dateFormatStr.trim().length() == 0 ) ) {
+              dateFormatStr = ValueMetaBase.DEFAULT_DATE_FORMAT_MASK;
+            }
+            SimpleDateFormat datePattern = new SimpleDateFormat( dateFormatStr );
             pentahoData = datePattern.parse( avroData );
             break;
           case ValueMetaInterface.TYPE_BOOLEAN:

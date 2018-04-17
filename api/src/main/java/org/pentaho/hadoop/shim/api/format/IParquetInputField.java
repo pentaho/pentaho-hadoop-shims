@@ -41,6 +41,8 @@ public interface IParquetInputField extends IFormatInputField {
     sb.append( Integer.toString( field.getPrecision() ) );
     sb.append( "|" );
     sb.append( Integer.toString( field.getScale() ) );
+    sb.append( "|" );
+    sb.append( field.getStringFormat() );
     return sb.toString();
   }
 

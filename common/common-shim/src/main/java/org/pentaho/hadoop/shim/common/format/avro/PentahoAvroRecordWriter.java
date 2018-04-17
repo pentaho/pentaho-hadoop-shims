@@ -132,7 +132,9 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
               } else {
                 floatValue = (float) row.getNumber( fieldMetaIndex, 0 );
               }
-              floatValue = applyScale( floatValue, field  );
+              if ( floatValue != null ) {
+                floatValue = applyScale( floatValue, field  );
+              }
               outputRecord.put( avroFieldName, floatValue );
               break;
             case DOUBLE:
@@ -142,7 +144,9 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
               } else {
                 doubleValue = row.getNumber( fieldMetaIndex, 0 );
               }
-              doubleValue = applyScale( doubleValue, field );
+              if ( doubleValue != null ) {
+                doubleValue = applyScale( doubleValue, field );
+              }
               outputRecord.put( avroFieldName, doubleValue );
               break;
             case LONG:
