@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.annotations.VisibleForTesting;
+import org.apache.avro.LogicalType;
 import org.apache.avro.Schema;
 import org.apache.avro.file.DataFileStream;
 import org.apache.avro.generic.GenericDatumReader;
@@ -226,58 +227,57 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
   }
 
   private AvroSpec.DataType findActualDataType( Schema.Field field ) {
-    String logicalType = getLogicalType( field );
-    if ( logicalType != null ) {
-      for ( AvroSpec.DataType tmpType : AvroSpec.DataType.values() ) {
-        if ( logicalType.equals( tmpType.getLogicalType() ) ) {
-          if ( field.schema().getType().equals( Schema.Type.UNION ) ) {
-            for ( Schema s: field.schema().getTypes() ) {
-              if ( tmpType.getBaseType().equals( s.getType().getName() ) ) {
-                return tmpType;
-              }
-            }
-          } else {
-            if ( tmpType.getBaseType().equals( field.schema().getType().getName() ) ) {
-              return tmpType;
-            }
-          }
-        }
-      }
-    } else {
-      String primitiveType = null;
-      if ( field.schema().getType().equals( Schema.Type.UNION ) ) {
-        for ( Schema s: field.schema().getTypes() ) {
-          if ( !s.getName().equalsIgnoreCase( "null" ) ) {
-            primitiveType = s.getType().getName();
-            break;
-          }
-        }
-      } else {
-        primitiveType = field.schema().getType().getName();
-      }
+    AvroSpec.DataType avroDataType = null;
+    LogicalType logicalType = null;
+    Schema.Type primitiveAvroType = null;
 
-      for ( AvroSpec.DataType tmpType : AvroSpec.DataType.values() ) {
-        if ( primitiveType.equals( tmpType.getBaseType() ) ) {
-          return  tmpType;
-        }
-      }
-    }
-    return null;
-  }
-
-  private String getLogicalType( Schema.Field f ) {
-    Schema schema = f.schema();
-    if ( schema.getType().equals( Schema.Type.UNION ) ) {
-      List<Schema> schemas = f.schema().getTypes();
-      for ( Schema s : schemas ) {
-        if ( !s.getName().equalsIgnoreCase( "null" ) ) {
-          schema = s;
+    if ( field.schema().getType().equals( Schema.Type.UNION ) ) {
+      for ( Schema typeSchema : field.schema().getTypes() ) {
+        if ( !typeSchema.getType().equals( Schema.Type.NULL ) ) {
+          logicalType = typeSchema.getLogicalType();
+          primitiveAvroType = typeSchema.getType();
           break;
         }
       }
+    } else {
+      logicalType = field.schema().getLogicalType();
+      primitiveAvroType = field.schema().getType();
     }
 
-    return schema.getProp( AvroSpec.LOGICAL_TYPE );
+    if ( logicalType != null ) {
+      for ( AvroSpec.DataType tmpType : AvroSpec.DataType.values() ) {
+        if ( !tmpType.isPrimitiveType() && tmpType.getType().equals( logicalType.getName() ) ) {
+          avroDataType = tmpType;
+          break;
+        }
+      }
+    } else {
+      switch ( primitiveAvroType ) {
+        case INT:
+          avroDataType = AvroSpec.DataType.INTEGER;
+          break;
+        case LONG:
+          avroDataType = AvroSpec.DataType.LONG;
+          break;
+        case BYTES:
+          avroDataType = AvroSpec.DataType.BYTES;
+          break;
+        case FLOAT:
+          avroDataType = AvroSpec.DataType.FLOAT;
+          break;
+        case DOUBLE:
+          avroDataType = AvroSpec.DataType.DOUBLE;
+          break;
+        case STRING:
+          avroDataType = AvroSpec.DataType.STRING;
+          break;
+        case BOOLEAN:
+          avroDataType = AvroSpec.DataType.BOOLEAN;
+          break;
+      }
+    }
+
+    return avroDataType;
   }
 
   private boolean isSupported( AvroSpec.DataType actualAvroType ) {

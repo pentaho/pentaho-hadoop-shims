@@ -31,6 +31,7 @@ public class BaseFormatInputField implements IFormatInputField {
   private int formatType;
   private int scale = 0;
   private int precision = 0;
+  private String stringFormat = "";
 
   @Override
   public String getFormatFieldName() {
@@ -88,6 +89,16 @@ public class BaseFormatInputField implements IFormatInputField {
 
   @Override public void setFormatType( int formatType ) {
     this.formatType = formatType;
+  }
+
+  @Override
+  public String getStringFormat() {
+    return stringFormat;
+  }
+
+  @Override
+  public void setStringFormat( String stringFormat ) {
+    this.stringFormat = stringFormat == null ? "" : stringFormat;
   }
 
   @Override

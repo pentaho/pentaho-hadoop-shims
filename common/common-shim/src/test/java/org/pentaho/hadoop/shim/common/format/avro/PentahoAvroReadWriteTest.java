@@ -116,7 +116,7 @@ public class PentahoAvroReadWriteTest {
   public void setup() throws Exception {
     tempFolder.create();
 
-    date1 = ( dateFormat.parse( "2001/11/01 00:00:00.000" ) );
+    date1 = ( dateFormat.parse( "2000/01/01 00:00:00.000" ) );
     date2 = ( dateFormat.parse( "1999/12/31 00:00:00.000" ) );
     timeStamp1 = new Timestamp( dateFormat.parse( "2001/11/01 20:30:15.123" ).getTime() );
     timeStamp2 = new Timestamp( dateFormat.parse( "1999/12/31 23:59:59.999" ).getTime() );

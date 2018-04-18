@@ -68,9 +68,9 @@ public class ParquetInputField extends BaseFormatInputField implements IParquetI
   }
 
   public static IParquetInputField unmarshallField( String str ) {
-    String[] values = new String[6];
+    String[] values = new String[7];
     int prev = 0;
-    for ( int i = 0; i < 5; i++ ) {
+    for ( int i = 0; i < 6; i++ ) {
       int pos = str.indexOf( '|', prev );
       if ( pos < 0 ) {
         throw new RuntimeException( "Wrong field: " + str );
@@ -81,7 +81,7 @@ public class ParquetInputField extends BaseFormatInputField implements IParquetI
     if ( str.indexOf( '|', prev ) >= 0 ) {
       throw new RuntimeException( "Wrong field: " + str );
     }
-    values[5] = str.substring( prev );
+    values[6] = str.substring( prev );
 
     ParquetInputField field = new ParquetInputField();
     field.setFormatFieldName( uc( values[ 0 ] ) );
@@ -90,6 +90,7 @@ public class ParquetInputField extends BaseFormatInputField implements IParquetI
     field.setPentahoType( Integer.parseInt( values[ 3 ] ) );
     field.setPrecision( Integer.parseInt( values[ 4 ] ) );
     field.setScale( Integer.parseInt( values[ 5 ] ) );
+    field.setStringFormat( values[ 6 ] );
     return field;
   }
 }

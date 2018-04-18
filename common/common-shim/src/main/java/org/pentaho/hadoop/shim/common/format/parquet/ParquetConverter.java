@@ -67,6 +67,9 @@ import java.math.BigInteger;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -260,6 +263,12 @@ public class ParquetConverter {
     private Object convertFromSourceToTargetType( IValueMetaConverter valueMetaConverter, Object stagingValue,
                                                   IParquetInputField f ) {
       try {
+        String dateFormatStr = f.getStringFormat();
+        if ( ( dateFormatStr == null ) || ( dateFormatStr.trim().length() == 0 ) ) {
+          dateFormatStr = ValueMetaBase.DEFAULT_DATE_FORMAT_MASK;
+        }
+        valueMetaConverter.setDatePattern( new SimpleDateFormat( dateFormatStr ) );
+
         return valueMetaConverter.convertFromSourceToTargetDataType(
           f.getParquetType().getPdiType(), f.getPentahoType(), stagingValue );
       } catch ( ValueMetaConversionException e ) {
@@ -316,6 +325,7 @@ public class ParquetConverter {
 
         final int index = i;
         addValueMeta( f.getPentahoType(), f.getPentahoFieldName() );
+
         switch ( f.getParquetType().getPdiType() ) {
           case ValueMetaInterface.TYPE_NUMBER:
             converters[ i ] = new PrimitiveConverter() {
@@ -324,6 +334,7 @@ public class ParquetConverter {
                 current.getData()[ index ] = value;
                 current.getData()[ index ] =
                   convertFromSourceToTargetType( valueMetaConverter, current.getData()[ index ], f );
+                updateValueMeta( index, f );
               }
 
               @Override
@@ -331,6 +342,7 @@ public class ParquetConverter {
                 current.getData()[ index ] = new BigDecimal( String.valueOf( value ) ).doubleValue();
                 current.getData()[ index ] =
                   convertFromSourceToTargetType( valueMetaConverter, current.getData()[ index ], f );
+                updateValueMeta( index, f );
               }
             };
             break;
@@ -348,6 +360,7 @@ public class ParquetConverter {
                 current.getData()[ index ] = value;
                 current.getData()[ index ] =
                   convertFromSourceToTargetType( valueMetaConverter, current.getData()[ index ], f );
+                updateValueMeta( index, f );
               }
             };
             break;
@@ -358,6 +371,7 @@ public class ParquetConverter {
                 current.getData()[ index ] = binaryToDecimal( value, f.getPrecision(), f.getScale() );
                 current.getData()[ index ] =
                   convertFromSourceToTargetType( valueMetaConverter, current.getData()[ index ], f );
+                updateValueMeta( index, f );
               }
 
               @Override
@@ -365,6 +379,7 @@ public class ParquetConverter {
                 current.getData()[ index ] = new BigDecimal( BigInteger.valueOf( value ), f.getScale() );
                 current.getData()[ index ] =
                   convertFromSourceToTargetType( valueMetaConverter, current.getData()[ index ], f );
+                updateValueMeta( index, f );
               }
 
               @Override
@@ -372,6 +387,7 @@ public class ParquetConverter {
                 current.getData()[ index ] = new BigDecimal( BigInteger.valueOf( value ), f.getScale() );
                 current.getData()[ index ] =
                   convertFromSourceToTargetType( valueMetaConverter, current.getData()[ index ], f );
+                updateValueMeta( index, f );
               }
             };
             break;
@@ -382,6 +398,7 @@ public class ParquetConverter {
                 current.getData()[ index ] = value.toStringUsingUTF8();
                 current.getData()[ index ] =
                   convertFromSourceToTargetType( valueMetaConverter, current.getData()[ index ], f );
+                updateValueMeta( index, f );
               }
             };
             break;
@@ -392,6 +409,7 @@ public class ParquetConverter {
                 current.getData()[ index ] = value;
                 current.getData()[ index ] =
                   convertFromSourceToTargetType( valueMetaConverter, current.getData()[ index ], f );
+                updateValueMeta( index, f );
               }
             };
             break;
@@ -402,6 +420,7 @@ public class ParquetConverter {
                 current.getData()[ index ] = value.getBytes();
                 current.getData()[ index ] =
                   convertFromSourceToTargetType( valueMetaConverter, current.getData()[ index ], f );
+                updateValueMeta( index, f );
               }
             };
             break;
@@ -415,6 +434,7 @@ public class ParquetConverter {
                   current.getData()[ index ] = value.getBytes();
                   current.getData()[ index ] =
                     convertFromSourceToTargetType( valueMetaConverter, current.getData()[ index ], f );
+                  updateValueMeta( index, f );
                 }
               }
             };
@@ -426,14 +446,16 @@ public class ParquetConverter {
                 current.getData()[ index ] = new Date( value );
                 current.getData()[ index ] =
                   convertFromSourceToTargetType( valueMetaConverter, current.getData()[ index ], f );
+                updateValueMeta( index, f );
               }
 
               // the number of days from the Unix epoch, 1 January 1970.
               @Override
               public void addInt( int value ) {
-                current.getData()[ index ] = new Date( value * 24L * 60L * 60L * 1000L );
-                current.getData()[ index ] =
-                  convertFromSourceToTargetType( valueMetaConverter, current.getData()[ index ], f );
+                LocalDate localDate = LocalDate.ofEpochDay( 0 ).plusDays( value );
+                current.getData()[ index ] = Date.from( localDate.atStartOfDay( ZoneId.systemDefault() ).toInstant() );
+                current.getData()[ index ] = convertFromSourceToTargetType( valueMetaConverter, current.getData()[ index ], f );
+                updateValueMeta( index, f );
               }
 
               @Override
@@ -441,6 +463,7 @@ public class ParquetConverter {
                 current.getData()[ index ] = new Date( dateFromInt96( value ) );
                 current.getData()[ index ] =
                   convertFromSourceToTargetType( valueMetaConverter, current.getData()[ index ], f );
+                updateValueMeta( index, f );
               }
             };
             break;
@@ -451,6 +474,7 @@ public class ParquetConverter {
                 current.getData()[ index ] = new Timestamp( value );
                 current.getData()[ index ] =
                   convertFromSourceToTargetType( valueMetaConverter, current.getData()[ index ], f );
+                updateValueMeta( index, f );
               }
 
               // the number of days from the Unix epoch, 1 January 1970.
@@ -459,6 +483,7 @@ public class ParquetConverter {
                 current.getData()[ index ] = new Timestamp( value * 24L * 60L * 60L * 1000L );
                 current.getData()[ index ] =
                   convertFromSourceToTargetType( valueMetaConverter, current.getData()[ index ], f );
+                updateValueMeta( index, f );
               }
 
               @Override
@@ -466,6 +491,7 @@ public class ParquetConverter {
                 current.getData()[ index ] = new Timestamp( dateFromInt96( value ) );
                 current.getData()[ index ] =
                   convertFromSourceToTargetType( valueMetaConverter, current.getData()[ index ], f );
+                updateValueMeta( index, f );
               }
             };
             break;
@@ -482,6 +508,7 @@ public class ParquetConverter {
                     current.getData()[ index ] =
                       convertFromSourceToTargetType( valueMetaConverter, current.getData()[ index ], f );
                   }
+                  updateValueMeta( index, f );
                 } catch ( Exception ex ) {
                   throw new RuntimeException( ex );
                 }
@@ -491,8 +518,15 @@ public class ParquetConverter {
           default:
             throw new RuntimeException( "Undefined type: " + f.getPentahoFieldName() );
         }
-
         i++;
+      }
+
+    }
+
+    private void updateValueMeta( int index, IParquetInputField inputField ) {
+      String stringFormat = inputField.getStringFormat();
+      if ( ( stringFormat != null ) && ( stringFormat.trim().length() > 0 ) ) {
+        current.getValueMeta( index ).setConversionMask( stringFormat );
       }
     }
 

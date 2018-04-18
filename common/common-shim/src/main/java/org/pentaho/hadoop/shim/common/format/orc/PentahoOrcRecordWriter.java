@@ -65,10 +65,10 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -185,9 +185,10 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
       case FLOAT:
       case DOUBLE:
         try {
-          ( (DoubleColumnVector) columnVector ).vector[ batchRowNumber ] =
-            rowMetaAndData.getNumber( field.getPentahoFieldName(),
-              field.getDefaultValue() != null ? new Double( field.getDefaultValue() ) : new Double( 0 ) );
+          double number = rowMetaAndData.getNumber( field.getPentahoFieldName(),
+            field.getDefaultValue() != null ? new Double( field.getDefaultValue() ) : new Double( 0 ) );
+          number = applyScale( number, field );
+          ( (DoubleColumnVector) columnVector ).vector[ batchRowNumber ] = number;
         } catch ( KettleValueException e ) {
           logger.error( e );
         }
@@ -218,10 +219,9 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
             conversionMask = ValueMetaBase.DEFAULT_DATE_PARSE_MASK;
           }
           DateFormat dateFormat = new SimpleDateFormat( conversionMask );
-          ( (LongColumnVector) columnVector ).vector[ batchRowNumber ] = getOrcDate(
-            rowMetaAndData.getDate( field.getPentahoFieldName(),
-              field.getDefaultValue() != null ? dateFormat.parse( field.getDefaultValue() ) : new Date( 0 ) )
-          );
+          Date defaultDate = field.getDefaultValue() != null ? dateFormat.parse( field.getDefaultValue() ) : new Date( 0 );
+          Date date = rowMetaAndData.getDate( field.getPentahoFieldName(), defaultDate );
+          ( (LongColumnVector) columnVector ).vector[ batchRowNumber ] = getOrcDate( date, rowMetaAndData.getValueMeta( rowMetaIndex ).getDateFormatTimeZone() );
         } catch ( KettleValueException | ParseException e ) {
           logger.error( e );
         }
@@ -247,8 +247,21 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
     }
   }
 
-  private int getOrcDate( Date date ) {
-    LocalDate rowDate = date.toInstant().atZone( ZoneId.systemDefault() ).toLocalDate();
+  private double applyScale( double number, IOrcOutputField outputField ) {
+    if ( outputField.getScale() > 0 ) {
+      BigDecimal bd = new BigDecimal( number );
+      bd = bd.setScale( outputField.getScale(), BigDecimal.ROUND_HALF_UP );
+      number = bd.doubleValue();
+    }
+    return number;
+  }
+
+
+  private int getOrcDate( Date date, TimeZone timeZone ) {
+    if ( timeZone == null ) {
+      timeZone = TimeZone.getDefault();
+    }
+    LocalDate rowDate = date.toInstant().atZone( timeZone.toZoneId() ).toLocalDate();
     return Math.toIntExact( ChronoUnit.DAYS.between( LocalDate.ofEpochDay( 0 ), rowDate ) );
   }
 

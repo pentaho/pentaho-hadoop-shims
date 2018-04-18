@@ -45,10 +45,10 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * Created by tkafalas on 8/28/2017.
@@ -115,7 +115,12 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
               Date dateFromRow = row.getDate( fieldMetaIndex, defaultDate );
 
               if ( dateFromRow != null ) {
-                LocalDate localDate = dateFromRow.toInstant().atZone( ZoneId.systemDefault() ).toLocalDate();
+                ValueMetaInterface valueMeta = row.getValueMeta( fieldMetaIndex );
+                TimeZone timeZone = valueMeta.getDateFormatTimeZone();
+                if ( timeZone == null ) {
+                  timeZone = TimeZone.getDefault();
+                }
+                LocalDate localDate = dateFromRow.toInstant().atZone( timeZone.toZoneId() ).toLocalDate();
                 dateInDays = Math.toIntExact( ChronoUnit.DAYS.between( LocalDate.ofEpochDay( 0 ), localDate ) );
               }
               outputRecord.put( avroFieldName,  dateInDays );
@@ -127,6 +132,9 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
               } else {
                 floatValue = (float) row.getNumber( fieldMetaIndex, 0 );
               }
+              if ( floatValue != null ) {
+                floatValue = applyScale( floatValue, field  );
+              }
               outputRecord.put( avroFieldName, floatValue );
               break;
             case DOUBLE:
@@ -135,6 +143,9 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
                 doubleValue = ( defaultValue != null && defaultValue.length() > 0 ) ? Double.parseDouble( defaultValue ) : null;
               } else {
                 doubleValue = row.getNumber( fieldMetaIndex, 0 );
+              }
+              if ( doubleValue != null ) {
+                doubleValue = applyScale( doubleValue, field );
               }
               outputRecord.put( avroFieldName, doubleValue );
               break;
@@ -218,6 +229,23 @@ public class PentahoAvroRecordWriter implements IPentahoOutputFormat.IPentahoRec
     return outputRecord;
   }
 
+  private double applyScale( double number, IAvroOutputField outputField ) {
+    if ( outputField.getScale() > 0 ) {
+      BigDecimal bd = new BigDecimal( number );
+      bd = bd.setScale( outputField.getScale(), BigDecimal.ROUND_HALF_UP );
+      number = bd.doubleValue();
+    }
+    return number;
+  }
+
+  private float applyScale( float number, IAvroOutputField outputField ) {
+    if ( outputField.getScale() > 0 ) {
+      BigDecimal bd = new BigDecimal( number );
+      bd = bd.setScale( outputField.getScale(), BigDecimal.ROUND_HALF_UP );
+      number = bd.floatValue();
+    }
+    return number;
+  }
 
   @Override
   public void close() throws IOException {

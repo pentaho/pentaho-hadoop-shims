@@ -34,6 +34,7 @@ import org.apache.hadoop.hive.serde2.io.HiveDecimalWritable;
 import org.apache.orc.TypeDescription;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.row.ValueMetaInterface;
+import org.pentaho.di.core.row.value.ValueMetaBase;
 import org.pentaho.di.core.row.value.ValueMetaConversionException;
 import org.pentaho.di.core.row.value.ValueMetaConverter;
 import org.pentaho.hadoop.shim.api.format.IOrcInputField;
@@ -41,6 +42,7 @@ import org.pentaho.hadoop.shim.api.format.IOrcInputField;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Arrays;
@@ -82,6 +84,11 @@ public class OrcConverter {
 
         Object convertToSchemaValue = null;
         try {
+          String dateFormatStr = inputField.getStringFormat();
+          if ( ( dateFormatStr == null ) || ( dateFormatStr.trim().length() == 0 ) ) {
+            dateFormatStr = ValueMetaBase.DEFAULT_DATE_FORMAT_MASK;
+          }
+          valueMetaConverter.setDatePattern( new SimpleDateFormat( dateFormatStr ) );
           convertToSchemaValue = valueMetaConverter
             .convertFromSourceToTargetDataType( orcField.getPentahoType(), inputField.getPentahoType(),
               orcToPentahoValue );
@@ -89,6 +96,10 @@ public class OrcConverter {
           logger.error( e );
         }
         rowMetaAndData.addValue( inputField.getPentahoFieldName(), inputField.getPentahoType(), convertToSchemaValue );
+        String stringFormat = inputField.getStringFormat();
+        if ( ( stringFormat != null ) && ( stringFormat.trim().length() > 0 ) ) {
+          rowMetaAndData.getValueMeta( rowMetaAndData.size() - 1 ).setConversionMask( stringFormat );
+        }
       }
     }
 
