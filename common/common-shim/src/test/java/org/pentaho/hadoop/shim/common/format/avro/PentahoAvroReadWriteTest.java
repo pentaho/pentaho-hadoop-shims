@@ -103,6 +103,7 @@ public class PentahoAvroReadWriteTest {
   private final int PDI_TYPE_INDEX = 3;
   private final int PRECISION_INDEX = 4;
   private final int SCALE_INDEX = 5;
+  private final int DATE_FORMAT_INDEX = 6;
 
   public TemporaryFolder tempFolder = new TemporaryFolder();
 
@@ -142,6 +143,9 @@ public class PentahoAvroReadWriteTest {
       avroInputField.setPentahoFieldName( schemaField[ PENTAHO_NAME_INDEX ] );
       avroInputField.setAvroType( AvroSpec.DataType.values()[ Integer.parseInt( schemaField[ AVRO_TYPE_INDEX ] ) ] );
       avroInputField.setPentahoType( Integer.valueOf( schemaField[ PDI_TYPE_INDEX ] ) );
+      if (( schemaField.length > DATE_FORMAT_INDEX ) && ( schemaField[ DATE_FORMAT_INDEX ] != null ) ) {
+        avroInputField.setStringFormat( schemaField[ DATE_FORMAT_INDEX ] );
+      }
       avroInputFields.add( avroInputField );
     }
     return avroInputFields;
@@ -245,6 +249,52 @@ public class PentahoAvroReadWriteTest {
       assertTrue( ex != null );
     }
   }
+
+  @Test
+  public void testParseDateOnInput() throws Exception {
+    Object[] rowData =
+      new Object[]{"2000-01-02"};
+    String[][] outputSchemaDescription = new String[][]{
+      {"avroDate8", "pentahoDate8", String.valueOf( AvroSpec.DataType.STRING.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_STRING ), "0", "0"}
+    };
+    String[][] inputSchemaDescription = new String[][]{
+      {"avroDate8", "pentahoDate8", String.valueOf( AvroSpec.DataType.STRING.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_DATE ), "0", "0", "yyyy-MM-dd"}
+    };
+
+    RowMeta rowMeta = buildRowMeta( outputSchemaDescription );
+    RowMetaAndData rowMetaAndData = new RowMetaAndData( rowMeta, rowData );
+
+    SimpleDateFormat format = new SimpleDateFormat( "yyyy-MM-dd" );
+    Date[] expectedResults = new Date[] {format.parse( "2000-01-02" )};
+
+    doReadWrite( inputSchemaDescription, outputSchemaDescription, rowData,
+      IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.avro", null, expectedResults, true );
+  }
+
+  @Test
+  public void testScaleOnOutput() throws Exception {
+    Object[] rowData = new Object[]{ new Double(1.987 )};
+    String[][] outputSchemaDescription = new String[][]{
+      {"avroDate8", "pentahoDate8", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_NUMBER ), "0", "2"}
+    };
+    String[][] inputSchemaDescription = new String[][]{
+      {"avroDate8", "pentahoDate8", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_NUMBER )}
+    };
+
+    RowMeta rowMeta = buildRowMeta( outputSchemaDescription );
+    RowMetaAndData rowMetaAndData = new RowMetaAndData( rowMeta, rowData );
+
+    Object[] expectedResults = new Object[]{ new Double(1.99 )};
+
+    doReadWrite( inputSchemaDescription, outputSchemaDescription, rowData,
+      IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.avro", null, expectedResults, true );
+  }
+
+
   @Test
   public void testConvertToStringOnOutput() throws Exception {
     Object[] rowData =
