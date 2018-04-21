@@ -37,6 +37,7 @@ import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.hadoop.shim.api.format.IOrcInputField;
 import org.pentaho.hadoop.shim.api.format.IOrcMetaData;
 import org.pentaho.hadoop.shim.api.format.IPentahoOrcInputFormat;
+import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
 
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
@@ -68,7 +69,8 @@ public class PentahoOrcRecordReader implements IPentahoOrcInputFormat.IPentahoRe
 
     Reader reader = null;
     try {
-      filePath = new Path( fileName );
+      S3NCredentialUtils.applyS3CredentialsToHadoopConfigurationIfNecessary( fileName, conf );
+      filePath = new Path( S3NCredentialUtils.scrubFilePathIfNecessary( fileName ) );
       fs = FileSystem.get( filePath.toUri(), conf );
       if ( !fs.exists( filePath ) ) {
         throw new NoSuchFileException( fileName );

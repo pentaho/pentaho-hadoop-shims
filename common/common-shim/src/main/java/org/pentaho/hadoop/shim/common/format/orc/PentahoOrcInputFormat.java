@@ -34,6 +34,7 @@ import org.pentaho.hadoop.shim.api.format.IOrcMetaData;
 import org.pentaho.hadoop.shim.api.format.IPentahoOrcInputFormat;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
 import org.pentaho.hadoop.shim.common.format.HadoopFormatBase;
+import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
 
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
@@ -47,6 +48,7 @@ public class PentahoOrcInputFormat extends HadoopFormatBase implements IPentahoO
   private String fileName;
   private List<? extends IOrcInputField> inputFields;
   private Configuration conf;
+
 
   public PentahoOrcInputFormat() throws Exception {
     conf = inClassloader( () -> {
@@ -104,6 +106,7 @@ public class PentahoOrcInputFormat extends HadoopFormatBase implements IPentahoO
       FileSystem fs;
       Reader orcReader;
       try {
+        S3NCredentialUtils.applyS3CredentialsToHadoopConfigurationIfNecessary( fileName, conf );
         filePath = new Path( fileName );
         fs = FileSystem.get( filePath.toUri(), conf );
         if ( !fs.exists( filePath ) ) {
@@ -147,7 +150,7 @@ public class PentahoOrcInputFormat extends HadoopFormatBase implements IPentahoO
 
   @Override
   public void setInputFile( String fileName ) throws Exception {
-    this.fileName = fileName;
+    this.fileName = S3NCredentialUtils.scrubFilePathIfNecessary( fileName );
   }
 
   @Override

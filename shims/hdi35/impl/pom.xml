@@ -15,6 +15,7 @@
     <xstream.version>1.4.9</xstream.version>
     <commons-io.version>2.4</commons-io.version>
     <com.fasterxml.jackson.core.version>2.5.3</com.fasterxml.jackson.core.version>
+    <aws-java-sdk.version>1.11.275</aws-java-sdk.version>
     <shim.type>HDI</shim.type>
   </properties>
   <dependencies>
@@ -136,6 +137,17 @@
         <exclusion>
           <artifactId>*</artifactId>
           <groupId>*</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk-core</artifactId>
+      <version>${aws-java-sdk.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
         </exclusion>
       </exclusions>
     </dependency>

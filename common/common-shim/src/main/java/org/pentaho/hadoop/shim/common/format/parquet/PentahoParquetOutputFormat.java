@@ -52,6 +52,7 @@ import org.pentaho.hadoop.shim.api.format.IParquetOutputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoParquetOutputFormat;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
 import org.pentaho.hadoop.shim.common.format.HadoopFormatBase;
+import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
 
 /**
  * Created by Vasilina_Terehova on 8/3/2017.
@@ -59,6 +60,9 @@ import org.pentaho.hadoop.shim.common.format.HadoopFormatBase;
 public class PentahoParquetOutputFormat extends HadoopFormatBase implements IPentahoParquetOutputFormat {
 
   private static final Logger logger = Logger.getLogger( PentahoParquetInputFormat.class );
+  private static final String S3SCHEME = "s3";
+  private static final String S3NSCHEME = "s3n";
+  private static final String S3NROOTBUCKET = S3NSCHEME + "/";
 
   private Job job;
   private Path outputFile;
@@ -85,7 +89,8 @@ public class PentahoParquetOutputFormat extends HadoopFormatBase implements IPen
   @Override
   public void setOutputFile( String file, boolean override ) throws Exception {
     inClassloader( () -> {
-      outputFile = new Path( file );
+      S3NCredentialUtils.applyS3CredentialsToHadoopConfigurationIfNecessary( file, job.getConfiguration() );
+      outputFile = new Path( S3NCredentialUtils.scrubFilePathIfNecessary( file ) );
       FileSystem fs = FileSystem.get( outputFile.toUri(), job.getConfiguration() );
       if ( fs.exists( outputFile ) ) {
         if ( override ) {

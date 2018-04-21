@@ -16,6 +16,8 @@
     <xstream.version>1.4.9</xstream.version>
     <maprfs.version>5.2.0-mapr</maprfs.version>
     <commons-configuration.version>1.6</commons-configuration.version>
+    <aws-java-sdk-core.version>1.11.275</aws-java-sdk-core.version>
+    <aws-java-sdk.version>1.7.4</aws-java-sdk.version>
     <shim.type>MAPR</shim.type>
   </properties>
   <dependencies>
@@ -223,6 +225,23 @@
       <artifactId>pentaho-hadoop-shims-common-pig-shim-1.1</artifactId>
       <version>${project.version}</version>
       <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk</artifactId>
+      <version>${aws-java-sdk.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk-core</artifactId>
+      <version>${aws-java-sdk-core.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
   <build>

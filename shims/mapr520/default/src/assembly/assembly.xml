@@ -30,6 +30,7 @@
         <include>pentaho:pentaho-hdfs-vfs</include>
         <include>com.twitter:parquet-hadoop-bundle</include>
         <include>org.apache.avro:avro</include>
+        <include>org.apache.hadoop:hadoop-aws</include>
       </includes>
       <excludes>
         <exclude>*:tests:*</exclude>
