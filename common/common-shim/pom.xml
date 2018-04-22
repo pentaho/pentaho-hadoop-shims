@@ -16,6 +16,7 @@
     <org.apache.parquet.version>1.8.1</org.apache.parquet.version>
     <org.apache.avro.version>1.8.1</org.apache.avro.version>
     <jackson.version>2.6.5</jackson.version>
+    <aws-java-sdk.version>1.11.275</aws-java-sdk.version>
     <integration-test.src>src/it/java</integration-test.src>
   </properties>
   <dependencies>
@@ -120,6 +121,17 @@
       <groupId>org.pentaho</groupId>
       <artifactId>pentaho-hadoop-shims-api</artifactId>
       <version>${pentaho-hadoop-shims-api.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk-core</artifactId>
+      <version>${aws-java-sdk.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.powermock</groupId>

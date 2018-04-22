@@ -55,6 +55,7 @@ import org.pentaho.di.core.row.value.ValueMetaString;
 import org.pentaho.di.core.row.value.ValueMetaTimestamp;
 import org.pentaho.hadoop.shim.api.format.IOrcOutputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat;
+import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -96,7 +97,9 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
     outputRowMetaAndData = new RowMetaAndData( outputRowMeta, new Object[ fieldNumber.get() ] );
 
     try {
-      writer = OrcFile.createWriter( new Path( filePath ),
+      S3NCredentialUtils.applyS3CredentialsToHadoopConfigurationIfNecessary( filePath, conf );
+      Path outputFile = new Path( S3NCredentialUtils.scrubFilePathIfNecessary( filePath ) );
+      writer = OrcFile.createWriter( outputFile,
         OrcFile.writerOptions( conf )
           .setSchema( schema ) );
       batch = schema.createRowBatch();

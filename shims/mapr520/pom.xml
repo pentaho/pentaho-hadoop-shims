@@ -20,6 +20,8 @@
     <org.apache.thrift.version>0.9.2</org.apache.thrift.version>
     <sqoop.version>1.4.6-mapr-1611</sqoop.version>
 	<org.apache.avro.version>1.8.0</org.apache.avro.version>
+    <hadoop.aws.mapr.version>2.7.0-mapr-1506</hadoop.aws.mapr.version>
+
     <!-- pmr folder -->
     <htrace-core.version>3.1.0-incubating</htrace-core.version>
     <net.sf.flexjson>2.1</net.sf.flexjson>

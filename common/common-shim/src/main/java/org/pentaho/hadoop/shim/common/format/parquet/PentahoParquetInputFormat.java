@@ -58,6 +58,7 @@ import org.pentaho.hadoop.shim.api.format.IPentahoParquetInputFormat;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
 import org.pentaho.hadoop.shim.common.format.HadoopFormatBase;
 import org.pentaho.hadoop.shim.common.format.ReadFileFilter;
+import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
 
 /**
  * Created by Vasilina_Terehova on 7/25/2017.
@@ -95,7 +96,8 @@ public class PentahoParquetInputFormat extends HadoopFormatBase implements IPent
   @Override
   public void setInputFile( String file ) throws Exception {
     inClassloader( () -> {
-      Path filePath = new Path( file );
+      S3NCredentialUtils.applyS3CredentialsToHadoopConfigurationIfNecessary( file, job.getConfiguration() );
+      Path filePath = new Path( S3NCredentialUtils.scrubFilePathIfNecessary( file ) );
       FileSystem fs = FileSystem.get( filePath.toUri(), job.getConfiguration() );
       if ( !fs.exists( filePath ) ) {
         throw new NoSuchFileException( file );
@@ -161,9 +163,10 @@ public class PentahoParquetInputFormat extends HadoopFormatBase implements IPent
   public List<IParquetInputField> readSchema( String file ) throws Exception {
     return inClassloader( () -> {
       ConfigurationProxy conf = new ConfigurationProxy();
-      Path filePath = new Path( file );
+      S3NCredentialUtils.applyS3CredentialsToHadoopConfigurationIfNecessary( file, conf );
+      Path filePath = new Path( S3NCredentialUtils.scrubFilePathIfNecessary( file ) );
       FileSystem fs = FileSystem.get( filePath.toUri(), conf );
-      FileStatus fileStatus = fs.getFileStatus( new Path( file ) );
+      FileStatus fileStatus = fs.getFileStatus( filePath );
       List<Footer> footers = ParquetFileReader.readFooters( conf, fileStatus, true );
       if ( footers.isEmpty() ) {
         return new ArrayList<IParquetInputField>();

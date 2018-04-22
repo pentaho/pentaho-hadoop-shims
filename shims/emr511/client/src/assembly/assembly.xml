@@ -33,8 +33,8 @@
       <includes>
         <include>org.apache.hadoop:hadoop-common</include>
         <include>org.apache.hadoop:hadoop-auth</include>
-        <include>org.apache.zookeeper:zookeeper</include>
         <include>org.apache.hadoop:hadoop-aws</include>
+        <include>org.apache.zookeeper:zookeeper</include>
         <include>org.apache.hadoop:hadoop-mapreduce-client-app</include>
         <include>org.apache.hadoop:hadoop-mapreduce-client-core</include>
         <include>org.apache.hadoop:hadoop-mapreduce-client-hs</include>

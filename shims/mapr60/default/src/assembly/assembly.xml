@@ -32,6 +32,7 @@
         <include>com.twitter:parquet-hadoop-bundle</include>
         <include>com.twitter:parquet-pig-bundle</include>
         <include>org.apache.avro:avro</include>
+        <include>org.apache.hadoop:hadoop-aws</include>
       </includes>
       <excludes>
         <exclude>*:tests:*</exclude>

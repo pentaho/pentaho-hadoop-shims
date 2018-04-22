@@ -22,6 +22,7 @@
 package org.pentaho.hadoop.shim.common.format.orc;
 
 import java.nio.file.FileAlreadyExistsException;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -33,6 +34,7 @@ import org.pentaho.hadoop.shim.api.format.IPentahoOrcOutputFormat;
 import org.apache.hadoop.mapreduce.Job;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
 import org.pentaho.hadoop.shim.common.format.HadoopFormatBase;
+import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
 
 import java.util.List;
 
@@ -80,7 +82,9 @@ public class PentahoOrcOutputFormat extends HadoopFormatBase implements IPentaho
   }
 
   @Override public void setOutputFile( String file, boolean override ) throws Exception {
-    Path outputFile = new Path( file );
+    this.outputFilename  = S3NCredentialUtils.scrubFilePathIfNecessary( file );
+    S3NCredentialUtils.applyS3CredentialsToHadoopConfigurationIfNecessary( file, job.getConfiguration() );
+    Path outputFile = new Path( outputFilename );
     FileSystem fs = FileSystem.get( outputFile.toUri(), job.getConfiguration() );
     if ( fs.exists( outputFile ) ) {
       if ( override ) {
@@ -90,7 +94,7 @@ public class PentahoOrcOutputFormat extends HadoopFormatBase implements IPentaho
       }
     }
 
-    this.outputFilename = file;
+
   }
 
   @Override public void setCompression( COMPRESSION compression ) {
