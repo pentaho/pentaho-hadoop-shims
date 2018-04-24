@@ -41,6 +41,7 @@ public class S3NCredentialUtils {
       AWSCredentials credentials = DefaultAWSCredentialsProviderChain.getInstance().getCredentials();
       conf.set( "fs.s3n.awsAccessKeyId", credentials.getAWSAccessKeyId() );
       conf.set( "fs.s3n.awsSecretAccessKey", credentials.getAWSSecretKey() );
+      conf.set( "fs.s3.buffer.dir", System.getProperty( "java.io.tmpdir" ) );
     }
   }
 
