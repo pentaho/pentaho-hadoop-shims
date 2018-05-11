@@ -32,3 +32,5 @@ target
 release.properties
 pom.xml.releaseBackup
 checkstyle/
+.vscode
+.factorypath
