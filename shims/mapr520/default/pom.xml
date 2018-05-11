@@ -175,6 +175,17 @@
       </exclusions>
     </dependency>
     <dependency>
+      <groupId>org.apache.sqoop.connector</groupId>
+      <artifactId>sqoop-connector-tdch</artifactId>
+      <version>${org.apache.sqoop.connector.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
       <groupId>dk.brics.automaton</groupId>
       <artifactId>automaton</artifactId>
       <version>${automaton.version}</version>
@@ -190,6 +201,28 @@
       <artifactId>pig</artifactId>
       <version>${pig.version}</version>
       <classifier>${dependency.pig.classifier}</classifier>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.twitter</groupId>
+      <artifactId>parquet-hadoop-bundle</artifactId>
+      <version>${com.twitter.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.twitter</groupId>
+      <artifactId>parquet-pig-bundle</artifactId>
+      <version>${com.twitter.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>

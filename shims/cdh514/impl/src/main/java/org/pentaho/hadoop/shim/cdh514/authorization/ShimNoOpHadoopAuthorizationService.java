@@ -23,13 +23,11 @@
 package org.pentaho.hadoop.shim.cdh514.authorization;
 
 
-import org.pentaho.hadoop.shim.cdh514.HadoopShim;
-import org.pentaho.hadoop.shim.common.CommonHadoopShim;
-import org.pentaho.hadoop.shim.common.authorization.NoOpHadoopAuthorizationService;
-
-public class ShimNoOpHadoopAuthorizationService extends NoOpHadoopAuthorizationService {
+@Deprecated
+//spring aspects will be used
+public class ShimNoOpHadoopAuthorizationService {/*extends NoOpHadoopAuthorizationService {
 
   @Override protected CommonHadoopShim getHadoopShim() {
     return new HadoopShim();
-  }
+  }*/
 }

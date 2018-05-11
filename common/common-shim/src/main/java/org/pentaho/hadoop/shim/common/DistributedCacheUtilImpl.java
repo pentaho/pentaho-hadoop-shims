@@ -131,9 +131,9 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.Dis
   private HadoopConfiguration configuration;
 
   public DistributedCacheUtilImpl( HadoopConfiguration configurationParam ) {
-    if ( configurationParam == null ) {
-      throw new NullPointerException();
-    }
+//    if ( configurationParam == null ) {
+//      throw new NullPointerException();
+//    }
     this.configuration = configurationParam;
   }
 
@@ -157,9 +157,7 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.Dis
    * @throws IOException Error investigating installation
    */
   public boolean isKettleEnvironmentInstalledAt( FileSystem fs, Path root ) throws IOException {
-    // These directories must exist
-    Path[] directories = new Path[] { new Path( root, PATH_LIB ), new Path( root, PATH_PLUGINS ),
-      new Path( new Path( root, PATH_PLUGINS ), PENTAHO_BIG_DATA_PLUGIN_FOLDER_NAME ) };
+    Path[] directories = new Path[] { new Path( root, PATH_LIB ) };
     // This file must not exist
     Path lock = getLockFileAt( root );
     // These directories must exist
@@ -195,11 +193,11 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.Dis
 
     stageForCache( extracted, fs, destination, true, false );
 
-    stageBigDataPlugin( fs, destination, bigDataPlugin );
+    //stageBigDataPlugin( fs, destination, bigDataPlugin );
 
-    if ( !Const.isEmpty( additionalPlugins ) ) {
-      stagePluginsForCache( fs, new Path( destination, PATH_PLUGINS ), additionalPlugins );
-    }
+//    if ( !Const.isEmpty( additionalPlugins ) ) {
+//      stagePluginsForCache( fs, new Path( destination, PATH_PLUGINS ), additionalPlugins );
+//    }
 
     // Delete the lock file now that we're done. It is intentional that we're not doing this in a try/finally. If the
     // staging fails for some reason we require the user to forcibly overwrite the (partial) installation
@@ -360,7 +358,7 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.Dis
 
     String classpath = conf.get( "mapred.job.classpath.files" );
     conf.set( "mapred.job.classpath.files", classpath == null ? file.toString()
-      : classpath + getClusterPathSeparator() + file.toString() );
+      : classpath + "," + file.toString() );
     FileSystem fs = FileSystem.get( conf );
     URI uri = fs.makeQualified( file ).toUri();
 
