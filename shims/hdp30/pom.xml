@@ -1,57 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.pentaho</groupId>
-    <artifactId>pentaho-hadoop-shims-list</artifactId>
-    <version>8.3.0.0-SNAPSHOT</version>
-  </parent>
-  <artifactId>pentaho-hadoop-shims-hdp30-reactor</artifactId>
-  <packaging>pom</packaging>
-  <properties>
-    <shim.name>hdp30</shim.name>
-    <!-- default folder -->
-    <org.xerial.snappy.version>1.1.1.3</org.xerial.snappy.version>
-    <automaton.version>1.11-8</automaton.version>
-    <pig.version>0.16.0.2.6.0.3-8</pig.version>
-    <gateway-shell>0.12.0.2.6.0.3-8</gateway-shell>
-    <dependency.pig.classifier>h2</dependency.pig.classifier>
-    <org.apache.oozie.version>4.3.1</org.apache.oozie.version>
-    <sqoop.version>1.4.7</sqoop.version>
-    <hive-jdbc.version>3.1.0.3.0.0.0-1634</hive-jdbc.version>
-    <org.apache.avro.version>1.8.0</org.apache.avro.version>
-    <hadoop-aws.version>2.7.3</hadoop-aws.version>
-    <!-- client and default folders -->
-    <hadoop.version>3.1.0.3.0.0.0-1634</hadoop.version>
-    <!-- pmr folder -->
-    <org.apache.hbase.version>2.0.0.3.0.0.0-1634</org.apache.hbase.version>
-    <org.apache.hbase-prefix-tree.version>2.0.0-alpha4</org.apache.hbase-prefix-tree.version>
-    <zookeeper.version>3.4.6.3.0.0.0-1634</zookeeper.version>
-    <htrace-core.version>2.04</htrace-core.version>
-    <protobuf-java.version>2.5.0</protobuf-java.version>
-    <commons-configuration.version>1.6</commons-configuration.version>
-    <commons-configuration2.version>2.1.1</commons-configuration2.version>
-    <geronimo-servlet_3.0_spec.version>1.0</geronimo-servlet_3.0_spec.version>
-    <org.apache.hive.version>3.1.0.3.0.0.0-1634</org.apache.hive.version>
-    <javax.el.version>3.0.0</javax.el.version>
-  </properties>
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <!-- This dependency is explicitly put here to set the version at 3.0.0
-        because hive-jdbc has it as a transitive with an unbound version. -->
-        <groupId>org.glassfish</groupId>
-        <artifactId>javax.el</artifactId>
-        <version>${javax.el.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-  <modules>
-    <module>client</module>
-    <module>pmr</module>
-    <module>default</module>
-    <module>impl</module>
-    <module>hbase-comparators</module>
-    <module>assemblies</module>
-  </modules>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.pentaho</groupId>
+        <artifactId>pentaho-hadoop-shims-list</artifactId>
+        <version>9.0.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>pentaho-hadoop-shims-hdp30-reactor</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>driver</module>
+    </modules>
 </project>
