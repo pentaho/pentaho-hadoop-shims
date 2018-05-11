@@ -17,6 +17,7 @@
         <pentaho-code.version>11.0.0.0</pentaho-code.version>
         <aws-java-sdk-core.version>1.11.275</aws-java-sdk-core.version>
         <integration-test.src>src/it/java</integration-test.src>
+        <gateway-shell.version>1.0.0.3.0.0.0-1634</gateway-shell.version>
     </properties>
 
     <profiles>
@@ -418,7 +419,7 @@
           <dependency>
             <groupId>pentaho</groupId>
             <artifactId>pentaho-big-data-impl-shim-common</artifactId>
-            <version>${project.version}</version>
+            <version>${big-data-plugin.version}</version>
             <scope>compile</scope>
           </dependency>
           <dependency>
@@ -526,13 +527,13 @@
         <dependency>
             <groupId>pentaho</groupId>
             <artifactId>pentaho-metastore-locator-api</artifactId>
-            <version>${project.version}</version>
+            <version>${pentaho-osgi-bundles.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
           <groupId>pentaho</groupId>
           <artifactId>pentaho-platform-api</artifactId>
-          <version>${project.version}</version>
+          <version>${platform.version}</version>
           <scope>test</scope>
           <exclusions>
             <exclusion>
@@ -588,6 +589,11 @@
             <artifactId>powermock-reflect</artifactId>
             <version>${org.powermock.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.knox</groupId>
+            <artifactId>gateway-shell</artifactId>
+            <version>${gateway-shell.version}</version>
         </dependency>
     </dependencies>
     <build>

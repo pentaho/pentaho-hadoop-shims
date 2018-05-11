@@ -7,9 +7,11 @@
         <artifactId>pentaho-hadoop-shims-cdh514-reactor</artifactId>
         <version>9.0.0.0-SNAPSHOT</version>
     </parent>
+
     <groupId>org.pentaho</groupId>
-    <version>9.0.0.0-SNAPSHOT</version>
     <artifactId>pentaho-hadoop-shims-cdh514-driver</artifactId>
+    <version>9.0.0.0-SNAPSHOT</version>
+
   <packaging>bundle</packaging>
 
   <properties><!--final-->
@@ -107,11 +109,6 @@
       <dependency>
           <groupId>org.apache.hadoop</groupId>
           <artifactId>hadoop-mapreduce-client-jobclient</artifactId>
-          <version>${org.apache.hadoop.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-yarn-api</artifactId>
           <version>${org.apache.hadoop.version}</version>
       </dependency>
       <dependency>
