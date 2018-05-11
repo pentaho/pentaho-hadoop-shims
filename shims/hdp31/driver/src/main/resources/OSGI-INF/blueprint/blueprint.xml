@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="
+            http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
+
+    <bean id="hdp31ShimIdentifier" class="org.pentaho.hadoop.shim.api.internal.ShimIdentifier" scope="singleton">
+        <argument value="hdp31"/>
+        <argument value="Hortonworks"/>
+        <argument value="3.1"/>
+        <argument value="COMMUNITY"/>
+    </bean>
+
+    <service ref="hdp31ShimIdentifier" interface="org.pentaho.hadoop.shim.api.ShimIdentifierInterface"/>
+
+    <bean id="hdp31Hadoop" class="org.pentaho.hadoop.shim.hdp31.HadoopShim" scope="singleton"/>
+
+    <service ref="hdp31Hadoop" interface="org.pentaho.hadoop.shim.spi.HadoopShim">
+        <service-properties>
+            <entry key="shim">
+                <value type="java.lang.String">hdp31</value>
+            </entry>
+        </service-properties>
+    </service>
+
+    <bean id="hadoopFileSystem" class="com.pentaho.big.data.bundles.impl.shim.hdfs.HadoopFileSystemFactoryImpl">
+        <argument ref="hdp31Hadoop"/>
+        <argument ref="hdp31ShimIdentifier"/>
+    </bean>
+
+    <service ref="hadoopFileSystem" interface="org.pentaho.hadoop.shim.api.hdfs.HadoopFileSystemFactory"/>
+
+    <bean id="hdp31FormatShim" class="org.pentaho.hadoop.shim.common.CommonFormatShim"/>
+
+    <service ref="hdp31FormatShim" auto-export="interfaces">
+        <service-properties>
+            <entry key="shim">
+                <value type="java.lang.String">hdp31</value>
+            </entry>
+            <entry key="service">
+                <value type="java.lang.String">format</value>
+            </entry>
+        </service-properties>
+    </service>
+
+    <bean id="hdp31FormatServiceFactory" class="org.pentaho.big.data.impl.shim.format.FormatServiceFactory">
+        <argument ref="hdp31FormatShim"/>
+    </bean>
+
+    <service ref="hdp31FormatServiceFactory"
+             interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
+        <service-properties>
+            <entry key="shim">
+                <value type="java.lang.String">hdp31</value>
+            </entry>
+            <entry key="service">
+                <value type="java.lang.String">format</value>
+            </entry>
+        </service-properties>
+    </service>
+
+    <bean id="hdp31MapReduceServiceFactory" class="org.pentaho.big.data.impl.shim.mapreduce.MapReduceServiceFactoryImpl">
+        <argument ref="hdp31Hadoop"/>
+        <argument ref="executorService"/>
+        <argument ref="transformationVisitorList"/>
+    </bean>
+    <reference id="executorService" interface="java.util.concurrent.ExecutorService"/>
+
+    <service ref="hdp31MapReduceServiceFactory" interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
+        <service-properties>
+            <entry key="shim">
+                <value type="java.lang.String">hdp31</value>
+            </entry>
+            <entry key="service">
+                <value type="java.lang.String">mapreduce</value>
+            </entry>
+        </service-properties>
+    </service>
+
+    <reference-list id="transformationVisitorList" interface="org.pentaho.big.data.impl.shim.mapreduce.TransformationVisitorService"
+                    availability="optional"/>
+
+    <!-- Hadoop client services definition -->
+    <bean id="hdp31HadoopServicesFactory" class="org.pentaho.big.data.impl.shim.HadoopClientServicesFactory">
+        <argument ref="hdp31Hadoop"/>
+        <argument ref="blueprintBundleContext"/>
+    </bean>
+    <service ref="hdp31HadoopServicesFactory" interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
+        <service-properties>
+            <entry key="shim">
+                <value type="java.lang.String">hdp31</value>
+            </entry>
+            <entry key="service">
+                <value type="java.lang.String">shimservices</value>
+            </entry>
+        </service-properties>
+    </service>
+    <!-- End of Hadoop client services definition -->
+
+    <!-- Hive service definition -->
+    <bean id="hdp31HiveDriver" class="com.pentaho.big.data.bundles.impl.shim.hive.HiveDriver">
+        <argument ref="jdbcUrlParser"/>
+        <argument value="org.apache.hive.jdbc.HiveDriver"/>
+        <argument value="hdp31"/>
+    </bean>
+
+    <service ref="hdp31HiveDriver" interface="java.sql.Driver">
+        <service-properties>
+            <entry key="dataSourceType" value="bigdata"/>
+        </service-properties>
+    </service>
+
+    <bean id="hdp31ImpalaDriver" class="com.pentaho.big.data.bundles.impl.shim.hive.ImpalaDriver">
+        <argument ref="jdbcUrlParser"/>
+        <argument value="org.apache.hive.jdbc.HiveDriver"/>
+        <argument value="hdp31"/>
+    </bean>
+
+    <bean id="hdp31ImpalaSimbaDriver" class="com.pentaho.big.data.bundles.impl.shim.hive.ImpalaSimbaDriver">
+        <argument ref="jdbcUrlParser"/>
+        <argument value="org.apache.hive.jdbc.HiveDriver"/>
+        <argument value="hdp31"/>
+    </bean>
+
+    <bean id="hdp31SparkSimbaDriver" class="com.pentaho.big.data.bundles.impl.shim.hive.SparkSimbaDriver">
+        <argument ref="jdbcUrlParser"/>
+        <argument value="org.apache.hive.jdbc.HiveDriver"/>
+        <argument value="hdp31"/>
+    </bean>
+
+    <service ref="hdp31ImpalaDriver" interface="java.sql.Driver">
+        <service-properties>
+            <entry key="dataSourceType" value="bigdata"/>
+        </service-properties>
+    </service>
+
+    <service ref="hdp31ImpalaSimbaDriver" interface="java.sql.Driver">
+        <service-properties>
+            <entry key="dataSourceType" value="bigdata"/>
+        </service-properties>
+    </service>
+
+    <service ref="hdp31SparkSimbaDriver" interface="java.sql.Driver">
+        <service-properties>
+            <entry key="dataSourceType" value="bigdata"/>
+        </service-properties>
+    </service>
+
+    <reference id="jdbcUrlParser" interface="org.pentaho.hadoop.shim.api.jdbc.JdbcUrlParser"/>
+
+    <!-- End of Hive service definition -->
+
+    <!-- Hbase service definition -->
+    <bean id="hbaseShim" class="org.pentaho.hbase.shim.common.CommonHBaseShim"/>
+    <service ref="hbaseShim" auto-export="interfaces">
+        <service-properties>
+            <entry key="shim">
+                <value type="java.lang.String">hdp31</value>
+            </entry>
+            <entry key="service">
+                <value type="java.lang.String">hbase</value>
+            </entry>
+        </service-properties>
+    </service>
+
+    <bean id="hdp31HBaseServiceFactory" class="com.pentaho.big.data.bundles.impl.shim.hbase.HBaseServiceFactory">
+        <argument ref="hbaseShim"/>
+    </bean>
+
+    <service ref="hdp31HBaseServiceFactory" interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
+        <service-properties>
+            <entry key="shim">
+                <value type="java.lang.String">hdp31</value>
+            </entry>
+            <entry key="service">
+                <value type="java.lang.String">hbase</value>
+            </entry>
+        </service-properties>
+    </service>
+    <!-- End of Hbase service definition -->
+
+</blueprint>
