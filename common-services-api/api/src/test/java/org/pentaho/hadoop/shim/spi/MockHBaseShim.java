@@ -26,7 +26,7 @@ import org.pentaho.hadoop.shim.ShimVersion;
 import org.pentaho.hbase.shim.spi.HBaseConnection;
 import org.pentaho.hbase.shim.spi.HBaseShim;
 
-public class MockHBaseShim extends HBaseShim {
+public class MockHBaseShim implements HBaseShim {
 
   public ShimVersion getVersion() {
     return null;

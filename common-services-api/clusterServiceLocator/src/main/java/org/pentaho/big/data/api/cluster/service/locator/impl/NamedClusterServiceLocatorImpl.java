@@ -22,22 +22,18 @@
 
 package org.pentaho.big.data.api.cluster.service.locator.impl;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Supplier;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
 import org.pentaho.big.data.api.cluster.NamedCluster;
 import org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory;
 import org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceLocator;
 import org.pentaho.big.data.api.initializer.ClusterInitializationException;
 import org.pentaho.big.data.api.initializer.ClusterInitializer;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -47,33 +43,29 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocator {
   public static final String SERVICE_RANKING = "service.ranking";
-  private final Multimap<Class<?>, ServiceFactoryAndRanking<?>> serviceFactoryMap;
+  //private final Multimap<Class<?>, ServiceFactoryAndRanking<?>> serviceFactoryMap;
+  private final Map<String, Map<Class<?>, List<ServiceFactoryAndRanking<?>>>> serviceVendorTypeMapping;
   private final ReadWriteLock readWriteLock;
   private final ClusterInitializer clusterInitializer;
 
   public NamedClusterServiceLocatorImpl( ClusterInitializer clusterInitializer ) {
     this.clusterInitializer = clusterInitializer;
     readWriteLock = new ReentrantReadWriteLock();
-    serviceFactoryMap =
-      Multimaps.newSortedSetMultimap( new HashMap<Class<?>, Collection<ServiceFactoryAndRanking<?>>>(),
-        new Supplier<SortedSet<ServiceFactoryAndRanking<?>>>() {
-          @Override public SortedSet<ServiceFactoryAndRanking<?>> get() {
-            return new TreeSet<>( new Comparator<ServiceFactoryAndRanking<?>>() {
-              @Override public int compare( ServiceFactoryAndRanking<?> o1,
-                                            ServiceFactoryAndRanking<?> o2 ) {
-                if ( o1.ranking == o2.ranking ) {
-                  return o1.namedClusterServiceFactory.toString().compareTo( o2.namedClusterServiceFactory.toString() );
-                }
-                return o2.ranking - o1.ranking;
-              }
-            } );
-          }
-        } );
+    //    serviceFactoryMap =
+    //      Multimaps.newSortedSetMultimap( new HashMap<Class<?>, Collection<ServiceFactoryAndRanking<?>>>(),
+    //        () -> new TreeSet<>( ( o1, o2 ) -> {
+    //          if ( o1.ranking == o2.ranking ) {
+    //            return o1.namedClusterServiceFactory.toString().compareTo( o2.namedClusterServiceFactory.toString() );
+    //          }
+    //          return o2.ranking - o1.ranking;
+    //        } ) );
+    serviceVendorTypeMapping =
+      new HashMap<>();
   }
 
-  @VisibleForTesting Multimap<Class<?>, ServiceFactoryAndRanking<?>> getServiceFactoryMap() {
-    return serviceFactoryMap;
-  }
+  //  @VisibleForTesting Multimap<Class<?>, ServiceFactoryAndRanking<?>> getServiceFactoryMap() {
+  //    //return serviceFactoryMap;
+  //  }
 
   public void factoryAdded( NamedClusterServiceFactory<?> namedClusterServiceFactory, Map properties ) {
     if ( namedClusterServiceFactory == null ) {
@@ -83,8 +75,13 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
     Lock writeLock = readWriteLock.writeLock();
     try {
       writeLock.lock();
-      serviceFactoryMap.get( serviceClass )
-        .add( new ServiceFactoryAndRanking( (Integer) properties.get( SERVICE_RANKING ), namedClusterServiceFactory ) );
+      String shim = (String) properties.get( "shim" );
+      serviceVendorTypeMapping.putIfAbsent( shim, new HashMap<>() );
+      Map<Class<?>, List<ServiceFactoryAndRanking<?>>> classListMap = serviceVendorTypeMapping.get( shim );
+      classListMap.putIfAbsent( serviceClass, new ArrayList<>() );
+      List<ServiceFactoryAndRanking<?>> serviceFactoryAndRankings = classListMap.get( serviceClass );
+      serviceFactoryAndRankings.add( new ServiceFactoryAndRanking( (Integer) properties.get( SERVICE_RANKING ),
+         namedClusterServiceFactory ) );
     } finally {
       writeLock.unlock();
     }
@@ -98,8 +95,8 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
     Lock writeLock = readWriteLock.writeLock();
     try {
       writeLock.lock();
-      serviceFactoryMap.remove( serviceClass,
-        new ServiceFactoryAndRanking( (Integer) properties.get( SERVICE_RANKING ), namedClusterServiceFactory ) );
+      String shim = (String) properties.get( "shim" );
+      Optional.ofNullable(serviceVendorTypeMapping.get( shim )).ifPresent( v -> Optional.ofNullable(v.get( serviceClass)).ifPresent( v1 -> v1.remove( namedClusterServiceFactory ) ) );
     } finally {
       writeLock.unlock();
     }
@@ -107,11 +104,11 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
 
   @Override public <T> T getService( NamedCluster namedCluster, Class<T> serviceClass )
     throws ClusterInitializationException {
-    clusterInitializer.initialize( namedCluster );
     Lock readLock = readWriteLock.readLock();
     try {
       readLock.lock();
-      Collection<ServiceFactoryAndRanking<?>> serviceFactoryAndRankings = serviceFactoryMap.get( serviceClass );
+      String shim = namedCluster.getShimIdentifier();
+      Collection<ServiceFactoryAndRanking<?>> serviceFactoryAndRankings = serviceVendorTypeMapping.computeIfPresent( shim, (key, value) -> value ).computeIfPresent( serviceClass, (key2, value2) -> value2 );
       if ( serviceFactoryAndRankings != null ) {
         for ( ServiceFactoryAndRanking<?> serviceFactoryAndRanking : serviceFactoryAndRankings ) {
           if ( serviceFactoryAndRanking.namedClusterServiceFactory.canHandle( namedCluster ) ) {
