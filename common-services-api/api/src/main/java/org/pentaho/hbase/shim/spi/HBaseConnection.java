@@ -33,7 +33,7 @@ import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hbase.shim.api.ColumnFilter;
 import org.pentaho.hbase.shim.api.HBaseValueMeta;
 
-public abstract class HBaseConnection {
+public interface HBaseConnection {
 
   // version key
   public static final String HBASE_VERSION_KEY = "hbase.defaults.for.version";
@@ -43,8 +43,6 @@ public abstract class HBaseConnection {
   public static final String SITE_KEY = "hbase.site";
   public static final String ZOOKEEPER_QUORUM_KEY = "hbase.zookeeper.quorum";
   public static final String ZOOKEEPER_PORT_KEY = "hbase.zookeeper.property.clientPort";
-  //constant for active shim configuration id
-  public static final String ACTIVE_SHIM_VERSION = "ACTIVE_SHIM_VERSION";
 
   // constant table creation option keys (commented out keys don't exist as
   // options for HColumnDescriptor in 0.90.3)

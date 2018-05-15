@@ -67,6 +67,11 @@ public class MockHadoopShim implements HadoopShim {
   }
 
   @Override
+  public Configuration createConfiguration(String namedCluster) {
+    return null;
+  }
+
+  @Override
   public FileSystem getFileSystem( Configuration conf ) throws IOException {
     return null;
   }

@@ -22,16 +22,27 @@
 
 package org.pentaho.hadoop.shim;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemException;
+import org.pentaho.di.core.exception.KettleException;
+import org.pentaho.di.core.plugins.LifecyclePluginType;
+import org.pentaho.di.core.plugins.PluginInterface;
+import org.pentaho.di.core.plugins.PluginRegistry;
+import org.pentaho.di.core.vfs.KettleVFS;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.hadoop.shim.api.Configuration;
+import org.pentaho.hadoop.shim.api.HadoopConfigurationInterface;
 import org.pentaho.hadoop.shim.api.process.Processable;
 import org.pentaho.hadoop.shim.spi.FormatShim;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
@@ -44,7 +55,9 @@ import org.pentaho.hbase.shim.spi.HBaseShim;
 /**
  * A collection of Hadoop shim implementations for interactive with a Hadoop cluster.
  */
-public class HadoopConfiguration {
+public class HadoopConfiguration implements HadoopConfigurationInterface {
+  //todo: find appropriate place for this constant
+  public static final String PLUGIN_ID_SPOON = "HadoopSpoonPlugin";
   private static final Class<?> PKG = HadoopConfiguration.class;
 
   private String identifier;
@@ -62,6 +75,25 @@ public class HadoopConfiguration {
 
   private Properties configProperties;
 
+  private PluginInterface plugin;
+   public static final String PLUGIN_ID = "HadoopConfigurationBootstrap";
+
+     public HadoopConfiguration(String identifier, String name, HadoopShim hadoopShim, List<PentahoHadoopShim> shims) throws KettleException,
+       FileSystemException {
+          this( KettleVFS.getFileObject( Paths.get( System.getProperty( "user.home" ) + File.separator + ".pentaho" + File.separator
+              + "metastore" + File.separator + identifier ).toAbsolutePath().toString() ).resolveFile(identifier),
+                    identifier, name, hadoopShim, shims.toArray(new PentahoHadoopShim[0]));
+      }
+
+     protected static PluginInterface getPluginInterface() throws KettleException {
+          PluginInterface pi =
+                    PluginRegistry.getInstance().findPluginWithId( LifecyclePluginType.class, PLUGIN_ID );
+          if ( pi == null ) {
+              throw new KettleException( BaseMessages.getString( PKG, "HadoopConfigurationBootstrap.CannotLocatePlugin" ) );
+            }
+        return pi;
+      }
+
   /**
    * Create a new Hadoop configuration with the provided shims. Only
    *
@@ -75,7 +107,22 @@ public class HadoopConfiguration {
    */
   public HadoopConfiguration( FileObject location, String identifier, String name, HadoopShim hadoopShim,
                               PentahoHadoopShim... shims ) {
-    this( new Properties(), location, identifier, name, hadoopShim, shims );
+
+
+    this( getConfigProperties( Paths.get( System.getProperty( "user.home" ) + File.separator + ".pentaho" + File.separator
+        + "metastore" + File.separator + identifier + File.separator + "config.properties" ).toAbsolutePath().toString() ),
+      location, identifier, name, hadoopShim, shims );
+  }
+
+  private static Properties getConfigProperties( String pathToConfigProperties ) {
+    Properties properties = new Properties(  );
+    try {
+      properties.load( new FileInputStream( pathToConfigProperties ) );
+    } catch ( IOException e ) {
+      e.printStackTrace();
+    }
+
+    return properties;
   }
 
   public HadoopConfiguration( Properties configProperties, FileObject location, String identifier, String name,
@@ -198,6 +245,12 @@ public class HadoopConfiguration {
    */
   public <T extends PentahoHadoopShim> T getShim( Class<T> shimType ) throws ConfigurationException {
     for ( PentahoHadoopShim shim : availableShims ) {
+      //todo: should be changed
+      if ( shimType.getName().toLowerCase().contains( "hbase" ) && shim.toString().toLowerCase().contains( "hbase" )) {
+        @SuppressWarnings( "unchecked" )
+        T t = (T) shim;
+        return t;
+      }
       if ( shimType.isAssignableFrom( shim.getClass() ) ) {
         @SuppressWarnings( "unchecked" )
         T t = (T) shim;

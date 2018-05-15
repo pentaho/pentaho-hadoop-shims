@@ -24,7 +24,7 @@ package org.pentaho.hbase.shim.spi;
 
 import org.pentaho.hadoop.shim.spi.PentahoHadoopShim;
 
-public abstract class HBaseShim implements PentahoHadoopShim {
+public interface HBaseShim extends PentahoHadoopShim {
 
-  public abstract HBaseConnection getHBaseConnection();
+  HBaseConnection getHBaseConnection();
 }

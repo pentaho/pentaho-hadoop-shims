@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.sql.Driver;
 import java.util.List;
 
+import org.pentaho.big.data.api.cluster.NamedCluster;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.hadoop.shim.ConfigurationException;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
@@ -102,6 +103,8 @@ public interface HadoopShim extends PentahoHadoopShim {
    */
   Configuration createConfiguration();
 
+  Configuration createConfiguration( String namedCluster );
+
   /**
    * Look up a file system abstraction using the configuration provided
    *
@@ -110,6 +113,12 @@ public interface HadoopShim extends PentahoHadoopShim {
    * @throws IOException Error looking up/creating the file system
    */
   FileSystem getFileSystem( Configuration conf ) throws IOException;
+
+  default FileSystem getFileSystem( URI uri, Configuration conf, NamedCluster namedCluster ) throws IOException, InterruptedException{
+    return getFileSystem( uri, conf, (String) null );
+  }
+
+//  FileSystem getFileSystem( URI uri, Configuration conf, String user ) throws IOException, InterruptedException;
 
   /**
    * Look up a file system abstraction using the configuration provided
