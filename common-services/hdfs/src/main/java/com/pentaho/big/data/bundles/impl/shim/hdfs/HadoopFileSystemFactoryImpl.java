@@ -22,7 +22,6 @@ import org.apache.hadoop.fs.LocalFileSystem;
 import org.pentaho.big.data.api.cluster.NamedCluster;
 import org.pentaho.bigdata.api.hdfs.HadoopFileSystem;
 import org.pentaho.bigdata.api.hdfs.HadoopFileSystemFactory;
-import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 import org.slf4j.Logger;
@@ -39,19 +38,22 @@ public class HadoopFileSystemFactoryImpl implements HadoopFileSystemFactory {
   public static final String HDFS = "hdfs";
   private static final Logger LOGGER = LoggerFactory.getLogger( HadoopFileSystemFactoryImpl.class );
   private final boolean isActiveConfiguration;
-  private final HadoopConfiguration hadoopConfiguration;
+  private final HadoopShim hadoopShim;
 
-  public HadoopFileSystemFactoryImpl( boolean isActiveConfiguration, HadoopConfiguration hadoopConfiguration,
+  public HadoopFileSystemFactoryImpl( HadoopShim hadoopShim ) {
+    this( true, hadoopShim, "hdfs" );
+  }
+
+  public HadoopFileSystemFactoryImpl( boolean isActiveConfiguration, HadoopShim hadoopShim,
                                       String scheme ) {
     this.isActiveConfiguration = isActiveConfiguration;
-    this.hadoopConfiguration = hadoopConfiguration;
+    this.hadoopShim = hadoopShim;
   }
 
   @Override public boolean canHandle( NamedCluster namedCluster ) {
     String shimIdentifier = namedCluster.getShimIdentifier();
     //handle only if we do not use gateway
-    return ( shimIdentifier == null && isActiveConfiguration && !namedCluster.isUseGateway() )
-           || ( hadoopConfiguration.getIdentifier().equals( shimIdentifier ) && !namedCluster.isUseGateway() );
+    return true;
   }
 
   @Override
@@ -61,28 +63,25 @@ public class HadoopFileSystemFactoryImpl implements HadoopFileSystemFactory {
 
   @Override
   public HadoopFileSystem create( NamedCluster namedCluster, URI uri ) throws IOException {
-    final URI finalUri = uri != null ? uri : URI.create( "" );
-    final HadoopShim hadoopShim = hadoopConfiguration.getHadoopShim();
-    final Configuration configuration = hadoopShim.createConfiguration();
+    final Configuration configuration = hadoopShim.createConfiguration( namedCluster.getName() );
     FileSystem fileSystem = (FileSystem) hadoopShim.getFileSystem( configuration ).getDelegate();
     if ( fileSystem instanceof LocalFileSystem ) {
-      LOGGER.error(  "Got a local filesystem, was expecting an hdfs connection" );
+      LOGGER.error( "Got a local filesystem, was expecting an hdfs connection" );
       throw new IOException( "Got a local filesystem, was expecting an hdfs connection" );
     }
 
-    return new HadoopFileSystemImpl( new HadoopFileSystemCallable() {
-      @Override
-      public FileSystem getFileSystem() {
-        try {
-          return (FileSystem) hadoopShim.getFileSystem( finalUri, configuration, null ).getDelegate();
-        } catch ( IOException e ) {
-          LOGGER.debug( "Error looking up/creating the file system ", e );
-          return null;
-        } catch ( InterruptedException e ) {
-          LOGGER.debug( "Error looking up/creating the file system ", e );
-          return null;
-        }
+    final URI finalUri = fileSystem.getUri() != null ? fileSystem.getUri() : uri;
+    HadoopFileSystem hadoopFileSystem = new HadoopFileSystemImpl( () -> {
+      try {
+        return finalUri != null ? (FileSystem) hadoopShim.getFileSystem( finalUri, configuration, (NamedCluster) namedCluster ).getDelegate()
+          : (FileSystem) hadoopShim.getFileSystem( configuration ).getDelegate();
+      } catch ( IOException | InterruptedException e ) {
+        LOGGER.debug( "Error looking up/creating the file system ", e );
+        return null;
       }
     } );
+    ( (HadoopFileSystemImpl) hadoopFileSystem ).setNamedCluster( namedCluster );
+
+    return hadoopFileSystem;
   }
 }

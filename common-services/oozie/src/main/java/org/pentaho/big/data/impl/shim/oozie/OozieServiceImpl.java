@@ -22,6 +22,8 @@
 
 package org.pentaho.big.data.impl.shim.oozie;
 
+import org.pentaho.big.data.api.cluster.INamedClusterSpecific;
+import org.pentaho.big.data.api.cluster.NamedCluster;
 import org.pentaho.bigdata.api.oozie.OozieServiceException;
 import org.pentaho.bigdata.api.oozie.OozieJobInfo;
 import org.pentaho.bigdata.api.oozie.OozieService;
@@ -35,12 +37,17 @@ import static org.apache.oozie.client.OozieClient.BUNDLE_APP_PATH;
 
 import java.util.Properties;
 
-public class OozieServiceImpl implements OozieService {
-
+public class OozieServiceImpl implements OozieService, INamedClusterSpecific {
+  private NamedCluster namedCluster;
   private final OozieClient delegate;
 
   public OozieServiceImpl( OozieClient oozieClient ) {
+    this( oozieClient, null );
+  }
+
+  public OozieServiceImpl( OozieClient oozieClient, NamedCluster namedCluster ) {
     this.delegate = oozieClient;
+    this.namedCluster = namedCluster;
   }
 
   @Override
@@ -83,4 +90,11 @@ public class OozieServiceImpl implements OozieService {
     }
   }
 
+  @Override public NamedCluster getNamedCluster() {
+    return namedCluster;
+  }
+
+  @Override public void setNamedCluster( NamedCluster namedCluster ) {
+    this.namedCluster = namedCluster;
+  }
 }

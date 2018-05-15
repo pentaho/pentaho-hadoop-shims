@@ -25,8 +25,6 @@ package org.pentaho.big.data.impl.shim.sqoop;
 import org.pentaho.big.data.api.cluster.NamedCluster;
 import org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory;
 import org.pentaho.bigdata.api.sqoop.SqoopService;
-import org.pentaho.hadoop.shim.ConfigurationException;
-import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 import org.pentaho.hadoop.shim.spi.SqoopShim;
 import org.slf4j.Logger;
@@ -34,13 +32,12 @@ import org.slf4j.LoggerFactory;
 
 public class SqoopServiceFactoryImpl implements NamedClusterServiceFactory<SqoopService> {
   private static final Logger LOGGER = LoggerFactory.getLogger( SqoopServiceFactoryImpl.class );
-  private final boolean isActiveConfiguration;
-  private final HadoopConfiguration hadoopConfiguration;
+  private final HadoopShim hadoopShim;
+  private final SqoopShim sqoopShim;
 
-  public SqoopServiceFactoryImpl( boolean isActiveConfiguration,
-                                  HadoopConfiguration hadoopConfiguration ) {
-    this.isActiveConfiguration = isActiveConfiguration;
-    this.hadoopConfiguration = hadoopConfiguration;
+  public SqoopServiceFactoryImpl( HadoopShim hadoopShim, SqoopShim sqoopShim ) {
+    this.hadoopShim = hadoopShim;
+    this.sqoopShim = sqoopShim;
   }
 
   @Override
@@ -50,20 +47,13 @@ public class SqoopServiceFactoryImpl implements NamedClusterServiceFactory<Sqoop
 
   @Override
   public boolean canHandle( NamedCluster namedCluster ) {
-    boolean ncState = namedCluster == null ? true : !namedCluster.isUseGateway();
-    return isActiveConfiguration && ncState;
+    //    boolean ncState = namedCluster == null ? true : !namedCluster.isUseGateway();
+    return true;
   }
 
   @Override
   public SqoopService create( NamedCluster namedCluster ) {
-    try {
-      HadoopShim hadoopShim = hadoopConfiguration.getHadoopShim();
-      SqoopShim sqoopShim = hadoopConfiguration.getSqoopShim();
-      return new SqoopServiceImpl( hadoopShim, sqoopShim, namedCluster );
-    } catch ( ConfigurationException e ) {
-      LOGGER.error( "Unable to load SqoopService for " + namedCluster );
-      return null;
-    }
+    return new SqoopServiceImpl( hadoopShim, sqoopShim, namedCluster );
   }
 
 }

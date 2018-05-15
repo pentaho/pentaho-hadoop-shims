@@ -35,7 +35,6 @@ import org.pentaho.bigdata.api.mapreduce.MapReduceJobSimple;
 import org.pentaho.bigdata.api.mapreduce.PentahoMapReduceJobBuilder;
 import org.pentaho.bigdata.api.mapreduce.TransformationVisitorService;
 import org.pentaho.di.core.exception.KettleFileException;
-import org.pentaho.di.core.hadoop.HadoopSpoonPlugin;
 import org.pentaho.di.core.logging.LogChannelInterface;
 import org.pentaho.di.core.plugins.LifecyclePluginType;
 import org.pentaho.di.core.plugins.PluginInterface;
@@ -84,7 +83,7 @@ public class MapReduceServiceImplTest {
     resolvedJarUrl = new URL( "http://jar.net/jar" );
     List<TransformationVisitorService> visitorServices = new ArrayList<>();
     mapReduceService =
-      new MapReduceServiceImpl( namedCluster, hadoopConfiguration, executorService, jarUtility, pluginPropertiesUtil,
+      new MapReduceServiceImpl( namedCluster, hadoopConfiguration.getHadoopShim(), executorService, jarUtility, pluginPropertiesUtil,
         pluginRegistry, visitorServices );
   }
 
@@ -173,7 +172,7 @@ public class MapReduceServiceImplTest {
   public void testCreatePmrJobBuilder() throws IOException {
     PluginInterface pluginInterface = mock( PluginInterface.class );
     when( pluginInterface.getPluginDirectory() ).thenReturn( new URL( "file:///path" ) );
-    when( pluginRegistry.findPluginWithId( LifecyclePluginType.class, HadoopSpoonPlugin.PLUGIN_ID ) )
+    when( pluginRegistry.findPluginWithId( LifecyclePluginType.class, HadoopConfiguration.PLUGIN_ID_SPOON ) )
       .thenReturn( pluginInterface );
     PentahoMapReduceJobBuilder jobBuilder =
       mapReduceService

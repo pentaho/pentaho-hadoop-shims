@@ -28,6 +28,12 @@ import java.sql.Driver;
 import java.sql.SQLException;
 
 public class SparkSimbaDriver extends HiveSimbaDriver {
+  public SparkSimbaDriver( JdbcUrlParser jdbcUrlParser,
+                           String className, String shimVersion )
+    throws IllegalAccessException, ClassNotFoundException, InstantiationException {
+    super( jdbcUrlParser, className, shimVersion, "SparkSqlSimba" );
+  }
+
   public SparkSimbaDriver( Driver delegate, String hadoopConfigurationId, boolean defaultConfiguration,
                           JdbcUrlParser jdbcUrlParser ) {
     super( delegate, hadoopConfigurationId, defaultConfiguration, jdbcUrlParser );
@@ -40,5 +46,9 @@ public class SparkSimbaDriver extends HiveSimbaDriver {
       return null;
     }
     return delegate;
+  }
+
+  protected boolean checkBeforeAccepting( String url ) {
+    return url.matches( ".+:spark:.*" );
   }
 }

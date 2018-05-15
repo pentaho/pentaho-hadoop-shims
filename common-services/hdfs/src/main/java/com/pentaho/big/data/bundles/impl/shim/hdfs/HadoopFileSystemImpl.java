@@ -28,6 +28,8 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.permission.FsAction;
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.security.AccessControlException;
+import org.pentaho.big.data.api.cluster.INamedClusterSpecific;
+import org.pentaho.big.data.api.cluster.NamedCluster;
 import org.pentaho.bigdata.api.hdfs.HadoopFileStatus;
 import org.pentaho.bigdata.api.hdfs.HadoopFileSystem;
 import org.pentaho.bigdata.api.hdfs.HadoopFileSystemPath;
@@ -39,8 +41,9 @@ import java.io.OutputStream;
 /**
  * Created by bryan on 5/28/15.
  */
-public class HadoopFileSystemImpl implements HadoopFileSystem {
+public class HadoopFileSystemImpl implements HadoopFileSystem, INamedClusterSpecific {
   protected HadoopFileSystemCallable hadoopFileSystemCallable;
+  private NamedCluster namedCluster;
 
   public HadoopFileSystemImpl( HadoopFileSystemCallable hadoopFileSystemCallable ) {
     this.hadoopFileSystemCallable = hadoopFileSystemCallable;
@@ -203,12 +206,20 @@ public class HadoopFileSystemImpl implements HadoopFileSystem {
     return getFileSystem().getConf().get( name, defaultValue );
   }
 
-  private <T> T callAndWrapExceptions( IOExceptionCallable<T> ioExceptionCallable ) throws IOException {
+  public  <T> T callAndWrapExceptions( IOExceptionCallable<T> ioExceptionCallable ) throws IOException {
     try {
       return ioExceptionCallable.call();
     } catch ( AccessControlException e ) {
       throw new org.pentaho.bigdata.api.hdfs.exceptions.AccessControlException( e.getMessage(), e );
     }
+  }
+
+  @Override public NamedCluster getNamedCluster() {
+    return namedCluster;
+  }
+
+  @Override public void setNamedCluster( NamedCluster namedCluster ) {
+    this.namedCluster = namedCluster;
   }
 
   protected interface IOExceptionCallable<T> {

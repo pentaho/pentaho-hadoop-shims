@@ -24,15 +24,15 @@ package org.pentaho.big.data.impl.shim.format;
 import org.pentaho.big.data.api.cluster.NamedCluster;
 import org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory;
 import org.pentaho.bigdata.api.format.FormatService;
-import org.pentaho.hadoop.shim.ConfigurationException;
-import org.pentaho.hadoop.shim.HadoopConfiguration;
+import org.pentaho.hadoop.shim.spi.FormatShim;
 
 public class FormatServiceFactory implements NamedClusterServiceFactory<FormatService> {
-  private final HadoopConfiguration hadoopConfiguration;
+  private final FormatShim formatShim;
 
-  public FormatServiceFactory( HadoopConfiguration hadoopConfiguration ) {
-    this.hadoopConfiguration = hadoopConfiguration;
+  public FormatServiceFactory( FormatShim formatShim ) {
+    this.formatShim = formatShim;
   }
+
   @Override public Class<FormatService> getServiceClass() {
     return FormatService.class;
   }
@@ -42,10 +42,6 @@ public class FormatServiceFactory implements NamedClusterServiceFactory<FormatSe
   }
 
   @Override public FormatService create( NamedCluster namedCluster ) {
-    try {
-      return new FormatServiceImpl( namedCluster, hadoopConfiguration );
-    } catch ( ConfigurationException e ) {
-      throw new RuntimeException( "Error getting format shim ", e );
-    }
+    return new FormatServiceImpl( namedCluster, formatShim );
   }
 }

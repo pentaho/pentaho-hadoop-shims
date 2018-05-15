@@ -50,7 +50,7 @@ public class SqoopServiceImpl implements SqoopService {
   }
 
   @Override public int runTool( List<String> args, Properties properties ) {
-    Configuration configuration = hadoopShim.createConfiguration();
+    Configuration configuration = hadoopShim.createConfiguration( namedCluster.getName() );
     for ( Map.Entry<String, String> entry : Maps.fromProperties( properties ).entrySet() ) {
       configuration.set( entry.getKey(), entry.getValue() );
     }
@@ -60,7 +60,7 @@ public class SqoopServiceImpl implements SqoopService {
       System.setProperty( SQOOP_THROW_ON_ERROR, Boolean.toString( true ) );
 
       configureShim( configuration );
-      return sqoopShim.runTool( args.toArray( new String[args.size()] ), configuration );
+      return sqoopShim.runTool( args.toArray( new String[ args.size() ] ), configuration );
     } catch ( Exception e ) {
       LOGGER.error( "Error executing sqoop", e );
       return 1;

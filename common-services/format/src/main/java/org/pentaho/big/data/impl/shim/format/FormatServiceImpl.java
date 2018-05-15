@@ -23,8 +23,6 @@ package org.pentaho.big.data.impl.shim.format;
 
 import org.pentaho.big.data.api.cluster.NamedCluster;
 import org.pentaho.bigdata.api.format.FormatService;
-import org.pentaho.hadoop.shim.ConfigurationException;
-import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat;
 import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat;
 import org.pentaho.hadoop.shim.spi.FormatShim;
@@ -33,13 +31,10 @@ public class FormatServiceImpl implements FormatService {
 
   private final FormatShim formatShim;
   private final NamedCluster namedCluster;
-  private final HadoopConfiguration hadoopConfiguration;
 
-  public FormatServiceImpl( NamedCluster namedCluster, HadoopConfiguration hadoopConfiguration )
-    throws ConfigurationException {
+  public FormatServiceImpl( NamedCluster namedCluster, FormatShim formatShim ) {
     this.namedCluster = namedCluster;
-    this.hadoopConfiguration = hadoopConfiguration;
-    this.formatShim = hadoopConfiguration.getFormatShim();
+    this.formatShim = formatShim;
   }
 
   @Override
