@@ -31,6 +31,19 @@ import java.sql.SQLException;
  * Created by bryan on 3/29/16.
  */
 public class HiveSimbaDriver extends HiveDriver {
+
+  public HiveSimbaDriver( JdbcUrlParser jdbcUrlParser,
+                          String className, String shimVersion )
+    throws IllegalAccessException, InstantiationException, ClassNotFoundException {
+    super( jdbcUrlParser, className, shimVersion, "hive2Simba" );
+  }
+
+  public HiveSimbaDriver( JdbcUrlParser jdbcUrlParser,
+                          String className, String shimVersion, String driverType )
+    throws IllegalAccessException, InstantiationException, ClassNotFoundException {
+    super( jdbcUrlParser, className, shimVersion, driverType );
+  }
+
   public HiveSimbaDriver( Driver delegate, String hadoopConfigurationId, boolean defaultConfiguration,
                           JdbcUrlParser jdbcUrlParser ) {
     super( delegate, hadoopConfigurationId, defaultConfiguration, jdbcUrlParser );
@@ -43,5 +56,9 @@ public class HiveSimbaDriver extends HiveDriver {
       return null;
     }
     return delegate;
+  }
+
+  protected boolean checkBeforeAccepting( String url ) {
+    return url.matches( ".+:hive2:.*" );
   }
 }

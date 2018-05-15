@@ -40,7 +40,7 @@ import java.util.Properties;
 /**
  * Created by bryan on 1/25/16.
  */
-public class HBaseConnectionWrapper extends HBaseConnection {
+public class HBaseConnectionWrapper implements HBaseConnection {
   private final HBaseConnection delegate;
   private final HBaseConnection realImpl;
   private final Field resultSetRowField;

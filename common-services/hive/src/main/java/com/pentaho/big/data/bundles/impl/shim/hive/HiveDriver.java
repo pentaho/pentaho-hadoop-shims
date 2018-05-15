@@ -25,6 +25,7 @@ package com.pentaho.big.data.bundles.impl.shim.hive;
 import org.pentaho.big.data.api.cluster.NamedCluster;
 import org.pentaho.big.data.api.jdbc.JdbcUrl;
 import org.pentaho.big.data.api.jdbc.JdbcUrlParser;
+import org.pentaho.hadoop.shim.common.DriverProxyInvocationChain;
 
 import java.net.URISyntaxException;
 import java.sql.Connection;
@@ -49,6 +50,20 @@ public class HiveDriver implements Driver {
   private final JdbcUrlParser jdbcUrlParser;
   private final String hadoopConfigurationId;
 
+  public HiveDriver( JdbcUrlParser jdbcUrlParser,
+                     String className, String shimVersion )
+    throws IllegalAccessException, InstantiationException, ClassNotFoundException {
+    this( jdbcUrlParser, className, shimVersion, "hive2" );
+  }
+
+  public HiveDriver( JdbcUrlParser jdbcUrlParser,
+                     String className, String shimVersion, String driverType )
+    throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+    this( DriverProxyInvocationChain.getProxy( Driver.class, (Driver) Class.forName( className ).newInstance() ),
+      shimVersion,
+            true, jdbcUrlParser );
+  }
+
   public HiveDriver( Driver delegate, String hadoopConfigurationId, boolean defaultConfiguration,
                      JdbcUrlParser jdbcUrlParser ) {
     this.delegate = delegate;
@@ -58,6 +73,9 @@ public class HiveDriver implements Driver {
   }
 
   @Override public Connection connect( String url, Properties info ) throws SQLException {
+    if ( !checkBeforeAccepting( url ) ) {
+      return null;
+    }
     Driver driver = checkBeforeCallActiveDriver( url );
     JdbcUrl jdbcUrl;
     try {
@@ -115,7 +133,7 @@ public class HiveDriver implements Driver {
       return false;
     }
     try {
-      return driver.acceptsURL( url );
+      return isRequiredShimUse( namedCluster ) && driver.acceptsURL( url );
     } catch ( Throwable e ) {
       // This should not have happened. If there was an error during processing, assume this driver can't
       // handle the URL and thus return false
@@ -123,12 +141,21 @@ public class HiveDriver implements Driver {
     }
   }
 
+  private boolean isRequiredShimUse( NamedCluster namedCluster ) {
+    return hadoopConfigurationId != null
+      && namedCluster != null && hadoopConfigurationId.equals( namedCluster.getShimIdentifier() );
+  }
+
   protected Driver checkBeforeCallActiveDriver( String url ) throws SQLException {
-    if ( url.contains( SIMBA_SPECIFIC_URL_PARAMETER ) ) {
+    if ( url.contains( SIMBA_SPECIFIC_URL_PARAMETER ) || !url.matches( ".+:hive2:.*" ) ) {
       // BAD-215 check required to distinguish Simba driver
       return null;
     }
     return delegate;
+  }
+
+  protected boolean checkBeforeAccepting( String url ) {
+    return url.matches( ".+:hive2:.*" );
   }
 
   @Override public DriverPropertyInfo[] getPropertyInfo( String url, Properties info ) throws SQLException {

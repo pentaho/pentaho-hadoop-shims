@@ -31,6 +31,12 @@ import java.sql.SQLException;
  * Created by bryan on 3/29/16.
  */
 public class ImpalaSimbaDriver extends HiveSimbaDriver {
+  public ImpalaSimbaDriver( JdbcUrlParser jdbcUrlParser,
+                            String className, String shimVersion )
+    throws IllegalAccessException, ClassNotFoundException, InstantiationException {
+    super( jdbcUrlParser, className, shimVersion, "ImpalaSimba" );
+  }
+
   public ImpalaSimbaDriver( Driver delegate, String hadoopConfigurationId, boolean defaultConfiguration,
                             JdbcUrlParser jdbcUrlParser ) {
     super( delegate, hadoopConfigurationId, defaultConfiguration, jdbcUrlParser );
@@ -43,5 +49,9 @@ public class ImpalaSimbaDriver extends HiveSimbaDriver {
       return null;
     }
     return delegate;
+  }
+
+  protected boolean checkBeforeAccepting( String url ) {
+    return url.matches( ".+:impala:.*" );
   }
 }

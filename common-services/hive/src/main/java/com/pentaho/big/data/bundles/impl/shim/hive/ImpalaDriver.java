@@ -30,6 +30,12 @@ import java.sql.Driver;
  * Created by bryan on 3/29/16.
  */
 public class ImpalaDriver extends HiveDriver {
+  public ImpalaDriver( JdbcUrlParser jdbcUrlParser,
+                       String className, String shimVersion )
+    throws IllegalAccessException, InstantiationException, ClassNotFoundException {
+    super( jdbcUrlParser, className, shimVersion, "Impala" );
+  }
+
   public ImpalaDriver( Driver delegate, String hadoopConfigurationId, boolean defaultConfiguration,
                        JdbcUrlParser jdbcUrlParser ) {
     super( delegate, hadoopConfigurationId, defaultConfiguration, jdbcUrlParser );

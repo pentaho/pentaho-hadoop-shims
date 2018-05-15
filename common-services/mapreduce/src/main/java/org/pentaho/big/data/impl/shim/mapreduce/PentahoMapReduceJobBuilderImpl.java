@@ -166,32 +166,32 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
   private String reducerOutputStep;
 
   public PentahoMapReduceJobBuilderImpl( NamedCluster namedCluster,
-                                         HadoopConfiguration hadoopConfiguration,
+                                         HadoopShim hadoopShim,
                                          LogChannelInterface log,
                                          VariableSpace variableSpace, PluginInterface pluginInterface,
                                          Properties pmrProperties,
                                          List<TransformationVisitorService> visitorServices )
     throws KettleFileException {
-    this( namedCluster, hadoopConfiguration, log, variableSpace, pluginInterface,
+    this( namedCluster, hadoopShim, log, variableSpace, pluginInterface,
       KettleVFS.getFileObject( pluginInterface.getPluginDirectory().getPath() ), pmrProperties,
       new TransFactory(), new PMRArchiveGetter( pluginInterface, pmrProperties ), visitorServices );
   }
 
   @VisibleForTesting PentahoMapReduceJobBuilderImpl( NamedCluster namedCluster,
-                                                     HadoopConfiguration hadoopConfiguration,
+                                                     HadoopShim hadoopShim,
                                                      LogChannelInterface log,
                                                      VariableSpace variableSpace, PluginInterface pluginInterface,
                                                      FileObject vfsPluginDirectory,
                                                      Properties pmrProperties, TransFactory transFactory,
                                                      PMRArchiveGetter pmrArchiveGetter,
                                                      List<TransformationVisitorService> visitorServices ) {
-    super( namedCluster, hadoopConfiguration.getHadoopShim(), log, variableSpace );
-    this.hadoopShim = hadoopConfiguration.getHadoopShim();
+    super( namedCluster, hadoopShim, log, variableSpace );
+    this.hadoopShim = hadoopShim;
     this.log = log;
     this.vfsPluginDirectory = vfsPluginDirectory;
     this.pmrProperties = pmrProperties;
     this.transFactory = transFactory;
-    this.installId = buildInstallIdBase( hadoopConfiguration );
+    this.installId = buildInstallIdBase( hadoopShim );
     this.pmrArchiveGetter = pmrArchiveGetter;
     this.visitorServices = addDefaultVisitors( visitorServices );
   }
@@ -269,7 +269,7 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
   }
 
 
-  private static String buildInstallIdBase( HadoopConfiguration hadoopConfiguration ) {
+  private static String buildInstallIdBase( HadoopShim hadoopShim ) {
     String pluginVersion = new PluginPropertiesUtil().getVersion();
 
     String installId = BuildVersion.getInstance().getVersion();
@@ -277,7 +277,7 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
       installId = installId + "-" + pluginVersion;
     }
 
-    return installId + "-" + hadoopConfiguration.getIdentifier();
+    return installId + "-" + hadoopShim.getHadoopVersion();
   }
 
   /**
@@ -532,11 +532,11 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
 
         stageMetaStoreForHadoop( conf, fs, installPath );
 
-        if ( !hadoopShim.getDistributedCacheUtil().isKettleEnvironmentInstalledAt( fs, kettleEnvInstallDir ) ) {
-          throw new KettleException( BaseMessages.getString( PKG,
-            JOB_ENTRY_HADOOP_TRANS_JOB_EXECUTOR_KETTLE_INSTALLATION_MISSING_FROM,
-            kettleEnvInstallDir.toUri().getPath() ) );
-        }
+//        if ( !hadoopShim.getDistributedCacheUtil().isKettleEnvironmentInstalledAt( fs, kettleEnvInstallDir ) ) {
+//          throw new KettleException( BaseMessages.getString( PKG,
+//            JOB_ENTRY_HADOOP_TRANS_JOB_EXECUTOR_KETTLE_INSTALLATION_MISSING_FROM,
+//            kettleEnvInstallDir.toUri().getPath() ) );
+//        }
 
         log.logBasic( BaseMessages.getString( PKG, JOB_ENTRY_HADOOP_TRANS_JOB_EXECUTOR_CONFIGURING_JOB_WITH_KETTLE_AT,
           kettleEnvInstallDir.toUri().getPath() ) );

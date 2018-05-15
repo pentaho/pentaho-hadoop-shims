@@ -26,7 +26,8 @@ import org.pentaho.big.data.api.cluster.NamedCluster;
 import org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory;
 import org.pentaho.bigdata.api.mapreduce.MapReduceService;
 import org.pentaho.bigdata.api.mapreduce.TransformationVisitorService;
-import org.pentaho.hadoop.shim.HadoopConfiguration;
+import org.pentaho.hadoop.shim.api.HasConfiguration;
+import org.pentaho.hadoop.shim.spi.HadoopShim;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -36,15 +37,20 @@ import java.util.concurrent.ExecutorService;
  */
 public class MapReduceServiceFactoryImpl implements NamedClusterServiceFactory<MapReduceService> {
   private final boolean isActiveConfiguration;
-  private final HadoopConfiguration hadoopConfiguration;
+  private final HadoopShim hadoopShim;
   private final ExecutorService executorService;
   private final List<TransformationVisitorService> visitorServices;
 
+  public MapReduceServiceFactoryImpl( HadoopShim hadoopShim, ExecutorService executorService,
+                                      List<TransformationVisitorService> visitorServices ) {
+    this(true, hadoopShim, executorService, visitorServices);
+  }
+
   public MapReduceServiceFactoryImpl( boolean isActiveConfiguration,
-                                      HadoopConfiguration hadoopConfiguration, ExecutorService executorService,
+                                      HadoopShim hadoopShim, ExecutorService executorService,
                                       List<TransformationVisitorService> visitorServices ) {
     this.isActiveConfiguration = isActiveConfiguration;
-    this.hadoopConfiguration = hadoopConfiguration;
+    this.hadoopShim = hadoopShim;
     this.executorService = executorService;
     this.visitorServices = visitorServices;
   }
@@ -56,12 +62,12 @@ public class MapReduceServiceFactoryImpl implements NamedClusterServiceFactory<M
 
   @Override
   public boolean canHandle( NamedCluster namedCluster ) {
-    boolean ncState = namedCluster == null ? true : !namedCluster.isUseGateway();
-    return isActiveConfiguration && ncState;
+//    boolean ncState = namedCluster == null ? true : !namedCluster.isUseGateway();
+    return true;
   }
 
   @Override
   public MapReduceService create( NamedCluster namedCluster ) {
-    return new MapReduceServiceImpl( namedCluster, hadoopConfiguration, executorService, visitorServices );
+    return new MapReduceServiceImpl( namedCluster, hadoopShim, executorService, visitorServices );
   }
 }

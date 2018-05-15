@@ -3,13 +3,13 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>pentaho</groupId>
-    <artifactId>pentaho-big-data-impl-shim</artifactId>
-    <version>8.2.0.0-SNAPSHOT</version>
+    <groupId>org.pentaho</groupId>
+    <artifactId>pentaho-hadoop-shims-common-services</artifactId>
+    <version>9.0.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>pentaho-big-data-impl-shim-pig</artifactId>
-  <version>8.2.0.0-SNAPSHOT</version>
-  <packaging>bundle</packaging>
+  <version>9.0.0.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
   <name>Pentaho Community Edition Project: ${project.artifactId}</name>
   <description>a Pentaho open source project</description>
   <url>http://www.pentaho.com</url>
@@ -18,19 +18,20 @@
   </properties>
   <dependencies>
     <dependency>
-      <groupId>pentaho</groupId>
+      <groupId>org.pentaho</groupId>
       <artifactId>pentaho-big-data-api-pig</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>pentaho</groupId>
+      <groupId>org.pentaho</groupId>
       <artifactId>pentaho-big-data-api-cluster-service-locator</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>pentaho</groupId>
-      <artifactId>pentaho-big-data-impl-shim-common</artifactId>
-      <version>${project.version}</version>
+      <groupId>org.pentaho.di.plugins</groupId>
+      <artifactId>kettle-log4j-core</artifactId>
+      <version>${pdi.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
@@ -57,22 +58,6 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>pentaho</groupId>
-      <artifactId>pentaho-big-data-legacy</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.codehaus.jackson</groupId>
-          <artifactId>jackson-core-asl</artifactId>
-        </exclusion>
-		<exclusion>
-          <groupId>org.codehaus.jackson</groupId>
-          <artifactId>jackson-mapper-asl</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>pentaho-hadoop-shims-api</artifactId>
       <version>${pentaho-hadoop-shims-api.version}</version>
@@ -81,13 +66,11 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>${dependency.junit.revision}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-all</artifactId>
-      <version>${dependency.mockito.revision}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -101,7 +84,7 @@
         <configuration>
           <instructions>
             <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-            <Import-Package>!org.apache.hadoop.*,!org.pentaho.di.core.hadoop.*,!org.pentaho.hadoop.*,!org.pentaho.yarn.*,!org.apache.log4j,*</Import-Package>
+            <Import-Package>org.pentaho.di.core.logging.*,org.pentaho.hadoop.*,org.apache.hadoop.*,org.pentaho.hadoop.shim.api.*,!org.pentaho.di.core.hadoop.*,!org.pentaho.hadoop.*,!org.pentaho.yarn.*,!org.apache.log4j,*</Import-Package>
           </instructions>
         </configuration>
       </plugin>
