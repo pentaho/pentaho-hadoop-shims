@@ -22,23 +22,19 @@
 
 package org.pentaho.hbase.shim.common;
 
-import org.pentaho.hadoop.shim.ShimVersion;
+import org.apache.hadoop.conf.Configuration;
+import org.pentaho.hbase.shim.common.wrapper.HBaseShimInterface;
 import org.pentaho.hbase.shim.spi.HBaseConnection;
-import org.pentaho.hbase.shim.spi.HBaseShim;
 
-/**
- * Concrete implementation of HBaseShim suitable for use with Apache HBase 0.90.x.
- * 
- * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
- */
-public class CommonHBaseShim implements HBaseShim {
-
-  @Override
-  public ShimVersion getVersion() {
-    return new ShimVersion( 1, 0 );
-  }
+public class HBaseShimImpl extends CommonHBaseShim implements HBaseShimInterface {
 
   public HBaseConnection getHBaseConnection() {
-    return new CommonHBaseConnection();
+    return new HBaseConnectionImpl();
   }
+
+  @Override
+  public void setInfo( Configuration configuration ) {
+    // noop
+  }
+
 }

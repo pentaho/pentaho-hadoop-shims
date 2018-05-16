@@ -20,16 +20,33 @@
  *
  ******************************************************************************/
 
-package org.pentaho.hadoop.shim.common;
+package org.pentaho.hadoop.shim.common.sqoop;
 
+import com.cloudera.sqoop.Sqoop;
+import org.apache.commons.io.FileUtils;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+import org.osgi.framework.BundleContext;
 import org.pentaho.hadoop.shim.ShimVersion;
 import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.spi.SqoopShim;
+import org.pentaho.hadoop.shim.common.ShimUtils;
 
-import com.cloudera.sqoop.Sqoop;
+import java.io.File;
+import java.io.IOException;
+import java.util.Iterator;
 
 @SuppressWarnings( "deprecation" )
 public class CommonSqoopShim implements SqoopShim {
+  private BundleContext bundleContext;
+
+  public BundleContext getBundleContext() {
+    return bundleContext;
+  }
+
+  public void setBundleContext( BundleContext bundleContext ) {
+    this.bundleContext = bundleContext;
+  }
 
   @Override
   public ShimVersion getVersion() {
@@ -40,11 +57,63 @@ public class CommonSqoopShim implements SqoopShim {
   public int runTool( String[] args, Configuration c ) {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
+    String tmpPropertyHolder = System.getProperty( "hadoop.alt.classpath" );
     try {
+      System.setProperty( "hadoop.alt.classpath", createHadoopAltClasspath() );
+      c.set( "tmpjars", getSqoopJarLocation(c) );
       return Sqoop.runTool( args, ShimUtils.asConfiguration( c ) );
     } finally {
       Thread.currentThread().setContextClassLoader( cl );
+      if ( tmpPropertyHolder == null ) {
+        System.clearProperty( "hadoop.alt.classpath" );
+      } else {
+        System.setProperty( "hadoop.alt.classpath", tmpPropertyHolder );
+      }
     }
+  }
+
+  private String createHadoopAltClasspath() {
+    File filesInsideBundle = new File( bundleContext.getBundle().getDataFile( "" ).getParent() );
+    Iterator<File> filesIterator = FileUtils.iterateFiles( filesInsideBundle, new String[] { "jar" }, true );
+
+    StringBuilder sb = new StringBuilder();
+
+    while ( filesIterator.hasNext() ) {
+      File file = filesIterator.next();
+      String name = file.getName();
+      if ( name.startsWith( "hadoop-common" )
+        || name.startsWith( "hadoop-mapreduce-client-core" )
+        || name.startsWith( "hadoop-core" )
+        || name.startsWith( "sqoop" ) ) {
+        sb.append( file.getAbsolutePath() );
+        sb.append( File.pathSeparator );
+      }
+    }
+
+    return sb.toString();
+  }
+
+  private String getSqoopJarLocation( Configuration c ) {
+    File filesInsideBundle = new File( bundleContext.getBundle().getDataFile( "" ).getParent() );
+    Iterator<File> filesIterator = FileUtils.iterateFiles( filesInsideBundle, new String[] { "jar" }, true );
+
+    StringBuilder sb = new StringBuilder();
+
+    while ( filesIterator.hasNext() ) {
+      File file = filesIterator.next();
+      String name = file.getName();
+      if ( name.startsWith( "sqoop" ) ) {
+        sb.append( file.getAbsolutePath() );
+      }
+    }
+
+    try {
+      FileSystem fs = FileSystem.getLocal( ShimUtils.asConfiguration( c ) );
+      return new Path( sb.toString() ).makeQualified( fs ).toString();
+    } catch ( IOException e ) {
+      e.printStackTrace();
+    }
+    return sb.toString();
   }
 
 }

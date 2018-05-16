@@ -20,25 +20,15 @@
  *
  ******************************************************************************/
 
-package org.pentaho.hbase.shim.common;
+package org.apache.hadoop.mapred;
 
-import org.pentaho.hadoop.shim.ShimVersion;
-import org.pentaho.hbase.shim.spi.HBaseConnection;
-import org.pentaho.hbase.shim.spi.HBaseShim;
+import java.util.ArrayList;
 
 /**
- * Concrete implementation of HBaseShim suitable for use with Apache HBase 0.90.x.
- * 
- * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
+ * This is an empty, fake class necessary for all non-MapR shims because MapR's Hadoop adds a method to the RunningJob
+ * interface that returns a class that only exists in the MapR Hadoop distribution. So we add a fake one here so the
+ * common tests will compile and run successfully.
  */
-public class CommonHBaseShim implements HBaseShim {
+public class TaskCompletionEventList extends ArrayList<TaskCompletionEvent> {
 
-  @Override
-  public ShimVersion getVersion() {
-    return new ShimVersion( 1, 0 );
-  }
-
-  public HBaseConnection getHBaseConnection() {
-    return new CommonHBaseConnection();
-  }
 }

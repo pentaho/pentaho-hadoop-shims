@@ -52,7 +52,7 @@ import org.pentaho.hadoop.shim.api.Configuration;
  *
  * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
  */
-public class FakeHBaseConnection extends HBaseConnection {
+public class FakeHBaseConnection implements HBaseConnection {
 
   public static class BytesComparator implements Comparator<byte[]> {
     /**
@@ -536,18 +536,18 @@ public class FakeHBaseConnection extends HBaseConnection {
     String zookeeperPort = connProps.getProperty( ZOOKEEPER_PORT_KEY );
 
     try {
-      if ( !isEmpty( defaultConfig ) ) {
-        stringToURL( defaultConfig );
+      if ( !HBaseConnection.isEmpty( defaultConfig ) ) {
+        HBaseConnection.stringToURL( defaultConfig );
       }
 
-      if ( !isEmpty( siteConfig ) ) {
-        stringToURL( siteConfig );
+      if ( !HBaseConnection.isEmpty( siteConfig ) ) {
+        HBaseConnection.stringToURL( siteConfig );
       }
     } catch ( Exception ex ) {
       throw new IllegalArgumentException( "Malformed URL" );
     }
 
-    if ( !isEmpty( zookeeperPort ) ) {
+    if ( !HBaseConnection.isEmpty( zookeeperPort ) ) {
       try {
         Integer.parseInt( zookeeperPort );
       } catch ( NumberFormatException e ) {

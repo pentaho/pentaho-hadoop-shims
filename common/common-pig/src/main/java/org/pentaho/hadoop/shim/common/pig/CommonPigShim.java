@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -20,28 +20,88 @@
  *
  ******************************************************************************/
 
-package org.pentaho.hadoop.shim.common;
+package org.pentaho.hadoop.shim.common.pig;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.pig.ExecType;
 import org.apache.pig.backend.hadoop.datastorage.ConfigurationUtil;
+import org.apache.pig.impl.PigContext;
 import org.apache.pig.impl.util.PropertiesUtil;
 import org.apache.pig.tools.parameters.ParameterSubstitutionPreprocessor;
 import org.apache.pig.tools.parameters.ParseException;
+import org.osgi.framework.BundleContext;
 import org.pentaho.hadoop.shim.ShimVersion;
 import org.pentaho.hadoop.shim.api.Configuration;
+import org.pentaho.hadoop.shim.common.ShimUtils;
 import org.pentaho.hadoop.shim.spi.PigShim;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
 public abstract class CommonPigShim implements PigShim {
   private static final String[] EMPTY_STRING_ARRAY = new String[ 0 ];
+
+
+  private BundleContext bundleContext;
+
+  public BundleContext getBundleContext() {
+    return bundleContext;
+  }
+
+  public void setBundleContext( BundleContext bundleContext ) {
+    this.bundleContext = bundleContext;
+  }
+
+  private enum ExternalPigJars {
+
+    PIG( "pig" ),
+    AUTOMATON( "automaton" ),
+    ANTLR( "antlr-runtime" ),
+    GUAVA( "guava" ),
+    JACKSON_CORE( "jackson-core-asl" ),
+    JACKSON_MAPPER( "jackson-mapper-asl" ),
+    JODATIME( "joda-time" );
+
+    private final String jarName;
+
+    ExternalPigJars( String jarName ) {
+      this.jarName = jarName;
+    }
+
+    public String getJarName() {
+      return jarName;
+    }
+
+  }
+
+  public void addExternalJarsToPigContext( PigContext pigContext ) throws MalformedURLException {
+    File filesInsideBundle = new File( bundleContext.getBundle().getDataFile( "" ).getParent() );
+    Iterator<File> filesIterator = FileUtils.iterateFiles( filesInsideBundle, new String[] { "jar" }, true );
+    while ( filesIterator.hasNext() ) {
+      File file = filesIterator.next();
+      addMatchedJarToPigContext( pigContext, file );
+    }
+  }
+
+  private void addMatchedJarToPigContext( PigContext pigContext, File jarFile ) throws MalformedURLException {
+    String jarName = jarFile.getName();
+    for ( ExternalPigJars externalPigJars : ExternalPigJars.values() ) {
+      if ( jarName.startsWith( externalPigJars.getJarName() ) ) {
+        String jarPath = jarFile.getAbsolutePath();
+        pigContext.addJar( jarPath );
+        break;
+      }
+    }
+  }
 
   @Override
   public ShimVersion getVersion() {
@@ -58,6 +118,7 @@ public abstract class CommonPigShim implements PigShim {
     PropertiesUtil.loadDefaultProperties( properties );
     if ( configuration != null ) {
       properties.putAll( ConfigurationUtil.toProperties( ShimUtils.asConfiguration( configuration ) ) );
+      properties.setProperty( "pig.use.overriden.hadoop.configs", "true" );
     }
   }
 
@@ -80,7 +141,7 @@ public abstract class CommonPigShim implements PigShim {
    * @return Type of execution for mode
    */
   protected ExecType getExecType( ExecutionMode mode ) {
-    switch ( mode ) {
+    switch( mode ) {
       case LOCAL:
         return ExecType.LOCAL;
       case MAPREDUCE:
@@ -89,5 +150,4 @@ public abstract class CommonPigShim implements PigShim {
         throw new IllegalStateException( "unknown execution mode: " + mode );
     }
   }
-
 }

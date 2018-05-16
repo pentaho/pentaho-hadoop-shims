@@ -22,6 +22,7 @@
 
 package org.pentaho.hadoop.shim.common;
 
+import com.google.common.annotations.VisibleForTesting;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.FileInputFormat;
 import org.apache.hadoop.mapred.FileOutputFormat;
@@ -37,6 +38,7 @@ import org.pentaho.hadoop.mapreduce.YarnQueueAclsException;
 import org.pentaho.hadoop.mapreduce.YarnQueueAclsVerifier;
 import org.pentaho.hadoop.shim.api.mapred.RunningJob;
 import org.pentaho.hadoop.shim.common.mapred.RunningJobProxy;
+import org.pentaho.hadoop.shim.ShimConfigsLoader;
 
 import java.io.IOException;
 
@@ -52,6 +54,21 @@ public class ConfigurationProxy extends org.apache.hadoop.mapred.JobConf impleme
     super();
     addResource( "hdfs-site.xml" );
   }
+
+  public ConfigurationProxy( String namedCluster ) {
+    super();
+    addConfigsAsResources( namedCluster );
+  }
+
+  @VisibleForTesting
+  void addConfigsAsResources( String additionalPath ) {
+    ShimConfigsLoader.addConfigsAsResources( additionalPath, this::addResource,
+      ShimConfigsLoader.ClusterConfigNames.CORE_SITE,
+      ShimConfigsLoader.ClusterConfigNames.MAPRED_SITE,
+      ShimConfigsLoader.ClusterConfigNames.HDFS_SITE,
+      ShimConfigsLoader.ClusterConfigNames.YARN_SITE );
+  }
+
   /*
    * Wrap the call to {@link super#setMapperClass(Class)} to avoid generic type
    * mismatches. We do not expose {@link org.apache.hadoop.mapred.*} classes through

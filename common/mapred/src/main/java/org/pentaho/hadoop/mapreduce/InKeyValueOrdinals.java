@@ -20,25 +20,22 @@
  *
  ******************************************************************************/
 
-package org.pentaho.hbase.shim.common;
+package org.pentaho.hadoop.mapreduce;
 
-import org.pentaho.hadoop.shim.ShimVersion;
-import org.pentaho.hbase.shim.spi.HBaseConnection;
-import org.pentaho.hbase.shim.spi.HBaseShim;
+import org.pentaho.di.core.row.RowMetaInterface;
 
-/**
- * Concrete implementation of HBaseShim suitable for use with Apache HBase 0.90.x.
- * 
- * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
- */
-public class CommonHBaseShim implements HBaseShim {
-
-  @Override
-  public ShimVersion getVersion() {
-    return new ShimVersion( 1, 0 );
+public class InKeyValueOrdinals extends BaseKeyValueOrdinals {
+  public InKeyValueOrdinals( RowMetaInterface rowMeta ) {
+    super( rowMeta );
   }
 
-  public HBaseConnection getHBaseConnection() {
-    return new CommonHBaseConnection();
+  @Override
+  protected final String getKeyName() {
+    return "key"; //$NON-NLS-1$
+  }
+
+  @Override
+  protected final String getValueName() {
+    return "value"; //$NON-NLS-1$
   }
 }

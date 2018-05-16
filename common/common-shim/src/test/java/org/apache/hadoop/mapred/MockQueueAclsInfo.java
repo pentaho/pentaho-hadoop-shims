@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*! ******************************************************************************
  *
  * Pentaho Big Data
  *
@@ -19,26 +19,10 @@
  * limitations under the License.
  *
  ******************************************************************************/
+package org.apache.hadoop.mapred;
 
-package org.pentaho.hbase.shim.common;
-
-import org.pentaho.hadoop.shim.ShimVersion;
-import org.pentaho.hbase.shim.spi.HBaseConnection;
-import org.pentaho.hbase.shim.spi.HBaseShim;
-
-/**
- * Concrete implementation of HBaseShim suitable for use with Apache HBase 0.90.x.
- * 
- * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
- */
-public class CommonHBaseShim implements HBaseShim {
-
-  @Override
-  public ShimVersion getVersion() {
-    return new ShimVersion( 1, 0 );
-  }
-
-  public HBaseConnection getHBaseConnection() {
-    return new CommonHBaseConnection();
+public class MockQueueAclsInfo extends QueueAclsInfo {
+  public MockQueueAclsInfo(String queueName, String[] operations) {
+    super(queueName, operations );
   }
 }
