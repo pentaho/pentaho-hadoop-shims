@@ -31,7 +31,7 @@ import org.pentaho.hbase.shim.spi.HBaseShim;
  * 
  * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
  */
-public class CommonHBaseShim extends HBaseShim {
+public class CommonHBaseShim implements HBaseShim {
 
   @Override
   public ShimVersion getVersion() {

@@ -22,6 +22,7 @@
 
 package org.pentaho.hadoop.shim.common.delegating;
 
+import org.pentaho.big.data.api.cluster.NamedCluster;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.hadoop.shim.ConfigurationException;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
@@ -91,6 +92,10 @@ public class DelegatingHadoopShim implements HadoopShim, HasHadoopAuthorizationS
     return delegate.createConfiguration();
   }
 
+  @Override public Configuration createConfiguration( String namedCluster ) {
+    return delegate.createConfiguration( namedCluster );
+  }
+
   @Override
   public FileSystem getFileSystem( Configuration conf ) throws IOException {
     return delegate.getFileSystem( conf );
@@ -99,6 +104,11 @@ public class DelegatingHadoopShim implements HadoopShim, HasHadoopAuthorizationS
   @Override
   public FileSystem getFileSystem( URI uri, Configuration conf, String user ) throws IOException, InterruptedException {
     return delegate.getFileSystem( uri, conf, user );
+  }
+
+  @Override
+  public FileSystem getFileSystem( URI uri, Configuration conf, NamedCluster namedCluster ) throws IOException, InterruptedException {
+    return delegate.getFileSystem( uri, conf, namedCluster );
   }
 
   @Override

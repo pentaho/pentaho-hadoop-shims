@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.NavigableMap;
 import java.util.Properties;
 
-public class DelegatingHBaseConnection extends HBaseConnection implements HBaseConnectionInterface {
+public class DelegatingHBaseConnection implements HBaseConnection, HBaseConnectionInterface {
   private final HBaseConnectionInterface delegate;
 
   public DelegatingHBaseConnection( HBaseConnectionInterface delegate ) {

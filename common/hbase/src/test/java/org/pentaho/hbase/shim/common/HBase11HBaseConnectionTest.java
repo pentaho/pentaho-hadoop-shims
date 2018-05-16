@@ -41,6 +41,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Matchers;
+import org.mockito.Mockito;
 import org.pentaho.di.core.logging.KettleLogStore;
 import org.pentaho.di.core.logging.LogChannelInterfaceFactory;
 import org.pentaho.di.core.variables.VariableSpace;
@@ -77,7 +78,7 @@ public class HBase11HBaseConnectionTest {
     commonHBaseConnection = new HBaseConnectionImpl();
     hbaseAdminMock = mock( HBaseAdmin.class );
     commonHBaseConnection.m_admin = hbaseAdminMock;
-    connectionSpy = spy( commonHBaseConnection );
+    connectionSpy = Mockito.spy( commonHBaseConnection );
     properties = new Properties();
   }
 

@@ -40,10 +40,12 @@ import org.apache.hadoop.hbase.filter.SubstringComparator;
 import org.apache.hadoop.hbase.filter.TimestampsFilter;
 import org.apache.hadoop.hbase.filter.ValueFilter;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
+import org.pentaho.big.data.api.cluster.INamedClusterSpecific;
 import org.pentaho.di.core.logging.KettleLogStore;
 import org.pentaho.di.core.logging.LogChannelInterface;
 import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.di.i18n.BaseMessages;
+import org.pentaho.hadoop.shim.ShimConfigsLoader;
 import org.pentaho.hbase.factory.HBaseAdmin;
 import org.pentaho.hbase.factory.HBaseClientFactory;
 import org.pentaho.hbase.factory.HBaseClientFactoryLocator;
@@ -52,6 +54,7 @@ import org.pentaho.hbase.factory.HBaseTable;
 import org.pentaho.hbase.shim.api.ColumnFilter;
 import org.pentaho.hbase.shim.api.HBaseValueMeta;
 import org.pentaho.hbase.shim.api.Mapping;
+import org.pentaho.hbase.shim.fake.FakeNamedCluster;
 import org.pentaho.hbase.shim.spi.HBaseBytesUtilShim;
 import org.pentaho.hbase.shim.spi.HBaseConnection;
 
@@ -74,7 +77,7 @@ import java.util.Set;
  *
  * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
  */
-public class CommonHBaseConnection extends HBaseConnection {
+public class CommonHBaseConnection implements HBaseConnection, IHBaseClientFactoryGetter {
   private static Class<?> PKG = CommonHBaseConnection.class;
 
   protected Configuration m_config = null;
@@ -126,43 +129,42 @@ public class CommonHBaseConnection extends HBaseConnection {
       String siteConfig = connProps.getProperty( SITE_KEY );
       String zookeeperQuorum = connProps.getProperty( ZOOKEEPER_QUORUM_KEY );
       String zookeeperPort = connProps.getProperty( ZOOKEEPER_PORT_KEY );
+      String namedCluster = connProps.getProperty( "named.cluster" );
 
       m_config = new Configuration();
       try {
-        if ( !isEmpty( defaultConfig ) ) {
-          m_config.addResource( stringToURL( defaultConfig ) );
+        if ( !HBaseConnection.isEmpty( defaultConfig ) ) {
+          m_config.addResource( HBaseConnection.stringToURL( defaultConfig ) );
         } else {
-          m_config.addResource( "hbase-default.xml" );
+          ShimConfigsLoader.addConfigsAsResources( namedCluster, m_config::addResource, ShimConfigsLoader.ClusterConfigNames.HBASE_DEFAULT.toString() );
         }
 
-        if ( !isEmpty( siteConfig ) ) {
-          m_config.addResource( stringToURL( siteConfig ) );
+        if ( !HBaseConnection.isEmpty( siteConfig ) ) {
+          m_config.addResource( HBaseConnection.stringToURL( siteConfig ) );
         } else {
-          m_config.addResource( "hbase-site.xml" );
+          ShimConfigsLoader.addConfigsAsResources( namedCluster, m_config::addResource, ShimConfigsLoader.ClusterConfigNames.HBASE_SITE.toString() );
         }
       } catch ( MalformedURLException e ) {
         throw new IllegalArgumentException(
           BaseMessages.getString( PKG, "CommonHBaseConnection.Error.MalformedConfigURL" ) );
       }
 
-      if ( !isEmpty( zookeeperQuorum ) && !isEmpty( m_config.get( ZOOKEEPER_QUORUM_KEY ) ) ) {
+      if ( !HBaseConnection.isEmpty( zookeeperQuorum ) && !HBaseConnection.isEmpty( m_config.get( ZOOKEEPER_QUORUM_KEY ) ) ) {
 
         if ( !doZookeeperQuorumInNamedClusterAndConfigMatch( zookeeperQuorum ) ) {
           String message = BaseMessages.
-            getString( PKG, "CommonHBaseConnection.Error.MismatchZookeeperNamedClusterVsConfiguration", zookeeperQuorum,
-              m_config.get( ZOOKEEPER_QUORUM_KEY ) );
+            getString( PKG, "CommonHBaseConnection.Error.MismatchZookeeperNamedClusterVsConfiguration", zookeeperQuorum, m_config.get( ZOOKEEPER_QUORUM_KEY ) );
           log.logBasic( message );
-          //no throw exception here as for using some specific cases in host name - aliases that totally different
-          // from host name or ips, that case
+          //no throw exception here as for using some specific cases in host name - aliases that totally different from host name or ips, that case
           //can be checked only ping ip which is too expensive
         }
       }
 
-      if ( !isEmpty( zookeeperQuorum ) ) {
+      if ( !HBaseConnection.isEmpty( zookeeperQuorum ) ) {
         m_config.set( ZOOKEEPER_QUORUM_KEY, zookeeperQuorum );
       }
 
-      if ( !isEmpty( zookeeperPort ) ) {
+      if ( !HBaseConnection.isEmpty( zookeeperPort ) ) {
         try {
           int port = Integer.parseInt( zookeeperPort );
           m_config.setInt( ZOOKEEPER_PORT_KEY, port );
@@ -180,12 +182,18 @@ public class CommonHBaseConnection extends HBaseConnection {
       }
 
       m_factory = getHBaseClientFactory( m_config );
+      setFakeNamedCluster( m_factory, connProps.getProperty( "named.cluster" ) );
 
       m_admin = m_factory.getHBaseAdmin();
     } finally {
       Thread.currentThread().setContextClassLoader( cl );
     }
   }
+
+  private void setFakeNamedCluster( INamedClusterSpecific iNamedClusterSpecific, String name ) {
+    iNamedClusterSpecific.setNamedCluster( new FakeNamedCluster( name ) );
+  }
+
 
   private void verifyHBaseMapR60SpecificConfiguration( String shimConfigurationId ) {
     if ( isMapR60OrAboveShim( shimConfigurationId ) && !isMapr60HBaseSpecificPropertySet() ) {
@@ -204,8 +212,7 @@ public class CommonHBaseConnection extends HBaseConnection {
 
   private boolean doZookeeperQuorumInNamedClusterAndConfigMatch( String zookeeperQuorum ) {
     return
-      allZookeperHostsFromNameNodeInConfigQuorum( zookeeperQuorum )
-        || atLeastOneHostFromConfigInNameClusterZookeeperQuorum( zookeeperQuorum );
+      allZookeperHostsFromNameNodeInConfigQuorum( zookeeperQuorum ) || atLeastOneHostFromConfigInNameClusterZookeeperQuorum( zookeeperQuorum );
   }
 
   private boolean allZookeperHostsFromNameNodeInConfigQuorum( String zookeeperQuorum ) {
@@ -247,7 +254,7 @@ public class CommonHBaseConnection extends HBaseConnection {
     return false;
   }
 
-  protected HBaseClientFactory getHBaseClientFactory( Configuration configuration ) {
+  public HBaseClientFactory getHBaseClientFactory( Configuration configuration ) {
     return HBaseClientFactoryLocator.getHBaseClientFactory( configuration );
   }
 
@@ -573,7 +580,7 @@ public class CommonHBaseConnection extends HBaseConnection {
                                          String comparisonString ) throws Exception {
     DecimalFormat df = new DecimalFormat();
     String formatS = vars.environmentSubstitute( cf.getFormat() );
-    if ( !isEmpty( formatS ) ) {
+    if ( !HBaseConnection.isEmpty( formatS ) ) {
       df.applyPattern( formatS );
     }
     Number num = df.parse( comparisonString );
@@ -611,7 +618,7 @@ public class CommonHBaseConnection extends HBaseConnection {
     IllegalAccessException, java.lang.reflect.InvocationTargetException {
     SimpleDateFormat sdf = new SimpleDateFormat();
     String formatS = vars.environmentSubstitute( cf.getFormat() );
-    if ( !isEmpty( formatS ) ) {
+    if ( !HBaseConnection.isEmpty( formatS ) ) {
       sdf.applyPattern( formatS );
     }
 
@@ -1063,5 +1070,6 @@ public class CommonHBaseConnection extends HBaseConnection {
 
   @Override
   public void obtainAuthTokenForJob( org.pentaho.hadoop.shim.api.Configuration conf ) throws Exception {
+
   }
 }

@@ -33,7 +33,7 @@ import java.util.List;
 public class HadoopShimImpl extends CommonHadoopShim {
 
   static {
-    JDBC_DRIVER_MAP.put( "hive2", org.apache.hive.jdbc.HiveDriver.class );
+    //JDBC_DRIVER_MAP.put( "hive2", org.apache.hive.jdbc.HiveDriver.class );
   }
 
   @Override
@@ -90,6 +90,19 @@ public class HadoopShimImpl extends CommonHadoopShim {
     Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
     try {
       return new ConfigurationProxyV2();
+    } catch ( IOException e ) {
+      throw new RuntimeException( "Unable to create configuration for new mapreduce api: ", e );
+    } finally {
+      Thread.currentThread().setContextClassLoader( cl );
+    }
+  }
+
+  @Override
+  public org.pentaho.hadoop.shim.api.Configuration createConfiguration( String namedCluster ) {
+    ClassLoader cl = Thread.currentThread().getContextClassLoader();
+    Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
+    try {
+      return new ConfigurationProxyV2( namedCluster );
     } catch ( IOException e ) {
       throw new RuntimeException( "Unable to create configuration for new mapreduce api: ", e );
     } finally {
