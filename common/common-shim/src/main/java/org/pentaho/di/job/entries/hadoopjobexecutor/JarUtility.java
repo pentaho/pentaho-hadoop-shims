@@ -40,6 +40,8 @@ import java.util.jar.Manifest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.apache.hadoop.mapreduce.Mapper;
+
 
 /**
  * Utility class for working with Jar files in the context of configuring MapReduce jobs.
@@ -63,6 +65,7 @@ public class JarUtility {
    */
   public Class<?> getMainClassFromManifest( URL jarUrl, ClassLoader parentClassLoader )
     throws IOException, ClassNotFoundException {
+    Class<Mapper> mapperClass = Mapper.class;
     JarFile jarFile = getJarFile( jarUrl, parentClassLoader );
     try {
       Manifest manifest = jarFile.getManifest();
@@ -151,7 +154,7 @@ public class JarUtility {
     ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
     URL url = new URL( jarUrl );
     URL[] urls = new URL[] { url };
-    try ( URLClassLoader loader = new URLClassLoader( urls, parentClassloader );
+    try ( URLClassLoader loader = new URLClassLoader( urls, JarUtility.class.getClassLoader() );
           JarInputStream jarFile = new JarInputStream( new FileInputStream( new File( url.toURI() ) ) ) ) {
       while ( true ) {
         JarEntry jarEntry = jarFile.getNextJarEntry();
