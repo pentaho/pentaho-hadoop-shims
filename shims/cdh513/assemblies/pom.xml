@@ -9,6 +9,9 @@
   <artifactId>pentaho-hadoop-shims-cdh513-assemblies-reactor</artifactId>
   <packaging>pom</packaging>
   <modules>
+    <module>client</module>
+    <module>pmr</module>
+    <module>default</module>
     <module>cdh513-shim</module>
   </modules>
 </project>
