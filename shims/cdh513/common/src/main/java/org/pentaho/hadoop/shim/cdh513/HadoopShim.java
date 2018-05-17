@@ -40,6 +40,10 @@ import java.util.Properties;
 
 public class HadoopShim extends HadoopShimImpl {
 
+  public HadoopShim() {
+    super();
+  }
+
   @Override
   public void onLoad( HadoopConfiguration config, HadoopConfigurationFileSystemManager fsm ) throws Exception {
     registerExtraDatabaseTypes( config.getConfigProperties() );
