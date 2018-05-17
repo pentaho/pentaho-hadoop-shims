@@ -7,11 +7,11 @@
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-common</artifactId>
-    <version>8.1.0.0-SNAPSHOT</version>
+    <version>9.0.0.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>common-format-shim</artifactId>
-  <version>8.1.0.0-SNAPSHOT</version>
+  <version>9.0.0.0-SNAPSHOT</version>
 
   <properties>
     <org.apache.parquet.version>1.8.1</org.apache.parquet.version>
@@ -19,9 +19,28 @@
     <org.apache.orc.version>1.2.3</org.apache.orc.version>
     <jackson.version>2.6.5</jackson.version>
     <integration-test.src>src/it/java</integration-test.src>
+    <aws-java-sdk.version>1.7.4</aws-java-sdk.version>
+    <aws-java-sdk-core.version>1.11.275</aws-java-sdk-core.version>
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk</artifactId>
+      <version>${aws-java-sdk.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk-core</artifactId>
+      <version>${aws-java-sdk-core.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
     <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>pentaho-hadoop-shims-common-shim</artifactId>
