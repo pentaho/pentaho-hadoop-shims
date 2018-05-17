@@ -381,7 +381,6 @@
         <module>hdp30</module>
         <module>cdh512</module>
         <module>cdh513</module>
-        <module>cdh514</module>
         <module>mapr520</module>
         <module>mapr60</module>
         <module>emr59</module>
@@ -450,6 +449,7 @@
       </modules>
     </profile>
 
+    <!--
     <profile>
       <id>cdh514</id>
       <activation>
@@ -461,6 +461,7 @@
         <module>cdh514</module>
       </modules>
     </profile>
+    -->
 
     <profile>
       <id>mapr520</id>

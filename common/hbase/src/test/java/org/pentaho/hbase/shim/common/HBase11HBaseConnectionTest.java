@@ -58,148 +58,148 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class HBase11HBaseConnectionTest {
-  private CommonHBaseConnection commonHBaseConnection;
-  private CommonHBaseConnection connectionSpy;
-  private static LogChannelInterfaceFactory oldLogChannelInterfaceFactory;
-
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
-  private Properties properties;
-  private HBaseAdmin hbaseAdminMock;
-
-  @BeforeClass
-  public static void beforeClass() throws Exception {
-    oldLogChannelInterfaceFactory = KettleLogStore.getLogChannelInterfaceFactory();
-    CommonHBaseConnectionTest.setKettleLogFactoryWithMock();
-  }
-
-  @Before
-  public void setUp() throws Exception {
-    commonHBaseConnection = new HBaseConnectionImpl();
-    hbaseAdminMock = mock( HBaseAdmin.class );
-    commonHBaseConnection.m_admin = hbaseAdminMock;
-    connectionSpy = Mockito.spy( commonHBaseConnection );
-    properties = new Properties();
-  }
-
-  @Test
-  public void testListTableNames() throws Exception {
-    when( hbaseAdminMock.listTables() )
-      .thenReturn( new HTableDescriptor[] { new HTableDescriptor( TableName.valueOf( "test" ) ) } );
-
-    List<String> tableNames = commonHBaseConnection.listTableNames();
-
-    assertThat( tableNames.size(), is( 1 ) );
-    assertThat( tableNames.get( 0 ), is( "test" ) );
-  }
-
-  @Test
-  public void testAddColumnFilterToScanDate() throws Exception {
-    ColumnFilter cf = new ColumnFilter( "Family" );
-    cf.setComparisonOperator( ColumnFilter.ComparisonType.LESS_THAN );
-    cf.setConstant( "07/10/96 4:5 PM" );
-    cf.setSignedComparison( true );
-
-    VariableSpace space = CommonHBaseConnectionTest.mockVariableSpace();
-    connectionSpy.m_sourceScan = new Scan();
-    ByteArrayComparable comparator = mock( ByteArrayComparable.class );
-    doReturn( comparator ).when( connectionSpy ).getDateComparator( eq( cf ), eq( space ), anyString() );
-    HBaseValueMeta meta = new HBaseValueMeta( "colFamly,colname,Family", 3, 20, 1 );
-
-    connectionSpy.addColumnFilterToScan( cf, meta, space, true );
-    FilterList filter = (FilterList) connectionSpy.m_sourceScan.getFilter();
-    assertFalse( filter.getFilters().isEmpty() );
-    assertEquals( filter.getFilters().size(), 1 );
-  }
-
-  @Test
-  public void testAddColumnFilterToScanBoolean() throws Exception {
-    ColumnFilter cf = new ColumnFilter( "Family" );
-    cf.setComparisonOperator( ColumnFilter.ComparisonType.LESS_THAN );
-    cf.setConstant( "true" );
-    cf.setSignedComparison( true );
-
-    VariableSpace space = CommonHBaseConnectionTest.mockVariableSpace();
-    connectionSpy.m_sourceScan = new Scan();
-    ByteArrayComparable comparator = mock( ByteArrayComparable.class );
-    doReturn( comparator ).when( connectionSpy ).getBooleanComparator( anyBoolean() );
-    HBaseValueMeta meta = new HBaseValueMeta( "colFamly,colname,Family", 4, 20, 1 );
-
-    connectionSpy.addColumnFilterToScan( cf, meta, space, true );
-    FilterList filter = (FilterList) connectionSpy.m_sourceScan.getFilter();
-    assertFalse( filter.getFilters().isEmpty() );
-    assertEquals( filter.getFilters().size(), 1 );
-  }
-
-  @Test
-  public void testAddColumnFilterToScanNumberSigned() throws Exception {
-    ColumnFilter cf = new ColumnFilter( "Family" );
-    cf.setComparisonOperator( ColumnFilter.ComparisonType.LESS_THAN );
-    cf.setConstant( "123" );
-    cf.setSignedComparison( true );
-
-    VariableSpace space = CommonHBaseConnectionTest.mockVariableSpace();
-    connectionSpy.m_sourceScan = new Scan();
-    HBaseValueMeta meta = new HBaseValueMeta( "colFamly,colname,Family", 1, 20, 1 );
-    meta.setIsLongOrDouble( true );
-    ByteArrayComparable comparator = mock( ByteArrayComparable.class );
-    doReturn( comparator ).when( connectionSpy ).getNumericComparator( eq( cf ), eq( meta ), eq( space ), anyString() );
-
-    connectionSpy.addColumnFilterToScan( cf, meta, space, true );
-    FilterList filter = (FilterList) connectionSpy.m_sourceScan.getFilter();
-    assertFalse( filter.getFilters().isEmpty() );
-    assertEquals( filter.getFilters().size(), 1 );
-  }
-
-  @Test
-  public void testAddFilterByMapping() throws Exception {
-    testAddFilterByMapping( Mapping.TupleMapping.KEY, RowFilter.class );
-    testAddFilterByMapping( Mapping.TupleMapping.FAMILY, FamilyFilter.class );
-    testAddFilterByMapping( Mapping.TupleMapping.COLUMN, QualifierFilter.class );
-    testAddFilterByMapping( Mapping.TupleMapping.VALUE, ValueFilter.class );
-  }
-
-  private <T> void testAddFilterByMapping( Mapping.TupleMapping mapping, Class<T> filterClass ) throws Exception {
-    FilterList list = new FilterList( FilterList.Operator.MUST_PASS_ONE );
-    ByteArrayComparable comparator = new BinaryComparator( new byte[] { 1, 1, 1 } );
-
-    commonHBaseConnection.addFilterByMapping( list, CompareFilter.CompareOp.EQUAL, ByteArrayComparable.class,
-      comparator, mapping );
-    assertEquals( 1, list.getFilters().size() );
-    assertEquals( filterClass, list.getFilters().get( 0 ).getClass() );
-  }
-
-  @Test
-  public void testGetByteArrayComparableClass() throws Exception {
-    Class<?> byteArrayComparableClass = commonHBaseConnection.getByteArrayComparableClass();
-    assertEquals( "org.apache.hadoop.hbase.filter.ByteArrayComparable", byteArrayComparableClass.getName() );
-  }
-
-  @Test
-  public void testGetCompressionAlgorithmClass() throws Exception {
-    Class<?> compressionAlgorithmClass = commonHBaseConnection.getCompressionAlgorithmClass();
-    assertEquals( "org.apache.hadoop.hbase.io.compress.Compression$Algorithm", compressionAlgorithmClass.getName() );
-  }
-
-  @Test
-  public void testGetBloomTypeClass() throws Exception {
-    Class<?> bloomTypeClass = commonHBaseConnection.getBloomTypeClass();
-    assertEquals( "org.apache.hadoop.hbase.regionserver.BloomType", bloomTypeClass.getName() );
-  }
-
-  @Test
-  public void testConfigureColumnDescriptorWithColDescriptorCompressionKey() throws Exception {
-    doReturn( Class.forName( "org.apache.hadoop.hbase.io.compress.Compression$Algorithm" ) )
-      .when( connectionSpy ).getCompressionAlgorithmClass();
-    HColumnDescriptor columnDescriptor = mock( HColumnDescriptor.class );
-    properties.put( CommonHBaseConnection.COL_DESCRIPTOR_COMPRESSION_KEY, "LZO" );
-    connectionSpy.configureColumnDescriptor( columnDescriptor, properties );
-    verify( columnDescriptor ).setCompressionType( Matchers.<Compression.Algorithm>anyObject() );
-  }
-
-  @AfterClass
-  public static void tearDown() {
-    KettleLogStore.setLogChannelInterfaceFactory( oldLogChannelInterfaceFactory );
-  }
-
+//   private CommonHBaseConnection commonHBaseConnection;
+//   private CommonHBaseConnection connectionSpy;
+//   private static LogChannelInterfaceFactory oldLogChannelInterfaceFactory;
+// 
+//   @Rule
+//   public ExpectedException thrown = ExpectedException.none();
+//   private Properties properties;
+//   private HBaseAdmin hbaseAdminMock;
+// 
+//   @BeforeClass
+//   public static void beforeClass() throws Exception {
+//     oldLogChannelInterfaceFactory = KettleLogStore.getLogChannelInterfaceFactory();
+//     CommonHBaseConnectionTest.setKettleLogFactoryWithMock();
+//   }
+// 
+//   @Before
+//   public void setUp() throws Exception {
+//     commonHBaseConnection = new HBaseConnectionImpl();
+//     hbaseAdminMock = mock( HBaseAdmin.class );
+//     commonHBaseConnection.m_admin = hbaseAdminMock;
+//     connectionSpy = Mockito.spy( commonHBaseConnection );
+//     properties = new Properties();
+//   }
+// 
+//   @Test
+//   public void testListTableNames() throws Exception {
+//     when( hbaseAdminMock.listTables() )
+//       .thenReturn( new HTableDescriptor[] { new HTableDescriptor( TableName.valueOf( "test" ) ) } );
+// 
+//     List<String> tableNames = commonHBaseConnection.listTableNames();
+// 
+//     assertThat( tableNames.size(), is( 1 ) );
+//     assertThat( tableNames.get( 0 ), is( "test" ) );
+//   }
+// 
+//   @Test
+//   public void testAddColumnFilterToScanDate() throws Exception {
+//     ColumnFilter cf = new ColumnFilter( "Family" );
+//     cf.setComparisonOperator( ColumnFilter.ComparisonType.LESS_THAN );
+//     cf.setConstant( "07/10/96 4:5 PM" );
+//     cf.setSignedComparison( true );
+// 
+//     VariableSpace space = CommonHBaseConnectionTest.mockVariableSpace();
+//     connectionSpy.m_sourceScan = new Scan();
+//     ByteArrayComparable comparator = mock( ByteArrayComparable.class );
+//     doReturn( comparator ).when( connectionSpy ).getDateComparator( eq( cf ), eq( space ), anyString() );
+//     HBaseValueMeta meta = new HBaseValueMeta( "colFamly,colname,Family", 3, 20, 1 );
+// 
+//     connectionSpy.addColumnFilterToScan( cf, meta, space, true );
+//     FilterList filter = (FilterList) connectionSpy.m_sourceScan.getFilter();
+//     assertFalse( filter.getFilters().isEmpty() );
+//     assertEquals( filter.getFilters().size(), 1 );
+//   }
+// 
+//   @Test
+//   public void testAddColumnFilterToScanBoolean() throws Exception {
+//     ColumnFilter cf = new ColumnFilter( "Family" );
+//     cf.setComparisonOperator( ColumnFilter.ComparisonType.LESS_THAN );
+//     cf.setConstant( "true" );
+//     cf.setSignedComparison( true );
+// 
+//     VariableSpace space = CommonHBaseConnectionTest.mockVariableSpace();
+//     connectionSpy.m_sourceScan = new Scan();
+//     ByteArrayComparable comparator = mock( ByteArrayComparable.class );
+//     doReturn( comparator ).when( connectionSpy ).getBooleanComparator( anyBoolean() );
+//     HBaseValueMeta meta = new HBaseValueMeta( "colFamly,colname,Family", 4, 20, 1 );
+// 
+//     connectionSpy.addColumnFilterToScan( cf, meta, space, true );
+//     FilterList filter = (FilterList) connectionSpy.m_sourceScan.getFilter();
+//     assertFalse( filter.getFilters().isEmpty() );
+//     assertEquals( filter.getFilters().size(), 1 );
+//   }
+// 
+//   @Test
+//   public void testAddColumnFilterToScanNumberSigned() throws Exception {
+//     ColumnFilter cf = new ColumnFilter( "Family" );
+//     cf.setComparisonOperator( ColumnFilter.ComparisonType.LESS_THAN );
+//     cf.setConstant( "123" );
+//     cf.setSignedComparison( true );
+// 
+//     VariableSpace space = CommonHBaseConnectionTest.mockVariableSpace();
+//     connectionSpy.m_sourceScan = new Scan();
+//     HBaseValueMeta meta = new HBaseValueMeta( "colFamly,colname,Family", 1, 20, 1 );
+//     meta.setIsLongOrDouble( true );
+//     ByteArrayComparable comparator = mock( ByteArrayComparable.class );
+//     doReturn( comparator ).when( connectionSpy ).getNumericComparator( eq( cf ), eq( meta ), eq( space ), anyString() );
+// 
+//     connectionSpy.addColumnFilterToScan( cf, meta, space, true );
+//     FilterList filter = (FilterList) connectionSpy.m_sourceScan.getFilter();
+//     assertFalse( filter.getFilters().isEmpty() );
+//     assertEquals( filter.getFilters().size(), 1 );
+//   }
+// 
+//   @Test
+//   public void testAddFilterByMapping() throws Exception {
+//     testAddFilterByMapping( Mapping.TupleMapping.KEY, RowFilter.class );
+//     testAddFilterByMapping( Mapping.TupleMapping.FAMILY, FamilyFilter.class );
+//     testAddFilterByMapping( Mapping.TupleMapping.COLUMN, QualifierFilter.class );
+//     testAddFilterByMapping( Mapping.TupleMapping.VALUE, ValueFilter.class );
+//   }
+// 
+//   private <T> void testAddFilterByMapping( Mapping.TupleMapping mapping, Class<T> filterClass ) throws Exception {
+//     FilterList list = new FilterList( FilterList.Operator.MUST_PASS_ONE );
+//     ByteArrayComparable comparator = new BinaryComparator( new byte[] { 1, 1, 1 } );
+// 
+//     commonHBaseConnection.addFilterByMapping( list, CompareFilter.CompareOp.EQUAL, ByteArrayComparable.class,
+//       comparator, mapping );
+//     assertEquals( 1, list.getFilters().size() );
+//     assertEquals( filterClass, list.getFilters().get( 0 ).getClass() );
+//   }
+// 
+//   @Test
+//   public void testGetByteArrayComparableClass() throws Exception {
+//     Class<?> byteArrayComparableClass = commonHBaseConnection.getByteArrayComparableClass();
+//     assertEquals( "org.apache.hadoop.hbase.filter.ByteArrayComparable", byteArrayComparableClass.getName() );
+//   }
+// 
+//   @Test
+//   public void testGetCompressionAlgorithmClass() throws Exception {
+//     Class<?> compressionAlgorithmClass = commonHBaseConnection.getCompressionAlgorithmClass();
+//     assertEquals( "org.apache.hadoop.hbase.io.compress.Compression$Algorithm", compressionAlgorithmClass.getName() );
+//   }
+// 
+//   @Test
+//   public void testGetBloomTypeClass() throws Exception {
+//     Class<?> bloomTypeClass = commonHBaseConnection.getBloomTypeClass();
+//     assertEquals( "org.apache.hadoop.hbase.regionserver.BloomType", bloomTypeClass.getName() );
+//   }
+// 
+//   @Test
+//   public void testConfigureColumnDescriptorWithColDescriptorCompressionKey() throws Exception {
+//     doReturn( Class.forName( "org.apache.hadoop.hbase.io.compress.Compression$Algorithm" ) )
+//       .when( connectionSpy ).getCompressionAlgorithmClass();
+//     HColumnDescriptor columnDescriptor = mock( HColumnDescriptor.class );
+//     properties.put( CommonHBaseConnection.COL_DESCRIPTOR_COMPRESSION_KEY, "LZO" );
+//     connectionSpy.configureColumnDescriptor( columnDescriptor, properties );
+//     verify( columnDescriptor ).setCompressionType( Matchers.<Compression.Algorithm>anyObject() );
+//   }
+// 
+//   @AfterClass
+//   public static void tearDown() {
+//     KettleLogStore.setLogChannelInterfaceFactory( oldLogChannelInterfaceFactory );
+//   }
+// 
 }
