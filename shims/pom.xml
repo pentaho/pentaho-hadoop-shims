@@ -424,8 +424,7 @@
         </property>
       </activation>
       <modules>
-        <!-- <module>hdp25</module> -->
-        <!-- <module>hdp26</module> -->
+        <!--<module>hdp25</module> -->        <module>hdp26</module>
         <!-- <module>cdh512</module> -->
         <module>cdh513</module>
         <!--
