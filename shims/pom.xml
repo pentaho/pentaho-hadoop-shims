@@ -486,7 +486,6 @@
       </modules>
     </profile>
 
-<!--
     <profile>
       <id>cdh514</id>
       <activation>
@@ -499,6 +498,7 @@
       </modules>
     </profile>
 
+<!--
     <profile>
       <id>mapr520</id>
       <activation>
