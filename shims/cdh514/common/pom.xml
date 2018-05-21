@@ -125,6 +125,7 @@
     <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.core</artifactId>
+      <version>${org.osgi.core.version}</version>
     </dependency>
     <dependency>
       <groupId>org.pentaho</groupId>
@@ -443,7 +444,7 @@
             <_exportcontents>
               ${bundle.karaf.export.packages}
             </_exportcontents>
-            <!--org.apache.avro;version=8.0.0.cdh514,—>
+            <!-- org.apache.avro;version=8.0.0.cdh514, -->
             <Embed-Dependency>*</Embed-Dependency>
           </instructions>
         </configuration>
