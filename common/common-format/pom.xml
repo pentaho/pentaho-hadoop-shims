@@ -18,6 +18,7 @@
     <org.apache.avro.version>1.8.1</org.apache.avro.version>
     <org.apache.orc.version>1.2.3</org.apache.orc.version>
     <jackson.version>2.6.5</jackson.version>
+    <jackson.annotations.version>2.9.4</jackson.annotations.version>
     <integration-test.src>src/it/java</integration-test.src>
     <aws-java-sdk.version>1.7.4</aws-java-sdk.version>
     <aws-java-sdk-core.version>1.11.275</aws-java-sdk-core.version>
@@ -102,6 +103,20 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
+      <version>${jackson.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <!-- Note: core-annotations version x.y.0 is generally compatible with
+           (identical to) version x.y.1, x.y.2, etc. -->
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>${jackson.annotations.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
       <version>${jackson.version}</version>
       <scope>provided</scope>
     </dependency>
