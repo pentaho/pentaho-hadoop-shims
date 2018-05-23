@@ -40,9 +40,9 @@ import static org.mockito.Mockito.spy;
 
 public class PentahoAvroInputFormatTest {
 
-  public static final String SAMPLE_SCHEMA_AVRO = "/sample-schema.avro";
-  public static final String SAMPLE_DATA_AVRO = "/sample-data.avro";
-  public static final String TYPES_SCHEMA_AVRO = "/avro/avro-types-schema.json";
+  public static final String SAMPLE_SCHEMA_AVRO = "sample-schema.avro";
+  public static final String SAMPLE_DATA_AVRO = "sample-data.avro";
+  public static final String TYPES_SCHEMA_AVRO = "avro/avro-types-schema.json";
 
   private PentahoAvroInputFormat format;
 
@@ -87,7 +87,7 @@ public class PentahoAvroInputFormatTest {
   public void testGetDefaultFields() throws Exception {
     PentahoAvroInputFormat format = spy( new PentahoAvroInputFormat() );
     Schema.Parser parser = new Schema.Parser();
-    Schema schema = parser.parse( new File( getClass().getResource( TYPES_SCHEMA_AVRO ).getFile() ) );
+    Schema schema = parser.parse( new File( getFilePath( TYPES_SCHEMA_AVRO ) ) );
     doReturn( schema ).when( format ).readAvroSchema();
 
     List<? extends IAvroInputField> defaultFields = format.getDefaultFields();
@@ -105,6 +105,6 @@ public class PentahoAvroInputFormatTest {
   }
 
   private String getFilePath( String file ) {
-    return getClass().getResource( file ).getPath();
+    return getClass().getClassLoader().getSystemClassLoader().getResource( file ).getPath();
   }
 }
