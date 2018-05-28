@@ -5,10 +5,10 @@
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-hdp25-reactor</artifactId>
-    <version>8.0-SNAPSHOT</version>
+    <version>80-SHIM-QAT-353</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-hdp25-assemblies-reactor</artifactId>
-  <version>8.0-SNAPSHOT</version>
+  <version>80-SHIM-QAT-353</version>
   <packaging>pom</packaging>
   <modules>
     <module>hdp25-shim</module>
