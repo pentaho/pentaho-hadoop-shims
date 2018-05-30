@@ -14,5 +14,7 @@
 
   <modules>
     <module>mapr60-shim</module>
+    <module>pmr</module>
+    <module>default</module>
   </modules>
 </project>

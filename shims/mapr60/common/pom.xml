@@ -7,7 +7,7 @@
     <artifactId>pentaho-hadoop-shims-mapr60-reactor</artifactId>
     <version>9.0.0.0-SNAPSHOT</version>
   </parent>
-  <artifactId>pentaho-hadoop-shims-mapr60</artifactId>
+  <artifactId>pentaho-hadoop-shims-mapr60-common</artifactId>
   <packaging>jar</packaging>
   <version>9.0.0.0-SNAPSHOT</version>
   <properties>
@@ -36,6 +36,12 @@
     <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>pentaho-hadoop-shims-mapr60-scope-default</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>org.pentaho</groupId>
+      <artifactId>pentaho-hadoop-shims-mapr60</artifactId>
       <version>${project.version}</version>
       <type>pom</type>
     </dependency>
@@ -243,6 +249,17 @@
           <artifactId>*</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.pentaho</groupId>
+      <artifactId>pentaho-hadoop-shims-common</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>com.springsource.org.apache.commons.configuration</artifactId>
+      <version>1.8.0</version>
     </dependency>
   </dependencies>
   <build>
