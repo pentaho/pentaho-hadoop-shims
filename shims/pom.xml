@@ -512,7 +512,7 @@
         <module>mapr520</module>
       </modules>
     </profile>
-
+-->
     <profile>
       <id>mapr60</id>
       <activation>
@@ -525,6 +525,7 @@
       </modules>
     </profile>
 
+<!--
     <profile>
       <id>emr59</id>
       <activation>

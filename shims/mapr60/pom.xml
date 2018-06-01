@@ -35,11 +35,12 @@
         <org.apache.hadoop.version>2.7.0-mapr-1710</org.apache.hadoop.version>
     </properties>
     <modules>
-        <module>pmr</module>
-        <module>default</module>
-        <module>impl</module>
+        <module>common</module>
         <module>hbase-comparators</module>
         <module>assemblies</module>
+        <module>default</module>
+        <module>oozie</module>
+        <module>hive</module>
     </modules>
     <dependencyManagement>
         <dependencies>
