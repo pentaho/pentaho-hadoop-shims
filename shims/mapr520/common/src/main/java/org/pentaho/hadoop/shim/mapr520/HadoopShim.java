@@ -102,7 +102,7 @@ public class HadoopShim extends CommonHadoopShim {
     } finally {
       Thread.currentThread().setContextClassLoader( cl );
     }
-    ShimUtils.asConfiguration( result ).addResource( "hbase-site.xml" );
+    ShimUtils.asConfiguration( result ).addResource("hbase-site.xml");
     return result;
   }
 
