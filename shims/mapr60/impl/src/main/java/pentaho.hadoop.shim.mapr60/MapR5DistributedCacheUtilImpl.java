@@ -20,7 +20,7 @@
  *
  ******************************************************************************/
 
-package org.pentaho.hadoop.shim.mapr60;
+package pentaho.hadoop.shim.mapr60;
 
 import java.io.IOException;
 import java.net.URI;

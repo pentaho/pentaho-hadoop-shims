@@ -20,7 +20,7 @@
  *
  ******************************************************************************/
 
-package org.pentaho.hadoop.shim.mapr60.authorization;
+package pentaho.hadoop.shim.mapr60.authorization;
 
 import org.pentaho.hadoop.shim.common.CommonHadoopShim;
 import org.pentaho.hadoop.shim.common.CommonPigShim;
