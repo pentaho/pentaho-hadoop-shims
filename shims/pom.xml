@@ -430,7 +430,7 @@
         <module>cdh513</module>
         <module>cdh514</module>
         <!--<module>mapr520</module> -->
-        <!--<module>mapr60</module> -->
+        <module>mapr60</module>
         <!--
         <module>emr59</module>
         <module>emr511</module>
@@ -512,7 +512,7 @@
         <module>mapr520</module>
       </modules>
     </profile>
-
+-->
     <profile>
       <id>mapr60</id>
       <activation>
@@ -524,7 +524,7 @@
         <module>mapr60</module>
       </modules>
     </profile>
-
+<!--
     <profile>
       <id>emr59</id>
       <activation>
