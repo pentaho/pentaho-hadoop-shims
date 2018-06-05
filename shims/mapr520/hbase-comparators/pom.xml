@@ -65,6 +65,7 @@
                   <outputDirectory>${project.build.directory}/src</outputDirectory>
                   <includes>**/DeserializedBooleanComparator.java,**/DeserializedNumericComparator.java</includes>
                 </artifactItem>
+                <!--
                 <artifactItem>
                   <groupId>org.pentaho</groupId>
                   <artifactId>pentaho-hadoop-shims-hbase-comparators</artifactId>
@@ -72,6 +73,7 @@
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}/test-src</outputDirectory>
                 </artifactItem>
+                -->
               </artifactItems>
             </configuration>
           </execution>
