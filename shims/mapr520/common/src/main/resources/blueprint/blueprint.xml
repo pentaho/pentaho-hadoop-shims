@@ -34,12 +34,12 @@
     </service-properties>
   </service>
 
-  <bean id="cdh11SqoopServiceFactory" class="org.pentaho.big.data.impl.shim.sqoop.SqoopServiceFactoryImpl">
+  <bean id="mapr520SqoopServiceFactory" class="org.pentaho.big.data.impl.shim.sqoop.SqoopServiceFactoryImpl">
     <argument ref="mapr520Hadoop"/>
     <argument ref="mapr520SqoopShim"/>
   </bean>
 
-  <service ref="cdh11SqoopServiceFactory"
+  <service ref="mapr520SqoopServiceFactory"
            interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
     <service-properties>
       <entry key="shim">
@@ -67,12 +67,12 @@
     </service-properties>
   </service>
 
-  <bean id="cdh11PigServiceFactory" class="org.pentaho.big.data.impl.shim.pig.PigServiceFactoryImpl">
+  <bean id="mapr520PigServiceFactory" class="org.pentaho.big.data.impl.shim.pig.PigServiceFactoryImpl">
     <argument ref="mapr520Hadoop"/>
     <argument ref="mapr520PigShim"/>
   </bean>
 
-  <service ref="cdh11PigServiceFactory"
+  <service ref="mapr520PigServiceFactory"
            interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
     <service-properties>
       <entry key="shim">
@@ -113,14 +113,14 @@
     </service-properties>
   </service>
 
-  <bean id="cdh11MapReduceServiceFactory" class="org.pentaho.big.data.impl.shim.mapreduce.MapReduceServiceFactoryImpl">
+  <bean id="mapr520MapReduceServiceFactory" class="org.pentaho.big.data.impl.shim.mapreduce.MapReduceServiceFactoryImpl">
     <argument ref="mapr520Hadoop"/>
     <argument ref="executorService"/>
     <argument ref="transformationVisitorList"/>
   </bean>
   <reference id="executorService" interface="java.util.concurrent.ExecutorService"/>
 
-  <service ref="cdh11MapReduceServiceFactory" interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
+  <service ref="mapr520MapReduceServiceFactory" interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
     <service-properties>
       <entry key="shim">
         <value type="java.lang.String">mapr520</value>
