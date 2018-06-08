@@ -4,10 +4,10 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.pentaho</groupId>
-    <artifactId>pentaho-hadoop-shims-emr59-reactor</artifactId>
+    <artifactId>pentaho-hadoop-shims-emr59-assemblies-reactor</artifactId>
     <version>8.2.0.0-SNAPSHOT</version>
   </parent>
-  <artifactId>pentaho-hadoop-shims-emr59-scope-pmr</artifactId>
+  <artifactId>pentaho-hadoop-shims-emr59-scope-pmr-assembly</artifactId>
   <version>8.2.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <dependencies>
@@ -120,3 +120,4 @@
     </plugins>
   </build>
 </project>
+
