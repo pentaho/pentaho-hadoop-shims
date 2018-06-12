@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="
+            http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
+
+    <bean id="emr511Hadoop" class="org.pentaho.hadoop.shim.emr511.HadoopShim" scope="singleton"/>
+    <service ref="emr511Hadoop" interface="org.pentaho.hadoop.shim.spi.HadoopShim">
+        <service-properties>
+            <entry key="shim">
+                <value type="java.lang.String">emr511</value>
+            </entry>
+        </service-properties>
+    </service>
+
+    <bean id="hadoopFileSystem" class="com.pentaho.big.data.bundles.impl.shim.hdfs.HadoopFileSystemFactoryImpl">
+        <argument ref="emr511Hadoop"/>
+    </bean>
+
+    <service ref="hadoopFileSystem" interface="org.pentaho.bigdata.api.hdfs.HadoopFileSystemFactory"/>
+
+    <bean id="emr511SqoopShim" class="org.pentaho.hadoop.shim.common.sqoop.CommonSqoopShim">
+        <property name="bundleContext" ref="blueprintBundleContext" />
+    </bean>
+
+    <service ref="emr511SqoopShim" auto-export="interfaces">
+        <service-properties>
+            <entry key="shim">
+                <value type="java.lang.String">emr511</value>
+            </entry>
+            <entry key="service">
+                <value type="java.lang.String">sqoop</value>
+            </entry>
+        </service-properties>
+    </service>
+
+    <bean id="emr511SqoopServiceFactory" class="org.pentaho.big.data.impl.shim.sqoop.SqoopServiceFactoryImpl">
+        <argument ref="emr511Hadoop"/>
+        <argument ref="emr511SqoopShim"/>
+    </bean>
+
+    <service ref="emr511SqoopServiceFactory"
+             interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
+        <service-properties>
+            <entry key="shim">
+                <value type="java.lang.String">emr511</value>
+            </entry>
+            <entry key="service">
+                <value type="java.lang.String">sqoop</value>
+            </entry>
+        </service-properties>
+    </service>
+
+
+    <bean id="emr511PigShim" class="org.pentaho.hadoop.shim.common.pig.PigShimImpl">
+        <property name="bundleContext" ref="blueprintBundleContext"/>
+    </bean>
+
+    <service ref="emr511PigShim" auto-export="interfaces">
+        <service-properties>
+            <entry key="shim">
+                <value type="java.lang.String">emr511</value>
+            </entry>
+            <entry key="service">
+                <value type="java.lang.String">pig</value>
+            </entry>
+        </service-properties>
+    </service>
+
+    <bean id="emr511PigServiceFactory" class="org.pentaho.big.data.impl.shim.pig.PigServiceFactoryImpl">
+        <argument ref="emr511Hadoop"/>
+        <argument ref="emr511PigShim"/>
+    </bean>
+
+    <service ref="emr511PigServiceFactory"
+             interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
+        <service-properties>
+            <entry key="shim">
+                <value type="java.lang.String">emr511</value>
+            </entry>
+            <entry key="service">
+                <value type="java.lang.String">pig</value>
+            </entry>
+        </service-properties>
+    </service>
+
+    <bean id="emr511FormatShim" class="org.pentaho.hadoop.shim.common.CommonFormatShim"/>
+
+    <service ref="emr511FormatShim" auto-export="interfaces">
+        <service-properties>
+            <entry key="shim">
+                <value type="java.lang.String">emr511</value>
+            </entry>
+            <entry key="service">
+                <value type="java.lang.String">format</value>
+            </entry>
+        </service-properties>
+    </service>
+
+    <bean id="emr511FormatServiceFactory" class="org.pentaho.big.data.impl.shim.format.FormatServiceFactory">
+        <argument ref="emr511FormatShim"/>
+    </bean>
+
+    <service ref="emr511FormatServiceFactory"
+             interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
+        <service-properties>
+            <entry key="shim">
+                <value type="java.lang.String">emr511</value>
+            </entry>
+            <entry key="service">
+                <value type="java.lang.String">format</value>
+            </entry>
+        </service-properties>
+    </service>
+
+    <bean id="emr511MapReduceServiceFactory" class="org.pentaho.big.data.impl.shim.mapreduce.MapReduceServiceFactoryImpl">
+        <argument ref="emr511Hadoop"/>
+        <argument ref="executorService"/>
+        <argument ref="transformationVisitorList"/>
+    </bean>
+    <reference id="executorService" interface="java.util.concurrent.ExecutorService"/>
+
+    <service ref="emr511MapReduceServiceFactory" interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
+        <service-properties>
+            <entry key="shim">
+                <value type="java.lang.String">emr511</value>
+            </entry>
+            <entry key="service">
+                <value type="java.lang.String">mapreduce</value>
+            </entry>
+        </service-properties>
+    </service>
+    <reference-list id="transformationVisitorList" interface="org.pentaho.bigdata.api.mapreduce.TransformationVisitorService"
+                    availability="optional"/>
+    <!--<reference id="emr511HadoopConfiguration" interface="org.pentaho.hadoop.shim.api.HadoopConfigurationInterface"/>-->
+
+</blueprint>
