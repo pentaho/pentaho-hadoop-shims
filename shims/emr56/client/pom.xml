@@ -10,6 +10,9 @@
   <artifactId>pentaho-hadoop-shims-emr56-scope-client</artifactId>
   <version>7.1-SNAPSHOT</version>
   <packaging>pom</packaging>
+  <properties>
+    <dependency.joda-time.revision>2.9.9</dependency.joda-time.revision>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>dk.brics.automaton</groupId>
@@ -52,6 +55,17 @@
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-aws</artifactId>
       <version>${org.apache.hadoop.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>${dependency.joda-time.revision}</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>*</artifactId>
+          <groupId>*</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
