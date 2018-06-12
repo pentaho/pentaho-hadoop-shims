@@ -4,10 +4,10 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.pentaho</groupId>
-    <artifactId>pentaho-hadoop-shims-emr511-reactor</artifactId>
+    <artifactId>pentaho-hadoop-shims-emr59-reactor</artifactId>
     <version>9.0.0.0-SNAPSHOT</version>
   </parent>
-  <artifactId>pentaho-hadoop-shims-emr511-hive</artifactId>
+  <artifactId>pentaho-hadoop-shims-emr59-hive</artifactId>
   <version>9.0.0.0-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <properties>
@@ -27,7 +27,7 @@
     </dependency>
     <dependency>
       <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-emr511-common</artifactId>
+      <artifactId>pentaho-hadoop-shims-emr59-common</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
@@ -199,7 +199,7 @@
               org.pentaho.hadoop.shim.spi.*,
             </Import-Package>
             <_exportcontents>
-              org.apache.hadoop.hive;version=9.0.511.emr
+              org.apache.hadoop.hive;version=8.0.513.cdh
             </_exportcontents>
             <Embed-Dependency>*</Embed-Dependency>
           </instructions>

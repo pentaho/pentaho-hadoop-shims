@@ -1,102 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
   <parent>
+    <artifactId>pentaho-hadoop-shims-emr59-reactor</artifactId>
     <groupId>org.pentaho</groupId>
-    <artifactId>pentaho-hadoop-shims-emr511-reactor</artifactId>
     <version>9.0.0.0-SNAPSHOT</version>
   </parent>
-  <artifactId>pentaho-hadoop-shims-emr511-hive</artifactId>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>pentaho-hadoop-shims-emr59-oozie</artifactId>
   <version>9.0.0.0-SNAPSHOT</version>
   <packaging>bundle</packaging>
-  <properties>
-    <shim.type>EMR</shim.type>
-  </properties>
   <dependencies>
     <dependency>
       <groupId>org.pentaho</groupId>
+      <artifactId>pentaho-hadoop-shims-emr59-common</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.pentaho</groupId>
+      <artifactId>pentaho-big-data-impl-shim-oozie</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oozie</groupId>
+      <artifactId>oozie-client</artifactId>
+      <version>${org.apache.oozie.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oozie</groupId>
+      <artifactId>oozie-core</artifactId>
+      <version>${org.apache.oozie.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.pentaho</groupId>
       <artifactId>pentaho-hadoop-shims-api</artifactId>
-      <version>${project.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-emr511-common</artifactId>
-      <version>${project.version}</version>
+      <version>${pentaho-hadoop-shims-api.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-big-data-impl-shim-hive</artifactId>
-      <version>9.0.0.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.hive</groupId>
-      <artifactId>hive-serde</artifactId>
-      <version>${org.apache.hive.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.hive</groupId>
-      <artifactId>hive-common</artifactId>
-      <version>${org.apache.hive.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.hive</groupId>
-      <artifactId>hive-service</artifactId>
-      <version>${org.apache.hive.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.hive</groupId>
-      <artifactId>hive-exec</artifactId>
-      <version>${org.apache.hive.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.hive</groupId>
-      <artifactId>hive-service</artifactId>
-      <version>${org.apache.hive.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.hive</groupId>
-      <artifactId>hive-metastore</artifactId>
-      <version>${org.apache.hive.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.hive</groupId>
-      <artifactId>hive-jdbc</artifactId>
-      <version>${org.apache.hive.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.hive</groupId>
-      <artifactId>hive-exec</artifactId>
-      <version>${org.apache.hive.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.hive</groupId>
-      <artifactId>hive-metastore</artifactId>
-      <version>${org.apache.hive.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.hadoop</groupId>
-      <artifactId>hadoop-common</artifactId>
-      <version>${org.apache.hadoop.version}</version>
+      <artifactId>pentaho-big-data-api-oozie</artifactId>
+      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.hadoop</groupId>
-      <artifactId>hadoop-hdfs</artifactId>
-      <version>${org.apache.hadoop.version}</version>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <version>4.3.1</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.hadoop</groupId>
-      <artifactId>hadoop-mapreduce-client-core</artifactId>
-      <version>${org.apache.hadoop.version}</version>
+      <groupId>org.pentaho</groupId>
+      <artifactId>pentaho-big-data-api-cluster-service-locator</artifactId>
+      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
@@ -116,14 +75,7 @@
               <artifactItems>
                 <artifactItem>
                   <groupId>org.pentaho</groupId>
-                  <artifactId>pentaho-hadoop-shims-common-shim</artifactId>
-                  <classifier>sources</classifier>
-                  <overWrite>false</overWrite>
-                  <outputDirectory>${project.build.directory}/src</outputDirectory>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.pentaho</groupId>
-                  <artifactId>pentaho-big-data-impl-shim-hive</artifactId>
+                  <artifactId>pentaho-big-data-impl-shim-oozie</artifactId>
                   <classifier>sources</classifier>
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}/src</outputDirectory>
@@ -140,12 +92,8 @@
         <configuration>
           <resolverFilters>
             <resolverFilter>
-              <include>
-                *:hive-*,*:automaton
-              </include>
-              <exclude>
-                *:*-core
-              </exclude>
+              <include>*:oozie*</include>
+              <exclude>*:*tests*</exclude>
               <transitive>false</transitive>
             </resolverFilter>
           </resolverFilters>
@@ -195,16 +143,18 @@
             <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
             <DynamicImport-Package>*</DynamicImport-Package>
             <Import-Package>
-              org.pentaho.hadoop.shim.api.*,
-              org.pentaho.hadoop.shim.spi.*,
+              org.pentaho.hadoop.shim.api.*;version=${pentaho-osgi-bundles.version},
+              org.pentaho.hadoop.shim.spi.*;version=${pentaho-osgi-bundles.version},
+              org.apache.hadoop.conf.*;version=${bundle.export.version}
             </Import-Package>
-            <_exportcontents>
-              org.apache.hadoop.hive;version=9.0.511.emr
-            </_exportcontents>
+            <_exportcontents>org.pentaho.big.data.impl.shim.oozie</_exportcontents>
             <Embed-Dependency>*</Embed-Dependency>
+            <!--<Embed-Transitive>true</Embed-Transitive>-->
           </instructions>
         </configuration>
       </plugin>
     </plugins>
   </build>
+
+
 </project>
