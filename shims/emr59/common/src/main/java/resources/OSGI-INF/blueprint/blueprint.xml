@@ -34,12 +34,12 @@
     </service-properties>
   </service>
 
-  <bean id="cdh11SqoopServiceFactory" class="org.pentaho.big.data.impl.shim.sqoop.SqoopServiceFactoryImpl">
+  <bean id="emr59SqoopServiceFactory" class="org.pentaho.big.data.impl.shim.sqoop.SqoopServiceFactoryImpl">
     <argument ref="emr59Hadoop"/>
     <argument ref="emr59SqoopShim"/>
   </bean>
 
-  <service ref="cdh11SqoopServiceFactory"
+  <service ref="emr59SqoopServiceFactory"
            interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
     <service-properties>
       <entry key="shim">
@@ -67,12 +67,12 @@
     </service-properties>
   </service>
 
-  <bean id="cdh11PigServiceFactory" class="org.pentaho.big.data.impl.shim.pig.PigServiceFactoryImpl">
+  <bean id="emr59PigServiceFactory" class="org.pentaho.big.data.impl.shim.pig.PigServiceFactoryImpl">
     <argument ref="emr59Hadoop"/>
     <argument ref="emr59PigShim"/>
   </bean>
 
-  <service ref="cdh11PigServiceFactory"
+  <service ref="emr59PigServiceFactory"
            interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
     <service-properties>
       <entry key="shim">
@@ -113,14 +113,14 @@
     </service-properties>
   </service>
 
-  <bean id="cdh11MapReduceServiceFactory" class="org.pentaho.big.data.impl.shim.mapreduce.MapReduceServiceFactoryImpl">
+  <bean id="emr59MapReduceServiceFactory" class="org.pentaho.big.data.impl.shim.mapreduce.MapReduceServiceFactoryImpl">
     <argument ref="emr59Hadoop"/>
     <argument ref="executorService"/>
     <argument ref="transformationVisitorList"/>
   </bean>
   <reference id="executorService" interface="java.util.concurrent.ExecutorService"/>
 
-  <service ref="cdh11MapReduceServiceFactory" interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
+  <service ref="emr59MapReduceServiceFactory" interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
     <service-properties>
       <entry key="shim">
         <value type="java.lang.String">emr59</value>
