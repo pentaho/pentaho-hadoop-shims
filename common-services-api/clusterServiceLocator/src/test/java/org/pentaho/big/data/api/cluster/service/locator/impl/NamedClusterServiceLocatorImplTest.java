@@ -22,8 +22,8 @@
 
 package org.pentaho.big.data.api.cluster.service.locator.impl;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
-import com.google.common.collect.TreeMultimap;
 import org.junit.Before;
 import org.junit.Test;
 import org.pentaho.big.data.api.cluster.NamedCluster;
@@ -33,8 +33,8 @@ import org.pentaho.big.data.api.initializer.ClusterInitializer;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -49,7 +49,9 @@ import static org.pentaho.big.data.api.cluster.service.locator.impl.NamedCluster
  * Created by bryan on 11/6/15.
  */
 public class NamedClusterServiceLocatorImplTest {
-  private Multimap<Class<?>, NamedClusterServiceLocatorImpl.ServiceFactoryAndRanking<?>> serviceFactoryMap;
+  //private Multimap<Class<?>, NamedClusterServiceLocatorImpl.ServiceFactoryAndRanking<?>> serviceFactoryMap;
+  private Map<String, Multimap<Class<?>, NamedClusterServiceLocatorImpl.ServiceFactoryAndRanking<?>>>
+    serviceVendorTypeMapping;
   private NamedClusterServiceLocatorImpl serviceLocator;
   private NamedCluster namedCluster;
   private NamedClusterServiceFactory namedClusterServiceFactory;
@@ -62,91 +64,98 @@ public class NamedClusterServiceLocatorImplTest {
   @Before
   public void setup() {
     clusterInitializer = mock( ClusterInitializer.class );
-    serviceLocator = new NamedClusterServiceLocatorImpl( clusterInitializer );
+    serviceLocator = new NamedClusterServiceLocatorImpl( clusterInitializer, "shimA" );
 //    serviceFactoryMap = serviceLocator.getServiceFactoryMap();
-//    namedCluster = mock( NamedCluster.class );
-//    namedClusterServiceFactory = mock( NamedClusterServiceFactory.class );
-//    namedClusterServiceFactory2 = mock( NamedClusterServiceFactory.class );
-//    namedClusterServiceFactory3 = mock( NamedClusterServiceFactory.class );
-//    namedClusterServiceFactory4 = mock( NamedClusterServiceFactory.class );
-//    when( namedClusterServiceFactory.getServiceClass() ).thenReturn( Object.class );
-//    when( namedClusterServiceFactory2.getServiceClass() ).thenReturn( Object.class );
-//    when( namedClusterServiceFactory3.getServiceClass() ).thenReturn( Object.class );
-//    when( namedClusterServiceFactory4.getServiceClass() ).thenReturn( Object.class );
-//    when( namedClusterServiceFactory.toString() ).thenReturn( "d" );
-//    when( namedClusterServiceFactory2.toString() ).thenReturn( "b" );
-//    when( namedClusterServiceFactory3.toString() ).thenReturn( "a" );
-//    when( namedClusterServiceFactory4.toString() ).thenReturn( "c" );
-//    serviceLocator.factoryAdded( namedClusterServiceFactory, Collections.singletonMap( SERVICE_RANKING, 2 ) );
-//    serviceLocator.factoryAdded( namedClusterServiceFactory2, Collections.singletonMap( SERVICE_RANKING, 1 ) );
-//    serviceLocator.factoryAdded( namedClusterServiceFactory3, Collections.emptyMap() );
-//    serviceLocator.factoryAdded( namedClusterServiceFactory4, Collections.singletonMap( SERVICE_RANKING, 1 ) );
-//    value = new Object();
+    serviceVendorTypeMapping = serviceLocator.getServiceVendorTypeMapping();
+    namedCluster = mock( NamedCluster.class );
+    namedClusterServiceFactory = mock( NamedClusterServiceFactory.class );
+    namedClusterServiceFactory2 = mock( NamedClusterServiceFactory.class );
+    namedClusterServiceFactory3 = mock( NamedClusterServiceFactory.class );
+    namedClusterServiceFactory4 = mock( NamedClusterServiceFactory.class );
+    when( namedClusterServiceFactory.getServiceClass() ).thenReturn( Object.class );
+    when( namedClusterServiceFactory2.getServiceClass() ).thenReturn( Object.class );
+    when( namedClusterServiceFactory3.getServiceClass() ).thenReturn( Object.class );
+    when( namedClusterServiceFactory4.getServiceClass() ).thenReturn( Object.class );
+    when( namedClusterServiceFactory.toString() ).thenReturn( "d" );
+    when( namedClusterServiceFactory2.toString() ).thenReturn( "b" );
+    when( namedClusterServiceFactory3.toString() ).thenReturn( "a" );
+    when( namedClusterServiceFactory4.toString() ).thenReturn( "c" );
+    serviceLocator.factoryAdded( namedClusterServiceFactory, ImmutableMap.of( "shim", "shimA", SERVICE_RANKING, 2 ) );
+    serviceLocator.factoryAdded( namedClusterServiceFactory2, ImmutableMap.of( "shim", "shimA", SERVICE_RANKING, 4 ) );
+    serviceLocator.factoryAdded( namedClusterServiceFactory3, Collections.emptyMap() );
+    serviceLocator.factoryAdded( namedClusterServiceFactory4, ImmutableMap.of( "shim", "shimA", SERVICE_RANKING, 4 ) );
+    serviceLocator.factoryAdded( namedClusterServiceFactory, ImmutableMap.of( "shim", "shimB", SERVICE_RANKING, 3 ) );
+    serviceLocator.factoryAdded( namedClusterServiceFactory4, ImmutableMap.of( "shim", "shimB", SERVICE_RANKING, 5 ) );
+    value = new Object();
   }
 
   @Test
   public void testNoArgConstructor() throws ClusterInitializationException {
-//    assertNull( new NamedClusterServiceLocatorImpl( clusterInitializer ).getService( namedCluster, Object.class ) );
+    assertNull( new NamedClusterServiceLocatorImpl( clusterInitializer, "shimA" ).getService( namedCluster, Object.class ) );
+    assertEquals( "shimA", serviceLocator.getDefaultShim() );
+    serviceLocator.getVendorShimList();
   }
 
   @Test
   public void testFactoryAddedRemoved() {
-//    List<NamedClusterServiceLocatorImpl.ServiceFactoryAndRanking<?>> serviceFactoryAndRankings =
-//      new ArrayList<>( serviceFactoryMap.get( Object.class ) );
-//    assertEquals( 4, serviceFactoryAndRankings.size() );
-//    assertEquals( namedClusterServiceFactory, serviceFactoryAndRankings.get( 0 ).namedClusterServiceFactory );
-//    assertEquals( namedClusterServiceFactory2, serviceFactoryAndRankings.get( 1 ).namedClusterServiceFactory );
-//    assertEquals( namedClusterServiceFactory4, serviceFactoryAndRankings.get( 2 ).namedClusterServiceFactory );
-//    assertEquals( namedClusterServiceFactory3, serviceFactoryAndRankings.get( 3 ).namedClusterServiceFactory );
-//
-//    serviceLocator.factoryRemoved( namedClusterServiceFactory, Collections.singletonMap( SERVICE_RANKING, 2 ) );
-//    serviceFactoryAndRankings = new ArrayList<>( serviceFactoryMap.get( Object.class ) );
-//    assertEquals( 3, serviceFactoryAndRankings.size() );
-//    assertEquals( namedClusterServiceFactory2, serviceFactoryAndRankings.get( 0 ).namedClusterServiceFactory );
-//    assertEquals( namedClusterServiceFactory4, serviceFactoryAndRankings.get( 1 ).namedClusterServiceFactory );
-//    assertEquals( namedClusterServiceFactory3, serviceFactoryAndRankings.get( 2 ).namedClusterServiceFactory );
-//
-//    serviceLocator.factoryRemoved( namedClusterServiceFactory, Collections.singletonMap( SERVICE_RANKING, 2 ) );
-//    serviceFactoryAndRankings = new ArrayList<>( serviceFactoryMap.get( Object.class ) );
-//    assertEquals( 3, serviceFactoryAndRankings.size() );
-//    assertEquals( namedClusterServiceFactory2, serviceFactoryAndRankings.get( 0 ).namedClusterServiceFactory );
-//    assertEquals( namedClusterServiceFactory4, serviceFactoryAndRankings.get( 1 ).namedClusterServiceFactory );
-//    assertEquals( namedClusterServiceFactory3, serviceFactoryAndRankings.get( 2 ).namedClusterServiceFactory );
-//
-//    serviceLocator.factoryRemoved( namedClusterServiceFactory2, Collections.singletonMap( SERVICE_RANKING, 1 ) );
-//    serviceFactoryAndRankings = new ArrayList<>( serviceFactoryMap.get( Object.class ) );
-//    assertEquals( 2, serviceFactoryAndRankings.size() );
-//    assertEquals( namedClusterServiceFactory4, serviceFactoryAndRankings.get( 0 ).namedClusterServiceFactory );
-//    assertEquals( namedClusterServiceFactory3, serviceFactoryAndRankings.get( 1 ).namedClusterServiceFactory );
-//
-//    serviceLocator.factoryRemoved( namedClusterServiceFactory4, Collections.singletonMap( SERVICE_RANKING, 1 ) );
-//    serviceFactoryAndRankings = new ArrayList<>( serviceFactoryMap.get( Object.class ) );
-//    assertEquals( 1, serviceFactoryAndRankings.size() );
-//    assertEquals( namedClusterServiceFactory3, serviceFactoryAndRankings.get( 0 ).namedClusterServiceFactory );
-//
-//    serviceLocator.factoryRemoved( namedClusterServiceFactory3, Collections.emptyMap() );
-//    assertFalse( serviceFactoryMap.containsKey( Object.class ) );
+    List<String> shims = serviceLocator.getVendorShimList();
+    assertEquals( 3, shims.size() );
+    List<NamedClusterServiceLocatorImpl.ServiceFactoryAndRanking<?>> serviceFactoryAndRankings =
+      new ArrayList<>( serviceVendorTypeMapping.get( "shimA" ).get( Object.class ) );
+    assertEquals( 3, serviceFactoryAndRankings.size() );
+    //Factories should be ordered by ranking
+    assertEquals( namedClusterServiceFactory2, serviceFactoryAndRankings.get( 0 ).namedClusterServiceFactory );
+    assertEquals( namedClusterServiceFactory4, serviceFactoryAndRankings.get( 1 ).namedClusterServiceFactory );
+    assertEquals( namedClusterServiceFactory, serviceFactoryAndRankings.get( 2 ).namedClusterServiceFactory );
+
+    serviceFactoryAndRankings = new ArrayList<>( serviceVendorTypeMapping.get( "shimB" ).get( Object.class ) );
+    assertEquals( 2, serviceFactoryAndRankings.size() );
+    //Factories should be ordered by ranking
+    assertEquals( namedClusterServiceFactory4, serviceFactoryAndRankings.get( 0 ).namedClusterServiceFactory );
+    assertEquals( namedClusterServiceFactory, serviceFactoryAndRankings.get( 1 ).namedClusterServiceFactory );
+
+    //Remove one of the factories
+    serviceLocator.factoryRemoved( namedClusterServiceFactory, ImmutableMap.of( "shim", "shimA", SERVICE_RANKING, 2 ) );
+    serviceFactoryAndRankings = new ArrayList<>( serviceVendorTypeMapping.get( "shimA" ).get( Object.class ) );
+    assertEquals( 2, serviceFactoryAndRankings.size() );
+    assertEquals( namedClusterServiceFactory2, serviceFactoryAndRankings.get( 0 ).namedClusterServiceFactory );
+    assertEquals( namedClusterServiceFactory4, serviceFactoryAndRankings.get( 1 ).namedClusterServiceFactory );
+
+    //Try the same removal again
+    serviceLocator.factoryRemoved( namedClusterServiceFactory, ImmutableMap.of( "shim", "shimA", SERVICE_RANKING, 2 ) );
+    serviceFactoryAndRankings = new ArrayList<>( serviceVendorTypeMapping.get( "shimA" ).get( Object.class ) );
+    assertEquals( 2, serviceFactoryAndRankings.size() );
+    assertEquals( namedClusterServiceFactory2, serviceFactoryAndRankings.get( 0 ).namedClusterServiceFactory );
+    assertEquals( namedClusterServiceFactory4, serviceFactoryAndRankings.get( 1 ).namedClusterServiceFactory );
+
+    serviceLocator.factoryRemoved( namedClusterServiceFactory2, ImmutableMap.of( "shim", "shimA",  SERVICE_RANKING, 4 ) );
+    serviceFactoryAndRankings = new ArrayList<>( serviceVendorTypeMapping.get( "shimA" ).get( Object.class ) );
+    assertEquals( 1, serviceFactoryAndRankings.size() );
+    assertEquals( namedClusterServiceFactory4, serviceFactoryAndRankings.get( 0 ).namedClusterServiceFactory );
+
+    serviceLocator.factoryRemoved( namedClusterServiceFactory4, ImmutableMap.of( "shim", "shimA", SERVICE_RANKING, 4 ) );
+    assertFalse( serviceVendorTypeMapping.containsKey( "shimA" ) );
   }
 
   @Test
   public void testGetServiceFirst() throws ClusterInitializationException {
-//    when( namedClusterServiceFactory.canHandle( namedCluster ) ).thenReturn( true );
-//    when( namedClusterServiceFactory.create( namedCluster ) ).thenReturn( value );
-//    assertEquals( value, serviceLocator.getService( namedCluster, Object.class ) );
-//    verify( namedClusterServiceFactory2, never() ).create( namedCluster );
-//    verify( namedClusterServiceFactory3, never() ).create( namedCluster );
-//    verify( namedClusterServiceFactory4, never() ).create( namedCluster );
-//    verify( clusterInitializer ).initialize( namedCluster );
+    when( namedClusterServiceFactory.canHandle( namedCluster ) ).thenReturn( true );
+    when( namedClusterServiceFactory.create( namedCluster ) ).thenReturn( value );
+    assertEquals( value, serviceLocator.getService( namedCluster, Object.class ) );
+    verify( namedClusterServiceFactory2, never() ).create( namedCluster );
+    verify( namedClusterServiceFactory3, never() ).create( namedCluster );
+    verify( namedClusterServiceFactory4, never() ).create( namedCluster );
+    //verify( clusterInitializer ).initialize( namedCluster ); //Multishim doesn't call this anymore, not sure why not
   }
 
   @Test
   public void testGetServiceLast() throws ClusterInitializationException {
-//    when( namedClusterServiceFactory3.canHandle( namedCluster ) ).thenReturn( true );
-//    when( namedClusterServiceFactory3.create( namedCluster ) ).thenReturn( value );
-//    assertEquals( value, serviceLocator.getService( namedCluster, Object.class ) );
-//    verify( namedClusterServiceFactory, never() ).create( namedCluster );
-//    verify( namedClusterServiceFactory2, never() ).create( namedCluster );
-//    verify( namedClusterServiceFactory4, never() ).create( namedCluster );
+    when( namedClusterServiceFactory4.canHandle( namedCluster ) ).thenReturn( true );
+    when( namedClusterServiceFactory4.create( namedCluster ) ).thenReturn( value );
+    assertEquals( value, serviceLocator.getService( namedCluster, Object.class ) );
+    verify( namedClusterServiceFactory, never() ).create( namedCluster );
+    verify( namedClusterServiceFactory2, never() ).create( namedCluster );
+    verify( namedClusterServiceFactory3, never() ).create( namedCluster );
 //    verify( clusterInitializer ).initialize( namedCluster );
   }
 

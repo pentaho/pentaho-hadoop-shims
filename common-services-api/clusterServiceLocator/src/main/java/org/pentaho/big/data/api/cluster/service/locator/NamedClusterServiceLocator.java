@@ -25,9 +25,14 @@ package org.pentaho.big.data.api.cluster.service.locator;
 import org.pentaho.big.data.api.cluster.NamedCluster;
 import org.pentaho.big.data.api.initializer.ClusterInitializationException;
 
+import java.util.List;
+
 /**
  * Created by bryan on 11/5/15.
  */
 public interface NamedClusterServiceLocator {
   <T> T getService( NamedCluster namedCluster, Class<T> serviceClass ) throws ClusterInitializationException;
+  List<String> getVendorShimList();
+  String getDefaultShim();
+  void setDefaultShim( String defaultShim );
 }
