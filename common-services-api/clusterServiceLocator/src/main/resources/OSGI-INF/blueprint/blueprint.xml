@@ -14,11 +14,16 @@
     </cm:default-properties>
   </cm:property-placeholder>
 
+  <reference id="metastoreLocator"
+             interface="org.pentaho.osgi.metastore.locator.api.MetastoreLocator"
+             availability="optional"/>
+
   <bean id="serviceLocatorImpl"
         class="org.pentaho.big.data.api.cluster.service.locator.impl.NamedClusterServiceLocatorImpl"
         scope="singleton">
     <argument ref="clusterInitializer"/>
     <argument value="${default.shim}"/>
+    <argument ref="metastoreLocator"/>
   </bean>
 
   <reference-list id="serviceFactories"
@@ -30,4 +35,5 @@
 
   <service ref="serviceLocatorImpl"
            interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceLocator"/>
+
 </blueprint>
