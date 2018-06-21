@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -30,6 +30,12 @@ import org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFacto
 import org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceLocator;
 import org.pentaho.big.data.api.initializer.ClusterInitializationException;
 import org.pentaho.big.data.api.initializer.ClusterInitializer;
+import org.pentaho.big.data.api.shims.DefaultShim;
+import org.pentaho.metastore.api.IMetaStore;
+import org.pentaho.metastore.api.exceptions.MetaStoreException;
+import org.pentaho.metastore.persist.MetaStoreFactory;
+import org.pentaho.metastore.util.PentahoDefaults;
+import org.pentaho.osgi.metastore.locator.api.MetastoreLocator;
 
 
 import java.util.Collection;
@@ -52,18 +58,19 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
   private final Map<String, Multimap<Class<?>, ServiceFactoryAndRanking<?>>> serviceVendorTypeMapping;
   private final ReadWriteLock readWriteLock;
   private final ClusterInitializer clusterInitializer;
+  private String fallbackShim;
   private String defaultShim;
+  private final MetastoreLocator metastoreLocator;
+  private final String NAMESPACE = "pentaho";
 
-  public NamedClusterServiceLocatorImpl( ClusterInitializer clusterInitializer, String defaultShim ) {
+  public NamedClusterServiceLocatorImpl( ClusterInitializer clusterInitializer, String fallbackShim,
+                                         MetastoreLocator metastoreLocator ) {
     this.clusterInitializer = clusterInitializer;
-    this.defaultShim = defaultShim;
+    this.fallbackShim = fallbackShim;
+    this.metastoreLocator = metastoreLocator;
     readWriteLock = new ReentrantReadWriteLock();
     serviceVendorTypeMapping = new HashMap<>();
   }
-
-  //  @VisibleForTesting Multimap<Class<?>, ServiceFactoryAndRanking<?>> getServiceFactoryMap() {
-  //    //return serviceFactoryMap;
-  //  }
 
   @VisibleForTesting
   Map<String, Multimap<Class<?>, ServiceFactoryAndRanking<?>>> getServiceVendorTypeMapping() {
@@ -127,7 +134,9 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
     Lock readLock = readWriteLock.readLock();
     try {
       readLock.lock();
-      String shim = namedCluster.getShimIdentifier() == null ? defaultShim : namedCluster.getShimIdentifier();
+      //The named Cluster is not fully defined.  We'll have to use the default shim
+      String shim = namedCluster.getShimIdentifier() != null ? namedCluster.getShimIdentifier() : getDefaultShim();
+
       Collection<ServiceFactoryAndRanking<?>> serviceFactoryAndRankings = null;
       if ( shim != null ) {
         Multimap<Class<?>, ServiceFactoryAndRanking<?>> multimap =
@@ -146,15 +155,48 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
     return null;
   }
 
+  private String readMetaStore() {
+    IMetaStore metaStore = metastoreLocator.getMetastore();
+    MetaStoreFactory metaStoreFactory =
+      new MetaStoreFactory<>( DefaultShim.class, metaStore, NAMESPACE );
+    try {
+      DefaultShim defaultShim = ( (DefaultShim) metaStoreFactory.loadElement( "DefaultShim" ) );
+      if ( defaultShim != null ) return defaultShim.getDefaultShim();
+    } catch ( MetaStoreException e ) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  private void writeMetaStore( String defaultShimValue ) {
+    IMetaStore metaStore = metastoreLocator.getMetastore();
+    MetaStoreFactory metaStoreFactory =
+      new MetaStoreFactory<>( DefaultShim.class, metaStore, NAMESPACE );
+    try {
+      metaStoreFactory.saveElement( new DefaultShim( defaultShimValue ) );
+    } catch ( MetaStoreException e ) {
+      e.printStackTrace();
+    }
+  }
+
   public List<String> getVendorShimList() {
     return serviceVendorTypeMapping.keySet().stream().collect( Collectors.toList() );
   }
 
   public String getDefaultShim() {
+    if ( defaultShim != null ) {
+      return defaultShim;
+    }
+    defaultShim = readMetaStore();
+    if ( defaultShim == null ) {
+      setDefaultShim( fallbackShim );
+    }
+
     return defaultShim;
   }
 
   public void setDefaultShim( String defaultShim ) {
+    writeMetaStore( defaultShim );
     this.defaultShim = defaultShim;
   }
 
