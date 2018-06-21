@@ -26,6 +26,9 @@
         <org.apache.sqoop.connector.version>1.1-mapr-1707</org.apache.sqoop.connector.version>
         <org.apache.avro.version>1.8.0</org.apache.avro.version>
         <hadoop.aws.mapr.version>2.7.0-mapr-1506</hadoop.aws.mapr.version>
+        <org.antlr.version>3.5.2</org.antlr.version>
+        <parquet.version>1.5.0-mapr6.0</parquet.version>
+
         <!-- pmr folder -->
         <htrace-core.version>3.1.0-incubating</htrace-core.version>
         <net.sf.flexjson>2.1</net.sf.flexjson>
@@ -35,11 +38,14 @@
         <org.apache.hadoop.version>2.7.0-mapr-1710</org.apache.hadoop.version>
     </properties>
     <modules>
-        <module>pmr</module>
+        <module>common</module>
         <module>default</module>
-        <module>impl</module>
+        <module>hbase</module>
+        <module>hive</module>
+        <!--<module>impl</module>-->
         <module>hbase-comparators</module>
-        <module>assemblies</module>
+        <!--<module>assemblies</module>-->
+        <module>oozie</module>
     </modules>
     <dependencyManagement>
         <dependencies>

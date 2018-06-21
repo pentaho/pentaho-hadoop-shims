@@ -30,6 +30,7 @@
     <pdi.version>9.0.0.0-SNAPSHOT</pdi.version>
     <org.powermock.version>1.6.2</org.powermock.version>
     <eula-wrap_assign-deps-to-properties-phase></eula-wrap_assign-deps-to-properties-phase>
+    <pentaho-osgi-bundles.version>9.0.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
     <org.apache.orc.version>1.2.3</org.apache.orc.version>
     <jets3t.version>0.9.4</jets3t.version>
   </properties>
@@ -269,7 +270,6 @@
         </property>
       </activation>
       <modules>
-        <module>api</module>
       </modules>
     </profile>
 
@@ -281,7 +281,9 @@
         </property>
       </activation>
       <modules>
+        <module>common-services-api</module>
         <module>common</module>
+        <module>common-services</module>
         <module>shims</module>
       </modules>
     </profile>

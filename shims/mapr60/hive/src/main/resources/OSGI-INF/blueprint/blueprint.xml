@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="
+            http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
+
+  <!--<bean id="hbaseShim" class="org.pentaho.hbase.shim.common.CommonHBaseShim"/>
+  <service ref="hbaseShim" auto-export="interfaces">
+    <service-properties>
+      <entry key="shim">
+        <value type="java.lang.String">mapr60</value>
+      </entry>
+      <entry key="service">
+        <value type="java.lang.String">hbase</value>
+      </entry>
+    </service-properties>
+  </service>-->
+
+  <bean id="mapr60HiveDriver" class="com.pentaho.big.data.bundles.impl.shim.hive.HiveDriver">
+    <argument ref="jdbcUrlParser"/>
+    <argument value="org.apache.hive.jdbc.HiveDriver"/>
+    <argument value="mapr60"/>
+  </bean>
+
+  <!--<bean id="mapr60ImpalaDriver" class="com.pentaho.big.data.bundles.impl.shim.hive.ImpalaDriver">
+    <argument ref="jdbcUrlParser"/>
+    <argument ref="hadoopShim"/>
+  </bean>
+
+  <bean id="mapr60ImpalaSimbaDriver" class="com.pentaho.big.data.bundles.impl.shim.hive.ImpalaSimbaDriver">
+    <argument ref="jdbcUrlParser"/>
+    <argument ref="hadoopShim"/>
+  </bean>
+
+  <bean id="mapr60SparkSimbaDriver" class="com.pentaho.big.data.bundles.impl.shim.hive.SparkSimbaDriver">
+    <argument ref="jdbcUrlParser"/>
+    <argument ref="hadoopShim"/>
+  </bean>-->
+
+  <service ref="mapr60HiveDriver" interface="java.sql.Driver">
+    <service-properties>
+      <entry key="dataSourceType" value="bigdata"/>
+    </service-properties>
+  </service>
+
+  <!--<service ref="mapr60ImpalaDriver" interface="java.sql.Driver">
+    <service-properties>
+      <entry key="dataSourceType" value="bigdata"/>
+    </service-properties>
+  </service>
+
+  <service ref="mapr60ImpalaSimbaDriver" interface="java.sql.Driver">
+    <service-properties>
+      <entry key="dataSourceType" value="bigdata"/>
+    </service-properties>
+  </service>
+
+  <service ref="mapr60SparkSimbaDriver" interface="java.sql.Driver">
+    <service-properties>
+      <entry key="dataSourceType" value="bigdata"/>
+    </service-properties>
+  </service>-->
+
+  <!--<reference id="hadoopShim" interface="org.pentaho.hadoop.shim.spi.HadoopShim" filter="(shim=mapr60)"/>-->
+  <reference id="jdbcUrlParser" interface="org.pentaho.big.data.api.jdbc.JdbcUrlParser"/>
+</blueprint>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="
+            http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
+
+  <bean id="hdp26Hadoop" class="org.pentaho.hadoop.shim.hdp26.HadoopShim" scope="singleton"/>
+  <service ref="hdp26Hadoop" interface="org.pentaho.hadoop.shim.spi.HadoopShim">
+    <service-properties>
+      <entry key="shim">
+        <value type="java.lang.String">hdp26</value>
+      </entry>
+    </service-properties>
+  </service>
+
+  <bean id="hadoopFileSystem" class="com.pentaho.big.data.bundles.impl.shim.hdfs.HadoopFileSystemFactoryImpl">
+    <argument ref="hdp26Hadoop"/>
+  </bean>
+
+  <service ref="hadoopFileSystem" interface="org.pentaho.bigdata.api.hdfs.HadoopFileSystemFactory"/>
+
+  <bean id="hdp26SqoopShim" class="org.pentaho.hadoop.shim.common.sqoop.CommonSqoopShim">
+    <property name="bundleContext" ref="blueprintBundleContext" />
+  </bean>
+
+  <service ref="hdp26SqoopShim" auto-export="interfaces">
+    <service-properties>
+      <entry key="shim">
+        <value type="java.lang.String">hdp26</value>
+      </entry>
+      <entry key="service">
+        <value type="java.lang.String">sqoop</value>
+      </entry>
+    </service-properties>
+  </service>
+
+  <bean id="hdp26SqoopServiceFactory" class="org.pentaho.big.data.impl.shim.sqoop.SqoopServiceFactoryImpl">
+    <argument ref="hdp26Hadoop"/>
+    <argument ref="hdp26SqoopShim"/>
+  </bean>
+
+  <service ref="hdp26SqoopServiceFactory"
+           interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
+    <service-properties>
+      <entry key="shim">
+        <value type="java.lang.String">hdp26</value>
+      </entry>
+      <entry key="service">
+        <value type="java.lang.String">sqoop</value>
+      </entry>
+    </service-properties>
+  </service>
+
+
+  <bean id="hdp26PigShim" class="org.pentaho.hadoop.shim.common.pig.PigShimImpl">
+    <property name="bundleContext" ref="blueprintBundleContext"/>
+  </bean>
+
+  <service ref="hdp26PigShim" auto-export="interfaces">
+    <service-properties>
+      <entry key="shim">
+        <value type="java.lang.String">hdp26</value>
+      </entry>
+      <entry key="service">
+        <value type="java.lang.String">pig</value>
+      </entry>
+    </service-properties>
+  </service>
+
+  <bean id="hdp26PigServiceFactory" class="org.pentaho.big.data.impl.shim.pig.PigServiceFactoryImpl">
+    <argument ref="hdp26Hadoop"/>
+    <argument ref="hdp26PigShim"/>
+  </bean>
+
+  <service ref="hdp26PigServiceFactory"
+           interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
+    <service-properties>
+      <entry key="shim">
+        <value type="java.lang.String">hdp26</value>
+      </entry>
+      <entry key="service">
+        <value type="java.lang.String">pig</value>
+      </entry>
+    </service-properties>
+  </service>
+
+  <bean id="hdp26FormatShim" class="org.pentaho.hadoop.shim.common.CommonFormatShim"/>
+
+  <service ref="hdp26FormatShim" auto-export="interfaces">
+    <service-properties>
+      <entry key="shim">
+        <value type="java.lang.String">hdp26</value>
+      </entry>
+      <entry key="service">
+        <value type="java.lang.String">format</value>
+      </entry>
+    </service-properties>
+  </service>
+
+  <bean id="hdp26FormatServiceFactory" class="org.pentaho.big.data.impl.shim.format.FormatServiceFactory">
+    <argument ref="hdp26FormatShim"/>
+  </bean>
+
+  <service ref="hdp26FormatServiceFactory"
+           interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
+    <service-properties>
+      <entry key="shim">
+        <value type="java.lang.String">hdp26</value>
+      </entry>
+      <entry key="service">
+        <value type="java.lang.String">format</value>
+      </entry>
+    </service-properties>
+  </service>
+
+  <bean id="hdp26MapReduceServiceFactory" class="org.pentaho.big.data.impl.shim.mapreduce.MapReduceServiceFactoryImpl">
+    <argument ref="hdp26Hadoop"/>
+    <argument ref="executorService"/>
+    <argument ref="transformationVisitorList"/>
+  </bean>
+  <reference id="executorService" interface="java.util.concurrent.ExecutorService"/>
+
+  <service ref="hdp26MapReduceServiceFactory" interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
+    <service-properties>
+      <entry key="shim">
+        <value type="java.lang.String">hdp26</value>
+      </entry>
+      <entry key="service">
+        <value type="java.lang.String">mapreduce</value>
+      </entry>
+    </service-properties>
+  </service>
+  <reference-list id="transformationVisitorList" interface="org.pentaho.bigdata.api.mapreduce.TransformationVisitorService"
+                  availability="optional"/>
+
+</blueprint>
