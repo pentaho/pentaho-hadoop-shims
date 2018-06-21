@@ -24,6 +24,7 @@ import org.pentaho.bigdata.api.hdfs.HadoopFileSystem;
 import org.pentaho.bigdata.api.hdfs.HadoopFileSystemFactory;
 import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
+import org.pentaho.hadoop.shim.spi.ShimIdentifierInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,21 +40,21 @@ public class HadoopFileSystemFactoryImpl implements HadoopFileSystemFactory {
   private static final Logger LOGGER = LoggerFactory.getLogger( HadoopFileSystemFactoryImpl.class );
   private final boolean isActiveConfiguration;
   private final HadoopShim hadoopShim;
+  private final ShimIdentifierInterface shimIdentifier;
 
-  public HadoopFileSystemFactoryImpl( HadoopShim hadoopShim ) {
-    this( true, hadoopShim, "hdfs" );
+  public HadoopFileSystemFactoryImpl( HadoopShim hadoopShim, ShimIdentifierInterface shimIdentifier ) {
+    this( true, hadoopShim, "hdfs", shimIdentifier );
   }
 
   public HadoopFileSystemFactoryImpl( boolean isActiveConfiguration, HadoopShim hadoopShim,
-                                      String scheme ) {
+                                      String scheme, ShimIdentifierInterface shimIdentifier ) {
     this.isActiveConfiguration = isActiveConfiguration;
     this.hadoopShim = hadoopShim;
+    this.shimIdentifier = shimIdentifier;
   }
 
   @Override public boolean canHandle( NamedCluster namedCluster ) {
-    String shimIdentifier = namedCluster.getShimIdentifier();
-    //handle only if we do not use gateway
-    return true;
+    return this.shimIdentifier.getId().equals( namedCluster.getShimIdentifier() );
   }
 
   @Override

@@ -39,7 +39,7 @@ import java.util.List;
 
 /**
  * Abstracts a Hadoop environment so that it may be swapped out at runtime. Users should obtain a shim implementation
- * through a {@link HadoopConfiugration} via {@link HadoopConfigurationProvider}.
+ * through a {@link HadoopConfiguration} via {@link HadoopConfigurationProvider}.
  *
  * @author Jordan Ganoff (jganoff@pentaho.com)
  */
