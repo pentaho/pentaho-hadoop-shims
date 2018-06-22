@@ -30,6 +30,9 @@ import org.pentaho.big.data.api.cluster.NamedCluster;
 import org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory;
 import org.pentaho.big.data.api.initializer.ClusterInitializationException;
 import org.pentaho.big.data.api.initializer.ClusterInitializer;
+import org.pentaho.metastore.api.IMetaStore;
+import org.pentaho.metastore.stores.memory.MemoryMetaStore;
+import org.pentaho.osgi.metastore.locator.api.MetastoreLocator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,7 +52,6 @@ import static org.pentaho.big.data.api.cluster.service.locator.impl.NamedCluster
  * Created by bryan on 11/6/15.
  */
 public class NamedClusterServiceLocatorImplTest {
-  //private Multimap<Class<?>, NamedClusterServiceLocatorImpl.ServiceFactoryAndRanking<?>> serviceFactoryMap;
   private Map<String, Multimap<Class<?>, NamedClusterServiceLocatorImpl.ServiceFactoryAndRanking<?>>>
     serviceVendorTypeMapping;
   private NamedClusterServiceLocatorImpl serviceLocator;
@@ -60,12 +62,16 @@ public class NamedClusterServiceLocatorImplTest {
   private NamedClusterServiceFactory namedClusterServiceFactory4;
   private Object value;
   private ClusterInitializer clusterInitializer;
+  private MetastoreLocator mockMetastoreLocator;
 
   @Before
   public void setup() {
     clusterInitializer = mock( ClusterInitializer.class );
-    serviceLocator = new NamedClusterServiceLocatorImpl( clusterInitializer, "shimA" );
-//    serviceFactoryMap = serviceLocator.getServiceFactoryMap();
+    MemoryMetaStore memoryMetaStore = new MemoryMetaStore();
+    memoryMetaStore.setName( "memoryMetastore" );
+    mockMetastoreLocator = mock( MetastoreLocator.class );
+    when( mockMetastoreLocator.getMetastore() ).thenReturn( memoryMetaStore );
+    serviceLocator = new NamedClusterServiceLocatorImpl( clusterInitializer, "shimA", mockMetastoreLocator );
     serviceVendorTypeMapping = serviceLocator.getServiceVendorTypeMapping();
     namedCluster = mock( NamedCluster.class );
     namedClusterServiceFactory = mock( NamedClusterServiceFactory.class );
@@ -87,11 +93,13 @@ public class NamedClusterServiceLocatorImplTest {
     serviceLocator.factoryAdded( namedClusterServiceFactory, ImmutableMap.of( "shim", "shimB", SERVICE_RANKING, 3 ) );
     serviceLocator.factoryAdded( namedClusterServiceFactory4, ImmutableMap.of( "shim", "shimB", SERVICE_RANKING, 5 ) );
     value = new Object();
+
   }
 
   @Test
   public void testNoArgConstructor() throws ClusterInitializationException {
-    assertNull( new NamedClusterServiceLocatorImpl( clusterInitializer, "shimA" ).getService( namedCluster, Object.class ) );
+    assertNull( new NamedClusterServiceLocatorImpl( clusterInitializer, "shimA", mockMetastoreLocator )
+      .getService( namedCluster, Object.class ) );
     assertEquals( "shimA", serviceLocator.getDefaultShim() );
     serviceLocator.getVendorShimList();
   }
@@ -128,12 +136,14 @@ public class NamedClusterServiceLocatorImplTest {
     assertEquals( namedClusterServiceFactory2, serviceFactoryAndRankings.get( 0 ).namedClusterServiceFactory );
     assertEquals( namedClusterServiceFactory4, serviceFactoryAndRankings.get( 1 ).namedClusterServiceFactory );
 
-    serviceLocator.factoryRemoved( namedClusterServiceFactory2, ImmutableMap.of( "shim", "shimA",  SERVICE_RANKING, 4 ) );
+    serviceLocator
+      .factoryRemoved( namedClusterServiceFactory2, ImmutableMap.of( "shim", "shimA", SERVICE_RANKING, 4 ) );
     serviceFactoryAndRankings = new ArrayList<>( serviceVendorTypeMapping.get( "shimA" ).get( Object.class ) );
     assertEquals( 1, serviceFactoryAndRankings.size() );
     assertEquals( namedClusterServiceFactory4, serviceFactoryAndRankings.get( 0 ).namedClusterServiceFactory );
 
-    serviceLocator.factoryRemoved( namedClusterServiceFactory4, ImmutableMap.of( "shim", "shimA", SERVICE_RANKING, 4 ) );
+    serviceLocator
+      .factoryRemoved( namedClusterServiceFactory4, ImmutableMap.of( "shim", "shimA", SERVICE_RANKING, 4 ) );
     assertFalse( serviceVendorTypeMapping.containsKey( "shimA" ) );
   }
 
@@ -145,7 +155,6 @@ public class NamedClusterServiceLocatorImplTest {
     verify( namedClusterServiceFactory2, never() ).create( namedCluster );
     verify( namedClusterServiceFactory3, never() ).create( namedCluster );
     verify( namedClusterServiceFactory4, never() ).create( namedCluster );
-    //verify( clusterInitializer ).initialize( namedCluster ); //Multishim doesn't call this anymore, not sure why not
   }
 
   @Test
@@ -156,20 +165,13 @@ public class NamedClusterServiceLocatorImplTest {
     verify( namedClusterServiceFactory, never() ).create( namedCluster );
     verify( namedClusterServiceFactory2, never() ).create( namedCluster );
     verify( namedClusterServiceFactory3, never() ).create( namedCluster );
-//    verify( clusterInitializer ).initialize( namedCluster );
   }
 
   @Test
-  public void testNullAdded() {
-//    serviceFactoryMap.clear();
-//    serviceLocator.factoryAdded( null, Collections.emptyMap() );
-//    assertEquals( 0, serviceFactoryMap.size() );
+  public void testDefaultShim() {
+    assertEquals( "shimA", serviceLocator.getDefaultShim() );
+    serviceLocator.setDefaultShim( "shimB" );
+    assertEquals( "shimB", serviceLocator.getDefaultShim() );
   }
 
-  @Test
-  public void testNullRemoved() {
-//    serviceFactoryMap.clear();
-//    serviceLocator.factoryRemoved( null, Collections.emptyMap() );
-//    assertEquals( 0, serviceFactoryMap.size() );
-  }
 }
