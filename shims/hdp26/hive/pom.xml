@@ -63,8 +63,8 @@
     </dependency>
     <dependency>
       <groupId>org.apache.hive</groupId>
-      <artifactId>hive-metastore</artifactId>
-      <version>${org.apache.hive.version}</version>
+      <artifactId>hive-storage-api</artifactId>
+      <version>${hive-storage-api.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hive</groupId>

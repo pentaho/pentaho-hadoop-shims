@@ -51,6 +51,10 @@
       org.apache.hadoop.gateway.shell;version=${bundle.export.version},
       io.netty;version=${bundle.export.version},
       io.netty.channel;version=${bundle.export.version},
+      io.airlift.compress;version=${bundle.export.version},
+      io.airlift.compress.snappy;version=${bundle.export.version},
+      io.airlift.compress.lzo;version=${bundle.export.version},
+      io.airlift.compress.lz4;version=${bundle.export.version},
       com.yammer.metrics;version=${bundle.export.version},
       org.pentaho.hdfs.vfs;version=${bundle.export.version}</bundle.karaf.export.packages>
   </properties>
