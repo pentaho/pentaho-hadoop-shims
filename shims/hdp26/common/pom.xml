@@ -345,6 +345,17 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>${joda-time.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
     <!--- End dependencies for Pig -->
 
     <dependency>
@@ -496,7 +507,7 @@
             <resolverFilter>
               <include>*:*java-protobuf,*:*metrics*,*:*pentaho-hdfs-vfs,*:sqoop,
                 <!-- Needed for Pig -->
-                *:antlr-runtime,*:automaton,*:pig,
+                *:antlr-runtime,*:automaton,*:pig,*:joda-time,
                 <!-- Needed for Formats -->
                 *:parquet*,*:avro,*:orc*,*:protobuf*,*:aircompressor,*:snappy*</include>
               <exclude>*:*tests*</exclude>
