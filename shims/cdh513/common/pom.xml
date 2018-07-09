@@ -158,6 +158,13 @@
 
     <dependency>
       <groupId>org.pentaho</groupId>
+      <artifactId>pentaho-big-data-api-mapreduce</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.pentaho</groupId>
       <artifactId>pentaho-big-data-impl-shim-pig</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -466,7 +473,8 @@
             <Import-Package>
               org.pentaho.hadoop.shim;version=${pentaho-osgi-bundles.version},
               org.pentaho.hadoop.shim.api.*;version=${pentaho-osgi-bundles.version},
-              org.pentaho.hadoop.shim.spi.*;version=${pentaho-osgi-bundles.version}
+              org.pentaho.hadoop.shim.spi.*;version=${pentaho-osgi-bundles.version},
+              org.pentaho.bigdata.api.mapreduce.*;version=${pentaho-osgi-bundles.version}
             </Import-Package>
             <_exportcontents>
               ${bundle.karaf.export.packages}
