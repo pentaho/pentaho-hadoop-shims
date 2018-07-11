@@ -562,7 +562,8 @@
               org.pentaho.hadoop.shim;version=${pentaho-osgi-bundles.version},
               org.pentaho.hadoop.shim.api.*;version=${pentaho-osgi-bundles.version},
               org.pentaho.hadoop.shim.spi.*;version=${pentaho-osgi-bundles.version},
-              org.apache.hadoop.hive.*;version=${bundle.export.version}
+              org.apache.hadoop.hive.*;version=${bundle.export.version},
+              org.apache.hadoop.hbase.*;version=${bundle.export.version}
             </Import-Package>
             <_exportcontents>
               ${bundle.karaf.export.packages}
