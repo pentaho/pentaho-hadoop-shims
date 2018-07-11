@@ -20,6 +20,8 @@
     <azure-storage.version>2.0.0</azure-storage.version>
     <automaton.version>1.11-8</automaton.version>
     <hadoop-azure.version>2.7.1</hadoop-azure.version>
+    <hadoop-azure-datalake.version>3.0.0-alpha3</hadoop-azure-datalake.version>
+    <hadoop-azure-datalake-sdk.version>2.1.5</hadoop-azure-datalake-sdk.version>
     <hadoop-aws.version>2.7.3</hadoop-aws.version>
     <avro.version>1.8.0</avro.version>
     <org.codehaus.jackson>1.9.13</org.codehaus.jackson>
