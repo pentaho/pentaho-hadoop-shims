@@ -178,7 +178,7 @@
               io.netty.channel;version=${bundle.export.version},
               org.apache.hadoop.conf.*;version=${bundle.export.version}
             </Import-Package>
-            <_exportcontents>org.pentaho.hbase.shim.common</_exportcontents>
+            <_exportcontents>org.pentaho.hbase.shim.common,org.apache.hadoop.hbase.*;version=${bundle.export.version}</_exportcontents>
             <Embed-Dependency>*</Embed-Dependency>
             <!--<Embed-Transitive>true</Embed-Transitive>-->
           </instructions>
