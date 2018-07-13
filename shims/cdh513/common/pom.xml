@@ -144,6 +144,7 @@
       <artifactId>pentaho-big-data-impl-shim-sqoop</artifactId>
       <version>${project.version}</version>
     </dependency>
+
     <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>pentaho-big-data-impl-shim-mapreduce</artifactId>
@@ -268,13 +269,6 @@
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
       <version>1.4.9</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-big-data-api-mapreduce</artifactId>
-      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
@@ -408,7 +402,7 @@
                 *:hadoop-mapreduce*,*:hadoop-hdfs*,*hadoop-annotation*,*:hadoop-yarn*,*:hadoop-client,commons-lang3,*:pig
               </include>
               <exclude>
-                *:*tests*,*:*xerces*,*:*xml*,*:*commons-logging*,*:log4j*,*:hbase-client
+                *:*tests*,*:*xerces*,*:*xml*,*:*commons-logging*,*:log4j*,*:hbase-client,*:pentaho-big-data-api*
               </exclude>
               <transitive>true</transitive>
             </resolverFilter>
@@ -420,7 +414,7 @@
                 <!--Needed for formate -->
                 *:parquet*,*:orc*,*:snappy*
               </include>
-              <exclude>*:*tests*</exclude>
+              <exclude>*:*tests*,*:pentaho-big-data-api*</exclude>
               <transitive>false</transitive>
             </resolverFilter>
           </resolverFilters>
