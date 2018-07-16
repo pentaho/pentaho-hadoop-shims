@@ -371,12 +371,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-big-data-api-mapreduce</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
-    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -507,7 +501,7 @@
               <include>
                 *:*mapreduce*,*:hadoop-hdfs*,*hadoop-annotation*,*:hadoop-yarn*,*:hadoop-client*,*:commons-cli
               </include>
-              <exclude>*:*tests*,*:*xerces*,*:*xml*</exclude>
+              <exclude>*:*tests*,*:*xerces*,*:*xml*,*:pentaho-big-data-api*</exclude>
               <transitive>true</transitive>
             </resolverFilter>
             <resolverFilter>
@@ -516,7 +510,7 @@
                 *:antlr-runtime,*:automaton,*:pig,*:joda-time,
                 <!-- Needed for Formats -->
                 *:parquet*,*:avro,*:orc*,*:protobuf*,*:aircompressor,*:snappy*</include>
-              <exclude>*:*tests*</exclude>
+              <exclude>*:*tests*,*:pentaho-big-data-api*</exclude>
               <transitive>false</transitive>
             </resolverFilter>
           </resolverFilters>
