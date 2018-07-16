@@ -32,7 +32,9 @@
         <configuration>
           <instructions>
             <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+            <Bundle-Version>${pentaho-osgi-bundles.version}</Bundle-Version>
             <Import-Package>org.pentaho.hadoop.shim.api.format.*,!org.pentaho.hbase.shim.api,!org.pentaho.hbase.shim.spi,!org.apache.hadoop.*,!org.pentaho.di.core.hadoop.*,!org.pentaho.hadoop.*,!org.pentaho.yarn.*,!org.apache.log4j,*</Import-Package>
+            <Export-Package>org.pentaho.bigdata.api.format;version=${pentaho-osgi-bundles.version}</Export-Package>
           </instructions>
         </configuration>
       </plugin>
