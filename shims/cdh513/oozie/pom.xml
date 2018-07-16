@@ -141,13 +141,14 @@
         <configuration>
           <instructions>
             <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+            <Bundle-Version>${pentaho-osgi-bundles.version}</Bundle-Version>
             <DynamicImport-Package>*</DynamicImport-Package>
             <Import-Package>
               org.pentaho.hadoop.shim.api.*;version=${pentaho-osgi-bundles.version},
               org.pentaho.hadoop.shim.spi.*;version=${pentaho-osgi-bundles.version},
               org.apache.hadoop.conf.*;version=${bundle.export.version}
             </Import-Package>
-            <_exportcontents>org.pentaho.big.data.impl.shim.oozie</_exportcontents>
+            <_exportcontents>org.pentaho.big.data.impl.shim.oozie;version=${bundle.export.version}</_exportcontents>
             <Embed-Dependency>*</Embed-Dependency>
             <!--<Embed-Transitive>true</Embed-Transitive>-->
           </instructions>

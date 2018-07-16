@@ -193,14 +193,19 @@
         <configuration>
           <instructions>
             <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+            <Bundle-Version>${pentaho-osgi-bundles.version}</Bundle-Version>
             <DynamicImport-Package>*</DynamicImport-Package>
             <Import-Package>
               org.pentaho.hadoop.shim.api.*,
               org.pentaho.hadoop.shim.spi.*,
             </Import-Package>
+<<<<<<< HEAD:shims/hdi35/hive/pom.xml
             <_exportcontents>
               org.apache.hadoop.hive;version=8.0.35.hdi
             </_exportcontents>
+=======
+            <_exportcontents>org.apache.hadoop.hive.*;version=${bundle.export.version}</_exportcontents>
+>>>>>>> [BACKLOG-24517] Adds explicit version numbers on exported packages. Also fixes some conversion mistakes.:shims/hdp26/hive/pom.xml
             <Embed-Dependency>*</Embed-Dependency>
           </instructions>
         </configuration>
