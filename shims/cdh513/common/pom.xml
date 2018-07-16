@@ -408,7 +408,7 @@
             </resolverFilter>
             <resolverFilter>
               <include>
-                *:*java-protobuf,*:*metrics*,*:*pentaho-hdfs-vfs,*:sqoop,
+                *:*protobuf-java,*:*metrics*,*:*pentaho-hdfs-vfs,*:sqoop,
                 <!--Needed for Pig-->
                 *:antlr-runtime,*:automaton,*:pig,*:joda-time,
                 <!--Needed for formate -->
@@ -462,6 +462,7 @@
         <configuration>
           <instructions>
             <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+            <Bundle-Version>${pentaho-osgi-bundles.version}</Bundle-Version>
             <DynamicImport-Package>*</DynamicImport-Package>
             <Import-Package>
               org.pentaho.hadoop.shim;version=${pentaho-osgi-bundles.version},
@@ -471,7 +472,6 @@
             <_exportcontents>
               ${bundle.karaf.export.packages}
             </_exportcontents>
-            <!--org.apache.avro;version=8.0.0.cdh513,-->
             <Embed-Dependency>*</Embed-Dependency>
           </instructions>
         </configuration>

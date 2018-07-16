@@ -385,7 +385,7 @@
             </resolverFilter>
             <resolverFilter>
               <include>
-                *:*java-protobuf,*:*metrics*,*:*pentaho-hdfs-vfs,*:sqoop,*:antlr-runtime,*:parquet*,*:orc*,*:snappy*
+                *:*protobuf-java,*:*metrics*,*:*pentaho-hdfs-vfs,*:sqoop,*:antlr-runtime,*:parquet*,*:orc*,*:snappy*
               </include>
               <exclude>*:*tests*</exclude>
               <transitive>false</transitive>

@@ -298,7 +298,7 @@
               <transitive>true</transitive>
             </resolverFilter>
             <resolverFilter>
-              <include>*:*java-protobuf,*:*metrics*,*:*pentaho-hdfs-vfs,*:parquet*,*:avro,*:orc*,*:protobuf*,*:aircompressor,*:snappy*</include>
+              <include>*:*protobuf-java,*:*metrics*,*:*pentaho-hdfs-vfs,*:parquet*,*:avro,*:orc*,*:protobuf*,*:aircompressor,*:snappy*</include>
               <exclude>*:*tests*</exclude>
               <transitive>false</transitive>
             </resolverFilter>
@@ -346,6 +346,7 @@
         <configuration>
           <instructions>
             <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+            <Bundle-Version>${pentaho-osgi-bundles.version}</Bundle-Version>
             <DynamicImport-Package>*</DynamicImport-Package>
             <Import-Package>
               org.pentaho.hadoop.shim;version=${pentaho-osgi-bundles.version},
