@@ -237,6 +237,7 @@
         <configuration>
           <instructions>
             <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+            <Bundle-Version>${pentaho-osgi-bundles.version}</Bundle-Version>
             <DynamicImport-Package>*</DynamicImport-Package>
             <Import-Package>
               org.pentaho.hadoop.shim.api.*;version=${pentaho-osgi-bundles.version},
@@ -244,7 +245,7 @@
               io.netty.channel;version=${bundle.export.version},
               org.apache.hadoop.conf.*;version=${bundle.export.version}
             </Import-Package>
-            <_exportcontents>org.pentaho.hbase.shim.common</_exportcontents>
+            <_exportcontents>org.pentaho.hbase.shim.common;version=${bundle.export.version}</_exportcontents>
             <Embed-Dependency>*</Embed-Dependency>
             <!--<Embed-Transitive>true</Embed-Transitive>-->
           </instructions>
