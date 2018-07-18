@@ -105,7 +105,6 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Bundle-Version>${pentaho-osgi-bundles.version}</Bundle-Version>
             <DynamicImport-Package>*</DynamicImport-Package>
             <Import-Package>org.pentaho.big.data.api.cluster.*,org.pentaho.di.*</Import-Package>
             <Export-Package>
