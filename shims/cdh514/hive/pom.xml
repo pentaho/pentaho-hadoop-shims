@@ -193,14 +193,13 @@
         <configuration>
           <instructions>
             <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+            <Bundle-Version>${pentaho-osgi-bundles.version}</Bundle-Version>
             <DynamicImport-Package>*</DynamicImport-Package>
             <Import-Package>
               org.pentaho.hadoop.shim.api.*,
               org.pentaho.hadoop.shim.spi.*,
             </Import-Package>
-            <_exportcontents>
-              org.apache.hadoop.hive;version=8.0.514.cdh
-            </_exportcontents>
+            <_exportcontents>org.apache.hadoop.hive;version=${bundle.export.version}</_exportcontents>
             <Embed-Dependency>*</Embed-Dependency>
           </instructions>
         </configuration>
