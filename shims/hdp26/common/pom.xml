@@ -362,6 +362,7 @@
       <groupId>org.pentaho.di.plugins</groupId>
       <artifactId>kettle-log4j-core</artifactId>
       <version>${pdi.version}</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -501,7 +502,7 @@
               <include>
                 *:*mapreduce*,*:hadoop-hdfs*,*hadoop-annotation*,*:hadoop-yarn*,*:hadoop-client*,*:commons-cli
               </include>
-              <exclude>*:*tests*,*:*xerces*,*:*xml*,*:pentaho-big-data-api*</exclude>
+              <exclude>*:*tests*,*:*xerces*,*:*xml*,*:pentaho-big-data-api*,*:*log4j*,*:*slf4j*</exclude>
               <transitive>true</transitive>
             </resolverFilter>
             <resolverFilter>

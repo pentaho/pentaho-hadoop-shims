@@ -402,7 +402,7 @@
                 *:hadoop-mapreduce*,*:hadoop-hdfs*,*hadoop-annotation*,*:hadoop-yarn*,*:hadoop-client,commons-lang3,*:pig
               </include>
               <exclude>
-                *:*tests*,*:*xerces*,*:*xml*,*:*commons-logging*,*:log4j*,*:hbase-client,*:pentaho-big-data-api*
+                *:*tests*,*:*xerces*,*:*xml*,*:*commons-logging*,*:*log4j*,*:*slf4j*,*:hbase-client,*:pentaho-big-data-api*
               </exclude>
               <transitive>true</transitive>
             </resolverFilter>
