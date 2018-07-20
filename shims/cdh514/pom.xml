@@ -11,7 +11,7 @@
   <properties>
     <shim.name>cdh514</shim.name>
     <shim.type>CDH</shim.type>
-    <bundle.export.version>9.0.514.cdh</bundle.export.version>
+    <bundle.export.version>9.0.0.0.cdh514</bundle.export.version>
     <!-- default folder -->
 	<org.xerial.snappy.version>1.1.1.3</org.xerial.snappy.version>
     <org.apache.hive.version>1.1.0-cdh5.14.0</org.apache.hive.version>
