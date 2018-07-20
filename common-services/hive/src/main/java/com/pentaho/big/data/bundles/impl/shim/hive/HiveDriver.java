@@ -147,15 +147,33 @@ public class HiveDriver implements Driver {
   }
 
   protected Driver checkBeforeCallActiveDriver( String url ) throws SQLException {
-    if ( url.contains( SIMBA_SPECIFIC_URL_PARAMETER ) || !url.matches( ".+:hive2:.*" ) ) {
+    if ( url.contains( SIMBA_SPECIFIC_URL_PARAMETER ) || !checkBeforeAccepting( url ) ) {
       // BAD-215 check required to distinguish Simba driver
       return null;
     }
     return delegate;
   }
 
+  protected String extractHadoopConfigurationId( String url ) {
+    String hadoopConfigurationId = null;
+    int startIndex = url.indexOf( ";pentahoNamedCluster=" );
+    if ( startIndex != -1 ) {
+      startIndex = url.indexOf( "=", startIndex ) + 1;
+      if ( startIndex < ( url.length() - 1 ) ) {
+        int endIndex = -1;
+        endIndex = url.indexOf( ";", startIndex );
+        if ( endIndex != -1 ) {
+          hadoopConfigurationId = url.substring( startIndex, endIndex ).trim();
+        } else {
+          hadoopConfigurationId = url.substring( startIndex ).trim();
+        }
+      }
+    }
+    return hadoopConfigurationId;
+  }
+
   protected boolean checkBeforeAccepting( String url ) {
-    return url.matches( ".+:hive2:.*" );
+    return ( hadoopConfigurationId != null ) && url.matches( ".+:hive2:.*" ) && hadoopConfigurationId.equals( extractHadoopConfigurationId( url ) );
   }
 
   @Override public DriverPropertyInfo[] getPropertyInfo( String url, Properties info ) throws SQLException {
