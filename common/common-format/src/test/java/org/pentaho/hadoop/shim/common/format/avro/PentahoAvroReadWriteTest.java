@@ -25,6 +25,7 @@ package org.pentaho.hadoop.shim.common.format.avro;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.pentaho.big.data.api.cluster.NamedCluster;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.plugins.PluginRegistry;
 import org.pentaho.di.core.row.RowMeta;
@@ -60,6 +61,7 @@ import java.util.List;
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 public class PentahoAvroReadWriteTest {
   private static InetAddress DEFAULT_INET_ADDR;
@@ -716,7 +718,7 @@ public class PentahoAvroReadWriteTest {
     PluginRegistry.addPluginType( ValueMetaPluginType.getInstance() );
     PluginRegistry.init( true );
 
-    PentahoAvroInputFormat pentahoAvroInputFormat = new PentahoAvroInputFormat();
+    PentahoAvroInputFormat pentahoAvroInputFormat = new PentahoAvroInputFormat( mock( NamedCluster.class ) );
     pentahoAvroInputFormat.setInputFields( avroInputFields );
     pentahoAvroInputFormat.setInputFile( filePath );
     IPentahoInputFormat.IPentahoRecordReader pentahoRecordReader = pentahoAvroInputFormat.createRecordReader( null );

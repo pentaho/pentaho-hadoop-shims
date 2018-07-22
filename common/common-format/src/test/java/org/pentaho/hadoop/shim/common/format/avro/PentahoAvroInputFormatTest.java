@@ -24,6 +24,7 @@ package org.pentaho.hadoop.shim.common.format.avro;
 import org.apache.avro.Schema;
 import org.junit.Before;
 import org.junit.Test;
+import org.pentaho.big.data.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.format.IAvroInputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat;
 
@@ -36,6 +37,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 
 public class PentahoAvroInputFormatTest {
@@ -48,7 +50,7 @@ public class PentahoAvroInputFormatTest {
 
   @Before
   public void setUp() throws Exception {
-    format = new PentahoAvroInputFormat();
+    format = new PentahoAvroInputFormat( mock( NamedCluster.class ) );
   }
 
   @Test
@@ -85,7 +87,7 @@ public class PentahoAvroInputFormatTest {
 
   @Test
   public void testGetDefaultFields() throws Exception {
-    PentahoAvroInputFormat format = spy( new PentahoAvroInputFormat() );
+    PentahoAvroInputFormat format = spy( new PentahoAvroInputFormat( mock( NamedCluster.class ) ) );
     Schema.Parser parser = new Schema.Parser();
     Schema schema = parser.parse( new File( getFilePath( TYPES_SCHEMA_AVRO ) ) );
     doReturn( schema ).when( format ).readAvroSchema();

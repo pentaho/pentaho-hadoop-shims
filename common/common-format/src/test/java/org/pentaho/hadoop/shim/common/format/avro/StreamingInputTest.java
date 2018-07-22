@@ -23,6 +23,7 @@ package org.pentaho.hadoop.shim.common.format.avro;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
+import org.pentaho.big.data.api.cluster.NamedCluster;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.plugins.PluginRegistry;
 import org.pentaho.di.core.row.ValueMetaInterface;
@@ -43,6 +44,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 public class StreamingInputTest {
   private DateFormat dateFormat = new SimpleDateFormat( "yyyy/MM/dd HH:mm:ss.SSS" );
@@ -98,7 +100,7 @@ public class StreamingInputTest {
 
     ByteArrayInputStream inputStream = fileToByteArrayInputStream( filePath );
 
-    PentahoAvroInputFormat pentahoAvroInputFormat = new PentahoAvroInputFormat();
+    PentahoAvroInputFormat pentahoAvroInputFormat = new PentahoAvroInputFormat( mock( NamedCluster.class) );
 
     pentahoAvroInputFormat.setInputFields( avroInputFields );
     pentahoAvroInputFormat.setInputStreamFieldName( "stream" );

@@ -38,8 +38,8 @@ public class FormatServiceImpl implements FormatService {
   }
 
   @Override
-  public <T extends IPentahoInputFormat> T createInputFormat( Class<T> type ) throws Exception {
-    return formatShim.createInputFormat( type );
+  public <T extends IPentahoInputFormat> T createInputFormat( Class<T> type, NamedCluster namedCluster ) throws Exception {
+    return formatShim.createInputFormat( type, namedCluster );
   }
 
   @Override

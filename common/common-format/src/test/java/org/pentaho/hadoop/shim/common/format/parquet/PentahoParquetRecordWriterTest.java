@@ -46,6 +46,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.internal.util.reflection.Whitebox;
+import org.pentaho.big.data.api.cluster.NamedCluster;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.row.RowMeta;
 import org.pentaho.di.core.row.value.ValueMetaString;
@@ -60,6 +61,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+
+import static org.mockito.Mockito.mock;
 
 
 public class PentahoParquetRecordWriterTest {
@@ -172,7 +175,7 @@ public class PentahoParquetRecordWriterTest {
 
     IPentahoInputFormat.IPentahoRecordReader recordReader = null;
     try {
-      PentahoParquetInputFormat pentahoParquetInputFormat = new PentahoParquetInputFormat();
+      PentahoParquetInputFormat pentahoParquetInputFormat = new PentahoParquetInputFormat( mock( NamedCluster.class ) );
       pentahoParquetInputFormat.setInputFile( parquetFilePath );
       List<IParquetInputField> schema = pentahoParquetInputFormat.readSchema( parquetFilePath );
       pentahoParquetInputFormat.setSchema( schema );

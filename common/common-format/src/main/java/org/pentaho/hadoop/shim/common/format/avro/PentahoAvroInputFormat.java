@@ -40,6 +40,7 @@ import org.pentaho.di.core.vfs.KettleVFS;
 import org.pentaho.hadoop.shim.api.format.AvroSpec;
 import org.pentaho.hadoop.shim.api.format.IAvroInputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoAvroInputFormat;
+import org.pentaho.big.data.api.cluster.NamedCluster;
 
 public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
 
@@ -49,6 +50,11 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
   private String inputStreamFieldName;
   private boolean useFieldAsInputStream;
   private InputStream inputStream;
+  private NamedCluster namedCluster;
+
+  public PentahoAvroInputFormat( NamedCluster namedCluster ) {
+    this.namedCluster = namedCluster;
+  }
 
   @Override
   public List<IPentahoInputSplit> getSplits() throws Exception {

@@ -24,13 +24,14 @@
     <commons-beanutils.version>1.9.3</commons-beanutils.version>
     <commons-io.version>2.4</commons-io.version>
     <pentaho-hadoop-shims-api.version>8.2.0.0-SNAPSHOT</pentaho-hadoop-shims-api.version>
+    <pentaho-big-data-api-cluster.version>8.2.0.0-SNAPSHOT</pentaho-big-data-api-cluster.version>
     <xerces.version>2.8.1</xerces.version>
     <oss-licenses.version>8.2.0.0-SNAPSHOT</oss-licenses.version>
     <eula-wrap_create-izpack-installer-jar-phase></eula-wrap_create-izpack-installer-jar-phase>
     <pdi.version>8.2.0.0-SNAPSHOT</pdi.version>
     <org.powermock.version>1.6.2</org.powermock.version>
     <eula-wrap_assign-deps-to-properties-phase></eula-wrap_assign-deps-to-properties-phase>
-    <pentaho-osgi-bundles.version>9.0.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
+    <pentaho-osgi-bundles.version>8.2.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
     <org.apache.orc.version>1.2.3</org.apache.orc.version>
     <jets3t.version>0.9.4</jets3t.version>
   </properties>
@@ -308,3 +309,4 @@
   </repositories>
 
 </project>
+

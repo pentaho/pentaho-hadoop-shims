@@ -29,6 +29,7 @@ import java.util.List;
 
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.junit.Test;
+import org.pentaho.big.data.api.cluster.NamedCluster;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.row.RowMeta;
 import org.pentaho.di.core.row.ValueMetaInterface;
@@ -48,6 +49,7 @@ import org.pentaho.hadoop.shim.common.format.avro.PentahoAvroInputFormat;
 import org.pentaho.hadoop.shim.common.format.avro.PentahoAvroOutputFormat;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 /**
  * Created by Vasilina_Terehova on 7/27/2017.
@@ -61,7 +63,7 @@ public class CommonFormatShimTestIT {
     expectedRows.add( "Alex Blum;15" );
     expectedRows.add( "Tom Falls;24" );
 
-    PentahoParquetInputFormat pentahoParquetInputFormat = new PentahoParquetInputFormat();
+    PentahoParquetInputFormat pentahoParquetInputFormat = new PentahoParquetInputFormat( mock( NamedCluster.class ) );
     pentahoParquetInputFormat
       .setInputFile( getClass().getClassLoader().getResource( "sample.pqt" ).toExternalForm() );
     pentahoParquetInputFormat.setSchema( ParquetUtils.createSchema( ValueMetaInterface.TYPE_INTEGER ) );
@@ -118,7 +120,7 @@ public class CommonFormatShimTestIT {
 
   private IPentahoRecordReader readCreatedParquetFile( String parquetFilePath )
     throws Exception {
-    PentahoParquetInputFormat pentahoParquetInputFormat = new PentahoParquetInputFormat();
+    PentahoParquetInputFormat pentahoParquetInputFormat = new PentahoParquetInputFormat( mock( NamedCluster.class ) );
 
     pentahoParquetInputFormat.setInputFile( parquetFilePath );
     List<IParquetInputField> schema = pentahoParquetInputFormat.readSchema( parquetFilePath );
@@ -133,7 +135,7 @@ public class CommonFormatShimTestIT {
   @Test
   public void testAvroReadLocalFileSystem() throws Exception {
     List<String> expectedRows = Arrays.asList( "John;4074549921", "Leslie;4079302194" );
-    PentahoAvroInputFormat avroInputFormat = new PentahoAvroInputFormat();
+    PentahoAvroInputFormat avroInputFormat = new PentahoAvroInputFormat( mock( NamedCluster.class ) );
     avroInputFormat.setInputSchemaFile( getFilePath( "/sample-schema.avro" ) );
     avroInputFormat.setInputFile( getFilePath( "/sample-data.avro" ) );
 
@@ -204,7 +206,7 @@ public class CommonFormatShimTestIT {
     recordWriter.write( row );
     recordWriter.close();
 
-    PentahoAvroInputFormat avroInputFormat = new PentahoAvroInputFormat();
+    PentahoAvroInputFormat avroInputFormat = new PentahoAvroInputFormat( mock( NamedCluster.class ) );
     List<AvroInputField> inputFields = new ArrayList<AvroInputField>();
 
     AvroInputField avroInputField = new AvroInputField();
@@ -266,7 +268,7 @@ public class CommonFormatShimTestIT {
     overwriteTrueRecordWriter.close();
 
 
-    avroInputFormat = new PentahoAvroInputFormat();
+    avroInputFormat = new PentahoAvroInputFormat( mock( NamedCluster.class ) );
     inputFields = new ArrayList<AvroInputField>();
 
     avroInputField = new AvroInputField();
