@@ -24,6 +24,7 @@ package org.pentaho.hadoop.shim.common.format.orc;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.pentaho.big.data.api.cluster.NamedCluster;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.plugins.PluginRegistry;
 import org.pentaho.di.core.row.RowMeta;
@@ -61,6 +62,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 
 /**
@@ -314,7 +316,7 @@ public class PentahoOrcReadWriteTest {
     PluginRegistry.addPluginType( ValueMetaPluginType.getInstance() );
     PluginRegistry.init( true );
 
-    PentahoOrcInputFormat pentahoOrcInputFormat = new PentahoOrcInputFormat();
+    PentahoOrcInputFormat pentahoOrcInputFormat = new PentahoOrcInputFormat( mock( NamedCluster.class ) );
     pentahoOrcInputFormat.setSchema( orcInputFields );
     pentahoOrcInputFormat.setInputFile( filePath );
     IPentahoInputFormat.IPentahoRecordReader pentahoRecordReader = pentahoOrcInputFormat.createRecordReader( null );
@@ -327,7 +329,7 @@ public class PentahoOrcReadWriteTest {
   }
 
   private void testGetSchema() throws Exception {
-    PentahoOrcInputFormat pentahoOrcInputFormat = new PentahoOrcInputFormat();
+    PentahoOrcInputFormat pentahoOrcInputFormat = new PentahoOrcInputFormat( mock( NamedCluster.class ) );
     pentahoOrcInputFormat.setInputFile( filePath );
 
     assertNotNull( "Schema Description should be populated", orcInputFields );

@@ -34,6 +34,7 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
 import org.apache.log4j.Logger;
+import org.pentaho.big.data.api.cluster.NamedCluster;
 //#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_name=="mapr60"
 import org.apache.parquet.hadoop.Footer;
 import org.apache.parquet.hadoop.ParquetFileReader;
@@ -53,6 +54,7 @@ import org.apache.parquet.schema.MessageType;
 //$import parquet.schema.MessageType;
 //#endif
 import org.pentaho.di.core.RowMetaAndData;
+import org.pentaho.hadoop.shim.ShimConfigsLoader;
 import org.pentaho.hadoop.shim.api.format.IParquetInputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoParquetInputFormat;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
@@ -70,12 +72,12 @@ public class PentahoParquetInputFormat extends HadoopFormatBase implements IPent
   private ParquetInputFormat<RowMetaAndData> nativeParquetInputFormat;
   private Job job;
 
-  public PentahoParquetInputFormat() throws Exception {
+  public PentahoParquetInputFormat( NamedCluster namedCluster ) throws Exception {
     logger.info( "We are initializing parquet input format" );
 
     inClassloader( () -> {
       ConfigurationProxy conf = new ConfigurationProxy();
-
+      ShimConfigsLoader.addConfigsAsResources( namedCluster.getName(), conf::addResource );
       job = Job.getInstance( conf );
 
       nativeParquetInputFormat = new ParquetInputFormat<>();

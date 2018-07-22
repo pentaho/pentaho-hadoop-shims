@@ -30,6 +30,7 @@ import org.pentaho.hadoop.shim.common.CommonFormatShim;
 import org.pentaho.hadoop.shim.common.authorization.HadoopAuthorizationService;
 import org.pentaho.hadoop.shim.common.authorization.HasHadoopAuthorizationService;
 import org.pentaho.hadoop.shim.spi.FormatShim;
+import org.pentaho.big.data.api.cluster.NamedCluster;
 
 public class DelegatingFormatShim extends CommonFormatShim implements HasHadoopAuthorizationService, FormatShim,
     Processable {
@@ -46,8 +47,8 @@ public class DelegatingFormatShim extends CommonFormatShim implements HasHadoopA
   }
 
   @Override
-  public <T extends IPentahoInputFormat> T createInputFormat( Class<T> type ) throws Exception {
-    return delegate.createInputFormat( type );
+  public <T extends IPentahoInputFormat> T createInputFormat( Class<T> type, NamedCluster namedCluster ) throws Exception {
+    return delegate.createInputFormat( type, namedCluster );
   }
 
   @Override

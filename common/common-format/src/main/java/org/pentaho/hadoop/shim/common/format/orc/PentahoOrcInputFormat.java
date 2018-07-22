@@ -29,12 +29,14 @@ import org.apache.hadoop.fs.PathFilter;
 import org.apache.orc.Reader;
 import org.apache.orc.OrcFile;
 import org.apache.orc.TypeDescription;
+import org.pentaho.hadoop.shim.ShimConfigsLoader;
 import org.pentaho.hadoop.shim.api.format.IOrcInputField;
 import org.pentaho.hadoop.shim.api.format.IOrcMetaData;
 import org.pentaho.hadoop.shim.api.format.IPentahoOrcInputFormat;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
 import org.pentaho.hadoop.shim.common.format.HadoopFormatBase;
 import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
+import org.pentaho.big.data.api.cluster.NamedCluster;
 
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
@@ -49,11 +51,11 @@ public class PentahoOrcInputFormat extends HadoopFormatBase implements IPentahoO
   private List<? extends IOrcInputField> inputFields;
   private Configuration conf;
 
-
-  public PentahoOrcInputFormat() throws Exception {
+  public PentahoOrcInputFormat( NamedCluster namedCluster ) throws Exception {
     conf = inClassloader( () -> {
       Configuration conf = new ConfigurationProxy();
       conf.addResource( "hive-site.xml" );
+      ShimConfigsLoader.addConfigsAsResources( namedCluster.getName(), conf::addResource );
       return conf;
     } );
   }

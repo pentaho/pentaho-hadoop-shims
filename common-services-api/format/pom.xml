@@ -21,6 +21,13 @@
       <groupId>org.pentaho</groupId>
       <artifactId>pentaho-hadoop-shims-api</artifactId>
       <version>${pentaho-hadoop-shims-api.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.pentaho</groupId>
+      <artifactId>pentaho-big-data-api-cluster</artifactId>
+      <version>${pentaho-big-data-api-cluster.version}</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
   <build>
