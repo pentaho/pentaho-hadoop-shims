@@ -23,10 +23,11 @@ package org.pentaho.bigdata.api.format;
 
 import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat;
 import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat;
+import org.pentaho.big.data.api.cluster.NamedCluster;
 
 public interface FormatService {
 
-  <T extends IPentahoInputFormat> T createInputFormat( Class<T> type ) throws Exception;
+  <T extends IPentahoInputFormat> T createInputFormat( Class<T> type, NamedCluster namedCluster ) throws Exception;
 
   <T extends IPentahoOutputFormat> T createOutputFormat( Class<T> type ) throws Exception;
 }

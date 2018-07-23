@@ -23,10 +23,13 @@ package org.pentaho.hadoop.shim.common.format.orc;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.pentaho.big.data.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.format.IOrcInputField;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.mockito.Mockito.mock;
 
 /**
  * Created by tkafalas on 11/20/2017.
@@ -38,7 +41,7 @@ public class PentahoOrcInputFormatTest {
 
   @Before
   public void setup() throws Exception {
-    pentahoOrcInputFormat = new PentahoOrcInputFormat();
+    pentahoOrcInputFormat = new PentahoOrcInputFormat( mock( NamedCluster.class ) );
     mockSchemaDescription = new ArrayList<IOrcInputField>();
   }
 
