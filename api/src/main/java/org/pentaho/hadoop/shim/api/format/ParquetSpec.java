@@ -141,4 +141,5 @@ public class ParquetSpec {
 
   public static final int DEFAULT_DECIMAL_PRECISION = 20;
   public static final int DEFAULT_DECIMAL_SCALE = 0;
+  public static final int JULIAN_DAY_OF_EPOCH = 2440588;
 }
