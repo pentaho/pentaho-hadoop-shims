@@ -41,5 +41,6 @@
     <module>common</module>
     <module>hbase</module>
     <module>hive</module>
+    <module>hbase-comparators</module>
   </modules>
 </project>
