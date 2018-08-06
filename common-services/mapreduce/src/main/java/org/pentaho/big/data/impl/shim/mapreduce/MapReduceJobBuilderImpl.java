@@ -272,7 +272,7 @@ public class MapReduceJobBuilderImpl implements MapReduceJobBuilder {
 
   @Override
   public final MapReduceJobAdvanced submit() throws Exception {
-    Configuration conf = hadoopShim.createConfiguration( namedCluster.getName() );
+    Configuration conf = hadoopShim.createConfiguration( namedCluster.getConfigId() );
     configure( conf );
     return submit( conf );
   }

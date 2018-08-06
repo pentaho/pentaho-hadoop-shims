@@ -74,7 +74,7 @@ public class PigServiceImpl implements PigService {
     try ( WriterAppenderManager appenderManager = writerAppenderManagerFactory.create( logChannelInterface, logLevel,
       name ) ) {
       appenderFile = appenderManager.getFile();
-      Configuration configuration = hadoopShim.createConfiguration( namedCluster.getName() );
+      Configuration configuration = hadoopShim.createConfiguration( namedCluster.getConfigId() );
       if ( executionMode != ExecutionMode.LOCAL ) {
         List<String> configMessages = new ArrayList<String>();
         hadoopShim.configureConnectionInformation( variableSpace.environmentSubstitute( namedCluster.getHdfsHost() ),

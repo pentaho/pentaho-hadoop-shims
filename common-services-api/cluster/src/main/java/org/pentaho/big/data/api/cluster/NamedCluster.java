@@ -39,6 +39,10 @@ public interface NamedCluster extends Cloneable, VariableSpace {
 
   public static final String NAMED_CLUSTER_XML_TAG = "namedClusterTag";
 
+  String getConfigId();
+
+  void setConfigId( String id );
+
   String getName();
 
   void setName( String name );

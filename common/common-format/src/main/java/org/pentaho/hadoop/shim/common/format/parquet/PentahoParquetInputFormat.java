@@ -77,7 +77,7 @@ public class PentahoParquetInputFormat extends HadoopFormatBase implements IPent
 
     inClassloader( () -> {
       ConfigurationProxy conf = new ConfigurationProxy();
-      ShimConfigsLoader.addConfigsAsResources( namedCluster.getName(), conf::addResource );
+      ShimConfigsLoader.addConfigsAsResources( namedCluster.getConfigId(), conf::addResource );
       job = Job.getInstance( conf );
 
       nativeParquetInputFormat = new ParquetInputFormat<>();
