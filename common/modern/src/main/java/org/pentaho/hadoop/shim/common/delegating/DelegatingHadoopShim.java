@@ -92,8 +92,8 @@ public class DelegatingHadoopShim implements HadoopShim, HasHadoopAuthorizationS
     return delegate.createConfiguration();
   }
 
-  @Override public Configuration createConfiguration( String namedCluster ) {
-    return delegate.createConfiguration( namedCluster );
+  @Override public Configuration createConfiguration( String namedClusterConfigId ) {
+    return delegate.createConfiguration( namedClusterConfigId );
   }
 
   @Override

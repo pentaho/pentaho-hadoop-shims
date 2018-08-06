@@ -50,7 +50,7 @@ public class SqoopServiceImpl implements SqoopService {
   }
 
   @Override public int runTool( List<String> args, Properties properties ) {
-    Configuration configuration = hadoopShim.createConfiguration( namedCluster.getName() );
+    Configuration configuration = hadoopShim.createConfiguration( namedCluster.getConfigId() );
     for ( Map.Entry<String, String> entry : Maps.fromProperties( properties ).entrySet() ) {
       configuration.set( entry.getKey(), entry.getValue() );
     }

@@ -64,7 +64,7 @@ public class HadoopFileSystemFactoryImpl implements HadoopFileSystemFactory {
 
   @Override
   public HadoopFileSystem create( NamedCluster namedCluster, URI uri ) throws IOException {
-    final Configuration configuration = hadoopShim.createConfiguration( namedCluster.getName() );
+    final Configuration configuration = hadoopShim.createConfiguration( namedCluster.getConfigId() );
     FileSystem fileSystem = (FileSystem) hadoopShim.getFileSystem( configuration ).getDelegate();
     if ( fileSystem instanceof LocalFileSystem ) {
       LOGGER.error( "Got a local filesystem, was expecting an hdfs connection" );

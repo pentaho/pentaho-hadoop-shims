@@ -16,6 +16,16 @@ public class FakeNamedCluster implements NamedCluster {
     this.name = name;
   }
 
+  @Override
+  public String getConfigId() {
+    return null;
+  }
+
+  @Override
+  public void setConfigId( String id ) {
+
+  }
+
   @Override public String getName() {
     return name;
   }
