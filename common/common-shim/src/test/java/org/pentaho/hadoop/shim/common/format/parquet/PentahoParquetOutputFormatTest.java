@@ -193,6 +193,13 @@ public class PentahoParquetOutputFormatTest {
     outputField.setAllowNull( true );
     fields.add( outputField );
 
+    outputField = new ParquetOutputField();
+    outputField.setFormatFieldName( "fint96" );
+    outputField.setPentahoFieldName( "fint96" );
+    outputField.setFormatType( ParquetSpec.DataType.INT_96 );
+    outputField.setAllowNull( true );
+    fields.add( outputField );
+
     of.setFields( fields );
     of.setOutputFile( "testparquet/" + file, true );
     IPentahoRecordWriter wr = of.createRecordWriter();
@@ -204,18 +211,23 @@ public class PentahoParquetOutputFormatTest {
     rowMeta.addValueMeta( new ValueMetaInteger( "fint" ) );
     rowMeta.addValueMeta( new ValueMetaBigNumber( "fbignum" ) );
     rowMeta.addValueMeta( new ValueMetaTimestamp( "ftime" ) );
+    rowMeta.addValueMeta( new ValueMetaTimestamp( "fint96" ) );
 
     SimpleDateFormat df = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
     df.setTimeZone( TimeZone.getTimeZone( "Europe/Minsk" ) );
 
     wr.write( new RowMetaAndData( rowMeta, 2.1, "John", df.parse( "2018-01-01 13:00:00" ), true, 1L,
-        new BigDecimal( 4.5 ), null ) );
+        new BigDecimal( 4.5 ), null, null ) );
     wr.write( new RowMetaAndData( rowMeta, null, "Paul", df.parse( "2018-01-01 09:10:15" ), false, 3L, null,
+        new Timestamp( df.parse( "2018-05-01 13:00:00" ).getTime() ),
         new Timestamp( df.parse( "2018-05-01 13:00:00" ).getTime() ) ) );
     wr.write( new RowMetaAndData( rowMeta, 2.1, "George", null, true, null, new BigDecimal( 4.5 ),
+        new Timestamp( df.parse( "2018-05-01 13:00:00" ).getTime() ),
         new Timestamp( df.parse( "2018-05-01 13:00:00" ).getTime() ) ) );
     wr.write( new RowMetaAndData( rowMeta, 2.1, "Ringo", df.parse( "2018-01-01 09:10:35" ), null, 4L,
-        new BigDecimal( 4.5 ), new Timestamp( df.parse( "2018-05-01 13:00:00" ).getTime() ) ) );
+        new BigDecimal( 4.5 ),
+        new Timestamp( df.parse( "2018-05-01 13:00:00" ).getTime() ),
+        new Timestamp( df.parse( "2018-05-01 13:00:00" ).getTime() ) ) );
     wr.close();
 
     File f = new File( "testparquet/" + file );

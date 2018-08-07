@@ -530,8 +530,6 @@ public class ParquetConverter {
       }
     }
 
-    private static final int JULIAN_DAY_OF_EPOCH = 2440588;
-
     private static long dateFromInt96( Binary value ) {
       byte[] readBuffer = value.getBytes();
       if ( readBuffer.length != 12 ) {
@@ -539,16 +537,16 @@ public class ParquetConverter {
       }
 
       long timeOfDayNanos =
-        ( ( (long) readBuffer[ 7 ] << 56 ) + ( (long) ( readBuffer[ 6 ] & 255 ) << 48 )
-          + ( (long) ( readBuffer[ 5 ] & 255 ) << 40 ) + ( (long) ( readBuffer[ 4 ] & 255 ) << 32 )
-          + ( (long) ( readBuffer[ 3 ] & 255 ) << 24 ) + ( ( readBuffer[ 2 ] & 255 ) << 16 )
-          + ( ( readBuffer[ 1 ] & 255 ) << 8 ) + ( readBuffer[ 0 ] & 255 ) );
+              ( ( (long) readBuffer[ 7 ] << 56 ) + ( (long) ( readBuffer[ 6 ] & 255 ) << 48 )
+                      + ( (long) ( readBuffer[ 5 ] & 255 ) << 40 ) + ( (long) ( readBuffer[ 4 ] & 255 ) << 32 )
+                      + ( (long) ( readBuffer[ 3 ] & 255 ) << 24 ) + ( ( readBuffer[ 2 ] & 255 ) << 16 )
+                      + ( ( readBuffer[ 1 ] & 255 ) << 8 ) + ( readBuffer[ 0 ] & 255 ) );
 
       int julianDay =
-        ( (int) ( readBuffer[ 11 ] & 255 ) << 24 ) + ( ( readBuffer[ 10 ] & 255 ) << 16 )
-          + ( ( readBuffer[ 9 ] & 255 ) << 8 ) + ( readBuffer[ 8 ] & 255 );
+              ( (int) ( readBuffer[ 11 ] & 255 ) << 24 ) + ( ( readBuffer[ 10 ] & 255 ) << 16 )
+                      + ( ( readBuffer[ 9 ] & 255 ) << 8 ) + ( readBuffer[ 8 ] & 255 );
 
-      return ( julianDay - JULIAN_DAY_OF_EPOCH ) * 24L * 60L * 60L * 1000L + timeOfDayNanos / 1000000;
+      return ( julianDay - ParquetSpec.JULIAN_DAY_OF_EPOCH ) * 24L * 60L * 60L * 1000L + timeOfDayNanos / 1000000;
     }
 
     @Override

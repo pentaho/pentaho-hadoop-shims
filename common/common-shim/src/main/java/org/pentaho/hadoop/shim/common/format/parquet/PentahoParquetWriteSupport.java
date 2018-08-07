@@ -24,11 +24,17 @@ package org.pentaho.hadoop.shim.common.format.parquet;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.JulianFields;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -64,10 +70,12 @@ import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.core.row.value.ValueMetaBase;
 import org.pentaho.hadoop.shim.api.format.IParquetOutputField;
+import org.pentaho.hadoop.shim.api.format.ParquetSpec;
 
 public class PentahoParquetWriteSupport extends WriteSupport<RowMetaAndData> {
   private RecordConsumer consumer;
   private List<? extends IParquetOutputField> outputFields;
+  byte[] timestampBuffer = new byte[12];
 
   public PentahoParquetWriteSupport( List<? extends IParquetOutputField> outputFields ) {
     this.outputFields = outputFields;
@@ -128,6 +136,11 @@ public class PentahoParquetWriteSupport extends WriteSupport<RowMetaAndData> {
     RowMetaInterface rmi = row.getRowMeta();
     int fieldIndex = row.getRowMeta().indexOfValue( field.getPentahoFieldName() );
     ValueMetaInterface vmi = rmi.getValueMeta( fieldIndex );
+    String conversionMask = null;
+    String defaultValue = null;
+    DateFormat dateFormat = null;
+    TimeZone timeZone = null;
+    LocalDate localDate = null;
 
     if ( fieldIndex < 0 ) {
       if ( field.getAllowNull() ) {
@@ -168,6 +181,40 @@ public class PentahoParquetWriteSupport extends WriteSupport<RowMetaAndData> {
             case INT_64:
               consumer.addLong( Long.parseLong( field.getDefaultValue() ) );
               break;
+            case INT_96:
+              Date date = null;
+              defaultValue = field.getDefaultValue();
+              conversionMask = ( vmi.getConversionMask() == null ) ? ValueMetaBase.DEFAULT_DATE_PARSE_MASK : vmi.getConversionMask();
+              dateFormat = new SimpleDateFormat( conversionMask );
+              try {
+                date = dateFormat.parse( defaultValue );
+              } catch ( ParseException pe ) {
+                date = new Date( 0 );
+              }
+
+              timeZone = vmi.getDateFormatTimeZone();
+              if ( timeZone == null ) {
+                timeZone = TimeZone.getDefault();
+              }
+
+              localDate = date.toInstant().atZone( timeZone.toZoneId() ).toLocalDate();
+              long julianDay = JulianFields.JULIAN_DAY.getFrom( localDate );
+
+              LocalDateTime ldt = LocalDateTime.ofInstant( date.toInstant(), timeZone.toZoneId() );
+              ZonedDateTime zdt = ldt.atZone( timeZone.toZoneId() );
+              ZonedDateTime utc = zdt.withZoneSameInstant( ZoneId.of( "UTC" ) );
+
+              long timeOfDayNanos = utc.toInstant().toEpochMilli() * 1000000L - ( ( julianDay - ParquetSpec.JULIAN_DAY_OF_EPOCH ) * 24L * 60L * 60L * 1000L * 1000000L );
+              ByteBuffer buf = ByteBuffer.wrap( timestampBuffer );
+
+              buf.order( ByteOrder.LITTLE_ENDIAN ).putLong( timeOfDayNanos ).putInt( (int) julianDay );
+              //#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
+              consumer.addBinary( Binary.fromReusedByteArray( timestampBuffer ) );
+              //#endif
+              //#if shim_type=="CDH" || shim_type=="MAPR"
+              //$     consumer.addBinary( Binary.fromByteArray( timestampBuffer ) );
+              //#endif
+              break;
             case DECIMAL:
               bigDecimal = new BigDecimal( field.getDefaultValue() );
               if ( bigDecimal != null ) {
@@ -196,19 +243,19 @@ public class PentahoParquetWriteSupport extends WriteSupport<RowMetaAndData> {
               break;
             case DATE:
               Date defaultDate = null;
-              String defaultValue = field.getDefaultValue();
-              String conversionMask = ( vmi.getConversionMask() == null ) ? ValueMetaBase.DEFAULT_DATE_PARSE_MASK : vmi.getConversionMask();
-              DateFormat dateFormat = new SimpleDateFormat( conversionMask );
+              defaultValue = field.getDefaultValue();
+              conversionMask = ( vmi.getConversionMask() == null ) ? ValueMetaBase.DEFAULT_DATE_PARSE_MASK : vmi.getConversionMask();
+              dateFormat = new SimpleDateFormat( conversionMask );
               try {
                 defaultDate = dateFormat.parse( defaultValue );
               } catch ( ParseException pe ) {
                 // Do nothing
               }
-              TimeZone timeZone = vmi.getDateFormatTimeZone();
+              timeZone = vmi.getDateFormatTimeZone();
               if ( timeZone == null ) {
                 timeZone = TimeZone.getDefault();
               }
-              LocalDate localDate = defaultDate.toInstant().atZone( timeZone.toZoneId() ).toLocalDate();
+              localDate = defaultDate.toInstant().atZone( timeZone.toZoneId() ).toLocalDate();
               Integer dateInDays = Math.toIntExact( ChronoUnit.DAYS.between( LocalDate.ofEpochDay( 0 ), localDate ) );
               consumer.addInteger( dateInDays );
               break;
@@ -254,6 +301,31 @@ public class PentahoParquetWriteSupport extends WriteSupport<RowMetaAndData> {
       case INT_64:
         consumer.addLong( row.getInteger( fieldIndex, 0 ) );
         break;
+      case INT_96:
+        Date date = row.getDate( fieldIndex, null );
+        timeZone = vmi.getDateFormatTimeZone();
+        if ( timeZone == null ) {
+          timeZone = TimeZone.getDefault();
+        }
+
+        localDate = date.toInstant().atZone( timeZone.toZoneId() ).toLocalDate();
+        long julianDay = JulianFields.JULIAN_DAY.getFrom( localDate );
+
+        LocalDateTime ldt = LocalDateTime.ofInstant( date.toInstant(), timeZone.toZoneId() );
+        ZonedDateTime zdt = ldt.atZone( timeZone.toZoneId() );
+        ZonedDateTime utc = zdt.withZoneSameInstant( ZoneId.of( "UTC" ) );
+
+        long timeOfDayNanos = utc.toInstant().toEpochMilli() * 1000000L - ( ( julianDay - ParquetSpec.JULIAN_DAY_OF_EPOCH ) * 24L * 60L * 60L * 1000L * 1000000L );
+        ByteBuffer buf = ByteBuffer.wrap( timestampBuffer );
+        buf.order( ByteOrder.LITTLE_ENDIAN ).putLong( timeOfDayNanos ).putInt( (int) julianDay );
+
+        //#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
+        consumer.addBinary( Binary.fromReusedByteArray( timestampBuffer ) );
+        //#endif
+        //#if shim_type=="CDH" || shim_type=="MAPR"
+        //$     consumer.addBinary( Binary.fromByteArray( timestampBuffer ) );
+        //#endif
+        break;
       case DECIMAL:
         BigDecimal bigDecimal = row.getBigNumber( fieldIndex, null );
         if ( bigDecimal != null ) {
@@ -282,11 +354,11 @@ public class PentahoParquetWriteSupport extends WriteSupport<RowMetaAndData> {
         break;
       case DATE:
         Date dateFromRow = row.getDate( fieldIndex, null );
-        TimeZone timeZone = vmi.getDateFormatTimeZone();
+        timeZone = vmi.getDateFormatTimeZone();
         if ( timeZone == null ) {
           timeZone = TimeZone.getDefault();
         }
-        LocalDate localDate = dateFromRow.toInstant().atZone( timeZone.toZoneId() ).toLocalDate();
+        localDate = dateFromRow.toInstant().atZone( timeZone.toZoneId() ).toLocalDate();
         Integer dateInDays = Math.toIntExact( ChronoUnit.DAYS.between( LocalDate.ofEpochDay( 0 ), localDate ) );
         consumer.addInteger( dateInDays );
         break;
@@ -333,6 +405,8 @@ public class PentahoParquetWriteSupport extends WriteSupport<RowMetaAndData> {
         return new PrimitiveType( rep, PrimitiveType.PrimitiveTypeName.BINARY, formatFieldName, OriginalType.UTF8 );
       case INT_64:
         return new PrimitiveType( rep, PrimitiveType.PrimitiveTypeName.INT64, formatFieldName, OriginalType.INT_64 );
+      case INT_96:
+        return new PrimitiveType( rep, PrimitiveType.PrimitiveTypeName.INT96, formatFieldName );
       case DATE:
         return new PrimitiveType( rep, PrimitiveType.PrimitiveTypeName.INT32, formatFieldName, OriginalType.DATE );
       case DECIMAL:
