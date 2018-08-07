@@ -276,4 +276,8 @@ public class MapReduceJobBuilderImpl implements MapReduceJobBuilder {
     configure( conf );
     return submit( conf );
   }
+
+  protected String getConfigId() {
+    return namedCluster.getConfigId();
+  }
 }
