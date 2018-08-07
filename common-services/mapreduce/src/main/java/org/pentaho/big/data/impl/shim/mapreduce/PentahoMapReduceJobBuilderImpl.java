@@ -24,6 +24,7 @@ package org.pentaho.big.data.impl.shim.mapreduce;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.thoughtworks.xstream.XStream;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemConfigBuilder;
 import org.apache.commons.vfs2.FileSystemException;
@@ -65,6 +66,7 @@ import org.pentaho.hadoop.PluginPropertiesUtil;
 import org.pentaho.hadoop.mapreduce.InKeyValueOrdinals;
 import org.pentaho.hadoop.mapreduce.OutKeyValueOrdinals;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
+import org.pentaho.hadoop.shim.ShimConfigsLoader;
 import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.api.fs.FileSystem;
 import org.pentaho.hadoop.shim.api.fs.Path;
@@ -73,9 +75,11 @@ import org.pentaho.metastore.api.IMetaStore;
 import org.pentaho.metastore.stores.xml.XmlMetaStore;
 import org.pentaho.metastore.stores.xml.XmlUtil;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -563,16 +567,14 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
     Path hdfsMetaStoreDirForCurrentJobPath;
     FileObject localMetaStoreSnapshotDirObject;
     //will create a temp folder on the local fs while hdfs folder name does not exist
-    do {
-      localMetaStoreSnapshotDirPath = Files.createTempDirectory( XmlUtil.META_FOLDER_NAME );
-      localMetaStoreSnapshotDirObject = KettleVFS.getFileObject( localMetaStoreSnapshotDirPath.toString() );
-      hdfsMetaStoreDirForCurrentJobPath = fs.asPath( installPath, localMetaStoreSnapshotDirObject.getName().getBaseName() );
-    } while ( fs.exists( hdfsMetaStoreDirForCurrentJobPath ) );
+    localMetaStoreSnapshotDirPath = Files.createTempDirectory( XmlUtil.META_FOLDER_NAME );
+    localMetaStoreSnapshotDirObject = KettleVFS.getFileObject( localMetaStoreSnapshotDirPath.toString() + File.separator + XmlUtil.META_FOLDER_NAME );
+    hdfsMetaStoreDirForCurrentJobPath = fs.asPath( installPath + XmlUtil.META_FOLDER_NAME );
 
     //fill local metastore snapshot by the existing named cluster
     snapshotMetaStore( localMetaStoreSnapshotDirPath.toString() );
 
-    hadoopShim.getDistributedCacheUtil().stageForCache( localMetaStoreSnapshotDirObject, fs, hdfsMetaStoreDirForCurrentJobPath, false, true );
+    hadoopShim.getDistributedCacheUtil().stageForCache( localMetaStoreSnapshotDirObject, fs, hdfsMetaStoreDirForCurrentJobPath, true, true );
     hadoopShim.getDistributedCacheUtil().addCachedFiles( conf, fs, hdfsMetaStoreDirForCurrentJobPath, null );
   }
 
@@ -582,8 +584,32 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
       FileSystemConfigBuilder nc = KettleVFS.getInstance().getFileSystemManager().getFileSystemConfigBuilder( "hc" );
       Method snapshotMethod = nc.getClass().getMethod( "snapshotNamedClusterToMetaStore", IMetaStore.class );
       snapshotMethod.invoke( nc, snapshot );
+      stageConfigurationFiles( metaStoreSnapshotDir );
     } catch ( FileSystemException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e ) {
       e.printStackTrace();
+    }
+  }
+
+  private void stageConfigurationFiles( String metaStoreSnapshotDir ) {
+    URI configFileLocation = null;
+    File configFileSource = null;
+    boolean stagingExists = true;
+    File configFilesStagingLocation = new File( metaStoreSnapshotDir + File.separator + ShimConfigsLoader.CONFIGS_DIR_PREFIX + File.separator + getConfigId() );
+    ShimConfigsLoader.ClusterConfigNames[] configFilesNames = ShimConfigsLoader.ClusterConfigNames.values();
+    for ( ShimConfigsLoader.ClusterConfigNames configFileName : configFilesNames ) {
+      try {
+        configFileLocation = ShimConfigsLoader.getURLToResourceFile( configFileName.toString(), getConfigId() ).toURI();
+        configFileSource = new File( configFileLocation );
+        stagingExists = true;
+        if ( !configFilesStagingLocation.exists() ) {
+          stagingExists = configFilesStagingLocation.mkdirs();
+        }
+        if( configFileSource.exists() && stagingExists ) {
+          FileUtils.copyFileToDirectory( configFileSource, configFilesStagingLocation );
+        }
+      } catch ( Exception e ) {
+        continue;
+      }
     }
   }
 
