@@ -98,11 +98,11 @@ public class HadoopShimImpl extends CommonHadoopShim {
   }
 
   @Override
-  public org.pentaho.hadoop.shim.api.Configuration createConfiguration( String namedCluster ) {
+  public org.pentaho.hadoop.shim.api.Configuration createConfiguration( String namedClusterConfigId ) {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
     try {
-      return new ConfigurationProxyV2( namedCluster );
+      return new ConfigurationProxyV2( namedClusterConfigId );
     } catch ( IOException e ) {
       throw new RuntimeException( "Unable to create configuration for new mapreduce api: ", e );
     } finally {
