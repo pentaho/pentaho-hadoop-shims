@@ -378,6 +378,7 @@
       <modules>
         <module>hdp25</module>
         <module>hdp26</module>
+        <module>hdp30</module>
         <module>cdh512</module>
         <module>cdh513</module>
         <module>cdh514</module>
@@ -410,6 +411,18 @@
       </activation>
       <modules>
         <module>hdp26</module>
+      </modules>
+    </profile>
+
+    <profile>
+      <id>hdp30</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>hdp30</module>
       </modules>
     </profile>
 
