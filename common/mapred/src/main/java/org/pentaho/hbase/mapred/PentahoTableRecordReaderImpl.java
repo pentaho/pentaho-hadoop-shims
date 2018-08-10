@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -28,7 +28,12 @@ import java.lang.reflect.Method;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+//#if shim_name!="hdp30"
 import org.apache.hadoop.hbase.KeyValue;
+//#endif
+//#if shim_name=="hdp30"
+//$import org.apache.hadoop.hbase.CellUtil;
+//#endif
 import org.apache.hadoop.hbase.UnknownScannerException;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
@@ -121,7 +126,12 @@ public class PentahoTableRecordReaderImpl {
    */
   protected static void configureScanWithInputColumns( Scan scan, byte[][] inputColumns ) {
     for ( byte[] familyAndQualifier : inputColumns ) {
+      //#if shim_name!="hdp30"
       byte[][] fq = KeyValue.parseColumn( familyAndQualifier );
+      //#endif
+      //#if shim_name=="hdp30"
+      //$byte[][] fq = CellUtil.parseColumn( familyAndQualifier );
+      //#endif
 
       if ( fq.length > 1 && fq[1] != null && fq[1].length > 0 ) {
         scan.addColumn( fq[0], fq[1] );
@@ -281,3 +291,4 @@ public class PentahoTableRecordReaderImpl {
     return false;
   }
 }
+
