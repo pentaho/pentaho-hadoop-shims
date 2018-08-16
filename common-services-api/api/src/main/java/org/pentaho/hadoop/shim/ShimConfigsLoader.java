@@ -18,7 +18,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class ShimConfigsLoader {
-  private static final String CONFIGS_DIR_PREFIX = "metastore" + File.separator + "pentaho" + File.separator + "NamedCluster" + File.separator + "Configs";
+  public static final String CONFIGS_DIR_PREFIX = "metastore" + File.separator + "pentaho" + File.separator + "NamedCluster" + File.separator + "Configs";
 
   public static Properties loadConfigProperties( String additionalPath ) {
     return getConfigProperties(
