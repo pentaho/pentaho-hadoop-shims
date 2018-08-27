@@ -37,4 +37,6 @@ public interface IAvroInputField extends IFormatInputField {
 
   String getDisplayableAvroFieldName();
 
+  String getIndexedValues();
+
 }
