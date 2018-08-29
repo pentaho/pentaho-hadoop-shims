@@ -70,4 +70,9 @@ public class AvroInputField extends BaseFormatInputField implements IAvroInputFi
   @Override public void setPentahoType( String value ) {
 
   }
+
+  @Override public String getIndexedValues() {
+    // TODO: Implement retrieving indexed values.
+    return null;
+  }
 }
