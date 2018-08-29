@@ -22,6 +22,9 @@
 package org.pentaho.hadoop.shim.api.format;
 
 
+import org.pentaho.di.core.row.RowMetaInterface;
+import org.pentaho.di.core.variables.VariableSpace;
+
 import java.io.InputStream;
 import java.util.List;
 
@@ -59,4 +62,14 @@ public interface IPentahoAvroInputFormat extends IPentahoInputFormat {
   boolean isUseFieldAsInputStream();
 
   void setInputStream( InputStream inputStream );
+
+  boolean isComplex();
+
+  void setIsComplex( boolean isComplex );
+
+  void setVariableSpace( VariableSpace variableSpace );
+
+  void setIncomingFields( Object[] incomingFields );
+
+  void setOutputRowMeta( RowMetaInterface outputRowMeta);
 }
