@@ -48,6 +48,7 @@ import org.pentaho.hadoop.shim.common.format.avro.PentahoAvroInputFormat;
 import org.pentaho.hadoop.shim.common.format.avro.PentahoAvroOutputFormat;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 /**
  * Created by Vasilina_Terehova on 7/27/2017.
@@ -298,6 +299,51 @@ public class CommonFormatShimTestIT {
   private String getFilePath( String file ) {
     return getClass().getResource( file ).getPath();
   }
+
+  @Test
+  public void testAvroNestedReadLocalFileSystem() throws Exception {
+    List<String> expectedRows = Arrays.asList( "John;4074549921", "Leslie;4079302194" );
+    PentahoAvroInputFormat avroInputFormat = new PentahoAvroInputFormat();
+
+
+    avroInputFormat.setInputSchemaFile( getFilePath( "/sample-schema.avro" ) );
+    avroInputFormat.setInputFile( getFilePath( "/sample-data.avro" ) );
+    avroInputFormat.setIsComplex( true );
+    List<AvroInputField> inputFields = new ArrayList<AvroInputField>();
+
+    AvroInputField avroInputField = new AvroInputField();
+    avroInputField.setFormatFieldName( "$.FirstName" );
+    avroInputField.setPentahoFieldName( "FirstName" );
+    avroInputField.setAvroType( AvroSpec.DataType.STRING );
+    avroInputField.setPentahoType( ValueMetaInterface.TYPE_STRING );
+    inputFields.add( avroInputField );
+
+    avroInputField = new AvroInputField();
+    avroInputField.setFormatFieldName( "$.Phone" );
+    avroInputField.setPentahoFieldName( "Phone" );
+    avroInputField.setAvroType( AvroSpec.DataType.STRING );
+    avroInputField.setPentahoType( ValueMetaInterface.TYPE_STRING );
+    inputFields.add( avroInputField );
+
+    avroInputFormat.setInputFields( inputFields );
+
+    RowMetaAndData row = new RowMetaAndData();
+    RowMeta rowMeta = new RowMeta();
+    rowMeta.addValueMeta( new ValueMetaString( "FirstName" ) );
+    rowMeta.addValueMeta( new ValueMetaString( "Phone" ) );
+    row.setRowMeta( rowMeta );
+
+    avroInputFormat.setOutputRowMeta( rowMeta );
+
+    IPentahoRecordReader recordReader = avroInputFormat.createRecordReader( null );
+    List<String> dataSampleRows = new ArrayList<>();
+    recordReader.forEach( rowMetaAndData -> {
+      dataSampleRows.add( String.join( ";", rowMetaAndData.getData()[0].toString(), rowMetaAndData.getData()[1].toString() ) );
+    } );
+    assertEquals( expectedRows, dataSampleRows );
+  }
+
+
 
   //#endif
 }
