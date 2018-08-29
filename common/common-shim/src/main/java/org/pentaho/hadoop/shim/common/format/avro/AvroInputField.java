@@ -22,11 +22,90 @@
 
 package org.pentaho.hadoop.shim.common.format.avro;
 
+import org.pentaho.di.core.row.ValueMeta;
+import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.hadoop.shim.api.format.AvroSpec;
 import org.pentaho.hadoop.shim.api.format.IAvroInputField;
 import org.pentaho.hadoop.shim.common.format.BaseFormatInputField;
 
+import java.util.List;
+
 public class AvroInputField extends BaseFormatInputField implements IAvroInputField {
+
+  ///////// Below added methods/variables to this object - Did this second /////////////
+  private List<String> pathParts;
+  private List<String> indexedVals;
+
+  private boolean m_isValid;
+  protected String m_cleansedVariableName;
+  protected String m_resolvedFieldName;
+  //protected String m_resolvedDefaultValue;
+
+  /** Index of this field in the incoming row stream */
+  //private int m_inputIndex = -1;
+
+  private String indexedValues;
+  protected ValueMetaInterface m_fieldVM;
+  /** The name of the variable to hold this field's values */
+  public String m_variableName = "";
+
+  private ValueMeta tempValueMeta;
+  private List<String> tempParts;
+
+  //protected static Class<?> PKG = AvroInputMetaBase.class;
+  protected static Class<?> PKG = AvroNestedReader.class;
+
+  public int getOutputIndex() {
+    return outputIndex;
+  }
+
+  public void setOutputIndex( int outputIndex ) {
+    this.outputIndex = outputIndex;
+  }
+
+  private int outputIndex; // the index that this field is in the output
+  // row structure
+
+  public void setPathParts( List<String> pathParts ) {
+    this.pathParts = pathParts;
+  }
+
+  public void setIndexedVals( List<String> mindexedVals ) {
+    this.indexedVals = mindexedVals;
+  }
+
+  public List<String> getPathParts() {
+
+    return pathParts;
+  }
+
+  public List<String> getIndexedVals() {
+    return indexedVals;
+  }
+
+  public ValueMeta getTempValueMeta() {
+    return tempValueMeta;
+  }
+
+  public void setTempValueMeta( ValueMeta tempValueMeta ) {
+    this.tempValueMeta = tempValueMeta;
+  }
+
+  public List<String> getTempParts() {
+    return tempParts;
+  }
+
+  public void setTempParts( List<String> tempParts ) {
+    this.tempParts = tempParts;
+  }
+
+  public String getIndexedValues() {
+    return indexedValues;
+  }
+
+  public void setIndexedValues( String indexedValues ) {
+    this.indexedValues = indexedValues;
+  }
 
   @Override
   public String getAvroFieldName() {
@@ -67,12 +146,4 @@ public class AvroInputField extends BaseFormatInputField implements IAvroInputFi
     return displayableAvroFieldName;
   }
 
-  @Override public void setPentahoType( String value ) {
-
-  }
-
-  @Override public String getIndexedValues() {
-    // TODO: Implement retrieving indexed values.
-    return null;
-  }
 }
