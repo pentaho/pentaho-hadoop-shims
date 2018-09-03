@@ -1,14 +1,11 @@
 package org.pentaho.hadoop.shim.common.format.avro;
 
 import org.apache.avro.Schema;
-import org.apache.avro.file.DataFileReader;
 import org.apache.avro.file.DataFileStream;
 import org.apache.avro.generic.GenericDatumReader;
-import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.io.DecoderFactory;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.exception.KettleException;
-import org.pentaho.di.core.row.RowMeta;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.hadoop.shim.api.format.IAvroInputField;
@@ -19,23 +16,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Spliterator;
-import java.util.function.Consumer;
 
-public class AvroNestedRecordReader  implements IPentahoAvroInputFormat.IPentahoRecordReader {
+public class AvroNestedRecordReader implements IPentahoAvroInputFormat.IPentahoRecordReader {
   private final DataFileStream<Object> nativeAvroRecordReader;
   private final Schema avroSchema;
   private final List<? extends IAvroInputField> fields;
   private final AvroNestedReader avroNestedReader;
   private final VariableSpace avroInputStep;
   private Object[] incomingFields;
-  private RowMetaAndData nextRowBuffer;
-  private boolean nextRowStale;
-  Object[][] avroOutputExpandedRows;
+  private RowMetaAndData nextRow;
+  Object[][] expandedRows = null;
   private boolean isAvroFile = true; // As opposed to datum. We need to run both ways at some point
 
-  private int outputArraySubscript = 0;
+  private int nextExpandedRow = 0;
 
   public AvroNestedRecordReader( DataFileStream<Object> nativeAvroRecordReader,
                                  Schema avroSchema, List<? extends IAvroInputField> fields, VariableSpace avroInputStep,
@@ -63,11 +56,11 @@ public class AvroNestedRecordReader  implements IPentahoAvroInputFormat.IPentaho
       e.printStackTrace();
     }
 
-
     ArrayList<AvroInputField> castedList = new ArrayList<AvroInputField>();
     for ( IAvroInputField field : fields ) {
       castedList.add( (AvroInputField) field );
     }
+
     avroNestedReader.m_normalFields = castedList;
     try {
       avroNestedReader.init();
@@ -76,63 +69,70 @@ public class AvroNestedRecordReader  implements IPentahoAvroInputFormat.IPentaho
     }
   }
 
-  @Override public void close() throws IOException {
+  @Override
+  public void close() throws IOException {
 
   }
 
-  @Override public Iterator<RowMetaAndData> iterator() {
+  private boolean hasExpandedRows() {
+    if ( expandedRows != null && nextExpandedRow < expandedRows.length ) {
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public Iterator<RowMetaAndData> iterator() {
 
     return new Iterator<RowMetaAndData>() {
 
-      @Override public boolean hasNext() {
-
-        if ( nextRowBuffer == null || nextRowStale ) {
-          return bufferNextRow();
-        } else {
+      @Override
+      public boolean hasNext() {
+        if ( hasExpandedRows() ) {
           return true;
         }
-        //return nativeAvroRecordReader.hasNext();
+        if ( nativeAvroRecordReader.hasNext() ) {
+          return true;
+        }
+        return false;
       }
 
-      @Override public RowMetaAndData next() {
-        if ( nextRowBuffer != null ) {
-          return nextRowBuffer;
-        } else {
-          if ( bufferNextRow() ) {
-            nextRowStale = true;
-            return nextRowBuffer;
-          } else {
-            throw new NoSuchElementException();
-          }
-          //return getRowMetaAndData(  nativeAvroRecordReader.next()
-        }
+      @Override
+      public RowMetaAndData next() {
+        return getNextRowMetaAndData();
       }
     };
   }
 
-  private boolean bufferNextRow() {
-    if ( avroOutputExpandedRows == null || outputArraySubscript >= avroOutputExpandedRows.length ) {
-      outputArraySubscript = 0;
+  private RowMetaAndData getNextRowMetaAndData() {
+    if ( hasExpandedRows() == false ) {
       try {
-        avroOutputExpandedRows = avroNestedReader.avroObjectToKettle( incomingFields, avroInputStep );
-        if ( avroOutputExpandedRows.length == 0 ){
-          return false;
-        }
+        nextExpandedRow = 0;
+        expandedRows = null;
+        expandedRows = avroNestedReader.avroObjectToKettle( incomingFields, avroInputStep );
+        nextRow = objectToRowMetaAndData( expandedRows[ nextExpandedRow ] );
       } catch ( KettleException e ) {
         e.printStackTrace();
       }
     }
 
-    nextRowBuffer = objectToRowMetaAndData( avroOutputExpandedRows[ outputArraySubscript ] );
-    outputArraySubscript++;
-    return true;
+    nextRow = objectToRowMetaAndData( expandedRows[ nextExpandedRow ] );
+    nextExpandedRow++;
+    return nextRow;
   }
 
-  private RowMetaAndData objectToRowMetaAndData( Object[] rawRow ) {
-    return null;
-  }
+  private RowMetaAndData objectToRowMetaAndData( Object[] row ) {
+    RowMetaAndData rowMetaAndData = new RowMetaAndData();
+    int index = 0;
+    for ( IAvroInputField metaField : fields ) {
+      rowMetaAndData.addValue( metaField.getPentahoFieldName(), metaField.getPentahoType(), row[ index ] );
+      String stringFormat = metaField.getStringFormat();
+      if ( ( stringFormat != null ) && ( stringFormat.trim().length() > 0 ) ) {
+        rowMetaAndData.getValueMeta( rowMetaAndData.size() - 1 ).setConversionMask( stringFormat );
+      }
+      index++;
+    }
 
-  @Override public Spliterator<RowMetaAndData> spliterator() {
-    return null;
+    return rowMetaAndData;
   }
 }

@@ -59,9 +59,8 @@ import java.util.Map;
 /**
  * The bulk of this code was taken from legacy AvroInputData and then logic from legacy AvroInputField was merged into
  * it.  The idea here is to remove the dependency on the schema from AvroInputField so that the current new
- * AvroInputField
- * can remain visible by AEL.  AEL cannot see any classes dependant on shim.  So code that normally be in format-meta
- * is here, instead.
+ * AvroInputField can remain visible by AEL.  AEL cannot see any classes dependant on shim.  So code that normally be in
+ * format-meta is here, instead.
  */
 public class AvroNestedReader {
   /**
@@ -228,8 +227,12 @@ public class AvroNestedReader {
     // non-existent map key or array index out of bounds)
     avroInputField.getTempParts().clear();
 
-    for ( String part : avroInputField.getTempParts() ) {
-      avroInputField.getTempParts().add( space.environmentSubstitute( part ) );
+    for ( String part : avroInputField.getPathParts() ) {
+      if ( space == null ) {
+        avroInputField.getTempParts().add( part );
+      } else {
+        avroInputField.getTempParts().add( space.environmentSubstitute( part ) );
+      }
     }
   }
 
@@ -956,7 +959,11 @@ public class AvroNestedReader {
       m_tempParts.clear();
 
       for ( String part : m_pathParts ) {
-        m_tempParts.add( space.environmentSubstitute( part ) );
+        if ( space == null ) {
+          m_tempParts.add( part );
+        } else {
+          m_tempParts.add( space.environmentSubstitute( part ) );
+        }
       }
 
       // reset sub fields
@@ -1675,11 +1682,9 @@ public class AvroNestedReader {
   /**
    * Load a schema from a file
    *
-   * @param schemaFile
-   *          the file to load from
+   * @param schemaFile the file to load from
    * @return the schema
-   * @throws KettleException
-   *           if a problem occurs
+   * @throws KettleException if a problem occurs
    */
   protected static Schema loadSchema( String schemaFile ) throws KettleException {
 
@@ -1704,11 +1709,9 @@ public class AvroNestedReader {
   /**
    * Load a schema from a Avro container file
    *
-   * @param containerFilename
-   *          the name of the Avro container file
+   * @param containerFilename the name of the Avro container file
    * @return the schema
-   * @throws KettleException
-   *           if a problem occurs
+   * @throws KettleException if a problem occurs
    */
   protected static Schema loadSchemaFromContainer( String containerFilename ) throws KettleException {
     Schema s = null;
