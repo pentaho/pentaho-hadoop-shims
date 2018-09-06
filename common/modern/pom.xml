@@ -5,10 +5,10 @@
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-common</artifactId>
-    <version>9.0.0.0-SNAPSHOT</version>
+    <version>9.0.2018.11.00-186</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-common-modern</artifactId>
-  <version>9.0.0.0-SNAPSHOT</version>
+  <version>9.0.2018.11.00-186</version>
   <dependencies>
     <dependency>
       <groupId>org.pentaho</groupId>

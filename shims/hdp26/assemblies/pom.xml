@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-hdp26-reactor</artifactId>
-    <version>9.0.0.0-SNAPSHOT</version>
+    <version>9.0.2018.11.00-186</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-hdp26-assemblies-reactor</artifactId>
   <packaging>pom</packaging>
