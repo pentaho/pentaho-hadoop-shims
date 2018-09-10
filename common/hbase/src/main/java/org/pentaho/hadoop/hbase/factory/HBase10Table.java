@@ -2,7 +2,7 @@
 *
 * Pentaho Big Data
 *
-* Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
+* Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
 *
 *******************************************************************************
 *
@@ -25,6 +25,9 @@ import java.io.IOException;
 
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.BufferedMutator;
+//#if shim_name=="hdp30"
+//$import org.apache.hadoop.hbase.client.BufferedMutatorParams;
+//#endif
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Get;
@@ -40,7 +43,7 @@ class HBase10Table implements HBaseTable {
   private final Table tab;
   private BufferedMutator mutator = null;
   private boolean autoFlush = true;
-  private final Connection conn; 
+  private final Connection conn;
 
   HBase10Table( Connection conn, String tableName ) throws IOException {
     this.conn = conn;
@@ -64,13 +67,17 @@ class HBase10Table implements HBaseTable {
     } else {
       throw new IOException( "Can't mutate the table " + tab.getName() );
     }
-    
     return mutator;
   }
 
   @Override
   public void setWriteBufferSize( long bufferSize ) throws IOException {
+    //#if shim_name!="hdp30"
     tab.setWriteBufferSize( bufferSize );
+    //#endif
+    //#if shim_name=="hdp30"
+    //$mutator = conn.getBufferedMutator( new BufferedMutatorParams( tab.getName() ).writeBufferSize( bufferSize ) );
+    //#endif
   }
 
   @Override
@@ -119,7 +126,7 @@ class HBase10Table implements HBaseTable {
       throw new NullPointerException( "NULL Put passed" );
     }
     if ( put instanceof HBase10Put ) {
-      HBase10Put p10 = ( HBase10Put ) put;
+      HBase10Put p10 = (HBase10Put) put;
       put( p10.getPut() );
     } else {
       throw new IllegalArgumentException( "Unexpected backed HBasePut type passed:" + put.getClass() );
