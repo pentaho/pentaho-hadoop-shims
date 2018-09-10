@@ -58,7 +58,18 @@ public class AvroNestedRecordReader implements IPentahoAvroInputFormat.IPentahoR
 
     ArrayList<AvroInputField> castedList = new ArrayList<AvroInputField>();
     for ( IAvroInputField field : fields ) {
-      castedList.add( (AvroInputField) field );
+      AvroInputField newField = new AvroInputField();
+      newField.setAvroFieldName( field.getAvroFieldName() );
+      newField.setAvroType( field.getAvroType() );
+      newField.setIndexedValues( field.getIndexedValues() );
+      newField.setFormatFieldName( field.getFormatFieldName() );
+      newField.setFormatType( field.getFormatType() );
+      newField.setPentahoFieldName( field.getPentahoFieldName() );
+      newField.setPentahoType( field.getPentahoType() );
+      newField.setPrecision( field.getPrecision() );
+      newField.setScale( field.getScale() );
+      newField.setStringFormat( field.getStringFormat() );
+      castedList.add( newField );
     }
 
     avroNestedReader.m_normalFields = castedList;
