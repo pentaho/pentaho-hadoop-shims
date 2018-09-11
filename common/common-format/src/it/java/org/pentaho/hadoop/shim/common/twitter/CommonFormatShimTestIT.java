@@ -19,13 +19,7 @@
  * limitations under the License.
  *
  ******************************************************************************/
-package org.pentaho.hadoop.shim.common;
-
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+package org.pentaho.hadoop.shim.common.twitter;
 
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.junit.Test;
@@ -40,13 +34,19 @@ import org.pentaho.hadoop.shim.api.format.IPentahoAvroOutputFormat;
 import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat.IPentahoRecordReader;
 import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat.IPentahoRecordWriter;
 import org.pentaho.hadoop.shim.api.format.ParquetSpec;
-import org.pentaho.hadoop.shim.common.format.parquet.ParquetUtils;
-import org.pentaho.hadoop.shim.common.format.parquet.PentahoParquetInputFormat;
-import org.pentaho.hadoop.shim.common.format.parquet.PentahoParquetOutputFormat;
+import org.pentaho.hadoop.shim.common.ConfigurationProxy;
 import org.pentaho.hadoop.shim.common.format.avro.AvroInputField;
 import org.pentaho.hadoop.shim.common.format.avro.AvroOutputField;
 import org.pentaho.hadoop.shim.common.format.avro.PentahoAvroInputFormat;
 import org.pentaho.hadoop.shim.common.format.avro.PentahoAvroOutputFormat;
+import org.pentaho.hadoop.shim.common.format.parquet.ParquetUtils;
+import org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter.TwitterInputFormat;
+import org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter.TwitterOutputFormat;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
@@ -55,7 +55,7 @@ import static org.mockito.Mockito.mock;
  * Created by Vasilina_Terehova on 7/27/2017.
  */
 public class CommonFormatShimTestIT {
-  //#if shim_type!="MAPR"
+
   @Test
   public void testParquetReadSuccessLocalFileSystem() throws Exception {
 
@@ -63,7 +63,7 @@ public class CommonFormatShimTestIT {
     expectedRows.add( "Alex Blum;15" );
     expectedRows.add( "Tom Falls;24" );
 
-    PentahoParquetInputFormat pentahoParquetInputFormat = new PentahoParquetInputFormat( mock( NamedCluster.class ) );
+    TwitterInputFormat pentahoParquetInputFormat = new TwitterInputFormat( mock( NamedCluster.class ) );
     pentahoParquetInputFormat
       .setInputFile( getClass().getClassLoader().getResource( "sample.pqt" ).toExternalForm() );
     pentahoParquetInputFormat.setSchema( ParquetUtils.createSchema( ValueMetaInterface.TYPE_INTEGER ) );
@@ -90,8 +90,8 @@ public class CommonFormatShimTestIT {
 
     String parquetFilePath = jobConfiguration.get( FileOutputFormat.OUTDIR ) + PARQUET_FILE_NAME;
 
-    PentahoParquetOutputFormat pentahoParquetOutputFormat =
-      new PentahoParquetOutputFormat();
+    TwitterOutputFormat pentahoParquetOutputFormat =
+      new TwitterOutputFormat();
 
     pentahoParquetOutputFormat.setOutputFile( parquetFilePath, true );
 
@@ -120,7 +120,7 @@ public class CommonFormatShimTestIT {
 
   private IPentahoRecordReader readCreatedParquetFile( String parquetFilePath )
     throws Exception {
-    PentahoParquetInputFormat pentahoParquetInputFormat = new PentahoParquetInputFormat( mock( NamedCluster.class ) );
+    TwitterInputFormat pentahoParquetInputFormat = new TwitterInputFormat( mock( NamedCluster.class ) );
 
     pentahoParquetInputFormat.setInputFile( parquetFilePath );
     List<IParquetInputField> schema = pentahoParquetInputFormat.readSchema( parquetFilePath );
@@ -301,5 +301,4 @@ public class CommonFormatShimTestIT {
     return getClass().getResource( file ).getPath();
   }
 
-  //#endif
 }

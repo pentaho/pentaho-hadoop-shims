@@ -19,23 +19,13 @@
  * limitations under the License.
  *
  ******************************************************************************/
-package org.pentaho.hadoop.shim.common.format.parquet;
+package org.pentaho.hadoop.shim.common.format.parquet.apache;
 
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
-//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_name=="mapr60"
-import org.apache.parquet.hadoop.ParquetInputFormat;
-import org.apache.parquet.hadoop.ParquetRecordReader;
-import org.apache.parquet.hadoop.api.ReadSupport;
-//#endif
-//#if shim_type=="CDH" || shim_type=="MAPR" && shim_name!="mapr60"
-//$import parquet.hadoop.ParquetInputFormat;
-//$import parquet.hadoop.ParquetRecordReader;
-//$import parquet.hadoop.api.ReadSupport;
-//#endif
 import org.junit.Test;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.row.ValueMetaInterface;
@@ -45,6 +35,16 @@ import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
 
 import java.util.List;
+
+//Apache imports
+import org.pentaho.hadoop.shim.common.format.parquet.ParquetInputFieldList;
+import org.pentaho.hadoop.shim.common.format.parquet.ParquetUtils;
+import org.pentaho.hadoop.shim.common.format.parquet.delegate.apache.ParquetConverter;
+import org.pentaho.hadoop.shim.common.format.parquet.delegate.apache.PentahoParquetReadSupport;
+import org.pentaho.hadoop.shim.common.format.parquet.delegate.apache.PentahoParquetRecordReader;
+import org.apache.parquet.hadoop.ParquetInputFormat;
+import org.apache.parquet.hadoop.ParquetRecordReader;
+import org.apache.parquet.hadoop.api.ReadSupport;
 
 public class PentahoParquetRecordReaderTest {
 

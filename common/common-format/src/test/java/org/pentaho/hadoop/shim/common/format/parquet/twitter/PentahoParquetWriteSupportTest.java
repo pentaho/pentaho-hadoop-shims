@@ -19,19 +19,17 @@
  * limitations under the License.
  *
  ******************************************************************************/
-package org.pentaho.hadoop.shim.common.format.parquet;
+package org.pentaho.hadoop.shim.common.format.parquet.twitter;
 
 import org.apache.hadoop.conf.Configuration;
-//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_name=="mapr60"
-import org.apache.parquet.hadoop.api.WriteSupport;
-//#endif
-//#if shim_type=="CDH" || shim_type=="MAPR" && shim_name!="mapr60"
-//$import parquet.hadoop.api.WriteSupport;
-//#endif
 import org.pentaho.di.core.util.Assert;
 import org.junit.Test;
 import org.pentaho.hadoop.shim.api.format.ParquetSpec;
 
+//Twitter imports
+import org.pentaho.hadoop.shim.common.format.parquet.ParquetUtils;
+import org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter.PentahoParquetWriteSupport;
+import parquet.hadoop.api.WriteSupport;
 
 public class PentahoParquetWriteSupportTest {
 

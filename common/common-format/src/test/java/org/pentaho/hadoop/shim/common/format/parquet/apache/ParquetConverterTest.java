@@ -19,26 +19,20 @@
  * limitations under the License.
  *
  ******************************************************************************/
-package org.pentaho.hadoop.shim.common.format.parquet;
+package org.pentaho.hadoop.shim.common.format.parquet.apache;
 
 import org.apache.hadoop.fs.Path;
-//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_name=="mapr60"
 import org.apache.parquet.format.converter.ParquetMetadataConverter;
 import org.apache.parquet.hadoop.ParquetFileReader;
 import org.apache.parquet.hadoop.metadata.ParquetMetadata;
 import org.apache.parquet.schema.MessageType;
-//#endif
-//#if shim_type=="CDH" || shim_type=="MAPR" && shim_name!="mapr60"
-//$import parquet.format.converter.ParquetMetadataConverter;
-//$import parquet.hadoop.ParquetFileReader;
-//$import parquet.hadoop.metadata.ParquetMetadata;
-//$import parquet.schema.MessageType;
-//#endif
 import org.junit.Assert;
 import org.junit.Test;
 import org.pentaho.hadoop.shim.api.format.IParquetInputField;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
-
+import org.pentaho.hadoop.shim.common.format.parquet.ParquetInputFieldList;
+import org.pentaho.hadoop.shim.common.format.parquet.ParquetUtils;
+import org.pentaho.hadoop.shim.common.format.parquet.delegate.apache.ParquetConverter;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.List;

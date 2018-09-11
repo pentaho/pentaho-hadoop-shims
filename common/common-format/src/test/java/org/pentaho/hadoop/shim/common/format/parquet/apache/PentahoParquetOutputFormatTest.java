@@ -19,7 +19,7 @@
  * limitations under the License.
  *
  ******************************************************************************/
-package org.pentaho.hadoop.shim.common.format.parquet;
+package org.pentaho.hadoop.shim.common.format.parquet.apache;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -47,12 +47,16 @@ import org.pentaho.hadoop.shim.api.format.IPentahoParquetOutputFormat.COMPRESSIO
 import org.pentaho.hadoop.shim.api.format.IPentahoParquetOutputFormat.VERSION;
 import org.pentaho.hadoop.shim.api.format.ParquetSpec;
 
+//Apache imports
+import org.pentaho.hadoop.shim.common.format.parquet.ParquetOutputField;
+import org.pentaho.hadoop.shim.common.format.parquet.ParquetUtils;
+import org.pentaho.hadoop.shim.common.format.parquet.delegate.apache.ApacheOutputFormat;
+
 public class PentahoParquetOutputFormatTest {
 
-//#if shim_type!="MAPR"
   @Test
   public void createRecordWriterWhenSchemaAndPathIsNotNull() throws Exception {
-    PentahoParquetOutputFormat pentahoParquetOutputFormat = new PentahoParquetOutputFormat();
+    ApacheOutputFormat pentahoParquetOutputFormat = new ApacheOutputFormat();
 
     String tempFile = Files.createTempDirectory( "parquet" ).toUri().toString();
     pentahoParquetOutputFormat.setOutputFile( tempFile.toString() + "test", true );
@@ -64,14 +68,13 @@ public class PentahoParquetOutputFormatTest {
     Assert.assertTrue( recordWriter instanceof IPentahoOutputFormat.IPentahoRecordWriter,
       "recordWriter should be instance of IPentahoInputFormat.IPentahoRecordReader" );
   }
-//#endif
 
   @Test( expected = RuntimeException.class )
   public void createRecordWriterWhenSchemaIsNull() throws Exception {
 
     String tempFile = Files.createTempDirectory( "parquet" ).toUri().toString();
 
-    PentahoParquetOutputFormat pentahoParquetOutputFormat = new PentahoParquetOutputFormat();
+    ApacheOutputFormat pentahoParquetOutputFormat = new ApacheOutputFormat();
 
     pentahoParquetOutputFormat.setOutputFile( tempFile.toString() + "test1", true );
     pentahoParquetOutputFormat.setFields( null );
@@ -84,7 +87,7 @@ public class PentahoParquetOutputFormatTest {
 
     String tempFile = null;
 
-    PentahoParquetOutputFormat pentahoParquetOutputFormat = new PentahoParquetOutputFormat();
+    ApacheOutputFormat pentahoParquetOutputFormat = new ApacheOutputFormat();
 
     pentahoParquetOutputFormat.setOutputFile( tempFile, true );
     pentahoParquetOutputFormat.setFields( ParquetUtils.createOutputFields() );
@@ -92,7 +95,6 @@ public class PentahoParquetOutputFormatTest {
     pentahoParquetOutputFormat.createRecordWriter();
   }
 
-//#if shim_type!="MAPR"
   @Test
   public void testFileOutput() throws Exception {
     long sz1un = writeData( "1_uncompressed_nodict.par", VERSION.VERSION_1_0, COMPRESSION.UNCOMPRESSED, true );
@@ -124,7 +126,7 @@ public class PentahoParquetOutputFormatTest {
   public void testSpacesInOutputFilePath() {
     Exception exception = null;
     try {
-      PentahoParquetOutputFormat pentahoParquetOutputFormat = new PentahoParquetOutputFormat();
+      ApacheOutputFormat pentahoParquetOutputFormat = new ApacheOutputFormat();
       pentahoParquetOutputFormat.setOutputFile( "/test test/output.parquet", true );
     } catch ( Exception e ) {
       exception = e;
@@ -134,7 +136,7 @@ public class PentahoParquetOutputFormatTest {
   }
 
   private long writeData( String file, VERSION ver, COMPRESSION compr, boolean dictionary ) throws Exception {
-    PentahoParquetOutputFormat of = new PentahoParquetOutputFormat();
+    ApacheOutputFormat of = new ApacheOutputFormat();
     of.setVersion( ver );
     of.setCompression( compr );
     of.enableDictionary( dictionary );
@@ -225,5 +227,4 @@ public class PentahoParquetOutputFormatTest {
     }
     return sz;
   }
-//#endif
 }

@@ -19,29 +19,12 @@
  * limitations under the License.
  *
  ******************************************************************************/
-package org.pentaho.hadoop.shim.common.format.parquet;
+package org.pentaho.hadoop.shim.common.format.parquet.apache;
 
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.mapreduce.TaskType;
 import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
-//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_name=="mapr60"
-import org.apache.parquet.hadoop.ParquetInputSplit;
-import org.apache.parquet.hadoop.ParquetOutputFormat;
-import org.apache.parquet.hadoop.ParquetRecordWriter;
-import org.apache.parquet.hadoop.api.WriteSupport;
-//#endif
-//#if shim_type=="CDH" || shim_type=="MAPR" && shim_name!="mapr60"
-//$import parquet.hadoop.ParquetInputSplit;
-//$import parquet.hadoop.ParquetOutputFormat;
-//$import parquet.hadoop.ParquetRecordWriter;
-//$import parquet.hadoop.api.WriteSupport;
-//#endif
-//#if shim_type=="MAPR"
-//$import org.junit.Assume;
-//$import org.junit.BeforeClass;
-//$import org.pentaho.di.core.Const;
-//#endif
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -64,6 +47,22 @@ import java.util.List;
 
 import static org.mockito.Mockito.mock;
 
+//Apache imports
+import org.pentaho.hadoop.shim.common.format.parquet.ParquetUtils;
+import org.pentaho.hadoop.shim.common.format.parquet.PentahoInputSplitImpl;
+import org.pentaho.hadoop.shim.common.format.parquet.delegate.apache.ApacheInputFormat;
+import org.pentaho.hadoop.shim.common.format.parquet.delegate.apache.PentahoParquetRecordWriter;
+import org.pentaho.hadoop.shim.common.format.parquet.delegate.apache.PentahoParquetWriteSupport;
+import org.apache.parquet.hadoop.ParquetInputSplit;
+import org.apache.parquet.hadoop.ParquetOutputFormat;
+import org.apache.parquet.hadoop.ParquetRecordWriter;
+import org.apache.parquet.hadoop.api.WriteSupport;
+
+//#if shim_type=="MAPR"
+//$import org.junit.Assume;
+//$import org.junit.BeforeClass;
+//$import org.pentaho.di.core.Const;
+//#endif
 
 public class PentahoParquetRecordWriterTest {
 
@@ -175,7 +174,7 @@ public class PentahoParquetRecordWriterTest {
 
     IPentahoInputFormat.IPentahoRecordReader recordReader = null;
     try {
-      PentahoParquetInputFormat pentahoParquetInputFormat = new PentahoParquetInputFormat( mock( NamedCluster.class ) );
+      ApacheInputFormat pentahoParquetInputFormat = new ApacheInputFormat( mock( NamedCluster.class ) );
       pentahoParquetInputFormat.setInputFile( parquetFilePath );
       List<IParquetInputField> schema = pentahoParquetInputFormat.readSchema( parquetFilePath );
       pentahoParquetInputFormat.setSchema( schema );
