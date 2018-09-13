@@ -32,8 +32,7 @@ import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat;
 import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat;
 import org.pentaho.hadoop.shim.common.format.orc.PentahoOrcInputFormat;
 import org.pentaho.hadoop.shim.common.format.orc.PentahoOrcOutputFormat;
-import org.pentaho.hadoop.shim.common.format.parquet.PentahoParquetInputFormat;
-import org.pentaho.hadoop.shim.common.format.parquet.PentahoParquetOutputFormat;
+import org.pentaho.hadoop.shim.common.format.parquet.delegate.DelegateFormatFactory;
 import org.pentaho.hadoop.shim.common.format.avro.PentahoAvroInputFormat;
 import org.pentaho.hadoop.shim.common.format.avro.PentahoAvroOutputFormat;
 import org.pentaho.hadoop.shim.spi.FormatShim;
@@ -44,7 +43,7 @@ public class CommonFormatShim implements FormatShim {
   @Override
   public <T extends IPentahoInputFormat> T createInputFormat( Class<T> type, NamedCluster namedCluster ) throws Exception {
     if ( type.isAssignableFrom( IPentahoParquetInputFormat.class ) ) {
-      return (T) new PentahoParquetInputFormat( namedCluster );
+      return (T) DelegateFormatFactory.getInputFormatInstance( namedCluster );
     } else if ( type.isAssignableFrom( IPentahoAvroInputFormat.class ) ) {
       return (T) new PentahoAvroInputFormat( namedCluster );
     } else if ( type.isAssignableFrom( IPentahoOrcInputFormat.class ) ) {
@@ -54,9 +53,9 @@ public class CommonFormatShim implements FormatShim {
   }
 
   @Override
-  public <T extends IPentahoOutputFormat> T createOutputFormat( Class<T> type ) throws Exception {
+  public <T extends IPentahoOutputFormat> T createOutputFormat( Class<T> type, NamedCluster namedCluster ) throws Exception {
     if ( type.isAssignableFrom( IPentahoParquetOutputFormat.class ) ) {
-      return (T) new PentahoParquetOutputFormat();
+      return (T) DelegateFormatFactory.getOutputFormatInstance( namedCluster );
     } else if ( type.isAssignableFrom( IPentahoAvroOutputFormat.class ) ) {
       return (T) new PentahoAvroOutputFormat();
     } else if ( type.isAssignableFrom( IPentahoOrcOutputFormat.class ) ) {

@@ -26,85 +26,125 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
-//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_name=="mapr60"
-import org.apache.parquet.hadoop.ParquetInputFormat;
-import org.apache.parquet.hadoop.ParquetRecordReader;
-import org.apache.parquet.hadoop.api.ReadSupport;
-//#endif
-//#if shim_type=="CDH" || shim_type=="MAPR" && shim_name!="mapr60"
-//$import parquet.hadoop.ParquetInputFormat;
-//$import parquet.hadoop.ParquetRecordReader;
-//$import parquet.hadoop.api.ReadSupport;
-//#endif
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.core.util.Assert;
-import org.pentaho.hadoop.shim.api.format.IParquetInputField;
 import org.pentaho.hadoop.shim.api.format.SchemaDescription;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
+import java.util.Arrays;
 
-import java.util.List;
 
+@RunWith(Parameterized.class)
 public class PentahoParquetRecordReaderTest {
 
-  private Job job;
-  private ParquetRecordReader<RowMetaAndData> nativeRecordReader;
-  private ParquetInputFormat<RowMetaAndData> nativeParquetInputFormat;
-
-  public void initSample() throws Exception {
-    ConfigurationProxy conf = new ConfigurationProxy();
-    conf.set( "fs.defaultFS", "file:///" );
-    job = Job.getInstance( conf );
-    List<IParquetInputField> schema = ParquetUtils.createSchema( ValueMetaInterface.TYPE_INTEGER );
-    job.getConfiguration().set( ParquetConverter.PARQUET_SCHEMA_CONF_KEY, new ParquetInputFieldList( schema ).marshall() );
-    ReadSupport<RowMetaAndData> readSupport = new PentahoParquetReadSupport();
-    nativeRecordReader =
-        new ParquetRecordReader<>( readSupport, ParquetInputFormat.getFilter( job.getConfiguration() ) );
-    nativeParquetInputFormat = new ParquetInputFormat<>();
+  @Parameterized.Parameters
+  public static Iterable<Object[]> data() {
+    return Arrays.asList(new Object[][] { { "APACHE", "DATA", "sample.pqt" }, { "TWITTER", "DATA", "sample.pqt" },
+            { "APACHE", "EMPTY", "empty.pqt" }, { "TWITTER", "EMPTY", "empty.pqt" } });
   }
 
-  public void initEmpty() throws Exception {
-    ConfigurationProxy conf = new ConfigurationProxy();
-    conf.set( "fs.defaultFS", "file:///" );
-    job = Job.getInstance( conf );
-    SchemaDescription schema = new SchemaDescription();
-    job.getConfiguration().set( ParquetConverter.PARQUET_SCHEMA_CONF_KEY, schema.marshall() );
-    ReadSupport<RowMetaAndData> readSupport = new PentahoParquetReadSupport();
-    nativeRecordReader =
-        new ParquetRecordReader<>( readSupport, ParquetInputFormat.getFilter( job.getConfiguration() ) );
-    nativeParquetInputFormat = new ParquetInputFormat<>();
-  }
+  @Parameterized.Parameter
+  public String provider;
+
+  @Parameterized.Parameter(1)
+  public String testType;
+
+  @Parameterized.Parameter(2)
+  public String testFile;
+
+  @Rule
+  public ExpectedException expectedException = ExpectedException.none();
 
   @Test
-  public void iterateOverParquetFileWithData() throws Exception {
-    initSample();
-    FileInputFormat.setInputPaths( job, getClass().getClassLoader().getResource( "sample.pqt" ).toExternalForm() );
-    initializeRecordReader();
-    PentahoParquetRecordReader recordReader = new PentahoParquetRecordReader( nativeRecordReader );
+  public void iterateOverParquetFile() throws Exception {
+    ConfigurationProxy conf = new ConfigurationProxy();
+    conf.set( "fs.defaultFS", "file:///" );
+    Job job = Job.getInstance( conf );
+    String marshallStr = null;
 
-    Assert.assertTrue( recordReader.iterator().hasNext() );
-    Assert.assertNotNull( recordReader.iterator().next() );
+    switch( testType ) {
+      case "DATA":
+        marshallStr = new ParquetInputFieldList( ParquetUtils.createSchema( ValueMetaInterface.TYPE_INTEGER ) ).marshall();
+        expectedException = ExpectedException.none();
+        break;
+      case "EMPTY":
+        marshallStr = new SchemaDescription().marshall();
+        expectedException.expect( RuntimeException.class );
+        break;
+      default:
+        org.junit.Assert.fail("Invalid test type used.");
+    }
 
-    recordReader.close();
-  }
+    switch( provider ) {
+      case "APACHE":
+        job.getConfiguration().set( org.pentaho.hadoop.shim.common.format.parquet.delegate.apache.ParquetConverter.PARQUET_SCHEMA_CONF_KEY,
+                marshallStr );
+        org.apache.parquet.hadoop.api.ReadSupport<RowMetaAndData> apacheReadSupport =
+                new org.pentaho.hadoop.shim.common.format.parquet.delegate.apache.PentahoParquetReadSupport();
+        org.apache.parquet.hadoop.ParquetRecordReader<RowMetaAndData> apacheNativeRecordReader =
+                new org.apache.parquet.hadoop.ParquetRecordReader<>( apacheReadSupport, org.apache.parquet.hadoop.ParquetInputFormat.getFilter( job.getConfiguration() ) );
+        org.apache.parquet.hadoop.ParquetInputFormat<RowMetaAndData> apacheNativeParquetInputFormat =
+                new org.apache.parquet.hadoop.ParquetInputFormat<>();
+        FileInputFormat.setInputPaths( job, getClass().getClassLoader().getResource( testFile ).toExternalForm() );
+        InputSplit apacheInputSplit = apacheNativeParquetInputFormat.getSplits( job ).get( 0 );
+        TaskAttemptContextImpl apacheTask = new TaskAttemptContextImpl( job.getConfiguration(), new TaskAttemptID() );
+        apacheNativeRecordReader.initialize( apacheInputSplit, apacheTask );
+        org.pentaho.hadoop.shim.common.format.parquet.delegate.apache.PentahoParquetRecordReader apacheRecordReader =
+                new org.pentaho.hadoop.shim.common.format.parquet.delegate.apache.PentahoParquetRecordReader( apacheNativeRecordReader );
 
-  @Test( expected = RuntimeException.class )
-  public void iterateOverEmptyParquetFile() throws Exception {
-    initEmpty();
-    FileInputFormat.setInputPaths( job, getClass().getClassLoader().getResource( "empty.pqt" ).toExternalForm() );
-    initializeRecordReader();
-    PentahoParquetRecordReader recordReader = new PentahoParquetRecordReader( nativeRecordReader );
+        switch( testType ) {
+          case "DATA":
+            Assert.assertTrue( apacheRecordReader.iterator().hasNext() );
+            Assert.assertNotNull( apacheRecordReader.iterator().next() );
+            break;
+          case "EMPTY":
+            Assert.assertFalse( apacheRecordReader.iterator().hasNext() );
+            Assert.assertNull( apacheRecordReader.iterator().next() );
+            break;
+          default:
+            org.junit.Assert.fail("Invalid test type used.");
+        }
 
-    Assert.assertFalse( recordReader.iterator().hasNext() );
-    Assert.assertNull( recordReader.iterator().next() );
+        apacheRecordReader.close();
+        break;
+      case "TWITTER":
+        job.getConfiguration().set( org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter.ParquetConverter.PARQUET_SCHEMA_CONF_KEY,
+                marshallStr );
+        parquet.hadoop.api.ReadSupport<RowMetaAndData> twitterReadSupport =
+                new org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter.PentahoParquetReadSupport();
+        parquet.hadoop.ParquetRecordReader<RowMetaAndData> twitterNativeRecordReader =
+                new parquet.hadoop.ParquetRecordReader<>( twitterReadSupport, parquet.hadoop.ParquetInputFormat.getFilter( job.getConfiguration() ) );
+        parquet.hadoop.ParquetInputFormat<RowMetaAndData> twitterNativeParquetInputFormat =
+                new parquet.hadoop.ParquetInputFormat<>();
+        FileInputFormat.setInputPaths( job, getClass().getClassLoader().getResource( testFile ).toExternalForm() );
+        InputSplit twitterInputSplit = twitterNativeParquetInputFormat.getSplits( job ).get( 0 );
+        TaskAttemptContextImpl twitterTask = new TaskAttemptContextImpl( job.getConfiguration(), new TaskAttemptID() );
+        twitterNativeRecordReader.initialize( twitterInputSplit, twitterTask );
+        org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter.PentahoParquetRecordReader twitterRecordReader =
+                new org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter.PentahoParquetRecordReader( twitterNativeRecordReader );
 
-    recordReader.close();
-  }
+        switch( testType ) {
+          case "DATA":
+            Assert.assertTrue( twitterRecordReader.iterator().hasNext() );
+            Assert.assertNotNull( twitterRecordReader.iterator().next() );
+            break;
+          case "EMPTY":
+            Assert.assertFalse( twitterRecordReader.iterator().hasNext() );
+            Assert.assertNull( twitterRecordReader.iterator().next() );
+            break;
+          default:
+            org.junit.Assert.fail("Invalid test type used.");
+        }
 
-  private void initializeRecordReader() throws Exception {
-    InputSplit inputSplit = nativeParquetInputFormat.getSplits( job ).get( 0 );
-    TaskAttemptContextImpl task = new TaskAttemptContextImpl( job.getConfiguration(), new TaskAttemptID() );
-    nativeRecordReader.initialize( inputSplit, task );
+        twitterRecordReader.close();
+        break;
+      default:
+        org.junit.Assert.fail("Invalid provider name used.");
+    }
   }
 }

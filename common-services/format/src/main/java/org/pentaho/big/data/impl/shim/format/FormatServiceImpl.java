@@ -43,7 +43,7 @@ public class FormatServiceImpl implements FormatService {
   }
 
   @Override
-  public <T extends IPentahoOutputFormat> T createOutputFormat( Class<T> type ) throws Exception {
-    return formatShim.createOutputFormat( type );
+  public <T extends IPentahoOutputFormat> T createOutputFormat( Class<T> type, NamedCluster namedCluster ) throws Exception {
+    return formatShim.createOutputFormat( type, namedCluster );
   }
 }

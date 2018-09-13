@@ -19,18 +19,10 @@
  * limitations under the License.
  *
  ******************************************************************************/
-package org.pentaho.hadoop.shim.common.format.parquet;
+package org.pentaho.hadoop.shim.common.format.parquet.delegate.apache;
 
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
-
-//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_name=="mapr60"
 import org.apache.parquet.hadoop.ParquetRecordWriter;
-//#endif
-
-//#if shim_type=="CDH" || shim_type=="MAPR" && shim_name!="mapr60"
-//$import parquet.hadoop.ParquetRecordWriter;
-//#endif
-
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat.IPentahoRecordWriter;
 
@@ -45,7 +37,7 @@ public class PentahoParquetRecordWriter implements IPentahoRecordWriter {
   private final TaskAttemptContext taskAttemptContext;
 
   public PentahoParquetRecordWriter( ParquetRecordWriter<RowMetaAndData> recordWriter,
-      TaskAttemptContext taskAttemptContext ) {
+                                     TaskAttemptContext taskAttemptContext ) {
     this.nativeParquetRecordWriter = recordWriter;
 
     this.taskAttemptContext = taskAttemptContext;
