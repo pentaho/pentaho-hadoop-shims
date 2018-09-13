@@ -33,6 +33,8 @@
     <eula-wrap_assign-deps-to-properties-phase></eula-wrap_assign-deps-to-properties-phase>
     <pentaho-osgi-bundles.version>9.0.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
     <org.apache.orc.version>1.2.3</org.apache.orc.version>
+    <org.apache.parquet.version>1.8.1</org.apache.parquet.version>
+    <twitter.parquet.version>1.5.0-cdh5.13.0</twitter.parquet.version>
     <jets3t.version>0.9.4</jets3t.version>
   </properties>
 

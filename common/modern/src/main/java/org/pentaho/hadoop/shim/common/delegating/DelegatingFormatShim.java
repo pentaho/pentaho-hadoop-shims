@@ -52,8 +52,8 @@ public class DelegatingFormatShim extends CommonFormatShim implements HasHadoopA
   }
 
   @Override
-  public <T extends IPentahoOutputFormat> T createOutputFormat( Class<T> type ) throws Exception {
-    return delegate.createOutputFormat( type );
+  public <T extends IPentahoOutputFormat> T createOutputFormat( Class<T> type, NamedCluster namedCluster ) throws Exception {
+    return delegate.createOutputFormat( type, namedCluster );
   }
 
   @Override

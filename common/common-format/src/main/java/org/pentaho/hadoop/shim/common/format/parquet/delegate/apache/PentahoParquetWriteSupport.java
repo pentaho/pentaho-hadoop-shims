@@ -19,7 +19,23 @@
  * limitations under the License.
  *
  ******************************************************************************/
-package org.pentaho.hadoop.shim.common.format.parquet;
+package org.pentaho.hadoop.shim.common.format.parquet.delegate.apache;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.parquet.hadoop.api.WriteSupport;
+import org.apache.parquet.io.api.Binary;
+import org.apache.parquet.io.api.RecordConsumer;
+import org.apache.parquet.schema.MessageType;
+import org.apache.parquet.schema.OriginalType;
+import org.apache.parquet.schema.PrimitiveType;
+import org.apache.parquet.schema.Type;
+import org.apache.parquet.schema.Types;
+import org.pentaho.di.core.RowMetaAndData;
+import org.pentaho.di.core.exception.KettleValueException;
+import org.pentaho.di.core.row.RowMetaInterface;
+import org.pentaho.di.core.row.ValueMetaInterface;
+import org.pentaho.di.core.row.value.ValueMetaBase;
+import org.pentaho.hadoop.shim.api.format.IParquetOutputField;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -34,36 +50,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.TreeMap;
-
-import org.apache.hadoop.conf.Configuration;
-
-//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_name=="mapr60"
-import org.apache.parquet.hadoop.api.WriteSupport;
-import org.apache.parquet.io.api.Binary;
-import org.apache.parquet.io.api.RecordConsumer;
-import org.apache.parquet.schema.MessageType;
-import org.apache.parquet.schema.OriginalType;
-import org.apache.parquet.schema.PrimitiveType;
-import org.apache.parquet.schema.Type;
-import org.apache.parquet.schema.Types;
-//#endif
-//#if shim_type=="CDH" || shim_type=="MAPR" && shim_name!="mapr60"
-//$import parquet.hadoop.api.WriteSupport;
-//$import parquet.io.api.Binary;
-//$import parquet.io.api.RecordConsumer;
-//$import parquet.schema.MessageType;
-//$import parquet.schema.OriginalType;
-//$import parquet.schema.PrimitiveType;
-//$import parquet.schema.Type;
-//$import parquet.schema.Types;
-//#endif
-
-import org.pentaho.di.core.RowMetaAndData;
-import org.pentaho.di.core.exception.KettleValueException;
-import org.pentaho.di.core.row.RowMetaInterface;
-import org.pentaho.di.core.row.ValueMetaInterface;
-import org.pentaho.di.core.row.value.ValueMetaBase;
-import org.pentaho.hadoop.shim.api.format.IParquetOutputField;
 
 public class PentahoParquetWriteSupport extends WriteSupport<RowMetaAndData> {
   private RecordConsumer consumer;
@@ -173,12 +159,7 @@ public class PentahoParquetWriteSupport extends WriteSupport<RowMetaAndData> {
               if ( bigDecimal != null ) {
                 bigDecimal = bigDecimal.round( new MathContext( field.getPrecision(), RoundingMode.HALF_UP ) ).setScale( field.getScale(), RoundingMode.HALF_UP );
               }
-              //#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
               consumer.addBinary( Binary.fromConstantByteArray( bigDecimal.unscaledValue().toByteArray() ) );
-              //#endif
-              //#if shim_type=="CDH" || shim_type=="MAPR"
-              //$     consumer.addBinary( Binary.fromByteArray( bigDecimal.unscaledValue().toByteArray() ) );
-              //#endif
               break;
             case DECIMAL_INT_32:
               bigDecimal = new BigDecimal( field.getDefaultValue() );
@@ -230,12 +211,7 @@ public class PentahoParquetWriteSupport extends WriteSupport<RowMetaAndData> {
         break;
       case BINARY:
         byte[] bytes = row.getBinary( fieldIndex, null );
-        //#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
         consumer.addBinary( Binary.fromConstantByteArray( bytes ) );
-        //#endif
-        //#if shim_type=="CDH" || shim_type=="MAPR"
-        //$     consumer.addBinary( Binary.fromByteArray( bytes ) );
-        //#endif
         break;
       case UTF8:
         consumer.addBinary( Binary.fromString( row.getString( fieldIndex, null ) ) );
@@ -259,12 +235,7 @@ public class PentahoParquetWriteSupport extends WriteSupport<RowMetaAndData> {
         if ( bigDecimal != null ) {
           bigDecimal = bigDecimal.round( new MathContext( field.getPrecision(), RoundingMode.HALF_UP ) ).setScale( field.getScale(), RoundingMode.HALF_UP );
         }
-        //#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI"
         consumer.addBinary( Binary.fromConstantByteArray( bigDecimal.unscaledValue().toByteArray() ) );
-        //#endif
-        //#if shim_type=="CDH" || shim_type=="MAPR"
-        //$     consumer.addBinary( Binary.fromByteArray( bigDecimal.unscaledValue().toByteArray() ) );
-        //#endif
         break;
       case DECIMAL_INT_32:
         bigDecimal = row.getBigNumber( fieldIndex, null );
