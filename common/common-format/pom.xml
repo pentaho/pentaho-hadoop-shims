@@ -14,6 +14,7 @@
   <version>9.0.0.0-SNAPSHOT</version>
 
   <properties>
+    <twittwer.parquet.version>1.5.0-cdh5.13.0</twittwer.parquet.version>
     <org.apache.parquet.version>1.8.1</org.apache.parquet.version>
     <org.apache.avro.version>1.8.1</org.apache.avro.version>
     <org.apache.orc.version>1.2.3</org.apache.orc.version>
@@ -157,6 +158,11 @@
     <dependency>
       <groupId>org.powermock</groupId>
       <artifactId>powermock-module-junit4-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.twitter</groupId>
+      <artifactId>parquet-hadoop-bundle</artifactId>
+      <version>${twittwer.parquet.version}</version>
     </dependency>
   </dependencies>
   <build>
