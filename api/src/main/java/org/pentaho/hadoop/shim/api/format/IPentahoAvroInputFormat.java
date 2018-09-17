@@ -21,7 +21,6 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.api.format;
 
-
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.variables.VariableSpace;
 
@@ -33,11 +32,11 @@ public interface IPentahoAvroInputFormat extends IPentahoInputFormat {
   /**
    * Set schema for file reading.
    */
-  List<? extends IAvroInputField> getFields(  ) throws Exception;
+  List<? extends IAvroInputField> getFields() throws Exception;
 
   /**
-     * Set schema for file reading.
-     */
+   * Set schema for file reading.
+   */
   void setInputFields( List<? extends IAvroInputField> fields ) throws Exception;
 
   /**
@@ -71,5 +70,7 @@ public interface IPentahoAvroInputFormat extends IPentahoInputFormat {
 
   void setIncomingFields( Object[] incomingFields );
 
-  void setOutputRowMeta( RowMetaInterface outputRowMeta);
+  void setOutputRowMeta( RowMetaInterface outputRowMeta );
+
+  List<? extends IAvroInputField> getLeafFields() throws Exception;
 }
