@@ -307,7 +307,6 @@ public class CommonFormatShimTestIT {
 
     PentahoAvroInputFormat avroInputFormat = new PentahoAvroInputFormat();
     avroInputFormat.setInputFile( getFilePath( "/sampledata1.avro" ) );
-    avroInputFormat.setIsComplex( true );
     List<AvroInputField> inputFields = new ArrayList<AvroInputField>();
 
     AvroInputField avroInputField = new AvroInputField();
@@ -361,7 +360,6 @@ public class CommonFormatShimTestIT {
 
     avroInputFormat.setInputSchemaFile( getFilePath( "/sample-schema.avro" ) );
     avroInputFormat.setInputFile( getFilePath( "/sample-data.avro" ) );
-    avroInputFormat.setIsComplex( true );
     List<AvroInputField> inputFields = new ArrayList<AvroInputField>();
 
     AvroInputField avroInputField = new AvroInputField();

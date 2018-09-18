@@ -62,10 +62,6 @@ public interface IPentahoAvroInputFormat extends IPentahoInputFormat {
 
   void setInputStream( InputStream inputStream );
 
-  boolean isComplex();
-
-  void setIsComplex( boolean isComplex );
-
   void setVariableSpace( VariableSpace variableSpace );
 
   void setIncomingFields( Object[] incomingFields );
