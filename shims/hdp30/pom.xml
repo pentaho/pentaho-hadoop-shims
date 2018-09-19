@@ -29,6 +29,7 @@
     <zookeeper.version>3.4.6.3.0.0.0-1634</zookeeper.version>
     <htrace-core.version>2.04</htrace-core.version>
     <protobuf-java.version>2.5.0</protobuf-java.version>
+    <commons-configuration.version>1.6</commons-configuration.version>
   </properties>
   <modules>
     <module>client</module>
