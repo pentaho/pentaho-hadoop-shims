@@ -13,6 +13,7 @@
       <includes>
 	    <include>org.xerial.snappy:snappy-java</include>
         <include>org.apache.hadoop:hadoop-client</include>
+        <include>commons-configuration:commons-configuration</include>
       </includes>
       <excludes>
         <exclude>xml-apis:xml-apis</exclude>
