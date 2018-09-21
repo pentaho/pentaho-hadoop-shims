@@ -52,7 +52,7 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
   private boolean useFieldAsInputStream;
   private InputStream inputStream;
   private VariableSpace variableSpace;
-  private Object[] incomingFields; //********* get the incoming fields to the step and delete this assignment
+  private Object[] incomingFields = new Object[]{}; //********* get the incoming fields to the step and delete this assignment
 
   private RowMetaInterface outputRowMeta;
 
