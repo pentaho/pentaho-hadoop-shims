@@ -46,7 +46,7 @@ public class AvroNestedFieldGetter {
 
     List<AvroInputField> fields = new ArrayList<AvroInputField>();
 
-    String root = "$";
+    String root = "";
 
     if ( s.getType() == Schema.Type.ARRAY || s.getType() == Schema.Type.MAP ) {
       while ( s.getType() == Schema.Type.ARRAY || s.getType() == Schema.Type.MAP ) {
@@ -61,16 +61,16 @@ public class AvroNestedFieldGetter {
     }
 
     if ( s.getType() == Schema.Type.RECORD ) {
-      processRecord( root, s, fields, root );
+      processRecord( root, s, fields );
     } else if ( s.getType() == Schema.Type.UNION ) {
-      processUnion( root, s, fields, root );
+      processUnion( root, s, fields );
     } else {
 
       // our top-level array/map structure bottoms out with primitive types
       // we'll create one zero-indexed path through to a primitive - the
       // user can copy and paste the path if they want to extract other
       // indexes out to separate Kettle fields
-      AvroInputField newField = createAvroField( root, s, null );
+      AvroInputField newField = createAvroField( root, s );
       if ( newField != null ) {
         fields.add( newField );
       }
@@ -87,8 +87,11 @@ public class AvroNestedFieldGetter {
    * @param fields a list of field objects that will correspond to leaf primitives
    * @throws KettleException if a problem occurs
    */
-  protected static void processRecord( String path, Schema s, List<AvroInputField> fields, String namePrefix )
-    throws KettleException {
+  protected static void processRecord( String path, Schema s, List<AvroInputField> fields ) throws KettleException {
+
+    if ( path.length() > 0 ) {
+      path += ".";
+    }
 
     List<Schema.Field> recordFields = s.getFields();
     for ( Schema.Field rField : recordFields ) {
@@ -98,18 +101,17 @@ public class AvroNestedFieldGetter {
        */
 
       if ( rSchema.getType() == Schema.Type.UNION ) {
-        processUnion( path + "." + rField.name(), rSchema, fields, namePrefix + "." + rField.name() );
+        processUnion( path + rField.name(), rSchema, fields );
       } else if ( rSchema.getType() == Schema.Type.RECORD ) {
-        processRecord( path + "." + rField.name(), rSchema, fields, namePrefix + "." + rField.name() );
+        processRecord( path + rField.name(), rSchema, fields );
       } else if ( rSchema.getType() == Schema.Type.ARRAY ) {
-        processArray( path + "." + rField.name() + "[0]", rSchema, fields, namePrefix + "." + rField.name() + "[0]" );
+        processArray( path + rField.name() + "[0]", rSchema, fields );
       } else if ( rSchema.getType() == Schema.Type.MAP ) {
-        processMap( path + "." + rField.name() + "[*key*]", rSchema, fields, namePrefix + "." + rField.name()
-          + "[*key*]" );
+        processMap( path  + rField.name() + "[*key*]", rSchema, fields );
       } else {
         // primitive
         AvroInputField newField =
-          createAvroField( path + "." + rField.name(), rSchema, namePrefix + "." + rField.name() );
+          createAvroField( path + rField.name(), rSchema );
         if ( newField != null ) {
           fields.add( newField );
         }
@@ -125,10 +127,8 @@ public class AvroNestedFieldGetter {
    * @param fields a list of field objects that will correspond to leaf primitives
    * @throws KettleException if a problem occurs
    */
-  protected static void processUnion( String path, Schema s, List<AvroInputField> fields, String namePrefix )
+  protected static void processUnion( String path, Schema s, List<AvroInputField> fields )
     throws KettleException {
-
-    boolean topLevelUnion = path.equals( "$" );
 
     // first check for the presence of primitive/leaf types in this union
     List<Schema> primitives = checkUnionForLeafTypes( s );
@@ -138,15 +138,14 @@ public class AvroNestedFieldGetter {
       // then we'll have to use String to cover them all
       if ( primitives.size() == 1 ) {
         Schema single = primitives.get( 0 );
-        namePrefix = topLevelUnion ? single.getName() : namePrefix;
-        AvroInputField newField = createAvroField( path, single, namePrefix );
+        AvroInputField newField = createAvroField( path, single );
         if ( newField != null ) {
           fields.add( newField );
         }
       } else {
         Schema stringS = Schema.create( Schema.Type.STRING );
         AvroInputField newField =
-          createAvroField( path, stringS, topLevelUnion ? path + "union:primitive/fixed" : namePrefix );
+          createAvroField( path, stringS );
         if ( newField != null ) {
           fields.add( newField );
         }
@@ -159,11 +158,11 @@ public class AvroNestedFieldGetter {
       if ( toCheck.getType() == Schema.Type.RECORD ) {
         String recordName = "[u:" + toCheck.getName() + "]";
 
-        processRecord( path, toCheck, fields, namePrefix + recordName );
+        processRecord( path, toCheck, fields );
       } else if ( toCheck.getType() == Schema.Type.MAP ) {
-        processMap( path + "[*key*]", toCheck, fields, namePrefix + "[*key*]" );
+        processMap( path + "[*key*]", toCheck, fields );
       } else if ( toCheck.getType() == Schema.Type.ARRAY ) {
-        processArray( path + "[0]", toCheck, fields, namePrefix + "[0]" );
+        processArray( path + "[0]", toCheck, fields );
       }
     }
   }
@@ -176,21 +175,21 @@ public class AvroNestedFieldGetter {
    * @param fields a list of field objects that will correspond to leaf primitives
    * @throws KettleException if a problem occurs
    */
-  protected static void processMap( String path, Schema s, List<AvroInputField> fields, String namePrefix )
+  protected static void processMap( String path, Schema s, List<AvroInputField> fields )
     throws KettleException {
 
     s = s.getValueType(); // type of the values of the map
 
     if ( s.getType() == Schema.Type.UNION ) {
-      processUnion( path, s, fields, namePrefix );
+      processUnion( path, s, fields );
     } else if ( s.getType() == Schema.Type.ARRAY ) {
-      processArray( path + "[0]", s, fields, namePrefix + "[0]" );
+      processArray( path + "[0]", s, fields );
     } else if ( s.getType() == Schema.Type.RECORD ) {
-      processRecord( path, s, fields, namePrefix );
+      processRecord( path, s, fields );
     } else if ( s.getType() == Schema.Type.MAP ) {
-      processMap( path + "[*key*]", s, fields, namePrefix + "[*key*]" );
+      processMap( path + "[*key*]", s, fields );
     } else {
-      AvroInputField newField = createAvroField( path, s, namePrefix );
+      AvroInputField newField = createAvroField( path, s );
       if ( newField != null ) {
         fields.add( newField );
       }
@@ -205,21 +204,21 @@ public class AvroNestedFieldGetter {
    * @param fields a list of field objects that will correspond to leaf primitives
    * @throws KettleException if a problem occurs
    */
-  protected static void processArray( String path, Schema s, List<AvroInputField> fields, String namePrefix )
+  protected static void processArray( String path, Schema s, List<AvroInputField> fields )
     throws KettleException {
 
     s = s.getElementType(); // type of the array elements
 
     if ( s.getType() == Schema.Type.UNION ) {
-      processUnion( path, s, fields, namePrefix );
+      processUnion( path, s, fields );
     } else if ( s.getType() == Schema.Type.ARRAY ) {
-      processArray( path + "[0]", s, fields, namePrefix );
+      processArray( path + "[0]", s, fields );
     } else if ( s.getType() == Schema.Type.RECORD ) {
-      processRecord( path, s, fields, namePrefix );
+      processRecord( path, s, fields );
     } else if ( s.getType() == Schema.Type.MAP ) {
-      processMap( path + "[*key*]", s, fields, namePrefix + "[*key*]" );
+      processMap( path + "[*key*]", s, fields );
     } else {
-      AvroInputField newField = createAvroField( path, s, namePrefix );
+      AvroInputField newField = createAvroField( path, s );
       if ( newField != null ) {
         fields.add( newField );
       }
@@ -233,19 +232,21 @@ public class AvroNestedFieldGetter {
    * @param s    the schema for the primitive
    * @return an avro field object.
    */
-  protected static AvroInputField createAvroField( String path, Schema s, String namePrefix ) {
+  protected static AvroInputField createAvroField( String path, Schema s ) {
     AvroInputField newField = new AvroInputField();
-    // newField.m_fieldName = s.getName(); // this will set the name to the
-    // primitive type if the schema is for a primitive
-    String fieldName = path;
-    if ( !Const.isEmpty( namePrefix ) ) {
-      fieldName = namePrefix;
+
+    String fieldName = "data";
+    if ( path.trim().length() > 0 ) {
+      fieldName = path.substring( path.lastIndexOf( "." ) + 1 );
     }
-    newField.setAvroFieldName( fieldName ); // set the name to the path, so that for
+    int index = fieldName.indexOf( "[" );
+    if ( index == 0 ) {
+      fieldName = "data";
+    } else if ( index > 0 ) {
+      fieldName = fieldName.substring( 0, index );
+    }
+    newField.setAvroFieldName( path ); // set the name to the path, so that for
     newField.setPentahoFieldName( fieldName );
-    // primitives within arrays we can at least
-    // distinguish among them
-    newField.setAvroFieldName( path );
     switch ( s.getType() ) {
       case BOOLEAN:
         newField.setAvroType( AvroSpec.DataType.BOOLEAN );
