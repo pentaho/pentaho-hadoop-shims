@@ -11,6 +11,9 @@
   <version>8.2.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
+    <module>client</module>
+    <module>pmr</module>
+    <module>default</module>
     <module>hdp25-shim</module>
   </modules>
 </project>

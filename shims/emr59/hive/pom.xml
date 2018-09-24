@@ -5,10 +5,10 @@
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-emr59-reactor</artifactId>
-    <version>9.0.0.0-SNAPSHOT</version>
+    <version>8.2.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-emr59-hive</artifactId>
-  <version>9.0.0.0-SNAPSHOT</version>
+  <version>8.2.0.0-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <properties>
     <shim.type>EMR</shim.type>
@@ -34,7 +34,7 @@
     <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>pentaho-big-data-impl-shim-hive</artifactId>
-      <version>9.0.0.0-SNAPSHOT</version>
+      <version>8.2.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hive</groupId>
@@ -193,19 +193,14 @@
         <configuration>
           <instructions>
             <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-            <Bundle-Version>${pentaho-osgi-bundles.version}</Bundle-Version>
             <DynamicImport-Package>*</DynamicImport-Package>
             <Import-Package>
               org.pentaho.hadoop.shim.api.*,
               org.pentaho.hadoop.shim.spi.*,
             </Import-Package>
-<<<<<<< HEAD:shims/emr59/hive/pom.xml
             <_exportcontents>
               org.apache.hadoop.hive;version=8.0.513.cdh
             </_exportcontents>
-=======
-            <_exportcontents>org.apache.hadoop.hive.*;version=${bundle.export.version}</_exportcontents>
->>>>>>> [BACKLOG-24517] Adds explicit version numbers on exported packages. Also fixes some conversion mistakes.:shims/hdp25/hive/pom.xml
             <Embed-Dependency>*</Embed-Dependency>
           </instructions>
         </configuration>
