@@ -69,4 +69,6 @@ public interface IPentahoAvroInputFormat extends IPentahoInputFormat {
   void setOutputRowMeta( RowMetaInterface outputRowMeta );
 
   List<? extends IAvroInputField> getLeafFields() throws Exception;
+
+  void setIsDataBinaryEncoded( boolean isBinary );
 }
