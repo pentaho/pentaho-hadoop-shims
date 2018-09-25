@@ -50,9 +50,10 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
   private List<? extends IAvroInputField> inputFields;
   private String inputStreamFieldName;
   private boolean useFieldAsInputStream;
+  private boolean isDataBinaryEncoded;
   private InputStream inputStream;
   private VariableSpace variableSpace;
-  private Object[] incomingFields = new Object[]{}; //********* get the incoming fields to the step and delete this assignment
+  private Object[] incomingFields = null;
 
   private RowMetaInterface outputRowMeta;
 
@@ -64,12 +65,17 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
   @Override
     public IPentahoRecordReader createRecordReader( IPentahoInputSplit split ) throws Exception {
 
-    DataFileStream<Object> nestedDfs = createNestedDataFileStream();
-    if ( nestedDfs == null ) {
-      throw new Exception( "Unable to read data from file " + fileName );
+    DataFileStream<Object> nestedDfs = null;
+    if ( this.isDataBinaryEncoded ) {
+      nestedDfs = createNestedDataFileStream();
+      if ( nestedDfs == null ) {
+        throw new Exception( "Unable to read data from file " + fileName );
+      }
     }
     Schema avroSchema = readAvroSchema();
-    return new AvroNestedRecordReader( nestedDfs, avroSchema, getFields(), variableSpace, incomingFields, outputRowMeta );
+      return new AvroNestedRecordReader( nestedDfs, avroSchema, getFields(), variableSpace, incomingFields,
+        outputRowMeta, fileName, isDataBinaryEncoded, useFieldAsInputStream );
+
   }
 
   @VisibleForTesting
@@ -388,5 +394,9 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
     Schema s = readAvroSchema();
     inputFields = AvroNestedFieldGetter.getLeafFields( s );
     return inputFields;
+  }
+
+  public void setIsDataBinaryEncoded( boolean isBinary ) {
+    this.isDataBinaryEncoded = isBinary;
   }
 }

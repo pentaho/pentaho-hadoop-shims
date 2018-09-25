@@ -222,6 +222,7 @@ public class AvroNestedReader {
     if ( m_expansionHandler != null ) {
       m_expansionHandler.init();
     }
+    m_factory = new DecoderFactory();
   }
 
   /**
@@ -1503,7 +1504,6 @@ public class AvroNestedReader {
             String schemaToUse = schemaMeta.getString( incoming[ m_schemaFieldIndex ] );
             setSchemaToUse( schemaToUse, m_cacheSchemas, space );
           }
-
           if ( m_jsonEncoded ) {
             try {
               String fieldValue = fieldMeta.getString( incoming[ m_fieldToDecodeIndex ] );

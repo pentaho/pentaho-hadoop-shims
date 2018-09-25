@@ -4,14 +4,14 @@ import org.apache.avro.Schema;
 import org.apache.avro.file.DataFileStream;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.io.DecoderFactory;
+import org.apache.commons.vfs2.FileObject;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.variables.VariableSpace;
+import org.pentaho.di.core.vfs.KettleVFS;
 import org.pentaho.hadoop.shim.api.format.IAvroInputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoAvroInputFormat;
-
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -26,13 +26,13 @@ public class AvroNestedRecordReader implements IPentahoAvroInputFormat.IPentahoR
   private Object[] incomingFields;
   private RowMetaAndData nextRow;
   Object[][] expandedRows = null;
-  private boolean isAvroFile = true; // As opposed to datum. We need to run both ways at some point
 
   private int nextExpandedRow = 0;
 
   public AvroNestedRecordReader( DataFileStream<Object> nativeAvroRecordReader,
                                  Schema avroSchema, List<? extends IAvroInputField> fields, VariableSpace avroInputStep,
-                                 Object[] incomingFields, RowMetaInterface outputRowMeta ) {
+                                 Object[] incomingFields, RowMetaInterface outputRowMeta,
+                                 String fileName, boolean isDataBinaryEncoded, boolean isDecodingFromField ) {
 
     this.nativeAvroRecordReader = nativeAvroRecordReader;
     this.avroSchema = avroSchema;
@@ -43,16 +43,25 @@ public class AvroNestedRecordReader implements IPentahoAvroInputFormat.IPentahoR
     avroNestedReader = new AvroNestedReader();
     avroNestedReader.m_schemaToUse = avroSchema;
     avroNestedReader.m_outputRowMeta = outputRowMeta;
+    avroNestedReader.m_jsonEncoded = !isDataBinaryEncoded;
+    avroNestedReader.m_decodingFromField = isDecodingFromField;
+    avroNestedReader.m_fieldToDecodeIndex = nextExpandedRow;
+
     try {
-      if ( isAvroFile ) {
+      if ( nativeAvroRecordReader != null ) { // Is Avro File
         avroNestedReader.m_containerReader = nativeAvroRecordReader;
       } else {
-        avroNestedReader.m_datumReader = new GenericDatumReader<Object>( avroSchema );
-        avroNestedReader.m_decoder = DecoderFactory.get()
-          .jsonDecoder( avroSchema, new ByteArrayInputStream( "input stream goes here".getBytes() ) );
+
+        if ( avroSchema != null ) {
+          avroNestedReader.m_datumReader = new GenericDatumReader<Object>( avroSchema );
+          if ( fileName != null ) {
+            FileObject fileObject = KettleVFS.getFileObject( fileName );
+            avroNestedReader.m_decoder = DecoderFactory.get().jsonDecoder( avroSchema, KettleVFS.getInputStream( fileObject ) );
+          }
+        }
       }
 
-    } catch ( IOException e ) {
+    } catch ( Exception e ) {
       e.printStackTrace();
     }
 
@@ -86,8 +95,12 @@ public class AvroNestedRecordReader implements IPentahoAvroInputFormat.IPentahoR
   }
 
   private boolean hasExpandedRows() {
-    if ( expandedRows != null && nextExpandedRow < expandedRows.length ) {
-      return true;
+    if ( expandedRows != null ) {
+      if( nextExpandedRow < expandedRows.length) {
+        return true;
+      } else {
+        incomingFields = null;
+      }
     }
     return false;
   }
@@ -102,7 +115,10 @@ public class AvroNestedRecordReader implements IPentahoAvroInputFormat.IPentahoR
         if ( hasExpandedRows() ) {
           return true;
         }
-        if ( nativeAvroRecordReader.hasNext() ) {
+        if ( nativeAvroRecordReader != null && nativeAvroRecordReader.hasNext() ) {
+          return true;
+        }
+        if ( incomingFields != null ) {
           return true;
         }
         return false;
@@ -121,7 +137,11 @@ public class AvroNestedRecordReader implements IPentahoAvroInputFormat.IPentahoR
         nextExpandedRow = 0;
         expandedRows = null;
         expandedRows = avroNestedReader.avroObjectToKettle( incomingFields, avroInputStep );
-        nextRow = objectToRowMetaAndData( expandedRows[ nextExpandedRow ] );
+        if ( expandedRows != null ) {
+          nextRow = objectToRowMetaAndData( expandedRows[nextExpandedRow] );
+        } else {
+          return null;
+        }
       } catch ( KettleException e ) {
         e.printStackTrace();
       }
