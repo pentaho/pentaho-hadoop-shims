@@ -76,6 +76,25 @@ public class AvroNestedFieldGetter {
       }
     }
 
+    for (int i = 0; i < fields.size() - 1; i++) {
+      AvroInputField field = fields.get( i );
+      boolean duplicateName;
+      int suffix = 0;
+      String fieldName;
+      do {
+        fieldName = field.getPentahoFieldName();
+        if ( suffix > 0 ) {
+          fieldName = fieldName + "-" + Integer.toString( suffix );
+        }
+        duplicateName = false;
+        for ( int j = i + 1; ( j < fields.size() ) && !duplicateName; j++ ) {
+          duplicateName = fieldName.equals( fields.get( j ).getPentahoFieldName() );
+        }
+        suffix++;
+      } while ( duplicateName );
+
+      field.setPentahoFieldName( fieldName );
+    }
     return fields;
   }
 
