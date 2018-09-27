@@ -65,13 +65,11 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
     public IPentahoRecordReader createRecordReader( IPentahoInputSplit split ) throws Exception {
 
     DataFileStream<Object> nestedDfs = createNestedDataFileStream();
-      if ( nestedDfs == null ) {
-        throw new Exception( "Unable to read data from file " + fileName );
-      }
+    if ( nestedDfs == null ) {
+      throw new Exception( "Unable to read data from file " + fileName );
+    }
     Schema avroSchema = readAvroSchema();
-      return new AvroNestedRecordReader( nestedDfs, avroSchema, getFields(), variableSpace, incomingFields,
-        outputRowMeta );
-
+    return new AvroNestedRecordReader( nestedDfs, avroSchema, getFields(), variableSpace, incomingFields, outputRowMeta );
   }
 
   @VisibleForTesting
@@ -94,7 +92,7 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
     if ( this.inputFields != null ) {
       return inputFields;
     } else {
-      return getDefaultFields();
+      return getLeafFields();
     }
   }
 
