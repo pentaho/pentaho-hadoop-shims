@@ -21,6 +21,8 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.common.format.avro;
 
+import org.apache.avro.Conversions;
+import org.apache.avro.LogicalTypes;
 import org.apache.avro.Schema;
 import org.apache.avro.file.DataFileStream;
 import org.apache.avro.generic.GenericContainer;
@@ -48,13 +50,19 @@ import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.di.core.vfs.KettleVFS;
 import org.pentaho.di.i18n.BaseMessages;
+import org.pentaho.hadoop.shim.api.format.AvroSpec;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.nio.ByteBuffer;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Date;
+
 
 /**
  * The bulk of this code was taken from legacy AvroInputData and then logic from legacy AvroInputField was merged into
@@ -709,10 +717,52 @@ public class AvroNestedReader {
     } else if ( fieldT == Schema.Type.MAP ) {
       return convertToKettleValue( avroInputField, (Map<Utf8, Object>) field, fieldSchema, defaultSchema,
         ignoreMissing );
+    } else if ( fieldT == Schema.Type.BYTES ) {
+      return convertToKettleValue( avroInputField, (ByteBuffer) field, fieldSchema );
     } else {
       // assume primitive (covers bytes encapsulated in FIXED type)
       return getPrimitive( avroInputField, field, fieldSchema );
     }
+  }
+
+  /**
+   * @param pentahoType
+   * @param avroData
+   * @param fieldSchema
+   * @return
+   */
+  public Object convertToKettleValue( AvroInputField pentahoType, ByteBuffer avroData, Schema fieldSchema ) {
+    Object pentahoData = null;
+    if ( avroData != null ) {
+      try {
+        switch ( pentahoType.getPentahoType() ) {
+          case ValueMetaInterface.TYPE_BIGNUMBER:
+            Conversions.DecimalConversion converter = new Conversions.DecimalConversion();
+            Schema schema = fieldSchema;
+            if ( schema.getType().equals( Schema.Type.UNION ) ) {
+              List<Schema> schemas = schema.getTypes();
+              for ( Schema s : schemas ) {
+                if ( !s.getName().equalsIgnoreCase( "null" ) ) {
+                  schema = s;
+                  break;
+                }
+              }
+            }
+            Object precision = schema.getObjectProp( AvroSpec.DECIMAL_PRECISION );
+            Object scale = schema.getObjectProp( AvroSpec.DECIMAL_SCALE );
+            LogicalTypes.Decimal decimalType = LogicalTypes.decimal( Integer.parseInt( precision.toString() ), Integer.parseInt( scale.toString() ) );
+            pentahoData = converter.fromBytes( avroData, m_schemaToUse, decimalType );
+            break;
+          case ValueMetaInterface.TYPE_BINARY:
+            pentahoData = new byte[ avroData.remaining() ];
+            avroData.get( (byte[]) pentahoData );
+            break;
+        }
+      } catch ( Exception e ) {
+        // If unable to do the type conversion just ignore. null will be returned.
+      }
+    }
+    return pentahoData;
   }
 
   /**
@@ -793,6 +843,10 @@ public class AvroNestedReader {
       case ValueMetaInterface.TYPE_BOOLEAN:
         return avroInputField.getTempValueMeta().getBoolean( fieldValue );
       case ValueMetaInterface.TYPE_DATE:
+        if ( avroInputField.getAvroType().getBaseType() == AvroSpec.DataType.INTEGER.getBaseType() ) {
+          LocalDate localDate = LocalDate.ofEpochDay( 0 ).plusDays( (Long) fieldValue );
+          return Date.from( localDate.atStartOfDay( ZoneId.systemDefault() ).toInstant() );
+        }
         return avroInputField.getTempValueMeta().getDate( fieldValue );
       case ValueMetaInterface.TYPE_INTEGER:
         return avroInputField.getTempValueMeta().getInteger( fieldValue );
