@@ -22,7 +22,6 @@
 package org.pentaho.hadoop.shim.common.format.avro;
 
 import org.apache.avro.Schema;
-import org.pentaho.di.core.Const;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.hadoop.shim.api.format.AvroSpec;
@@ -126,7 +125,7 @@ public class AvroNestedFieldGetter {
       } else if ( rSchema.getType() == Schema.Type.ARRAY ) {
         processArray( path + rField.name() + "[0]", rSchema, fields );
       } else if ( rSchema.getType() == Schema.Type.MAP ) {
-        processMap( path  + rField.name() + "[*key*]", rSchema, fields );
+        processMap( path + rField.name() + "[*key*]", rSchema, fields );
       } else {
         // primitive
         AvroInputField newField =
@@ -288,16 +287,36 @@ public class AvroNestedFieldGetter {
         newField.setPentahoType( ValueMetaInterface.TYPE_NUMBER );
         break;
       case INT:
-        newField.setAvroType( AvroSpec.DataType.INTEGER );
-        newField.setPentahoType( ValueMetaInterface.TYPE_INTEGER );
+        if ( s.getLogicalType() != null ) {
+          if ( s.getLogicalType().getName().equalsIgnoreCase( "Date" ) ) {
+            newField.setAvroType( AvroSpec.DataType.DATE );
+            newField.setPentahoType( ValueMetaInterface.TYPE_DATE );
+          } else {
+            newField.setAvroType( AvroSpec.DataType.INTEGER );
+            newField.setPentahoType( ValueMetaInterface.TYPE_INTEGER );
+          }
+        } else {
+          newField.setAvroType( AvroSpec.DataType.INTEGER );
+          newField.setPentahoType( ValueMetaInterface.TYPE_INTEGER );
+        }
         break;
       case LONG:
         newField.setAvroType( AvroSpec.DataType.LONG );
         newField.setPentahoType( ValueMetaInterface.TYPE_INTEGER );
         break;
       case BYTES:
-        newField.setAvroType( AvroSpec.DataType.BYTES );
-        newField.setPentahoType( ValueMetaInterface.TYPE_BINARY );
+        if ( s.getLogicalType() != null ) {
+          if ( s.getLogicalType().getName().equalsIgnoreCase( "Decimal" ) ) {
+            newField.setAvroType( AvroSpec.DataType.DECIMAL );
+            newField.setPentahoType( ValueMetaInterface.TYPE_BIGNUMBER );
+          } else {
+            newField.setAvroType( AvroSpec.DataType.BYTES );
+            newField.setPentahoType( ValueMetaInterface.TYPE_BINARY );
+          }
+        } else {
+          newField.setAvroType( AvroSpec.DataType.BYTES );
+          newField.setPentahoType( ValueMetaInterface.TYPE_BINARY );
+        }
         break;
       case FIXED:
         newField.setAvroType( AvroSpec.DataType.FIXED );
