@@ -75,7 +75,7 @@ public class AvroNestedFieldGetter {
       }
     }
 
-    for (int i = 0; i < fields.size() - 1; i++) {
+    for ( int i = 0; i < fields.size() - 1; i++ ) {
       AvroInputField field = fields.get( i );
       boolean duplicateName;
       int suffix = 0;
@@ -301,8 +301,18 @@ public class AvroNestedFieldGetter {
         }
         break;
       case LONG:
-        newField.setAvroType( AvroSpec.DataType.LONG );
-        newField.setPentahoType( ValueMetaInterface.TYPE_INTEGER );
+        if ( s.getLogicalType() != null ) {
+          if ( s.getLogicalType().getName().equalsIgnoreCase( "timestamp-millis" ) ) {
+            newField.setAvroType( AvroSpec.DataType.TIMESTAMP_MILLIS );
+            newField.setPentahoType( ValueMetaInterface.TYPE_TIMESTAMP );
+          } else {
+            newField.setAvroType( AvroSpec.DataType.LONG );
+            newField.setPentahoType( ValueMetaInterface.TYPE_INTEGER );
+          }
+        } else {
+          newField.setAvroType( AvroSpec.DataType.LONG );
+          newField.setPentahoType( ValueMetaInterface.TYPE_INTEGER );
+        }
         break;
       case BYTES:
         if ( s.getLogicalType() != null ) {
