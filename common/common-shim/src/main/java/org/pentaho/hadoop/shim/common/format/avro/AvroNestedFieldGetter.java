@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -75,7 +75,7 @@ public class AvroNestedFieldGetter {
       }
     }
 
-    for (int i = 0; i < fields.size() - 1; i++) {
+    for ( int i = 0; i < fields.size() - 1; i++ ) {
       AvroInputField field = fields.get( i );
       boolean duplicateName;
       int suffix = 0;
@@ -274,9 +274,6 @@ public class AvroNestedFieldGetter {
       case STRING:
         newField.setPentahoType( ValueMetaInterface.TYPE_STRING );
         newField.setAvroType( AvroSpec.DataType.STRING );
-        if ( s.getType() == Schema.Type.ENUM ) {
-          //TODO: Fix this - newField.m_indexedVals = s.getEnumSymbols();
-        }
         break;
       case FLOAT:
         newField.setAvroType( AvroSpec.DataType.FLOAT );
@@ -301,8 +298,18 @@ public class AvroNestedFieldGetter {
         }
         break;
       case LONG:
-        newField.setAvroType( AvroSpec.DataType.LONG );
-        newField.setPentahoType( ValueMetaInterface.TYPE_INTEGER );
+        if ( s.getLogicalType() != null ) {
+          if ( s.getLogicalType().getName().equalsIgnoreCase( "timestamp-millis" ) ) {
+            newField.setAvroType( AvroSpec.DataType.TIMESTAMP_MILLIS );
+            newField.setPentahoType( ValueMetaInterface.TYPE_TIMESTAMP );
+          } else {
+            newField.setAvroType( AvroSpec.DataType.LONG );
+            newField.setPentahoType( ValueMetaInterface.TYPE_INTEGER );
+          }
+        } else {
+          newField.setAvroType( AvroSpec.DataType.LONG );
+          newField.setPentahoType( ValueMetaInterface.TYPE_INTEGER );
+        }
         break;
       case BYTES:
         if ( s.getLogicalType() != null ) {

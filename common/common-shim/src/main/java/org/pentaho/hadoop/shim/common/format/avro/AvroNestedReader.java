@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -51,7 +51,6 @@ import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.di.core.vfs.KettleVFS;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.hadoop.shim.api.format.AvroSpec;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -62,6 +61,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
+import java.sql.Timestamp;
 
 
 /**
@@ -199,11 +199,6 @@ public class AvroNestedReader {
   protected void init() throws KettleException {
     if ( m_schemaToUse != null ) {
       initTopLevelStructure( m_schemaToUse, true );
-      // any fields specified by the user, or do we need to read all leaves
-      // from the schema?
-      if ( m_normalFields == null || m_normalFields.size() == 0 ) {
-        //TODO: Do we need this?          m_normalFields = AvroFieldGetter.getLeafFields( m_schemaToUse );
-      }
     }
 
     if ( m_normalFields == null || m_normalFields.size() == 0 ) {
@@ -848,6 +843,8 @@ public class AvroNestedReader {
           return Date.from( localDate.atStartOfDay( ZoneId.systemDefault() ).toInstant() );
         }
         return avroInputField.getTempValueMeta().getDate( fieldValue );
+      case ValueMetaInterface.TYPE_TIMESTAMP:
+        return new Timestamp( (Long) fieldValue );
       case ValueMetaInterface.TYPE_INTEGER:
         return avroInputField.getTempValueMeta().getInteger( fieldValue );
       case ValueMetaInterface.TYPE_NUMBER:
