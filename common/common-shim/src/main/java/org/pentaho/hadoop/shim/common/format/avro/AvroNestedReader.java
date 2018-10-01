@@ -51,7 +51,6 @@ import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.di.core.vfs.KettleVFS;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.hadoop.shim.api.format.AvroSpec;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -62,6 +61,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
+import java.sql.Timestamp;
 
 
 /**
@@ -848,6 +848,8 @@ public class AvroNestedReader {
           return Date.from( localDate.atStartOfDay( ZoneId.systemDefault() ).toInstant() );
         }
         return avroInputField.getTempValueMeta().getDate( fieldValue );
+      case ValueMetaInterface.TYPE_TIMESTAMP:
+        return new Timestamp( (Long) fieldValue );
       case ValueMetaInterface.TYPE_INTEGER:
         return avroInputField.getTempValueMeta().getInteger( fieldValue );
       case ValueMetaInterface.TYPE_NUMBER:
