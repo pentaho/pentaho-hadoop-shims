@@ -19,12 +19,7 @@
  * limitations under the License.
  *
  ******************************************************************************/
-package org.pentaho.hadoop.shim.common.format.parquet;
-
-import java.nio.file.NoSuchFileException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+package org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter;
 
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
@@ -35,24 +30,6 @@ import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
 import org.apache.log4j.Logger;
 import org.pentaho.big.data.api.cluster.NamedCluster;
-//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_name=="mapr60"
-import org.apache.parquet.hadoop.Footer;
-import org.apache.parquet.hadoop.ParquetFileReader;
-import org.apache.parquet.hadoop.ParquetInputFormat;
-import org.apache.parquet.hadoop.ParquetRecordReader;
-import org.apache.parquet.hadoop.api.ReadSupport;
-import org.apache.parquet.hadoop.metadata.ParquetMetadata;
-import org.apache.parquet.schema.MessageType;
-//#endif
-//#if shim_type=="CDH" || shim_type=="MAPR" && shim_name!="mapr60"
-//$import parquet.hadoop.Footer;
-//$import parquet.hadoop.ParquetFileReader;
-//$import parquet.hadoop.ParquetInputFormat;
-//$import parquet.hadoop.ParquetRecordReader;
-//$import parquet.hadoop.api.ReadSupport;
-//$import parquet.hadoop.metadata.ParquetMetadata;
-//$import parquet.schema.MessageType;
-//#endif
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.hadoop.shim.ShimConfigsLoader;
 import org.pentaho.hadoop.shim.api.format.IParquetInputField;
@@ -61,18 +38,34 @@ import org.pentaho.hadoop.shim.common.ConfigurationProxy;
 import org.pentaho.hadoop.shim.common.format.HadoopFormatBase;
 import org.pentaho.hadoop.shim.common.format.ReadFileFilter;
 import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
+import org.pentaho.hadoop.shim.common.format.parquet.ParquetInputFieldList;
+import org.pentaho.hadoop.shim.common.format.parquet.PentahoInputSplitImpl;
+
+import java.nio.file.NoSuchFileException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import parquet.hadoop.Footer;
+import parquet.hadoop.ParquetFileReader;
+import parquet.hadoop.ParquetInputFormat;
+import parquet.hadoop.ParquetRecordReader;
+import parquet.hadoop.api.ReadSupport;
+import parquet.hadoop.metadata.ParquetMetadata;
+import parquet.schema.MessageType;
+
 
 /**
  * Created by Vasilina_Terehova on 7/25/2017.
  */
-public class PentahoParquetInputFormat extends HadoopFormatBase implements IPentahoParquetInputFormat {
+public class PentahoTwitterInputFormat extends HadoopFormatBase implements IPentahoParquetInputFormat {
 
-  private static final Logger logger = Logger.getLogger( PentahoParquetInputFormat.class );
+    private static final Logger logger = Logger.getLogger( PentahoTwitterInputFormat.class );
 
   private ParquetInputFormat<RowMetaAndData> nativeParquetInputFormat;
   private Job job;
 
-  public PentahoParquetInputFormat( NamedCluster namedCluster ) throws Exception {
+  public PentahoTwitterInputFormat( NamedCluster namedCluster ) throws Exception {
     logger.info( "We are initializing parquet input format" );
 
     inClassloader( () -> {
@@ -128,9 +121,7 @@ public class PentahoParquetInputFormat extends HadoopFormatBase implements IPent
        * mapr510 and mapr520 doesn't support SPLIT_FILES property
        */
       // ParquetInputFormat.setMaxInputSplitSize( job, blockSize );
-//#if shim_type!="MAPR"
-      job.getConfiguration().setBoolean( ParquetInputFormat.SPLIT_FILES, false );
-//#endif
+//      job.getConfiguration().setBoolean( ParquetInputFormat.SPLIT_FILES, false );
     } );
   }
 

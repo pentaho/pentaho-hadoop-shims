@@ -22,29 +22,28 @@
 package org.pentaho.hadoop.shim.common.format.parquet;
 
 import org.apache.hadoop.fs.Path;
-//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_name=="mapr60"
-import org.apache.parquet.format.converter.ParquetMetadataConverter;
-import org.apache.parquet.hadoop.ParquetFileReader;
-import org.apache.parquet.hadoop.metadata.ParquetMetadata;
-import org.apache.parquet.schema.MessageType;
-//#endif
-//#if shim_type=="CDH" || shim_type=="MAPR" && shim_name!="mapr60"
-//$import parquet.format.converter.ParquetMetadataConverter;
-//$import parquet.hadoop.ParquetFileReader;
-//$import parquet.hadoop.metadata.ParquetMetadata;
-//$import parquet.schema.MessageType;
-//#endif
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.pentaho.hadoop.shim.api.format.IParquetInputField;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
 
 import java.net.URL;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 
-
+@RunWith(Parameterized.class)
 public class ParquetConverterTest {
+
+  @Parameterized.Parameters
+  public static Iterable<Object[]> data() {
+    return Arrays.asList(new Object[][] { { "APACHE" }, { "TWITTER" } });
+  }
+
+  @Parameterized.Parameter
+  public String provider;
 
   private static String PARQUET_FILE = "sample.pqt";
   private static URL urlTestResources;
@@ -63,12 +62,27 @@ public class ParquetConverterTest {
 
     ConfigurationProxy conf = new ConfigurationProxy();
     conf.set( "fs.defaultFS", "file:///" );
-    ParquetMetadata meta = ParquetFileReader
-      .readFooter( conf, new Path( Paths.get( urlTestResources.toURI() ).toString() ),
-        ParquetMetadataConverter.NO_FILTER );
-    MessageType schema = meta.getFileMetaData().getSchema();
+    List<IParquetInputField> kettleSchema = null;
 
-    List<IParquetInputField> kettleSchema = ParquetConverter.buildInputFields( schema );
+    switch( provider ) {
+      case "APACHE":
+        org.apache.parquet.hadoop.metadata.ParquetMetadata apacheMeta = org.apache.parquet.hadoop.ParquetFileReader
+      .readFooter( conf, new Path( Paths.get( urlTestResources.toURI() ).toString() ),
+                        org.apache.parquet.format.converter.ParquetMetadataConverter.NO_FILTER );
+        org.apache.parquet.schema.MessageType apacheSchema = apacheMeta.getFileMetaData().getSchema();
+        kettleSchema = org.pentaho.hadoop.shim.common.format.parquet.delegate.apache.ParquetConverter.buildInputFields( apacheSchema );
+        break;
+      case "TWITTER":
+        parquet.hadoop.metadata.ParquetMetadata twitterMeta = parquet.hadoop.ParquetFileReader
+                .readFooter( conf, new Path( Paths.get( urlTestResources.toURI() ).toString() ),
+                        parquet.format.converter.ParquetMetadataConverter.NO_FILTER );
+        parquet.schema.MessageType twitterSchema = twitterMeta.getFileMetaData().getSchema();
+        kettleSchema = org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter.ParquetConverter.buildInputFields( twitterSchema );
+        break;
+      default:
+        Assert.fail("Invalid provider name used.");
+    }
+
     String marshallKettleSchema = new ParquetInputFieldList( kettleSchema ).marshall();
     Assert.assertEquals( marshallKettleSchema, expectedKettleSchema );
   }

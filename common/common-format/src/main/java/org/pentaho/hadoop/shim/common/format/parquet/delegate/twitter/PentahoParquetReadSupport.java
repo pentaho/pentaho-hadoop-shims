@@ -19,32 +19,23 @@
  * limitations under the License.
  *
  ******************************************************************************/
-package org.pentaho.hadoop.shim.common.format.parquet;
+package org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter;
+
+import org.apache.hadoop.conf.Configuration;
+import parquet.hadoop.api.InitContext;
+import parquet.hadoop.api.ReadSupport;
+import parquet.io.api.RecordMaterializer;
+import parquet.schema.MessageType;
+import parquet.schema.Type;
+import org.pentaho.di.core.RowMetaAndData;
+import org.pentaho.hadoop.shim.api.format.IParquetInputField;
+import org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter.ParquetConverter.MyRecordMaterializer;
+import org.pentaho.hadoop.shim.common.format.parquet.ParquetInputFieldList;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_name=="mapr60"
-import org.apache.hadoop.conf.Configuration;
-import org.apache.parquet.hadoop.api.InitContext;
-import org.apache.parquet.hadoop.api.ReadSupport;
-import org.apache.parquet.io.api.RecordMaterializer;
-import org.apache.parquet.schema.MessageType;
-import org.apache.parquet.schema.Type;
-//#endif
-//#if shim_type=="CDH" || shim_type=="MAPR" && shim_name!="mapr60"
-//$import org.apache.hadoop.conf.Configuration;
-//$import parquet.hadoop.api.InitContext;
-//$import parquet.hadoop.api.ReadSupport;
-//$import parquet.io.api.RecordMaterializer;
-//$import parquet.schema.MessageType;
-//$import parquet.schema.Type;
-//#endif
-import org.pentaho.di.core.RowMetaAndData;
-import org.pentaho.hadoop.shim.api.format.IParquetInputField;
-import org.pentaho.hadoop.shim.common.format.parquet.ParquetConverter.MyRecordMaterializer;
 
 public class PentahoParquetReadSupport extends ReadSupport<RowMetaAndData> {
   ParquetConverter converter;
@@ -80,6 +71,6 @@ public class PentahoParquetReadSupport extends ReadSupport<RowMetaAndData> {
   public RecordMaterializer<RowMetaAndData> prepareForRead( Configuration configuration,
                                                             Map<String, String> keyValueMetaData,
                                                             MessageType fileSchema, ReadContext readContext ) {
-    return new MyRecordMaterializer( converter );
+    return new ParquetConverter.MyRecordMaterializer( converter );
   }
 }

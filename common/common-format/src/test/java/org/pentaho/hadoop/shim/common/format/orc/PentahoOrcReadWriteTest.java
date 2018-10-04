@@ -238,9 +238,8 @@ public class PentahoOrcReadWriteTest {
     doReadWrite( IPentahoOrcOutputFormat.COMPRESSION.NONE, "orcOutputNone.orc", false );
     doReadWrite( IPentahoOrcOutputFormat.COMPRESSION.SNAPPY, "orcOutputSnappy.orc", false );
     doReadWrite( IPentahoOrcOutputFormat.COMPRESSION.ZLIB, "orcOutputZlib.orc", false );
-    //#if shim_type!="EMR"
-    //$doReadWrite( IPentahoOrcOutputFormat.COMPRESSION.LZO, "orcOutputLzo.orc", false );
-    //#endif
+    //Next line to be used in EMR shim build test
+    //doReadWrite( IPentahoOrcOutputFormat.COMPRESSION.LZO, "orcOutputLzo.orc", false );
 
   }
 

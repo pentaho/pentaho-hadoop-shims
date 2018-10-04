@@ -22,39 +22,68 @@
 package org.pentaho.hadoop.shim.common.format.parquet;
 
 import org.apache.hadoop.conf.Configuration;
-//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_name=="mapr60"
-import org.apache.parquet.hadoop.api.WriteSupport;
-//#endif
-//#if shim_type=="CDH" || shim_type=="MAPR" && shim_name!="mapr60"
-//$import parquet.hadoop.api.WriteSupport;
-//#endif
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.pentaho.di.core.util.Assert;
 import org.junit.Test;
 import org.pentaho.hadoop.shim.api.format.ParquetSpec;
 
 
+import java.util.Arrays;
+
+@RunWith(Parameterized.class)
 public class PentahoParquetWriteSupportTest {
+
+  @Parameterized.Parameters
+  public static Iterable<Object[]> data() {
+    return Arrays.asList(new Object[][] { { "APACHE" }, { "TWITTER" } });
+  }
+
+  @Parameterized.Parameter
+  public String provider;
+
+  private static Configuration conf = new Configuration();
+  static {
+    conf.set( "fs.defaultFS", "file:///" );
+  }
 
   @Test( expected = RuntimeException.class )
   public void initParquetWriteSupportWhenSchemaIsNull() {
-    PentahoParquetWriteSupport writeSupport = new PentahoParquetWriteSupport( null );
 
-    Configuration conf = new Configuration();
-    conf.set( "fs.defaultFS", "file:///" );
-
-    writeSupport.init( conf );
+    switch( provider ) {
+      case "APACHE":
+        org.pentaho.hadoop.shim.common.format.parquet.delegate.apache.PentahoParquetWriteSupport apacheWriteSupport =
+                new org.pentaho.hadoop.shim.common.format.parquet.delegate.apache.PentahoParquetWriteSupport( null );
+        apacheWriteSupport.init( conf );
+        break;
+      case "TWITTER":
+        org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter.PentahoParquetWriteSupport twitterWriteSupport =
+                new org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter.PentahoParquetWriteSupport( null );
+        twitterWriteSupport.init( conf );
+        break;
+      default:
+        org.junit.Assert.fail("Invalid provider name used.");
+    }
   }
 
   @Test
   public void initParquetWriteSupportWhenSchemaIsNotNull() {
 
-    PentahoParquetWriteSupport writeSupport = new PentahoParquetWriteSupport( ParquetUtils.createOutputFields( ParquetSpec.DataType.UTF8, false, ParquetSpec.DataType.INT_64, false ) );
-
-    Configuration conf = new Configuration();
-    conf.set( "fs.defaultFS", "file:///" );
-
-    WriteSupport.WriteContext writeContext = writeSupport.init( conf );
-
-    Assert.assertNotNull( writeContext );
+    switch( provider ) {
+      case "APACHE":
+        org.pentaho.hadoop.shim.common.format.parquet.delegate.apache.PentahoParquetWriteSupport apacheWriteSupport =
+                new org.pentaho.hadoop.shim.common.format.parquet.delegate.apache.PentahoParquetWriteSupport( ParquetUtils.createOutputFields( ParquetSpec.DataType.UTF8, false, ParquetSpec.DataType.INT_64, false ) );
+        org.apache.parquet.hadoop.api.WriteSupport.WriteContext apacheWriteContext = apacheWriteSupport.init( conf );
+        Assert.assertNotNull( apacheWriteContext );
+        break;
+      case "TWITTER":
+        org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter.PentahoParquetWriteSupport twitterWriteSupport =
+                new org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter.PentahoParquetWriteSupport( ParquetUtils.createOutputFields( ParquetSpec.DataType.UTF8, false, ParquetSpec.DataType.INT_64, false ) );
+        parquet.hadoop.api.WriteSupport.WriteContext twitterWriteContext = twitterWriteSupport.init( conf );
+        Assert.assertNotNull( twitterWriteContext );
+        break;
+      default:
+        org.junit.Assert.fail("Invalid provider name used.");
+    }
   }
 }

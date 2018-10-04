@@ -28,13 +28,10 @@ import java.lang.reflect.Method;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-//#if shim_name!="hdp30"
 import org.apache.hadoop.hbase.KeyValue;
-//#endif
-//#if shim_name=="hdp30"
-//$import org.apache.hadoop.hbase.CellUtil;
-//#endif
+import org.apache.hadoop.hbase.CellUtil;
 import org.apache.hadoop.hbase.UnknownScannerException;
+import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
@@ -126,12 +123,17 @@ public class PentahoTableRecordReaderImpl {
    */
   protected static void configureScanWithInputColumns( Scan scan, byte[][] inputColumns ) {
     for ( byte[] familyAndQualifier : inputColumns ) {
-      //#if shim_name!="hdp30"
-      byte[][] fq = KeyValue.parseColumn( familyAndQualifier );
-      //#endif
-      //#if shim_name=="hdp30"
-      //$byte[][] fq = CellUtil.parseColumn( familyAndQualifier );
-      //#endif
+      byte[][] fq = null;
+      try {
+        Method method = KeyValue.class.getMethod( "parseColumn", new Class[]{byte[].class} );
+        fq = (byte[][])method.invoke( familyAndQualifier );
+      } catch ( Exception e1 ) {
+        try {
+          Method method = CellUtil.class.getMethod( "parseColumn", new Class[]{byte[].class} );
+          fq = (byte[][])method.invoke( familyAndQualifier );
+        } catch ( Exception e2 ) {
+        }
+      }
 
       if ( fq.length > 1 && fq[1] != null && fq[1].length > 0 ) {
         scan.addColumn( fq[0], fq[1] );

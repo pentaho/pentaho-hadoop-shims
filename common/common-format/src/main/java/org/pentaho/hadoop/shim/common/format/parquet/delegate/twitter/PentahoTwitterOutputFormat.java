@@ -19,11 +19,7 @@
  * limitations under the License.
  *
  ******************************************************************************/
-package org.pentaho.hadoop.shim.common.format.parquet;
-
-import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
-import java.util.List;
+package org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter;
 
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -33,20 +29,10 @@ import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.mapreduce.TaskType;
 import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
 import org.apache.log4j.Logger;
-
-//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_name=="mapr60"
-import org.apache.parquet.column.ParquetProperties;
-import org.apache.parquet.hadoop.ParquetOutputFormat;
-import org.apache.parquet.hadoop.ParquetRecordWriter;
-import org.apache.parquet.hadoop.metadata.CompressionCodecName;
-//#endif
-//#if shim_type=="CDH" || shim_type=="MAPR" && shim_name!="mapr60"
-//$import parquet.column.ParquetProperties;
-//$import parquet.hadoop.ParquetOutputFormat;
-//$import parquet.hadoop.ParquetRecordWriter;
-//$import parquet.hadoop.metadata.CompressionCodecName;
-//#endif
-
+import parquet.column.ParquetProperties;
+import parquet.hadoop.ParquetOutputFormat;
+import parquet.hadoop.ParquetRecordWriter;
+import parquet.hadoop.metadata.CompressionCodecName;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.hadoop.shim.api.format.IParquetOutputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoParquetOutputFormat;
@@ -54,12 +40,16 @@ import org.pentaho.hadoop.shim.common.ConfigurationProxy;
 import org.pentaho.hadoop.shim.common.format.HadoopFormatBase;
 import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
 
+import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
+import java.util.List;
+
 /**
  * Created by Vasilina_Terehova on 8/3/2017.
  */
-public class PentahoParquetOutputFormat extends HadoopFormatBase implements IPentahoParquetOutputFormat {
+public class PentahoTwitterOutputFormat extends HadoopFormatBase implements IPentahoParquetOutputFormat {
 
-  private static final Logger logger = Logger.getLogger( PentahoParquetInputFormat.class );
+  private static final Logger logger = Logger.getLogger( PentahoTwitterOutputFormat.class );
   private static final String S3SCHEME = "s3";
   private static final String S3NSCHEME = "s3n";
   private static final String S3NROOTBUCKET = S3NSCHEME + "/";
@@ -68,7 +58,7 @@ public class PentahoParquetOutputFormat extends HadoopFormatBase implements IPen
   private Path outputFile;
   private List<? extends IParquetOutputField> outputFields;
 
-  public PentahoParquetOutputFormat() throws Exception {
+  public PentahoTwitterOutputFormat() throws Exception {
     logger.info( "We are initializing parquet output format" );
 
     inClassloader( () -> {

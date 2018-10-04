@@ -19,30 +19,10 @@
  * limitations under the License.
  *
  ******************************************************************************/
-package org.pentaho.hadoop.shim.common.format.parquet;
-
-//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_name=="mapr60"
-import org.apache.parquet.io.api.Binary;
-import org.apache.parquet.io.api.Converter;
-import org.apache.parquet.io.api.GroupConverter;
-import org.apache.parquet.io.api.PrimitiveConverter;
-import org.apache.parquet.io.api.RecordMaterializer;
-import org.apache.parquet.schema.MessageType;
-import org.apache.parquet.schema.OriginalType;
-import org.apache.parquet.schema.Type;
-//#endif
-//#if shim_type=="CDH" || shim_type=="MAPR" && shim_name!="mapr60"
-//$import parquet.io.api.Binary;
-//$import parquet.io.api.Converter;
-//$import parquet.io.api.GroupConverter;
-//$import parquet.io.api.PrimitiveConverter;
-//$import parquet.io.api.RecordMaterializer;
-//$import parquet.schema.MessageType;
-//$import parquet.schema.OriginalType;
-//$import parquet.schema.Type;
-//#endif
+package org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter;
 
 import org.apache.log4j.Logger;
+
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.plugins.IValueMetaConverter;
 import org.pentaho.di.core.row.RowMeta;
@@ -61,6 +41,7 @@ import org.pentaho.di.core.row.value.ValueMetaString;
 import org.pentaho.di.core.row.value.ValueMetaTimestamp;
 import org.pentaho.hadoop.shim.api.format.IParquetInputField;
 import org.pentaho.hadoop.shim.api.format.ParquetSpec;
+import org.pentaho.hadoop.shim.common.format.parquet.ParquetInputField;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -73,7 +54,17 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import static java.lang.Math.pow;
+
+import parquet.io.api.Binary;
+import parquet.io.api.Converter;
+import parquet.io.api.GroupConverter;
+import parquet.io.api.PrimitiveConverter;
+import parquet.io.api.RecordMaterializer;
+import parquet.schema.MessageType;
+import parquet.schema.OriginalType;
+import parquet.schema.Type;
 
 /**
  * Converter for read/write Hitachi Vantara row from/into Parquet files.

@@ -280,12 +280,16 @@ public class CommonHBaseConnection implements HBaseConnection, IHBaseClientFacto
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
     try {
-      //#if shim_name!="hdp30"
-      org.apache.hadoop.hbase.client.HBaseAdmin.checkHBaseAvailable( m_config );
-      //#endif
-      //#if shim_name=="hdp30"
-      //$org.apache.hadoop.hbase.client.HBaseAdmin.available( m_config );
-      //#endif
+      try {
+        Method method = org.apache.hadoop.hbase.client.HBaseAdmin.class.getMethod( "checkHBaseAvailable", new Class[]{Configuration.class} );
+        method.invoke( m_config );
+      } catch ( Exception e1) {
+        try {
+          Method method = org.apache.hadoop.hbase.client.HBaseAdmin.class.getMethod("available", new Class[]{Configuration.class});
+          method.invoke(m_config);
+        } catch ( Exception e2 ) {
+        }
+      }
     } finally {
       Thread.currentThread().setContextClassLoader( cl );
     }

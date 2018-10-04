@@ -22,12 +22,11 @@
 package org.pentaho.hadoop.hbase.factory;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.BufferedMutator;
-//#if shim_name=="hdp30"
-//$import org.apache.hadoop.hbase.client.BufferedMutatorParams;
-//#endif
+import org.apache.hadoop.hbase.client.BufferedMutatorParams;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Get;
@@ -72,12 +71,16 @@ class HBase10Table implements HBaseTable {
 
   @Override
   public void setWriteBufferSize( long bufferSize ) throws IOException {
-    //#if shim_name!="hdp30"
+    try {
+      Method method = tab.getClass().getMethod( "setWriteBufferSize", new Class[]{long.class} );
     tab.setWriteBufferSize( bufferSize );
-    //#endif
-    //#if shim_name=="hdp30"
-    //$mutator = conn.getBufferedMutator( new BufferedMutatorParams( tab.getName() ).writeBufferSize( bufferSize ) );
-    //#endif
+    } catch ( Exception e1 ) {
+      try {
+        Method method = conn.getClass().getMethod( "getBufferedMutator", new Class[]{BufferedMutatorParams.class} );
+        mutator = conn.getBufferedMutator( new BufferedMutatorParams( tab.getName() ).writeBufferSize( bufferSize ) );
+      } catch ( Exception e2 ) {
+      }
+    }
   }
 
   @Override

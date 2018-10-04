@@ -231,7 +231,7 @@
     <dependency>
       <groupId>com.twitter</groupId>
       <artifactId>parquet-hadoop-bundle</artifactId>
-      <version>${parquet.version}</version>
+      <version>${twitter.parquet.version}</version>
     </dependency>
 
     <dependency>

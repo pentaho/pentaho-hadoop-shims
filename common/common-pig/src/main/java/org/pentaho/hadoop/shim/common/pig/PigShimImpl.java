@@ -23,7 +23,10 @@ import org.apache.pig.tools.grunt.GruntParser;
 import org.pentaho.hadoop.shim.spi.PigShim;
 
 import java.io.IOException;
-//$import java.io.StringReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.Properties;
 
 /**
@@ -38,13 +41,20 @@ public class PigShimImpl extends CommonPigShim {
     PigContext pigContext = new PigContext( getExecType( mode ), properties );
     addExternalJarsToPigContext( pigContext );
     PigServer pigServer = new PigServer( pigContext );
-    //#if shim_type=="CDH"
-    //$grunt = new GruntParser( new StringReader( pigScript ) );
-    //$grunt.setParams( pigServer );
-    //#else
-    //$grunt = new GruntParser( new StringReader( pigScript ), pigServer );
-    //#endif
+    try {
+      Constructor constructor = GruntParser.class.getConstructor( Reader.class, PigServer.class );
+      grunt = (GruntParser)constructor.newInstance( new StringReader( pigScript ), pigServer );
+    } catch ( Exception e ) {
+      try {
+        Constructor constructor = GruntParser.class.getConstructor( Reader.class );
+        grunt = (GruntParser)constructor.newInstance( new StringReader( pigScript ) );
+        Method method = grunt.getClass().getMethod("setParams", new Class[]{PigServer.class});
+        method.invoke( grunt, pigServer );
+      } catch ( Exception e1 ) {
+      }
+    }
     grunt.setInteractive( false );
-    return grunt.parseStopOnError( false );
+    int[] retValues = grunt.parseStopOnError( false );
+    return retValues;
   }
 }
