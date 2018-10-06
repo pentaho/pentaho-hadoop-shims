@@ -41,12 +41,16 @@ public class AvroInputField extends BaseFormatInputField implements IAvroInputFi
   protected String m_resolvedFieldName;
   //protected String m_resolvedDefaultValue;
 
-  /** Index of this field in the incoming row stream */
+  /**
+   * Index of this field in the incoming row stream
+   */
   //private int m_inputIndex = -1;
 
   private String indexedValues;
   protected ValueMetaInterface m_fieldVM;
-  /** The name of the variable to hold this field's values */
+  /**
+   * The name of the variable to hold this field's values
+   */
   public String m_variableName = "";
 
   private ValueMeta tempValueMeta;

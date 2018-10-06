@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -47,21 +47,26 @@ import org.pentaho.di.core.row.RowDataUtil;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.row.ValueMeta;
 import org.pentaho.di.core.row.ValueMetaInterface;
+import org.pentaho.di.core.row.value.ValueMetaBase;
 import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.di.core.vfs.KettleVFS;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.hadoop.shim.api.format.AvroSpec;
+
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
-import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -199,11 +204,6 @@ public class AvroNestedReader {
   protected void init() throws KettleException {
     if ( m_schemaToUse != null ) {
       initTopLevelStructure( m_schemaToUse, true );
-      // any fields specified by the user, or do we need to read all leaves
-      // from the schema?
-      if ( m_normalFields == null || m_normalFields.size() == 0 ) {
-        //TODO: Do we need this?          m_normalFields = AvroFieldGetter.getLeafFields( m_schemaToUse );
-      }
     }
 
     if ( m_normalFields == null || m_normalFields.size() == 0 ) {
@@ -656,7 +656,10 @@ public class AvroNestedReader {
     Object field = record.get( part );
 
     if ( field == null ) {
-      fieldS = defaultSchema.getField( part );
+      if ( defaultSchema != null ) {
+        fieldS = defaultSchema.getField( part );
+      }
+
       if ( fieldS == null || fieldS.defaultValue() == null ) {
         return null;
       }
@@ -751,7 +754,8 @@ public class AvroNestedReader {
             }
             Object precision = schema.getObjectProp( AvroSpec.DECIMAL_PRECISION );
             Object scale = schema.getObjectProp( AvroSpec.DECIMAL_SCALE );
-            LogicalTypes.Decimal decimalType = LogicalTypes.decimal( Integer.parseInt( precision.toString() ), Integer.parseInt( scale.toString() ) );
+            LogicalTypes.Decimal decimalType =
+              LogicalTypes.decimal( Integer.parseInt( precision.toString() ), Integer.parseInt( scale.toString() ) );
             pentahoData = converter.fromBytes( avroData, m_schemaToUse, decimalType );
             break;
           case ValueMetaInterface.TYPE_BINARY:
@@ -847,6 +851,18 @@ public class AvroNestedReader {
         if ( avroInputField.getAvroType().getBaseType() == AvroSpec.DataType.INTEGER.getBaseType() ) {
           LocalDate localDate = LocalDate.ofEpochDay( 0 ).plusDays( (Long) fieldValue );
           return Date.from( localDate.atStartOfDay( ZoneId.systemDefault() ).toInstant() );
+        } else if ( avroInputField.getAvroType().getBaseType() == AvroSpec.DataType.STRING.getBaseType() ) {
+          Object pentahoData = null;
+          String dateFormatStr = avroInputField.getStringFormat();
+          if ( ( dateFormatStr == null ) || ( dateFormatStr.trim().length() == 0 ) ) {
+            dateFormatStr = ValueMetaBase.DEFAULT_DATE_FORMAT_MASK;
+          }
+          SimpleDateFormat datePattern = new SimpleDateFormat( dateFormatStr );
+          try {
+            return datePattern.parse( fieldValue.toString() );
+          } catch ( Exception e ) {
+            return null;
+          }
         }
         return avroInputField.getTempValueMeta().getDate( fieldValue );
       case ValueMetaInterface.TYPE_TIMESTAMP:
@@ -857,6 +873,12 @@ public class AvroNestedReader {
         return avroInputField.getTempValueMeta().getNumber( fieldValue );
       case ValueMetaInterface.TYPE_STRING:
         return avroInputField.getTempValueMeta().getString( fieldValue );
+      case ValueMetaInterface.TYPE_INET:
+        try {
+          return InetAddress.getByName( fieldValue.toString() );
+        } catch ( UnknownHostException ex ) {
+          return null;
+        }
       default:
         return null;
     }

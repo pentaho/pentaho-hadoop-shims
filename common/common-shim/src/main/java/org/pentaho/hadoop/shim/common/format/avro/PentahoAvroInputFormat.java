@@ -63,7 +63,7 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
   }
 
   @Override
-    public IPentahoRecordReader createRecordReader( IPentahoInputSplit split ) throws Exception {
+  public IPentahoRecordReader createRecordReader( IPentahoInputSplit split ) throws Exception {
 
     DataFileStream<Object> nestedDfs = null;
     if ( this.isDataBinaryEncoded ) {
@@ -73,24 +73,24 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
       }
     }
     Schema avroSchema = readAvroSchema();
-      return new AvroNestedRecordReader( nestedDfs, avroSchema, getFields(), variableSpace, incomingFields,
-        outputRowMeta, fileName, isDataBinaryEncoded, useFieldAsInputStream );
+    return new AvroNestedRecordReader( nestedDfs, avroSchema, getFields(), variableSpace, incomingFields,
+      outputRowMeta, fileName, isDataBinaryEncoded, useFieldAsInputStream );
 
   }
 
   @VisibleForTesting
-  public Schema readAvroSchema( ) throws Exception {
+  public Schema readAvroSchema() throws Exception {
     if ( schemaFileName != null && schemaFileName.length() > 0 ) {
       return new Schema.Parser().parse( KettleVFS.getInputStream( schemaFileName ) );
     } else if ( ( fileName != null && fileName.length() > 0 ) || ( useFieldAsInputStream && inputStream != null ) ) {
       Schema schema;
-      DataFileStream<GenericRecord> dataFileStream = createDataFileStream(  );
+      DataFileStream<GenericRecord> dataFileStream = createDataFileStream();
       schema = dataFileStream.getSchema();
       dataFileStream.close();
-      return  schema;
+      return schema;
     }
     throw new Exception( "The file you provided does not contain a schema."
-          + "  Please choose a schema file, or another file that contains a schema." );
+      + "  Please choose a schema file, or another file that contains a schema." );
   }
 
   @Override
@@ -144,10 +144,10 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
     //do nothing 
   }
 
-  private DataFileStream<GenericRecord> createDataFileStream(  ) throws Exception {
+  private DataFileStream<GenericRecord> createDataFileStream() throws Exception {
     DatumReader<GenericRecord> datumReader;
     if ( useFieldAsInputStream ) {
-      datumReader = new GenericDatumReader<GenericRecord>(  );
+      datumReader = new GenericDatumReader<GenericRecord>();
       inputStream.reset();
       return new DataFileStream<GenericRecord>( inputStream, datumReader );
     }
@@ -155,26 +155,26 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
       Schema schema = new Schema.Parser().parse( KettleVFS.getInputStream( schemaFileName ) );
       datumReader = new GenericDatumReader<GenericRecord>( schema );
     } else {
-      datumReader = new GenericDatumReader<GenericRecord>(  );
+      datumReader = new GenericDatumReader<GenericRecord>();
     }
     FileObject fileObject = KettleVFS.getFileObject( fileName );
     if ( fileObject.isFile() ) {
       this.inputStream = fileObject.getContent().getInputStream();
-      return  new DataFileStream<>( inputStream, datumReader );
+      return new DataFileStream<>( inputStream, datumReader );
     } else {
       FileObject[] avroFiles = fileObject.findFiles( new FileExtensionSelector( "avro" ) );
       if ( !Utils.isEmpty( avroFiles ) ) {
-        this.inputStream = avroFiles[0].getContent().getInputStream();
-        return  new DataFileStream<>( inputStream, datumReader );
+        this.inputStream = avroFiles[ 0 ].getContent().getInputStream();
+        return new DataFileStream<>( inputStream, datumReader );
       }
       return null;
     }
   }
 
-  private DataFileStream<Object> createNestedDataFileStream(  ) throws Exception {
+  private DataFileStream<Object> createNestedDataFileStream() throws Exception {
     DatumReader<Object> datumReader;
     if ( useFieldAsInputStream ) {
-      datumReader = new GenericDatumReader<Object>(  );
+      datumReader = new GenericDatumReader<Object>();
       inputStream.reset();
       return new DataFileStream<Object>( inputStream, datumReader );
     }
@@ -182,23 +182,23 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
       Schema schema = new Schema.Parser().parse( KettleVFS.getInputStream( schemaFileName ) );
       datumReader = new GenericDatumReader<Object>( schema );
     } else {
-      datumReader = new GenericDatumReader<Object>(  );
+      datumReader = new GenericDatumReader<Object>();
     }
     FileObject fileObject = KettleVFS.getFileObject( fileName );
     if ( fileObject.isFile() ) {
       this.inputStream = fileObject.getContent().getInputStream();
-      return  new DataFileStream<>( inputStream, datumReader );
+      return new DataFileStream<>( inputStream, datumReader );
     } else {
       FileObject[] avroFiles = fileObject.findFiles( new FileExtensionSelector( "avro" ) );
       if ( !Utils.isEmpty( avroFiles ) ) {
-        this.inputStream = avroFiles[0].getContent().getInputStream();
-        return  new DataFileStream<>( inputStream, datumReader );
+        this.inputStream = avroFiles[ 0 ].getContent().getInputStream();
+        return new DataFileStream<>( inputStream, datumReader );
       }
       return null;
     }
   }
 
-  public List<? extends IAvroInputField> getDefaultFields( ) throws Exception {
+  public List<? extends IAvroInputField> getDefaultFields() throws Exception {
     ArrayList<AvroInputField> fields = new ArrayList<>();
 
     Schema avroSchema = readAvroSchema();
@@ -325,7 +325,7 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
       || ( actualAvroType == AvroSpec.DataType.DECIMAL )
       || ( actualAvroType == AvroSpec.DataType.TIMESTAMP_MILLIS )
       || ( actualAvroType.isPrimitiveType()
-           && actualAvroType != AvroSpec.DataType.NULL );
+      && actualAvroType != AvroSpec.DataType.NULL );
   }
 
   public static FieldName parseFieldName( String fieldName ) {
@@ -338,7 +338,7 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
     if ( splits.length == 0 || splits.length > 3 ) {
       return null;
     } else {
-      return new FieldName( splits[0], Integer.valueOf( splits[1] ), Boolean.parseBoolean( splits[2] ) );
+      return new FieldName( splits[ 0 ], Integer.valueOf( splits[ 1 ] ), Boolean.parseBoolean( splits[ 2 ] ) );
     }
   }
 
@@ -371,11 +371,11 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
     this.variableSpace = variableSpace;
   }
 
-  public void setIncomingFields( Object[] incomingFields ){
+  public void setIncomingFields( Object[] incomingFields ) {
     this.incomingFields = incomingFields;
   }
 
-  public Object[] getIncomingFields( ){
+  public Object[] getIncomingFields() {
     return incomingFields;
   }
 

@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -274,9 +274,6 @@ public class AvroNestedFieldGetter {
       case STRING:
         newField.setPentahoType( ValueMetaInterface.TYPE_STRING );
         newField.setAvroType( AvroSpec.DataType.STRING );
-        if ( s.getType() == Schema.Type.ENUM ) {
-          //TODO: Fix this - newField.m_indexedVals = s.getEnumSymbols();
-        }
         break;
       case FLOAT:
         newField.setAvroType( AvroSpec.DataType.FLOAT );
