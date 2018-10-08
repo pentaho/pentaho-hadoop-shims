@@ -21,12 +21,6 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.common;
 
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.junit.Test;
 import org.pentaho.di.core.RowMetaAndData;
@@ -39,15 +33,24 @@ import org.pentaho.hadoop.shim.api.format.IPentahoAvroOutputFormat;
 import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat.IPentahoRecordReader;
 import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat.IPentahoRecordWriter;
 import org.pentaho.hadoop.shim.api.format.ParquetSpec;
-import org.pentaho.hadoop.shim.common.format.parquet.ParquetUtils;
-import org.pentaho.hadoop.shim.common.format.parquet.PentahoParquetInputFormat;
-import org.pentaho.hadoop.shim.common.format.parquet.PentahoParquetOutputFormat;
 import org.pentaho.hadoop.shim.common.format.avro.AvroInputField;
 import org.pentaho.hadoop.shim.common.format.avro.AvroOutputField;
 import org.pentaho.hadoop.shim.common.format.avro.PentahoAvroInputFormat;
 import org.pentaho.hadoop.shim.common.format.avro.PentahoAvroOutputFormat;
+import org.pentaho.hadoop.shim.common.format.parquet.ParquetUtils;
+import org.pentaho.hadoop.shim.common.format.parquet.PentahoParquetInputFormat;
+import org.pentaho.hadoop.shim.common.format.parquet.PentahoParquetOutputFormat;
 
-import static org.junit.Assert.*;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Created by Vasilina_Terehova on 7/27/2017.
@@ -158,7 +161,8 @@ public class CommonFormatShimTestIT {
     IPentahoRecordReader recordReader = avroInputFormat.createRecordReader( null );
     List<String> dataSampleRows = new ArrayList<>();
     recordReader.forEach( rowMetaAndData -> {
-      dataSampleRows.add( String.join( ";", rowMetaAndData.getData()[0].toString(), rowMetaAndData.getData()[1].toString() ) );
+      dataSampleRows
+        .add( String.join( ";", rowMetaAndData.getData()[ 0 ].toString(), rowMetaAndData.getData()[ 1 ].toString() ) );
     } );
     assertEquals( expectedRows, dataSampleRows );
   }
@@ -187,7 +191,7 @@ public class CommonFormatShimTestIT {
 
     PentahoAvroOutputFormat outputFormat = new PentahoAvroOutputFormat();
     outputFormat.setFields( outputFields );
-    outputFormat.setSchemaFilename(  tempDir + "/avro-schema.out" );
+    outputFormat.setSchemaFilename( tempDir + "/avro-schema.out" );
     outputFormat.setOutputFile( tempDir + "/avro.out", false );
     outputFormat.setNameSpace( "nameSpace" );
     outputFormat.setRecordName( "recordName" );
@@ -228,12 +232,12 @@ public class CommonFormatShimTestIT {
     avroInputFormat.setInputFields( inputFields );
     IPentahoRecordReader recordReader = avroInputFormat.createRecordReader( null );
     recordReader.forEach( rowMetaAndData ->
-        assertArrayEquals( new Object[] { "Alice", "987654321" }, new Object[] { rowMetaAndData.getData()[0].toString(),
-            rowMetaAndData.getData()[1].toString() } ) );
+      assertArrayEquals( new Object[] { "Alice", "987654321" }, new Object[] { rowMetaAndData.getData()[ 0 ].toString(),
+        rowMetaAndData.getData()[ 1 ].toString() } ) );
 
     PentahoAvroOutputFormat overwriteFalseOutputFormat = new PentahoAvroOutputFormat();
     overwriteFalseOutputFormat.setFields( outputFields );
-    overwriteFalseOutputFormat.setSchemaFilename(  tempDir + "/avro-schema.out" );
+    overwriteFalseOutputFormat.setSchemaFilename( tempDir + "/avro-schema.out" );
     try {
       overwriteFalseOutputFormat.setOutputFile( tempDir + "/avro.out", false );
       fail( "Should have thrown an exception" );
@@ -243,7 +247,7 @@ public class CommonFormatShimTestIT {
 
     PentahoAvroOutputFormat overwriteTrueOutputFormat = new PentahoAvroOutputFormat();
     overwriteTrueOutputFormat.setFields( outputFields );
-    overwriteTrueOutputFormat.setSchemaFilename(  tempDir + "/avro-schema.out" );
+    overwriteTrueOutputFormat.setSchemaFilename( tempDir + "/avro-schema.out" );
     try {
       overwriteTrueOutputFormat.setOutputFile( tempDir + "/avro.out", true );
       assertTrue( true );
@@ -290,14 +294,110 @@ public class CommonFormatShimTestIT {
     avroInputFormat.setInputFields( inputFields );
     recordReader = avroInputFormat.createRecordReader( null );
     recordReader.forEach( rowMetaAndData ->
-      assertArrayEquals( new Object[] { "John", "123456789" }, new Object[] { rowMetaAndData.getData()[0].toString(),
-        rowMetaAndData.getData()[1].toString() } ) );
+      assertArrayEquals( new Object[] { "John", "123456789" }, new Object[] { rowMetaAndData.getData()[ 0 ].toString(),
+        rowMetaAndData.getData()[ 1 ].toString() } ) );
 
   }
 
   private String getFilePath( String file ) {
     return getClass().getResource( file ).getPath();
   }
+
+  @Test
+  public void testAvroArrayAndMapComplexTypes() throws Exception {
+
+    List<String> expectedRows = Arrays.asList( "string1;string2;string4", "string101;string102;string104" );
+
+    PentahoAvroInputFormat avroInputFormat = new PentahoAvroInputFormat();
+    avroInputFormat.setInputFile( getFilePath( "/sampledata1.avro" ) );
+    List<AvroInputField> inputFields = new ArrayList<AvroInputField>();
+
+    AvroInputField avroInputField = new AvroInputField();
+    avroInputField.setFormatFieldName( "$.parentString" );
+    avroInputField.setPentahoFieldName( "$.parentString" );
+    avroInputField.setAvroType( AvroSpec.DataType.STRING );
+    avroInputField.setPentahoType( ValueMetaInterface.TYPE_STRING );
+    inputFields.add( avroInputField );
+
+    avroInputField = new AvroInputField();
+    avroInputField.setFormatFieldName( "$.parentStringMap[key1]" );
+    avroInputField.setPentahoFieldName( "$.parentStringMap[key1]" );
+    avroInputField.setAvroType( AvroSpec.DataType.STRING );
+    avroInputField.setPentahoType( ValueMetaInterface.TYPE_STRING );
+    inputFields.add( avroInputField );
+
+    avroInputField = new AvroInputField();
+    avroInputField.setFormatFieldName( "$.parentStringArray[0]" );
+    avroInputField.setPentahoFieldName( "$.parentStringArray[0]" );
+    avroInputField.setAvroType( AvroSpec.DataType.STRING );
+    avroInputField.setPentahoType( ValueMetaInterface.TYPE_STRING );
+    inputFields.add( avroInputField );
+
+    avroInputFormat.setInputFields( inputFields );
+
+    RowMetaAndData row = new RowMetaAndData();
+    RowMeta rowMeta = new RowMeta();
+    rowMeta.addValueMeta( new ValueMetaString( "$.parentString" ) );
+    rowMeta.addValueMeta( new ValueMetaString( "$.parentStringMap[key1]" ) );
+    rowMeta.addValueMeta( new ValueMetaString( "$.parentStringArray[0]" ) );
+    row.setRowMeta( rowMeta );
+
+    avroInputFormat.setOutputRowMeta( rowMeta );
+
+    IPentahoRecordReader recordReader = avroInputFormat.createRecordReader( null );
+    List<String> dataSampleRows = new ArrayList<>();
+    recordReader.forEach( rowMetaAndData -> {
+      dataSampleRows.add( String.join( ";",
+        rowMetaAndData.getData()[ 0 ].toString(),
+        rowMetaAndData.getData()[ 1 ].toString(),
+        rowMetaAndData.getData()[ 2 ].toString() ) );
+    } );
+    assertEquals( expectedRows, dataSampleRows );
+  }
+
+  @Test
+  public void testAvroNestedReadLocalFileSystem() throws Exception {
+    List<String> expectedRows = Arrays.asList( "John;4074549921", "Leslie;4079302194" );
+    PentahoAvroInputFormat avroInputFormat = new PentahoAvroInputFormat();
+
+
+    avroInputFormat.setInputSchemaFile( getFilePath( "/sample-schema.avro" ) );
+    avroInputFormat.setInputFile( getFilePath( "/sample-data.avro" ) );
+    List<AvroInputField> inputFields = new ArrayList<AvroInputField>();
+
+    AvroInputField avroInputField = new AvroInputField();
+    avroInputField.setFormatFieldName( "$.FirstName" );
+    avroInputField.setPentahoFieldName( "FirstName" );
+    avroInputField.setAvroType( AvroSpec.DataType.STRING );
+    avroInputField.setPentahoType( ValueMetaInterface.TYPE_STRING );
+    inputFields.add( avroInputField );
+
+    avroInputField = new AvroInputField();
+    avroInputField.setFormatFieldName( "$.Phone" );
+    avroInputField.setPentahoFieldName( "Phone" );
+    avroInputField.setAvroType( AvroSpec.DataType.STRING );
+    avroInputField.setPentahoType( ValueMetaInterface.TYPE_STRING );
+    inputFields.add( avroInputField );
+
+    avroInputFormat.setInputFields( inputFields );
+
+    RowMetaAndData row = new RowMetaAndData();
+    RowMeta rowMeta = new RowMeta();
+    rowMeta.addValueMeta( new ValueMetaString( "FirstName" ) );
+    rowMeta.addValueMeta( new ValueMetaString( "Phone" ) );
+    row.setRowMeta( rowMeta );
+
+    avroInputFormat.setOutputRowMeta( rowMeta );
+
+    IPentahoRecordReader recordReader = avroInputFormat.createRecordReader( null );
+    List<String> dataSampleRows = new ArrayList<>();
+    recordReader.forEach( rowMetaAndData -> {
+      dataSampleRows
+        .add( String.join( ";", rowMetaAndData.getData()[ 0 ].toString(), rowMetaAndData.getData()[ 1 ].toString() ) );
+    } );
+    assertEquals( expectedRows, dataSampleRows );
+  }
+
 
   //#endif
 }
