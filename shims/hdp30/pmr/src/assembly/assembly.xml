@@ -21,6 +21,9 @@
         <include>org.apache.hbase:hbase-hadoop-compat</include>
         <include>org.cloudera.htrace:htrace-core</include>
         <include>org.apache.zookeeper:zookeeper</include>
+        <include>commons-configuration:commons-configuration</include>
+        <include>org.apache.commons:commons-configuration2</include>
+        <include>org.apache.geronimo.specs:geronimo-servlet_3.0_spec</include>
       </includes>
       <excludes>
         <exclude>*:tests:*</exclude>
