@@ -11,7 +11,7 @@
       <useTransitiveDependencies>true</useTransitiveDependencies>
       <useTransitiveFiltering>true</useTransitiveFiltering>
       <includes>
-	    <include>org.xerial.snappy:snappy-java</include>
+        <include>org.xerial.snappy:snappy-java</include>
         <include>org.apache.hadoop:hadoop-client</include>
         <include>commons-configuration:commons-configuration</include>
       </includes>
