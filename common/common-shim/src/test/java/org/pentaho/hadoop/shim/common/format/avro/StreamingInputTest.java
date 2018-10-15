@@ -25,8 +25,10 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.plugins.PluginRegistry;
+import org.pentaho.di.core.row.RowMeta;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.core.row.value.ValueMetaPluginType;
+import org.pentaho.di.core.row.value.ValueMetaString;
 import org.pentaho.hadoop.shim.api.format.AvroSpec;
 import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat;
 
@@ -102,6 +104,11 @@ public class StreamingInputTest {
 
     pentahoAvroInputFormat.setInputFields( avroInputFields );
     pentahoAvroInputFormat.setInputStreamFieldName( "stream" );
+    pentahoAvroInputFormat.setIsDataBinaryEncoded( true );
+    pentahoAvroInputFormat.setUseFieldAsInputStream( true );
+    RowMeta rowMeta = new RowMeta();
+    rowMeta.addValueMeta( new ValueMetaString( "stream" ) );
+    pentahoAvroInputFormat.setOutputRowMeta( rowMeta );
 
     pentahoAvroInputFormat.setInputStream( inputStream );
     IPentahoInputFormat.IPentahoRecordReader pentahoRecordReader = pentahoAvroInputFormat.createRecordReader( null );
