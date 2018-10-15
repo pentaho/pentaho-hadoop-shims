@@ -71,4 +71,12 @@ public interface IPentahoAvroInputFormat extends IPentahoInputFormat {
   List<? extends IAvroInputField> getLeafFields() throws Exception;
 
   void setIsDataBinaryEncoded( boolean isBinary );
+
+  void setDatum( boolean isDatum );
+
+  void setUseFieldAsSchema( boolean useFieldFromSchema );
+
+  void setSchemaFieldName( String schemaFieldName );
+
+  void setUseFieldAsInputStream( boolean useFieldAsInputStream );
 }

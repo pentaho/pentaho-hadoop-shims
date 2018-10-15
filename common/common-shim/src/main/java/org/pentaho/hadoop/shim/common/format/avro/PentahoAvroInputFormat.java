@@ -50,10 +50,13 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
   private List<? extends IAvroInputField> inputFields;
   private String inputStreamFieldName;
   private boolean useFieldAsInputStream;
+  private boolean useFieldAsSchema;
   private boolean isDataBinaryEncoded;
   private InputStream inputStream;
   private VariableSpace variableSpace;
   private Object[] incomingFields = null;
+  private boolean isDatum;
+  private String schemaFieldName;
 
   private RowMetaInterface outputRowMeta;
 
@@ -66,28 +69,34 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
   public IPentahoRecordReader createRecordReader( IPentahoInputSplit split ) throws Exception {
 
     DataFileStream<Object> nestedDfs = null;
-    if ( this.isDataBinaryEncoded ) {
+    if ( !this.isDatum ) {
       nestedDfs = createNestedDataFileStream();
       if ( nestedDfs == null ) {
         throw new Exception( "Unable to read data from file " + fileName );
       }
     }
     Schema avroSchema = readAvroSchema();
+    int dataFieldIndex = useFieldAsInputStream ? determineStringFieldIndex( inputStreamFieldName ) : -1;
+
     return new AvroNestedRecordReader( nestedDfs, avroSchema, getFields(), variableSpace, incomingFields,
-      outputRowMeta, fileName, isDataBinaryEncoded, useFieldAsInputStream );
+      outputRowMeta, fileName, isDataBinaryEncoded, dataFieldIndex, isDatum );
 
   }
 
   @VisibleForTesting
   public Schema readAvroSchema() throws Exception {
-    if ( schemaFileName != null && schemaFileName.length() > 0 ) {
-      return new Schema.Parser().parse( KettleVFS.getInputStream( schemaFileName ) );
-    } else if ( ( fileName != null && fileName.length() > 0 ) || ( useFieldAsInputStream && inputStream != null ) ) {
-      Schema schema;
-      DataFileStream<GenericRecord> dataFileStream = createDataFileStream();
-      schema = dataFileStream.getSchema();
-      dataFileStream.close();
-      return schema;
+    if ( useFieldAsSchema ) {
+      return new Schema.Parser().parse( ( (String) incomingFields[ determineStringFieldIndex( schemaFieldName ) ] ) );
+    } else {
+      if ( schemaFileName != null && schemaFileName.length() > 0 ) {
+        return new Schema.Parser().parse( KettleVFS.getInputStream( schemaFileName ) );
+      } else if ( ( fileName != null && fileName.length() > 0 ) || ( useFieldAsInputStream && inputStream != null ) ) {
+        Schema schema;
+        DataFileStream<GenericRecord> dataFileStream = createDataFileStream();
+        schema = dataFileStream.getSchema();
+        dataFileStream.close();
+        return schema;
+      }
     }
     throw new Exception( "The file you provided does not contain a schema."
       + "  Please choose a schema file, or another file that contains a schema." );
@@ -125,7 +134,7 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
   @Override
   public void setInputStreamFieldName( String inputStreamFieldName ) {
     this.inputStreamFieldName = inputStreamFieldName;
-    this.useFieldAsInputStream = inputStreamFieldName != null && !inputStreamFieldName.isEmpty();
+    //this.useFieldAsInputStream = inputStreamFieldName != null && !inputStreamFieldName.isEmpty();
   }
 
   @Override
@@ -396,7 +405,40 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
     return inputFields;
   }
 
+  @Override
   public void setIsDataBinaryEncoded( boolean isBinary ) {
     this.isDataBinaryEncoded = isBinary;
+  }
+
+  @Override
+  public void setDatum( boolean isDatum ) {
+    this.isDatum = isDatum;
+  }
+
+  @Override
+  public void setUseFieldAsSchema( boolean useFieldAsSchema ) {
+    this.useFieldAsSchema = useFieldAsSchema;
+  }
+
+  @Override
+  public void setSchemaFieldName( String schemaFieldName ) {
+    this.schemaFieldName = schemaFieldName;
+  }
+
+  @Override
+  public void setUseFieldAsInputStream( boolean useFieldAsInputStream ) {
+    this.useFieldAsInputStream = useFieldAsInputStream;
+  }
+
+  private int determineStringFieldIndex( String fieldName ) throws Exception {
+    int index = outputRowMeta.indexOfValue( fieldName );
+    if ( index >= 0 ) {
+      ValueMetaInterface fieldMeta = outputRowMeta.getValueMeta( index );
+      if ( !fieldMeta.isString() && !fieldMeta.isBinary() ) {
+        throw new Exception( "Field " + fieldName + " is not a string." );
+      }
+      return index;
+    }
+    throw new Exception( "Could not locate field " + fieldName );
   }
 }

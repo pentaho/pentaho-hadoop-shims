@@ -21,11 +21,13 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.common;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.junit.Test;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.row.RowMeta;
 import org.pentaho.di.core.row.ValueMetaInterface;
+import org.pentaho.di.core.row.value.ValueMetaBinary;
 import org.pentaho.di.core.row.value.ValueMetaString;
 import org.pentaho.hadoop.shim.api.format.AvroSpec;
 import org.pentaho.hadoop.shim.api.format.IParquetInputField;
@@ -41,8 +43,10 @@ import org.pentaho.hadoop.shim.common.format.parquet.ParquetUtils;
 import org.pentaho.hadoop.shim.common.format.parquet.PentahoParquetInputFormat;
 import org.pentaho.hadoop.shim.common.format.parquet.PentahoParquetOutputFormat;
 
+import java.io.File;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -57,6 +61,31 @@ import static org.junit.Assert.fail;
  */
 public class CommonFormatShimTestIT {
   //#if shim_type!="MAPR"
+  final String jsonDatumData = "{\"parentInt\": 1, \"parentBool\": true, \"parentLong\": 2, \"parentFloat\": 3.0, "
+    + "\"parentDouble\": 4.0, \"parentString\": \"string1\", \"parentStringMap\": {\"key1\": \"string2\", \"key2\":"
+    + " \"string3\"}, \"parentIntMap\": {\"key3\": 5, \"key4\": 6}, \"parentStringArray\": [\"string4\", "
+    + "\"string5\"],\"parentIntArray\": [7, 8], \"childData\": {\"childInt\": 9, \"childBool\": false, "
+    + "\"childLong\": 10, \"childFloat\": 11.0, \"childDouble\": 12.0, \"childString\": \"string6\", "
+    + "\"childStringMap\": {\"key5\": \"string7\", \"key6\": \"string8\"}, \"childIntMap\": {\"key7\": 13, "
+    + "\"key8\": 14 }, \"childStringArray\": [\"string9\", \"string10\"], \"childIntArray\": [15, 16]}}";
+  final String jsonSchema =
+    "{\"namespace\": \"example.avro\",\"name\": \"ParentData\",\"type\": \"record\",\"fields\": "
+      + "[{\"name\": \"parentInt\", \"type\": \"int\"},{\"name\":\"parentBool\", \"type\": \"boolean\"},{\"name\": "
+      + "\"parentLong\", \"type\": \"long\"},{\"name\": \"parentFloat\", \"type\": \"float\"},{\"name\": "
+      + "\"parentDouble\", \"type\": \"double\"},{\"name\": \"parentString\", \"type\": \"string\"},{\"name\": "
+      + "\"parentStringMap\", \"type\": {\"type\": \"map\", \"values\": \"string\"}},{\"name\": \"parentIntMap\", "
+      + "\"type\": {\"type\": \"map\", \"values\": \"int\"}},{\"name\": \"parentStringArray\", \"type\": {\"type\": "
+      + "\"array\", \"items\": \"string\"}},{\"name\": \"parentIntArray\", \"type\": {\"type\": \"array\", \"items\":"
+      + " \"int\"}},{\"name\": \"childData\",\"type\": {\"namespace\": \"example.avro\",\"type\" : \"record\","
+      + "\"name\" : \"ChildData\",\"fields\" : [{\"name\": \"childInt\", \"type\": \"int\"},{\"name\": \"childBool\","
+      + " \"type\": \"boolean\"},{\"name\": \"childLong\", \"type\": \"long\"},{\"name\": \"childFloat\", \"type\": "
+      + "\"float\"},{\"name\": \"childDouble\", \"type\": \"double\"},{\"name\": \"childString\", \"type\": "
+      + "\"string\"},{\"name\": \"childStringMap\", \"type\": {\"type\": \"map\", \"values\": \"string\"}},{\"name\":"
+      + " \"childIntMap\", \"type\": {\"type\": \"map\", \"values\": \"int\"}},{\"name\": \"childStringArray\", "
+      + "\"type\": {\"type\": \"array\", \"items\": \"string\"}},{\"name\": \"childIntArray\", \"type\": {\"type\": "
+      + "\"array\", \"items\": \"int\"}}]}}]}";
+
+
   @Test
   public void testParquetReadSuccessLocalFileSystem() throws Exception {
 
@@ -139,32 +168,18 @@ public class CommonFormatShimTestIT {
     PentahoAvroInputFormat avroInputFormat = new PentahoAvroInputFormat();
     avroInputFormat.setInputSchemaFile( getFilePath( "/sample-schema.avro" ) );
     avroInputFormat.setInputFile( getFilePath( "/sample-data.avro" ) );
+    avroInputFormat.setUseFieldAsInputStream( false );
+    avroInputFormat.setIsDataBinaryEncoded( true );
+    avroInputFormat.setOutputRowMeta( new RowMeta() );
 
     List<AvroInputField> inputFields = new ArrayList<AvroInputField>();
 
-    AvroInputField avroInputField = new AvroInputField();
-    avroInputField.setFormatFieldName( "FirstName" );
-    avroInputField.setPentahoFieldName( "FirstName" );
-    avroInputField.setAvroType( AvroSpec.DataType.STRING );
-    avroInputField.setPentahoType( ValueMetaInterface.TYPE_STRING );
-    inputFields.add( avroInputField );
-
-    avroInputField = new AvroInputField();
-    avroInputField.setFormatFieldName( "Phone" );
-    avroInputField.setPentahoFieldName( "Phone" );
-    avroInputField.setAvroType( AvroSpec.DataType.STRING );
-    avroInputField.setPentahoType( ValueMetaInterface.TYPE_STRING );
-    inputFields.add( avroInputField );
-
+    addStringField( inputFields, "FirstName" );
+    addStringField( inputFields, "Phone" );
     avroInputFormat.setInputFields( inputFields );
 
     IPentahoRecordReader recordReader = avroInputFormat.createRecordReader( null );
-    List<String> dataSampleRows = new ArrayList<>();
-    recordReader.forEach( rowMetaAndData -> {
-      dataSampleRows
-        .add( String.join( ";", rowMetaAndData.getData()[ 0 ].toString(), rowMetaAndData.getData()[ 1 ].toString() ) );
-    } );
-    assertEquals( expectedRows, dataSampleRows );
+    assertEquals( expectedRows, generateDataSample( recordReader, inputFields ) );
   }
 
   @Test
@@ -211,29 +226,17 @@ public class CommonFormatShimTestIT {
     PentahoAvroInputFormat avroInputFormat = new PentahoAvroInputFormat();
     List<AvroInputField> inputFields = new ArrayList<AvroInputField>();
 
-    AvroInputField avroInputField = new AvroInputField();
-    avroInputField.setFormatFieldName( "name" );
-    avroInputField.setPentahoFieldName( "name" );
-    avroInputField.setAvroType( AvroSpec.DataType.STRING );
-    avroInputField.setPentahoType( ValueMetaInterface.TYPE_STRING );
-    inputFields.add( avroInputField );
-
-    avroInputField = new AvroInputField();
-    avroInputField.setFormatFieldName( "phone" );
-    avroInputField.setPentahoFieldName( "phone" );
-    avroInputField.setAvroType( AvroSpec.DataType.STRING );
-    avroInputField.setPentahoType( ValueMetaInterface.TYPE_STRING );
-    inputFields.add( avroInputField );
-
+    addStringField( inputFields, "name" );
+    addStringField( inputFields, "phone" );
     avroInputFormat.setInputFields( inputFields );
 
     avroInputFormat.setInputSchemaFile( tempDir + "/avro-schema.out" );
     avroInputFormat.setInputFile( tempDir + "/avro.out" );
     avroInputFormat.setInputFields( inputFields );
+    avroInputFormat.setIsDataBinaryEncoded( true );
+    avroInputFormat.setOutputRowMeta( new RowMeta() );
     IPentahoRecordReader recordReader = avroInputFormat.createRecordReader( null );
-    recordReader.forEach( rowMetaAndData ->
-      assertArrayEquals( new Object[] { "Alice", "987654321" }, new Object[] { rowMetaAndData.getData()[ 0 ].toString(),
-        rowMetaAndData.getData()[ 1 ].toString() } ) );
+    assertEquals( Arrays.asList( "Alice;987654321" ), generateDataSample( recordReader, inputFields ) );
 
     PentahoAvroOutputFormat overwriteFalseOutputFormat = new PentahoAvroOutputFormat();
     overwriteFalseOutputFormat.setFields( outputFields );
@@ -273,30 +276,17 @@ public class CommonFormatShimTestIT {
     avroInputFormat = new PentahoAvroInputFormat();
     inputFields = new ArrayList<AvroInputField>();
 
-    avroInputField = new AvroInputField();
-    avroInputField.setFormatFieldName( "name" );
-    avroInputField.setPentahoFieldName( "name" );
-    avroInputField.setAvroType( AvroSpec.DataType.STRING );
-    avroInputField.setPentahoType( ValueMetaInterface.TYPE_STRING );
-    inputFields.add( avroInputField );
-
-    avroInputField = new AvroInputField();
-    avroInputField.setFormatFieldName( "phone" );
-    avroInputField.setPentahoFieldName( "phone" );
-    avroInputField.setAvroType( AvroSpec.DataType.STRING );
-    avroInputField.setPentahoType( ValueMetaInterface.TYPE_STRING );
-    inputFields.add( avroInputField );
-
+    addStringField( inputFields, "name" );
+    addStringField( inputFields, "phone" );
     avroInputFormat.setInputFields( inputFields );
 
     avroInputFormat.setInputSchemaFile( tempDir + "/avro-schema.out" );
     avroInputFormat.setInputFile( tempDir + "/avro.out" );
     avroInputFormat.setInputFields( inputFields );
+    avroInputFormat.setIsDataBinaryEncoded( true );
+    avroInputFormat.setOutputRowMeta( new RowMeta() );
     recordReader = avroInputFormat.createRecordReader( null );
-    recordReader.forEach( rowMetaAndData ->
-      assertArrayEquals( new Object[] { "John", "123456789" }, new Object[] { rowMetaAndData.getData()[ 0 ].toString(),
-        rowMetaAndData.getData()[ 1 ].toString() } ) );
-
+    assertEquals( Arrays.asList( "John;123456789" ), generateDataSample( recordReader, inputFields ) );
   }
 
   private String getFilePath( String file ) {
@@ -310,49 +300,26 @@ public class CommonFormatShimTestIT {
 
     PentahoAvroInputFormat avroInputFormat = new PentahoAvroInputFormat();
     avroInputFormat.setInputFile( getFilePath( "/sampledata1.avro" ) );
+    avroInputFormat.setUseFieldAsInputStream( false );
+    avroInputFormat.setIsDataBinaryEncoded( true );
     List<AvroInputField> inputFields = new ArrayList<AvroInputField>();
 
-    AvroInputField avroInputField = new AvroInputField();
-    avroInputField.setFormatFieldName( "$.parentString" );
-    avroInputField.setPentahoFieldName( "$.parentString" );
-    avroInputField.setAvroType( AvroSpec.DataType.STRING );
-    avroInputField.setPentahoType( ValueMetaInterface.TYPE_STRING );
-    inputFields.add( avroInputField );
-
-    avroInputField = new AvroInputField();
-    avroInputField.setFormatFieldName( "$.parentStringMap[key1]" );
-    avroInputField.setPentahoFieldName( "$.parentStringMap[key1]" );
-    avroInputField.setAvroType( AvroSpec.DataType.STRING );
-    avroInputField.setPentahoType( ValueMetaInterface.TYPE_STRING );
-    inputFields.add( avroInputField );
-
-    avroInputField = new AvroInputField();
-    avroInputField.setFormatFieldName( "$.parentStringArray[0]" );
-    avroInputField.setPentahoFieldName( "$.parentStringArray[0]" );
-    avroInputField.setAvroType( AvroSpec.DataType.STRING );
-    avroInputField.setPentahoType( ValueMetaInterface.TYPE_STRING );
-    inputFields.add( avroInputField );
-
+    addStringField( inputFields, "parentString" );
+    addStringField( inputFields, "parentStringMap[key1]" );
+    addStringField( inputFields, "parentStringArray[0]" );
     avroInputFormat.setInputFields( inputFields );
 
     RowMetaAndData row = new RowMetaAndData();
     RowMeta rowMeta = new RowMeta();
-    rowMeta.addValueMeta( new ValueMetaString( "$.parentString" ) );
-    rowMeta.addValueMeta( new ValueMetaString( "$.parentStringMap[key1]" ) );
-    rowMeta.addValueMeta( new ValueMetaString( "$.parentStringArray[0]" ) );
+    rowMeta.addValueMeta( new ValueMetaString( "parentString" ) );
+    rowMeta.addValueMeta( new ValueMetaString( "parentStringMap[key1]" ) );
+    rowMeta.addValueMeta( new ValueMetaString( "parentStringArray[0]" ) );
     row.setRowMeta( rowMeta );
 
     avroInputFormat.setOutputRowMeta( rowMeta );
 
     IPentahoRecordReader recordReader = avroInputFormat.createRecordReader( null );
-    List<String> dataSampleRows = new ArrayList<>();
-    recordReader.forEach( rowMetaAndData -> {
-      dataSampleRows.add( String.join( ";",
-        rowMetaAndData.getData()[ 0 ].toString(),
-        rowMetaAndData.getData()[ 1 ].toString(),
-        rowMetaAndData.getData()[ 2 ].toString() ) );
-    } );
-    assertEquals( expectedRows, dataSampleRows );
+    assertEquals( expectedRows, generateDataSample( recordReader, inputFields ) );
   }
 
   @Test
@@ -360,25 +327,14 @@ public class CommonFormatShimTestIT {
     List<String> expectedRows = Arrays.asList( "John;4074549921", "Leslie;4079302194" );
     PentahoAvroInputFormat avroInputFormat = new PentahoAvroInputFormat();
 
-
     avroInputFormat.setInputSchemaFile( getFilePath( "/sample-schema.avro" ) );
     avroInputFormat.setInputFile( getFilePath( "/sample-data.avro" ) );
+    avroInputFormat.setUseFieldAsInputStream( false );
+    avroInputFormat.setIsDataBinaryEncoded( true );
     List<AvroInputField> inputFields = new ArrayList<AvroInputField>();
 
-    AvroInputField avroInputField = new AvroInputField();
-    avroInputField.setFormatFieldName( "$.FirstName" );
-    avroInputField.setPentahoFieldName( "FirstName" );
-    avroInputField.setAvroType( AvroSpec.DataType.STRING );
-    avroInputField.setPentahoType( ValueMetaInterface.TYPE_STRING );
-    inputFields.add( avroInputField );
-
-    avroInputField = new AvroInputField();
-    avroInputField.setFormatFieldName( "$.Phone" );
-    avroInputField.setPentahoFieldName( "Phone" );
-    avroInputField.setAvroType( AvroSpec.DataType.STRING );
-    avroInputField.setPentahoType( ValueMetaInterface.TYPE_STRING );
-    inputFields.add( avroInputField );
-
+    addStringField( inputFields, "FirstName" );
+    addStringField( inputFields, "Phone" );
     avroInputFormat.setInputFields( inputFields );
 
     RowMetaAndData row = new RowMetaAndData();
@@ -390,12 +346,179 @@ public class CommonFormatShimTestIT {
     avroInputFormat.setOutputRowMeta( rowMeta );
 
     IPentahoRecordReader recordReader = avroInputFormat.createRecordReader( null );
+    assertEquals( expectedRows, generateDataSample( recordReader, inputFields ) );
+  }
+
+  @Test
+  public void testAvroDatumReadFromField() throws Exception {
+    List<String> expectedRows = Arrays.asList( "1;string1;string6" );
+
+    PentahoAvroInputFormat avroInputFormat = new PentahoAvroInputFormat();
+    avroInputFormat.setDatum( true );
+    avroInputFormat.setUseFieldAsInputStream( true );
+    avroInputFormat.setUseFieldAsSchema( true );
+    avroInputFormat.setInputStreamFieldName( "data" );
+    avroInputFormat.setSchemaFieldName( "schema" );
+    avroInputFormat.setIncomingFields( new Object[] { jsonDatumData, jsonSchema } );
+    avroInputFormat.setIsDataBinaryEncoded( false );
+    List<AvroInputField> inputFields = new ArrayList<AvroInputField>();
+
+    addStringField( inputFields, "parentInt" );
+    addStringField( inputFields, "parentString" );
+    addStringField( inputFields, "childData.childString" );
+
+    avroInputFormat.setInputFields( inputFields );
+
+    RowMetaAndData row = new RowMetaAndData();
+    RowMeta rowMeta = new RowMeta();
+    rowMeta.addValueMeta( new ValueMetaString( "data" ) );
+    rowMeta.addValueMeta( new ValueMetaString( "schema" ) );
+    rowMeta.addValueMeta( new ValueMetaString( "parentInt" ) );
+    rowMeta.addValueMeta( new ValueMetaString( "parentString" ) );
+    rowMeta.addValueMeta( new ValueMetaString( "childData.childString" ) );
+    row.setRowMeta( rowMeta );
+    avroInputFormat.setOutputRowMeta( rowMeta );
+
+    IPentahoRecordReader recordReader = avroInputFormat.createRecordReader( null );
+
+    assertEquals( expectedRows, generateDataSample( recordReader, inputFields ) );
+
+  }
+
+  @Test
+  public void testAvroJsonDatumReadFromFile() throws Exception {
+    String tempDir = Files.createTempDirectory( "avro" ).toString();
+    String datumFile = tempDir + File.separator + "datum";
+    FileUtils.writeStringToFile( new File( datumFile ), jsonDatumData, "utf8" );
+
+    List<String> expectedRows = Arrays.asList( "1;string1;string6" );
+
+    PentahoAvroInputFormat avroInputFormat = new PentahoAvroInputFormat();
+    avroInputFormat.setDatum( true );
+    avroInputFormat.setUseFieldAsInputStream( false );
+    avroInputFormat.setUseFieldAsSchema( true );
+    avroInputFormat.setInputFile( datumFile );
+    avroInputFormat.setSchemaFieldName( "schema" );
+    avroInputFormat.setIncomingFields( new Object[] { jsonSchema } );
+    avroInputFormat.setIsDataBinaryEncoded( false );
+    List<AvroInputField> inputFields = new ArrayList<AvroInputField>();
+
+    addStringField( inputFields, "parentInt" );
+    addStringField( inputFields, "parentString" );
+    addStringField( inputFields, "childData.childString" );
+
+    avroInputFormat.setInputFields( inputFields );
+
+    RowMetaAndData row = new RowMetaAndData();
+    RowMeta rowMeta = new RowMeta();
+    rowMeta.addValueMeta( new ValueMetaString( "schema" ) );
+    rowMeta.addValueMeta( new ValueMetaString( "parentInt" ) );
+    rowMeta.addValueMeta( new ValueMetaString( "parentString" ) );
+    rowMeta.addValueMeta( new ValueMetaString( "childData.childString" ) );
+    row.setRowMeta( rowMeta );
+    avroInputFormat.setOutputRowMeta( rowMeta );
+
+    IPentahoRecordReader recordReader = avroInputFormat.createRecordReader( null );
+
+    assertEquals( expectedRows, generateDataSample( recordReader, inputFields ) );
+
+  }
+
+  @Test
+  public void testAvroBinaryDatumReadFromFile() throws Exception {
+    List<String> expectedRows = Arrays.asList( "1;aString" );
+
+    PentahoAvroInputFormat avroInputFormat = new PentahoAvroInputFormat();
+    avroInputFormat.setDatum( true );
+    avroInputFormat.setUseFieldAsInputStream( false );
+    avroInputFormat.setUseFieldAsSchema( false );
+    avroInputFormat.setInputFile( getFilePath( "/avro/flatschema.datum" ) );
+    avroInputFormat.setInputSchemaFile( getFilePath( "/avro/flatschema.avsc" ) );
+    avroInputFormat.setIsDataBinaryEncoded( true );
+    avroInputFormat.setIncomingFields( new Object[]{} );
+
+    List<AvroInputField> inputFields = new ArrayList<AvroInputField>();
+    addStringField( inputFields, "parentInt" );
+    addStringField( inputFields, "parentString" );
+
+    avroInputFormat.setInputFields( inputFields );
+
+    RowMetaAndData row = new RowMetaAndData();
+    RowMeta rowMeta = new RowMeta();
+    rowMeta.addValueMeta( new ValueMetaString( "parentInt" ) );
+    rowMeta.addValueMeta( new ValueMetaString( "parentString" ) );
+    row.setRowMeta( rowMeta );
+    avroInputFormat.setOutputRowMeta( rowMeta );
+
+    IPentahoRecordReader recordReader = avroInputFormat.createRecordReader( null );
+
+    assertEquals( expectedRows, generateDataSample( recordReader, inputFields ) );
+
+  }
+
+  @Test
+  public void testAvroBinaryDatumReadFromField() throws Exception {
+    List<String> expectedRows = Arrays.asList( "1;aString" );
+    byte[] datumBytes = Files.readAllBytes( new File( getFilePath( "/avro/flatschema.datum" ) ).toPath() );
+
+    PentahoAvroInputFormat avroInputFormat = new PentahoAvroInputFormat();
+    avroInputFormat.setDatum( true );
+    avroInputFormat.setUseFieldAsInputStream( true );
+    avroInputFormat.setInputStreamFieldName( "binaryData" );
+    avroInputFormat.setUseFieldAsSchema( false );
+
+    //avroInputFormat.setInputFile( getFilePath( "/avro/flatschema.datum" ) );
+    avroInputFormat.setInputSchemaFile( getFilePath( "/avro/flatschema.avsc" ) );
+
+    avroInputFormat.setIsDataBinaryEncoded( true );
+    avroInputFormat.setIncomingFields( new Object[]{ datumBytes } );
+
+    List<AvroInputField> inputFields = new ArrayList<AvroInputField>();
+    addStringField( inputFields, "parentInt" );
+    addStringField( inputFields, "parentString" );
+
+    avroInputFormat.setInputFields( inputFields );
+
+    RowMetaAndData row = new RowMetaAndData();
+    RowMeta rowMeta = new RowMeta();
+    rowMeta.addValueMeta( new ValueMetaBinary( "binaryData" ) );
+    rowMeta.addValueMeta( new ValueMetaString( "parentInt" ) );
+    rowMeta.addValueMeta( new ValueMetaString( "parentString" ) );
+    row.setRowMeta( rowMeta );
+    avroInputFormat.setOutputRowMeta( rowMeta );
+
+    IPentahoRecordReader recordReader = avroInputFormat.createRecordReader( null );
+
+    assertEquals( expectedRows, generateDataSample( recordReader, inputFields ) );
+
+  }
+
+  // Add a string with fieldName to the inputFields list.
+  private void addStringField( List<AvroInputField> inputFields, String fieldName ) {
+    AvroInputField avroInputField = new AvroInputField();
+    avroInputField.setFormatFieldName( fieldName );
+    avroInputField.setPentahoFieldName( fieldName );
+    avroInputField.setAvroType( AvroSpec.DataType.STRING );
+    avroInputField.setPentahoType( ValueMetaInterface.TYPE_STRING );
+    inputFields.add( avroInputField );
+  }
+
+  //returns a list of strings.  Each string contains the values of one row
+  private List<String> generateDataSample( IPentahoRecordReader recordReader, List<AvroInputField> inputFields ) {
+
     List<String> dataSampleRows = new ArrayList<>();
-    recordReader.forEach( rowMetaAndData -> {
-      dataSampleRows
-        .add( String.join( ";", rowMetaAndData.getData()[ 0 ].toString(), rowMetaAndData.getData()[ 1 ].toString() ) );
+    recordReader.forEach( rowMetaAndData ->
+    {
+      StringBuilder checkString = new StringBuilder();
+      for ( int i = 0; i < inputFields.size(); i++ ) {
+        if ( i > 0 ) {
+          checkString.append( ";" ); //field delimiter
+        }
+        checkString.append( rowMetaAndData.getData()[ i ].toString() );
+      }
+      dataSampleRows.add( checkString.toString() );
     } );
-    assertEquals( expectedRows, dataSampleRows );
+    return dataSampleRows;
   }
 
 
