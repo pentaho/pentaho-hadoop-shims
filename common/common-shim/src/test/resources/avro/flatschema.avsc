@@ -1,0 +1,13 @@
+{
+    "namespace": "example.avro",
+    "name": "FlatSchema",
+    "type": "record",
+    "fields": [
+        {"name": "parentInt", "type": "int"},
+        {"name": "parentBool", "type": "boolean"},
+        {"name": "parentLong", "type": "long"},
+        {"name": "parentFloat", "type": "float"},
+        {"name": "parentDouble", "type": "double"},
+        {"name": "parentString", "type": "string"}
+    ]
+}

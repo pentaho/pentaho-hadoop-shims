@@ -48,26 +48,28 @@ public class AvroNestedRecordReader implements IPentahoAvroInputFormat.IPentahoR
   private Object[] incomingFields;
   private RowMetaAndData nextRow;
   Object[][] expandedRows = null;
-
   private int nextExpandedRow = 0;
+  private boolean isDatum;
 
   public AvroNestedRecordReader( DataFileStream<Object> nativeAvroRecordReader,
                                  Schema avroSchema, List<? extends IAvroInputField> fields, VariableSpace avroInputStep,
                                  Object[] incomingFields, RowMetaInterface outputRowMeta,
-                                 String fileName, boolean isDataBinaryEncoded, boolean isDecodingFromField ) {
+                                 String fileName, boolean isDataBinaryEncoded, int fieldIndexForDataStream,
+                                 boolean isDatum ) {
 
     this.nativeAvroRecordReader = nativeAvroRecordReader;
     this.avroSchema = avroSchema;
     this.fields = fields;
     this.avroInputStep = avroInputStep;
     this.incomingFields = incomingFields;
+    this.isDatum = isDatum;
 
     avroNestedReader = new AvroNestedReader();
     avroNestedReader.m_schemaToUse = avroSchema;
     avroNestedReader.m_outputRowMeta = outputRowMeta;
     avroNestedReader.m_jsonEncoded = !isDataBinaryEncoded;
-    avroNestedReader.m_decodingFromField = isDecodingFromField;
-    avroNestedReader.m_fieldToDecodeIndex = nextExpandedRow;
+    avroNestedReader.m_decodingFromField = fieldIndexForDataStream >= 0 ? true : false;
+    avroNestedReader.m_fieldToDecodeIndex = fieldIndexForDataStream;
 
     try {
       if ( nativeAvroRecordReader != null ) { // Is Avro File
@@ -78,8 +80,13 @@ public class AvroNestedRecordReader implements IPentahoAvroInputFormat.IPentahoR
           avroNestedReader.m_datumReader = new GenericDatumReader<Object>( avroSchema );
           if ( fileName != null ) {
             FileObject fileObject = KettleVFS.getFileObject( fileName );
-            avroNestedReader.m_decoder =
-              DecoderFactory.get().jsonDecoder( avroSchema, KettleVFS.getInputStream( fileObject ) );
+            if ( avroNestedReader.m_jsonEncoded ) {
+              avroNestedReader.m_decoder =
+                DecoderFactory.get().jsonDecoder( avroSchema, KettleVFS.getInputStream( fileObject ) );
+            } else {
+              avroNestedReader.m_decoder =
+                DecoderFactory.get().binaryDecoder( KettleVFS.getInputStream( fileObject ), null );
+            }
           }
         }
       }
