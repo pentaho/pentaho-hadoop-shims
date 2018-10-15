@@ -30,6 +30,8 @@
     <htrace-core.version>2.04</htrace-core.version>
     <protobuf-java.version>2.5.0</protobuf-java.version>
     <commons-configuration.version>1.6</commons-configuration.version>
+    <commons-configuration2.version>2.1.1</commons-configuration2.version>
+    <geronimo-servlet_3.0_spec.version>1.0</geronimo-servlet_3.0_spec.version>
   </properties>
   <modules>
     <module>client</module>
