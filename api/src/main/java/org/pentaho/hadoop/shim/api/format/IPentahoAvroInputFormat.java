@@ -33,11 +33,15 @@ public interface IPentahoAvroInputFormat extends IPentahoInputFormat {
    * Set schema for file reading.
    */
   List<? extends IAvroInputField> getFields() throws Exception;
+  List<? extends IAvroLookupField> getLookupFields();
 
   /**
    * Set schema for file reading.
    */
   void setInputFields( List<? extends IAvroInputField> fields ) throws Exception;
+
+  void setLookupFields( List<? extends IAvroLookupField> fields );
+
 
   /**
    * Set input file.
