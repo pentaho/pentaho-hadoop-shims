@@ -37,6 +37,7 @@ import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.di.core.vfs.KettleVFS;
 import org.pentaho.hadoop.shim.api.format.AvroSpec;
 import org.pentaho.hadoop.shim.api.format.IAvroInputField;
+import org.pentaho.hadoop.shim.api.format.IAvroLookupField;
 import org.pentaho.hadoop.shim.api.format.IPentahoAvroInputFormat;
 
 import java.io.InputStream;
@@ -48,6 +49,7 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
   private String fileName;
   private String schemaFileName;
   private List<? extends IAvroInputField> inputFields;
+  private List<? extends IAvroLookupField> lookupFields;
   private String inputStreamFieldName;
   private boolean useFieldAsInputStream;
   private boolean useFieldAsSchema;
@@ -100,6 +102,16 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
     }
     throw new Exception( "The file you provided does not contain a schema."
       + "  Please choose a schema file, or another file that contains a schema." );
+  }
+
+  @Override
+  public List<? extends IAvroLookupField> getLookupFields() {
+    return lookupFields;
+  }
+
+  @Override
+  public void setLookupFields( List<? extends IAvroLookupField> lookupFields ) {
+    this.lookupFields = lookupFields;
   }
 
   @Override
