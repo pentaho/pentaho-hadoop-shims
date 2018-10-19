@@ -100,6 +100,11 @@ public class AvroNestedReader {
   protected LogChannelInterface m_log;
 
   /**
+   * The input data format
+   */
+  protected RowMetaInterface m_incomingRowMeta;
+
+  /**
    * The output data format
    */
   protected RowMetaInterface m_outputRowMeta;
@@ -776,7 +781,7 @@ public class AvroNestedReader {
    */
   protected Object getPrimitive( AvroInputField avroInputField, Object fieldValue, Schema s ) throws KettleException {
 
-    return  m_avroToPdiConverter.converAvroToPdi( fieldValue, avroInputField, s  );
+    return m_avroToPdiConverter.converAvroToPdi( fieldValue, avroInputField, s );
   }
 
   /**
@@ -1456,7 +1461,7 @@ public class AvroNestedReader {
             // must be done - just return null
             return null;
           }
-          ValueMetaInterface fieldMeta = m_outputRowMeta.getValueMeta( m_fieldToDecodeIndex );
+          ValueMetaInterface fieldMeta = m_incomingRowMeta.getValueMeta( m_fieldToDecodeIndex );
 
           // incoming avro field null? - all decoded fields are null
           if ( fieldMeta.isNull( incoming[ m_fieldToDecodeIndex ] ) ) {
@@ -1470,7 +1475,7 @@ public class AvroNestedReader {
           // if necessary, set the current datum reader and top level structure
           // for the incoming schema
           if ( m_schemaInField ) {
-            ValueMetaInterface schemaMeta = m_outputRowMeta.getValueMeta( m_schemaFieldIndex );
+            ValueMetaInterface schemaMeta = m_incomingRowMeta.getValueMeta( m_schemaFieldIndex );
             String schemaToUse = schemaMeta.getString( incoming[ m_schemaFieldIndex ] );
             setSchemaToUse( schemaToUse, m_cacheSchemas, space );
           }
@@ -1550,6 +1555,8 @@ public class AvroNestedReader {
 
     // get the normal (non expansion-related fields)
     Object value = null;
+    int incomingFieldsOffset = m_outputRowMeta.size() - m_normalFields.size();
+
     for ( AvroInputField f : m_normalFields ) {
       resetField( f, space );
 
@@ -1567,7 +1574,7 @@ public class AvroNestedReader {
           convertToKettleValue( f, m_topLevelMap, m_schemaToUse, m_defaultSchema, m_dontComplainAboutMissingFields );
       }
 
-      outputRowData[ f.getOutputIndex() ] = value;
+      outputRowData[ f.getOutputIndex() + incomingFieldsOffset ] = value;
     }
 
     // copy normal fields and existing incoming over to each expansion row (if

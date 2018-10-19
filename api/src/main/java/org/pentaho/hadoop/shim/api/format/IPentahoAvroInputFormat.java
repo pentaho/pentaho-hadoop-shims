@@ -33,6 +33,7 @@ public interface IPentahoAvroInputFormat extends IPentahoInputFormat {
    * Set schema for file reading.
    */
   List<? extends IAvroInputField> getFields() throws Exception;
+
   List<? extends IAvroLookupField> getLookupFields();
 
   /**
@@ -69,6 +70,8 @@ public interface IPentahoAvroInputFormat extends IPentahoInputFormat {
   void setVariableSpace( VariableSpace variableSpace );
 
   void setIncomingFields( Object[] incomingFields );
+
+  void setIncomingRowMeta( RowMetaInterface incomingRowMeta );
 
   void setOutputRowMeta( RowMetaInterface outputRowMeta );
 

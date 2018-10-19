@@ -60,6 +60,7 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
   private boolean isDatum;
   private String schemaFieldName;
 
+  private RowMetaInterface incomingRowMeta;
   private RowMetaInterface outputRowMeta;
 
   @Override
@@ -80,7 +81,8 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
     Schema avroSchema = readAvroSchema();
     int dataFieldIndex = useFieldAsInputStream ? determineStringFieldIndex( inputStreamFieldName ) : -1;
 
-    return new AvroNestedRecordReader( nestedDfs, avroSchema, getFields(), variableSpace, incomingFields,
+    return new AvroNestedRecordReader( nestedDfs, avroSchema, getFields(), variableSpace, incomingRowMeta,
+      incomingFields,
       outputRowMeta, fileName, isDataBinaryEncoded, dataFieldIndex, isDatum );
 
   }
@@ -405,6 +407,11 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
   }
 
   @Override
+  public void setIncomingRowMeta( RowMetaInterface incomingRowMeta ) {
+    this.incomingRowMeta = incomingRowMeta;
+  }
+
+  @Override
   public void setOutputRowMeta( RowMetaInterface outputRowMeta ) {
     this.outputRowMeta = outputRowMeta;
   }
@@ -443,9 +450,9 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
   }
 
   private int determineStringFieldIndex( String fieldName ) throws Exception {
-    int index = outputRowMeta.indexOfValue( fieldName );
+    int index = incomingRowMeta.indexOfValue( fieldName );
     if ( index >= 0 ) {
-      ValueMetaInterface fieldMeta = outputRowMeta.getValueMeta( index );
+      ValueMetaInterface fieldMeta = incomingRowMeta.getValueMeta( index );
       if ( !fieldMeta.isString() && !fieldMeta.isBinary() ) {
         throw new Exception( "Field " + fieldName + " is not a string." );
       }
