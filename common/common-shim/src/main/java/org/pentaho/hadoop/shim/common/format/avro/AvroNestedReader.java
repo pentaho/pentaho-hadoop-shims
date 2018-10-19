@@ -28,18 +28,11 @@ import org.apache.avro.file.DataFileStream;
 import org.apache.avro.generic.GenericContainer;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
-import org.apache.avro.generic.GenericFixed;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.util.Utf8;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
-import org.codehaus.jackson.node.BooleanNode;
-import org.codehaus.jackson.node.DoubleNode;
-import org.codehaus.jackson.node.IntNode;
-import org.codehaus.jackson.node.LongNode;
-import org.codehaus.jackson.node.NumericNode;
-import org.codehaus.jackson.node.TextNode;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.logging.LogChannelInterface;
@@ -192,6 +185,8 @@ public class AvroNestedReader {
 
   protected DataFileStream<Object> m_avroDataFileStream;
 
+  protected AvroToPdiConverter m_avroToPdiConverter;
+
   /**
    * Factory for obtaining a decoder
    */
@@ -203,6 +198,7 @@ public class AvroNestedReader {
 
   protected void init() throws KettleException {
     if ( m_schemaToUse != null ) {
+      m_avroToPdiConverter = new AvroToPdiConverter( m_schemaToUse );
       initTopLevelStructure( m_schemaToUse, true );
     }
 
@@ -780,55 +776,7 @@ public class AvroNestedReader {
    */
   protected Object getPrimitive( AvroInputField avroInputField, Object fieldValue, Schema s ) throws KettleException {
 
-    if ( fieldValue == null ) {
-      return null;
-    }
-
-    try {
-
-      switch ( s.getType() ) {
-        case BOOLEAN:
-          if ( fieldValue.getClass() == BooleanNode.class ) {
-            return getKettleValue( avroInputField, ( (BooleanNode) fieldValue ).getBooleanValue() );
-          }
-          return getKettleValue( avroInputField, fieldValue );
-        case LONG:
-          if ( fieldValue.getClass() == LongNode.class ) {
-            return getKettleValue( avroInputField, ( (LongNode) fieldValue ).getLongValue() );
-          }
-          return getKettleValue( avroInputField, fieldValue );
-        case DOUBLE:
-          if ( fieldValue.getClass() == DoubleNode.class ) {
-            return getKettleValue( avroInputField, ( (DoubleNode) fieldValue ).getDoubleValue() );
-          }
-          return getKettleValue( avroInputField, fieldValue );
-        case STRING:
-          if ( fieldValue.getClass() == TextNode.class ) {
-            return getKettleValue( avroInputField, fieldValue.toString() );
-          }
-          return getKettleValue( avroInputField, fieldValue );
-        case BYTES:
-        case ENUM:
-          return getKettleValue( avroInputField, fieldValue );
-        case INT:
-          if ( fieldValue.getClass() == IntNode.class ) {
-            return getKettleValue( avroInputField, new Long( ( (IntNode) fieldValue ).getIntValue() ) );
-          }
-          return getKettleValue( avroInputField, new Long( (Integer) fieldValue ) );
-        case FLOAT:
-          if ( fieldValue instanceof NumericNode ) {
-            return getKettleValue( avroInputField, ( (DoubleNode) fieldValue ).getDoubleValue() );
-          }
-          return getKettleValue( avroInputField, new Double( (Float) fieldValue ) );
-        case FIXED:
-          return ( (GenericFixed) fieldValue ).bytes();
-        default:
-          return null;
-      }
-
-    } catch ( ClassCastException e ) {
-      return null;
-    }
+    return  m_avroToPdiConverter.converAvroToPdi( fieldValue, avroInputField, s  );
   }
 
   /**

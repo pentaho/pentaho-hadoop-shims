@@ -41,7 +41,6 @@ public class AvroInputField extends BaseFormatInputField implements IAvroInputFi
   private boolean m_isValid;
   protected String m_cleansedVariableName;
   protected String m_resolvedFieldName;
-  //protected String m_resolvedDefaultValue;
 
   /**
    * Index of this field in the incoming row stream
@@ -148,12 +147,8 @@ public class AvroInputField extends BaseFormatInputField implements IAvroInputFi
 
   @Override
   public String getDisplayableAvroFieldName() {
-    String displayableAvroFieldName = formatFieldName;
-    if ( formatFieldName.contains( FILENAME_DELIMITER ) ) {
-      displayableAvroFieldName = formatFieldName.split( FILENAME_DELIMITER )[ 0 ];
-    }
 
-    return displayableAvroFieldName;
+    return formatFieldName;
   }
 
 }
