@@ -333,6 +333,13 @@ public class AvroNestedFieldGetter {
         // unhandled type
         newField = null;
     }
+    if ( fieldName.contains( AvroInputField.FILENAME_DELIMITER ) && newField != null ) {
+      String[] splits = fieldName.split( AvroInputField.FILENAME_DELIMITER );
+      if ( splits.length > 0 & splits.length <= 3 ) {
+        newField.setPentahoFieldName( splits[ 0 ] );
+        newField.setPentahoType( Integer.valueOf( splits[ 1 ] ) );
+      }
+    }
 
     return newField;
   }
