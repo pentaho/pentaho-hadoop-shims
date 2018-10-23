@@ -49,11 +49,14 @@ public class AvroNestedRecordReader implements IPentahoAvroInputFormat.IPentahoR
   private RowMetaAndData nextRow;
   Object[][] expandedRows = null;
   private int nextExpandedRow = 0;
+  private RowMetaInterface incomingRowMeta;
+  private RowMetaInterface outputRowMeta;
   private boolean isDatum;
 
   public AvroNestedRecordReader( DataFileStream<Object> nativeAvroRecordReader,
                                  Schema avroSchema, List<? extends IAvroInputField> fields, VariableSpace avroInputStep,
-                                 Object[] incomingFields, RowMetaInterface outputRowMeta,
+                                 RowMetaInterface incomingRowMeta, Object[] incomingFields,
+                                 RowMetaInterface outputRowMeta,
                                  String fileName, boolean isDataBinaryEncoded, int fieldIndexForDataStream,
                                  boolean isDatum ) {
 
@@ -61,11 +64,14 @@ public class AvroNestedRecordReader implements IPentahoAvroInputFormat.IPentahoR
     this.avroSchema = avroSchema;
     this.fields = fields;
     this.avroInputStep = avroInputStep;
+    this.incomingRowMeta = incomingRowMeta;
     this.incomingFields = incomingFields;
     this.isDatum = isDatum;
+    this.outputRowMeta = outputRowMeta;
 
     avroNestedReader = new AvroNestedReader();
     avroNestedReader.m_schemaToUse = avroSchema;
+    avroNestedReader.m_incomingRowMeta = incomingRowMeta;
     avroNestedReader.m_outputRowMeta = outputRowMeta;
     avroNestedReader.m_jsonEncoded = !isDataBinaryEncoded;
     avroNestedReader.m_decodingFromField = fieldIndexForDataStream >= 0 ? true : false;
@@ -185,6 +191,14 @@ public class AvroNestedRecordReader implements IPentahoAvroInputFormat.IPentahoR
   private RowMetaAndData objectToRowMetaAndData( Object[] row ) {
     RowMetaAndData rowMetaAndData = new RowMetaAndData();
     int index = 0;
+
+    int incomingFieldsCount = outputRowMeta.size() - fields.size();
+    if ( outputRowMeta != null && incomingFields != null ) {
+      for ( index = 0; index < incomingFieldsCount; index++ ) {
+        rowMetaAndData.addValue( outputRowMeta.getValueMeta( index ), incomingFields[ index ] );
+      }
+    }
+
     for ( IAvroInputField metaField : fields ) {
       rowMetaAndData.addValue( metaField.getPentahoFieldName(), metaField.getPentahoType(), row[ index ] );
       String stringFormat = metaField.getStringFormat();
