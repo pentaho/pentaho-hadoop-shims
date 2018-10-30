@@ -24,7 +24,7 @@
     <!-- client and default folders -->
     <hadoop.version>3.1.0.3.0.0.0-1634</hadoop.version>
     <!-- pmr folder -->
-    <org.apache.hbase.version>2.1.0</org.apache.hbase.version>
+    <org.apache.hbase.version>2.0.0.3.0.0.0-1634</org.apache.hbase.version>
     <org.apache.hbase-prefix-tree.version>2.0.0-alpha4</org.apache.hbase-prefix-tree.version>
     <zookeeper.version>3.4.6.3.0.0.0-1634</zookeeper.version>
     <htrace-core.version>2.04</htrace-core.version>

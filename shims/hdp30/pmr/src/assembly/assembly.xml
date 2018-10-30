@@ -15,12 +15,17 @@
         <include>com.yammer.metrics:metrics-core</include>
         <include>org.apache.hbase:hbase-server</include>
         <include>org.apache.hbase:hbase-client</include>
+        <include>org.apache.hbase:hbase-mapreduce</include>
         <include>org.apache.hbase:hbase-prefix-tree</include>
         <include>org.apache.hbase:hbase-protocol</include>
+        <include>org.apache.hbase:hbase-protocol-shaded</include>
         <include>org.apache.hbase:hbase-common</include>
         <include>org.apache.hbase:hbase-hadoop-compat</include>
         <include>org.cloudera.htrace:htrace-core</include>
         <include>org.apache.zookeeper:zookeeper</include>
+        <include>org.apache.hbase.thirdparty:hbase-shaded-miscellaneous</include>
+        <include>org.apache.hbase.thirdparty:hbase-shaded-protobuf</include>
+        <include>org.apache.hbase.thirdparty:hbase-shaded-netty</include>
         <include>commons-configuration:commons-configuration</include>
         <include>org.apache.commons:commons-configuration2</include>
         <include>org.apache.geronimo.specs:geronimo-servlet_3.0_spec</include>
