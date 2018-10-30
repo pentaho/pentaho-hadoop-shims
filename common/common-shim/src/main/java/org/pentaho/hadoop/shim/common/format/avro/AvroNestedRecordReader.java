@@ -107,13 +107,22 @@ public class AvroNestedRecordReader implements IPentahoAvroInputFormat.IPentahoR
       newField.setAvroFieldName( field.getAvroFieldName() );
       newField.setAvroType( field.getAvroType() );
       newField.setIndexedValues( field.getIndexedValues() );
-      newField.setFormatFieldName( field.getFormatFieldName() );
       newField.setFormatType( field.getFormatType() );
       newField.setPentahoFieldName( field.getPentahoFieldName() );
       newField.setPentahoType( field.getPentahoType() );
       newField.setPrecision( field.getPrecision() );
       newField.setScale( field.getScale() );
       newField.setStringFormat( field.getStringFormat() );
+
+      List<String> indexes = field.getIndexedVals();
+      String fieldName = field.getFormatFieldName();
+      if ( fieldName.endsWith( "[0]" ) && !indexes.toString().equals( "[]" ) ) {
+        String newValue = fieldName.substring( 0, fieldName.lastIndexOf( "[" ) ) + indexes.toString();
+        newField.setFormatFieldName( newValue );
+      } else {
+        newField.setFormatFieldName( field.getFormatFieldName() );
+      }
+
       castedList.add( newField );
     }
 
