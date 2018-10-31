@@ -53,6 +53,13 @@
       <artifactId>hadoop-aws</artifactId>
       <version>${org.apache.hadoop.version}</version>
     </dependency>
+	<!-- There is a transient dependency on an unbound version
+         of joda-time. We have to add it explicitly. -->
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>${joda-time.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-mapreduce-client-app</artifactId>
