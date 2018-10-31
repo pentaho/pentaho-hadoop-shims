@@ -32,6 +32,7 @@
     <commons-configuration.version>1.6</commons-configuration.version>
     <commons-configuration2.version>2.1.1</commons-configuration2.version>
     <geronimo-servlet_3.0_spec.version>1.0</geronimo-servlet_3.0_spec.version>
+    <org.apache.hive.version>3.1.0.3.0.0.0-1634</org.apache.hive.version>
   </properties>
   <modules>
     <module>client</module>
