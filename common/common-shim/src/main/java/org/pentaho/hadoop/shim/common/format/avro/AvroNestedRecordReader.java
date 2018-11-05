@@ -52,6 +52,7 @@ public class AvroNestedRecordReader implements IPentahoAvroInputFormat.IPentahoR
   private RowMetaInterface incomingRowMeta;
   private RowMetaInterface outputRowMeta;
   private boolean isDatum;
+  private boolean readDatumLine = true;
 
   public AvroNestedRecordReader( DataFileStream<Object> nativeAvroRecordReader,
                                  Schema avroSchema, List<? extends IAvroInputField> fields, VariableSpace avroInputStep,
@@ -164,6 +165,10 @@ public class AvroNestedRecordReader implements IPentahoAvroInputFormat.IPentahoR
           return true;
         }
         if ( incomingFields != null ) {
+          return true;
+        }
+        if ( isDatum && readDatumLine ) {
+          readDatumLine = false;
           return true;
         }
         return false;
