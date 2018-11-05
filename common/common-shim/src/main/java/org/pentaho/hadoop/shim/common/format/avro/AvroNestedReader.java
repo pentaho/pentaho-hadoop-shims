@@ -1589,9 +1589,11 @@ public class AvroNestedReader {
         for ( int j = 0; j < m_newFieldOffset; j++ ) {
           row[ j ] = outputRowData[ j ];
         }
-
-        for ( AvroInputField f : m_normalFields ) {
-          row[ f.getOutputIndex() ] = outputRowData[ f.getOutputIndex() ];
+        int rowIndex = 0;
+        for ( int x = 0; x < outputRowData.length; x++ ) {
+          if ( outputRowData[ x ] != null && rowIndex < row.length ) {
+            row[ rowIndex++ ] = outputRowData[ x ];
+          }
         }
       }
     }
