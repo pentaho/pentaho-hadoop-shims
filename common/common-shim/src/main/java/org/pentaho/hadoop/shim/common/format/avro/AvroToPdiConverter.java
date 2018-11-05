@@ -24,6 +24,7 @@ package org.pentaho.hadoop.shim.common.format.avro;
 import org.apache.avro.Conversions;
 import org.apache.avro.LogicalTypes;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.util.Utf8;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.core.row.value.ValueMetaBase;
@@ -65,6 +66,9 @@ public class AvroToPdiConverter {
         break;
       case BYTES:
         avroDataType = AvroSpec.DataType.BYTES;
+        break;
+      case FIXED:
+        avroDataType = AvroSpec.DataType.FIXED;
         break;
       case FLOAT:
         avroDataType = AvroSpec.DataType.FLOAT;
@@ -111,10 +115,17 @@ public class AvroToPdiConverter {
           pentahoData = convertToPentahoType( pentahoType, (Integer) avroData );
           break;
         case STRING:
-          pentahoData = convertToPentahoType( pentahoType, (String) avroData, avroInputField );
+          if ( avroData instanceof GenericData.EnumSymbol ) {
+            pentahoData = ( (GenericData.EnumSymbol) avroData ).toString();
+          } else {
+            pentahoData = convertToPentahoType( pentahoType, (String) avroData, avroInputField );
+          }
           break;
         case BYTES:
           pentahoData = convertToPentahoType( pentahoType, (ByteBuffer) avroData, avroField );
+          break;
+        case FIXED:
+          pentahoData = convertToPentahoType( pentahoType, ( (GenericData.Fixed) avroData ).bytes(), avroField );
           break;
         case TIMESTAMP_MILLIS:
           pentahoData = convertToPentahoType( pentahoType, (Long) avroData );
@@ -193,7 +204,6 @@ public class AvroToPdiConverter {
     }
     return pentahoData;
   }
-
 
   private Object convertToPentahoType( int pentahoType, Long avroData ) {
     Object pentahoData = null;
@@ -360,6 +370,22 @@ public class AvroToPdiConverter {
           case ValueMetaInterface.TYPE_BOOLEAN:
             pentahoData = Boolean.valueOf( "Y".equalsIgnoreCase( avroData ) || "TRUE".equalsIgnoreCase( avroData )
               || "YES".equalsIgnoreCase( avroData ) || "1".equals( avroData ) );
+            break;
+        }
+      } catch ( Exception e ) {
+        // If unable to do the type conversion just ignore. null will be returned.
+      }
+    }
+    return pentahoData;
+  }
+
+  private Object convertToPentahoType( int pentahoType, byte[] avroData, Schema field ) {
+    Object pentahoData = null;
+    if ( avroData != null ) {
+      try {
+        switch ( pentahoType ) {
+          case ValueMetaInterface.TYPE_BINARY:
+            pentahoData = avroData;
             break;
         }
       } catch ( Exception e ) {
