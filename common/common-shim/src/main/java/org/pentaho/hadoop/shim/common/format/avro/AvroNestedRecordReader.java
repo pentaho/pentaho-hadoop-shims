@@ -52,7 +52,7 @@ public class AvroNestedRecordReader implements IPentahoAvroInputFormat.IPentahoR
   private RowMetaInterface incomingRowMeta;
   private RowMetaInterface outputRowMeta;
   private boolean isDatum;
-  private boolean readDatumLine = true;
+  private int nextCallCounter = 0;
 
   public AvroNestedRecordReader( DataFileStream<Object> nativeAvroRecordReader,
                                  Schema avroSchema, List<? extends IAvroInputField> fields, VariableSpace avroInputStep,
@@ -167,8 +167,7 @@ public class AvroNestedRecordReader implements IPentahoAvroInputFormat.IPentahoR
         if ( incomingFields != null ) {
           return true;
         }
-        if ( isDatum && readDatumLine ) {
-          readDatumLine = false;
+        if ( isDatum && nextCallCounter == 0 ) {
           return true;
         }
         return false;
@@ -176,6 +175,7 @@ public class AvroNestedRecordReader implements IPentahoAvroInputFormat.IPentahoR
 
       @Override
       public RowMetaAndData next() {
+        nextCallCounter++;
         return getNextRowMetaAndData();
       }
     };
