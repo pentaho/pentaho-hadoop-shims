@@ -695,19 +695,8 @@ public class AvroNestedReader {
           fieldSchema = mapSchema;
           fieldT = Schema.Type.MAP;
         } else {
-          if ( avroInputField.getTempValueMeta().getType() != ValueMetaInterface.TYPE_STRING ) {
-            // we have a two element union, where one element is the type
-            // "null". So in this case we actually have just one type and can
-            // output specific values of it (instead of using String as a
-            // catch all for varying primitive types in the union)
-            fieldSchema = checkUnion( fieldSchema );
-            fieldT = fieldSchema.getType();
-          } else {
-
-            // use the string representation of the value
-            fieldSchema = Schema.create( Schema.Type.STRING );
-            fieldT = fieldSchema.getType();
-          }
+          fieldSchema = checkUnion( fieldSchema );
+          fieldT = fieldSchema.getType();
         }
       }
     }
