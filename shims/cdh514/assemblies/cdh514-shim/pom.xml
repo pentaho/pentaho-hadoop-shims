@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-cdh514-assemblies-reactor</artifactId>
-    <version>8.2.0.0-SNAPSHOT</version>
+    <version>8.2.2018.11.00-342</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-cdh514-package</artifactId>
   <packaging>pom</packaging>
