@@ -3,13 +3,9 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>pentaho-hadoop-shims-list</artifactId>
-<<<<<<< HEAD
-    <version>9.0.0.0-SNAPSHOT</version>
-=======
     <groupId>org.pentaho</groupId>
+    <artifactId>pentaho-hadoop-shims-list</artifactId>
     <version>9.0.0.0-SNAPSHOT</version>
->>>>>>> [BACKLOG-23100] - Enable multiple shim support.
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
