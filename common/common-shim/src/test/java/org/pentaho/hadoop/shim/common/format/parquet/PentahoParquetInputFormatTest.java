@@ -34,10 +34,10 @@ import java.util.TimeZone;
 import java.util.TreeSet;
 
 import org.apache.hadoop.fs.Path;
-//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_name=="mapr60"
+//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_name=="mapr60" || shim_name=="cdh601"
 import org.apache.parquet.hadoop.ParquetInputSplit;
 //#endif
-//#if shim_type=="CDH" || shim_type=="MAPR" && shim_name!="mapr60"
+//#if shim_type=="CDH" && shim_name!="cdh601" || shim_type=="MAPR" && shim_name!="mapr60"
 //$import parquet.hadoop.ParquetInputSplit;
 //#endif
 import org.junit.Test;
@@ -77,12 +77,12 @@ public class PentahoParquetInputFormatTest {
 
     PentahoInputSplitImpl pentahoInputSplit = new PentahoInputSplitImpl( parquetInputSplit );
 
-    IPentahoInputFormat.IPentahoRecordReader recordReader =
+    IPentahoRecordReader recordReader =
         pentahoParquetInputFormat.createRecordReader( pentahoInputSplit );
 
     Assert.assertNotNull( "recordReader should NOT be null!", recordReader );
     Assert.assertTrue( "recordReader should be instance of IPentahoInputFormat.IPentahoRecordReader",
-      recordReader instanceof IPentahoInputFormat.IPentahoRecordReader );
+      recordReader instanceof IPentahoRecordReader );
   }
 
   @Test
