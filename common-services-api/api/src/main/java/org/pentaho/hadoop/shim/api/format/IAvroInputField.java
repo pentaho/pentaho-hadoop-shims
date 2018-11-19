@@ -22,6 +22,8 @@
 
 package org.pentaho.hadoop.shim.api.format;
 
+import java.util.List;
+
 public interface IAvroInputField extends IFormatInputField {
   static final String FILENAME_DELIMITER = "_delimiter_";
 
@@ -37,4 +39,11 @@ public interface IAvroInputField extends IFormatInputField {
 
   String getDisplayableAvroFieldName();
 
+  void setIndexedVals( List<String> mindexedVals );
+
+  List<String> getIndexedVals();
+
+  void setIndexedValues( String indexedValues );
+
+  String getIndexedValues();
 }

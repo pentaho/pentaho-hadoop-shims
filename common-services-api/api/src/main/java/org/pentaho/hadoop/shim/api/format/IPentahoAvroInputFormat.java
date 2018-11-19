@@ -21,6 +21,8 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.api.format;
 
+import org.pentaho.di.core.row.RowMetaInterface;
+import org.pentaho.di.core.variables.VariableSpace;
 
 import java.io.InputStream;
 import java.util.List;
@@ -30,12 +32,17 @@ public interface IPentahoAvroInputFormat extends IPentahoInputFormat {
   /**
    * Set schema for file reading.
    */
-  List<? extends IAvroInputField> getFields(  ) throws Exception;
+  List<? extends IAvroInputField> getFields() throws Exception;
+
+  List<? extends IAvroLookupField> getLookupFields();
 
   /**
-     * Set schema for file reading.
-     */
+   * Set schema for file reading.
+   */
   void setInputFields( List<? extends IAvroInputField> fields ) throws Exception;
+
+  void setLookupFields( List<? extends IAvroLookupField> fields );
+
 
   /**
    * Set input file.
@@ -59,4 +66,24 @@ public interface IPentahoAvroInputFormat extends IPentahoInputFormat {
   boolean isUseFieldAsInputStream();
 
   void setInputStream( InputStream inputStream );
+
+  void setVariableSpace( VariableSpace variableSpace );
+
+  void setIncomingFields( Object[] incomingFields );
+
+  void setIncomingRowMeta( RowMetaInterface incomingRowMeta );
+
+  void setOutputRowMeta( RowMetaInterface outputRowMeta );
+
+  List<? extends IAvroInputField> getLeafFields() throws Exception;
+
+  void setIsDataBinaryEncoded( boolean isBinary );
+
+  void setDatum( boolean isDatum );
+
+  void setUseFieldAsSchema( boolean useFieldFromSchema );
+
+  void setSchemaFieldName( String schemaFieldName );
+
+  void setUseFieldAsInputStream( boolean useFieldAsInputStream );
 }

@@ -26,8 +26,18 @@ import org.junit.Test;
 import org.pentaho.big.data.api.cluster.NamedCluster;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.plugins.PluginRegistry;
+import org.pentaho.di.core.row.RowMeta;
 import org.pentaho.di.core.row.ValueMetaInterface;
+import org.pentaho.di.core.row.value.ValueMetaBigNumber;
+import org.pentaho.di.core.row.value.ValueMetaBinary;
+import org.pentaho.di.core.row.value.ValueMetaBoolean;
+import org.pentaho.di.core.row.value.ValueMetaDate;
+import org.pentaho.di.core.row.value.ValueMetaInteger;
+import org.pentaho.di.core.row.value.ValueMetaInternetAddress;
+import org.pentaho.di.core.row.value.ValueMetaNumber;
 import org.pentaho.di.core.row.value.ValueMetaPluginType;
+import org.pentaho.di.core.row.value.ValueMetaString;
+import org.pentaho.di.core.row.value.ValueMetaTimestamp;
 import org.pentaho.hadoop.shim.api.format.AvroSpec;
 import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat;
 
@@ -78,10 +88,11 @@ public class StreamingInputTest {
   }
 
   private AvroInputField buildAvroInputField( String name, AvroSpec.DataType avroType, int pentahoType ) {
-    return buildAvroInputField( name,  avroType, pentahoType, 0, 0 );
+    return buildAvroInputField( name, avroType, pentahoType, 0, 0 );
   }
 
-  private AvroInputField buildAvroInputField( String name, AvroSpec.DataType avroType, int pentahoType, int precision, int scale ) {
+  private AvroInputField buildAvroInputField( String name, AvroSpec.DataType avroType, int pentahoType, int precision,
+                                              int scale ) {
     AvroInputField avroInputField = new AvroInputField();
     avroInputField.setAvroFieldName( name );
     avroInputField.setPentahoFieldName( name );
@@ -93,7 +104,8 @@ public class StreamingInputTest {
   }
 
   private void testStreamingRecordReader( List<AvroInputField> avroInputFields,
-                                 Object[] origValues, String filePath, Object[] expectedResults ) throws Exception {
+                                          Object[] origValues, String filePath, Object[] expectedResults )
+    throws Exception {
 
     PluginRegistry.addPluginType( ValueMetaPluginType.getInstance() );
     PluginRegistry.init( true );
@@ -104,8 +116,22 @@ public class StreamingInputTest {
 
     pentahoAvroInputFormat.setInputFields( avroInputFields );
     pentahoAvroInputFormat.setInputStreamFieldName( "stream" );
+    pentahoAvroInputFormat.setIsDataBinaryEncoded( true );
+    pentahoAvroInputFormat.setUseFieldAsInputStream( true );
+    RowMeta inRowMeta = new RowMeta();
+    inRowMeta.addValueMeta( new ValueMetaString( "stream" ) );
+    pentahoAvroInputFormat.setIncomingRowMeta( inRowMeta );
 
+    RowMeta outRowMeta = new RowMeta();
+    for ( AvroInputField avroInputField : avroInputFields ) {
+      outRowMeta.addValueMeta(
+        getValueMetaInterface( avroInputField.getPentahoFieldName(), avroInputField.getPentahoType() )
+      );
+    }
+
+    pentahoAvroInputFormat.setOutputRowMeta( outRowMeta );
     pentahoAvroInputFormat.setInputStream( inputStream );
+
     IPentahoInputFormat.IPentahoRecordReader pentahoRecordReader = pentahoAvroInputFormat.createRecordReader( null );
     for ( RowMetaAndData row : pentahoRecordReader ) {
       for ( int colNum = 0; colNum < avroInputFields.size(); colNum++ ) {
@@ -139,5 +165,33 @@ public class StreamingInputTest {
   private ByteArrayInputStream fileToByteArrayInputStream( String filePath ) throws Exception {
     File file = new File( getClass().getResource( filePath ).getFile() );
     return new ByteArrayInputStream( FileUtils.readFileToByteArray( file ) );
+  }
+
+  private ValueMetaInterface getValueMetaInterface( String fieldName, int fieldType ) {
+    switch ( fieldType ) {
+      case ValueMetaInterface.TYPE_INET:
+        return new ValueMetaInternetAddress( fieldName );
+      case ValueMetaInterface.TYPE_STRING:
+        return new ValueMetaString( fieldName );
+      case ValueMetaInterface.TYPE_INTEGER:
+        return new ValueMetaInteger( fieldName );
+      case ValueMetaInterface.TYPE_NUMBER:
+        return new ValueMetaNumber( fieldName );
+      case ValueMetaInterface.TYPE_BIGNUMBER:
+        return new ValueMetaBigNumber( fieldName );
+      case ValueMetaInterface.TYPE_TIMESTAMP:
+        ValueMetaTimestamp valueMetaTimestamp = new ValueMetaTimestamp( fieldName );
+        valueMetaTimestamp.setConversionMask( "yyyy/MM/dd HH:mm:ss.SSS" );
+        return valueMetaTimestamp;
+      case ValueMetaInterface.TYPE_DATE:
+        ValueMetaDate valueMetaDate = new ValueMetaDate( fieldName );
+        valueMetaDate.setConversionMask( "yyyy/MM/dd HH:mm:ss.SSS" );
+        return valueMetaDate;
+      case ValueMetaInterface.TYPE_BOOLEAN:
+        return new ValueMetaBoolean( fieldName );
+      case ValueMetaInterface.TYPE_BINARY:
+        return new ValueMetaBinary( fieldName );
+    }
+    return null;
   }
 }

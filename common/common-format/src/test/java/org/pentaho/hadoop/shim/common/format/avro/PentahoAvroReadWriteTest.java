@@ -145,7 +145,7 @@ public class PentahoAvroReadWriteTest {
       avroInputField.setPentahoFieldName( schemaField[ PENTAHO_NAME_INDEX ] );
       avroInputField.setAvroType( AvroSpec.DataType.values()[ Integer.parseInt( schemaField[ AVRO_TYPE_INDEX ] ) ] );
       avroInputField.setPentahoType( Integer.valueOf( schemaField[ PDI_TYPE_INDEX ] ) );
-      if (( schemaField.length > DATE_FORMAT_INDEX ) && ( schemaField[ DATE_FORMAT_INDEX ] != null ) ) {
+      if ( ( schemaField.length > DATE_FORMAT_INDEX ) && ( schemaField[ DATE_FORMAT_INDEX ] != null ) ) {
         avroInputField.setStringFormat( schemaField[ DATE_FORMAT_INDEX ] );
       }
       avroInputFields.add( avroInputField );
@@ -179,7 +179,7 @@ public class PentahoAvroReadWriteTest {
     doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED,
       "avroOutputNone.avro", false );
     doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED,
-        "avroOutputNone.avro", true );
+      "avroOutputNone.avro", true );
     doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.SNAPPY,
       "avroOutputSnappy.avro", false );
     doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.DEFLATE,
@@ -242,10 +242,10 @@ public class PentahoAvroReadWriteTest {
       DEFAULT_INET_ADDR, Boolean.TRUE, new Long( 1 ), date1, timeStamp1, "foobar".getBytes() };
 
     doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED,
-        "avroOutputNone.avro", false );
+      "avroOutputNone.avro", false );
     try {
       doReadWrite( DEFAULT_SCHEME_DESCRIPTION, rowData, IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED,
-          "avroOutputNone.avro", false );
+        "avroOutputNone.avro", false );
       fail();
     } catch ( FileAlreadyExistsException ex ) {
       assertTrue( ex != null );
@@ -255,21 +255,21 @@ public class PentahoAvroReadWriteTest {
   @Test
   public void testParseDateOnInput() throws Exception {
     Object[] rowData =
-      new Object[]{"2000-01-02"};
-    String[][] outputSchemaDescription = new String[][]{
-      {"avroDate8", "pentahoDate8", String.valueOf( AvroSpec.DataType.STRING.ordinal() ),
-        String.valueOf( ValueMetaInterface.TYPE_STRING ), "0", "0"}
+      new Object[] { "2000-01-02" };
+    String[][] outputSchemaDescription = new String[][] {
+      { "avroDate8", "pentahoDate8", String.valueOf( AvroSpec.DataType.STRING.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_STRING ), "0", "0" }
     };
-    String[][] inputSchemaDescription = new String[][]{
-      {"avroDate8", "pentahoDate8", String.valueOf( AvroSpec.DataType.STRING.ordinal() ),
-        String.valueOf( ValueMetaInterface.TYPE_DATE ), "0", "0", "yyyy-MM-dd"}
+    String[][] inputSchemaDescription = new String[][] {
+      { "avroDate8", "pentahoDate8", String.valueOf( AvroSpec.DataType.STRING.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_DATE ), "0", "0", "yyyy-MM-dd" }
     };
 
     RowMeta rowMeta = buildRowMeta( outputSchemaDescription );
     RowMetaAndData rowMetaAndData = new RowMetaAndData( rowMeta, rowData );
 
     SimpleDateFormat format = new SimpleDateFormat( "yyyy-MM-dd" );
-    Date[] expectedResults = new Date[] {format.parse( "2000-01-02" )};
+    Date[] expectedResults = new Date[] { format.parse( "2000-01-02" ) };
 
     doReadWrite( inputSchemaDescription, outputSchemaDescription, rowData,
       IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.avro", null, expectedResults, true );
@@ -277,20 +277,20 @@ public class PentahoAvroReadWriteTest {
 
   @Test
   public void testScaleOnOutput() throws Exception {
-    Object[] rowData = new Object[]{ new Double(1.987 )};
-    String[][] outputSchemaDescription = new String[][]{
-      {"avroDate8", "pentahoDate8", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ),
-        String.valueOf( ValueMetaInterface.TYPE_NUMBER ), "0", "2"}
+    Object[] rowData = new Object[] { new Double( 1.987 ) };
+    String[][] outputSchemaDescription = new String[][] {
+      { "avroDate8", "pentahoDate8", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_NUMBER ), "0", "2" }
     };
-    String[][] inputSchemaDescription = new String[][]{
-      {"avroDate8", "pentahoDate8", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ),
-        String.valueOf( ValueMetaInterface.TYPE_NUMBER )}
+    String[][] inputSchemaDescription = new String[][] {
+      { "avroDate8", "pentahoDate8", String.valueOf( AvroSpec.DataType.DOUBLE.ordinal() ),
+        String.valueOf( ValueMetaInterface.TYPE_NUMBER ) }
     };
 
     RowMeta rowMeta = buildRowMeta( outputSchemaDescription );
     RowMetaAndData rowMetaAndData = new RowMetaAndData( rowMeta, rowData );
 
-    Object[] expectedResults = new Object[]{ new Double(1.99 )};
+    Object[] expectedResults = new Object[] { new Double( 1.99 ) };
 
     doReadWrite( inputSchemaDescription, outputSchemaDescription, rowData,
       IPentahoAvroOutputFormat.COMPRESSION.UNCOMPRESSED, "avroOutputNone.avro", null, expectedResults, true );
@@ -670,8 +670,9 @@ public class PentahoAvroReadWriteTest {
     String filePath = getFilePath( outputFileName );
 
     testRecordWriter( avroOutputFields, rowMeta, rowData, compressionType, filePath, overwrite );
-    testRecordReader( avroInputFields, avroOutputFields, rowData, filePath, expectedResults );
 
+    RowMeta outputRowMeta = buildRowMeta( inputSchemaDescription );
+    testRecordReader( avroInputFields, rowMeta, avroOutputFields, rowData, filePath, expectedResults );
   }
 
   private void doReadWrite( String[][] schemaDescription, Object[] rowData,
@@ -682,13 +683,16 @@ public class PentahoAvroReadWriteTest {
   }
 
   private void doReadWrite( String[][] schemaDescription, Object[] rowData,
-                            IPentahoAvroOutputFormat.COMPRESSION compressionType, String outputFileName, boolean overwrite )
+                            IPentahoAvroOutputFormat.COMPRESSION compressionType, String outputFileName,
+                            boolean overwrite )
     throws Exception {
-    doReadWrite( schemaDescription, schemaDescription, rowData, compressionType, outputFileName, null, null, overwrite );
+    doReadWrite( schemaDescription, schemaDescription, rowData, compressionType, outputFileName, null, null,
+      overwrite );
   }
 
   private void testRecordWriter( List<AvroOutputField> avroOutputFields, RowMeta rowMeta, Object[] rowData,
-                                 IPentahoAvroOutputFormat.COMPRESSION compressionType, String filePath, boolean overwrite )
+                                 IPentahoAvroOutputFormat.COMPRESSION compressionType, String filePath,
+                                 boolean overwrite )
     throws Exception {
 
     PentahoAvroOutputFormat avroOutputFormat = new PentahoAvroOutputFormat();
@@ -712,7 +716,8 @@ public class PentahoAvroReadWriteTest {
     }
   }
 
-  private void testRecordReader( List<AvroInputField> avroInputFields, List<AvroOutputField> avroOutputFields,
+  private void testRecordReader( List<AvroInputField> avroInputFields, RowMeta rowMeta,
+                                 List<AvroOutputField> avroOutputFields,
                                  Object[] origValues, String filePath, Object[] expectedResults ) throws Exception {
 
     PluginRegistry.addPluginType( ValueMetaPluginType.getInstance() );
@@ -721,6 +726,7 @@ public class PentahoAvroReadWriteTest {
     PentahoAvroInputFormat pentahoAvroInputFormat = new PentahoAvroInputFormat( mock( NamedCluster.class ) );
     pentahoAvroInputFormat.setInputFields( avroInputFields );
     pentahoAvroInputFormat.setInputFile( filePath );
+    pentahoAvroInputFormat.setOutputRowMeta( rowMeta );
     IPentahoInputFormat.IPentahoRecordReader pentahoRecordReader = pentahoAvroInputFormat.createRecordReader( null );
     for ( RowMetaAndData row : pentahoRecordReader ) {
       for ( int colNum = 0; colNum < avroInputFields.size(); colNum++ ) {
