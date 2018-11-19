@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -26,7 +26,12 @@ import org.pentaho.hadoop.shim.ShimVersion;
 import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.spi.SqoopShim;
 
-import com.cloudera.sqoop.Sqoop;
+//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_name=="mapr60" || shim_name=="cdh601"
+import org.apache.sqoop.Sqoop;
+//#endif
+//#if shim_type=="CDH" && shim_name!="cdh601" || shim_type=="MAPR" && shim_name!="mapr60"
+//$import com.cloudera.sqoop.Sqoop;
+//#endif
 
 @SuppressWarnings( "deprecation" )
 public class CommonSqoopShim implements SqoopShim {
