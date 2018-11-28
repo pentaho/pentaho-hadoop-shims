@@ -22,6 +22,7 @@
 
 package org.pentaho.big.data.api.cluster;
 
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.metastore.api.IMetaStore;
 import org.pentaho.metastore.api.exceptions.MetaStoreException;
 

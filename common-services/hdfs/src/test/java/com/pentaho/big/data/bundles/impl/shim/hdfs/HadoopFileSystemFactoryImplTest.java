@@ -25,10 +25,9 @@ package com.pentaho.big.data.bundles.impl.shim.hdfs;
 import org.apache.hadoop.fs.LocalFileSystem;
 import org.junit.Before;
 import org.junit.Test;
-import org.pentaho.big.data.api.cluster.NamedCluster;
-import org.pentaho.bigdata.api.hdfs.HadoopFileSystem;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.api.Configuration;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.fs.FileSystem;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 

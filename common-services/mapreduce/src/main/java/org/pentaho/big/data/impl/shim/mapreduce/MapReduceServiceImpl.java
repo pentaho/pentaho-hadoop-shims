@@ -23,7 +23,6 @@
 package org.pentaho.big.data.impl.shim.mapreduce;
 
 import com.google.common.annotations.VisibleForTesting;
-import org.pentaho.big.data.api.cluster.NamedCluster;
 import org.pentaho.bigdata.api.mapreduce.MapReduceExecutionException;
 import org.pentaho.bigdata.api.mapreduce.MapReduceJarInfo;
 import org.pentaho.bigdata.api.mapreduce.MapReduceJobBuilder;
@@ -43,6 +42,7 @@ import org.pentaho.di.job.entries.hadoopjobexecutor.JarUtility;
 import org.pentaho.hadoop.PluginPropertiesUtil;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.api.HasConfiguration;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 
 import java.io.IOException;

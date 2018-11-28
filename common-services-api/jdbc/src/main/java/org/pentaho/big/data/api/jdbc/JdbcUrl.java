@@ -22,7 +22,7 @@
 
 package org.pentaho.big.data.api.jdbc;
 
-import org.pentaho.big.data.api.cluster.NamedCluster;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.metastore.api.exceptions.MetaStoreException;
 
 /**

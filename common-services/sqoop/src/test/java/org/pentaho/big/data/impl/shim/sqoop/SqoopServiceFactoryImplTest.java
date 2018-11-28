@@ -24,10 +24,10 @@ package org.pentaho.big.data.impl.shim.sqoop;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.pentaho.big.data.api.cluster.NamedCluster;
-import org.pentaho.bigdata.api.sqoop.SqoopService;
 import org.pentaho.hadoop.shim.ConfigurationException;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
+import org.pentaho.hadoop.shim.api.sqoop.SqoopService;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;

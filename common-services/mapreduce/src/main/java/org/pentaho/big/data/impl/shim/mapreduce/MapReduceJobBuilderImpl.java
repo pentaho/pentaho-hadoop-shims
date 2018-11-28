@@ -22,7 +22,7 @@
 
 package org.pentaho.big.data.impl.shim.mapreduce;
 
-import org.pentaho.big.data.api.cluster.NamedCluster;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.bigdata.api.mapreduce.MapReduceJobAdvanced;
 import org.pentaho.bigdata.api.mapreduce.MapReduceJobBuilder;
 import org.pentaho.di.core.logging.LogChannelInterface;

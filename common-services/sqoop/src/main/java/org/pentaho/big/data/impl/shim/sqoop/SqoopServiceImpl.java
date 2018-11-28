@@ -24,9 +24,9 @@ package org.pentaho.big.data.impl.shim.sqoop;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.pentaho.big.data.api.cluster.NamedCluster;
-import org.pentaho.bigdata.api.sqoop.SqoopService;
 import org.pentaho.hadoop.shim.api.Configuration;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
+import org.pentaho.hadoop.shim.api.sqoop.SqoopService;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 import org.pentaho.hadoop.shim.spi.SqoopShim;
 import org.slf4j.LoggerFactory;

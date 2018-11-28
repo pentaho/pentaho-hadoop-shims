@@ -20,7 +20,7 @@
   <dependencies>
     <dependency>
       <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-big-data-api-sqoop</artifactId>
+      <artifactId>shim-api</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

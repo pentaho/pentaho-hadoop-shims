@@ -22,11 +22,10 @@
 
 package org.pentaho.big.data.impl.shim.oozie;
 
-import org.pentaho.big.data.api.cluster.INamedClusterSpecific;
-import org.pentaho.big.data.api.cluster.NamedCluster;
-import org.pentaho.bigdata.api.oozie.OozieServiceException;
-import org.pentaho.bigdata.api.oozie.OozieJobInfo;
-import org.pentaho.bigdata.api.oozie.OozieService;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
+import org.pentaho.hadoop.shim.api.oozie.OozieJobInfo;
+import org.pentaho.hadoop.shim.api.oozie.OozieService;
+import org.pentaho.hadoop.shim.api.oozie.OozieServiceException;
 import org.pentaho.oozie.shim.api.OozieClient;
 import org.pentaho.oozie.shim.api.OozieClientException;
 import org.pentaho.oozie.shim.api.OozieJob;
@@ -37,7 +36,7 @@ import static org.apache.oozie.client.OozieClient.BUNDLE_APP_PATH;
 
 import java.util.Properties;
 
-public class OozieServiceImpl implements OozieService, INamedClusterSpecific {
+public class OozieServiceImpl implements OozieService {
   private NamedCluster namedCluster;
   private final OozieClient delegate;
 
@@ -90,11 +89,11 @@ public class OozieServiceImpl implements OozieService, INamedClusterSpecific {
     }
   }
 
-  @Override public NamedCluster getNamedCluster() {
+  public NamedCluster getNamedCluster() {
     return namedCluster;
   }
 
-  @Override public void setNamedCluster( NamedCluster namedCluster ) {
+  public void setNamedCluster( NamedCluster namedCluster ) {
     this.namedCluster = namedCluster;
   }
 }

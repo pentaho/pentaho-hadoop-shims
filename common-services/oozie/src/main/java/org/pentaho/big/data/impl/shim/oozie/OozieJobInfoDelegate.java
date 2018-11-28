@@ -22,8 +22,9 @@
 
 package org.pentaho.big.data.impl.shim.oozie;
 
-import org.pentaho.bigdata.api.oozie.OozieJobInfo;
-import org.pentaho.bigdata.api.oozie.OozieServiceException;
+
+import org.pentaho.hadoop.shim.api.oozie.OozieJobInfo;
+import org.pentaho.hadoop.shim.api.oozie.OozieServiceException;
 import org.pentaho.oozie.shim.api.OozieClientException;
 import org.pentaho.oozie.shim.api.OozieJob;
 

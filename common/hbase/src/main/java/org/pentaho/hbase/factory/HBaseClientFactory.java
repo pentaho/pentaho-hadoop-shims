@@ -23,13 +23,12 @@ package org.pentaho.hbase.factory;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HTableDescriptor;
-import org.apache.hadoop.hbase.client.Connection;
-import org.pentaho.big.data.api.cluster.INamedClusterSpecific;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hbase.mapred.PentahoTableInputFormat;
 
 import java.io.IOException;
 
-public interface HBaseClientFactory extends INamedClusterSpecific {
+public interface HBaseClientFactory {
   HBaseTable getHBaseTable( String tableName );
   HBaseAdmin getHBaseAdmin();
   HTableDescriptor getHBaseTableDescriptor( String tableName );
@@ -38,5 +37,7 @@ public interface HBaseClientFactory extends INamedClusterSpecific {
       PentahoTableInputFormat pentahoTableInputFormatBase,
       Configuration conf );
   HBasePut getHBasePut( byte[] key );
+  NamedCluster getNamedCluster();
+  void setNamedCluster( NamedCluster namedCluster );
   void close();
 }

@@ -28,7 +28,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.pentaho.bigdata.api.oozie.OozieServiceException;
+import org.pentaho.hadoop.shim.api.oozie.OozieServiceException;
 import org.pentaho.oozie.shim.api.OozieJob;
 
 import static org.hamcrest.CoreMatchers.instanceOf;

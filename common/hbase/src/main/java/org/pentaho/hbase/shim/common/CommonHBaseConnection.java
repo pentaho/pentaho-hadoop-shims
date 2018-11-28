@@ -40,7 +40,6 @@ import org.apache.hadoop.hbase.filter.SubstringComparator;
 import org.apache.hadoop.hbase.filter.TimestampsFilter;
 import org.apache.hadoop.hbase.filter.ValueFilter;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
-import org.pentaho.big.data.api.cluster.INamedClusterSpecific;
 import org.pentaho.di.core.logging.KettleLogStore;
 import org.pentaho.di.core.logging.LogChannelInterface;
 import org.pentaho.di.core.variables.VariableSpace;
@@ -182,18 +181,13 @@ public class CommonHBaseConnection implements HBaseConnection, IHBaseClientFacto
       }
 
       m_factory = getHBaseClientFactory( m_config );
-      setFakeNamedCluster( m_factory, connProps.getProperty( "named.cluster" ) );
+      m_factory.setNamedCluster( new FakeNamedCluster( connProps.getProperty( "named.cluster" ) ) );
 
       m_admin = m_factory.getHBaseAdmin();
     } finally {
       Thread.currentThread().setContextClassLoader( cl );
     }
   }
-
-  private void setFakeNamedCluster( INamedClusterSpecific iNamedClusterSpecific, String name ) {
-    iNamedClusterSpecific.setNamedCluster( new FakeNamedCluster( name ) );
-  }
-
 
   private void verifyHBaseMapR60SpecificConfiguration( String shimConfigurationId ) {
     if ( isMapR60OrAboveShim( shimConfigurationId ) && !isMapr60HBaseSpecificPropertySet() ) {

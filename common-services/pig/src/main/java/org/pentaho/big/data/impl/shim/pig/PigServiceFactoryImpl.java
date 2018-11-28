@@ -17,7 +17,7 @@
 
 package org.pentaho.big.data.impl.shim.pig;
 
-import org.pentaho.big.data.api.cluster.NamedCluster;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory;
 import org.pentaho.bigdata.api.pig.PigService;
 import org.pentaho.hadoop.shim.spi.HadoopShim;

@@ -22,9 +22,9 @@
 
 package org.pentaho.big.data.impl.shim.sqoop;
 
-import org.pentaho.big.data.api.cluster.NamedCluster;
-import org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory;
-import org.pentaho.bigdata.api.sqoop.SqoopService;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
+import org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory;
+import org.pentaho.hadoop.shim.api.sqoop.SqoopService;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 import org.pentaho.hadoop.shim.spi.SqoopShim;
 import org.slf4j.Logger;

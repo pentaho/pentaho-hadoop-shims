@@ -22,7 +22,7 @@
 
 package org.pentaho.hadoop.shim.api;
 
-import org.pentaho.hadoop.shim.spi.ShimIdentifierInterface;
+import org.pentaho.hadoop.shim.api.ShimIdentifierInterface;
 
 public class ShimIdentifier implements ShimIdentifierInterface {
   private String id;

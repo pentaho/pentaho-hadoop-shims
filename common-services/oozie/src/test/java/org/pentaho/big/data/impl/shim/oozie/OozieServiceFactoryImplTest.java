@@ -22,10 +22,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.pentaho.big.data.api.cluster.NamedCluster;
-import org.pentaho.bigdata.api.oozie.OozieService;
 import org.pentaho.hadoop.shim.ConfigurationException;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
+import org.pentaho.hadoop.shim.api.oozie.OozieService;
 import org.pentaho.oozie.shim.api.OozieClient;
 import org.pentaho.oozie.shim.api.OozieClientFactory;
 
@@ -38,7 +38,8 @@ import static org.mockito.Mockito.*;
 public class OozieServiceFactoryImplTest {
 
   @Mock HadoopConfiguration configuration;
-  @Mock NamedCluster cluster;
+  @Mock
+  NamedCluster cluster;
   @Mock OozieClientFactory clientFactory;
   @Mock OozieClient oozieClient;
   OozieServiceFactoryImpl serviceFactory;

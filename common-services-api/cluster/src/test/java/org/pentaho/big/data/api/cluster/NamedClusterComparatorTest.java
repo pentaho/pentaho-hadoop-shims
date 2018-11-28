@@ -24,6 +24,7 @@ package org.pentaho.big.data.api.cluster;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

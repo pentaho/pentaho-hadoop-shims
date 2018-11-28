@@ -23,6 +23,7 @@
 package org.pentaho.hadoop.shim.common.delegating;
 
 import org.pentaho.hadoop.shim.ShimVersion;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat;
 import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat;
 import org.pentaho.hadoop.shim.api.process.Processable;
@@ -30,7 +31,6 @@ import org.pentaho.hadoop.shim.common.CommonFormatShim;
 import org.pentaho.hadoop.shim.common.authorization.HadoopAuthorizationService;
 import org.pentaho.hadoop.shim.common.authorization.HasHadoopAuthorizationService;
 import org.pentaho.hadoop.shim.spi.FormatShim;
-import org.pentaho.big.data.api.cluster.NamedCluster;
 
 public class DelegatingFormatShim extends CommonFormatShim implements HasHadoopAuthorizationService, FormatShim,
     Processable {

@@ -22,9 +22,9 @@
 
 package org.pentaho.big.data.impl.shim.oozie;
 
-import org.pentaho.big.data.api.cluster.NamedCluster;
-import org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory;
-import org.pentaho.bigdata.api.oozie.OozieService;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
+import org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory;
+import org.pentaho.hadoop.shim.api.oozie.OozieService;
 import org.pentaho.oozie.shim.api.OozieClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

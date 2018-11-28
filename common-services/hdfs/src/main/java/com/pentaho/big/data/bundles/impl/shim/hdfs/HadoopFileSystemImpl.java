@@ -28,11 +28,10 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.permission.FsAction;
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.security.AccessControlException;
-import org.pentaho.big.data.api.cluster.INamedClusterSpecific;
-import org.pentaho.big.data.api.cluster.NamedCluster;
 import org.pentaho.bigdata.api.hdfs.HadoopFileStatus;
 import org.pentaho.bigdata.api.hdfs.HadoopFileSystem;
 import org.pentaho.bigdata.api.hdfs.HadoopFileSystemPath;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,7 +40,7 @@ import java.io.OutputStream;
 /**
  * Created by bryan on 5/28/15.
  */
-public class HadoopFileSystemImpl implements HadoopFileSystem, INamedClusterSpecific {
+public class HadoopFileSystemImpl implements HadoopFileSystem {
   protected HadoopFileSystemCallable hadoopFileSystemCallable;
   private NamedCluster namedCluster;
 
@@ -214,11 +213,11 @@ public class HadoopFileSystemImpl implements HadoopFileSystem, INamedClusterSpec
     }
   }
 
-  @Override public NamedCluster getNamedCluster() {
+  public NamedCluster getNamedCluster() {
     return namedCluster;
   }
 
-  @Override public void setNamedCluster( NamedCluster namedCluster ) {
+  public void setNamedCluster( NamedCluster namedCluster ) {
     this.namedCluster = namedCluster;
   }
 

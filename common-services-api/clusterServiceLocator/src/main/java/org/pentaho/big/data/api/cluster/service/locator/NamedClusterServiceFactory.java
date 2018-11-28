@@ -22,7 +22,8 @@
 
 package org.pentaho.big.data.api.cluster.service.locator;
 
-import org.pentaho.big.data.api.cluster.NamedCluster;
+
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 
 /**
  * Created by bryan on 11/5/15.
