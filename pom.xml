@@ -266,13 +266,16 @@
   <profiles>
 
     <profile>
-      <id>api</id>
+      <id>common</id>
       <activation>
         <property>
           <name>!skipDefault</name>
         </property>
       </activation>
       <modules>
+        <module>common-services-api</module>
+        <module>common</module>
+        <module>common-services</module>
       </modules>
     </profile>
 
@@ -284,9 +287,6 @@
         </property>
       </activation>
       <modules>
-        <module>common-services-api</module>
-        <module>common</module>
-        <module>common-services</module>
         <module>shims</module>
       </modules>
     </profile>
