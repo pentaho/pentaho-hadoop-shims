@@ -20,13 +20,26 @@
  *
  ******************************************************************************/
 
-package org.pentaho.bigdata.api.hbase;
+package org.pentaho.hadoop.shim.api.hbase.mapping;
+
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
- * Created by bryan on 1/29/16.
+ * Created by bryan on 2/2/16.
  */
-public class ResultFactoryException extends Exception {
-  public ResultFactoryException( Throwable cause ) {
-    super( cause );
+public class KeyTypeTest {
+  @Test
+  public void testKeyType() {
+    for ( Mapping.KeyType keyType : Mapping.KeyType.values() ) {
+      assertEquals( keyType, Mapping.KeyType.valueOf( keyType.name() ) );
+      StringBuilder valbuilder = new StringBuilder();
+      for ( String s : keyType.name().split( "_" ) ) {
+        valbuilder.append( s.substring( 0, 1 ) );
+        valbuilder.append( s.substring( 1 ).toLowerCase() );
+      }
+      assertEquals( valbuilder.toString(), keyType.toString() );
+    }
   }
 }

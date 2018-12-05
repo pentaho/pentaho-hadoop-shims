@@ -20,10 +20,9 @@
  *
  ******************************************************************************/
 
-package org.pentaho.bigdata.api.hbase.mapping;
+package org.pentaho.hadoop.shim.api.hbase.mapping;
 
 import org.junit.Test;
-import org.pentaho.bigdata.api.hbase.mapping.Mapping;
 
 import static org.junit.Assert.assertEquals;
 

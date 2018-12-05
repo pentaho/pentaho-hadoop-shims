@@ -20,24 +20,19 @@
  *
  ******************************************************************************/
 
-package org.pentaho.bigdata.api.pig;
+package org.pentaho.hadoop.shim.api.hbase;
 
-import org.pentaho.di.core.logging.LogChannelInterface;
-import org.pentaho.di.core.logging.LogLevel;
-import org.pentaho.di.core.variables.VariableSpace;
+import org.junit.Test;
 
-import java.util.List;
+import static org.junit.Assert.assertEquals;
 
 /**
- * Created by bryan on 6/18/15.
+ * Created by bryan on 2/2/16.
  */
-public interface PigService {
-  boolean isLocalExecutionSupported();
-
-  PigResult executeScript( String scriptPath, ExecutionMode executionMode, List<String> parameters, String name,
-                       LogChannelInterface logChannelInterface, VariableSpace variableSpace, LogLevel logLevel );
-
-  enum ExecutionMode {
-    LOCAL, MAPREDUCE
+public class ResultFactoryExceptionTest {
+  @Test
+  public void testConstructor() {
+    Exception exception = new Exception();
+    assertEquals( exception, new ResultFactoryException( exception ).getCause() );
   }
 }

@@ -20,7 +20,7 @@
  *
  ******************************************************************************/
 
-package org.pentaho.bigdata.api.hbase.mapping;
+package org.pentaho.hadoop.shim.api.hbase.mapping;
 
 import org.junit.Test;
 
@@ -30,7 +30,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by bryan on 2/2/16.
