@@ -16,7 +16,7 @@
   <dependencies>
     <dependency>
       <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-hdp26-hbase</artifactId>
+      <artifactId>pentaho-hadoop-shims-hdp26-common</artifactId>
       <version>${project.version}</version>
       <exclusions>
         <exclusion>
