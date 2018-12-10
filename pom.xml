@@ -62,10 +62,6 @@
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
           </exclusion>
-          <exclusion>
-            <groupId>commons-compress</groupId>
-            <artifactId>commons-compress</artifactId>
-          </exclusion>
         </exclusions>
       </dependency>
       <dependency>
