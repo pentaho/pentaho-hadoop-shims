@@ -23,9 +23,10 @@
 package com.pentaho.big.data.bundles.impl.shim.hbase.table;
 
 import com.pentaho.big.data.bundles.impl.shim.hbase.connectionPool.HBaseConnectionHandle;
-import org.pentaho.bigdata.api.hbase.table.HBaseDelete;
-import org.pentaho.bigdata.api.hbase.table.HBasePut;
-import org.pentaho.bigdata.api.hbase.table.HBaseTableWriteOperationManager;
+import org.pentaho.hadoop.shim.api.hbase.table.HBaseDelete;
+import org.pentaho.hadoop.shim.api.hbase.table.HBasePut;
+import org.pentaho.hadoop.shim.api.hbase.table.HBaseTableWriteOperationManager;
+
 
 import java.io.IOException;
 

@@ -23,8 +23,8 @@
 package com.pentaho.big.data.bundles.impl.shim.hbase.mapping;
 
 import com.pentaho.big.data.bundles.impl.shim.hbase.meta.HBaseValueMetaInterfaceFactoryImpl;
-import org.pentaho.bigdata.api.hbase.mapping.Mapping;
-import org.pentaho.bigdata.api.hbase.mapping.MappingFactory;
+import org.pentaho.hadoop.shim.api.hbase.mapping.Mapping;
+import org.pentaho.hadoop.shim.api.hbase.mapping.MappingFactory;
 import org.pentaho.hbase.shim.spi.HBaseBytesUtilShim;
 
 /**

@@ -25,7 +25,7 @@ package com.pentaho.big.data.bundles.impl.shim.hbase;
 import org.apache.hadoop.hbase.client.Result;
 import org.junit.Before;
 import org.junit.Test;
-import org.pentaho.bigdata.api.hbase.ResultFactoryException;
+import org.pentaho.hadoop.shim.api.hbase.ResultFactoryException;
 import org.pentaho.hbase.shim.spi.HBaseBytesUtilShim;
 
 import java.nio.charset.Charset;

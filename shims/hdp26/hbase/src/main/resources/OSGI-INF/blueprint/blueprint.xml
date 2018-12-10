@@ -21,7 +21,7 @@
   </bean>
 
   <service ref="hdp26HBaseServiceFactory"
-           interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
+           interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
     <service-properties>
       <entry key="shim">
         <value type="java.lang.String">hdp26</value>

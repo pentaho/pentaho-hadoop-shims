@@ -25,9 +25,9 @@ package com.pentaho.big.data.bundles.impl.shim.hbase;
 import com.pentaho.big.data.bundles.impl.shim.hbase.connectionPool.HBaseConnectionHandle;
 import com.pentaho.big.data.bundles.impl.shim.hbase.connectionPool.HBaseConnectionPool;
 import com.pentaho.big.data.bundles.impl.shim.hbase.table.HBaseTableImpl;
-import org.pentaho.bigdata.api.hbase.HBaseConnection;
-import org.pentaho.bigdata.api.hbase.HBaseService;
 import org.pentaho.di.core.logging.LogChannelInterface;
+import org.pentaho.hadoop.shim.api.hbase.HBaseConnection;
+import org.pentaho.hadoop.shim.api.hbase.HBaseService;
 import org.pentaho.hbase.shim.spi.HBaseBytesUtilShim;
 import org.pentaho.hbase.shim.spi.HBaseShim;
 

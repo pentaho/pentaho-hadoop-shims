@@ -77,7 +77,7 @@ public class ColumnFilterImplTest {
 
   @Test
   public void testGetComparisonOperator() {
-    for ( org.pentaho.bigdata.api.hbase.mapping.ColumnFilter.ComparisonType comparisonType : org.pentaho.bigdata.api
+    for ( org.pentaho.hadoop.shim.api.hbase.mapping.ColumnFilter.ComparisonType comparisonType : org.pentaho.hadoop.shim.api
       .hbase.mapping.ColumnFilter.ComparisonType.values() ) {
       when( delegate.getComparisonOperator() )
         .thenReturn( ColumnFilter.ComparisonType.valueOf( comparisonType.name() ) );
@@ -89,7 +89,7 @@ public class ColumnFilterImplTest {
 
   @Test
   public void testSetComparisonOperator() {
-    for ( org.pentaho.bigdata.api.hbase.mapping.ColumnFilter.ComparisonType comparisonType : org.pentaho.bigdata.api
+    for ( org.pentaho.hadoop.shim.api.hbase.mapping.ColumnFilter.ComparisonType comparisonType : org.pentaho.hadoop.shim.api
       .hbase.mapping.ColumnFilter.ComparisonType.values() ) {
       columnFilter.setComparisonOperator( comparisonType );
       verify( delegate ).setComparisonOperator( ColumnFilter.ComparisonType.valueOf( comparisonType.name() ) );

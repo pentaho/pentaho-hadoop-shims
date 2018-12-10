@@ -20,7 +20,6 @@
     <module>hdfs</module>
     <module>jdbc</module>
     <module>mapreduce</module>
-    <module>hbase</module>
     <module>pig</module>
   </modules>
   <properties>

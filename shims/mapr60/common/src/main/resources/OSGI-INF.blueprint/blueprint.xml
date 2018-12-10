@@ -40,7 +40,7 @@
   </bean>
 
   <service ref="mapr60SqoopServiceFactory"
-           interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
+           interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
     <service-properties>
       <entry key="shim">
         <value type="java.lang.String">mapr60</value>
@@ -73,7 +73,7 @@
   </bean>
 
   <service ref="mapr60PigServiceFactory"
-           interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
+           interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
     <service-properties>
       <entry key="shim">
         <value type="java.lang.String">mapr60</value>
@@ -102,7 +102,7 @@
   </bean>
 
   <service ref="mapr60FormatServiceFactory"
-           interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
+           interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
     <service-properties>
       <entry key="shim">
         <value type="java.lang.String">mapr60</value>
@@ -120,7 +120,7 @@
   </bean>
   <reference id="executorService" interface="java.util.concurrent.ExecutorService"/>
 
-  <service ref="mapr60MapReduceServiceFactory" interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
+  <service ref="mapr60MapReduceServiceFactory" interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
     <service-properties>
       <entry key="shim">
         <value type="java.lang.String">mapr60</value>

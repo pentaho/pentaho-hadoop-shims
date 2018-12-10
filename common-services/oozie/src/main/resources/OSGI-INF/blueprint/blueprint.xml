@@ -5,7 +5,7 @@
     <argument ref="hascdh513HadoopConfiguration"/>
   </bean>
 
-  <service ref="cdh513OozieServiceFactory" interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory"/>
+  <service ref="cdh513OozieServiceFactory" interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory"/>
 
   <reference id="hascdh513HadoopConfiguration" interface="org.pentaho.hadoop.shim.api.HasConfiguration"/>
 </blueprint>

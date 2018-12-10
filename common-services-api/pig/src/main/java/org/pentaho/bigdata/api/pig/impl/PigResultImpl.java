@@ -23,7 +23,7 @@
 package org.pentaho.bigdata.api.pig.impl;
 
 import org.apache.commons.vfs2.FileObject;
-import org.pentaho.bigdata.api.pig.PigResult;
+import org.pentaho.hadoop.shim.api.pig.PigResult;
 
 /**
  * Created by bryan on 7/9/15.

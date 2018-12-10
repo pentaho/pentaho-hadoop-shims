@@ -50,7 +50,7 @@
   </bean>
 
   <service ref="cdh11SqoopServiceFactory"
-           interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
+           interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
     <service-properties>
       <entry key="shim">
         <value type="java.lang.String">cdh513</value>
@@ -83,7 +83,7 @@
   </bean>
 
   <service ref="cdh11PigServiceFactory"
-           interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
+           interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
     <service-properties>
       <entry key="shim">
         <value type="java.lang.String">cdh513</value>
@@ -112,7 +112,7 @@
   </bean>
 
   <service ref="cdh513FormatServiceFactory"
-           interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
+           interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
     <service-properties>
       <entry key="shim">
         <value type="java.lang.String">cdh513</value>
@@ -130,7 +130,7 @@
   </bean>
   <reference id="executorService" interface="java.util.concurrent.ExecutorService"/>
 
-  <service ref="cdh11MapReduceServiceFactory" interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
+  <service ref="cdh11MapReduceServiceFactory" interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
     <service-properties>
       <entry key="shim">
         <value type="java.lang.String">cdh513</value>

@@ -27,7 +27,7 @@
   </bean>
 
   <reference-list id="serviceFactories"
-                  interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory"
+                  interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory"
                   availability="optional">
     <reference-listener ref="serviceLocatorImpl" bind-method="factoryAdded" unbind-method="factoryRemoved"/>
   </reference-list>

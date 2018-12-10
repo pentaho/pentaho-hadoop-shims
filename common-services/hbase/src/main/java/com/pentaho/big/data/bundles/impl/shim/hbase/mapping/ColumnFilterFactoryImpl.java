@@ -22,11 +22,11 @@
 
 package com.pentaho.big.data.bundles.impl.shim.hbase.mapping;
 
-import org.pentaho.bigdata.api.hbase.mapping.ColumnFilter;
-import org.pentaho.bigdata.api.hbase.mapping.ColumnFilterFactory;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.repository.ObjectId;
 import org.pentaho.di.repository.Repository;
+import org.pentaho.hadoop.shim.api.hbase.mapping.ColumnFilter;
+import org.pentaho.hadoop.shim.api.hbase.mapping.ColumnFilterFactory;
 import org.w3c.dom.Node;
 
 /**

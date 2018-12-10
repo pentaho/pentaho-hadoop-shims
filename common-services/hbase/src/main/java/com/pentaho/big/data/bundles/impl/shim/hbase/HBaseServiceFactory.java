@@ -22,12 +22,10 @@
 
 package com.pentaho.big.data.bundles.impl.shim.hbase;
 
-import org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory;
-import org.pentaho.bigdata.api.hbase.HBaseService;
 import org.pentaho.hadoop.shim.ConfigurationException;
-import org.pentaho.hadoop.shim.HadoopConfiguration;
-import org.pentaho.hadoop.shim.api.HasConfiguration;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
+import org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory;
+import org.pentaho.hadoop.shim.api.hbase.HBaseService;
 import org.pentaho.hbase.shim.spi.HBaseShim;
 
 /**

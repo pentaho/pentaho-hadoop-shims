@@ -27,11 +27,11 @@ import com.pentaho.big.data.bundles.impl.shim.hbase.meta.HBaseValueMetaInterface
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.pentaho.bigdata.api.hbase.meta.HBaseValueMetaInterface;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.exception.KettleXMLException;
 import org.pentaho.di.repository.ObjectId;
 import org.pentaho.di.repository.Repository;
+import org.pentaho.hadoop.shim.api.hbase.meta.HBaseValueMetaInterface;
 import org.pentaho.hbase.shim.api.HBaseValueMeta;
 import org.pentaho.hbase.shim.api.Mapping;
 import org.pentaho.hbase.shim.spi.HBaseBytesUtilShim;
@@ -139,7 +139,7 @@ public class MappingImplTest {
   public void testGetKeyType() {
     for ( Mapping.KeyType keyType : Mapping.KeyType.values() ) {
       when( delegate.getKeyType() ).thenReturn( keyType );
-      org.pentaho.bigdata.api.hbase.mapping.Mapping.KeyType type = mapping.getKeyType();
+      org.pentaho.hadoop.shim.api.hbase.mapping.Mapping.KeyType type = mapping.getKeyType();
       assertNotNull( type );
       assertEquals( keyType.name(), type.name() );
     }
@@ -149,7 +149,7 @@ public class MappingImplTest {
 
   @Test
   public void testSetKeyType() {
-    for ( org.pentaho.bigdata.api.hbase.mapping.Mapping.KeyType keyType : org.pentaho.bigdata.api.hbase.mapping
+    for ( org.pentaho.hadoop.shim.api.hbase.mapping.Mapping.KeyType keyType : org.pentaho.hadoop.shim.api.hbase.mapping
       .Mapping.KeyType.values() ) {
       mapping.setKeyType( keyType );
       Mapping.KeyType type = Mapping.KeyType.valueOf( keyType.name() );

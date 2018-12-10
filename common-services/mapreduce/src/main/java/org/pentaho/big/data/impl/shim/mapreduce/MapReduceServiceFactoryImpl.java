@@ -22,11 +22,11 @@
 
 package org.pentaho.big.data.impl.shim.mapreduce;
 
-import org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory;
 import org.pentaho.bigdata.api.mapreduce.MapReduceService;
 import org.pentaho.bigdata.api.mapreduce.TransformationVisitorService;
 import org.pentaho.hadoop.shim.api.HasConfiguration;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
+import org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 
 import java.util.List;

@@ -27,12 +27,13 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
-import org.pentaho.bigdata.api.pig.PigResult;
-import org.pentaho.bigdata.api.pig.PigService;
+
 import org.pentaho.di.core.logging.LogChannelInterface;
 import org.pentaho.di.core.logging.LogLevel;
 import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.hadoop.shim.api.Configuration;
+import org.pentaho.hadoop.shim.api.pig.PigResult;
+import org.pentaho.hadoop.shim.api.pig.PigService;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 import org.pentaho.hadoop.shim.spi.PigShim;
 
