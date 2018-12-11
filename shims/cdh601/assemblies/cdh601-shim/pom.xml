@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.pentaho</groupId>
-    <artifactId>pentaho-hadoop-shims-emr511-assemblies-reactor</artifactId>
-    <version>9.0.0.0-SNAPSHOT</version>
+    <artifactId>pentaho-hadoop-shims-cdh601-assemblies-reactor</artifactId>
+    <version>8.3.0.0-SNAPSHOT</version>
   </parent>
-  <artifactId>pentaho-hadoop-shims-emr511-package</artifactId>
+  <artifactId>pentaho-hadoop-shims-cdh601-package</artifactId>
   <packaging>pom</packaging>
   <properties>
     <eula-wrap_assign-deps-to-properties-phase>initialize</eula-wrap_assign-deps-to-properties-phase>
@@ -18,32 +18,32 @@
   <dependencies>
     <dependency>
       <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-emr511</artifactId>
+      <artifactId>pentaho-hadoop-shims-cdh601</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-emr511-scope-client</artifactId>
+      <artifactId>pentaho-hadoop-shims-cdh601-scope-client</artifactId>
       <version>${project.version}</version>
       <type>zip</type>
     </dependency>
     <dependency>
       <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-emr511-scope-pmr</artifactId>
+      <artifactId>pentaho-hadoop-shims-cdh601-scope-pmr</artifactId>
       <version>${project.version}</version>
       <type>zip</type>
     </dependency>
     <dependency>
       <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-emr511-scope-default</artifactId>
+      <artifactId>pentaho-hadoop-shims-cdh601-scope-default</artifactId>
       <version>${project.version}</version>
       <type>zip</type>
     </dependency>
-    <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-emr511-hbase-comparators</artifactId>
-      <version>${project.version}</version>
-    </dependency>
+    <dependency>                                                               
+      <groupId>org.pentaho</groupId>                                           
+      <artifactId>pentaho-hadoop-shims-cdh601-hbase-comparators</artifactId>
+      <version>${project.version}</version>                                    
+    </dependency>                                                              
   </dependencies>
   <build>
     <plugins>

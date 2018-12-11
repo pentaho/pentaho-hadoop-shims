@@ -47,7 +47,6 @@ import org.pentaho.di.core.row.value.ValueMetaNumber;
 import org.pentaho.di.core.row.value.ValueMetaString;
 import org.pentaho.di.core.row.value.ValueMetaTimestamp;
 import org.pentaho.hadoop.shim.api.format.IParquetInputField;
-import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat;
 import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat.IPentahoInputSplit;
 import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat.IPentahoRecordReader;
 import org.pentaho.hadoop.shim.api.format.IPentahoParquetInputFormat;
@@ -111,12 +110,12 @@ public class PentahoParquetInputFormatTest {
         Assert.fail("Invalid provider name used.");
     }
 
-    IPentahoInputFormat.IPentahoRecordReader recordReader =
+    IPentahoRecordReader recordReader =
         pentahoParquetInputFormat.createRecordReader( pentahoInputSplit );
 
     Assert.assertNotNull( "recordReader should NOT be null!", recordReader );
     Assert.assertTrue( "recordReader should be instance of IPentahoInputFormat.IPentahoRecordReader",
-      recordReader instanceof IPentahoInputFormat.IPentahoRecordReader );
+      recordReader instanceof IPentahoRecordReader );
   }
 
   @Test

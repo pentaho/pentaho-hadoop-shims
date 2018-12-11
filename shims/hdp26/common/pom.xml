@@ -5,10 +5,10 @@
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-hdp26-reactor</artifactId>
-    <version>9.0.0.0-SNAPSHOT</version>
+    <version>8.3.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-hdp26-common</artifactId>
-  <version>9.0.0.0-SNAPSHOT</version>
+  <version>8.3.0.0-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <dependencies>
     <dependency>
@@ -157,7 +157,7 @@
     <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>pentaho-big-data-impl-shim-hive</artifactId>
-      <version>9.0.0.0-SNAPSHOT</version>
+      <version>8.3.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hive</groupId>
@@ -376,7 +376,7 @@
                 <artifactItem>
                   <groupId>pentaho</groupId>
                   <artifactId>pentaho-hdfs-vfs</artifactId>
-                  <version>9.0.0.0-SNAPSHOT</version>
+                  <version>8.3.0.0-SNAPSHOT</version>
                   <type>jar</type>
                   <outputDirectory>${project.build.directory}/dependencies/hadoop-common</outputDirectory>
                   <includes>META-INF/vfs-providers.xml</includes>
