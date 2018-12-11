@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-list</artifactId>
-    <version>9.0.0.0-SNAPSHOT</version>
+    <version>8.3.0.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -28,7 +28,7 @@
     <hadoop.aws.mapr.version>2.7.0-mapr-1506</hadoop.aws.mapr.version>
     <org.antlr.version>3.5.2</org.antlr.version>
     <parquet.version>1.5.0-mapr6.0</parquet.version>
-    <pentaho-hadoop-shims.version>9.0.0.0-SNAPSHOT</pentaho-hadoop-shims.version>
+    <pentaho-hadoop-shims.version>8.3.0.0-SNAPSHOT</pentaho-hadoop-shims.version>
 
     <!-- pmr folder -->
     <htrace-core.version>3.1.0-incubating</htrace-core.version>
