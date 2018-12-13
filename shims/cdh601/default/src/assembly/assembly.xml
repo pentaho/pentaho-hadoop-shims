@@ -31,6 +31,7 @@
         <exclude>org.apache.zookeeper:zookeeper</exclude>
         <exclude>org.apache.hadoop:hadoop-annotations</exclude>
         <exclude>org.apache.hadoop:hadoop-yarn-api</exclude>
+        <exclude>org.apache.hadoop:hadoop-yarn-client</exclude>
         <exclude>org.apache.hadoop:hadoop-yarn-common</exclude>
         <exclude>org.apache.hadoop:hadoop-yarn-server-applicationhistoryservice</exclude>
         <exclude>org.apache.hadoop:hadoop-yarn-server-common</exclude>
@@ -68,6 +69,7 @@
         <exclude>org.apache.zookeeper:zookeeper</exclude>
         <exclude>org.apache.hadoop:hadoop-annotations</exclude>
         <exclude>org.apache.hadoop:hadoop-yarn-api</exclude>
+        <exclude>org.apache.hadoop:hadoop-yarn-client</exclude>
         <exclude>org.apache.hadoop:hadoop-yarn-common</exclude>
         <exclude>org.apache.hadoop:hadoop-yarn-server-applicationhistoryservice</exclude>
         <exclude>org.apache.hadoop:hadoop-yarn-server-common</exclude>
