@@ -31,6 +31,8 @@
     <org.apache.pig.version>0.8.0</org.apache.pig.version>
     <com.thoughtworks.xstream.version>1.4.9</com.thoughtworks.xstream.version>
     <org.apache.hbase.version>1.1.1</org.apache.hbase.version>
+    <com.google.guava.version>22.0</com.google.guava.version>
+    <htrace-core.version>3.1.0-incubating</htrace-core.version>
   </properties>
   <dependencyManagement>
     <dependencies>

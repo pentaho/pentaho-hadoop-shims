@@ -23,21 +23,45 @@
 package org.pentaho.hadoop.shim.common.sqoop;
 
 import com.cloudera.sqoop.Sqoop;
+import com.google.common.collect.Lists;
+import com.google.protobuf.Message;
+import com.yammer.metrics.core.MetricsRegistry;
+import io.netty.channel.Channel;
 import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.hbase.CompatibilityFactory;
+import org.apache.hadoop.hbase.HConstants;
+import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.mapreduce.TableMapper;
+import org.apache.hadoop.hbase.protobuf.generated.ClientProtos;
+import org.apache.htrace.Trace;
+import org.apache.zookeeper.ZooKeeper;
 import org.osgi.framework.BundleContext;
 import org.pentaho.hadoop.shim.ShimVersion;
 import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.spi.SqoopShim;
 import org.pentaho.hadoop.shim.common.ShimUtils;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 @SuppressWarnings( "deprecation" )
 public class CommonSqoopShim implements SqoopShim {
+  private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger( CommonSqoopShim.class );
+  private static final String TMPJARS = "tmpjars";
+
   private BundleContext bundleContext;
 
   public BundleContext getBundleContext() {
@@ -60,8 +84,17 @@ public class CommonSqoopShim implements SqoopShim {
     String tmpPropertyHolder = System.getProperty( "hadoop.alt.classpath" );
     try {
       System.setProperty( "hadoop.alt.classpath", createHadoopAltClasspath() );
-      c.set( "tmpjars", getSqoopJarLocation(c) );
+      c.set( TMPJARS, getSqoopJarLocation( c ) );
+      if ( args.length > 0 && Arrays.asList( args ).contains( "--hbase-table" ) ) {
+          addHbaseDependencyJars( c, HConstants.class, ClientProtos.class, Put.class,
+                  CompatibilityFactory.class, TableMapper.class, ZooKeeper.class,
+                  Channel.class, Message.class, Lists.class, Trace.class, MetricsRegistry.class
+          );
+      }
       return Sqoop.runTool( args, ShimUtils.asConfiguration( c ) );
+    } catch ( IOException e ) {
+      e.printStackTrace();
+      return -1;
     } finally {
       Thread.currentThread().setContextClassLoader( cl );
       if ( tmpPropertyHolder == null ) {
@@ -116,4 +149,56 @@ public class CommonSqoopShim implements SqoopShim {
     return sb.toString();
   }
 
+  public void addHbaseDependencyJars(Configuration conf, Class... classes )
+    throws IOException {
+    List<String> classNames = new ArrayList<String>();
+    for ( Class clazz : classes ) {
+      classNames.add( clazz.getCanonicalName().replace( ".", "/" ) + ".class" );
+    }
+    Set<String> tmpjars = new HashSet<String>();
+    if ( conf.get( TMPJARS ) != null ) {
+      tmpjars.addAll( Arrays.asList( conf.get( TMPJARS ).split( "," ) ) );
+}
+    File filesInsideBundle = new File( bundleContext.getBundle().getDataFile( "" ).getParent() );
+    Iterator<File> filesIterator = FileUtils.iterateFiles( filesInsideBundle, new String[] { "jar" }, true );
+
+    getOut:
+    while ( filesIterator.hasNext() ) {
+      File file = filesIterator.next();
+      ZipFile zip = new ZipFile( file );
+      // Process the jar file.
+
+      try {
+        // Loop through the jar entries and print the name of each one.
+
+        for ( Enumeration list = zip.entries(); list.hasMoreElements(); ) {
+          ZipEntry entry = (ZipEntry) list.nextElement();
+          System.out.println( entry.getName() );
+          if ( !entry.isDirectory() && entry.getName().endsWith( ".class" ) ) {
+            ListIterator<String> classNameIterator = classNames.listIterator();
+            while ( classNameIterator.hasNext() ) {
+              if ( entry.getName().endsWith( classNameIterator.next() ) ) {
+                // If here we found a class in this jar, add the jar to the list, and delete the class from classNames.
+                tmpjars.add( file.toURI().toURL().toString() );
+                classNameIterator.remove();
+                if ( classNames.size() == 0 ) {
+                  break getOut;
+                }
+              }
+            }
+          }
+        }
+      } finally {
+        zip.close();
+      }
+    }
+
+    StringBuilder sb = new StringBuilder();
+    if ( tmpjars.size() > 0 ) {
+      for ( String jarPath : tmpjars ) {
+        sb.append( "," ).append( jarPath );
+      }
+      conf.set( TMPJARS, sb.toString().substring( 1 ) );
+    }
+  }
 }
