@@ -23,6 +23,7 @@
         <include>org.apache.hadoop:hadoop-mapreduce-client-shuffle</include>
         <include>org.apache.hadoop:hadoop-annotations</include>
         <include>org.apache.hadoop:hadoop-yarn-api</include>
+        <include>org.apache.hadoop:hadoop-yarn-client</include>
         <include>org.apache.hadoop:hadoop-yarn-common</include>
         <include>org.apache.hadoop:hadoop-yarn-server-applicationhistoryservice</include>
         <include>org.apache.hadoop:hadoop-yarn-server-common</include>
