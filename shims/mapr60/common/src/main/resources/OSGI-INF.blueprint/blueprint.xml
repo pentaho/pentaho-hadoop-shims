@@ -17,7 +17,7 @@
     <argument ref="mapr60Hadoop"/>
   </bean>
 
-  <service ref="hadoopFileSystem" interface="org.pentaho.bigdata.api.hdfs.HadoopFileSystemFactory"/>
+  <service ref="hadoopFileSystem" interface="org.pentaho.hadoop.shim.api.hdfs.HadoopFileSystemFactory"/>
 
   <bean id="mapr60SqoopShim" class="org.pentaho.hadoop.shim.common.sqoop.CommonSqoopShim">
     <property name="bundleContext" ref="blueprintBundleContext" />

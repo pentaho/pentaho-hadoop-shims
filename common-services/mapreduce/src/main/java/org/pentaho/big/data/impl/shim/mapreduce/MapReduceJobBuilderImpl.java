@@ -23,13 +23,14 @@
 package org.pentaho.big.data.impl.shim.mapreduce;
 
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
-import org.pentaho.bigdata.api.mapreduce.MapReduceJobAdvanced;
-import org.pentaho.bigdata.api.mapreduce.MapReduceJobBuilder;
+
 import org.pentaho.di.core.logging.LogChannelInterface;
 import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.api.fs.FileSystem;
 import org.pentaho.hadoop.shim.api.fs.Path;
+import org.pentaho.hadoop.shim.api.mapreduce.MapReduceJobAdvanced;
+import org.pentaho.hadoop.shim.api.mapreduce.MapReduceJobBuilder;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 
 import java.io.IOException;

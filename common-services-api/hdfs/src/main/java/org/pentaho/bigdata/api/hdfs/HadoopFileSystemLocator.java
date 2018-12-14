@@ -24,6 +24,7 @@ package org.pentaho.bigdata.api.hdfs;
 
 import org.pentaho.big.data.api.initializer.ClusterInitializationException;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
+import org.pentaho.hadoop.shim.api.hdfs.HadoopFileSystem;
 
 import java.net.URI;
 

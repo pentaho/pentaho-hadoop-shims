@@ -27,7 +27,7 @@
     <argument ref="cdh513ShimIdentifier"/>
   </bean>
 
-  <service ref="hadoopFileSystem" interface="org.pentaho.bigdata.api.hdfs.HadoopFileSystemFactory"/>
+  <service ref="hadoopFileSystem" interface="org.pentaho.hadoop.shim.api.hdfs.HadoopFileSystemFactory"/>
 
   <bean id="cdh513SqoopShim" class="org.pentaho.hadoop.shim.common.sqoop.CommonSqoopShim">
     <property name="bundleContext" ref="blueprintBundleContext" />

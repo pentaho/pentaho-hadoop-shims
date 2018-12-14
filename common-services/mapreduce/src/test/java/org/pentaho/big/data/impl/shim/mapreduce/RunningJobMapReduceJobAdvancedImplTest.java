@@ -24,7 +24,7 @@ package org.pentaho.big.data.impl.shim.mapreduce;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.pentaho.bigdata.api.mapreduce.MapReduceService;
+import org.pentaho.hadoop.shim.api.mapreduce.MapReduceService;
 import org.pentaho.hadoop.shim.api.mapred.RunningJob;
 import org.pentaho.hadoop.shim.api.mapred.TaskCompletionEvent;
 
@@ -125,7 +125,7 @@ public class RunningJobMapReduceJobAdvancedImplTest {
     when( runningJob.getTaskCompletionEvents( 1 ) )
       .thenReturn( new TaskCompletionEvent[] { taskCompletionEvent } );
     when( taskCompletionEvent.getEventId() ).thenReturn( id );
-    org.pentaho.bigdata.api.mapreduce.TaskCompletionEvent[] taskCompletionEvents =
+    org.pentaho.hadoop.shim.api.mapreduce.TaskCompletionEvent[] taskCompletionEvents =
       runningJobMapReduceJobAdvanced.getTaskCompletionEvents( 1 );
     assertEquals( 1, taskCompletionEvents.length );
     assertEquals( id, taskCompletionEvents[ 0 ].getEventId() );

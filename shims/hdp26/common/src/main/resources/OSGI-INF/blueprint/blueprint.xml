@@ -22,12 +22,27 @@
     </service-properties>
   </service>
 
+  <bean id="shimServicesFactory" class="org.pentaho.big.data.impl.shim.factory.ShimServicesFactory">
+    <argument ref="hdp26Hadoop"/>
+    <argument ref="executorService"/>
+    <argument ref="transformationVisitorList"/>
+    <property name="bundleContext" ref="blueprintBundleContext" />
+  </bean>
+
+  <service ref="shimServicesFactory" interface="org.pentaho.hadoop.shim.api.ShimServicesFactoryInterface">
+    <service-properties>
+      <entry key="shim">
+        <value type="java.lang.String">hdp26</value>
+      </entry>
+    </service-properties>
+  </service>
+
   <bean id="hadoopFileSystem" class="com.pentaho.big.data.bundles.impl.shim.hdfs.HadoopFileSystemFactoryImpl">
     <argument ref="hdp26Hadoop"/>
     <argument ref="hdp26ShimIdentifier"/>
   </bean>
 
-  <service ref="hadoopFileSystem" interface="org.pentaho.bigdata.api.hdfs.HadoopFileSystemFactory"/>
+  <service ref="hadoopFileSystem" interface="org.pentaho.hadoop.shim.api.hdfs.HadoopFileSystemFactory"/>
 
   <bean id="hdp26SqoopShim" class="org.pentaho.hadoop.shim.common.sqoop.CommonSqoopShim">
     <property name="bundleContext" ref="blueprintBundleContext" />

@@ -17,7 +17,7 @@
     <argument ref="hdp25Hadoop"/>
   </bean>
 
-  <service ref="hadoopFileSystem" interface="org.pentaho.bigdata.api.hdfs.HadoopFileSystemFactory"/>
+  <service ref="hadoopFileSystem" interface="org.pentaho.hadoop.shim.api.hdfs.HadoopFileSystemFactory"/>
 
   <bean id="hdp25FormatShim" class="org.pentaho.hadoop.shim.common.CommonFormatShim"/>
 

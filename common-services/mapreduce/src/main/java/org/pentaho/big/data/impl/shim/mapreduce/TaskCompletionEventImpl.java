@@ -22,7 +22,8 @@
 
 package org.pentaho.big.data.impl.shim.mapreduce;
 
-import org.pentaho.bigdata.api.mapreduce.TaskCompletionEvent;
+
+import org.pentaho.hadoop.shim.api.mapreduce.TaskCompletionEvent;
 
 /**
  * Created by bryan on 12/3/15.

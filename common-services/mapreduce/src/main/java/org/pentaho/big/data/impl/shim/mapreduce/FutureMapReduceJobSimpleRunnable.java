@@ -22,9 +22,9 @@
 
 package org.pentaho.big.data.impl.shim.mapreduce;
 
-import org.pentaho.bigdata.api.mapreduce.MapReduceExecutionException;
 import org.pentaho.di.job.entries.hadoopjobexecutor.NoExitSecurityManager;
 import org.pentaho.di.job.entries.hadoopjobexecutor.SecurityManagerStack;
+import org.pentaho.hadoop.shim.api.mapreduce.MapReduceExecutionException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
