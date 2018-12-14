@@ -28,6 +28,8 @@
     <!-- pmr folder -->
     <org.apache.hbase.version>1.2.0-cdh5.13.0</org.apache.hbase.version>
     <zookeeper.version>3.4.5-cdh5.13.0</zookeeper.version>
+    <com.google.guava.version>22.0</com.google.guava.version>
+    <htrace-core.version>3.1.0-incubating</htrace-core.version>
   </properties>
   <modules>
     <module>common</module>
