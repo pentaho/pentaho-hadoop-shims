@@ -25,7 +25,7 @@ package com.pentaho.big.data.bundles.impl.shim.hbase.mapping;
 import com.pentaho.big.data.bundles.impl.shim.hbase.meta.HBaseValueMetaInterfaceFactoryImpl;
 import org.junit.Before;
 import org.junit.Test;
-import org.pentaho.bigdata.api.hbase.mapping.Mapping;
+import org.pentaho.hadoop.shim.api.hbase.mapping.Mapping;
 import org.pentaho.hbase.shim.spi.HBaseBytesUtilShim;
 
 import static org.junit.Assert.assertEquals;

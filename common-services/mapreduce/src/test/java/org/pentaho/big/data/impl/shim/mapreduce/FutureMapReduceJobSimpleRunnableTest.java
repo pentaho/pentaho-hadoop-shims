@@ -25,7 +25,7 @@ package org.pentaho.big.data.impl.shim.mapreduce;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.pentaho.bigdata.api.mapreduce.MapReduceExecutionException;
+import org.pentaho.hadoop.shim.api.mapreduce.MapReduceExecutionException;
 import org.pentaho.di.job.entries.hadoopjobexecutor.NoExitSecurityManager;
 
 import java.util.concurrent.atomic.AtomicBoolean;

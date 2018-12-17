@@ -23,7 +23,7 @@
 package com.pentaho.big.data.bundles.impl.shim.hdfs;
 
 import org.apache.hadoop.fs.Path;
-import org.pentaho.bigdata.api.hdfs.HadoopFileSystemPath;
+import org.pentaho.hadoop.shim.api.hdfs.HadoopFileSystemPath;
 
 import java.net.URI;
 

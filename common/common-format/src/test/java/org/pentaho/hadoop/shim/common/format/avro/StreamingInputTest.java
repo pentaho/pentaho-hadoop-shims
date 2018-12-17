@@ -23,7 +23,6 @@ package org.pentaho.hadoop.shim.common.format.avro;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
-import org.pentaho.big.data.api.cluster.NamedCluster;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.plugins.PluginRegistry;
 import org.pentaho.di.core.row.RowMeta;
@@ -38,6 +37,7 @@ import org.pentaho.di.core.row.value.ValueMetaNumber;
 import org.pentaho.di.core.row.value.ValueMetaPluginType;
 import org.pentaho.di.core.row.value.ValueMetaString;
 import org.pentaho.di.core.row.value.ValueMetaTimestamp;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.format.AvroSpec;
 import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat;
 

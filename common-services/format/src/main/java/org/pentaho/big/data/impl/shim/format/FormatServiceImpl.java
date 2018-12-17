@@ -21,8 +21,8 @@
  ******************************************************************************/
 package org.pentaho.big.data.impl.shim.format;
 
-import org.pentaho.big.data.api.cluster.NamedCluster;
-import org.pentaho.bigdata.api.format.FormatService;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
+import org.pentaho.hadoop.shim.api.format.FormatService;
 import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat;
 import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat;
 import org.pentaho.hadoop.shim.spi.FormatShim;

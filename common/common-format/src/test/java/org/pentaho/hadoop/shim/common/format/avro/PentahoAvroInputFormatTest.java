@@ -24,7 +24,7 @@ package org.pentaho.hadoop.shim.common.format.avro;
 import org.apache.avro.Schema;
 import org.junit.Before;
 import org.junit.Test;
-import org.pentaho.big.data.api.cluster.NamedCluster;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.format.IAvroInputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat;
 

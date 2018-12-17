@@ -7,7 +7,7 @@ import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.mapred.Table10InputFormatDiscloser;
-import org.pentaho.big.data.api.cluster.NamedCluster;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hbase.factory.HBaseAdmin;
 import org.pentaho.hbase.factory.HBaseClientFactory;
 import org.pentaho.hbase.factory.HBaseClientFactoryLocator;

@@ -24,20 +24,10 @@ package org.pentaho.hadoop.hbase.factory;
 import java.io.IOException;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.HTableDescriptor;
-import org.apache.hadoop.hbase.TableName;
+
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.ConnectionFactory;
-import org.apache.hadoop.hbase.client.Table;
-import org.apache.hadoop.hbase.mapred.Table10InputFormatDiscloser;
-import org.pentaho.big.data.api.cluster.NamedCluster;
-import org.pentaho.hbase.factory.HBaseAdmin;
-import org.pentaho.hbase.factory.HBaseClientFactory;
-import org.pentaho.hbase.factory.HBaseClientFactoryLocator;
-import org.pentaho.hbase.factory.HBasePut;
-import org.pentaho.hbase.factory.HBaseTable;
-import org.pentaho.hbase.mapred.PentahoTableInputFormat;
-import org.pentaho.hbase.mapred.PentahoTableRecordReader;
+
 
 public class HBase10ClientFactory extends BaseHBaseClientFactory {
   public HBase10ClientFactory( Configuration conf ) throws Exception {

@@ -18,6 +18,11 @@
   </properties>
   <dependencies>
     <dependency>
+      <groupId>org.pentaho</groupId>
+      <artifactId>shim-api</artifactId>
+      <version>${pentaho-hadoop-shims-api.version}</version>
+    </dependency>
+    <dependency>
       <groupId>pentaho</groupId>
       <artifactId>metastore</artifactId>
       <version>${metastore.version}</version>

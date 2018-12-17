@@ -22,8 +22,9 @@
 
 package com.pentaho.big.data.bundles.impl.shim.hbase;
 
-import org.pentaho.bigdata.api.hbase.ResultFactory;
-import org.pentaho.bigdata.api.hbase.ResultFactoryException;
+
+import org.pentaho.hadoop.shim.api.hbase.ResultFactory;
+import org.pentaho.hadoop.shim.api.hbase.ResultFactoryException;
 import org.pentaho.hbase.shim.spi.HBaseBytesUtilShim;
 
 /**

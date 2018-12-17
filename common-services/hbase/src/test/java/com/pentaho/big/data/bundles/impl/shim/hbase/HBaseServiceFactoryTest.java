@@ -24,10 +24,9 @@ package com.pentaho.big.data.bundles.impl.shim.hbase;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.pentaho.big.data.api.cluster.NamedCluster;
-import org.pentaho.bigdata.api.hbase.HBaseService;
 import org.pentaho.hadoop.shim.ConfigurationException;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hbase.shim.spi.HBaseBytesUtilShim;
 import org.pentaho.hbase.shim.spi.HBaseConnection;
 import org.pentaho.hbase.shim.spi.HBaseShim;

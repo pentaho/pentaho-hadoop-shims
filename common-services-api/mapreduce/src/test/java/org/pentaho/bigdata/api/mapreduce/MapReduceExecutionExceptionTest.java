@@ -23,6 +23,7 @@
 package org.pentaho.bigdata.api.mapreduce;
 
 import org.junit.Test;
+import org.pentaho.hadoop.shim.api.mapreduce.MapReduceExecutionException;
 
 import static org.junit.Assert.assertEquals;
 

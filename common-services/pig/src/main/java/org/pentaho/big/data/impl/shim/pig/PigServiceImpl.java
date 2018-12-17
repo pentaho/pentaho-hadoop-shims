@@ -23,14 +23,14 @@
 package org.pentaho.big.data.impl.shim.pig;
 
 import org.apache.commons.vfs2.FileObject;
-import org.pentaho.big.data.api.cluster.NamedCluster;
-import org.pentaho.bigdata.api.pig.PigResult;
-import org.pentaho.bigdata.api.pig.PigService;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.bigdata.api.pig.impl.PigResultImpl;
 import org.pentaho.di.core.logging.LogChannelInterface;
 import org.pentaho.di.core.logging.LogLevel;
 import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.hadoop.shim.api.Configuration;
+import org.pentaho.hadoop.shim.api.pig.PigResult;
+import org.pentaho.hadoop.shim.api.pig.PigService;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 import org.pentaho.hadoop.shim.spi.PigShim;
 
@@ -43,7 +43,8 @@ import java.util.Properties;
 /**
  * Created by bryan on 7/6/15.
  */
-public class PigServiceImpl implements PigService {
+public class PigServiceImpl implements PigService
+{
   private static final Class<?> PKG = PigServiceImpl.class;
   private final NamedCluster namedCluster;
   private final PigShim pigShim;

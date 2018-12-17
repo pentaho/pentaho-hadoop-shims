@@ -22,6 +22,7 @@
 package org.pentaho.hadoop.shim.common;
 
 import org.pentaho.hadoop.shim.ShimVersion;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.format.IPentahoAvroInputFormat;
 import org.pentaho.hadoop.shim.api.format.IPentahoAvroOutputFormat;
 import org.pentaho.hadoop.shim.api.format.IPentahoOrcInputFormat;
@@ -36,7 +37,6 @@ import org.pentaho.hadoop.shim.common.format.avro.PentahoAvroInputFormat;
 import org.pentaho.hadoop.shim.common.format.avro.PentahoAvroOutputFormat;
 import org.pentaho.hadoop.shim.common.format.parquet.delegate.DelegateFormatFactory;
 import org.pentaho.hadoop.shim.spi.FormatShim;
-import org.pentaho.big.data.api.cluster.NamedCluster;
 
 public class CommonFormatShim implements FormatShim {
 

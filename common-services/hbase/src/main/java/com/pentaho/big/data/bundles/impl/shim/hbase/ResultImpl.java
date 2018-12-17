@@ -22,7 +22,7 @@
 
 package com.pentaho.big.data.bundles.impl.shim.hbase;
 
-import org.pentaho.bigdata.api.hbase.Result;
+import org.pentaho.hadoop.shim.api.hbase.Result;
 import org.pentaho.hbase.shim.spi.HBaseBytesUtilShim;
 
 import java.util.NavigableMap;

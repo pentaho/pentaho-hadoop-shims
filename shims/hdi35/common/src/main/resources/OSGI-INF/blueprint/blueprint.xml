@@ -17,7 +17,7 @@
     <argument ref="hdi35Hadoop"/>
   </bean>
 
-  <service ref="hadoopFileSystem" interface="org.pentaho.bigdata.api.hdfs.HadoopFileSystemFactory"/>
+  <service ref="hadoopFileSystem" interface="org.pentaho.hadoop.shim.api.hdfs.HadoopFileSystemFactory"/>
 
   <bean id="hdi35SqoopShim" class="org.pentaho.hadoop.shim.common.sqoop.CommonSqoopShim">
     <property name="bundleContext" ref="blueprintBundleContext" />
@@ -40,7 +40,7 @@
   </bean>
 
   <service ref="hdi35SqoopServiceFactory"
-           interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
+           interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
     <service-properties>
       <entry key="shim">
         <value type="java.lang.String">hdi35</value>
@@ -73,7 +73,7 @@
   </bean>
 
   <service ref="hdi35PigServiceFactory"
-           interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
+           interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
     <service-properties>
       <entry key="shim">
         <value type="java.lang.String">hdi35</value>
@@ -102,7 +102,7 @@
   </bean>
 
   <service ref="hdi35FormatServiceFactory"
-           interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
+           interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
     <service-properties>
       <entry key="shim">
         <value type="java.lang.String">hdi35</value>
@@ -120,7 +120,7 @@
   </bean>
   <reference id="executorService" interface="java.util.concurrent.ExecutorService"/>
 
-  <service ref="hdi35MapReduceServiceFactory" interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
+  <service ref="hdi35MapReduceServiceFactory" interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
     <service-properties>
       <entry key="shim">
         <value type="java.lang.String">hdi35</value>

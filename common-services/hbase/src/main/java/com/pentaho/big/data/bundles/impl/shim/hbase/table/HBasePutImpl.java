@@ -26,7 +26,7 @@ import com.pentaho.big.data.bundles.impl.shim.hbase.BatchHBaseConnectionOperatio
 import com.pentaho.big.data.bundles.impl.shim.hbase.HBaseConnectionOperation;
 import com.pentaho.big.data.bundles.impl.shim.hbase.HBaseConnectionWrapper;
 import com.pentaho.big.data.bundles.impl.shim.hbase.connectionPool.HBaseConnectionHandle;
-import org.pentaho.bigdata.api.hbase.table.HBasePut;
+import org.pentaho.hadoop.shim.api.hbase.table.HBasePut;
 import org.pentaho.hbase.shim.api.HBaseValueMeta;
 
 import java.io.IOException;

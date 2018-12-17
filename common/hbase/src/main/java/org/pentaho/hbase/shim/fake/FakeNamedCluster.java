@@ -1,9 +1,9 @@
 package org.pentaho.hbase.shim.fake;
 
-import org.pentaho.big.data.api.cluster.NamedCluster;
 import org.pentaho.di.core.exception.KettleValueException;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.variables.VariableSpace;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.metastore.api.IMetaStore;
 import org.w3c.dom.Node;
 

@@ -30,13 +30,13 @@ import org.apache.orc.Reader;
 import org.apache.orc.OrcFile;
 import org.apache.orc.TypeDescription;
 import org.pentaho.hadoop.shim.ShimConfigsLoader;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.format.IOrcInputField;
 import org.pentaho.hadoop.shim.api.format.IOrcMetaData;
 import org.pentaho.hadoop.shim.api.format.IPentahoOrcInputFormat;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
 import org.pentaho.hadoop.shim.common.format.HadoopFormatBase;
 import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
-import org.pentaho.big.data.api.cluster.NamedCluster;
 
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;

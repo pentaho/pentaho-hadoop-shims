@@ -25,9 +25,9 @@ package com.pentaho.big.data.bundles.impl.shim.hbase;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 import org.junit.Before;
 import org.junit.Test;
-import org.pentaho.bigdata.api.hbase.mapping.Mapping;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.row.ValueMetaInterface;
+import org.pentaho.hadoop.shim.api.hbase.mapping.Mapping;
 import org.pentaho.hbase.shim.api.HBaseValueMeta;
 import org.pentaho.hbase.shim.spi.HBaseBytesUtilShim;
 

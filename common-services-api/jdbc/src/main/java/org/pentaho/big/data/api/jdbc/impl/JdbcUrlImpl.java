@@ -22,9 +22,9 @@
 
 package org.pentaho.big.data.api.jdbc.impl;
 
-import org.pentaho.big.data.api.cluster.NamedCluster;
 import org.pentaho.big.data.api.cluster.NamedClusterService;
 import org.pentaho.big.data.api.jdbc.JdbcUrl;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.metastore.api.IMetaStore;
 import org.pentaho.metastore.api.exceptions.MetaStoreException;
 import org.pentaho.osgi.metastore.locator.api.MetastoreLocator;

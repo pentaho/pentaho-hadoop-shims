@@ -30,11 +30,12 @@ import com.pentaho.big.data.bundles.impl.shim.hbase.connectionPool.HBaseConnecti
 import com.pentaho.big.data.bundles.impl.shim.hbase.connectionPool.HBaseConnectionPool;
 import com.pentaho.big.data.bundles.impl.shim.hbase.meta.HBaseValueMetaInterfaceFactoryImpl;
 import com.pentaho.big.data.bundles.impl.shim.hbase.meta.HBaseValueMetaInterfaceImpl;
-import org.pentaho.bigdata.api.hbase.mapping.ColumnFilter;
-import org.pentaho.bigdata.api.hbase.meta.HBaseValueMetaInterface;
-import org.pentaho.bigdata.api.hbase.table.ResultScanner;
-import org.pentaho.bigdata.api.hbase.table.ResultScannerBuilder;
+
 import org.pentaho.di.core.variables.VariableSpace;
+import org.pentaho.hadoop.shim.api.hbase.mapping.ColumnFilter;
+import org.pentaho.hadoop.shim.api.hbase.meta.HBaseValueMetaInterface;
+import org.pentaho.hadoop.shim.api.hbase.table.ResultScanner;
+import org.pentaho.hadoop.shim.api.hbase.table.ResultScannerBuilder;
 import org.pentaho.hbase.shim.spi.HBaseBytesUtilShim;
 
 import java.io.IOException;

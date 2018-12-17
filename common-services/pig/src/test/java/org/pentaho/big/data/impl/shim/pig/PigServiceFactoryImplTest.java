@@ -24,10 +24,10 @@ package org.pentaho.big.data.impl.shim.pig;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.pentaho.big.data.api.cluster.NamedCluster;
-import org.pentaho.bigdata.api.pig.PigService;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.ConfigurationException;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
+import org.pentaho.hadoop.shim.api.pig.PigService;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

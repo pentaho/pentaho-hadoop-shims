@@ -11,7 +11,7 @@
     <argument value="COMMUNITY"/>
   </bean>
 
-  <service ref="cdh513ShimIdentifier" interface="org.pentaho.hadoop.shim.spi.ShimIdentifierInterface"/>
+  <service ref="cdh513ShimIdentifier" interface="org.pentaho.hadoop.shim.api.ShimIdentifierInterface"/>
 
   <bean id="cdh513Hadoop" class="org.pentaho.hadoop.shim.cdh513.HadoopShim" scope="singleton"/>
   <service ref="cdh513Hadoop" interface="org.pentaho.hadoop.shim.spi.HadoopShim">
@@ -27,7 +27,7 @@
     <argument ref="cdh513ShimIdentifier"/>
   </bean>
 
-  <service ref="hadoopFileSystem" interface="org.pentaho.bigdata.api.hdfs.HadoopFileSystemFactory"/>
+  <service ref="hadoopFileSystem" interface="org.pentaho.hadoop.shim.api.hdfs.HadoopFileSystemFactory"/>
 
   <bean id="cdh513SqoopShim" class="org.pentaho.hadoop.shim.common.sqoop.CommonSqoopShim">
     <property name="bundleContext" ref="blueprintBundleContext" />
@@ -50,7 +50,7 @@
   </bean>
 
   <service ref="cdh11SqoopServiceFactory"
-           interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
+           interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
     <service-properties>
       <entry key="shim">
         <value type="java.lang.String">cdh513</value>
@@ -83,7 +83,7 @@
   </bean>
 
   <service ref="cdh11PigServiceFactory"
-           interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
+           interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
     <service-properties>
       <entry key="shim">
         <value type="java.lang.String">cdh513</value>
@@ -112,7 +112,7 @@
   </bean>
 
   <service ref="cdh513FormatServiceFactory"
-           interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
+           interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
     <service-properties>
       <entry key="shim">
         <value type="java.lang.String">cdh513</value>
@@ -130,7 +130,7 @@
   </bean>
   <reference id="executorService" interface="java.util.concurrent.ExecutorService"/>
 
-  <service ref="cdh11MapReduceServiceFactory" interface="org.pentaho.big.data.api.cluster.service.locator.NamedClusterServiceFactory">
+  <service ref="cdh11MapReduceServiceFactory" interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
     <service-properties>
       <entry key="shim">
         <value type="java.lang.String">cdh513</value>

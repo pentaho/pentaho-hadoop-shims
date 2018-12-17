@@ -22,9 +22,11 @@
 
 package org.pentaho.big.data.impl.shim.mapreduce;
 
-import org.pentaho.bigdata.api.mapreduce.MapReduceExecutionException;
-import org.pentaho.bigdata.api.mapreduce.MapReduceJobSimple;
-import org.pentaho.bigdata.api.mapreduce.MapReduceService;
+
+
+import org.pentaho.hadoop.shim.api.mapreduce.MapReduceExecutionException;
+import org.pentaho.hadoop.shim.api.mapreduce.MapReduceJobSimple;
+import org.pentaho.hadoop.shim.api.mapreduce.MapReduceService;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;

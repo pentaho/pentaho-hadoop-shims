@@ -94,6 +94,11 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.pentaho</groupId>
+      <artifactId>pentaho-big-data-impl-shim-factory</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.orc</groupId>
       <artifactId>orc-core</artifactId>
       <version>${org.apache.orc.version}</version>
@@ -146,7 +151,7 @@
     </dependency>
     <dependency>
       <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-big-data-api-oozie</artifactId>
+      <artifactId>shim-api</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -313,6 +318,13 @@
                 <artifactItem>
                   <groupId>org.pentaho</groupId>
                   <artifactId>pentaho-big-data-impl-shim-format</artifactId>
+                  <classifier>sources</classifier>
+                  <overWrite>false</overWrite>
+                  <outputDirectory>${project.build.directory}/src</outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.pentaho</groupId>
+                  <artifactId>pentaho-big-data-impl-shim-factory</artifactId>
                   <classifier>sources</classifier>
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}/src</outputDirectory>

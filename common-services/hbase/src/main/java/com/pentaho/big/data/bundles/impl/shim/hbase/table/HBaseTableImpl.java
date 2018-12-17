@@ -25,15 +25,16 @@ package com.pentaho.big.data.bundles.impl.shim.hbase.table;
 import com.pentaho.big.data.bundles.impl.shim.hbase.connectionPool.HBaseConnectionHandle;
 import com.pentaho.big.data.bundles.impl.shim.hbase.connectionPool.HBaseConnectionPool;
 import com.pentaho.big.data.bundles.impl.shim.hbase.meta.HBaseValueMetaInterfaceFactoryImpl;
-import org.pentaho.bigdata.api.hbase.mapping.Mapping;
-import org.pentaho.bigdata.api.hbase.table.HBaseTable;
-import org.pentaho.bigdata.api.hbase.table.HBaseTableWriteOperationManager;
-import org.pentaho.bigdata.api.hbase.table.ResultScannerBuilder;
+
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.logging.LogChannelInterface;
 import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.di.i18n.BaseMessages;
+import org.pentaho.hadoop.shim.api.hbase.mapping.Mapping;
+import org.pentaho.hadoop.shim.api.hbase.table.HBaseTable;
+import org.pentaho.hadoop.shim.api.hbase.table.HBaseTableWriteOperationManager;
+import org.pentaho.hadoop.shim.api.hbase.table.ResultScannerBuilder;
 import org.pentaho.hbase.shim.api.HBaseValueMeta;
 import org.pentaho.hbase.shim.spi.HBaseBytesUtilShim;
 

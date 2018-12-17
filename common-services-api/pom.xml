@@ -20,11 +20,7 @@
     <module>hdfs</module>
     <module>jdbc</module>
     <module>mapreduce</module>
-    <module>hbase</module>
-    <module>oozie</module>
     <module>pig</module>
-    <module>sqoop</module>
-    <module>format</module>
   </modules>
   <properties>
     <org.apache.hadoop.version>0.20.2</org.apache.hadoop.version>

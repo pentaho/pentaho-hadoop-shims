@@ -25,16 +25,16 @@ package com.pentaho.big.data.bundles.impl.shim.hbase;
 import com.pentaho.big.data.bundles.impl.shim.hbase.mapping.ColumnFilterFactoryImpl;
 import com.pentaho.big.data.bundles.impl.shim.hbase.mapping.MappingFactoryImpl;
 import com.pentaho.big.data.bundles.impl.shim.hbase.meta.HBaseValueMetaInterfaceFactoryImpl;
-import org.pentaho.big.data.api.cluster.NamedCluster;
-import org.pentaho.bigdata.api.hbase.ByteConversionUtil;
-import org.pentaho.bigdata.api.hbase.HBaseService;
-import org.pentaho.bigdata.api.hbase.ResultFactory;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.logging.LogChannelInterface;
 import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.hadoop.shim.ConfigurationException;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.api.HasConfiguration;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
+import org.pentaho.hadoop.shim.api.hbase.ByteConversionUtil;
+import org.pentaho.hadoop.shim.api.hbase.HBaseService;
+import org.pentaho.hadoop.shim.api.hbase.ResultFactory;
 import org.pentaho.hbase.shim.spi.HBaseBytesUtilShim;
 import org.pentaho.hbase.shim.spi.HBaseShim;
 
@@ -100,7 +100,7 @@ public class HBaseServiceImpl implements HBaseService {
   }
 
   @Override public ByteConversionUtil getByteConversionUtil() {
-    return new ByteConversionUtilImpl( bytesUtil );
+    return (ByteConversionUtil) new ByteConversionUtilImpl( bytesUtil );
   }
 
   @Override public ResultFactory getResultFactory() {

@@ -29,10 +29,10 @@ import com.pentaho.big.data.bundles.impl.shim.hbase.meta.HBaseValueMetaInterface
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.stubbing.OngoingStubbing;
-import org.pentaho.bigdata.api.hbase.mapping.Mapping;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.logging.LogChannelInterface;
 import org.pentaho.di.core.variables.VariableSpace;
+import org.pentaho.hadoop.shim.api.hbase.mapping.Mapping;
 import org.pentaho.hbase.shim.spi.HBaseBytesUtilShim;
 
 import java.io.IOException;

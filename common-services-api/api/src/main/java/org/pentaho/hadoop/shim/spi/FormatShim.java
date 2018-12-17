@@ -22,9 +22,10 @@
 
 package org.pentaho.hadoop.shim.spi;
 
+
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat;
 import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat;
-import org.pentaho.big.data.api.cluster.NamedCluster;
 
 public interface FormatShim extends PentahoHadoopShim {
   <T extends IPentahoInputFormat> T createInputFormat( Class<T> type, NamedCluster namedCluster ) throws Exception;

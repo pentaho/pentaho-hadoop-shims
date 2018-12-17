@@ -22,7 +22,6 @@
 
 package org.pentaho.hadoop.shim.common.delegating;
 
-import org.pentaho.big.data.api.cluster.NamedCluster;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.hadoop.shim.ConfigurationException;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
@@ -30,6 +29,7 @@ import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
 import org.pentaho.hadoop.shim.ShimVersion;
 import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.api.DistributedCacheUtil;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.fs.FileSystem;
 import org.pentaho.hadoop.shim.api.mapred.RunningJob;
 import org.pentaho.hadoop.shim.common.authorization.HadoopAuthorizationService;

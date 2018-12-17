@@ -24,12 +24,13 @@ package com.pentaho.big.data.bundles.impl.shim.hbase.mapping;
 
 import com.google.common.collect.Maps;
 import com.pentaho.big.data.bundles.impl.shim.hbase.meta.HBaseValueMetaInterfaceFactoryImpl;
-import org.pentaho.bigdata.api.hbase.mapping.Mapping;
-import org.pentaho.bigdata.api.hbase.meta.HBaseValueMetaInterface;
+
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.exception.KettleXMLException;
 import org.pentaho.di.repository.ObjectId;
 import org.pentaho.di.repository.Repository;
+import org.pentaho.hadoop.shim.api.hbase.mapping.Mapping;
+import org.pentaho.hadoop.shim.api.hbase.meta.HBaseValueMetaInterface;
 import org.pentaho.hbase.shim.api.HBaseValueMeta;
 import org.pentaho.hbase.shim.spi.HBaseBytesUtilShim;
 import org.w3c.dom.Node;
