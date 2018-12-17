@@ -22,7 +22,6 @@
     <org.apache.oozie.version>4.3.0</org.apache.oozie.version>
     <sqoop.version>1.4.6-pentaho-hbase120</sqoop.version>
     <org.apache.avro.version>1.8.0</org.apache.avro.version>
-    <aws-java-sdk.version>1.11.275</aws-java-sdk.version>
     <!-- client folder -->
     <org.apache.hadoop.version>2.7.3</org.apache.hadoop.version>
     <automaton.version>1.11-8</automaton.version>

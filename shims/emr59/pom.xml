@@ -20,7 +20,6 @@
     <sqoop.version>1.4.6-pentaho-hbase120</sqoop.version>
 	<org.apache.avro.version>1.8.0</org.apache.avro.version>
     <hadoop-aws.version>2.7.3</hadoop-aws.version>
-    <aws-java-sdk.version>1.11.275</aws-java-sdk.version>
     <!-- client folder -->
     <org.apache.hadoop.version>2.7.3</org.apache.hadoop.version>
     <com.amazonaws.version>1.11.160</com.amazonaws.version>

@@ -17,14 +17,6 @@
         <include>joda-time:joda-time</include>
         <include>commons-configuration:commons-configuration</include>
       </includes>
-      <excludes>
-        <exclude>org.apache.hadoop:hadoop-yarn-server-nodemanager</exclude>
-        <exclude>xml-apis:*</exclude>
-        <exclude>commons-collections:*</exclude>
-        <exclude>javax.xml.stream:*</exclude>
-        <exclude>org.apache.calcite:*</exclude>
-        <exclude>*:tests:*</exclude>
-      </excludes>
     </dependencySet>
     <dependencySet>
       <outputDirectory>lib/client</outputDirectory>
@@ -44,13 +36,11 @@
         <include>org.apache.hadoop:hadoop-mapreduce-client-shuffle</include>
       </includes>
       <excludes>
+        <exclude>com.amazonaws:aws-java-sdk:*</exclude>
         <exclude>org.apache.hadoop:hadoop-yarn-server-nodemanager</exclude>
         <exclude>xml-apis:*</exclude>
         <exclude>*:stax-api:*</exclude>
         <exclude>commons-collections:*</exclude>
-        <exclude>javax.xml.stream:*</exclude>
-        <exclude>org.apache.calcite:*</exclude>
-        <exclude>*:tests:*</exclude>
       </excludes>
     </dependencySet>
   </dependencySets>

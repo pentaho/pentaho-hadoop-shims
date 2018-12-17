@@ -12,12 +12,9 @@
   <version>8.3.0.0-SNAPSHOT</version>
   <properties>
     <log4j.version>1.2.15</log4j.version>
-    <com.fasterxml.jackson.core.version>2.5.3</com.fasterxml.jackson.core.version>
     <xstream.version>1.4.9</xstream.version>
     <maprfs.version>6.0.0-mapr</maprfs.version>
     <commons-configuration.version>1.6</commons-configuration.version>
-    <aws-java-sdk-core.version>1.11.275</aws-java-sdk-core.version>
-    <aws-java-sdk.version>1.7.4</aws-java-sdk.version>
     <shim.type>MAPR</shim.type>
   </properties>
 
@@ -42,38 +39,12 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>${com.fasterxml.jackson.core.version}</version>
       <scope>compile</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>*</artifactId>
-          <groupId>*</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
-      <version>${com.fasterxml.jackson.core.version}</version>
       <scope>compile</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>*</artifactId>
-          <groupId>*</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-annotations</artifactId>
-      <version>${com.fasterxml.jackson.core.version}</version>
-      <scope>compile</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>*</artifactId>
-          <groupId>*</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <!--here test dependencies-->
     <dependency>
@@ -229,20 +200,12 @@
     </dependency>
     <dependency>
       <groupId>com.amazonaws</groupId>
-      <artifactId>aws-java-sdk</artifactId>
-      <version>${aws-java-sdk.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-core</artifactId>
-      <version>${aws-java-sdk-core.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
+    </dependency>
+    <dependency> <!-- required to run tests -->
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk-s3</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
   <build>
