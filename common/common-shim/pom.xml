@@ -15,8 +15,6 @@
     <httpcore.version>4.4.6</httpcore.version>
     <org.apache.parquet.version>1.8.1</org.apache.parquet.version>
     <org.apache.avro.version>1.8.1</org.apache.avro.version>
-    <jackson.version>2.6.5</jackson.version>
-    <aws-java-sdk.version>1.11.275</aws-java-sdk.version>
     <integration-test.src>src/it/java</integration-test.src>
   </properties>
   <dependencies>
@@ -108,7 +106,11 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>${jackson.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -125,13 +127,6 @@
     <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-core</artifactId>
-      <version>${aws-java-sdk.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.powermock</groupId>

@@ -32,6 +32,7 @@
     <eula-wrap_assign-deps-to-properties-phase></eula-wrap_assign-deps-to-properties-phase>
     <org.apache.orc.version>1.2.3</org.apache.orc.version>
     <jets3t.version>0.9.4</jets3t.version>
+    <aws-java-sdk.version>1.11.275</aws-java-sdk.version>
   </properties>
 
   <dependencyManagement>
@@ -130,6 +131,39 @@
         <version>${oss-licenses.version}</version>
         <type>zip</type>
         <optional>true</optional>
+      </dependency>
+      <dependency>
+        <groupId>com.amazonaws</groupId>
+        <artifactId>aws-java-sdk-core</artifactId>
+        <version>${aws-java-sdk.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>*</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>com.amazonaws</groupId>
+        <artifactId>aws-java-sdk-s3</artifactId>
+        <version>${aws-java-sdk.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>*</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>com.amazonaws</groupId>
+        <artifactId>aws-java-sdk-bundle</artifactId>
+        <version>${aws-java-sdk.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>*</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.hamcrest</groupId>
