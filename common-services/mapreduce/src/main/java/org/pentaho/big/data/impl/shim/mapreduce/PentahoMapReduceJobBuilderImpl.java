@@ -568,7 +568,7 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
     FileObject localMetaStoreSnapshotDirObject;
     //will create a temp folder on the local fs while hdfs folder name does not exist
     localMetaStoreSnapshotDirPath = Files.createTempDirectory( XmlUtil.META_FOLDER_NAME );
-    localMetaStoreSnapshotDirObject = KettleVFS.getFileObject( localMetaStoreSnapshotDirPath.toString() + File.separator + XmlUtil.META_FOLDER_NAME );
+    localMetaStoreSnapshotDirObject = KettleVFS.getFileObject( localMetaStoreSnapshotDirPath.toString() );
     hdfsMetaStoreDirForCurrentJobPath = fs.asPath( installPath + XmlUtil.META_FOLDER_NAME );
 
     //fill local metastore snapshot by the existing named cluster
