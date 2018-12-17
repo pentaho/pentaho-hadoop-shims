@@ -42,5 +42,7 @@
     <!--<module>hive</module>-->
     <module>hbase-comparators</module>
     <!--<module>oozie</module>-->
+    <module>driver</module>
+    <module>blueprint</module>
   </modules>
 </project>

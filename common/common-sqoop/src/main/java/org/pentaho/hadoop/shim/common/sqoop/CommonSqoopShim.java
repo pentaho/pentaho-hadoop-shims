@@ -37,6 +37,7 @@ import org.apache.hadoop.hbase.mapreduce.TableMapper;
 import org.apache.hadoop.hbase.protobuf.generated.ClientProtos;
 import org.apache.htrace.Trace;
 import org.apache.zookeeper.ZooKeeper;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.pentaho.hadoop.shim.ShimVersion;
 import org.pentaho.hadoop.shim.api.Configuration;
@@ -127,7 +128,15 @@ public class CommonSqoopShim implements SqoopShim {
   }
 
   private String getSqoopJarLocation( Configuration c ) {
-    File filesInsideBundle = new File( bundleContext.getBundle().getDataFile( "" ).getParent() );
+    long bundleId = 0;
+    String driverBundleName = bundleContext.getBundle().getSymbolicName().replace( "blueprint","driver" );
+    for ( Bundle bundle : bundleContext.getBundles() ) {
+        if ( bundle.getSymbolicName().equals( driverBundleName ) ) {
+            bundleId = bundle.getBundleId();
+        }
+    }
+
+    File filesInsideBundle = new File( bundleContext.getBundle( bundleId ).getDataFile( "" ).getParent() + "/version0.0/bundle.jar-embedded" );
     Iterator<File> filesIterator = FileUtils.iterateFiles( filesInsideBundle, new String[] { "jar" }, true );
 
     StringBuilder sb = new StringBuilder();
@@ -140,12 +149,14 @@ public class CommonSqoopShim implements SqoopShim {
       }
     }
 
+    /*
     try {
       FileSystem fs = FileSystem.getLocal( ShimUtils.asConfiguration( c ) );
       return new Path( sb.toString() ).makeQualified( fs ).toString();
     } catch ( IOException e ) {
       e.printStackTrace();
     }
+    */
     return sb.toString();
   }
 
@@ -158,8 +169,16 @@ public class CommonSqoopShim implements SqoopShim {
     Set<String> tmpjars = new HashSet<String>();
     if ( conf.get( TMPJARS ) != null ) {
       tmpjars.addAll( Arrays.asList( conf.get( TMPJARS ).split( "," ) ) );
-}
-    File filesInsideBundle = new File( bundleContext.getBundle().getDataFile( "" ).getParent() );
+    }
+
+      long bundleId = 0;
+      String driverBundleName = bundleContext.getBundle().getSymbolicName().replace( "blueprint","driver" );
+      for ( Bundle bundle : bundleContext.getBundles() ) {
+          if ( bundle.getSymbolicName().equals( driverBundleName ) ) {
+              bundleId = bundle.getBundleId();
+          }
+      }
+      File filesInsideBundle = new File( bundleContext.getBundle( bundleId ).getDataFile( "" ).getParent() + "/version0.0/bundle.jar-embedded" );
     Iterator<File> filesIterator = FileUtils.iterateFiles( filesInsideBundle, new String[] { "jar" }, true );
 
     getOut:
