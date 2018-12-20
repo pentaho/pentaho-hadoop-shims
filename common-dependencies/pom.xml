@@ -234,7 +234,7 @@
                                 *:hbase-server,*:protobuf-java
                             </include>
                             <exclude>
-                                *:*log4j*,*:xml-apis,*:xercesImpl
+                                *:*log4j*,*:xml-apis,*:xercesImpl,*:hadoop*,*:hbase*,*:zookeeper*
                             </exclude>
                             <transitive>true</transitive>
                         </resolverFilter>

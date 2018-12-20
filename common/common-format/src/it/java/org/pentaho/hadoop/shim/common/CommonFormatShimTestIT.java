@@ -33,9 +33,13 @@ import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.core.row.value.ValueMetaBinary;
 import org.pentaho.di.core.row.value.ValueMetaString;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
-import org.pentaho.hadoop.shim.api.format.*;
+import org.pentaho.hadoop.shim.api.format.AvroSpec;
+import org.pentaho.hadoop.shim.api.format.IParquetInputField;
+import org.pentaho.hadoop.shim.api.format.IPentahoAvroOutputFormat;
 import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat.IPentahoRecordReader;
 import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat.IPentahoRecordWriter;
+import org.pentaho.hadoop.shim.api.format.IPentahoParquetInputFormat;
+import org.pentaho.hadoop.shim.api.format.IPentahoParquetOutputFormat;
 import org.pentaho.hadoop.shim.api.format.ParquetSpec;
 import org.pentaho.hadoop.shim.common.format.parquet.ParquetUtils;
 import org.pentaho.hadoop.shim.common.format.avro.AvroInputField;
@@ -50,12 +54,10 @@ import org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter.PentahoTwi
 import java.io.File;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -64,12 +66,12 @@ import static org.mockito.Mockito.mock;
 /**
  * Created by Vasilina_Terehova on 7/27/2017.
  */
-@RunWith(Parameterized.class)
+@RunWith( Parameterized.class )
 public class CommonFormatShimTestIT {
 
   @Parameterized.Parameters
   public static Iterable<Object[]> data() {
-    return Arrays.asList(new Object[][] { { "APACHE" }, { "TWITTER" } });
+    return Arrays.asList( new Object[][] { { "APACHE" }, { "TWITTER" } } );
   }
 
   @Parameterized.Parameter
@@ -109,7 +111,7 @@ public class CommonFormatShimTestIT {
 
     IPentahoParquetInputFormat pentahoParquetInputFormat = null;
     NamedCluster namedCluster = mock( NamedCluster.class );
-    switch( provider ) {
+    switch ( provider ) {
       case "APACHE":
         pentahoParquetInputFormat = new PentahoApacheInputFormat( namedCluster );
         break;
@@ -117,7 +119,7 @@ public class CommonFormatShimTestIT {
         pentahoParquetInputFormat = new PentahoTwitterInputFormat( namedCluster );
         break;
       default:
-        Assert.fail("Invalid provider name used.");
+        Assert.fail( "Invalid provider name used." );
     }
 
     pentahoParquetInputFormat
@@ -147,7 +149,7 @@ public class CommonFormatShimTestIT {
     String parquetFilePath = jobConfiguration.get( FileOutputFormat.OUTDIR ) + PARQUET_FILE_NAME;
 
     IPentahoParquetOutputFormat pentahoParquetOutputFormat = null;
-    switch( provider ) {
+    switch ( provider ) {
       case "APACHE":
         pentahoParquetOutputFormat = new PentahoApacheOutputFormat();
         break;
@@ -155,7 +157,7 @@ public class CommonFormatShimTestIT {
         pentahoParquetOutputFormat = new PentahoTwitterOutputFormat();
         break;
       default:
-        org.junit.Assert.fail("Invalid provider name used.");
+        org.junit.Assert.fail( "Invalid provider name used." );
     }
 
     pentahoParquetOutputFormat.setOutputFile( parquetFilePath, true );

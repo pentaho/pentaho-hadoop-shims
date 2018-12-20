@@ -164,6 +164,12 @@
       <artifactId>parquet-hadoop-bundle</artifactId>
       <version>${twittwer.parquet.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.pentaho</groupId>
+      <artifactId>shim-api</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

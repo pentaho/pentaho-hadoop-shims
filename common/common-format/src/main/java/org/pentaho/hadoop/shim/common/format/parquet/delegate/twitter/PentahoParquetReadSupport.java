@@ -29,7 +29,6 @@ import parquet.schema.MessageType;
 import parquet.schema.Type;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.hadoop.shim.api.format.IParquetInputField;
-import org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter.ParquetConverter.MyRecordMaterializer;
 import org.pentaho.hadoop.shim.common.format.parquet.ParquetInputFieldList;
 
 import java.util.ArrayList;
