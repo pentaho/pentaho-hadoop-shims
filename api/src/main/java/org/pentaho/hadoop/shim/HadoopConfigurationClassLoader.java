@@ -59,6 +59,7 @@ public class HadoopConfigurationClassLoader extends URLClassLoader {
     }
     loadClassesFromParent.add( "org.apache.commons.log" );
     loadClassesFromParent.add( "org.apache.log4j" );
+    loadClassesFromParent.add( "org.slf4j" );
   }
 
   /**
