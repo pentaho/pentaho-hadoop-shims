@@ -39,6 +39,8 @@ import org.apache.htrace.Trace;
 import org.apache.zookeeper.ZooKeeper;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.wiring.BundleWire;
+import org.osgi.framework.wiring.BundleWiring;
 import org.pentaho.hadoop.shim.ShimVersion;
 import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.spi.SqoopShim;
@@ -64,6 +66,7 @@ public class CommonSqoopShim implements SqoopShim {
   private static final String TMPJARS = "tmpjars";
 
   private BundleContext bundleContext;
+  private List<String> bundleFilesLocations = new ArrayList<>();
 
   public BundleContext getBundleContext() {
     return bundleContext;
@@ -84,13 +87,14 @@ public class CommonSqoopShim implements SqoopShim {
     Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
     String tmpPropertyHolder = System.getProperty( "hadoop.alt.classpath" );
     try {
+      loadBundleFilesLocations();
       System.setProperty( "hadoop.alt.classpath", createHadoopAltClasspath() );
       c.set( TMPJARS, getSqoopJarLocation( c ) );
       if ( args.length > 0 && Arrays.asList( args ).contains( "--hbase-table" ) ) {
-          addHbaseDependencyJars( c, HConstants.class, ClientProtos.class, Put.class,
+        addHbaseDependencyJars( c, HConstants.class, ClientProtos.class, Put.class,
                   CompatibilityFactory.class, TableMapper.class, ZooKeeper.class,
                   Channel.class, Message.class, Lists.class, Trace.class, MetricsRegistry.class
-          );
+        );
       }
       return Sqoop.runTool( args, ShimUtils.asConfiguration( c ) );
     } catch ( IOException e ) {
@@ -106,21 +110,37 @@ public class CommonSqoopShim implements SqoopShim {
     }
   }
 
+  private void loadBundleFilesLocations() {
+
+    String bundleLocation = bundleContext.getBundle().getDataFile( "" ).getParent();
+    bundleFilesLocations.add( bundleLocation );
+    BundleWiring wiring = bundleContext.getBundle().adapt( BundleWiring.class );
+    List<BundleWire> fragments = wiring.getProvidedWires( "osgi.wiring.host" );
+    for ( BundleWire fragment : fragments ) {
+      Bundle fragmentBundle = fragment.getRequirerWiring().getBundle();
+      String fragmentBundleLocation = fragmentBundle.getDataFile( "" ).getParent();
+      bundleFilesLocations.add( fragmentBundleLocation );
+    }
+  }
+
   private String createHadoopAltClasspath() {
-    File filesInsideBundle = new File( bundleContext.getBundle().getDataFile( "" ).getParent() );
-    Iterator<File> filesIterator = FileUtils.iterateFiles( filesInsideBundle, new String[] { "jar" }, true );
 
     StringBuilder sb = new StringBuilder();
 
-    while ( filesIterator.hasNext() ) {
-      File file = filesIterator.next();
-      String name = file.getName();
-      if ( name.startsWith( "hadoop-common" )
-        || name.startsWith( "hadoop-mapreduce-client-core" )
-        || name.startsWith( "hadoop-core" )
-        || name.startsWith( "sqoop" ) ) {
-        sb.append( file.getAbsolutePath() );
-        sb.append( File.pathSeparator );
+    for ( String bundleFileLocation : bundleFilesLocations ) {
+      File filesInsideBundle = new File( bundleFileLocation );
+      Iterator<File> filesIterator = FileUtils.iterateFiles( filesInsideBundle, new String[]{"jar"}, true );
+
+      while ( filesIterator.hasNext() ) {
+        File file = filesIterator.next();
+        String name = file.getName();
+        if ( name.startsWith( "hadoop-common" )
+                || name.startsWith( "hadoop-mapreduce-client-core" )
+                || name.startsWith( "hadoop-core" )
+                || name.startsWith( "sqoop" ) ) {
+          sb.append( file.getAbsolutePath() );
+          sb.append( File.pathSeparator );
+        }
       }
     }
 
@@ -128,87 +148,74 @@ public class CommonSqoopShim implements SqoopShim {
   }
 
   private String getSqoopJarLocation( Configuration c ) {
-    long bundleId = 0;
-    String driverBundleName = bundleContext.getBundle().getSymbolicName().replace( "blueprint","driver" );
-    for ( Bundle bundle : bundleContext.getBundles() ) {
-        if ( bundle.getSymbolicName().equals( driverBundleName ) ) {
-            bundleId = bundle.getBundleId();
-        }
-    }
-
-    File filesInsideBundle = new File( bundleContext.getBundle( bundleId ).getDataFile( "" ).getParent() + "/version0.0/bundle.jar-embedded" );
-    Iterator<File> filesIterator = FileUtils.iterateFiles( filesInsideBundle, new String[] { "jar" }, true );
 
     StringBuilder sb = new StringBuilder();
 
-    while ( filesIterator.hasNext() ) {
-      File file = filesIterator.next();
-      String name = file.getName();
-      if ( name.startsWith( "sqoop" ) ) {
-        sb.append( file.getAbsolutePath() );
+    for ( String bundleFileLocation : bundleFilesLocations ) {
+      File filesInsideBundle = new File( bundleFileLocation );
+      Iterator<File> filesIterator = FileUtils.iterateFiles( filesInsideBundle, new String[]{"jar"}, true );
+
+      while ( filesIterator.hasNext() ) {
+        File file = filesIterator.next();
+        String name = file.getName();
+        if ( name.startsWith( "sqoop" ) ) {
+          sb.append( file.getAbsolutePath() );
+        }
       }
     }
 
-    /*
     try {
       FileSystem fs = FileSystem.getLocal( ShimUtils.asConfiguration( c ) );
       return new Path( sb.toString() ).makeQualified( fs ).toString();
     } catch ( IOException e ) {
       e.printStackTrace();
     }
-    */
     return sb.toString();
   }
 
-  public void addHbaseDependencyJars(Configuration conf, Class... classes )
+  public void addHbaseDependencyJars( Configuration conf, Class... classes )
     throws IOException {
-    List<String> classNames = new ArrayList<String>();
+    List<String> classNames = new ArrayList<>();
     for ( Class clazz : classes ) {
       classNames.add( clazz.getCanonicalName().replace( ".", "/" ) + ".class" );
     }
-    Set<String> tmpjars = new HashSet<String>();
+    Set<String> tmpjars = new HashSet<>();
     if ( conf.get( TMPJARS ) != null ) {
       tmpjars.addAll( Arrays.asList( conf.get( TMPJARS ).split( "," ) ) );
     }
 
-      long bundleId = 0;
-      String driverBundleName = bundleContext.getBundle().getSymbolicName().replace( "blueprint","driver" );
-      for ( Bundle bundle : bundleContext.getBundles() ) {
-          if ( bundle.getSymbolicName().equals( driverBundleName ) ) {
-              bundleId = bundle.getBundleId();
-          }
-      }
-      File filesInsideBundle = new File( bundleContext.getBundle( bundleId ).getDataFile( "" ).getParent() + "/version0.0/bundle.jar-embedded" );
-    Iterator<File> filesIterator = FileUtils.iterateFiles( filesInsideBundle, new String[] { "jar" }, true );
+    for ( String bundleFileLocation : bundleFilesLocations ) {
+      File filesInsideBundle = new File( bundleFileLocation );
+      Iterator<File> filesIterator = FileUtils.iterateFiles( filesInsideBundle, new String[]{"jar"}, true );
 
-    getOut:
-    while ( filesIterator.hasNext() ) {
-      File file = filesIterator.next();
-      ZipFile zip = new ZipFile( file );
-      // Process the jar file.
+      getOut:
+      while ( filesIterator.hasNext() ) {
+        File file = filesIterator.next();
+        ZipFile zip = new ZipFile( file );
+        // Process the jar file.
 
-      try {
-        // Loop through the jar entries and print the name of each one.
+        try {
+          // Loop through the jar entries and print the name of each one.
 
-        for ( Enumeration list = zip.entries(); list.hasMoreElements(); ) {
-          ZipEntry entry = (ZipEntry) list.nextElement();
-          System.out.println( entry.getName() );
-          if ( !entry.isDirectory() && entry.getName().endsWith( ".class" ) ) {
-            ListIterator<String> classNameIterator = classNames.listIterator();
-            while ( classNameIterator.hasNext() ) {
-              if ( entry.getName().endsWith( classNameIterator.next() ) ) {
-                // If here we found a class in this jar, add the jar to the list, and delete the class from classNames.
-                tmpjars.add( file.toURI().toURL().toString() );
-                classNameIterator.remove();
-                if ( classNames.size() == 0 ) {
-                  break getOut;
+          for ( Enumeration list = zip.entries(); list.hasMoreElements(); ) {
+            ZipEntry entry = (ZipEntry) list.nextElement();
+            if ( !entry.isDirectory() && entry.getName().endsWith( ".class" ) ) {
+              ListIterator<String> classNameIterator = classNames.listIterator();
+              while ( classNameIterator.hasNext() ) {
+                if ( entry.getName().endsWith( classNameIterator.next() ) ) {
+                  // If here we found a class in this jar, add the jar to the list, and delete the class from classNames.
+                  tmpjars.add( file.toURI().toURL().toString() );
+                  classNameIterator.remove();
+                  if ( classNames.size() == 0 ) {
+                    break getOut;
+                  }
                 }
               }
             }
           }
+        } finally {
+          zip.close();
         }
-      } finally {
-        zip.close();
       }
     }
 
