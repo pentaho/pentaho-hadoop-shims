@@ -66,7 +66,6 @@
     <org.slf4j.version>1.7.10</org.slf4j.version>
     <javax.xml.bind.version>2.2.2</javax.xml.bind.version>
     <pentaho-hadoop2-windows-patch.version>08072014</pentaho-hadoop2-windows-patch.version>
-    <org.apache.commons22.version>1.4.1</org.apache.commons22.version>
     <javax.servlet.jsp.version>2.1</javax.servlet.jsp.version>
     <com.thoughtworks.xstream.version>1.4.4</com.thoughtworks.xstream.version>
     <com.jamesmurty.utils.version>0.4</com.jamesmurty.utils.version>
@@ -671,7 +670,6 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-compress</artifactId>
-      <version>${org.apache.commons22.version}</version>
       <scope>compile</scope>
       <exclusions>
         <exclusion>
