@@ -20,6 +20,11 @@
         <include>org.apache.pig:pig</include>
         <include>com.twitter:parquet-pig</include>
         <include>com.twitter:parquet-hadoop-bundle</include>
+        <include>org.apache.hbase:hbase-protocol-shaded</include>
+        <include>com.codahale.metrics:metrics-core</include>
+        <include>org.apache.hbase.thirdparty:hbase-shaded-miscellaneous</include>
+        <include>org.apache.hbase.thirdparty:hbase-shaded-protobuf</include>
+        <include>org.apache.hbase.thirdparty:hbase-shaded-netty</include>
       </includes>
       <excludes>
         <exclude>log4j:log4j</exclude>
