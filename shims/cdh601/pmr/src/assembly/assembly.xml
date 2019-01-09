@@ -16,11 +16,15 @@
         <include>org.apache.hbase:hbase-common</include>
         <include>org.apache.hbase:hbase-examples</include>
         <include>org.apache.hbase:hbase-protocol</include>
+        <include>org.apache.hbase:hbase-protocol-shaded</include>
         <include>org.apache.hbase:hbase-server</include>
         <include>org.apache.hbase:hbase-thrift</include>
         <include>org.apache.htrace:htrace-core</include>
-        <include>com.yammer.metrics:metrics-core</include>
+        <include>com.codahale.metrics:metrics-core</include>
         <include>org.apache.zookeeper:zookeeper</include>
+        <include>org.apache.hbase.thirdparty:hbase-shaded-miscellaneous</include>
+        <include>org.apache.hbase.thirdparty:hbase-shaded-protobuf</include>
+        <include>org.apache.hbase.thirdparty:hbase-shaded-netty</include>
       </includes>
       <excludes>
         <exclude>*:tests:*</exclude>

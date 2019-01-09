@@ -78,8 +78,9 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>com.yammer.metrics</groupId>
+      <groupId>com.codahale.metrics</groupId>
       <artifactId>metrics-core</artifactId>
+      <version>${com.codahale.metrics.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.zookeeper</groupId>

@@ -154,6 +154,12 @@
       <artifactId>hive-metastore</artifactId>
       <version>${org.apache.hive.version}</version>
     </dependency>
+    <!-- Added next dependency for hbase -->
+    <dependency>
+      <groupId>com.codahale.metrics</groupId>
+      <artifactId>metrics-core</artifactId>
+      <version>${com.codahale.metrics.version}</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
