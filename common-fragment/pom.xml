@@ -553,7 +553,6 @@
                         <Bundle-Version>${pentaho-osgi-bundles.version}</Bundle-Version>
                         <Fragment-Host>pentaho-hadoop-shims-hdp26-blueprint</Fragment-Host>
                         <Pentaho-Code-Version>${pentaho-code.version}</Pentaho-Code-Version>
-                        <!--<DynamicImport-Package>*</DynamicImport-Package>-->
                         <Import-Package>
                         </Import-Package>
                         <_exportcontents>
