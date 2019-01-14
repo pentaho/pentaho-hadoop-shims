@@ -14,8 +14,129 @@
         <vendor-driver.version>2.6.0.0.hdp</vendor-driver.version>
         <pentaho-code.version>11.0.0.0</pentaho-code.version>
     </properties>
+    <dependencies>
+
+        <dependency>
+            <groupId>com.pentaho</groupId>
+            <artifactId>shim-bundle-plugin</artifactId>
+            <version>${shim-bundle-plugin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-mapreduce-client-core</artifactId>
+            <version>${org.apache.hadoop.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-yarn-api</artifactId>
+            <version>${org.apache.hadoop.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-yarn-common</artifactId>
+            <version>${org.apache.hadoop.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-common</artifactId>
+            <version>${org.apache.hadoop.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.orc</groupId>
+            <artifactId>orc-core</artifactId>
+            <version>${org.apache.orc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.avro</groupId>
+            <artifactId>avro</artifactId>
+            <version>${org.apache.avro.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.parquet</groupId>
+            <artifactId>parquet-hadoop-bundle</artifactId>
+            <version>${parquet.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.sqoop</groupId>
+            <artifactId>sqoop</artifactId>
+            <version>${sqoop.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pig</groupId>
+            <artifactId>pig</artifactId>
+            <version>${pig.version}</version>
+            <classifier>${dependency.pig.classifier}</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.oozie</groupId>
+            <artifactId>oozie-client</artifactId>
+            <version>${org.apache.oozie.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hive</groupId>
+            <artifactId>hive-jdbc</artifactId>
+            <version>${org.apache.hive.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-hdfs</artifactId>
+            <version>${org.apache.hadoop.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-server</artifactId>
+            <version>${org.apache.hbase.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-client</artifactId>
+            <version>${org.apache.hbase.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-common</artifactId>
+            <version>${org.apache.hbase.version}</version>
+        </dependency>
+
+    </dependencies>
     <build>
         <plugins>
+
+            <plugin>
+                <groupId>com.pentaho</groupId>
+                <artifactId>shim-bundle-plugin</artifactId>
+                <version>${shim-bundle-plugin.version}</version>
+                <configuration>
+                    <resolverFilters>
+                        <resolverFilter>
+                            <include>
+                                *:hadoop-mapreduce-client-core,*:hadoop-yarn-api,*:hadoop-common,*:orc-core,*:avro,
+                                *:parquet-hadoop-bundle,*:sqoop,*:oozie-client,*:hive-jdbc,*:hadoop-hdfs,
+                                *:hbase-server,*:hbase-client,*:hbase-common,*:hadoop-yarn-common
+                            </include>
+                            <exclude>
+                                *:*log4j*,*:xml-apis,*:xercesImpl
+                            </exclude>
+                            <transitive>true</transitive>
+                        </resolverFilter>
+                        <resolverFilter>
+                            <include>
+                                *:pig
+                            </include>
+                            <transitive>false</transitive>
+                        </resolverFilter>
+                    </resolverFilters>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>resolve</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -106,7 +227,7 @@
                         </Import-Package>
                         <_exportcontents>
                         </_exportcontents>
-                        <!--<Embed-Dependency>*</Embed-Dependency>-->
+                        <Embed-Dependency>*</Embed-Dependency>
                     </instructions>
                 </configuration>
             </plugin>
