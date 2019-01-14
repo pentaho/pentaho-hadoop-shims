@@ -25,6 +25,7 @@
         <include>org.apache.hbase.thirdparty:hbase-shaded-miscellaneous</include>
         <include>org.apache.hbase.thirdparty:hbase-shaded-protobuf</include>
         <include>org.apache.hbase.thirdparty:hbase-shaded-netty</include>
+        <include>org.python:jython</include>
       </includes>
       <excludes>
         <exclude>log4j:log4j</exclude>
