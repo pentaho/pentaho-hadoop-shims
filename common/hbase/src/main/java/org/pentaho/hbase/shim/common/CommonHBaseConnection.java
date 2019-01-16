@@ -128,20 +128,20 @@ public class CommonHBaseConnection implements HBaseConnection, IHBaseClientFacto
       String siteConfig = connProps.getProperty( SITE_KEY );
       String zookeeperQuorum = connProps.getProperty( ZOOKEEPER_QUORUM_KEY );
       String zookeeperPort = connProps.getProperty( ZOOKEEPER_PORT_KEY );
-      String namedCluster = connProps.getProperty( "named.cluster" );
+      String namedClusterConfigId = connProps.getProperty( "named.cluster.config.id" );
 
       m_config = new Configuration();
       try {
         if ( !HBaseConnection.isEmpty( defaultConfig ) ) {
           m_config.addResource( HBaseConnection.stringToURL( defaultConfig ) );
         } else {
-          ShimConfigsLoader.addConfigsAsResources( namedCluster, m_config::addResource, ShimConfigsLoader.ClusterConfigNames.HBASE_DEFAULT.toString() );
+          ShimConfigsLoader.addConfigsAsResources( namedClusterConfigId, m_config::addResource, ShimConfigsLoader.ClusterConfigNames.HBASE_DEFAULT.toString() );
         }
 
         if ( !HBaseConnection.isEmpty( siteConfig ) ) {
           m_config.addResource( HBaseConnection.stringToURL( siteConfig ) );
         } else {
-          ShimConfigsLoader.addConfigsAsResources( namedCluster, m_config::addResource, ShimConfigsLoader.ClusterConfigNames.HBASE_SITE.toString() );
+          ShimConfigsLoader.addConfigsAsResources( namedClusterConfigId, m_config::addResource, ShimConfigsLoader.ClusterConfigNames.HBASE_SITE.toString() );
         }
       } catch ( MalformedURLException e ) {
         throw new IllegalArgumentException(
@@ -277,10 +277,10 @@ public class CommonHBaseConnection implements HBaseConnection, IHBaseClientFacto
       try {
         Method method = org.apache.hadoop.hbase.client.HBaseAdmin.class.getMethod( "checkHBaseAvailable", new Class[]{Configuration.class} );
         method.invoke( m_config );
-      } catch ( Exception e1) {
+      } catch ( Exception e1 ) {
         try {
-          Method method = org.apache.hadoop.hbase.client.HBaseAdmin.class.getMethod("available", new Class[]{Configuration.class});
-          method.invoke(m_config);
+          Method method = org.apache.hadoop.hbase.client.HBaseAdmin.class.getMethod( "available", new Class[]{Configuration.class} );
+          method.invoke( m_config );
         } catch ( Exception e2 ) {
         }
       }
