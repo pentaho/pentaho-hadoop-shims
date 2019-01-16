@@ -112,6 +112,7 @@ public class CommonSqoopShim implements SqoopShim {
 
   private void loadBundleFilesLocations() {
 
+    bundleFilesLocations.clear();
     String bundleLocation = bundleContext.getBundle().getDataFile( "" ).getParent();
     bundleFilesLocations.add( bundleLocation );
     BundleWiring wiring = bundleContext.getBundle().adapt( BundleWiring.class );
