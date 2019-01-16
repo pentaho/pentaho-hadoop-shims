@@ -154,26 +154,8 @@ public class HiveDriver implements Driver {
     return delegate;
   }
 
-  protected String extractHadoopConfigurationId( String url ) {
-    String hadoopConfigurationId = null;
-    int startIndex = url.indexOf( ";pentahoNamedCluster=" );
-    if ( startIndex != -1 ) {
-      startIndex = url.indexOf( "=", startIndex ) + 1;
-      if ( startIndex < ( url.length() - 1 ) ) {
-        int endIndex = -1;
-        endIndex = url.indexOf( ";", startIndex );
-        if ( endIndex != -1 ) {
-          hadoopConfigurationId = url.substring( startIndex, endIndex ).trim();
-        } else {
-          hadoopConfigurationId = url.substring( startIndex ).trim();
-        }
-      }
-    }
-    return hadoopConfigurationId;
-  }
-
   protected boolean checkBeforeAccepting( String url ) {
-    return ( hadoopConfigurationId != null ) && url.matches( ".+:hive2:.*" ) && hadoopConfigurationId.equals( extractHadoopConfigurationId( url ) );
+    return ( hadoopConfigurationId != null ) && url.matches( ".+:hive2:.*" );
   }
 
   @Override public DriverPropertyInfo[] getPropertyInfo( String url, Properties info ) throws SQLException {
