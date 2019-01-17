@@ -166,6 +166,22 @@
       <artifactId>jython</artifactId>
       <version>2.5.3</version>
     </dependency>
+    <!-- Added next 3 dependencies for Hbase in Sqooop -->
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-hadoop2-compat</artifactId>
+      <version>2.0.0-cdh6.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-metrics</artifactId>
+      <version>2.0.0-cdh6.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-metrics-api</artifactId>
+      <version>2.0.0-cdh6.0.1</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
