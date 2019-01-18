@@ -102,7 +102,41 @@
             <artifactId>hbase-common</artifactId>
             <version>${org.apache.hbase.version}</version>
         </dependency>
-
+        <!-- The following added for Pig -->
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr-runtime</artifactId>
+            <version>${org.antlr.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>dk.brics.automaton</groupId>
+            <artifactId>automaton</artifactId>
+            <version>${automaton.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>${joda-time.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!--- End dependencies for Pig -->
     </dependencies>
     <build>
         <plugins>
@@ -126,7 +160,8 @@
                         </resolverFilter>
                         <resolverFilter>
                             <include>
-                                *:pig
+                                <!--Needed for Pig-->
+                                *:antlr-runtime,*:automaton,*:pig,*:joda-time
                             </include>
                             <transitive>false</transitive>
                         </resolverFilter>
