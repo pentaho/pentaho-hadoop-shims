@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -24,10 +24,10 @@ package org.pentaho.hadoop.shim.common.format.parquet;
 import java.io.IOException;
 import java.util.Iterator;
 
-//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_name=="mapr60"
+//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_name=="mapr60" || shim_name=="cdh601"
 import org.apache.parquet.hadoop.ParquetRecordReader;
 //#endif
-//#if shim_type=="CDH" || shim_type=="MAPR" && shim_name!="mapr60"
+//#if shim_type=="CDH" && shim_name!="cdh601" || shim_type=="MAPR" && shim_name!="mapr60"
 //$import parquet.hadoop.ParquetRecordReader;
 //#endif
 
