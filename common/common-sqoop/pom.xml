@@ -111,6 +111,17 @@
       <version>${htrace-core.version}</version>
       <scope>provided</scope>
     </dependency>
+      <dependency>
+          <groupId>org.apache.avro</groupId>
+          <artifactId>avro</artifactId>
+          <version>1.8.0</version>
+          <scope>compile</scope>
+      </dependency>
+    <dependency>
+      <groupId>org.apache.avro</groupId>
+      <artifactId>avro-mapred</artifactId>
+      <version>1.8.0</version>
+    </dependency>
   </dependencies>
 
 </project>
