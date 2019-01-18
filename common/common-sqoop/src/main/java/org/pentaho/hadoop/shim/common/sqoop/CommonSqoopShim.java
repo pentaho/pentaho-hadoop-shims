@@ -27,6 +27,8 @@ import com.google.common.collect.Lists;
 import com.google.protobuf.Message;
 import com.yammer.metrics.core.MetricsRegistry;
 import io.netty.channel.Channel;
+import org.apache.avro.Conversion;
+import org.apache.avro.mapred.AvroWrapper;
 import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -90,8 +92,11 @@ public class CommonSqoopShim implements SqoopShim {
       loadBundleFilesLocations();
       System.setProperty( "hadoop.alt.classpath", createHadoopAltClasspath() );
       c.set( TMPJARS, getSqoopJarLocation( c ) );
+      if ( args.length > 0 && Arrays.asList( args ).contains( "--as-avrodatafile" ) ) {
+        addDependencyJars( c, Conversion.class, AvroWrapper.class );
+      }
       if ( args.length > 0 && Arrays.asList( args ).contains( "--hbase-table" ) ) {
-        addHbaseDependencyJars( c, HConstants.class, ClientProtos.class, Put.class,
+        addDependencyJars( c, HConstants.class, ClientProtos.class, Put.class,
                   CompatibilityFactory.class, TableMapper.class, ZooKeeper.class,
                   Channel.class, Message.class, Lists.class, Trace.class, MetricsRegistry.class
         );
@@ -174,7 +179,7 @@ public class CommonSqoopShim implements SqoopShim {
     return sb.toString();
   }
 
-  public void addHbaseDependencyJars( Configuration conf, Class... classes )
+  public void addDependencyJars( Configuration conf, Class... classes )
     throws IOException {
     List<String> classNames = new ArrayList<>();
     for ( Class clazz : classes ) {

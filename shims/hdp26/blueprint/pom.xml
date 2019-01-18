@@ -52,6 +52,11 @@
             <version>${org.apache.avro.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.avro</groupId>
+            <artifactId>avro-mapred</artifactId>
+            <version>${org.apache.avro.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.parquet</groupId>
             <artifactId>parquet-hadoop-bundle</artifactId>
             <version>${parquet.version}</version>
@@ -112,7 +117,7 @@
                             <include>
                                 *:hadoop-mapreduce-client-core,*:hadoop-yarn-api,*:hadoop-common,*:orc-core,*:avro,
                                 *:parquet-hadoop-bundle,*:sqoop,*:oozie-client,*:hive-jdbc,*:hadoop-hdfs,
-                                *:hbase-server,*:hbase-client,*:hbase-common,*:hadoop-yarn-common
+                                *:hbase-server,*:hbase-client,*:hbase-common,*:hadoop-yarn-common,*:avro-mapred
                             </include>
                             <exclude>
                                 *:*log4j*,*:xml-apis,*:xercesImpl
