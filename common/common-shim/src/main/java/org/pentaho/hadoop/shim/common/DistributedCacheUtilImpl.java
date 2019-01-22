@@ -192,8 +192,7 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.Dis
     out.close();
 
     stageForCache( extracted, fs, destination, true, false );
-
-    //stageBigDataPlugin( fs, destination, bigDataPlugin );
+    stageBigDataPlugin( fs, destination, bigDataPlugin );
 
 //    if ( !Const.isEmpty( additionalPlugins ) ) {
 //      stagePluginsForCache( fs, new Path( destination, PATH_PLUGINS ), additionalPlugins );
@@ -216,7 +215,6 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.Dis
   private void stageBigDataPlugin( FileSystem fs, Path dest, FileObject pluginFolder )
     throws KettleFileException, IOException {
     Path pluginsDir = new Path( dest, PATH_PLUGINS );
-    Path libDir = new Path( dest, PATH_LIB );
     Path bigDataPluginDir = new Path( pluginsDir, pluginFolder.getName().getBaseName() );
 
     // Stage everything except the hadoop-configurations and pmr libraries
@@ -225,34 +223,6 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.Dis
         && !"pentaho-mapreduce-libraries.zip".equals( f.getName().getBaseName() ) ) {
         stageForCache( f, fs, new Path( bigDataPluginDir, f.getName().getBaseName() ), true, false );
       }
-    }
-
-    // Stage the current Hadoop configuration without its client-only or pmr libraries (these will be copied into the
-    // lib dir)
-    Path hadoopConfigDir =
-      new Path( new Path( bigDataPluginDir, "hadoop-configurations" ), configuration.getIdentifier() );
-    for ( FileObject f : configuration.getLocation().findFiles( new FileSelector() {
-      @Override
-      public boolean includeFile( FileSelectInfo info ) throws Exception {
-        return FileType.FILE.equals( info.getFile().getType() );
-      }
-
-      @Override
-      public boolean traverseDescendents( FileSelectInfo info ) throws Exception {
-        String name = info.getFile().getName().getBaseName();
-        return !( ( PATH_PMR.equals( name ) || PATH_CLIENT.equals( name ) )
-          && PATH_LIB.equals( info.getFile().getParent().getName().getBaseName() ) );
-      }
-    } ) ) {
-      // Create relative path to write to
-      String relPath = configuration.getLocation().getName().getRelativeName( f.getName() );
-      stageForCache( f, fs, new Path( hadoopConfigDir, relPath ), true, false );
-    }
-
-    // Stage all pmr libraries for the Hadoop configuration into the root library path for the Kettle environment
-    for ( FileObject f : configuration.getLocation().resolveFile( PATH_LIB ).resolveFile( PATH_PMR )
-      .findFiles( new FileTypeSelector( FileType.FILE ) ) ) {
-      stageForCache( f, fs, new Path( libDir, f.getName().getBaseName() ), true, false );
     }
   }
 

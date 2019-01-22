@@ -566,7 +566,7 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
     java.nio.file.Path localMetaStoreSnapshotDirPath;
     Path hdfsMetaStoreDirForCurrentJobPath;
     FileObject localMetaStoreSnapshotDirObject;
-    //will create a temp folder on the local fs while hdfs folder name does not exist
+
     localMetaStoreSnapshotDirPath = Files.createTempDirectory( XmlUtil.META_FOLDER_NAME );
     localMetaStoreSnapshotDirObject = KettleVFS.getFileObject( localMetaStoreSnapshotDirPath.toString() );
     hdfsMetaStoreDirForCurrentJobPath = fs.asPath( installPath + XmlUtil.META_FOLDER_NAME );
@@ -584,6 +584,7 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
       FileSystemConfigBuilder nc = KettleVFS.getInstance().getFileSystemManager().getFileSystemConfigBuilder( "hc" );
       Method snapshotMethod = nc.getClass().getMethod( "snapshotNamedClusterToMetaStore", IMetaStore.class );
       snapshotMethod.invoke( nc, snapshot );
+
       stageConfigurationFiles( metaStoreSnapshotDir );
     } catch ( FileSystemException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e ) {
       e.printStackTrace();
