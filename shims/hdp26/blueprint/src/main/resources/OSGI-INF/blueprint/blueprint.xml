@@ -186,7 +186,44 @@
         </service-properties>
     </service>
 
-    <reference id="jdbcUrlParser" interface="org.pentaho.big.data.api.jdbc.JdbcUrlParser"/>
+  <bean id="hdp26HImpalaDriver" class="com.pentaho.big.data.bundles.impl.shim.hive.ImpalaDriver">
+    <argument ref="jdbcUrlParser"/>
+    <argument value="org.apache.hive.jdbc.HiveDriver"/>
+    <argument value="hdp26"/>
+  </bean>
+
+  <bean id="hdp26HImpalaSimbaDriver" class="com.pentaho.big.data.bundles.impl.shim.hive.ImpalaSimbaDriver">
+    <argument ref="jdbcUrlParser"/>
+    <argument value="org.apache.hive.jdbc.HiveDriver"/>
+    <argument value="hdp26"/>
+  </bean>
+
+  <bean id="hdp26HparkSimbaDriver" class="com.pentaho.big.data.bundles.impl.shim.hive.SparkSimbaDriver">
+    <argument ref="jdbcUrlParser"/>
+    <argument value="org.apache.hive.jdbc.HiveDriver"/>
+    <argument value="hdp26"/>
+  </bean>
+
+  <service ref="hdp26ImpalaDriver" interface="java.sql.Driver">
+    <service-properties>
+      <entry key="dataSourceType" value="bigdata"/>
+    </service-properties>
+  </service>
+
+  <service ref="hdp26ImpalaSimbaDriver" interface="java.sql.Driver">
+    <service-properties>
+      <entry key="dataSourceType" value="bigdata"/>
+    </service-properties>
+  </service>
+
+  <service ref="hdp26SparkSimbaDriver" interface="java.sql.Driver">
+    <service-properties>
+      <entry key="dataSourceType" value="bigdata"/>
+    </service-properties>
+  </service>
+
+  <reference id="jdbcUrlParser" interface="org.pentaho.big.data.api.jdbc.JdbcUrlParser"/>
+
     <!-- End of Hive service definition -->
 
     <!-- Hbase service definition -->

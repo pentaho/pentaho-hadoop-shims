@@ -87,6 +87,12 @@
         </dependency>
         <dependency>
             <groupId>org.pentaho</groupId>
+            <artifactId>pentaho-hadoop-shims-common-modern</artifactId>
+            <version>${project.version}</version>
+            <classifier>sources</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.pentaho</groupId>
             <artifactId>common-sqoop-shim</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -253,6 +259,13 @@
                                 <artifactItem>
                                     <groupId>org.pentaho</groupId>
                                     <artifactId>pentaho-hadoop-shims-common-mapred</artifactId>
+                                    <classifier>sources</classifier>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/src</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.pentaho</groupId>
+                                    <artifactId>pentaho-hadoop-shims-common-modern</artifactId>
                                     <classifier>sources</classifier>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/src</outputDirectory>
