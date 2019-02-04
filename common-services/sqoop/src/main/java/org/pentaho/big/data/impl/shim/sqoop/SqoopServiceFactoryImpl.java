@@ -32,8 +32,8 @@ import org.slf4j.LoggerFactory;
 
 public class SqoopServiceFactoryImpl implements NamedClusterServiceFactory<SqoopService> {
   private static final Logger LOGGER = LoggerFactory.getLogger( SqoopServiceFactoryImpl.class );
-  private final HadoopShim hadoopShim;
-  private final SqoopShim sqoopShim;
+  protected final HadoopShim hadoopShim;
+  protected final SqoopShim sqoopShim;
 
   public SqoopServiceFactoryImpl( HadoopShim hadoopShim, SqoopShim sqoopShim ) {
     this.hadoopShim = hadoopShim;

@@ -38,10 +38,10 @@ import java.net.URI;
 public class HadoopFileSystemFactoryImpl implements HadoopFileSystemFactory {
   public static final String SHIM_IDENTIFIER = "shim.identifier";
   public static final String HDFS = "hdfs";
-  private static final Logger LOGGER = LoggerFactory.getLogger( HadoopFileSystemFactoryImpl.class );
-  private final boolean isActiveConfiguration;
-  private final HadoopShim hadoopShim;
-  private final ShimIdentifierInterface shimIdentifier;
+  protected static final Logger LOGGER = LoggerFactory.getLogger( HadoopFileSystemFactoryImpl.class );
+  protected final boolean isActiveConfiguration;
+  protected final HadoopShim hadoopShim;
+  protected final ShimIdentifierInterface shimIdentifier;
 
   public HadoopFileSystemFactoryImpl( HadoopShim hadoopShim, ShimIdentifierInterface shimIdentifier ) {
     this( true, hadoopShim, "hdfs", shimIdentifier );

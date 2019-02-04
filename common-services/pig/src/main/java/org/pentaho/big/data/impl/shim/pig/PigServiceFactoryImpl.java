@@ -30,8 +30,8 @@ import org.slf4j.LoggerFactory;
  */
 public class PigServiceFactoryImpl implements NamedClusterServiceFactory<PigService> {
   private static final Logger LOGGER = LoggerFactory.getLogger( PigServiceFactoryImpl.class );
-  private final HadoopShim hadoopShim;
-  private final PigShim pigShim;
+  protected final HadoopShim hadoopShim;
+  protected final PigShim pigShim;
 
   public PigServiceFactoryImpl( HadoopShim hadoopShim, PigShim pigShim ) {
     this.hadoopShim = hadoopShim;
