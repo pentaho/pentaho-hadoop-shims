@@ -42,6 +42,13 @@ public class ShimConfigsLoader {
         if ( Files.exists( currentPath ) ) {
           return currentPath.toAbsolutePath().toFile().toURI().toURL();
         }
+
+        currentPath = Paths.get(
+                Const.getUserHomeDirectory() + File.separator + CONFIGS_DIR_PREFIX + File.separator + additionalPath + File.separator
+                        + siteFileName );
+        if ( Files.exists( currentPath ) ) {
+          return currentPath.toAbsolutePath().toFile().toURI().toURL();
+        }
       }
     } catch ( MalformedURLException ex ) {
       ex.printStackTrace();
