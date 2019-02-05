@@ -230,7 +230,7 @@
                         <resolverFilter>
                             <include>
                                 *:aws-java-sdk-core,*:jackson-core,*:xstream,*:guava,*:httpclient,
-                                *:commons-vfs2,*:htrace-core,*:hbase-protocol,*:zookeeper,
+                                *:htrace-core,*:hbase-protocol,*:zookeeper,
                                 *:hbase-server,*:protobuf-java
                             </include>
                             <exclude>
