@@ -25,7 +25,7 @@ import java.io.IOException;
 
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.BufferedMutator;
-//#if shim_name=="hdp30" || shim_name=="cdh601"
+//#if shim_name=="hdp30" || shim_name=="cdh610"
 //$import org.apache.hadoop.hbase.client.BufferedMutatorParams;
 //#endif
 import org.apache.hadoop.hbase.client.Connection;
@@ -72,10 +72,10 @@ class HBase10Table implements HBaseTable {
 
   @Override
   public void setWriteBufferSize( long bufferSize ) throws IOException {
-    //#if shim_name!="hdp30" && shim_name!="cdh601"
+    //#if shim_name!="hdp30" && shim_name!="cdh610"
     tab.setWriteBufferSize( bufferSize );
     //#endif
-    //#if shim_name=="hdp30" || shim_name=="cdh601"
+    //#if shim_name=="hdp30" || shim_name=="cdh610"
     //$mutator = conn.getBufferedMutator( new BufferedMutatorParams( tab.getName() ).writeBufferSize( bufferSize ) );
     //#endif
   }
