@@ -273,10 +273,10 @@ public class CommonHBaseConnection extends HBaseConnection {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
     try {
-      //#if shim_name!="hdp30" && shim_name!="cdh601"
+      //#if shim_name!="hdp30" && shim_name!="cdh610"
       org.apache.hadoop.hbase.client.HBaseAdmin.checkHBaseAvailable( m_config );
       //#endif
-      //#if shim_name=="hdp30" || shim_name=="cdh601"
+      //#if shim_name=="hdp30" || shim_name=="cdh610"
       //$org.apache.hadoop.hbase.client.HBaseAdmin.available( m_config );
       //#endif
     } finally {

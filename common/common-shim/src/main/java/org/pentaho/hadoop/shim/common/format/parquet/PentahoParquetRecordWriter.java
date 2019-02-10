@@ -23,11 +23,11 @@ package org.pentaho.hadoop.shim.common.format.parquet;
 
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 
-//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_name=="mapr60" || shim_name=="cdh601"
+//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_name=="mapr60" || shim_name=="cdh610"
 import org.apache.parquet.hadoop.ParquetRecordWriter;
 //#endif
 
-//#if shim_type=="CDH" && shim_name!="cdh601" || shim_type=="MAPR" && shim_name!="mapr60"
+//#if shim_type=="CDH" && shim_name!="cdh610" || shim_type=="MAPR" && shim_name!="mapr60"
 //$import parquet.hadoop.ParquetRecordWriter;
 //#endif
 

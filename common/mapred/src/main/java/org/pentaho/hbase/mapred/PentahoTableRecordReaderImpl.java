@@ -28,10 +28,10 @@ import java.lang.reflect.Method;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-//#if shim_name!="hdp30" && shim_name!="cdh601"
+//#if shim_name!="hdp30" && shim_name!="cdh610"
 import org.apache.hadoop.hbase.KeyValue;
 //#endif
-//#if shim_name=="hdp30" || shim_name=="cdh601"
+//#if shim_name=="hdp30" || shim_name=="cdh610"
 //$import org.apache.hadoop.hbase.CellUtil;
 //#endif
 import org.apache.hadoop.hbase.UnknownScannerException;
@@ -126,10 +126,10 @@ public class PentahoTableRecordReaderImpl {
    */
   protected static void configureScanWithInputColumns( Scan scan, byte[][] inputColumns ) {
     for ( byte[] familyAndQualifier : inputColumns ) {
-      //#if shim_name!="hdp30" && shim_name!="cdh601"
+      //#if shim_name!="hdp30" && shim_name!="cdh610"
       byte[][] fq = KeyValue.parseColumn( familyAndQualifier );
       //#endif
-      //#if shim_name=="hdp30" || shim_name=="cdh601"
+      //#if shim_name=="hdp30" || shim_name=="cdh610"
       //$byte[][] fq = CellUtil.parseColumn( familyAndQualifier );
       //#endif
 

@@ -22,13 +22,13 @@
 package org.pentaho.hadoop.shim.common.format.parquet;
 
 import org.apache.hadoop.fs.Path;
-//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_name=="mapr60" || shim_name=="cdh601"
+//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_name=="mapr60" || shim_name=="cdh610"
 import org.apache.parquet.format.converter.ParquetMetadataConverter;
 import org.apache.parquet.hadoop.ParquetFileReader;
 import org.apache.parquet.hadoop.metadata.ParquetMetadata;
 import org.apache.parquet.schema.MessageType;
 //#endif
-//#if shim_type=="CDH" && shim_name!="cdh601" || shim_type=="MAPR" && shim_name!="mapr60"
+//#if shim_type=="CDH" && shim_name!="cdh610" || shim_type=="MAPR" && shim_name!="mapr60"
 //$import parquet.format.converter.ParquetMetadataConverter;
 //$import parquet.hadoop.ParquetFileReader;
 //$import parquet.hadoop.metadata.ParquetMetadata;
