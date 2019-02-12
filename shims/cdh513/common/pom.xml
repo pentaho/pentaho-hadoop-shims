@@ -106,80 +106,13 @@
       <version>${org.apache.hadoop.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-common-hadoop-shim</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-common-shim</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-    </dependency>
-    <dependency>
       <groupId>pentaho</groupId>
       <artifactId>pentaho-hdfs-vfs</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-big-data-impl-shim-hdfs</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.core</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-common-mapred</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-    </dependency>
-
-    <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>common-sqoop-shim</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-big-data-impl-shim-sqoop</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-big-data-impl-shim-mapreduce</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>common-pig-shim</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-big-data-impl-shim-pig</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>common-format-shim</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-big-data-impl-shim-format</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
     <dependency>
       <groupId>org.apache.orc</groupId>
       <artifactId>orc-core</artifactId>
@@ -337,83 +270,11 @@
               <artifactItems>
                 <artifactItem>
                   <groupId>org.pentaho</groupId>
-                  <artifactId>pentaho-hadoop-shims-common-shim</artifactId>
-                  <classifier>sources</classifier>
-                  <overWrite>false</overWrite>
-                  <outputDirectory>${project.build.directory}/src</outputDirectory>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.pentaho</groupId>
-                  <artifactId>pentaho-hadoop-shims-common-hadoop-shim</artifactId>
-                  <classifier>sources</classifier>
-                  <overWrite>false</overWrite>
-                  <outputDirectory>${project.build.directory}/src</outputDirectory>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.pentaho</groupId>
                   <artifactId>pentaho-hadoop-shims-common-mapred</artifactId>
                   <classifier>sources</classifier>
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}/src</outputDirectory>
                 </artifactItem>
-                <artifactItem>
-                  <groupId>org.pentaho</groupId>
-                  <artifactId>pentaho-big-data-impl-shim-hdfs</artifactId>
-                  <classifier>sources</classifier>
-                  <overWrite>false</overWrite>
-                  <outputDirectory>${project.build.directory}/src</outputDirectory>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.pentaho</groupId>
-                  <artifactId>common-sqoop-shim</artifactId>
-                  <classifier>sources</classifier>
-                  <overWrite>false</overWrite>
-                  <outputDirectory>${project.build.directory}/src</outputDirectory>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.pentaho</groupId>
-                  <artifactId>pentaho-big-data-impl-shim-sqoop</artifactId>
-                  <classifier>sources</classifier>
-                  <overWrite>false</overWrite>
-                  <outputDirectory>${project.build.directory}/src</outputDirectory>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.pentaho</groupId>
-                  <artifactId>pentaho-big-data-impl-shim-mapreduce</artifactId>
-                  <classifier>sources</classifier>
-                  <overWrite>false</overWrite>
-                  <outputDirectory>${project.build.directory}/src</outputDirectory>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.pentaho</groupId>
-                  <artifactId>common-pig-shim</artifactId>
-                  <classifier>sources</classifier>
-                  <overWrite>false</overWrite>
-                  <outputDirectory>${project.build.directory}/src</outputDirectory>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.pentaho</groupId>
-                  <artifactId>pentaho-big-data-impl-shim-pig</artifactId>
-                  <classifier>sources</classifier>
-                  <overWrite>false</overWrite>
-                  <outputDirectory>${project.build.directory}/src</outputDirectory>
-                </artifactItem>
-
-                <artifactItem>
-                  <groupId>org.pentaho</groupId>
-                  <artifactId>common-format-shim</artifactId>
-                  <classifier>sources</classifier>
-                  <overWrite>false</overWrite>
-                  <outputDirectory>${project.build.directory}/src</outputDirectory>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.pentaho</groupId>
-                  <artifactId>pentaho-big-data-impl-shim-format</artifactId>
-                  <classifier>sources</classifier>
-                  <overWrite>false</overWrite>
-                  <outputDirectory>${project.build.directory}/src</outputDirectory>
-                </artifactItem>
-
               </artifactItems>
             </configuration>
           </execution>

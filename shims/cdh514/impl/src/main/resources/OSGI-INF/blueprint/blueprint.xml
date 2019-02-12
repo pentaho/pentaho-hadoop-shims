@@ -20,12 +20,12 @@
   <service ref="snappyShim" interface="org.pentaho.hadoop.shim.spi.SnappyShim"/>
 
   <bean id="oozieClientFactory" class="org.pentaho.hadoop.shim.common.delegating.DelegatingOozieClientFactory"/>
-  <service ref="oozieClientFactory" interface="org.pentaho.oozie.shim.api.OozieClientFactory"/>
+  <service ref="oozieClientFactory" interface="org.pentaho.hadoop.shim.api.internal.oozie.OozieClientFactory"/>
 
   <reference-list id="hadoopShims" interface="org.pentaho.hadoop.shim.spi.PentahoHadoopShim"
                   availability="optional"/>
 
-  <reference id="hbaseShim" interface="org.pentaho.hbase.shim.spi.HBaseShim" filter="(shim=cdh514)(service=hbase)"/>
+  <reference id="hbaseShim" interface="org.pentaho.hadoop.shim.spi.HBaseShim" filter="(shim=cdh514)(service=hbase)"/>
 
   <bean id="cdh514HadoopConfiguration" class="org.pentaho.hadoop.shim.HadoopConfiguration">
     <argument value="cdh514" />
@@ -43,7 +43,7 @@
     </argument>
   </bean>
 
-  <service ref="cdh514HadoopConfiguration" interface="org.pentaho.hadoop.shim.api.HadoopConfigurationInterface">
+  <service ref="cdh514HadoopConfiguration" interface="org.pentaho.hadoop.shim.api.internal.HadoopConfigurationInterface">
     <service-properties>
       <entry key="shim">
         <value type="java.lang.String">cdh514</value>
@@ -64,7 +64,7 @@
     <argument ref="cdh514HadoopConfiguration"/>
   </bean>
 
-  <service ref="hascdh514Configuration" interface="org.pentaho.hadoop.shim.api.HasConfiguration">
+  <service ref="hascdh514Configuration" interface="org.pentaho.hadoop.shim.api.internal.HasConfiguration">
     <service-properties>
       <entry key="shim">
         <value type="java.lang.String">cdh514</value>

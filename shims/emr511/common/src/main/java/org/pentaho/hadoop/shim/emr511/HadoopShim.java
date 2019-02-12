@@ -46,8 +46,8 @@ public class HadoopShim extends HadoopShimImpl {
   }
 
   @Override
-  public org.pentaho.hadoop.shim.api.fs.FileSystem getFileSystem(
-    org.pentaho.hadoop.shim.api.Configuration conf ) throws IOException {
+  public org.pentaho.hadoop.shim.api.internal.fs.FileSystem getFileSystem(
+    org.pentaho.hadoop.shim.api.internal.Configuration conf ) throws IOException {
     // Set the context class loader when instantiating the configuration
     // since org.apache.hadoop.conf.Configuration uses it to load resources
     ClassLoader cl = Thread.currentThread().getContextClassLoader();

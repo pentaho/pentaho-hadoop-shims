@@ -127,36 +127,12 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-common-hadoop-shim</artifactId>
-      <version>8.3.0.0-SNAPSHOT</version>
-      <classifier>sources</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-common-shim</artifactId>
-      <version>8.3.0.0-SNAPSHOT</version>
-      <classifier>sources</classifier>
-    </dependency>
-    <dependency>
       <groupId>pentaho</groupId>
       <artifactId>pentaho-hdfs-vfs</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-big-data-impl-shim-hdfs</artifactId>
-      <version>8.3.0.0-SNAPSHOT</version>
-      <classifier>sources</classifier>
-    </dependency>
-    <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-common-mapred</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
@@ -168,19 +144,6 @@
       <groupId>org.pentaho.di.plugins</groupId>
       <artifactId>kettle-log4j-core</artifactId>
       <version>${pdi.version}</version>
-    </dependency>
-
-
-    <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>common-format-shim</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-big-data-impl-shim-format</artifactId>
-      <version>${project.version}</version>
     </dependency>
 
     <dependency>
@@ -208,61 +171,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
-          <execution>
-            <id>unpack-common-sources</id>
-            <phase>process-sources</phase>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.pentaho</groupId>
-                  <artifactId>pentaho-hadoop-shims-common-shim</artifactId>
-                  <classifier>sources</classifier>
-                  <overWrite>false</overWrite>
-                  <outputDirectory>${project.build.directory}/src</outputDirectory>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.pentaho</groupId>
-                  <artifactId>pentaho-hadoop-shims-common-hadoop-shim</artifactId>
-                  <classifier>sources</classifier>
-                  <overWrite>false</overWrite>
-                  <outputDirectory>${project.build.directory}/src</outputDirectory>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.pentaho</groupId>
-                  <artifactId>pentaho-hadoop-shims-common-mapred</artifactId>
-                  <classifier>sources</classifier>
-                  <overWrite>false</overWrite>
-                  <outputDirectory>${project.build.directory}/src</outputDirectory>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.pentaho</groupId>
-                  <artifactId>pentaho-big-data-impl-shim-hdfs</artifactId>
-                  <classifier>sources</classifier>
-                  <overWrite>false</overWrite>
-                  <outputDirectory>${project.build.directory}/src</outputDirectory>
-                </artifactItem>
-
-                <artifactItem>
-                  <groupId>org.pentaho</groupId>
-                  <artifactId>common-format-shim</artifactId>
-                  <classifier>sources</classifier>
-                  <overWrite>false</overWrite>
-                  <outputDirectory>${project.build.directory}/src</outputDirectory>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.pentaho</groupId>
-                  <artifactId>pentaho-big-data-impl-shim-format</artifactId>
-                  <classifier>sources</classifier>
-                  <overWrite>false</overWrite>
-                  <outputDirectory>${project.build.directory}/src</outputDirectory>
-                </artifactItem>
-
-              </artifactItems>
-            </configuration>
-          </execution>
           <execution>
             <id>unpack-dependencies</id>
             <phase>generate-resources</phase>

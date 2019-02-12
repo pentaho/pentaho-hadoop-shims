@@ -4,7 +4,7 @@
            xsi:schemaLocation="
             http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
 
-  <bean id="hdp26ShimIdentifier" class="org.pentaho.hadoop.shim.api.ShimIdentifier" scope="singleton">
+  <bean id="hdp26ShimIdentifier" class="org.pentaho.hadoop.shim.api.internal.ShimIdentifier" scope="singleton">
     <argument value="hdp26"/>
     <argument value="Hortonworks"/>
     <argument value="2.6"/>
@@ -155,7 +155,7 @@
       </entry>
     </service-properties>
   </service>
-  <reference-list id="transformationVisitorList" interface="org.pentaho.bigdata.api.mapreduce.TransformationVisitorService"
+  <reference-list id="transformationVisitorList" interface="org.pentaho.big.data.impl.shim.mapreduce.TransformationVisitorService"
                   availability="optional"/>
 
   <!-- Oozie service definition -->
@@ -185,7 +185,7 @@
     </service-properties>
   </service>
 
-  <reference id="jdbcUrlParser" interface="org.pentaho.big.data.api.jdbc.JdbcUrlParser"/>
+  <reference id="jdbcUrlParser" interface="org.pentaho.hadoop.shim.api.jdbc.JdbcUrlParser"/>
   <!-- End of Hive service definition -->
 
   <!-- Hbase service definition -->
