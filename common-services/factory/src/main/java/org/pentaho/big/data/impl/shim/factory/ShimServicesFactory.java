@@ -33,7 +33,7 @@ import org.pentaho.big.data.impl.shim.oozie.FallbackOozieClientImpl;
 import org.pentaho.big.data.impl.shim.oozie.OozieServiceImpl;
 import org.pentaho.big.data.impl.shim.pig.PigServiceImpl;
 import org.pentaho.big.data.impl.shim.sqoop.SqoopServiceImpl;
-import org.pentaho.bigdata.api.mapreduce.TransformationVisitorService;
+import org.pentaho.big.data.impl.shim.mapreduce.TransformationVisitorService;
 import org.pentaho.hadoop.shim.ConfigurationException;
 import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hadoop.shim.api.ShimServicesFactoryInterface;

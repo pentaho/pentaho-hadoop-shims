@@ -24,7 +24,6 @@ package org.pentaho.big.data.impl.shim.pig;
 
 import org.apache.commons.vfs2.FileObject;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
-import org.pentaho.bigdata.api.pig.impl.PigResultImpl;
 import org.pentaho.di.core.logging.LogChannelInterface;
 import org.pentaho.di.core.logging.LogLevel;
 import org.pentaho.di.core.variables.VariableSpace;

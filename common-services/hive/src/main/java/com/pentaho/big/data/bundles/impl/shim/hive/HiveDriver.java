@@ -22,8 +22,8 @@
 
 package com.pentaho.big.data.bundles.impl.shim.hive;
 
-import org.pentaho.big.data.api.jdbc.JdbcUrl;
-import org.pentaho.big.data.api.jdbc.JdbcUrlParser;
+import org.pentaho.hadoop.shim.api.jdbc.JdbcUrl;
+import org.pentaho.hadoop.shim.api.jdbc.JdbcUrlParser;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.common.DriverProxyInvocationChain;
 

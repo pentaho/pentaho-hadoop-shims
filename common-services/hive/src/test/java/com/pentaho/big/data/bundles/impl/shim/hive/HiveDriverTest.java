@@ -27,8 +27,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.pentaho.big.data.api.jdbc.JdbcUrl;
-import org.pentaho.big.data.api.jdbc.JdbcUrlParser;
+import org.pentaho.hadoop.shim.api.jdbc.JdbcUrl;
+import org.pentaho.hadoop.shim.api.jdbc.JdbcUrlParser;
 import org.pentaho.metastore.api.exceptions.MetaStoreException;
 
 import java.net.URISyntaxException;

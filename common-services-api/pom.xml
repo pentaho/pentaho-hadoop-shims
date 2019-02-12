@@ -11,16 +11,8 @@
   <version>8.3.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
-    <module>cluster</module>
     <module>api</module>
-    <module>clusterServiceLocator</module>
-    <module>initializer</module>
-    <module>jaas</module>
     <module>runtimeTest</module>
-    <module>hdfs</module>
-    <module>jdbc</module>
-    <module>mapreduce</module>
-    <module>pig</module>
   </modules>
   <properties>
     <org.apache.hadoop.version>0.20.2</org.apache.hadoop.version>

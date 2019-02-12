@@ -155,7 +155,7 @@
       </entry>
     </service-properties>
   </service>
-  <reference-list id="transformationVisitorList" interface="org.pentaho.bigdata.api.mapreduce.TransformationVisitorService"
+  <reference-list id="transformationVisitorList" interface="org.pentaho.big.data.impl.shim.mapreduce.TransformationVisitorService"
                   availability="optional"/>
 
   <!-- Oozie service definition -->
@@ -185,7 +185,7 @@
     </service-properties>
   </service>
 
-  <reference id="jdbcUrlParser" interface="org.pentaho.big.data.api.jdbc.JdbcUrlParser"/>
+  <reference id="jdbcUrlParser" interface="org.pentaho.hadoop.shim.api.jdbc.JdbcUrlParser"/>
   <!-- End of Hive service definition -->
 
   <!-- Hbase service definition -->

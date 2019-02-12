@@ -37,10 +37,10 @@
     <protobuf-java.version>2.5.0</protobuf-java.version>
   </properties>
   <modules>
-    <module>common</module>
+    <!--module>common</module-->
     <!--<module>hbase</module>-->
     <!--<module>hive</module>-->
-    <module>hbase-comparators</module>
+    <!--module>hbase-comparators</module-->
     <!--<module>oozie</module>-->
     <module>driver</module>
     <module>blueprint</module>

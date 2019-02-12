@@ -62,5 +62,5 @@
   </service>-->
 
   <!--<reference id="hadoopShim" interface="org.pentaho.hadoop.shim.spi.HadoopShim" filter="(shim=emr59)"/>-->
-  <reference id="jdbcUrlParser" interface="org.pentaho.big.data.api.jdbc.JdbcUrlParser"/>
+  <reference id="jdbcUrlParser" interface="org.pentaho.hadoop.shim.api.jdbc.JdbcUrlParser"/>
 </blueprint>

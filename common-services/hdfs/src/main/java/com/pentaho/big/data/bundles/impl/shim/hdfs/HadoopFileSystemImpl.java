@@ -210,7 +210,7 @@ public class HadoopFileSystemImpl implements HadoopFileSystem {
     try {
       return ioExceptionCallable.call();
     } catch ( AccessControlException e ) {
-      throw new org.pentaho.bigdata.api.hdfs.exceptions.AccessControlException( e.getMessage(), e );
+      throw new org.pentaho.hadoop.shim.api.hdfs.exceptions.AccessControlException( e.getMessage(), e );
     }
   }
 

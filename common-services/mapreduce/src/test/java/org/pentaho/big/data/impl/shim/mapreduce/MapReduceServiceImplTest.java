@@ -33,7 +33,6 @@ import org.pentaho.hadoop.shim.api.mapreduce.MapReduceJarInfo;
 import org.pentaho.hadoop.shim.api.mapreduce.MapReduceJobBuilder;
 import org.pentaho.hadoop.shim.api.mapreduce.MapReduceJobSimple;
 import org.pentaho.hadoop.shim.api.mapreduce.PentahoMapReduceJobBuilder;
-import org.pentaho.bigdata.api.mapreduce.TransformationVisitorService;
 import org.pentaho.di.core.exception.KettleFileException;
 import org.pentaho.di.core.logging.LogChannelInterface;
 import org.pentaho.di.core.plugins.LifecyclePluginType;

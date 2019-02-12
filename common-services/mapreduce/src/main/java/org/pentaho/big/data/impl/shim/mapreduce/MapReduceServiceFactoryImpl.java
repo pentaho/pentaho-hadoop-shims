@@ -22,8 +22,6 @@
 
 package org.pentaho.big.data.impl.shim.mapreduce;
 
-import org.pentaho.bigdata.api.mapreduce.TransformationVisitorService;
-import org.pentaho.hadoop.shim.api.HasConfiguration;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory;
 import org.pentaho.hadoop.shim.api.mapreduce.MapReduceService;

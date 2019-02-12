@@ -26,7 +26,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.mapreduce.MapReduceService;
-import org.pentaho.bigdata.api.mapreduce.TransformationVisitorService;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
 
 import java.util.ArrayList;

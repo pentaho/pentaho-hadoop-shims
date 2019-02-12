@@ -24,7 +24,6 @@ package org.pentaho.big.data.impl.shim.mapreduce;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import org.pentaho.bigdata.api.mapreduce.TransformationVisitorService;
 import org.pentaho.di.core.exception.KettleFileException;
 import org.pentaho.di.core.logging.LogChannelInterface;
 import org.pentaho.di.core.plugins.LifecyclePluginType;
@@ -36,14 +35,8 @@ import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.job.entries.hadoopjobexecutor.JarUtility;
 import org.pentaho.hadoop.PluginPropertiesUtil;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
-import org.pentaho.hadoop.shim.api.HasConfiguration;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
-import org.pentaho.hadoop.shim.api.mapreduce.MapReduceExecutionException;
-import org.pentaho.hadoop.shim.api.mapreduce.MapReduceJarInfo;
-import org.pentaho.hadoop.shim.api.mapreduce.MapReduceJobBuilder;
-import org.pentaho.hadoop.shim.api.mapreduce.MapReduceJobSimple;
-import org.pentaho.hadoop.shim.api.mapreduce.MapReduceService;
-import org.pentaho.hadoop.shim.api.mapreduce.PentahoMapReduceJobBuilder;
+import org.pentaho.hadoop.shim.api.mapreduce.*;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 
 import java.io.IOException;
