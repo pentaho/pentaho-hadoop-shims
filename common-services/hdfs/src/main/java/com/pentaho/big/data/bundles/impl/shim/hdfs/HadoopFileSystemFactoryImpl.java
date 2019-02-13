@@ -20,7 +20,7 @@ package com.pentaho.big.data.bundles.impl.shim.hdfs;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.LocalFileSystem;
 
-import org.pentaho.hadoop.shim.api.Configuration;
+import org.pentaho.hadoop.shim.api.internal.Configuration;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.hdfs.HadoopFileSystem;
 import org.pentaho.hadoop.shim.api.hdfs.HadoopFileSystemFactory;

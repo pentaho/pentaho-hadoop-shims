@@ -8,5 +8,5 @@
   <service ref="cdh513SqoopServiceFactory"
            interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory"/>
 
-  <reference id="hascdh513HadoopConfiguration" interface="org.pentaho.hadoop.shim.api.HasConfiguration"/>
+  <reference id="hascdh513HadoopConfiguration" interface="org.pentaho.hadoop.shim.api.internal.HasConfiguration"/>
 </blueprint>

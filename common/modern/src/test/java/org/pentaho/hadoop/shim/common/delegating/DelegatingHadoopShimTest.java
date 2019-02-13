@@ -26,7 +26,7 @@ import org.mockito.stubbing.Answer;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
-import org.pentaho.hadoop.shim.api.Configuration;
+import org.pentaho.hadoop.shim.api.internal.Configuration;
 import org.pentaho.hadoop.shim.common.authorization.HadoopAuthorizationService;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 

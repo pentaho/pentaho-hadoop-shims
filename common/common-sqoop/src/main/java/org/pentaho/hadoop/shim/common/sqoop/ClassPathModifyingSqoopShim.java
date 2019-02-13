@@ -24,7 +24,7 @@ package org.pentaho.hadoop.shim.common.sqoop;
 
 import org.apache.sqoop.Sqoop;
 import org.pentaho.hadoop.shim.HadoopConfigurationClassLoader;
-import org.pentaho.hadoop.shim.api.Configuration;
+import org.pentaho.hadoop.shim.api.internal.Configuration;
 import org.pentaho.hadoop.shim.common.ShimUtils;
 
 import java.util.concurrent.Callable;

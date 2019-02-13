@@ -27,7 +27,7 @@ import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.di.core.logging.LogChannelInterface;
 import org.pentaho.di.core.logging.LogLevel;
 import org.pentaho.di.core.variables.VariableSpace;
-import org.pentaho.hadoop.shim.api.Configuration;
+import org.pentaho.hadoop.shim.api.internal.Configuration;
 import org.pentaho.hadoop.shim.api.pig.PigResult;
 import org.pentaho.hadoop.shim.api.pig.PigService;
 import org.pentaho.hadoop.shim.spi.HadoopShim;

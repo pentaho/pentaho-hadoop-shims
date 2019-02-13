@@ -24,7 +24,7 @@ package org.pentaho.hadoop.shim.mapr60;
 
 import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
-import org.pentaho.hadoop.shim.api.Configuration;
+import org.pentaho.hadoop.shim.api.internal.Configuration;
 import org.pentaho.hadoop.shim.common.CommonHadoopShim;
 import org.pentaho.hadoop.shim.common.ShimUtils;
 import org.pentaho.hdfs.vfs.MapRFileProvider;
@@ -89,8 +89,8 @@ public class HadoopShim extends CommonHadoopShim {
   }
 
   @Override
-  public org.pentaho.hadoop.shim.api.Configuration createConfiguration() {
-    org.pentaho.hadoop.shim.api.Configuration result;
+  public org.pentaho.hadoop.shim.api.internal.Configuration createConfiguration() {
+    org.pentaho.hadoop.shim.api.internal.Configuration result;
     // Set the context class loader when instantiating the configuration
     // since org.apache.hadoop.conf.Configuration uses it to load resources
     ClassLoader cl = Thread.currentThread().getContextClassLoader();

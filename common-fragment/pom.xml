@@ -10,34 +10,138 @@
     <artifactId>pentaho-hadoop-shims-common-fragment</artifactId>
     <version>8.3.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
+
     <properties>
-        <org.mockito.version>1.10.19</org.mockito.version>
-        <shim.name>hdp26</shim.name>
-        <shim.type>HDP</shim.type>
-        <shim-bundle-plugin.version>1.0</shim-bundle-plugin.version>
-        <com.igormaznitsa.jcp.version>6.1.2</com.igormaznitsa.jcp.version>
-        <org.apache.hadoop.version>2.7.3.2.6.0.3-8</org.apache.hadoop.version>
-        <org.apache.avro.version>1.8.0</org.apache.avro.version>
-        <parquet.version>1.8.1</parquet.version>
-        <sqoop.version>1.4.6.2.6.0.3-8</sqoop.version>
-        <pig.version>0.16.0.2.6.0.3-8</pig.version>
-        <dependency.pig.classifier>h2</dependency.pig.classifier>
+        <twittwer.parquet.version>1.5.0-cdh5.13.0</twittwer.parquet.version>
+        <org.apache.hadoop.version>0.20.2</org.apache.hadoop.version>
         <org.apache.hive.version>1.2.1000.2.6.0.3-8</org.apache.hive.version>
-        <org.apache.oozie.version>4.2.0.2.6.0.3-8</org.apache.oozie.version>
-        <org.apache.hbase.version>1.1.2.2.6.0.3-8</org.apache.hbase.version>
-        <org.osgi.core.version>4.3.1</org.osgi.core.version>
+        <org.apache.sqoop.version>1.4.6.2.4.0.0-169</org.apache.sqoop.version>
+        <org.apache.pig.version>0.8.0</org.apache.pig.version>
+        <com.thoughtworks.xstream.version>1.4.9</com.thoughtworks.xstream.version>
+        <org.apache.hbase.version>1.1.1</org.apache.hbase.version>
+        <com.google.guava.version>22.0</com.google.guava.version>
+        <htrace-core.version>3.1.0-incubating</htrace-core.version>
         <pentaho-code.version>11.0.0.0</pentaho-code.version>
+        <jackson.version>2.6.5</jackson.version>
+        <aws-java-sdk-core.version>1.11.275</aws-java-sdk-core.version>
+        <aws-java-sdk.version>1.7.4</aws-java-sdk.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.hbase</groupId>
+                <artifactId>hbase-common</artifactId>
+                <version>${org.apache.hbase.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.sqoop</groupId>
+                <artifactId>sqoop</artifactId>
+                <version>${org.apache.sqoop.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.hbase</groupId>
+                <artifactId>hbase-client</artifactId>
+                <version>${org.apache.hbase.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.hbase</groupId>
+                <artifactId>hbase-server</artifactId>
+                <version>${org.apache.hbase.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.hive</groupId>
+                <artifactId>hive-jdbc</artifactId>
+                <version>${org.apache.hive.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.pig</groupId>
+                <artifactId>pig</artifactId>
+                <version>${org.apache.pig.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.thoughtworks.xstream</groupId>
+                <artifactId>xstream</artifactId>
+                <version>${com.thoughtworks.xstream.version}</version>
+                <scope>provided</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk</artifactId>
+            <version>${aws-java-sdk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.orc</groupId>
+            <artifactId>orc-core</artifactId>
+            <version>${org.apache.orc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.parquet</groupId>
+            <artifactId>parquet-avro</artifactId>
+            <version>${org.apache.parquet.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.avro</groupId>
+            <artifactId>avro</artifactId>
+            <version>${org.apache.avro.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.twitter</groupId>
+            <artifactId>parquet-hadoop-bundle</artifactId>
+            <version>${twittwer.parquet.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-core</artifactId>
+            <version>${org.apache.hadoop.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-server</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.pentaho</groupId>
             <artifactId>shim-api</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>pentaho</groupId>
             <artifactId>pentaho-metastore-locator-api</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
@@ -46,10 +150,24 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
             <version>${org.mockito.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-core</artifactId>
+            <version>0.20.2</version>
+        </dependency>
+        <dependency>
+            <groupId>pentaho</groupId>
+            <artifactId>pentaho-hdfs-vfs</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
     <build>

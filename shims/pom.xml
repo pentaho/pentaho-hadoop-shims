@@ -61,31 +61,6 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.pentaho</groupId>
-        <artifactId>pentaho-hadoop-shims-api</artifactId>
-        <version>${pentaho-hadoop-shims-api.version}</version>
-        <scope>provided</scope>
-        <exclusions>
-          <exclusion>
-            <artifactId>*</artifactId>
-            <groupId>*</groupId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.pentaho</groupId>
-        <artifactId>pentaho-hadoop-shims-api</artifactId>
-        <version>${pentaho-hadoop-shims-api.version}</version>
-        <classifier>tests</classifier>
-        <scope>test</scope>
-        <exclusions>
-          <exclusion>
-            <artifactId>*</artifactId>
-            <groupId>*</groupId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
         <groupId>pentaho</groupId>
         <artifactId>pentaho-hdfs-vfs</artifactId>
         <version>${pentaho-hdfs-vfs.version}</version>
@@ -159,13 +134,6 @@
     <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>pentaho-hadoop-shims-common-modern</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-common-mapred</artifactId>
       <version>${project.version}</version>
       <classifier>sources</classifier>
       <scope>provided</scope>
@@ -311,13 +279,6 @@
                   <artifactItem>
                     <groupId>org.pentaho</groupId>
                     <artifactId>pentaho-hadoop-shims-common-hadoop-shim</artifactId>
-                    <classifier>test-sources</classifier>
-                    <overWrite>false</overWrite>
-                    <outputDirectory>${project.build.directory}/test-src</outputDirectory>
-                  </artifactItem>
-                  <artifactItem>
-                    <groupId>org.pentaho</groupId>
-                    <artifactId>pentaho-hadoop-shims-common-mapred</artifactId>
                     <classifier>test-sources</classifier>
                     <overWrite>false</overWrite>
                     <outputDirectory>${project.build.directory}/test-src</outputDirectory>

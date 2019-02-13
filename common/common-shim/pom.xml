@@ -22,11 +22,6 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-common-mapred</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.apache.hive</groupId>
       <artifactId>hive-jdbc</artifactId>
     </dependency>
@@ -63,13 +58,6 @@
       <artifactId>shim-api</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <!--
-    <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>common-format-shim</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    -->
     <dependency>
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-common</artifactId>

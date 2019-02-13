@@ -23,7 +23,7 @@
 package org.pentaho.hadoop.shim.common.delegating;
 
 import org.pentaho.hadoop.shim.ShimVersion;
-import org.pentaho.hadoop.shim.api.Configuration;
+import org.pentaho.hadoop.shim.api.internal.Configuration;
 import org.pentaho.hadoop.shim.common.authorization.HadoopAuthorizationService;
 import org.pentaho.hadoop.shim.common.authorization.HasHadoopAuthorizationService;
 import org.pentaho.hadoop.shim.spi.PigShim;

@@ -25,7 +25,7 @@ package org.pentaho.big.data.impl.shim.mapreduce;
 import org.junit.Before;
 import org.junit.Test;
 import org.pentaho.hadoop.shim.api.mapreduce.MapReduceService;
-import org.pentaho.hadoop.shim.api.mapred.RunningJob;
+import org.pentaho.hadoop.shim.api.internal.mapred.RunningJob;
 import org.pentaho.hadoop.shim.api.mapred.TaskCompletionEvent;
 
 import java.io.IOException;

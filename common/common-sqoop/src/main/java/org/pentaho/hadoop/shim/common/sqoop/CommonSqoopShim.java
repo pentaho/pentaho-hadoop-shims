@@ -44,7 +44,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.wiring.BundleWire;
 import org.osgi.framework.wiring.BundleWiring;
 import org.pentaho.hadoop.shim.ShimVersion;
-import org.pentaho.hadoop.shim.api.Configuration;
+import org.pentaho.hadoop.shim.api.internal.Configuration;
 import org.pentaho.hadoop.shim.spi.SqoopShim;
 import org.pentaho.hadoop.shim.common.ShimUtils;
 import org.slf4j.LoggerFactory;

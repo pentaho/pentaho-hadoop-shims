@@ -69,9 +69,9 @@ import org.pentaho.di.trans.step.StepMeta;
 import org.pentaho.di.trans.step.StepMetaInterface;
 import org.pentaho.hadoop.shim.ConfigurationException;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
-import org.pentaho.hadoop.shim.api.Configuration;
+import org.pentaho.hadoop.shim.api.internal.Configuration;
 import org.pentaho.hadoop.shim.api.DistributedCacheUtil;
-import org.pentaho.hadoop.shim.api.fs.FileSystem;
+import org.pentaho.hadoop.shim.api.internal.fs.FileSystem;
 import org.pentaho.hadoop.shim.api.fs.Path;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 

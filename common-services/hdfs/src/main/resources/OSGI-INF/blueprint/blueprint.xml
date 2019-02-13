@@ -7,6 +7,6 @@
 
   <service ref="hadoopFileSystem" interface="org.pentaho.hadoop.shim.api.hdfs.HadoopFileSystemFactory"/>
 
-  <reference id="cdh513HadoopConfiguration" interface="org.pentaho.hadoop.shim.api.HadoopConfigurationInterface"/>
+  <reference id="cdh513HadoopConfiguration" interface="org.pentaho.hadoop.shim.api.internal.HadoopConfigurationInterface"/>
 
 </blueprint>

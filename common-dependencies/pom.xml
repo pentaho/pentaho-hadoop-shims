@@ -62,12 +62,6 @@
         </dependency>
         <dependency>
             <groupId>org.pentaho</groupId>
-            <artifactId>pentaho-hadoop-shims-common-mapred</artifactId>
-            <version>${project.version}</version>
-            <classifier>sources</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.pentaho</groupId>
             <artifactId>common-sqoop-shim</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -89,11 +83,6 @@
         <dependency>
             <groupId>org.pentaho</groupId>
             <artifactId>pentaho-big-data-impl-shim-pig</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.pentaho</groupId>
-            <artifactId>common-format-shim</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -146,11 +135,6 @@
             <groupId>org.apache.oozie</groupId>
             <artifactId>oozie-client</artifactId>
             <version>${org.apache.oozie.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.pentaho</groupId>
-            <artifactId>pentaho-hadoop-shims-api</artifactId>
-            <version>${pentaho-hadoop-shims-api.version}</version>
         </dependency>
         <dependency>
             <groupId>org.pentaho</groupId>

@@ -29,10 +29,10 @@ import org.mockito.stubbing.Answer;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.di.core.logging.LogChannelInterface;
 import org.pentaho.di.core.variables.VariableSpace;
-import org.pentaho.hadoop.shim.api.Configuration;
-import org.pentaho.hadoop.shim.api.fs.FileSystem;
+import org.pentaho.hadoop.shim.api.internal.Configuration;
+import org.pentaho.hadoop.shim.api.internal.fs.FileSystem;
 import org.pentaho.hadoop.shim.api.fs.Path;
-import org.pentaho.hadoop.shim.api.mapred.RunningJob;
+import org.pentaho.hadoop.shim.api.internal.mapred.RunningJob;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 
 import java.io.IOException;

@@ -7,6 +7,6 @@
 
   <service ref="cdh513PigServiceFactory" interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory"/>
 
-  <reference id="hascdh513HadoopConfiguration" interface="org.pentaho.hadoop.shim.api.HasConfiguration"/>
+  <reference id="hascdh513HadoopConfiguration" interface="org.pentaho.hadoop.shim.api.internal.HasConfiguration"/>
 
 </blueprint>

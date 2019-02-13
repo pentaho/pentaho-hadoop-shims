@@ -8,5 +8,5 @@
 
   <service ref="cdh11HBaseServiceFactory" interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory"/>
 
-  <reference id="hbaseShim" interface="org.pentaho.hbase.shim.spi.HBaseShim" filter="(shim=cdh513)(service=hbase)"/>
+  <reference id="hbaseShim" interface="org.pentaho.hadoop.shim.spi.HBaseShim" filter="(shim=cdh513)(service=hbase)"/>
 </blueprint>

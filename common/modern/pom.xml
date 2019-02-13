@@ -22,11 +22,6 @@
     </dependency>
     <dependency>
       <groupId>org.pentaho</groupId>
-      <artifactId>common-format-shim</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.pentaho</groupId>
       <artifactId>common-sqoop-shim</artifactId>
       <version>${project.version}</version>
     </dependency>

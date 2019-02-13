@@ -44,7 +44,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.pentaho.hadoop.shim.api.Configuration;
+import org.pentaho.hadoop.shim.api.internal.Configuration;
 
 /**
  * Implementation of HBaseConnection that partially "simulates" a real HBase instance. Used for unit testing the HBase

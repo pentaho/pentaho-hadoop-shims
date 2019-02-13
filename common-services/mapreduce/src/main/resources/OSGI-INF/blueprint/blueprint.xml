@@ -8,7 +8,7 @@
     <argument ref="transformationVisitorList"/>
   </bean>
   <reference id="executorService" interface="java.util.concurrent.ExecutorService"/>
-  <reference id="hascdh513HadoopConfiguration" interface="org.pentaho.hadoop.shim.api.HasConfiguration"/>
+  <reference id="hascdh513HadoopConfiguration" interface="org.pentaho.hadoop.shim.api.internal.HasConfiguration"/>
   <service ref="cdh11MapReduceServiceFactory" interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory"/>
   <reference-list id="transformationVisitorList" interface="org.pentaho.big.data.impl.shim.mapreduce.TransformationVisitorService"
                   availability="optional"/>

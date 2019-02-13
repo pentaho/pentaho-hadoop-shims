@@ -23,7 +23,7 @@ package org.pentaho.hadoop.shim.common;
 
 import org.apache.hadoop.mapred.TaskAttemptID;
 import org.apache.hadoop.mapreduce.Job;
-import org.pentaho.hadoop.shim.api.mapred.RunningJob;
+import org.pentaho.hadoop.shim.api.internal.mapred.RunningJob;
 import org.pentaho.hadoop.shim.common.mapred.TaskCompletionEventProxy;
 
 import java.io.IOException;

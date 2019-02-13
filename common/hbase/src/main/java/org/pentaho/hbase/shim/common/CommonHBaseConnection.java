@@ -1072,7 +1072,7 @@ public class CommonHBaseConnection implements HBaseConnection, IHBaseClientFacto
   }
 
   @Override
-  public void obtainAuthTokenForJob( org.pentaho.hadoop.shim.api.Configuration conf ) throws Exception {
+  public void obtainAuthTokenForJob( org.pentaho.hadoop.shim.api.internal.Configuration conf ) throws Exception {
 
   }
 }

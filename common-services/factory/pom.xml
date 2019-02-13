@@ -39,11 +39,6 @@
     </dependency>
     <dependency>
       <groupId>org.pentaho</groupId>
-      <artifactId>common-format-shim</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.pentaho</groupId>
       <artifactId>pentaho-big-data-impl-shim-format</artifactId>
       <version>${project.version}</version>
     </dependency>

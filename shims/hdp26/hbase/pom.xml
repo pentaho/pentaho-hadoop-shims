@@ -158,13 +158,6 @@
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.pentaho</groupId>
-                  <artifactId>pentaho-hadoop-shims-common-mapred</artifactId>
-                  <classifier>sources</classifier>
-                  <overWrite>false</overWrite>
-                  <outputDirectory>${project.build.directory}/src</outputDirectory>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.pentaho</groupId>
                   <artifactId>pentaho-hadoop-shims-common-hbase</artifactId>
                   <classifier>sources</classifier>
                   <overWrite>false</overWrite>

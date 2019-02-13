@@ -26,7 +26,7 @@ import org.apache.hadoop.hbase.client.Result;
 import org.junit.Before;
 import org.junit.Test;
 import org.pentaho.di.core.variables.VariableSpace;
-import org.pentaho.hadoop.shim.api.Configuration;
+import org.pentaho.hadoop.shim.api.internal.Configuration;
 import org.pentaho.hadoop.shim.api.hbase.HBaseConnection;
 import org.pentaho.hbase.shim.api.ColumnFilter;
 import org.pentaho.hbase.shim.api.HBaseValueMeta;

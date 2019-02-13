@@ -32,8 +32,8 @@ import org.apache.hadoop.security.UserGroupInformation;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.hadoop.mapreduce.YarnQueueAclsException;
 import org.pentaho.hadoop.mapreduce.YarnQueueAclsVerifier;
-import org.pentaho.hadoop.shim.api.Configuration;
-import org.pentaho.hadoop.shim.api.mapred.RunningJob;
+import org.pentaho.hadoop.shim.api.internal.Configuration;
+import org.pentaho.hadoop.shim.api.internal.mapred.RunningJob;
 import org.pentaho.hadoop.shim.ShimConfigsLoader;
 
 import java.io.IOException;

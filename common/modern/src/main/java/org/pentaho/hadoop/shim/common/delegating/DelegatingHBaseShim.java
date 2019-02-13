@@ -55,7 +55,7 @@ public class DelegatingHBaseShim implements HBaseShim,HasHadoopAuthorizationServ
     delegate.setInfo( configuration );
   }
 
-  @Override public void process( org.pentaho.hadoop.shim.api.Configuration configuration ) {
+  @Override public void process( org.pentaho.hadoop.shim.api.internal.Configuration configuration ) {
     Processable processable;
     if ( Processable.class.isInstance( delegate ) ) {
       processable = (Processable) delegate;

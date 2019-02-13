@@ -23,7 +23,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
-import org.pentaho.hadoop.shim.api.mapred.RunningJob;
+import org.pentaho.hadoop.shim.api.internal.mapred.RunningJob;
 import org.pentaho.hdfs.vfs.HDFSFileProvider;
 
 import java.io.IOException;
@@ -70,7 +70,7 @@ public class HadoopShimImpl extends CommonHadoopShim {
   }
 
   @Override
-  public RunningJob submitJob( org.pentaho.hadoop.shim.api.Configuration c ) throws IOException {
+  public RunningJob submitJob( org.pentaho.hadoop.shim.api.internal.Configuration c ) throws IOException {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
     try {
@@ -83,7 +83,7 @@ public class HadoopShimImpl extends CommonHadoopShim {
   }
 
   @Override
-  public org.pentaho.hadoop.shim.api.Configuration createConfiguration() {
+  public org.pentaho.hadoop.shim.api.internal.Configuration createConfiguration() {
     // Set the context class loader when instantiating the configuration
     // since org.apache.hadoop.conf.Configuration uses it to load resources
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
@@ -98,7 +98,7 @@ public class HadoopShimImpl extends CommonHadoopShim {
   }
 
   @Override
-  public org.pentaho.hadoop.shim.api.Configuration createConfiguration( String namedClusterConfigId ) {
+  public org.pentaho.hadoop.shim.api.internal.Configuration createConfiguration( String namedClusterConfigId ) {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
     try {
@@ -113,7 +113,7 @@ public class HadoopShimImpl extends CommonHadoopShim {
   @Override
   public void configureConnectionInformation( String namenodeHost, String namenodePort, String jobtrackerHost,
                                               String jobtrackerPort,
-                                              org.pentaho.hadoop.shim.api.Configuration conf,
+                                              org.pentaho.hadoop.shim.api.internal.Configuration conf,
                                               List<String> logMessages ) throws Exception {
 
     String runtimeFsDefaultName = conf.get( "pentaho.runtime.fs.default.name" );

@@ -57,7 +57,7 @@ public class DelegatingFormatShim extends CommonFormatShim implements HasHadoopA
   }
 
   @Override
-  public void process( org.pentaho.hadoop.shim.api.Configuration configuration ) { // TODO remove conf ?
+  public void process( org.pentaho.hadoop.shim.api.internal.Configuration configuration ) { // TODO remove conf ?
     Processable processable;
     if ( Processable.class.isInstance( delegate ) ) {
       processable = (Processable) delegate;

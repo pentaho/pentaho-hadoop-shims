@@ -132,12 +132,6 @@
       <artifactId>org.osgi.core</artifactId>
       <version>${org.osgi.core.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-common-mapred</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-    </dependency>
 
     <dependency>
       <groupId>org.pentaho</groupId>
@@ -165,12 +159,6 @@
     <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>pentaho-big-data-impl-shim-pig</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>common-format-shim</artifactId>
       <version>${project.version}</version>
     </dependency>
 

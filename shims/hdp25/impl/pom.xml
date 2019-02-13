@@ -56,10 +56,6 @@
   </properties>
   <dependencies>
     <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-api</artifactId>
-    </dependency>
-    <dependency>
       <groupId>pentaho-kettle</groupId>
       <artifactId>kettle-core</artifactId>
     </dependency>
@@ -420,11 +416,6 @@
     <dependency>
       <groupId>org.safehaus.jug</groupId>
       <artifactId>jug-lgpl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-api</artifactId>
-      <classifier>tests</classifier>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>

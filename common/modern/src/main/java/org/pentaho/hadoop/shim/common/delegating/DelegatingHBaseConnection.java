@@ -23,7 +23,7 @@
 package org.pentaho.hadoop.shim.common.delegating;
 
 import org.pentaho.di.core.variables.VariableSpace;
-import org.pentaho.hadoop.shim.api.Configuration;
+import org.pentaho.hadoop.shim.api.internal.Configuration;
 import org.pentaho.hbase.shim.api.ColumnFilter;
 import org.pentaho.hbase.shim.api.HBaseValueMeta;
 import org.pentaho.hbase.shim.common.wrapper.HBaseConnectionInterface;

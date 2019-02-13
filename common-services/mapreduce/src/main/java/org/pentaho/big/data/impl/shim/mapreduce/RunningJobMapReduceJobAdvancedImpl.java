@@ -23,7 +23,7 @@
 package org.pentaho.big.data.impl.shim.mapreduce;
 
 
-import org.pentaho.hadoop.shim.api.mapred.RunningJob;
+import org.pentaho.hadoop.shim.api.internal.mapred.RunningJob;
 import org.pentaho.hadoop.shim.api.mapreduce.MapReduceJobAdvanced;
 import org.pentaho.hadoop.shim.api.mapreduce.MapReduceService;
 import org.pentaho.hadoop.shim.api.mapreduce.TaskCompletionEvent;

@@ -123,7 +123,7 @@ public class CommonFormatShimTestIT {
     }
 
     pentahoParquetInputFormat
-      .setInputFile( getClass().getClassLoader().getResource( "sample.pqt" ).toExternalForm() );
+      .setInputFile( getClass().getClassLoader().getResource("sample.pqt").toExternalForm() );
     pentahoParquetInputFormat.setSchema( ParquetUtils.createSchema( ValueMetaInterface.TYPE_INTEGER ) );
     IPentahoRecordReader recordReader =
       pentahoParquetInputFormat.createRecordReader( pentahoParquetInputFormat.getSplits().get( 0 ) );
@@ -203,8 +203,8 @@ public class CommonFormatShimTestIT {
   public void testAvroReadLocalFileSystem() throws Exception {
     List<String> expectedRows = Arrays.asList( "John;4074549921", "Leslie;4079302194" );
     PentahoAvroInputFormat avroInputFormat = new PentahoAvroInputFormat( mock( NamedCluster.class ) );
-    avroInputFormat.setInputSchemaFile( getFilePath( "/sample-schema.avro" ) );
-    avroInputFormat.setInputFile( getFilePath( "/sample-data.avro" ) );
+    avroInputFormat.setInputSchemaFile( getFilePath("/sample-schema.avro") );
+    avroInputFormat.setInputFile( getFilePath("/sample-data.avro") );
     avroInputFormat.setUseFieldAsInputStream( false );
     avroInputFormat.setIsDataBinaryEncoded( true );
     avroInputFormat.setOutputRowMeta( new RowMeta() );
@@ -364,8 +364,8 @@ public class CommonFormatShimTestIT {
     List<String> expectedRows = Arrays.asList( "John;4074549921", "Leslie;4079302194" );
     PentahoAvroInputFormat avroInputFormat = new PentahoAvroInputFormat( mock( NamedCluster.class ) );
 
-    avroInputFormat.setInputSchemaFile( getFilePath( "/sample-schema.avro" ) );
-    avroInputFormat.setInputFile( getFilePath( "/sample-data.avro" ) );
+    avroInputFormat.setInputSchemaFile( getFilePath("/sample-schema.avro") );
+    avroInputFormat.setInputFile( getFilePath("/sample-data.avro") );
     avroInputFormat.setUseFieldAsInputStream( false );
     avroInputFormat.setIsDataBinaryEncoded( true );
     List<AvroInputField> inputFields = new ArrayList<AvroInputField>();

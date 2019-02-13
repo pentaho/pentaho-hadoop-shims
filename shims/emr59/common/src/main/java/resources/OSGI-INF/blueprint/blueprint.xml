@@ -132,6 +132,6 @@
   </service>
   <reference-list id="transformationVisitorList" interface="org.pentaho.big.data.impl.shim.mapreduce.TransformationVisitorService"
                   availability="optional"/>
-  <!--<reference id="emr59HadoopConfiguration" interface="org.pentaho.hadoop.shim.api.HadoopConfigurationInterface"/>-->
+  <!--<reference id="emr59HadoopConfiguration" interface="org.pentaho.hadoop.shim.api.internal.HadoopConfigurationInterface"/>-->
 
 </blueprint>
