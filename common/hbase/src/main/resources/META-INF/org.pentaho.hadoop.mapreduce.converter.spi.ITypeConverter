@@ -1,2 +1,0 @@
-org.pentaho.hadoop.mapreduce.converter.converters.ImmutableBytesWritablePassThroughConverter
-org.pentaho.hadoop.mapreduce.converter.converters.ResultPassThroughConverter

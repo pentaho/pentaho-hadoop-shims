@@ -34,61 +34,14 @@
             <version>${org.apache.hadoop.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.pentaho</groupId>
-            <artifactId>pentaho-hadoop-shims-common-hadoop-shim</artifactId>
-            <version>${project.version}</version>
-            <classifier>sources</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.pentaho</groupId>
-            <artifactId>pentaho-hadoop-shims-common-shim</artifactId>
-            <version>${project.version}</version>
-            <classifier>sources</classifier>
-        </dependency>
-        <dependency>
             <groupId>pentaho</groupId>
             <artifactId>pentaho-hdfs-vfs</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.pentaho</groupId>
-            <artifactId>pentaho-big-data-impl-shim-hdfs</artifactId>
-            <version>${project.version}</version>
-            <classifier>sources</classifier>
-        </dependency>
+
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
             <version>${org.osgi.core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.pentaho</groupId>
-            <artifactId>common-sqoop-shim</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.pentaho</groupId>
-            <artifactId>pentaho-big-data-impl-shim-sqoop</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.pentaho</groupId>
-            <artifactId>pentaho-big-data-impl-shim-mapreduce</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.pentaho</groupId>
-            <artifactId>common-pig-shim</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.pentaho</groupId>
-            <artifactId>pentaho-big-data-impl-shim-pig</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.pentaho</groupId>
-            <artifactId>pentaho-big-data-impl-shim-format</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.orc</groupId>
@@ -127,11 +80,6 @@
             <version>1.4.9</version>
         </dependency>
         <dependency>
-            <groupId>org.pentaho</groupId>
-            <artifactId>pentaho-big-data-impl-shim-oozie</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.oozie</groupId>
             <artifactId>oozie-client</artifactId>
             <version>${org.apache.oozie.version}</version>
@@ -139,11 +87,6 @@
         <dependency>
             <groupId>org.pentaho</groupId>
             <artifactId>shim-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.pentaho</groupId>
-            <artifactId>pentaho-big-data-impl-shim-hive</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -170,11 +113,6 @@
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-common</artifactId>
             <version>${org.apache.hbase.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.pentaho</groupId>
-            <artifactId>pentaho-big-data-impl-shim-hbase</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.hbase</groupId>

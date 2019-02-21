@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.apache.hadoop.mapred.TaskAttemptID;
 import org.apache.hadoop.mapred.TaskID;
 import org.junit.Test;
-import org.pentaho.hadoop.shim.api.mapred.TaskCompletionEvent;
+import org.pentaho.hadoop.shim.api.internal.mapred.TaskCompletionEvent;
 
 @SuppressWarnings( "deprecation" )
 public class TaskCompletionEventProxyTest {

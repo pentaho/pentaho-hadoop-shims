@@ -5,6 +5,7 @@ package org.pentaho.hadoop.shim;
  */
 import org.apache.commons.vfs2.impl.DefaultFileSystemManager;
 import org.pentaho.di.i18n.BaseMessages;
+import org.pentaho.hadoop.shim.api.ConfigurationException;
 import org.pentaho.hadoop.shim.spi.HadoopConfigurationProvider;
 
 import java.util.ArrayList;

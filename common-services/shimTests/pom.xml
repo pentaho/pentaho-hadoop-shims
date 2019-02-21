@@ -19,11 +19,6 @@
   <dependencies>
     <dependency>
       <groupId>pentaho</groupId>
-      <artifactId>pentaho-big-data-impl-shim-common</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>pentaho</groupId>
       <artifactId>pentaho-big-data-impl-clusterTests</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -65,7 +60,7 @@
       <artifactId>mockito-all</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.pentaho</groupId>
+      <groupId>pentaho</groupId>
       <artifactId>pentaho-big-data-api-runtimeTest</artifactId>
       <version>${project.version}</version>
       <classifier>tests</classifier>

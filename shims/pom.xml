@@ -119,42 +119,7 @@
   <dependencies>
     <dependency>
       <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-common-shim</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-common-hbase-comparators-api</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-common-modern</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.pentaho</groupId>
       <artifactId>pentaho-hadoop-shims-common-hbase</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-hbase-comparators</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-common-hadoop-shim</artifactId>
       <version>${project.version}</version>
       <classifier>sources</classifier>
       <scope>provided</scope>
@@ -200,36 +165,11 @@
                 <artifactItems>
                   <artifactItem>
                     <groupId>org.pentaho</groupId>
-                    <artifactId>pentaho-hadoop-shims-common-shim</artifactId>
-                    <classifier>sources</classifier>
-                    <overWrite>false</overWrite>
-                    <outputDirectory>${project.build.directory}/src</outputDirectory>
-                  </artifactItem>
-                  <artifactItem>
-                    <groupId>org.pentaho</groupId>
                     <artifactId>pentaho-hadoop-shims-common-modern</artifactId>
                     <classifier>sources</classifier>
                     <overWrite>false</overWrite>
                     <outputDirectory>${project.build.directory}/src</outputDirectory>
                   </artifactItem>
-<!--
-                  <artifactItem>
-                    <groupId>org.pentaho</groupId>
-                    <artifactId>pentaho-hadoop-shims-common-hbase-comparators-api</artifactId>
-                    <classifier>sources</classifier>
-                    <overWrite>false</overWrite>
-                    <outputDirectory>${project.build.directory}/src</outputDirectory>
-                    <excludes>**/IDeserializedBooleanComparator.java,**/IDeserializedNumericComparator.java</excludes>
-                  </artifactItem>
-                  <artifactItem>
-                    <groupId>org.pentaho</groupId>
-                    <artifactId>pentaho-hadoop-shims-hbase-comparators</artifactId>
-                    <classifier>sources</classifier>
-                    <overWrite>false</overWrite>
-                    <outputDirectory>${project.build.directory}/src</outputDirectory>
-                    <excludes>**/DeserializedBooleanComparator.java,**/DeserializedNumericComparator.java</excludes>
-                  </artifactItem>
--->
                   <artifactItem>
                     <groupId>org.pentaho</groupId>
                     <artifactId>pentaho-hadoop-shims-common-mapred</artifactId>
@@ -243,45 +183,6 @@
                     <classifier>sources</classifier>
                     <overWrite>false</overWrite>
                     <outputDirectory>${project.build.directory}/src</outputDirectory>
-                  </artifactItem>
-<!--
-                  <artifactItem>
-                    <groupId>org.pentaho</groupId>
-                    <artifactId>pentaho-hadoop-shims-common-hbase</artifactId>
-                    <classifier>sources</classifier>
-                    <overWrite>false</overWrite>
-                    <outputDirectory>${project.build.directory}/src</outputDirectory>
-                  </artifactItem>
--->
-                  <artifactItem>
-                    <groupId>org.pentaho</groupId>
-                    <artifactId>pentaho-hadoop-shims-common-shim</artifactId>
-                    <classifier>test-sources</classifier>
-                    <overWrite>false</overWrite>
-                    <outputDirectory>${project.build.directory}/test-src</outputDirectory>
-                  </artifactItem>
-                  <artifactItem>
-                    <groupId>org.pentaho</groupId>
-                    <artifactId>pentaho-hadoop-shims-common-modern</artifactId>
-                    <classifier>test-sources</classifier>
-                    <overWrite>false</overWrite>
-                    <outputDirectory>${project.build.directory}/test-src</outputDirectory>
-                  </artifactItem>
-<!--
-                  <artifactItem>
-                    <groupId>org.pentaho</groupId>
-                    <artifactId>pentaho-hadoop-shims-hbase-comparators</artifactId>
-                    <classifier>test-sources</classifier>
-                    <overWrite>false</overWrite>
-                    <outputDirectory>${project.build.directory}/test-src</outputDirectory>
-                  </artifactItem>
--->
-                  <artifactItem>
-                    <groupId>org.pentaho</groupId>
-                    <artifactId>pentaho-hadoop-shims-common-hadoop-shim</artifactId>
-                    <classifier>test-sources</classifier>
-                    <overWrite>false</overWrite>
-                    <outputDirectory>${project.build.directory}/test-src</outputDirectory>
                   </artifactItem>
                 </artifactItems>
               </configuration>

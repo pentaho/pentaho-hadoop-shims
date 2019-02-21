@@ -27,7 +27,6 @@ import org.apache.commons.vfs2.VFS;
 import org.apache.commons.vfs2.impl.DefaultFileSystemManager;
 import org.apache.commons.vfs2.provider.FileProvider;
 import org.junit.Test;
-import org.pentaho.hadoop.shim.ConfigurationException;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
 import org.pentaho.hadoop.shim.MockHadoopConfigurationProvider;
@@ -84,7 +83,7 @@ public class HadoopConfigurationFileSystemManagerTest {
   public void getActiveFileProvider_no_active() throws Exception {
     DefaultFileSystemManager def = new DefaultFileSystemManager();
     HadoopConfigurationProvider configProvider = new MockHadoopConfigurationProvider() {
-      public HadoopConfiguration getActiveConfiguration() throws org.pentaho.hadoop.shim.ConfigurationException {
+      public HadoopConfiguration getActiveConfiguration() throws ConfigurationException {
         throw new ConfigurationException( "no active config" );
       }
     };

@@ -30,7 +30,7 @@ import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.hadoop.mapreduce.GenericTransCombiner;
 import org.pentaho.hadoop.mapreduce.GenericTransReduce;
 import org.pentaho.hadoop.mapreduce.PentahoMapRunnable;
-import org.pentaho.hadoop.shim.ConfigurationException;
+import org.pentaho.hadoop.shim.api.ConfigurationException;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
 import org.pentaho.hadoop.shim.MockHadoopConfigurationProvider;

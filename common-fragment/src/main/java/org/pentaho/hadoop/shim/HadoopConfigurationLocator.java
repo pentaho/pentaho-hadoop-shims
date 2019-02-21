@@ -46,6 +46,7 @@ import org.apache.log4j.Logger;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.util.StringUtil;
 import org.pentaho.di.i18n.BaseMessages;
+import org.pentaho.hadoop.shim.api.ConfigurationException;
 import org.pentaho.hadoop.shim.api.internal.ActiveHadoopConfigurationLocator;
 import org.pentaho.hadoop.shim.api.internal.Required;
 import org.pentaho.hadoop.shim.api.internal.ShimProperties;

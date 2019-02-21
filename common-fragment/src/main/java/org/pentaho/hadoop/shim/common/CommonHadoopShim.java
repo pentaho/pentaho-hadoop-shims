@@ -18,8 +18,6 @@
 package org.pentaho.hadoop.shim.common;
 
 //import org.apache.hive.jdbc.HiveDriver;
-import org.apache.commons.vfs2.FileSystemException;
-import org.apache.commons.vfs2.impl.DefaultFileSystemManager;
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.net.NetUtils;
 import org.apache.hadoop.util.VersionInfo;
@@ -29,7 +27,7 @@ import org.pentaho.hadoop.mapreduce.GenericTransCombiner;
 import org.pentaho.hadoop.mapreduce.GenericTransReduce;
 import org.pentaho.hadoop.mapreduce.PentahoMapRunnable;
 import org.pentaho.hadoop.mapreduce.converter.TypeConverterFactory;
-import org.pentaho.hadoop.shim.ConfigurationException;
+import org.pentaho.hadoop.shim.api.ConfigurationException;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
 import org.pentaho.hadoop.shim.ShimVersion;

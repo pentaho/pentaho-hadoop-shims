@@ -102,107 +102,107 @@ public class ParquetConverter {
     int precision = 0;
 
     switch ( t.asPrimitiveType().getPrimitiveTypeName() ) {
-      case PrimitiveTypeName.BINARY:
+      case BINARY:
         if ( originalType == null ) {
           dataType = ParquetSpec.DataType.BINARY;
           break;
         }
 
         switch ( originalType ) {
-          case OriginalType.DECIMAL:
+          case DECIMAL:
             dataType = ParquetSpec.DataType.DECIMAL;
             precision = t.asPrimitiveType().getDecimalMetadata().getPrecision();
             scale = t.asPrimitiveType().getDecimalMetadata().getScale();
             break;
-          case OriginalType.UTF8:
+          case UTF8:
             dataType = ParquetSpec.DataType.UTF8;
             break;
-          case OriginalType.ENUM:
+          case ENUM:
             dataType = ParquetSpec.DataType.ENUM;
             break;
           default:
             dataType = ParquetSpec.DataType.BINARY;
         }
         break;
-      case PrimitiveTypeName.BOOLEAN:
+      case BOOLEAN:
         dataType = ParquetSpec.DataType.BOOLEAN;
         break;
-      case PrimitiveTypeName.DOUBLE:
+      case DOUBLE:
         dataType = ParquetSpec.DataType.DOUBLE;
         break;
-      case PrimitiveTypeName.FLOAT:
+      case FLOAT:
         dataType = ParquetSpec.DataType.FLOAT;
         break;
-      case PrimitiveTypeName.INT32:
+      case INT32:
         if ( originalType == null ) {
           dataType = ParquetSpec.DataType.INT_32;
           break;
         }
 
         switch ( originalType ) {
-          case OriginalType.DECIMAL:
+          case DECIMAL:
             dataType = ParquetSpec.DataType.DECIMAL_INT_32;
             precision = t.asPrimitiveType().getDecimalMetadata().getPrecision();
             scale = t.asPrimitiveType().getDecimalMetadata().getScale();
             break;
-          case OriginalType.DATE:
+          case DATE:
             dataType = ParquetSpec.DataType.DATE;
             break;
-          case OriginalType.INT_8:
+          case INT_8:
             dataType = ParquetSpec.DataType.INT_8;
             break;
-          case OriginalType.INT_16:
+          case INT_16:
             dataType = ParquetSpec.DataType.INT_8;
             break;
-          case OriginalType.INT_32:
+          case INT_32:
             dataType = ParquetSpec.DataType.INT_32;
             break;
-          case OriginalType.UINT_8:
+          case UINT_8:
             dataType = ParquetSpec.DataType.UINT_8;
             break;
-          case OriginalType.UINT_16:
+          case UINT_16:
             dataType = ParquetSpec.DataType.UINT_16;
             break;
-          case OriginalType.UINT_32:
+          case UINT_32:
             dataType = ParquetSpec.DataType.UINT_32;
             break;
-          case OriginalType.TIME_MILLIS:
+          case TIME_MILLIS:
             dataType = ParquetSpec.DataType.TIME_MILLIS;
             break;
           default:
             dataType = ParquetSpec.DataType.INT_32;
         }
         break;
-      case PrimitiveTypeName.INT64:
+      case INT64:
         if ( originalType == null ) {
           dataType = ParquetSpec.DataType.INT_64;
           break;
         }
 
         switch ( originalType ) {
-          case OriginalType.DECIMAL:
+          case DECIMAL:
             dataType = ParquetSpec.DataType.DECIMAL_INT_64;
             precision = t.asPrimitiveType().getDecimalMetadata().getPrecision();
             scale = t.asPrimitiveType().getDecimalMetadata().getScale();
             break;
-          case OriginalType.TIMESTAMP_MILLIS:
+          case TIMESTAMP_MILLIS:
             dataType = ParquetSpec.DataType.TIMESTAMP_MILLIS;
             break;
           default:
             dataType = ParquetSpec.DataType.INT_64;
         }
         break;
-      case PrimitiveTypeName.INT96:
+      case INT96:
         dataType = ParquetSpec.DataType.INT_96;
         break;
-      case PrimitiveTypeName.FIXED_LEN_BYTE_ARRAY:
+      case FIXED_LEN_BYTE_ARRAY:
         if ( originalType == null ) {
           dataType = ParquetSpec.DataType.FIXED_LEN_BYTE_ARRAY;
           break;
         }
 
         switch ( originalType ) {
-          case OriginalType.DECIMAL:
+          case DECIMAL:
             dataType = ParquetSpec.DataType.DECIMAL_FIXED_LEN_BYTE_ARRAY;
             precision = t.asPrimitiveType().getDecimalMetadata().getPrecision();
             scale = t.asPrimitiveType().getDecimalMetadata().getScale();

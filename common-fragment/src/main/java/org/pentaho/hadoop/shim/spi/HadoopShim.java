@@ -22,7 +22,7 @@ import java.sql.Driver;
 import java.util.List;
 
 import org.pentaho.di.core.row.ValueMetaInterface;
-import org.pentaho.hadoop.shim.ConfigurationException;
+import org.pentaho.hadoop.shim.api.ConfigurationException;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
 import org.pentaho.hadoop.shim.api.internal.Configuration;

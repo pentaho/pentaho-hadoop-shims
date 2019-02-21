@@ -93,12 +93,6 @@
     </dependency>
     <dependency>
       <groupId>org.pentaho</groupId>
-      <artifactId>common-pig-shim</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.pentaho</groupId>
       <artifactId>common-parquet-shim</artifactId>
       <version>${project.version}</version>
       <classifier>sources</classifier>
@@ -164,13 +158,6 @@
             </goals>
             <configuration>
               <artifactItems>
-                <artifactItem>
-                  <groupId>org.pentaho</groupId>
-                  <artifactId>common-pig-shim</artifactId>
-                  <classifier>sources</classifier>
-                  <overWrite>false</overWrite>
-                  <outputDirectory>${project.build.directory}/src</outputDirectory>
-                </artifactItem>
                 <artifactItem>
                   <groupId>org.pentaho</groupId>
                   <artifactId>common-parquet-shim</artifactId>

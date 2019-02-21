@@ -22,7 +22,7 @@
 
 package org.pentaho.hadoop.shim.api.internal;
 
-import org.pentaho.hadoop.shim.ConfigurationException;
+import org.pentaho.hadoop.shim.api.ConfigurationException;
 
 /**
  * Provides a mechanism for a {@link HadoopConfigurationProvider} to locate the

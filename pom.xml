@@ -283,8 +283,6 @@
       </activation>
       <modules>
         <module>shim-api</module>
-        <module>common</module>
-        <module>common-services</module>
         <module>common-fragment</module>
         <module>common-dependencies</module>
       </modules>

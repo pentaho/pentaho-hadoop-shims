@@ -25,6 +25,7 @@ package org.pentaho.hadoop.shim;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.pentaho.hadoop.shim.api.ConfigurationException;
 import org.pentaho.hadoop.shim.spi.HadoopConfigurationProvider;
 
 public class MockHadoopConfigurationProvider implements HadoopConfigurationProvider {

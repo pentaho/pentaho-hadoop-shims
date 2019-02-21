@@ -22,7 +22,7 @@
 
 package org.pentaho.hadoop.shim.spi;
 
-import org.pentaho.hadoop.shim.ConfigurationException;
+import org.pentaho.hadoop.shim.api.ConfigurationException;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
 
 import java.util.List;

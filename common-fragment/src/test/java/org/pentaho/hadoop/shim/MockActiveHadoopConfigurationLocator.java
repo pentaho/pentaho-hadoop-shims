@@ -22,6 +22,7 @@
 
 package org.pentaho.hadoop.shim;
 
+import org.pentaho.hadoop.shim.api.ConfigurationException;
 import org.pentaho.hadoop.shim.api.internal.ActiveHadoopConfigurationLocator;
 
 public class MockActiveHadoopConfigurationLocator implements ActiveHadoopConfigurationLocator {

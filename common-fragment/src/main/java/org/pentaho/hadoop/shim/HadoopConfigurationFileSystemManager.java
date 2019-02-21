@@ -29,6 +29,7 @@ import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.impl.DefaultFileSystemManager;
 import org.apache.commons.vfs2.provider.FileProvider;
 import org.pentaho.di.i18n.BaseMessages;
+import org.pentaho.hadoop.shim.api.ConfigurationException;
 import org.pentaho.hadoop.shim.spi.HadoopConfigurationProvider;
 
 /**

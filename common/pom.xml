@@ -11,17 +11,6 @@
   <version>8.3.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
-    <module>core</module>
-    <module>common-shim</module>
-    <module>common-hbase-comparators-api</module>
-    <module>hbase-comparators</module>
-    <module>hadoop-shim</module>
-    <module>common-pig</module>
-    <module>common-oozie</module>
-    <module>common-format</module>
-    <module>common-sqoop</module>
-    <module>modern</module>
-    <module>hbase</module>
   </modules>
   <properties>
     <org.apache.hadoop.version>0.20.2</org.apache.hadoop.version>
