@@ -23,8 +23,6 @@
     <org.apache.hbase.version>2.1.0-cdh6.1.0</org.apache.hbase.version>
     <zookeeper.version>3.4.5-cdh6.1.0</zookeeper.version>
     <com.codahale.metrics.version>3.0.1</com.codahale.metrics.version>
-    <slf4j-api.version>1.7.7</slf4j-api.version>
-    <slf4j-log4j12.version>1.7.7</slf4j-log4j12.version>
   </properties>
   <modules>
     <module>client</module>
