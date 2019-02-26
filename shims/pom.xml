@@ -165,21 +165,7 @@
                 <artifactItems>
                   <artifactItem>
                     <groupId>org.pentaho</groupId>
-                    <artifactId>pentaho-hadoop-shims-common-modern</artifactId>
-                    <classifier>sources</classifier>
-                    <overWrite>false</overWrite>
-                    <outputDirectory>${project.build.directory}/src</outputDirectory>
-                  </artifactItem>
-                  <artifactItem>
-                    <groupId>org.pentaho</groupId>
-                    <artifactId>pentaho-hadoop-shims-common-mapred</artifactId>
-                    <classifier>sources</classifier>
-                    <overWrite>false</overWrite>
-                    <outputDirectory>${project.build.directory}/src</outputDirectory>
-                  </artifactItem>
-                  <artifactItem>
-                    <groupId>org.pentaho</groupId>
-                    <artifactId>pentaho-hadoop-shims-common-hadoop-shim</artifactId>
+                    <artifactId>pentaho-hadoop-shims-common-fragment</artifactId>
                     <classifier>sources</classifier>
                     <overWrite>false</overWrite>
                     <outputDirectory>${project.build.directory}/src</outputDirectory>
@@ -319,6 +305,7 @@
       </modules>
     </profile>
 
+    <!--
     <profile>
       <id>cdh513</id>
       <activation>
@@ -331,7 +318,6 @@
       </modules>
     </profile>
 
-    <!--
     <profile>
       <id>hdp30</id>
       <activation>

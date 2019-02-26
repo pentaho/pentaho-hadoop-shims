@@ -296,7 +296,7 @@
         </property>
       </activation>
       <modules>
-        <!--module>shims</module-->
+        <module>shims</module>
       </modules>
     </profile>
 
