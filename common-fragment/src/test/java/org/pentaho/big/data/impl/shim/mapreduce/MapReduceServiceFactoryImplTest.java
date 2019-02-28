@@ -26,14 +26,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.mapreduce.MapReduceService;
-import org.pentaho.hadoop.shim.HadoopConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
@@ -42,7 +40,6 @@ import static org.mockito.Mockito.mock;
  */
 public class MapReduceServiceFactoryImplTest {
   private boolean isActiveConfiguration;
-  private HadoopConfiguration hadoopConfiguration;
   private ExecutorService executorService;
   private MapReduceServiceFactoryImpl mapReduceServiceFactory;
   private NamedCluster namedCluster;
@@ -51,10 +48,7 @@ public class MapReduceServiceFactoryImplTest {
   @Before
   public void setup() {
     isActiveConfiguration = true;
-    hadoopConfiguration = mock( HadoopConfiguration.class );
     executorService = mock( ExecutorService.class );
-    mapReduceServiceFactory =
-      new MapReduceServiceFactoryImpl( hadoopConfiguration.getHadoopShim(), executorService, visitorServices );
     namedCluster = mock( NamedCluster.class );
   }
 
@@ -71,8 +65,6 @@ public class MapReduceServiceFactoryImplTest {
   @Test
   public void testCanHandleInactive() {
     isActiveConfiguration = false;
-    mapReduceServiceFactory =
-      new MapReduceServiceFactoryImpl( hadoopConfiguration.getHadoopShim(), executorService, visitorServices );
 //    assertFalse( mapReduceServiceFactory.canHandle( namedCluster ) );
   }
 

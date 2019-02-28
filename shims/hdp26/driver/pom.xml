@@ -177,7 +177,7 @@
                     <instructions>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Version>${pentaho-osgi-bundles.version}</Bundle-Version>
-                        <Fragment-Host>pentaho-hadoop-shims-hdp26-blueprint</Fragment-Host>
+                        <Fragment-Host>pentaho-hadoop-driver</Fragment-Host>
                         <Vendor-Driver-Version>${vendor-driver.version}</Vendor-Driver-Version>
                         <Pentaho-Code-Version>${pentaho-code.version}</Pentaho-Code-Version>
                         <DynamicImport-Package>*</DynamicImport-Package>

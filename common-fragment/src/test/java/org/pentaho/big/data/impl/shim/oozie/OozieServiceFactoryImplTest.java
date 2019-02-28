@@ -22,28 +22,27 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.pentaho.hadoop.shim.api.ConfigurationException;
-import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.internal.oozie.OozieClient;
 import org.pentaho.hadoop.shim.api.internal.oozie.OozieClientFactory;
 import org.pentaho.hadoop.shim.api.oozie.OozieService;
 
 import static junit.framework.TestCase.assertEquals;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith( MockitoJUnitRunner.class )
 public class OozieServiceFactoryImplTest {
 
-  @Mock HadoopConfiguration configuration;
   @Mock
   NamedCluster cluster;
-  @Mock
-  OozieClientFactory clientFactory;
-  @Mock
-  OozieClient oozieClient;
+  @Mock OozieClientFactory clientFactory;
+  @Mock OozieClient oozieClient;
   OozieServiceFactoryImpl serviceFactory;
   private static final String OOZIE_URL = "http://oozieurl";
 
@@ -82,8 +81,6 @@ public class OozieServiceFactoryImplTest {
   @Test
   public void testCreate() throws Exception {
     when( cluster.getOozieUrl() ).thenReturn( OOZIE_URL );
-    when( configuration.getShim( OozieClientFactory.class ) )
-      .thenReturn( clientFactory );
     when( clientFactory.create( OOZIE_URL ) )
       .thenReturn( oozieClient );
     serviceFactory.create( cluster );
@@ -92,8 +89,6 @@ public class OozieServiceFactoryImplTest {
 
   @Test
   public void testFallbackCreate() throws Exception {
-    when( configuration.getShim( OozieClientFactory.class ) )
-      .thenThrow( mock( ConfigurationException.class ) );
     serviceFactory.create( cluster );
     verify( clientFactory, times( 0 ) ).create( OOZIE_URL );
     // did not create from the shim, but still return an OozieService

@@ -25,11 +25,12 @@ package org.pentaho.big.data.impl.shim.sqoop;
 import org.junit.Before;
 import org.junit.Test;
 import org.pentaho.hadoop.shim.api.ConfigurationException;
-import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.sqoop.SqoopService;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -38,23 +39,18 @@ import static org.mockito.Mockito.when;
  */
 public class SqoopServiceFactoryImplTest {
   private boolean isActiveConfiguration;
-  private HadoopConfiguration hadoopConfiguration;
   private SqoopServiceFactoryImpl sqoopServiceFactory;
   private NamedCluster namedCluster;
 
   @Before
   public void setup() throws ConfigurationException {
     isActiveConfiguration = true;
-    hadoopConfiguration = mock( HadoopConfiguration.class );
-    sqoopServiceFactory = new SqoopServiceFactoryImpl( hadoopConfiguration.getHadoopShim(), hadoopConfiguration.getSqoopShim() );
     namedCluster = mock( NamedCluster.class );
   }
 
   @Test
   public void testCanHandle() throws ConfigurationException {
     assertTrue( sqoopServiceFactory.canHandle( namedCluster ) );
-    sqoopServiceFactory = new SqoopServiceFactoryImpl( hadoopConfiguration.getHadoopShim(), hadoopConfiguration.getSqoopShim() );
-    //    assertFalse( sqoopServiceFactory.canHandle( namedCluster ) );
   }
 
   @Test
@@ -74,8 +70,4 @@ public class SqoopServiceFactoryImplTest {
     assertNotNull( sqoopServiceFactory.create( namedCluster ) );
   }
 
-  @Test
-  public void testCreateFailure() throws ConfigurationException {
-    when( hadoopConfiguration.getSqoopShim() ).thenThrow( new ConfigurationException( null ) );
-  }
 }

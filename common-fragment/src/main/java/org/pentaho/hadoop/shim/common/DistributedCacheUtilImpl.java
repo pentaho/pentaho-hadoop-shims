@@ -30,7 +30,6 @@ import org.apache.commons.vfs2.FileSelectInfo;
 import org.apache.commons.vfs2.FileSelector;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileType;
-import org.apache.commons.vfs2.FileTypeSelector;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.filecache.DistributedCache;
 import org.apache.hadoop.fs.FSDataOutputStream;
@@ -45,7 +44,7 @@ import org.pentaho.di.core.plugins.PluginFolder;
 import org.pentaho.di.core.plugins.PluginFolderInterface;
 import org.pentaho.di.core.vfs.KettleVFS;
 import org.pentaho.di.i18n.BaseMessages;
-import org.pentaho.hadoop.shim.HadoopConfiguration;
+import org.pentaho.hadoop.shim.ShimRuntimeException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -68,16 +67,6 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
    * Path within the installation directory to deploy libraries
    */
   private static final String PATH_LIB = "lib";
-
-  /**
-   * Pentaho MapReduce library path within a Hadoop configuration
-   */
-  private static final String PATH_PMR = "pmr";
-
-  /**
-   * Client-only library path within a Hadoop configuration
-   */
-  private static final String PATH_CLIENT = "client";
 
   /**
    * Path within the installation directory to deploy plugins
@@ -125,17 +114,6 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
    */
   private static final String AUTH_PREFIX = "pentaho.authentication";
 
-  /**
-   * The Hadoop Configuration this Distributed Cache Utility is part of
-   */
-  private HadoopConfiguration configuration;
-
-  public DistributedCacheUtilImpl( HadoopConfiguration configurationParam ) {
-//    if ( configurationParam == null ) {
-//      throw new NullPointerException();
-//    }
-    this.configuration = configurationParam;
-  }
 
   /**
    * Creates the path to a lock file within the provided directory
@@ -162,7 +140,7 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
     Path lock = getLockFileAt( root );
     // These directories must exist
     for ( Path dir : directories ) {
-      if ( !( fs.exists( dir ) && fs.getFileStatus( dir ).isDir() ) ) {
+      if ( !( fs.exists( dir ) && fs.getFileStatus( dir ).isDirectory() ) ) {
         return false;
       }
     }
@@ -193,10 +171,6 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
 
     stageForCache( extracted, fs, destination, true, false );
     stageBigDataPlugin( fs, destination, bigDataPlugin );
-
-//    if ( !Const.isEmpty( additionalPlugins ) ) {
-//      stagePluginsForCache( fs, new Path( destination, PATH_PLUGINS ), additionalPlugins );
-//    }
 
     // Delete the lock file now that we're done. It is intentional that we're not doing this in a try/finally. If the
     // staging fails for some reason we require the user to forcibly overwrite the (partial) installation
@@ -245,9 +219,8 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
       fs.mkdirs( pluginsDir );
     }
     for ( String localPluginPath : pluginFolderNames.split( "," ) ) {
-      localPluginPath.trim();
       Object[] localFileTuple = findPluginFolder( localPluginPath );
-      if ( localFileTuple == null || !( (FileObject) localFileTuple[ 0 ] ).exists() ) {
+      if ( localFileTuple == null || localFileTuple.length == 0 || !( (FileObject) localFileTuple[ 0 ] ).exists() ) {
         throw new KettleFileException( BaseMessages
           .getString( DistributedCacheUtilImpl.class, "DistributedCacheUtil.PluginDirectoryNotFound",
             localPluginPath ) );
@@ -315,14 +288,6 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader( VersionInfo.class.getClassLoader() );
 
-    // Get the version string or set to a default value
-    String version;
-    try {
-      version = VersionInfo.getVersion();
-    } catch ( Throwable t ) {
-      version = "unknown";
-    }
-
     // Restore the original classloader
     Thread.currentThread().setContextClassLoader( cl );
 
@@ -362,6 +327,15 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
   }
 
 
+  /**
+   * @deprecated
+   * @param source
+   * @param fs
+   * @param dest
+   * @param overwrite
+   * @throws IOException
+   * @throws KettleFileException
+   */
   @Deprecated
   public void stageForCache( FileObject source, FileSystem fs, Path dest, boolean overwrite )
     throws IOException, KettleFileException {
@@ -430,7 +404,7 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
         }
       }
     } catch ( IOException e ) {
-      throw new RuntimeException( "Error copying modified version of config.properties", e );
+      throw new ShimRuntimeException( "Error copying modified version of config.properties", e );
     }
   }
 
@@ -459,10 +433,10 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
     } );
 
     if ( files == null ) {
-      return Collections.EMPTY_LIST;
+      return Collections.emptyList();
     }
 
-    List<String> paths = new ArrayList<String>();
+    List<String> paths = new ArrayList<>();
     for ( FileObject file : files ) {
       try {
         paths.add( file.getURL().toURI().getPath() );
@@ -485,7 +459,7 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
    */
   public List<Path> findFiles( FileSystem fs, Path path, Pattern fileNamePattern ) throws IOException {
     FileStatus[] files = fs.listStatus( path );
-    List<Path> found = new ArrayList<Path>( files.length );
+    List<Path> found = new ArrayList<>( files.length );
     for ( FileStatus file : files ) {
       if ( fileNamePattern == null || fileNamePattern.matcher( file.getPath().toString() ).matches() ) {
         found.add( file.getPath() );
@@ -603,25 +577,7 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
 
         try {
           if ( folder.exists() ) {
-            FileObject[] files = folder.findFiles( new FileSelector() {
-              @Override
-              public boolean includeFile( FileSelectInfo fileSelectInfo ) throws Exception {
-                if ( fileSelectInfo.getFile().equals( fileSelectInfo.getBaseFolder() ) ) {
-                  // Do not consider the base folders
-                  return false;
-                }
-                // Determine relative name to compare
-                int baseNameLength = fileSelectInfo.getBaseFolder().getName().getPath().length() + 1;
-                String relativeName = fileSelectInfo.getFile().getName().getPath().substring( baseNameLength );
-                // Compare plugin folder name with the relative name
-                return pluginFolderName.equals( relativeName );
-              }
-
-              @Override
-              public boolean traverseDescendents( FileSelectInfo fileSelectInfo ) throws Exception {
-                return true;
-              }
-            } );
+            FileObject[] files = folder.findFiles( new PluginFolderSelector( pluginFolderName ) );
             if ( files != null && files.length > 0 ) {
               return new Object[] { files[ 0 ],
                 folder.getName().getRelativeName( files[ 0 ].getName() ) }; // Return the first match
@@ -632,7 +588,7 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
         }
       }
     }
-    return null;
+    return new Object[] {};
   }
 
   /**
@@ -701,5 +657,32 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
 
     List<Path> nonLibFiles = findFiles( ShimUtils.asFileSystem( fs ), ShimUtils.asPath( source ), fileNamePattern );
     addCachedFiles( nonLibFiles, ShimUtils.asConfiguration( conf ) );
+  }
+
+  private class PluginFolderSelector implements FileSelector {
+
+    String pluginFolderName;
+
+    public PluginFolderSelector ( String pluginFolderName ) {
+      this.pluginFolderName = pluginFolderName;
+    }
+
+    @Override
+    public boolean includeFile( FileSelectInfo fileSelectInfo ) throws Exception {
+      if ( fileSelectInfo.getFile().equals( fileSelectInfo.getBaseFolder() ) ) {
+        // Do not consider the base folders
+        return false;
+      }
+      // Determine relative name to compare
+      int baseNameLength = fileSelectInfo.getBaseFolder().getName().getPath().length() + 1;
+      String relativeName = fileSelectInfo.getFile().getName().getPath().substring( baseNameLength );
+      // Compare plugin folder name with the relative name
+      return pluginFolderName.equals( relativeName );
+    }
+
+    @Override
+    public boolean traverseDescendents( FileSelectInfo fileSelectInfo ) throws Exception {
+      return true;
+    }
   }
 }

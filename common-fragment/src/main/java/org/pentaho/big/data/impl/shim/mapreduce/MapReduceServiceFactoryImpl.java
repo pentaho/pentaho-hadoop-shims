@@ -34,20 +34,12 @@ import java.util.concurrent.ExecutorService;
  * Created by bryan on 7/6/15.
  */
 public class MapReduceServiceFactoryImpl implements NamedClusterServiceFactory<MapReduceService> {
-  private final boolean isActiveConfiguration;
   private final HadoopShim hadoopShim;
   private final ExecutorService executorService;
   private final List<TransformationVisitorService> visitorServices;
 
   public MapReduceServiceFactoryImpl( HadoopShim hadoopShim, ExecutorService executorService,
                                       List<TransformationVisitorService> visitorServices ) {
-    this(true, hadoopShim, executorService, visitorServices);
-  }
-
-  public MapReduceServiceFactoryImpl( boolean isActiveConfiguration,
-                                      HadoopShim hadoopShim, ExecutorService executorService,
-                                      List<TransformationVisitorService> visitorServices ) {
-    this.isActiveConfiguration = isActiveConfiguration;
     this.hadoopShim = hadoopShim;
     this.executorService = executorService;
     this.visitorServices = visitorServices;
@@ -60,7 +52,6 @@ public class MapReduceServiceFactoryImpl implements NamedClusterServiceFactory<M
 
   @Override
   public boolean canHandle( NamedCluster namedCluster ) {
-//    boolean ncState = namedCluster == null ? true : !namedCluster.isUseGateway();
     return true;
   }
 

@@ -30,9 +30,10 @@ import org.apache.commons.vfs2.FileSystemConfigBuilder;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.security.UserGroupInformation;
+import org.pentaho.hadoop.shim.ShimRuntimeException;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.bigdata.api.mapreduce.MapReduceTransformations;
 import org.pentaho.bigdata.api.mapreduce.PentahoMapReduceOutputStepMetaInterface;
-import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 
 import org.pentaho.di.core.CheckResultInterface;
 import org.pentaho.di.core.Const;
@@ -71,6 +72,7 @@ import org.pentaho.hadoop.shim.api.mapreduce.MapReduceJobAdvanced;
 import org.pentaho.hadoop.shim.api.mapreduce.PentahoMapReduceJobBuilder;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 import org.pentaho.metastore.api.IMetaStore;
+import org.pentaho.metastore.api.exceptions.MetaStoreException;
 import org.pentaho.metastore.stores.xml.XmlMetaStore;
 import org.pentaho.metastore.stores.xml.XmlUtil;
 
@@ -304,22 +306,11 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
         if ( objectValue instanceof String ) {
           return objectValue.toString();
         } else if ( objectValue instanceof List ) {
-          // it should contain strings only
-          ArrayList<String> values = new ArrayList<String>( (List) objectValue );
-          StringBuilder stringBuilder = new StringBuilder( "" );
-          for ( int i = 0; i < values.size(); i++ ) {
-            String value = values.get( i );
-            if ( value != null && !value.isEmpty() ) {
-              if ( i != 0 ) {
-                stringBuilder.append( "," );
-              }
-              stringBuilder.append( value );
-            }
-          }
-          if ( stringBuilder.toString().equals( "" ) ) {
+          String strObjectValue = String.join( ",", (List) objectValue  );
+          if ( strObjectValue.equals( "" ) ) {
             return defaultValue;
           } else {
-            return stringBuilder.toString();
+            return strObjectValue;
           }
         } else {
           // shouldn't happen
@@ -490,21 +481,21 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
       Boolean.toString( true ) ) ) ) {
       String installPath =
         getProperty( conf, pmrProperties, PENTAHO_MAPREDUCE_PROPERTY_KETTLE_HDFS_INSTALL_DIR, null );
-      String installId =
+      String mInstallId =
         getProperty( conf, pmrProperties, PENTAHO_MAPREDUCE_PROPERTY_KETTLE_INSTALLATION_ID, null );
       try {
         if ( Utils.isEmpty( installPath ) ) {
           throw new IllegalArgumentException( BaseMessages.getString( PKG,
             JOB_ENTRY_HADOOP_TRANS_JOB_EXECUTOR_KETTLE_HDFS_INSTALL_DIR_MISSING ) );
         }
-        if ( Utils.isEmpty( installId ) ) {
-          installId = this.installId;
+        if ( Utils.isEmpty( mInstallId ) ) {
+          mInstallId = this.installId;
         }
         if ( !installPath.endsWith( Const.FILE_SEPARATOR ) ) {
           installPath += Const.FILE_SEPARATOR;
         }
 
-        Path kettleEnvInstallDir = fs.asPath( installPath, installId );
+        Path kettleEnvInstallDir = fs.asPath( installPath, mInstallId );
         FileObject pmrLibArchive = pmrArchiveGetter.getPmrArchive( conf );
 
         // Make sure the version we're attempting to use is installed
@@ -534,12 +525,6 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
         }
 
         stageMetaStoreForHadoop( conf, fs, installPath );
-
-//        if ( !hadoopShim.getDistributedCacheUtil().isKettleEnvironmentInstalledAt( fs, kettleEnvInstallDir ) ) {
-//          throw new KettleException( BaseMessages.getString( PKG,
-//            JOB_ENTRY_HADOOP_TRANS_JOB_EXECUTOR_KETTLE_INSTALLATION_MISSING_FROM,
-//            kettleEnvInstallDir.toUri().getPath() ) );
-//        }
 
         log.logBasic( BaseMessages.getString( PKG, JOB_ENTRY_HADOOP_TRANS_JOB_EXECUTOR_CONFIGURING_JOB_WITH_KETTLE_AT,
           kettleEnvInstallDir.toUri().getPath() ) );
@@ -577,7 +562,7 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
     hadoopShim.getDistributedCacheUtil().addCachedFiles( conf, fs, hdfsMetaStoreDirForCurrentJobPath, null );
   }
 
-  private void snapshotMetaStore( String metaStoreSnapshotDir ) throws Exception {
+  private void snapshotMetaStore( String metaStoreSnapshotDir ) throws MetaStoreException {
     IMetaStore snapshot = new XmlMetaStore( metaStoreSnapshotDir );
     try {
       FileSystemConfigBuilder nc = KettleVFS.getInstance().getFileSystemManager().getFileSystemConfigBuilder( "hc" );
@@ -586,7 +571,7 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
 
       stageConfigurationFiles( metaStoreSnapshotDir );
     } catch ( FileSystemException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e ) {
-      e.printStackTrace();
+      log.logError( "Error in snapshotNamedClusterToMetaStore.", e );
     }
   }
 
@@ -604,11 +589,11 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
         if ( !configFilesStagingLocation.exists() ) {
           stagingExists = configFilesStagingLocation.mkdirs();
         }
-        if( configFileSource.exists() && stagingExists ) {
+        if ( configFileSource.exists() && stagingExists ) {
           FileUtils.copyFileToDirectory( configFileSource, configFilesStagingLocation );
         }
       } catch ( Exception e ) {
-        continue;
+        //Do nothing
       }
     }
   }
@@ -643,12 +628,10 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
           // If the path does not exist one could think of it as "already cleaned"
           return;
         }
-        if ( !fs.delete( path, true ) ) {
-          if ( log.isBasic() ) {
+        if ( !fs.delete( path, true ) && log.isBasic() ) {
             log.logBasic(
               BaseMessages
                 .getString( PKG, JOB_ENTRY_HADOOP_TRANS_JOB_EXECUTOR_FAILED_TO_CLEAN_OUTPUT_PATH, outputPath ) );
-          }
         }
       } catch ( IOException ex ) {
         throw new IOException(
@@ -681,7 +664,7 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
       TransConfiguration transConfiguration = TransConfiguration.fromXML( xmlString );
       return Optional.of( transConfiguration );
     } catch ( KettleException e ) {
-      throw new RuntimeException( "Unable to convert string to object", e );
+      throw new ShimRuntimeException( "Unable to convert string to object", e );
     }
   }
 
@@ -693,7 +676,7 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
         return null;
       }
     } catch ( KettleException | IOException e ) {
-      throw new RuntimeException( "Unable to convert object to string.", e );
+      throw new ShimRuntimeException( "Unable to convert object to string.", e );
     }
   }
 

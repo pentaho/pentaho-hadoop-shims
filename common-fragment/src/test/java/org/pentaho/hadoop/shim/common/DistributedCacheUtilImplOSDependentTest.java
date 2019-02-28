@@ -24,7 +24,6 @@ package org.pentaho.hadoop.shim.common;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
 
 import java.io.IOException;
 import java.util.List;
@@ -42,8 +41,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.vfs.KettleVFS;
-import org.pentaho.hadoop.shim.HadoopConfiguration;
-import org.pentaho.hadoop.shim.spi.MockHadoopShim;
 
 /**
  * There are tests of DistributedCacheUtil using hadoop local file system implementation. So these tests requires
@@ -61,7 +58,6 @@ import org.pentaho.hadoop.shim.spi.MockHadoopShim;
  * </pre>
  */
 public class DistributedCacheUtilImplOSDependentTest {
-  private static HadoopConfiguration TEST_CONFIG;
   private static String PLUGIN_BASE = null;
   private static final String OS_NAME = System.getProperty( "os.name", "unknown" );
 
@@ -71,8 +67,6 @@ public class DistributedCacheUtilImplOSDependentTest {
 
   @BeforeClass
   public static void setup() throws Exception {
-    // Create some Hadoop configuration specific pmr libraries
-    TEST_CONFIG = new HadoopConfiguration( DistributedCacheTestUtil.createTestHadoopConfiguration( "bin/test/" + DistributedCacheUtilImplOSDependentTest.class.getSimpleName() ), "test-config", "name", new MockHadoopShim() );
 
     PLUGIN_BASE = System.getProperty( Const.PLUGIN_BASE_FOLDERS_PROP );
     // Fake out the "plugins" directory for the project's root directory
@@ -88,7 +82,7 @@ public class DistributedCacheUtilImplOSDependentTest {
 
   @Test
   public void stageForCache() throws Exception {
-    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
+    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( );
 
     // Copy the contents of test folder
     FileObject source = DistributedCacheTestUtil.createTestFolderWithContent();
@@ -108,7 +102,7 @@ public class DistributedCacheUtilImplOSDependentTest {
 
   @Test
   public void stageForCache_destination_exists() throws Exception {
-    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
+    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( );
 
     Configuration conf = new Configuration();
     FileSystem fs = DistributedCacheTestUtil.getLocalFileSystem( conf );
@@ -130,7 +124,7 @@ public class DistributedCacheUtilImplOSDependentTest {
 
   @Test
   public void stagePluginsForCache() throws Exception {
-    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
+    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( );
 
     Configuration conf = new Configuration();
     FileSystem fs = DistributedCacheTestUtil.getLocalFileSystem( conf );
@@ -154,7 +148,7 @@ public class DistributedCacheUtilImplOSDependentTest {
 
   @Test
   public void findFiles_hdfs_native() throws Exception {
-    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
+    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( );
 
     // Copy the contents of test folder
     FileObject source = DistributedCacheTestUtil.createTestFolderWithContent();
@@ -184,7 +178,7 @@ public class DistributedCacheUtilImplOSDependentTest {
 
   @Test
   public void installKettleEnvironment() throws Exception {
-    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
+    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( );
 
     Configuration conf = new Configuration();
     FileSystem fs = DistributedCacheTestUtil.getLocalFileSystem( conf );
@@ -206,7 +200,7 @@ public class DistributedCacheUtilImplOSDependentTest {
 
   @Test
   public void installKettleEnvironment_additional_plugins() throws Exception {
-    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
+    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( );
 
     Configuration conf = new Configuration();
     FileSystem fs = DistributedCacheTestUtil.getLocalFileSystem( conf );
@@ -231,7 +225,7 @@ public class DistributedCacheUtilImplOSDependentTest {
 
   @Test
   public void isPmrInstalledAt() throws IOException {
-    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
+    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( );
 
     Configuration conf = new Configuration();
     FileSystem fs = DistributedCacheTestUtil.getLocalFileSystem( conf );
@@ -268,7 +262,7 @@ public class DistributedCacheUtilImplOSDependentTest {
 
   @Test
   public void configureWithPmr() throws Exception {
-    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
+    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( );
 
     Configuration conf = new Configuration();
     FileSystem fs = DistributedCacheTestUtil.getLocalFileSystem( conf );
