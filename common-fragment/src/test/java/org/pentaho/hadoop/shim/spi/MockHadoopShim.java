@@ -23,8 +23,6 @@
 package org.pentaho.hadoop.shim.spi;
 
 import org.pentaho.di.core.row.ValueMetaInterface;
-import org.pentaho.hadoop.shim.HadoopConfiguration;
-import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
 import org.pentaho.hadoop.shim.ShimVersion;
 import org.pentaho.hadoop.shim.api.internal.Configuration;
 import org.pentaho.hadoop.shim.api.internal.DistributedCacheUtil;
@@ -40,10 +38,6 @@ public class MockHadoopShim implements HadoopShim {
   @Override
   public ShimVersion getVersion() {
     return null;
-  }
-
-  @Override
-  public void onLoad( HadoopConfiguration config, HadoopConfigurationFileSystemManager fsm ) throws Exception {
   }
 
   @Override
@@ -67,7 +61,7 @@ public class MockHadoopShim implements HadoopShim {
   }
 
   @Override
-  public Configuration createConfiguration(String namedCluster) {
+  public Configuration createConfiguration( String namedCluster ) {
     return null;
   }
 

@@ -25,7 +25,6 @@ package org.pentaho.hadoop.shim.common;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
@@ -58,22 +57,17 @@ import org.pentaho.di.core.Const;
 import org.pentaho.di.core.exception.KettleFileException;
 import org.pentaho.di.core.vfs.KettleVFS;
 import org.pentaho.di.i18n.BaseMessages;
-import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.common.fs.PathProxy;
-import org.pentaho.hadoop.shim.spi.MockHadoopShim;
 
 /**
  * Test the DistributedCacheUtil
  */
 public class DistributedCacheUtilImplTest {
 
-  private static HadoopConfiguration TEST_CONFIG;
   private static String PLUGIN_BASE = null;
 
   @BeforeClass
   public static void setup() throws Exception {
-    // Create some Hadoop configuration specific pmr libraries
-    TEST_CONFIG = new HadoopConfiguration( DistributedCacheTestUtil.createTestHadoopConfiguration( "bin/test/" + DistributedCacheUtilImplTest.class.getSimpleName() ), "test-config", "name", new MockHadoopShim() );
 
     PLUGIN_BASE = System.getProperty( Const.PLUGIN_BASE_FOLDERS_PROP );
     // Fake out the "plugins" directory for the project's root directory
@@ -89,7 +83,7 @@ public class DistributedCacheUtilImplTest {
 
   //@Test( expected = NullPointerException.class )
   public void instantiation() {
-    new DistributedCacheUtilImpl( null );
+    new DistributedCacheUtilImpl( );
   }
 
   @Test
@@ -97,7 +91,7 @@ public class DistributedCacheUtilImplTest {
     FileObject test = KettleVFS.getFileObject( "bin/test/deleteDirectoryTest" );
     test.createFolder();
 
-    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
+    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( );
     ch.deleteDirectory( test );
     try {
       assertFalse( test.exists() );
@@ -112,7 +106,7 @@ public class DistributedCacheUtilImplTest {
 
   @Test
   public void extract_invalid_archive() throws Exception {
-    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
+    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( );
 
     try {
       ch.extract( KettleVFS.getFileObject( "bogus" ), null );
@@ -124,7 +118,7 @@ public class DistributedCacheUtilImplTest {
 
   @Test
   public void extract_destination_exists() throws Exception {
-    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
+    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( );
 
     FileObject archive = KettleVFS.getFileObject( getClass().getResource( "/pentaho-mapreduce-sample.jar" ).toURI().getPath() );
 
@@ -137,7 +131,7 @@ public class DistributedCacheUtilImplTest {
 
   @Test
   public void extractToTemp() throws Exception {
-    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
+    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( );
 
     FileObject archive = KettleVFS.getFileObject( getClass().getResource( "/pentaho-mapreduce-sample.jar" ).toURI().getPath() );
     FileObject extracted = ch.extractToTemp( archive );
@@ -155,7 +149,7 @@ public class DistributedCacheUtilImplTest {
 
   @Test
   public void extractToTempZipEntriesMixed() throws Exception {
-    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
+    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( );
 
     File dest = File.createTempFile( "entriesMixed", ".zip" );
     ZipOutputStream outputStream = new ZipOutputStream( new FileOutputStream( dest ) );
@@ -193,7 +187,7 @@ public class DistributedCacheUtilImplTest {
 
   @Test
   public void extractToTemp_missing_archive() throws Exception {
-    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
+    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( );
 
     try {
       ch.extractToTemp( null );
@@ -205,7 +199,7 @@ public class DistributedCacheUtilImplTest {
 
   @Test
   public void findFiles_vfs() throws Exception {
-    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
+    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( );
 
     FileObject testFolder = DistributedCacheTestUtil.createTestFolderWithContent();
 
@@ -225,7 +219,7 @@ public class DistributedCacheUtilImplTest {
   @Test
   public void findFiles_vfs_hdfs() throws Exception {
 
-    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
+    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( );
 
     URL url = new URL( "http://localhost:8020/path/to/file" );
     Configuration conf = mock( Configuration.class );
@@ -270,7 +264,7 @@ public class DistributedCacheUtilImplTest {
 
   @Test
   public void stageForCache_missing_source() throws Exception {
-    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
+    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( );
 
     Configuration conf = new Configuration();
     FileSystem fs = DistributedCacheTestUtil.getLocalFileSystem( conf );
@@ -287,7 +281,7 @@ public class DistributedCacheUtilImplTest {
 
   @Test
   public void stageForCache_destination_no_overwrite() throws Exception {
-    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
+    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( );
 
     Configuration conf = new Configuration();
     FileSystem fs = DistributedCacheTestUtil.getLocalFileSystem( conf );
@@ -314,7 +308,7 @@ public class DistributedCacheUtilImplTest {
 
   @Test
   public void addCachedFilesToClasspath() throws IOException {
-    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
+    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( );
     Configuration conf = new Configuration();
 
     List<Path> files = Arrays.asList( new Path( "a" ), new Path( "b" ), new Path( "c" ) );
@@ -334,7 +328,7 @@ public class DistributedCacheUtilImplTest {
 
   @Test
   public void installKettleEnvironment_missing_arguments() throws Exception {
-    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
+    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( );
 
     try {
       ch.installKettleEnvironment( null, (org.pentaho.hadoop.shim.api.internal.fs.FileSystem) null, null, null, null );
@@ -360,34 +354,34 @@ public class DistributedCacheUtilImplTest {
 
   @Test( expected = IllegalArgumentException.class )
   public void stagePluginsForCache_no_folders() throws Exception {
-    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
+    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( );
     ch.stagePluginsForCache( DistributedCacheTestUtil.getLocalFileSystem( new Configuration() ), new Path( "bin/test/plugins-installation-dir" ), null );
   }
 
   @Test( expected = KettleFileException.class )
   public void stagePluginsForCache_invalid_folder() throws Exception {
-    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
+    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( );
     ch.stagePluginsForCache( DistributedCacheTestUtil.getLocalFileSystem( new Configuration() ), new Path( "bin/test/plugins-installation-dir" ), "bin/bogus-plugin-name" );
   }
 
   @Test
   public void findPluginFolder() throws Exception {
-    DistributedCacheUtilImpl util = new DistributedCacheUtilImpl( TEST_CONFIG );
+    DistributedCacheUtilImpl util = new DistributedCacheUtilImpl( );
 
     // Fake out the "plugins" directory for the project's root directory
     String originalValue = System.getProperty( Const.PLUGIN_BASE_FOLDERS_PROP );
     System.setProperty( Const.PLUGIN_BASE_FOLDERS_PROP, KettleVFS.getFileObject( "." ).getURL().toURI().getPath() );
 
-    assertNotNull( "Should have found plugin dir: bin/", util.findPluginFolder( "bin" ) );
-    assertNotNull( "Should be able to find nested plugin dir: bin/test/", util.findPluginFolder( "bin/test" ) );
+    assertTrue( "Should have found plugin dir: bin/", util.findPluginFolder( "bin" ).length > 0 );
+    assertTrue( "Should be able to find nested plugin dir: bin/test/", util.findPluginFolder( "bin/test" ).length > 0 );
 
-    assertNull( "Should not have found plugin dir: org/", util.findPluginFolder( "org" ) );
+    assertTrue( "Should not have found plugin dir: org/", util.findPluginFolder( "org" ).length > 0 );
     System.setProperty( Const.PLUGIN_BASE_FOLDERS_PROP, originalValue );
   }
 
   @Test
   public void addFilesToClassPath() throws IOException {
-    DistributedCacheUtilImpl util = new DistributedCacheUtilImpl( TEST_CONFIG );
+    DistributedCacheUtilImpl util = new DistributedCacheUtilImpl( );
     Path p1 = new Path( "/testing1" );
     Path p2 = new Path( "/testing2" );
     Configuration conf = new Configuration();
@@ -398,7 +392,7 @@ public class DistributedCacheUtilImplTest {
 
   @Test
   public void addFilesToClassPath_custom_path_separator() throws IOException {
-    DistributedCacheUtilImpl util = new DistributedCacheUtilImpl( TEST_CONFIG );
+    DistributedCacheUtilImpl util = new DistributedCacheUtilImpl( );
     Path p1 = new Path( "/testing1" );
     Path p2 = new Path( "/testing2" );
     Configuration conf = new Configuration();

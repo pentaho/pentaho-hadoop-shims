@@ -17,7 +17,6 @@
 
 package org.pentaho.hadoop.shim.common;
 
-//import org.apache.hive.jdbc.HiveDriver;
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.net.NetUtils;
 import org.apache.hadoop.util.VersionInfo;
@@ -28,8 +27,7 @@ import org.pentaho.hadoop.mapreduce.GenericTransReduce;
 import org.pentaho.hadoop.mapreduce.PentahoMapRunnable;
 import org.pentaho.hadoop.mapreduce.converter.TypeConverterFactory;
 import org.pentaho.hadoop.shim.api.ConfigurationException;
-import org.pentaho.hadoop.shim.HadoopConfiguration;
-import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
+import org.pentaho.hadoop.shim.ShimRuntimeException;
 import org.pentaho.hadoop.shim.ShimVersion;
 import org.pentaho.hadoop.shim.api.internal.Configuration;
 import org.pentaho.hadoop.shim.api.internal.DistributedCacheUtil;
@@ -38,7 +36,6 @@ import org.pentaho.hadoop.shim.api.internal.fs.FileSystem;
 import org.pentaho.hadoop.shim.api.internal.mapred.RunningJob;
 import org.pentaho.hadoop.shim.common.fs.FileSystemProxy;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
-import org.pentaho.hdfs.vfs.HDFSFileProvider;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -56,18 +53,17 @@ import java.util.logging.Logger;
 
 public class CommonHadoopShim implements HadoopShim {
 
-  public CommonHadoopShim() {
-//    try {
-//      new DefaultFileSystemManager().addProvider( "hdfs", new HDFSFileProvider() );
-//    } catch ( FileSystemException e ) {
-//      e.printStackTrace();
-//    }
-  }
+  private static final String FS_HDFS_IMPL = "fs.hdfs.impl";
+  private static final String FS_FILE_IMPL = "fs.file.impl";
+  private static final String MAPRED_JOB_TRACKER = "mapred.job.tracker";
+  private static final String SHIM_NOT_SUPPORTED_DRIVER = "org.pentaho.hadoop.shim.common.CommonHadoopShim$NotSupportedDriver";
+  private static final String DEFAULT_NAMENODE_PORT = "9000";
+  private static final String DEFAULT_JOBTRACKER_PORT = "9001";
 
   private org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger( getClass() );
 
   public static class NotSupportedDriver implements Driver {
-    public static SQLException notSupported =
+    public static final SQLException notSupported =
       new SQLException( "Chosen driver is not supported in currently active Hadoop shim" );
 
     @Override public Connection connect( String url, Properties info ) throws SQLException {
@@ -102,22 +98,16 @@ public class CommonHadoopShim implements HadoopShim {
   private DistributedCacheUtil dcUtil;
 
   @SuppressWarnings( "serial" )
-  protected static Map<String, Class<? extends Driver>> JDBC_DRIVER_MAP =
-    new HashMap<String, Class<? extends Driver>>() {
-      {
-        //put( "hive", org.apache.hive.jdbc.HiveDriver.class );
-      }
-    };
+  protected static final Map<String, Class<? extends Driver>> JDBC_DRIVER_MAP = new HashMap<>();
 
   @SuppressWarnings( "serial" )
-  protected static Map<String, String> JDBC_POSSIBLE_DRIVER_MAP =
-    new HashMap<String, String>();
+  protected static final Map<String, String> JDBC_POSSIBLE_DRIVER_MAP = new HashMap<>();
 
   static {
-    JDBC_POSSIBLE_DRIVER_MAP.put( "hive2Simba", "org.pentaho.hadoop.shim.common.CommonHadoopShim$NotSupportedDriver" );
-    JDBC_POSSIBLE_DRIVER_MAP.put( "ImpalaSimba", "org.pentaho.hadoop.shim.common.CommonHadoopShim$NotSupportedDriver" );
+    JDBC_POSSIBLE_DRIVER_MAP.put( "hive2Simba", SHIM_NOT_SUPPORTED_DRIVER );
+    JDBC_POSSIBLE_DRIVER_MAP.put( "ImpalaSimba", SHIM_NOT_SUPPORTED_DRIVER );
     JDBC_POSSIBLE_DRIVER_MAP
-      .put( "SparkSqlSimba", "org.pentaho.hadoop.shim.common.CommonHadoopShim$NotSupportedDriver" );
+      .put( "SparkSqlSimba", SHIM_NOT_SUPPORTED_DRIVER );
     JDBC_POSSIBLE_DRIVER_MAP.put( "Impala", "org.apache.hive.jdbc.HiveDriver" );
   }
 
@@ -135,7 +125,7 @@ public class CommonHadoopShim implements HadoopShim {
     } catch ( ClassNotFoundException e ) {
       // Ignore
     } catch ( ClassCastException e2 ) {
-      e2.printStackTrace();
+      logger.error( "ClassCastException caught.", e2 );
     } finally {
       Thread.currentThread().setContextClassLoader( originalClassLoader );
     }
@@ -153,20 +143,8 @@ public class CommonHadoopShim implements HadoopShim {
   }
 
   @Override
-  public void onLoad( HadoopConfiguration config, HadoopConfigurationFileSystemManager fsm ) throws Exception {
-    validateHadoopHomeWithWinutils();
-    fsm.addProvider( config, "hdfs", config.getIdentifier(), new HDFSFileProvider() );
-    setDistributedCacheUtil( new DistributedCacheUtilImpl( config ) );
-  }
-
-  @Override
   public Driver getHiveJdbcDriver() {
     return null;
-//    try {
-//      return new HiveDriver();
-//    } catch ( Exception ex ) {
-//      throw new RuntimeException( "Unable to load Hive JDBC driver", ex );
-//    }
   }
 
   protected void validateHadoopHomeWithWinutils() {
@@ -199,7 +177,7 @@ public class CommonHadoopShim implements HadoopShim {
       }
 
     } catch ( Exception ex ) {
-      throw new RuntimeException( "Unable to load JDBC driver of type: " + driverType, ex );
+      throw new ShimRuntimeException( "Unable to load JDBC driver of type: " + driverType, ex );
     }
   }
 
@@ -235,15 +213,14 @@ public class CommonHadoopShim implements HadoopShim {
     // since org.apache.hadoop.conf.Configuration uses it to load resources
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
-    try {
-      conf.set("fs.hdfs.impl",
-                      org.apache.hadoop.hdfs.DistributedFileSystem.class.getName()
-                );
-      //conf.set( "fs.default.name", "hdfs" );
-            conf.set("fs.file.impl",
-                      org.apache.hadoop.fs.LocalFileSystem.class.getName()
-                );
-      return new FileSystemProxy( org.apache.hadoop.fs.FileSystem.get( ShimUtils.asConfiguration( conf ) ) );
+    conf.set( FS_HDFS_IMPL,
+            org.apache.hadoop.hdfs.DistributedFileSystem.class.getName()
+    );
+    conf.set( FS_FILE_IMPL,
+            org.apache.hadoop.fs.LocalFileSystem.class.getName()
+    );
+    try ( FileSystemProxy fsp = new FileSystemProxy( org.apache.hadoop.fs.FileSystem.get( ShimUtils.asConfiguration( conf ) ) ) ) {
+      return fsp;
     } finally {
       Thread.currentThread().setContextClassLoader( cl );
     }
@@ -253,14 +230,14 @@ public class CommonHadoopShim implements HadoopShim {
   public FileSystem getFileSystem( URI uri, Configuration conf, String user ) throws IOException, InterruptedException {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
-    try {
-      conf.set("fs.hdfs.impl",
-        org.apache.hadoop.hdfs.DistributedFileSystem.class.getName()
-      );
-      conf.set("fs.file.impl",
-        org.apache.hadoop.fs.LocalFileSystem.class.getName()
-      );
-      return new FileSystemProxy( org.apache.hadoop.fs.FileSystem.get( uri, ShimUtils.asConfiguration( conf ), user ) );
+    conf.set( FS_HDFS_IMPL,
+            org.apache.hadoop.hdfs.DistributedFileSystem.class.getName()
+    );
+    conf.set( FS_FILE_IMPL,
+            org.apache.hadoop.fs.LocalFileSystem.class.getName()
+    );
+    try ( FileSystemProxy fsp = new FileSystemProxy( org.apache.hadoop.fs.FileSystem.get( uri, ShimUtils.asConfiguration( conf ), user ) ) ) {
+      return fsp;
     } finally {
       Thread.currentThread().setContextClassLoader( cl );
     }
@@ -270,14 +247,14 @@ public class CommonHadoopShim implements HadoopShim {
     throws IOException, InterruptedException {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
-    try {
-      conf.set("fs.hdfs.impl",
-        org.apache.hadoop.hdfs.DistributedFileSystem.class.getName()
-      );
-      conf.set("fs.file.impl",
-        org.apache.hadoop.fs.LocalFileSystem.class.getName()
-      );
-      return new FileSystemProxy( org.apache.hadoop.fs.FileSystem.get( uri, ShimUtils.asConfiguration( conf ) ) );
+    conf.set( FS_HDFS_IMPL,
+            org.apache.hadoop.hdfs.DistributedFileSystem.class.getName()
+    );
+    conf.set( FS_FILE_IMPL,
+            org.apache.hadoop.fs.LocalFileSystem.class.getName()
+    );
+    try ( FileSystemProxy fsp = new FileSystemProxy( org.apache.hadoop.fs.FileSystem.get( uri, ShimUtils.asConfiguration( conf ) ) ) ) {
+      return fsp;
     } finally {
       Thread.currentThread().setContextClassLoader( cl );
     }
@@ -293,9 +270,7 @@ public class CommonHadoopShim implements HadoopShim {
   @Override
   public DistributedCacheUtil getDistributedCacheUtil() throws ConfigurationException {
     if ( dcUtil == null ) {
-//      throw new ConfigurationException( BaseMessages.getString( CommonHadoopShim.class,
-//        "CommonHadoopShim.DistributedCacheUtilMissing" ) );
-      dcUtil = new DistributedCacheUtilImpl( null );
+      dcUtil = new DistributedCacheUtilImpl( );
     }
     return dcUtil;
   }
@@ -316,7 +291,7 @@ public class CommonHadoopShim implements HadoopShim {
   @Override
   public String[] getJobtrackerConnectionInfo( Configuration c ) {
     String[] result = new String[ 2 ];
-    if ( !"local".equals( c.get( "mapred.job.tracker", "local" ) ) ) {
+    if ( !"local".equals( c.get( MAPRED_JOB_TRACKER, "local" ) ) ) {
       InetSocketAddress jobtracker = getJobTrackerAddress( c );
       result[ 0 ] = jobtracker.getHostName();
       result[ 1 ] = String.valueOf( jobtracker.getPort() );
@@ -325,7 +300,7 @@ public class CommonHadoopShim implements HadoopShim {
   }
 
   public static InetSocketAddress getJobTrackerAddress( Configuration conf ) {
-    String jobTrackerStr = conf.get( "mapred.job.tracker", "localhost:8012" );
+    String jobTrackerStr = conf.get( MAPRED_JOB_TRACKER, "localhost:8012" );
     return NetUtils.createSocketAddr( jobTrackerStr );
   }
 
@@ -335,10 +310,10 @@ public class CommonHadoopShim implements HadoopShim {
     throws Exception {
 
     if ( namenodeHost == null || namenodeHost.trim().length() == 0 ) {
-      throw new Exception( "No hdfs host specified!" );
+      throw new ConfigurationException( "No hdfs host specified!" );
     }
     if ( jobtrackerHost == null || jobtrackerHost.trim().length() == 0 ) {
-      throw new Exception( "No job tracker host specified!" );
+      throw new ConfigurationException( "No job tracker host specified!" );
     }
 
     if ( namenodePort != null
@@ -361,21 +336,21 @@ public class CommonHadoopShim implements HadoopShim {
     String jobTracker = jobtrackerHost + ":" + jobtrackerPort;
 
     conf.set( "fs.default.name", fsDefaultName );
-    conf.set( "mapred.job.tracker", jobTracker );
+    conf.set( MAPRED_JOB_TRACKER, jobTracker );
   }
 
   /**
    * @return the default port of the namenode
    */
   protected String getDefaultNamenodePort() {
-    return "9000";
+    return DEFAULT_NAMENODE_PORT;
   }
 
   /**
    * @return the default port of the jobtracker
    */
   protected String getDefaultJobtrackerPort() {
-    return "9001";
+    return DEFAULT_JOBTRACKER_PORT;
   }
 
   @Override
@@ -384,8 +359,11 @@ public class CommonHadoopShim implements HadoopShim {
     Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
     try {
       return c.submit();
-    } catch ( InterruptedException | ClassNotFoundException e ) {
-      throw new RuntimeException( e );
+    } catch ( ClassNotFoundException e ) {
+      throw new ShimRuntimeException( "Caught ClassNotFoundException.", e );
+    } catch ( InterruptedException e ) {
+      Thread.currentThread().interrupt();
+      throw new ShimRuntimeException( "Caught InterruptedException.", e );
     } finally {
       Thread.currentThread().setContextClassLoader( cl );
     }

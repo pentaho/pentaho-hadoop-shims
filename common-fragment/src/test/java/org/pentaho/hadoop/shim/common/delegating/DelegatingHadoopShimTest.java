@@ -24,8 +24,6 @@ package org.pentaho.hadoop.shim.common.delegating;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.pentaho.di.core.row.ValueMetaInterface;
-import org.pentaho.hadoop.shim.HadoopConfiguration;
-import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
 import org.pentaho.hadoop.shim.api.internal.Configuration;
 import org.pentaho.hadoop.shim.common.authorization.HadoopAuthorizationService;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
@@ -39,7 +37,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 
 /**
  * User: Dzmitry Stsiapanau Date: 02/10/2016 Time: 13:11
@@ -57,14 +57,6 @@ public class DelegatingHadoopShimTest {
     hadoopShimMock = mock( HadoopShim.class );
     when( has.getShim( HadoopShim.class ) ).thenReturn( hadoopShimMock );
     dhs.setHadoopAuthorizationService( has );
-  }
-
-  @org.junit.Test
-  public void testOnLoad() throws Exception {
-    HadoopConfiguration hc = mock( HadoopConfiguration.class );
-    HadoopConfigurationFileSystemManager fsm = mock( HadoopConfigurationFileSystemManager.class );
-    dhs.onLoad( hc, fsm );
-    verify( hadoopShimMock ).onLoad( hc, fsm );
   }
 
   @org.junit.Test

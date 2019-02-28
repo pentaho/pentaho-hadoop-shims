@@ -24,29 +24,19 @@ package com.pentaho.big.data.bundles.impl.shim.hbase;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.pentaho.di.core.logging.LogChannelInterface;
 import org.pentaho.di.core.variables.VariableSpace;
-import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.internal.hbase.HBaseBytesUtilShim;
 import org.pentaho.hadoop.shim.spi.HBaseShim;
-
-import java.util.ArrayList;
-import java.util.Properties;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by bryan on 2/2/16.
  */
 public class HBaseServiceImplTest {
   private NamedCluster namedCluster;
-  private HadoopConfiguration hadoopConfiguration;
   private HBaseServiceImpl hBaseService;
   private HBaseShim hBaseShim;
   private org.pentaho.hadoop.shim.spi.HBaseConnection hBaseConnection;
@@ -55,12 +45,10 @@ public class HBaseServiceImplTest {
   @Before
   public void setup() throws Exception {
     namedCluster = mock( NamedCluster.class );
-    hadoopConfiguration = mock( HadoopConfiguration.class );
     hBaseShim = mock( HBaseShim.class );
     hBaseConnection = mock( HBaseConnectionTestImpls.HBaseConnectionWithResultField.class );
     hBaseBytesUtilShim = mock( HBaseBytesUtilShim.class );
 
-    when( hadoopConfiguration.getHBaseShim() ).thenReturn( hBaseShim );
     when( hBaseShim.getHBaseConnection() ).thenReturn( hBaseConnection );
     when( hBaseConnection.getBytesUtil() ).thenReturn( hBaseBytesUtilShim );
 

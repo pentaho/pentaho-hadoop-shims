@@ -22,8 +22,6 @@
 
 package org.pentaho.hadoop.shim.common;
 
-import org.apache.commons.vfs2.VFS;
-import org.apache.commons.vfs2.impl.DefaultFileSystemManager;
 import org.apache.hadoop.util.VersionInfo;
 import org.junit.Test;
 import org.pentaho.di.i18n.BaseMessages;
@@ -31,17 +29,17 @@ import org.pentaho.hadoop.mapreduce.GenericTransCombiner;
 import org.pentaho.hadoop.mapreduce.GenericTransReduce;
 import org.pentaho.hadoop.mapreduce.PentahoMapRunnable;
 import org.pentaho.hadoop.shim.api.ConfigurationException;
-import org.pentaho.hadoop.shim.HadoopConfiguration;
-import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
-import org.pentaho.hadoop.shim.MockHadoopConfigurationProvider;
 import org.pentaho.hadoop.shim.api.internal.Configuration;
-import org.pentaho.hadoop.shim.spi.HadoopConfigurationProvider;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.junit.Assert.assertNotNull;
 
 public class CommonHadoopShimTest {
 
@@ -106,8 +104,8 @@ public class CommonHadoopShimTest {
     List<String> logMessages = new ArrayList<String>();
     shim.configureConnectionInformation( "namenodeHost", "namenodePort", "jobtrackerHost", "jobtrackerPort", conf,
       logMessages );
-    assertEquals( conf.get( "fs.default.name" ), "hdfs://namenodeHost:namenodePort" );
-    assertEquals( conf.get( "mapred.job.tracker" ), "jobtrackerHost:jobtrackerPort" );
+    assertEquals( "hdfs://namenodeHost:namenodePort" , conf.get( "fs.default.name" ) );
+    assertEquals( "jobtrackerHost:jobtrackerPort", conf.get( "mapred.job.tracker" ) );
     assertEquals( 0, logMessages.size() );
   }
 
@@ -134,24 +132,24 @@ public class CommonHadoopShimTest {
     List<String> logMessages = new ArrayList<String>();
 
     shim.configureConnectionInformation( "namenodeHost", null, "jobtrackerHost", "jobtrackerPort", conf, logMessages );
-    assertEquals( conf.get( "fs.default.name" ), "hdfs://namenodeHost" );
-    assertEquals( conf.get( "mapred.job.tracker" ), "jobtrackerHost:jobtrackerPort" );
+    assertEquals( "hdfs://namenodeHost", conf.get( "fs.default.name" ) );
+    assertEquals( "jobtrackerHost:jobtrackerPort", conf.get( "mapred.job.tracker" ) );
     assertEquals( 1, logMessages.size() );
     String message = logMessages.get( 0 );
     assertTrue( "Unexpected message: " + message, message.contains( "HA?" ) );
 
     logMessages.clear();
     shim.configureConnectionInformation( "namenodeHost", "   \t   ", "jobtrackerHost", "jobtrackerPort", conf, logMessages );
-    assertEquals( conf.get( "fs.default.name" ), "hdfs://namenodeHost" );
-    assertEquals( conf.get( "mapred.job.tracker" ), "jobtrackerHost:jobtrackerPort" );
+    assertEquals( "hdfs://namenodeHost", conf.get( "fs.default.name" ) );
+    assertEquals( "jobtrackerHost:jobtrackerPort", conf.get( "mapred.job.tracker" ) );
     assertEquals( 1, logMessages.size() );
     message = logMessages.get( 0 );
     assertTrue( "Unexpected message: " + message, message.contains( "HA?" ) );
 
     logMessages.clear();
     shim.configureConnectionInformation( "namenodeHost", "   -1   ", "jobtrackerHost", "jobtrackerPort", conf, logMessages );
-    assertEquals( conf.get( "fs.default.name" ), "hdfs://namenodeHost" );
-    assertEquals( conf.get( "mapred.job.tracker" ), "jobtrackerHost:jobtrackerPort" );
+    assertEquals( "hdfs://namenodeHost", conf.get( "fs.default.name" ) );
+    assertEquals( "jobtrackerHost:jobtrackerPort", conf.get( "mapred.job.tracker" ) );
     assertEquals( 1, logMessages.size() );
     message = logMessages.get( 0 );
     assertTrue( "Unexpected message: " + message, message.contains( "HA?" ) );
@@ -179,7 +177,7 @@ public class CommonHadoopShimTest {
     Configuration conf = new ConfigurationProxy();
     List<String> logMessages = new ArrayList<String>();
     shim.configureConnectionInformation( "namenodeHost", "namenodePort", "jobtrackerHost", null, conf, logMessages );
-    assertEquals( conf.get( "fs.default.name" ), "hdfs://namenodeHost:namenodePort" );
+    assertEquals( "hdfs://namenodeHost:namenodePort", conf.get( "fs.default.name" ) );
     assertEquals( conf.get( "mapred.job.tracker" ), "jobtrackerHost:" + shim.getDefaultJobtrackerPort() );
     assertEquals( 1, logMessages.size() );
     String message = logMessages.get( 0 );
@@ -187,47 +185,11 @@ public class CommonHadoopShimTest {
 
     logMessages = new ArrayList<String>();
     shim.configureConnectionInformation( "namenodeHost", "namenodePort", "jobtrackerHost", "", conf, logMessages );
-    assertEquals( conf.get( "fs.default.name" ), "hdfs://namenodeHost:namenodePort" );
+    assertEquals( "hdfs://namenodeHost:namenodePort", conf.get( "fs.default.name" ) );
     assertEquals( conf.get( "mapred.job.tracker" ), "jobtrackerHost:" + shim.getDefaultJobtrackerPort() );
     assertEquals( 1, logMessages.size() );
     message = logMessages.get( 0 );
     assertTrue( "Unexpected message: " + message, message.contains( "using default" ) );
-  }
-
-  @Test
-  public void onLoad() throws Exception {
-    HadoopConfigurationProvider configProvider = new HadoopConfigurationProvider() {
-      @Override
-      public boolean hasConfiguration( String id ) {
-        throw new UnsupportedOperationException();
-      }
-
-      @Override
-      public List<? extends HadoopConfiguration> getConfigurations() {
-        throw new UnsupportedOperationException();
-      }
-
-      @Override
-      public HadoopConfiguration getConfiguration( String id ) throws ConfigurationException {
-        throw new UnsupportedOperationException();
-      }
-
-      @Override
-      public HadoopConfiguration getActiveConfiguration() throws ConfigurationException {
-        throw new UnsupportedOperationException();
-      }
-    };
-    DefaultFileSystemManager delegate = new DefaultFileSystemManager();
-    HadoopConfigurationFileSystemManager fsm = new HadoopConfigurationFileSystemManager( configProvider, delegate );
-    assertFalse( fsm.hasProvider( "hdfs" ) );
-
-    CommonHadoopShim shim = new CommonHadoopShim();
-    HadoopConfiguration config =
-      new HadoopConfiguration( VFS.getManager().resolveFile( "ram:///" ), "id", "name", shim, null, null, null );
-
-    shim.onLoad( config, fsm );
-    assertTrue( fsm.hasProvider( "hdfs" ) );
-    assertTrue( fsm.hasProvider( "hdfs-id" ) );
   }
 
   @Test
@@ -241,10 +203,6 @@ public class CommonHadoopShimTest {
         BaseMessages.getString( CommonHadoopShim.class, "CommonHadoopShim.DistributedCacheUtilMissing" ) );
     }
 
-    shim.onLoad( new HadoopConfiguration( VFS.getManager().resolveFile( "ram:///" ), "id", "name", shim ),
-      new HadoopConfigurationFileSystemManager( new MockHadoopConfigurationProvider(),
-        new DefaultFileSystemManager() ) );
-    assertNotNull( shim.getDistributedCacheUtil() );
   }
 
   @Test

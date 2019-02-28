@@ -26,15 +26,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.ConfigurationException;
-import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.api.pig.PigService;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * Created by bryan on 10/1/15.
@@ -43,17 +39,14 @@ public class PigServiceFactoryImplTest {
 
   private PigServiceFactoryImpl pigServiceFactory;
   private boolean activeConfiguration;
-  private HadoopConfiguration hadoopConfiguration;
   private NamedCluster namedCluster;
 
   private void initialize() throws ConfigurationException {
-    pigServiceFactory = new PigServiceFactoryImpl( hadoopConfiguration.getHadoopShim(), hadoopConfiguration.getPigShim() );
   }
 
   @Before
   public void setup() throws ConfigurationException {
     activeConfiguration = true;
-    hadoopConfiguration = mock( HadoopConfiguration.class );
     namedCluster = mock( NamedCluster.class );
     initialize();
   }
@@ -71,7 +64,6 @@ public class PigServiceFactoryImplTest {
   @Test
   public void testInactiveCanHandle() throws ConfigurationException {
     activeConfiguration = false;
-    when( hadoopConfiguration.getIdentifier() ).thenReturn( "testId" );
     initialize();
     //todo: fix knox handling
     //assertFalse( pigServiceFactory.canHandle( namedCluster ) );

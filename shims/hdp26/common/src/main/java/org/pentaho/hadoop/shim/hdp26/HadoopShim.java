@@ -23,18 +23,11 @@
 package org.pentaho.hadoop.shim.hdp26;
 
 import org.pentaho.di.core.exception.KettlePluginException;
-import org.pentaho.hadoop.shim.HadoopConfiguration;
-import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
 import org.pentaho.hadoop.shim.common.HadoopShimImpl;
 
 import java.util.Properties;
 
 public class HadoopShim extends HadoopShimImpl {
-  @Override
-  public void onLoad( HadoopConfiguration config, HadoopConfigurationFileSystemManager fsm ) throws Exception {
-    registerExtraDatabaseTypes( config.getConfigProperties() );
-    super.onLoad( config, fsm );
-  }
 
   protected void registerExtraDatabaseTypes( Properties configuration ) throws KettlePluginException {
     String sparkSqlSimbaDriverName =

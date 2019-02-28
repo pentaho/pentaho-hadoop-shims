@@ -17,24 +17,13 @@
 
 package org.pentaho.hadoop.shim.common;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.filecache.DistributedCache;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
-import org.pentaho.hadoop.shim.HadoopConfiguration;
-import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
+import org.pentaho.hadoop.shim.ShimException;
+import org.pentaho.hadoop.shim.ShimRuntimeException;
 import org.pentaho.hadoop.shim.api.internal.mapred.RunningJob;
-import org.pentaho.hdfs.vfs.HDFSFileProvider;
-
 import java.io.IOException;
-import java.net.URI;
 import java.util.List;
 
 public class HadoopShimImpl extends CommonHadoopShim {
-
-  static {
-    //JDBC_DRIVER_MAP.put( "hive2", org.apache.hive.jdbc.HiveDriver.class );
-  }
 
   @Override
   protected String getDefaultNamenodePort() {
@@ -47,36 +36,16 @@ public class HadoopShimImpl extends CommonHadoopShim {
   }
 
   @Override
-  public void onLoad( HadoopConfiguration config, HadoopConfigurationFileSystemManager fsm ) throws Exception {
-    validateHadoopHomeWithWinutils();
-    fsm.addProvider( config, "hdfs", config.getIdentifier(), new HDFSFileProvider() );
-    setDistributedCacheUtil( new DistributedCacheUtilImpl( config ) {
-
-      public void addFileToClassPath( Path file, Configuration conf ) throws IOException {
-        String classpath = conf.get( "mapred.job.classpath.files" );
-        conf.set( "mapred.job.classpath.files",
-          classpath == null ? file.toString() : classpath + getClusterPathSeparator() + file.toString() );
-        FileSystem fs = FileSystem.get( file.toUri(), conf );
-        URI uri = fs.makeQualified( file ).toUri();
-
-        DistributedCache.addCacheFile( uri, conf );
-      }
-
-      public String getClusterPathSeparator() {
-        // Use a comma rather than an OS-specific separator (see https://issues.apache.org/jira/browse/HADOOP-4864)
-        return System.getProperty( "hadoop.cluster.path.separator", "," );
-      }
-    } );
-  }
-
-  @Override
-  public RunningJob submitJob( org.pentaho.hadoop.shim.api.internal.Configuration c ) throws IOException {
+  public RunningJob submitJob( org.pentaho.hadoop.shim.api.Configuration c ) throws IOException {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
     try {
       return c.submit();
-    } catch ( InterruptedException | ClassNotFoundException e ) {
-      throw new RuntimeException( e );
+    } catch ( InterruptedException e ) {
+      Thread.currentThread().interrupt();
+      throw new ShimRuntimeException( e );
+    } catch ( ClassNotFoundException e ) {
+      throw new ShimRuntimeException( e );
     } finally {
       Thread.currentThread().setContextClassLoader( cl );
     }
@@ -91,7 +60,7 @@ public class HadoopShimImpl extends CommonHadoopShim {
     try {
       return new ConfigurationProxyV2();
     } catch ( IOException e ) {
-      throw new RuntimeException( "Unable to create configuration for new mapreduce api: ", e );
+      throw new ShimRuntimeException( "Unable to create configuration for new mapreduce api: ", e );
     } finally {
       Thread.currentThread().setContextClassLoader( cl );
     }
@@ -104,7 +73,7 @@ public class HadoopShimImpl extends CommonHadoopShim {
     try {
       return new ConfigurationProxyV2( namedClusterConfigId );
     } catch ( IOException e ) {
-      throw new RuntimeException( "Unable to create configuration for new mapreduce api: ", e );
+      throw new ShimRuntimeException( "Unable to create configuration for new mapreduce api: ", e );
     } finally {
       Thread.currentThread().setContextClassLoader( cl );
     }
@@ -121,7 +90,7 @@ public class HadoopShimImpl extends CommonHadoopShim {
     String runtimeJobTracker = conf.get( "pentaho.runtime.job.tracker" );
     if ( runtimeFsDefaultName == null ) {
       if ( namenodeHost == null || namenodeHost.trim().length() == 0 ) {
-        throw new Exception( "No hdfs host specified!" );
+        throw new ShimException( "No hdfs host specified!" );
       }
 
       if ( namenodePort != null
@@ -140,7 +109,7 @@ public class HadoopShimImpl extends CommonHadoopShim {
 
     if ( runtimeJobTracker == null ) {
       if ( jobtrackerHost == null || jobtrackerHost.trim().length() == 0 ) {
-        throw new Exception( "No job tracker host specified!" );
+        throw new ShimException( "No job tracker host specified!" );
       }
 
       if ( jobtrackerPort == null || jobtrackerPort.trim().length() == 0 ) {

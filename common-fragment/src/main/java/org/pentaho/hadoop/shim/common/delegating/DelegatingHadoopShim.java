@@ -24,8 +24,6 @@ package org.pentaho.hadoop.shim.common.delegating;
 
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.hadoop.shim.api.ConfigurationException;
-import org.pentaho.hadoop.shim.HadoopConfiguration;
-import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
 import org.pentaho.hadoop.shim.ShimVersion;
 import org.pentaho.hadoop.shim.api.internal.Configuration;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
@@ -45,11 +43,6 @@ public class DelegatingHadoopShim implements HadoopShim, HasHadoopAuthorizationS
   public static final String SUPER_USER = "authentication.superuser.provider";
   public static final String PROVIDER_LIST = "authentication.provider.list";
   private HadoopShim delegate = null;
-
-  @Override
-  public void onLoad( HadoopConfiguration config, HadoopConfigurationFileSystemManager fsm ) throws Exception {
-    delegate.onLoad( config, fsm );
-  }
 
   @Override
   public void setHadoopAuthorizationService( HadoopAuthorizationService hadoopAuthorizationService ) throws Exception {
