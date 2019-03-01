@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.hadoop.shim.api.ConfigurationException;
-import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.api.internal.Configuration;
 import org.pentaho.hadoop.shim.api.internal.DistributedCacheUtil;
 import org.pentaho.hadoop.shim.api.internal.Required;
