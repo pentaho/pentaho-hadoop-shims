@@ -194,7 +194,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>pentaho-hadoop-driver</Bundle-SymbolicName>
                         <Bundle-Version>${pentaho-osgi-bundles.version}</Bundle-Version>
                         <Pentaho-Code-Version>${pentaho-code.version}</Pentaho-Code-Version>
                         <DynamicImport-Package>*</DynamicImport-Package>

@@ -285,6 +285,7 @@
         <module>shim-api</module>
         <module>common-fragment</module>
         <module>common-dependencies</module>
+        <module>common-services-api</module>
       </modules>
     </profile>
 

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.pentaho</groupId>
+        <artifactId>pentaho-hadoop-shims</artifactId>
+        <version>8.3.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>pentaho-hadoop-shims-common-services-api</artifactId>
+    <version>8.3.0.0-SNAPSHOT</version>
+    <packaging>bundle</packaging>
+
+    <properties>
+
+    </properties>
+    <dependencies>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.pentaho</groupId>
+                <artifactId>shim-bundle-plugin</artifactId>
+                <version>${shim-bundle-plugin.version}</version>
+                <configuration>
+                    <resolverFilters>
+                    </resolverFilters>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>resolve</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>pentaho-hadoop-driver</Bundle-SymbolicName>
+                        <Bundle-Version>9.9.9.9</Bundle-Version>
+                        <Pentaho-Code-Version>${pentaho-code.version}</Pentaho-Code-Version>
+                        <DynamicImport-Package>*</DynamicImport-Package>
+                        <Import-Package>
+                        </Import-Package>
+                        <_exportcontents>
+                        </_exportcontents>
+                        <Embed-Dependency>*</Embed-Dependency>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
