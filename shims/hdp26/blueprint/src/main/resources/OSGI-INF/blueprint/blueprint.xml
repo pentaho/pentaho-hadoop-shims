@@ -142,7 +142,7 @@
         <argument ref="executorService"/>
         <argument ref="transformationVisitorList"/>
     </bean>
-    <!--<reference id="executorService" interface="java.util.concurrent.ExecutorService"/>-->
+    <reference id="executorService" interface="java.util.concurrent.ExecutorService"/>
 
     <service ref="hdp26MapReduceServiceFactory" interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
         <service-properties>
@@ -173,7 +173,7 @@
 
     <!-- Hive service definition -->
     <bean id="hdp26HiveDriver" class="com.pentaho.big.data.bundles.impl.shim.hive.HiveDriver">
-        <argument ref="jdbcUrlParserImpl"/>
+        <argument ref="jdbcUrlParser"/>
         <argument value="org.apache.hive.jdbc.HiveDriver"/>
         <argument value="hdp26"/>
     </bean>
@@ -185,19 +185,19 @@
     </service>
 
     <bean id="hdp26ImpalaDriver" class="com.pentaho.big.data.bundles.impl.shim.hive.ImpalaDriver">
-        <argument ref="jdbcUrlParserImpl"/>
+        <argument ref="jdbcUrlParser"/>
         <argument value="org.apache.hive.jdbc.HiveDriver"/>
         <argument value="hdp26"/>
     </bean>
 
     <bean id="hdp26ImpalaSimbaDriver" class="com.pentaho.big.data.bundles.impl.shim.hive.ImpalaSimbaDriver">
-        <argument ref="jdbcUrlParserImpl"/>
+        <argument ref="jdbcUrlParser"/>
         <argument value="org.apache.hive.jdbc.HiveDriver"/>
         <argument value="hdp26"/>
     </bean>
 
     <bean id="hdp26SparkSimbaDriver" class="com.pentaho.big.data.bundles.impl.shim.hive.SparkSimbaDriver">
-        <argument ref="jdbcUrlParserImpl"/>
+        <argument ref="jdbcUrlParser"/>
         <argument value="org.apache.hive.jdbc.HiveDriver"/>
         <argument value="hdp26"/>
     </bean>
@@ -220,7 +220,7 @@
         </service-properties>
     </service>
 
-    <!--<reference id="jdbcUrlParser" interface="org.pentaho.hadoop.shim.api.jdbc.JdbcUrlParser"/>-->
+    <reference id="jdbcUrlParser" interface="org.pentaho.hadoop.shim.api.jdbc.JdbcUrlParser"/>
 
     <!-- End of Hive service definition -->
 
@@ -252,139 +252,5 @@
         </service-properties>
     </service>
     <!-- End of Hbase service definition -->
-    
-    <!-- New Code -->
-    
-    <!-- From pentaho-hadoop-shims/common-services-api/clusterServiceLocator -->
-    <cm:property-placeholder persistent-id="pentaho.default.shim" update-strategy="reload">
-    <cm:default-properties>
-      <cm:property name="default.shim" value="hdp26" />
-      <cm:property name="orderedModules" value="Hadoop Configuration,Hadoop File System,Map Reduce,Oozie,Zookeeper"/>
-      <cm:property name="pentaho.jdbc.lazydrivers.num" value="5"/>
-    </cm:default-properties>
-  </cm:property-placeholder>
-
-<!--
-  <reference id="metastoreLocator"
-             interface="org.pentaho.osgi.metastore.locator.api.MetastoreLocator"
-             availability="optional"/>
--->
-
-  <bean id="serviceLocatorImpl"
-        class="org.pentaho.big.data.api.cluster.service.locator.impl.NamedClusterServiceLocatorImpl"
-        scope="singleton">
-    <argument ref="clusterInitializerImpl"/>
-    <argument value="${default.shim}"/>
-    <argument ref="metastoreLocator"/>
-  </bean>
-
-  <reference-list id="serviceFactories"
-                  interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory"
-                  availability="optional">
-    <reference-listener ref="serviceLocatorImpl" bind-method="factoryAdded" unbind-method="factoryRemoved"/>
-  </reference-list>
-  <!-- <reference id="clusterInitializer" interface="org.pentaho.hadoop.shim.api.cluster.ClusterInitializer"/> -->
-
-  <service ref="serviceLocatorImpl"
-           interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceLocator"/>
-    
-    <!-- From pentaho-hadoop-shims/common-services-api/hdfs -->
-    <bean id="hadoopFileSystemService" class="org.pentaho.bigdata.api.hdfs.impl.HadoopFileSystemLocatorImpl"
-        scope="singleton">
-    <argument ref="hadoopFileSystemFactories"/>
-    <argument ref="clusterInitializerImpl"/>
-  </bean>
-  <reference-list id="hadoopFileSystemFactories" interface="org.pentaho.hadoop.shim.api.hdfs.HadoopFileSystemFactory"
-                  availability="optional"/>
-  <!-- <reference id="clusterInitializer" interface="org.pentaho.hadoop.shim.api.cluster.ClusterInitializer"/> -->
-  <service ref="hadoopFileSystemService" interface="org.pentaho.hadoop.shim.api.hdfs.HadoopFileSystemLocator"/>
-  
-  <!-- From pentaho-hadoop-shims/common-services-api/initializer -->
-  <bean id="clusterInitializerImpl" class="org.pentaho.big.data.api.initializer.impl.ClusterInitializerImpl"
-        scope="singleton">
-    <argument ref="clusterInitializerProviders"/>
-  </bean>
-  <reference-list id="clusterInitializerProviders" interface="org.pentaho.big.data.api.initializer.ClusterInitializerProvider"
-                  availability="optional"/>
-  <service ref="clusterInitializerImpl" interface="org.pentaho.hadoop.shim.api.cluster.ClusterInitializer"/>
-  
-  <!-- From pentaho-hadoop-shims/common-services-api/jdbc -->
-  <!--
-  <cm:property-placeholder persistent-id="pentaho.jdbc" update-strategy="reload" >
-        <cm:default-properties>
-            <cm:property name="pentaho.jdbc.lazydrivers.num" value="5"/>
-        </cm:default-properties>
-    </cm:property-placeholder>
-    -->
-
-    <bean id="jdbcUrlParserImpl" class="org.pentaho.big.data.api.jdbc.impl.JdbcUrlParserImpl" scope="singleton">
-        <argument ref="namedClusterService"/>
-        <argument ref="metastoreLocator"/>
-    </bean>
-
-    <bean id="driverLocator" class="org.pentaho.big.data.api.jdbc.impl.DriverLocatorImpl" scope="singleton">
-        <argument ref="blueprintBundleContext"/>
-    </bean>
-
-    <bean class="org.pentaho.big.data.api.jdbc.impl.ClusterInitializingDriver">
-        <argument ref="clusterInitializerImpl"/>
-        <argument ref="jdbcUrlParserImpl"/>
-        <argument ref="driverLocator"/>
-        <argument value="${pentaho.jdbc.lazydrivers.num}"/>
-    </bean>
-
-    <service ref="driverLocator" interface="org.pentaho.hadoop.shim.api.jdbc.DriverLocator"/>
-    <service ref="jdbcUrlParserImpl" interface="org.pentaho.hadoop.shim.api.jdbc.JdbcUrlParser"/>
-    <reference id="namedClusterService" interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterService"/>
-    <reference id="metastoreLocator" interface="org.pentaho.osgi.metastore.locator.api.MetastoreLocator"/>
-    <!--<reference id="clusterInitializer" interface="org.pentaho.hadoop.shim.api.cluster.ClusterInitializer"/>-->
-    
-    <!-- From pentaho-hadoop-shims/common-services-api/runtimeTest -->
-    <!--
-    <cm:property-placeholder persistent-id="org.pentaho.runtime.test"
-                           update-strategy="reload">
-    <cm:default-properties>
-      <cm:property name="orderedModules" value="Hadoop Configuration,Hadoop File System,Map Reduce,Oozie,Zookeeper"/>
-    </cm:default-properties>
-  </cm:property-placeholder>
-  -->
-
-  <bean id="loggingRuntimeTestActionHandlerImpl"
-        class="org.pentaho.runtime.test.action.impl.LoggingRuntimeTestActionHandlerImpl" scope="singleton">
-    <argument ref="baseMessagesMessageGetterFactoryImpl"/>
-  </bean>
-
-  <bean id="runtimeTestActionServiceImpl" class="org.pentaho.runtime.test.action.impl.RuntimeTestActionServiceImpl"
-        scope="singleton">
-    <argument ref="loggingRuntimeTestActionHandlerImpl"/>
-    <argument ref="runtimeTestActionHandlers"/>
-  </bean>
-
-  <bean id="runtimeTesterImpl" class="org.pentaho.runtime.test.impl.RuntimeTesterImpl" scope="singleton">
-    <argument ref="runtimeTests"/>
-    <argument ref="executorService"/>
-    <argument value="${orderedModules}"/>
-  </bean>
-
-  <bean id="connectivityTestFactoryImpl"
-        class="org.pentaho.runtime.test.network.impl.ConnectivityTestFactoryImpl" scope="singleton"/>
-
-  <bean id="baseMessagesMessageGetterFactoryImpl"
-        class="org.pentaho.runtime.test.i18n.impl.BaseMessagesMessageGetterFactoryImpl" scope="singleton"/>
-
-  <reference-list id="runtimeTests" interface="org.pentaho.runtime.test.RuntimeTest"
-                  availability="optional"/>
-  <reference-list id="runtimeTestActionHandlers" interface="org.pentaho.runtime.test.action.RuntimeTestActionHandler"
-                  availability="optional"/>
-  <reference id="executorService" interface="java.util.concurrent.ExecutorService"/>
-
-  <service ref="runtimeTesterImpl" interface="org.pentaho.runtime.test.RuntimeTester"/>
-  <service ref="runtimeTestActionServiceImpl" interface="org.pentaho.runtime.test.action.RuntimeTestActionService"/>
-  <service ref="connectivityTestFactoryImpl"
-           interface="org.pentaho.runtime.test.network.ConnectivityTestFactory"/>
-  <service ref="baseMessagesMessageGetterFactoryImpl"
-           interface="org.pentaho.runtime.test.i18n.MessageGetterFactory"/>
-    
-    <!-- End New Code -->
 
 </blueprint>
