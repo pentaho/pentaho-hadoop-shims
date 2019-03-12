@@ -22,32 +22,15 @@
 
 package org.pentaho.hadoop.shim.cdh514;
 
-import org.pentaho.di.core.database.DatabaseInterface;
 import org.pentaho.di.core.exception.KettlePluginException;
-import org.pentaho.di.core.plugins.DatabasePluginType;
-import org.pentaho.di.core.plugins.Plugin;
-import org.pentaho.di.core.plugins.PluginInterface;
-import org.pentaho.di.core.plugins.PluginRegistry;
-import org.pentaho.hadoop.shim.HadoopConfiguration;
-import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
 import org.pentaho.hadoop.shim.common.HadoopShimImpl;
 
-import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 public class HadoopShim extends HadoopShimImpl {
 
   public HadoopShim() {
     super();
-  }
-
-  @Override
-  public void onLoad( HadoopConfiguration config, HadoopConfigurationFileSystemManager fsm ) throws Exception {
-    registerExtraDatabaseTypes( config.getConfigProperties() );
-    super.onLoad( config, fsm );
   }
 
   protected void registerExtraDatabaseTypes( Properties configuration ) throws KettlePluginException {
@@ -57,20 +40,6 @@ public class HadoopShim extends HadoopShimImpl {
     String impalaSimbaDriverName =
       configuration.getProperty( "impala.simba.driver", "com.cloudera.impala.jdbc41.Driver" );
     JDBC_POSSIBLE_DRIVER_MAP.put( "ImpalaSimba", impalaSimbaDriverName );
-  }
-
-  protected void registerExtraDatabaseType( String id, String description, String mainClass )
-    throws KettlePluginException {
-    Map<Class<?>, String> classMap = new HashMap<Class<?>, String>();
-    classMap.put( DatabaseInterface.class, mainClass );
-    PluginInterface dbPlugin =
-      new Plugin(
-        new String[] { id }, DatabasePluginType.class, DatabaseInterface.class, "", description, description, null,
-        false,
-        false, classMap, new ArrayList<String>(), null, null, null, null, null );
-    PluginRegistry.getInstance().addClassLoader(
-      (URLClassLoader) Thread.currentThread().getContextClassLoader().getParent(), dbPlugin );
-    PluginRegistry.getInstance().registerPlugin( DatabasePluginType.class, dbPlugin );
   }
 
 }
