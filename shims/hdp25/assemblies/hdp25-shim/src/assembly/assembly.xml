@@ -104,8 +104,6 @@
         <include>net.sf.opencsv:opencsv</include>
         <include>org.apache.parquet:parquet-hadoop-bundle</include>
         <include>javax.servlet:servlet-api</include>
-        <include>org.slf4j:slf4j-api</include>
-        <include>org.slf4j:slf4j-log4j12</include>
         <include>org.antlr:stringtemplate</include>
         <include>javax.transaction:transaction-api</include>
         <include>org.apache.knox:gateway-shell</include>
