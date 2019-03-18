@@ -16,7 +16,6 @@
         <include>com.google.code.gson:gson</include>
         <include>joda-time:joda-time</include>
         <include>commons-configuration:commons-configuration</include>
-        <include>*:htrace-core:*</include>
       </includes>
       <excludes>
         <exclude>org.apache.hadoop:hadoop-yarn-server-nodemanager</exclude>
@@ -42,7 +41,6 @@
         <include>org.apache.hadoop:hadoop-mapreduce-client-common</include>
         <include>org.apache.hadoop:hadoop-mapreduce-client-jobclient</include>
         <include>org.apache.hadoop:hadoop-mapreduce-client-shuffle</include>
-        <include>*:netty-all:*</include>
       </includes>
       <excludes>
         <exclude>org.apache.hadoop:hadoop-yarn-server-nodemanager</exclude>
@@ -53,6 +51,7 @@
         <exclude>org.apache.calcite:*</exclude>
         <exclude>*:tests:*</exclude>
         <exclude>*:netty:*</exclude>
+        <exclude>*:htrace-core4:*</exclude>
       </excludes>
     </dependencySet>
   </dependencySets>
