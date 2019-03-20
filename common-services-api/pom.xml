@@ -12,7 +12,8 @@
     <packaging>bundle</packaging>
 
     <properties>
-
+        <vendor-driver.version>8.3.0.0.SNAPSHOT</vendor-driver.version>
+        <pentaho-code.version>11.0.0.0</pentaho-code.version>
     </properties>
     <dependencies>
 
