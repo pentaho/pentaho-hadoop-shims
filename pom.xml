@@ -24,7 +24,6 @@
     <commons-beanutils.version>1.9.3</commons-beanutils.version>
     <commons-io.version>2.4</commons-io.version>
     <pentaho-hadoop-shims-api.version>8.3.0.0-SNAPSHOT</pentaho-hadoop-shims-api.version>
-    <pentaho-big-data-api-cluster.version>8.3.0.0-SNAPSHOT</pentaho-big-data-api-cluster.version>
     <xerces.version>2.8.1</xerces.version>
     <oss-licenses.version>8.3.0.0-SNAPSHOT</oss-licenses.version>
     <eula-wrap_create-izpack-installer-jar-phase></eula-wrap_create-izpack-installer-jar-phase>
@@ -284,11 +283,9 @@
       </activation>
       <modules>
         <module>shim-api</module>
-        <module>common-services-api</module>
-        <module>common</module>
-        <module>common-services</module>
         <module>common-fragment</module>
         <module>common-dependencies</module>
+        <module>common-services-api</module>
       </modules>
     </profile>
 
