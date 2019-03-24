@@ -93,6 +93,7 @@
         <exclude>*:hbase-common:*</exclude>
         <exclude>*:ST4:*</exclude>
         <exclude>com.fasterxml.jackson.core:jackson-databind</exclude>
+        <exclude>org.apache.hadoop:hbase-mapreduce</exclude>
       </excludes>
     </dependencySet>
   </dependencySets>
