@@ -14,6 +14,7 @@
         <include>org.apache.hbase:hbase-client</include>
         <include>org.apache.hbase:hbase-hadoop-compat</include>
         <include>org.apache.hbase:hbase-common</include>
+        <include>org.apache.hbase:hbase-mapreduce</include>
         <include>org.apache.hbase:hbase-examples</include>
         <include>org.apache.hbase:hbase-protocol</include>
         <include>org.apache.hbase:hbase-protocol-shaded</include>
