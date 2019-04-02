@@ -44,7 +44,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>pentaho-hadoop-driver</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>pentaho-hadoop-driver-V1</Bundle-SymbolicName>
                         <Bundle-Version>9.9.9.9</Bundle-Version>
                         <Pentaho-Code-Version>${pentaho-code.version}</Pentaho-Code-Version>
                         <DynamicImport-Package>*</DynamicImport-Package>
