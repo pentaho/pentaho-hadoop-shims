@@ -144,7 +144,7 @@
         <!--- End dependencies for Pig -->
         <dependency>
             <groupId>org.pentaho</groupId>
-            <artifactId>pentaho-hadoop-shims-common-fragment</artifactId>
+            <artifactId>pentaho-hadoop-shims-common-fragment-V1</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -194,8 +194,8 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>pentaho-hadoop-driver</Bundle-SymbolicName>
-                        <Bundle-Version>${pentaho-osgi-bundles.version}</Bundle-Version>
+                        <Bundle-SymbolicName>pentaho-hadoop-driver-V1</Bundle-SymbolicName>
+                        <Bundle-Version>2.6.hdp</Bundle-Version>
                         <Pentaho-Code-Version>${pentaho-code.version}</Pentaho-Code-Version>
                         <DynamicImport-Package>*</DynamicImport-Package>
                         <Import-Package>
