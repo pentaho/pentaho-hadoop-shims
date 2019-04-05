@@ -278,12 +278,13 @@
       <modules>
         <module>hdp26</module>
         <module>cdh514</module>
+        <module>cdh61</module>
         <!--
         <module>cdh513</module>
         <module>hdp25</module>
         <module>hdp30</module>
         <module>cdh512</module>
-        <module>cdh601</module>
+        <module>cdh61</module>
         <module>mapr520</module>
         <module>mapr60</module>
         <module>emr59</module>
