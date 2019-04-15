@@ -12,7 +12,6 @@
   <packaging>pom</packaging>
   <properties>
     <oss.license.directory>${project.build.directory}/oss_license</oss.license.directory>
-    <xerces.version>2.8.1</xerces.version>
     <com.yammer.metrics.version>2.2.0</com.yammer.metrics.version>
     <org.safehaus.jug.version>2.0.0</org.safehaus.jug.version>
     <commons-lang.version>2.6</commons-lang.version>
