@@ -5,11 +5,11 @@
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-mapr520-reactor</artifactId>
-    <version>8.2.0.0-SNAPSHOT</version>
+    <version>8.2.2019.04.00-626</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-mapr520</artifactId>
   <packaging>jar</packaging>
-  <version>8.2.0.0-SNAPSHOT</version>
+  <version>8.2.2019.04.00-626</version>
   <properties>
     <log4j.version>1.2.15</log4j.version>
     <com.fasterxml.jackson.core.version>2.5.3</com.fasterxml.jackson.core.version>
