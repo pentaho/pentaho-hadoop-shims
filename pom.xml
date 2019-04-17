@@ -287,6 +287,8 @@
         <module>common-dependencies-V1</module>
         <module>common-fragment-V2</module>
         <module>common-dependencies-V2</module>
+        <module>common-fragment-V3</module>
+        <module>common-dependencies-V3</module>
         <module>common-services-api</module>
       </modules>
     </profile>
