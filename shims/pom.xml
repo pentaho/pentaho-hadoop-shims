@@ -376,7 +376,6 @@
         </property>
       </activation>
       <modules>
-        <module>emr521</module>
         <module>hdp25</module>
         <module>hdp26</module>
         <module>hdp30</module>
@@ -388,6 +387,7 @@
         <module>mapr60</module>
         <module>emr59</module>
         <module>emr511</module>
+        <module>emr521</module>
         <module>hdi35</module>
       </modules>
     </profile>
@@ -521,6 +521,18 @@
       </activation>
       <modules>
         <module>emr511</module>
+      </modules>
+    </profile>
+
+    <profile>
+      <id>emr521</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>emr521</module>
       </modules>
     </profile>
 
