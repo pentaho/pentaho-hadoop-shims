@@ -228,7 +228,7 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>pentaho-hadoop-driver-V1</Bundle-SymbolicName>
-                        <Bundle-Version>5.14.cdh</Bundle-Version>
+                        <Bundle-Version>6.1.cdh</Bundle-Version>
                         <Pentaho-Code-Version>${pentaho-code.version}</Pentaho-Code-Version>
                         <DynamicImport-Package>*</DynamicImport-Package>
                         <excludes>
