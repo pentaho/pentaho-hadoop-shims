@@ -465,7 +465,7 @@ public class CommonHBaseConnection implements HBaseConnection, IHBaseClientFacto
     }
 
     if ( cacheSize > 0 ) {
-      m_sourceScan.setCaching( cacheSize );
+      m_sourceScan.getClass().getMethod( "setCaching", int.class ).invoke( m_sourceScan, cacheSize );
     }
   }
 

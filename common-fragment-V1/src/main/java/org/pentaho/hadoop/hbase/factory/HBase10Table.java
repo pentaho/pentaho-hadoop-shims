@@ -22,6 +22,7 @@
 package org.pentaho.hadoop.hbase.factory;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.hadoop.hbase.TableName;
@@ -72,14 +73,9 @@ class HBase10Table implements HBaseTable {
   @Override
   public void setWriteBufferSize( long bufferSize ) throws IOException {
     try {
-      Method method = tab.getClass().getMethod( "setWriteBufferSize", new Class[]{long.class} );
-    tab.setWriteBufferSize( bufferSize );
-    } catch ( Exception e1 ) {
-      try {
-        Method method = conn.getClass().getMethod( "getBufferedMutator", new Class[]{BufferedMutatorParams.class} );
-        mutator = conn.getBufferedMutator( new BufferedMutatorParams( tab.getName() ).writeBufferSize( bufferSize ) );
-      } catch ( Exception e2 ) {
-      }
+      tab.getClass().getMethod( "setWriteBufferSize", long.class ).invoke( tab, bufferSize );
+    } catch ( NoSuchMethodException | IllegalAccessException | InvocationTargetException e ) {
+      mutator = conn.getBufferedMutator( new BufferedMutatorParams( tab.getName() ).writeBufferSize( bufferSize ) );
     }
   }
 

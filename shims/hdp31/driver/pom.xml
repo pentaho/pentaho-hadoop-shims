@@ -52,7 +52,7 @@
 
         <dependency>
             <groupId>org.pentaho</groupId>
-            <artifactId>pentaho-hadoop-shims-common-fragment-V3</artifactId>
+            <artifactId>pentaho-hadoop-shims-common-fragment-V1</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -296,7 +296,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>pentaho-hadoop-driver-V3</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>pentaho-hadoop-driver-V1</Bundle-SymbolicName>
                         <Bundle-Version>3.1.hdp</Bundle-Version>
                         <Pentaho-Code-Version>${pentaho-code.version}</Pentaho-Code-Version>
                         <DynamicImport-Package>*</DynamicImport-Package>

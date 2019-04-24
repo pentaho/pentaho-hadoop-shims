@@ -92,8 +92,12 @@ public class HiveDriver implements Driver {
     if ( !acceptsURL( url, driver, namedCluster ) ) {
       return null;
     }
+
+    ClassLoader cl = Thread.currentThread().getContextClassLoader();
     try {
-      return doConnect( driver, jdbcUrl, info );
+      Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
+      Connection hiveConn = doConnect( driver, jdbcUrl, info );
+      return hiveConn;
     } catch ( Exception ex ) {
       Throwable cause = ex;
       do {
@@ -108,6 +112,8 @@ public class HiveDriver implements Driver {
       } while ( cause != null );
 
       throw ex;
+    } finally {
+      Thread.currentThread().setContextClassLoader( cl );
     }
   }
 
