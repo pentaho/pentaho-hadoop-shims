@@ -63,12 +63,7 @@ public class HBaseConnectionImplTest {
     poolConnection = mock( HBaseConnectionPoolConnection.class );
     when( hBaseConnectionHandle.getConnection() ).thenReturn( poolConnection );
     hBaseConnection =
-      new HBaseConnectionImpl( hBaseService, hBaseBytesUtilShim, hBaseConnectionPool );
-  }
-
-  @Test
-  public void testGetService() {
-    assertEquals( hBaseService, hBaseConnection.getService() );
+      new HBaseConnectionImpl( hBaseBytesUtilShim, hBaseConnectionPool );
   }
 
   @Test

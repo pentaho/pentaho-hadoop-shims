@@ -22,7 +22,6 @@
 
 package org.pentaho.hadoop.shim.api.internal.oozie;
 
-import org.pentaho.hadoop.shim.api.internal.oozie.OozieClientException;
 
 public interface OozieJob {
   public String getId();

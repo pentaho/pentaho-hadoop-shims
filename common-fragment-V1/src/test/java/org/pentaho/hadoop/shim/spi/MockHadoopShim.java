@@ -36,11 +36,6 @@ import java.util.List;
 public class MockHadoopShim implements HadoopShim {
 
   @Override
-  public ShimVersion getVersion() {
-    return null;
-  }
-
-  @Override
   public String[] getNamenodeConnectionInfo( Configuration c ) {
     return null;
   }

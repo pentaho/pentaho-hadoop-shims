@@ -25,6 +25,7 @@ package com.pentaho.big.data.bundles.impl.shim.hbase.connectionPool;
 import org.pentaho.di.core.logging.LogChannelInterface;
 import org.pentaho.hadoop.shim.spi.HBaseConnection;
 import org.pentaho.hadoop.shim.spi.HBaseShim;
+import org.pentaho.hbase.shim.common.CommonHBaseConnection;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -41,8 +42,8 @@ public class HBaseConnectionPool implements Closeable {
   private final Set<HBaseConnectionPoolConnection> availableConnections;
   private final Set<HBaseConnectionPoolConnection> inUseConnections;
   private final HBaseShim hBaseShim;
-  private final Properties connectionProps;
-  private final LogChannelInterface logChannelInterface;
+  protected final Properties connectionProps;
+  protected final LogChannelInterface logChannelInterface;
 
   public HBaseConnectionPool( HBaseShim hBaseShim, Properties connectionProps,
                               LogChannelInterface logChannelInterface ) {
@@ -127,8 +128,8 @@ public class HBaseConnectionPool implements Closeable {
     }
   }
 
-  private HBaseConnectionPoolConnection create() throws IOException {
-    HBaseConnection hBaseConnection = hBaseShim.getHBaseConnection();
+  protected HBaseConnectionPoolConnection create() throws IOException {
+    HBaseConnection hBaseConnection = (hBaseShim != null ? hBaseShim.getHBaseConnection() : new CommonHBaseConnection());
     try {
       List<String> messages = new ArrayList<>();
       hBaseConnection.configureConnection( connectionProps, messages );

@@ -82,7 +82,7 @@ public class HBaseServiceImpl implements HBaseService {
     }
     connProps.setProperty( "named.cluster", namedCluster.getName() );
     connProps.setProperty( "named.cluster.config.id", namedCluster.getConfigId() );
-    return new HBaseConnectionImpl( this, hBaseShim, bytesUtil, connProps, logChannelInterface );
+    return new HBaseConnectionImpl( hBaseShim, bytesUtil, connProps, logChannelInterface );
   }
 
   @Override public ColumnFilterFactoryImpl getColumnFilterFactory() {
