@@ -23,92 +23,12 @@
     </service-properties>
   </service>
 
-  <bean id="shimServicesFactory" class="org.pentaho.big.data.impl.shim.factory.ShimServicesFactory">
-    <argument ref="cdh514Hadoop"/>
-    <argument ref="executorService"/>
-    <argument ref="transformationVisitorList"/>
-    <property name="bundleContext" ref="blueprintBundleContext" />
-  </bean>
-
-  <service ref="shimServicesFactory" interface="org.pentaho.hadoop.shim.api.ShimServicesFactoryInterface">
-    <service-properties>
-      <entry key="shim">
-        <value type="java.lang.String">cdh514</value>
-      </entry>
-    </service-properties>
-  </service>
-
   <bean id="hadoopFileSystem" class="com.pentaho.big.data.bundles.impl.shim.hdfs.HadoopFileSystemFactoryImpl">
     <argument ref="cdh514Hadoop"/>
     <argument ref="cdh514ShimIdentifier"/>
   </bean>
 
   <service ref="hadoopFileSystem" interface="org.pentaho.hadoop.shim.api.hdfs.HadoopFileSystemFactory"/>
-
-  <bean id="cdh514SqoopShim" class="org.pentaho.hadoop.shim.common.sqoop.CommonSqoopShim">
-    <property name="bundleContext" ref="blueprintBundleContext" />
-  </bean>
-
-  <service ref="cdh514SqoopShim" auto-export="interfaces">
-    <service-properties>
-      <entry key="shim">
-        <value type="java.lang.String">cdh514</value>
-      </entry>
-      <entry key="service">
-        <value type="java.lang.String">sqoop</value>
-      </entry>
-    </service-properties>
-  </service>
-
-  <bean id="cdh14SqoopServiceFactory" class="org.pentaho.big.data.impl.shim.sqoop.SqoopServiceFactoryImpl">
-    <argument ref="cdh514Hadoop"/>
-    <argument ref="cdh514SqoopShim"/>
-  </bean>
-
-  <service ref="cdh14SqoopServiceFactory"
-           interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
-    <service-properties>
-      <entry key="shim">
-        <value type="java.lang.String">cdh514</value>
-      </entry>
-      <entry key="service">
-        <value type="java.lang.String">sqoop</value>
-      </entry>
-    </service-properties>
-  </service>
-
-
-  <bean id="cdh514PigShim" class="org.pentaho.hadoop.shim.common.pig.PigShimImpl">
-    <property name="bundleContext" ref="blueprintBundleContext"/>
-  </bean>
-
-  <service ref="cdh514PigShim" auto-export="interfaces">
-    <service-properties>
-      <entry key="shim">
-        <value type="java.lang.String">cdh514</value>
-      </entry>
-      <entry key="service">
-        <value type="java.lang.String">pig</value>
-      </entry>
-    </service-properties>
-  </service>
-
-  <bean id="cdh14PigServiceFactory" class="org.pentaho.big.data.impl.shim.pig.PigServiceFactoryImpl">
-    <argument ref="cdh514Hadoop"/>
-    <argument ref="cdh514PigShim"/>
-  </bean>
-
-  <service ref="cdh14PigServiceFactory"
-           interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
-    <service-properties>
-      <entry key="shim">
-        <value type="java.lang.String">cdh514</value>
-      </entry>
-      <entry key="service">
-        <value type="java.lang.String">pig</value>
-      </entry>
-    </service-properties>
-  </service>
 
   <bean id="cdh514FormatShim" class="org.pentaho.hadoop.shim.common.CommonFormatShim"/>
 
@@ -160,19 +80,22 @@
   <reference-list id="transformationVisitorList" interface="org.pentaho.big.data.impl.shim.mapreduce.TransformationVisitorService"
                   availability="optional"/>
 
-  <!-- Oozie service definition -->
-  <bean id="cdh514OozieServiceFactory" class="org.pentaho.big.data.impl.shim.oozie.OozieServiceFactoryImpl"/>
-  <service ref="cdh514OozieServiceFactory" interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
+  <!-- Hadoop client services definition -->
+  <bean id="cdh514HadoopServicesFactory" class="org.pentaho.big.data.impl.shim.HadoopClientServicesFactory">
+    <argument ref="cdh514Hadoop"/>
+    <argument ref="blueprintBundleContext"/>
+  </bean>
+  <service ref="cdh514HadoopServicesFactory" interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
     <service-properties>
       <entry key="shim">
         <value type="java.lang.String">cdh514</value>
       </entry>
       <entry key="service">
-        <value type="java.lang.String">oozie</value>
+        <value type="java.lang.String">shimservices</value>
       </entry>
     </service-properties>
   </service>
-  <!-- End of Oozie service definition -->
+  <!-- End of Hadoop client services definition -->
 
   <!-- Hive service definition -->
   <bean id="cdh514HiveDriver" class="com.pentaho.big.data.bundles.impl.shim.hive.HiveDriver">

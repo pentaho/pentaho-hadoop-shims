@@ -38,7 +38,7 @@ import java.net.URI;
  * @author Jordan Ganoff (jganoff@pentaho.com)
  */
 @Required
-public interface HadoopShim extends PentahoHadoopShim {
+public interface HadoopShim  {
 
   /**
    * Retrieve a JDBC driver capable of querying Hive for the version of Hadoop this shim abstracts.

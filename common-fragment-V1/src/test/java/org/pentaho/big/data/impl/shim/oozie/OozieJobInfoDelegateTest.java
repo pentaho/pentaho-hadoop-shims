@@ -41,7 +41,8 @@ public class OozieJobInfoDelegateTest {
 
   @Mock
   OozieJob job;
-  @Mock org.pentaho.hadoop.shim.api.internal.oozie.OozieClientException exception;
+  @Mock
+  org.pentaho.hadoop.shim.api.internal.oozie.OozieClientException exception;
   String id = "ID";
   OozieJobInfoDelegate oozieJobInfoDelegate;
 

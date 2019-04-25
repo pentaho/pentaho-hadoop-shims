@@ -45,22 +45,6 @@ public class ShimRegistrationTest {
   }
 
   /**
-   * Make sure we've registered our Pig Shim
-   */
-  @Test
-  public void pigShimRegistered() {
-    assertRegistered( PigShim.class );
-  }
-
-  /**
-   * Make sure we've registered our Pig Shim
-   */
-  @Test
-  public void sqoopShimRegistered() {
-    assertRegistered( SqoopShim.class );
-  }
-
-  /**
    * Make sure we've registered our Snappy Shim
    */
   @Test

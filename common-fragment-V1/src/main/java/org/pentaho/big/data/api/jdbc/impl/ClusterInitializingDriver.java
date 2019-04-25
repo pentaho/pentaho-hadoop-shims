@@ -23,7 +23,6 @@
 package org.pentaho.big.data.api.jdbc.impl;
 
 import com.google.common.annotations.VisibleForTesting;
-import org.pentaho.hadoop.shim.api.cluster.ClusterInitializer;
 import org.pentaho.hadoop.shim.api.jdbc.JdbcUrlParser;
 import org.pentaho.di.core.database.DelegatingDriver;
 import org.slf4j.LoggerFactory;
@@ -50,7 +49,6 @@ public class ClusterInitializingDriver implements Driver {
   @VisibleForTesting
   protected static org.slf4j.Logger logger = LoggerFactory.getLogger( ClusterInitializingDriver.class );
 
-  private final ClusterInitializer clusterInitializer;
   private final JdbcUrlParser jdbcUrlParser;
 
   static {
@@ -60,19 +58,18 @@ public class ClusterInitializingDriver implements Driver {
     BIG_DATA_DRIVER_URL_PATTERNS.add( ".+:spark:.*" );
   }
 
-  public ClusterInitializingDriver( ClusterInitializer clusterInitializer, JdbcUrlParser jdbcUrlParser,
+  public ClusterInitializingDriver( JdbcUrlParser jdbcUrlParser,
       DriverLocatorImpl driverRegistry ) {
-    this( clusterInitializer, jdbcUrlParser, driverRegistry, null );
+    this( jdbcUrlParser, driverRegistry, null );
   }
 
-  public ClusterInitializingDriver( ClusterInitializer clusterInitializer, JdbcUrlParser jdbcUrlParser,
+  public ClusterInitializingDriver( JdbcUrlParser jdbcUrlParser,
       DriverLocatorImpl driverRegistry, Integer numLazyProxies ) {
-    this( clusterInitializer, jdbcUrlParser, driverRegistry, numLazyProxies, DriverManager::registerDriver );
+    this( jdbcUrlParser, driverRegistry, numLazyProxies, DriverManager::registerDriver );
   }
 
-  public ClusterInitializingDriver( ClusterInitializer clusterInitializer, JdbcUrlParser jdbcUrlParser,
+  public ClusterInitializingDriver( JdbcUrlParser jdbcUrlParser,
       DriverLocatorImpl driverRegistry, Integer numLazyProxies, HasRegisterDriver hasRegisterDriver ) {
-    this.clusterInitializer = clusterInitializer;
     this.jdbcUrlParser = jdbcUrlParser;
     int lazyProxies = Optional.ofNullable( numLazyProxies ).orElse( 5 );
     try {
@@ -120,22 +117,6 @@ public class ClusterInitializingDriver implements Driver {
   }
 
   private void initializeCluster( String url ) {
-    try {
-      // Initialize with a null namedCluster, since jdbc connections are not
-      // associated with namedClusters.
-      // Formerly this method used the following to determine cluster:
-      // jdbcUrlParser.parse( url ).getNamedCluster() );
-      // But this had the potential to create a block. BACKLOG-10983
-      clusterInitializer.initialize( null );
-    } catch ( Exception e ) {
-      // Don't want to depend on legacy, so can't directly
-      // check for NoShimSpecifiedException
-      if ( e.getCause() != null && e.getCause().getClass().getName().contains( "NoShimSpecifiedException" ) ) {
-        logger.debug( "No shim specified", e );
-      } else {
-        logger.error( "Failed to initialize cluster", e );
-      }
-    }
   }
 
   @Override

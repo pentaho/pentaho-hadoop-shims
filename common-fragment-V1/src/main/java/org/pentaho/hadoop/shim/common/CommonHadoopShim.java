@@ -133,11 +133,6 @@ public class CommonHadoopShim implements HadoopShim {
   }
 
   @Override
-  public ShimVersion getVersion() {
-    return new ShimVersion( 1, 0 );
-  }
-
-  @Override
   public String getHadoopVersion() {
     return VersionInfo.getVersion();
   }

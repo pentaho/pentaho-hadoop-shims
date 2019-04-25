@@ -22,6 +22,9 @@
 
 package org.pentaho.hadoop.shim.api.hbase;
 
+import org.pentaho.hadoop.shim.api.hbase.mapping.ColumnFilterFactory;
+import org.pentaho.hadoop.shim.api.hbase.mapping.MappingFactory;
+import org.pentaho.hadoop.shim.api.hbase.meta.HBaseValueMetaInterfaceFactory;
 import org.pentaho.hadoop.shim.api.hbase.table.HBaseTable;
 
 import java.io.Closeable;
@@ -41,11 +44,17 @@ public interface HBaseConnection extends Closeable {
   public static final String COL_DESCRIPTOR_BLOOM_FILTER_KEY = "col.descriptor.bloomFilter";
   public static final String COL_DESCRIPTOR_SCOPE_KEY = "col.descriptor.scope";
 
-  HBaseService getService();
-
-  HBaseTable getTable( String tableName ) throws IOException;
+  HBaseTable getTable(String tableName) throws IOException;
 
   void checkHBaseAvailable() throws IOException;
 
   List<String> listTableNames() throws IOException;
+
+
+  MappingFactory getMappingFactory();
+
+  HBaseValueMetaInterfaceFactory getHBaseValueMetaInterfaceFactory();
+
+  ByteConversionUtil getByteConversionUtil();
+
 }

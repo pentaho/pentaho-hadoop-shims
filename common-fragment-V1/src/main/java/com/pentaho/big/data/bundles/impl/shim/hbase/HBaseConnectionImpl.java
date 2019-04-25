@@ -24,10 +24,12 @@ package com.pentaho.big.data.bundles.impl.shim.hbase;
 
 import com.pentaho.big.data.bundles.impl.shim.hbase.connectionPool.HBaseConnectionHandle;
 import com.pentaho.big.data.bundles.impl.shim.hbase.connectionPool.HBaseConnectionPool;
+import com.pentaho.big.data.bundles.impl.shim.hbase.mapping.MappingFactoryImpl;
+import com.pentaho.big.data.bundles.impl.shim.hbase.meta.HBaseValueMetaInterfaceFactoryImpl;
 import com.pentaho.big.data.bundles.impl.shim.hbase.table.HBaseTableImpl;
 import org.pentaho.di.core.logging.LogChannelInterface;
+import org.pentaho.hadoop.shim.api.hbase.ByteConversionUtil;
 import org.pentaho.hadoop.shim.api.hbase.HBaseConnection;
-import org.pentaho.hadoop.shim.api.hbase.HBaseService;
 import org.pentaho.hadoop.shim.api.internal.hbase.HBaseBytesUtilShim;
 import org.pentaho.hadoop.shim.spi.HBaseShim;
 
@@ -39,28 +41,21 @@ import java.util.Properties;
  * Created by bryan on 1/21/16.
  */
 public class HBaseConnectionImpl implements HBaseConnection {
-  private final HBaseServiceImpl hBaseService;
   private final HBaseConnectionPool hBaseConnectionPool;
   private final HBaseBytesUtilShim hBaseBytesUtilShim;
 
-  public HBaseConnectionImpl(HBaseServiceImpl hBaseService, HBaseShim hBaseShim, HBaseBytesUtilShim hBaseBytesUtilShim,
+  public HBaseConnectionImpl(HBaseShim hBaseShim, HBaseBytesUtilShim hBaseBytesUtilShim,
                              Properties connectionProps, LogChannelInterface logChannelInterface ) throws IOException {
-    this( hBaseService, hBaseBytesUtilShim, new HBaseConnectionPool( hBaseShim, connectionProps, logChannelInterface ) );
+    this(hBaseBytesUtilShim, new HBaseConnectionPool( hBaseShim, connectionProps, logChannelInterface ) );
   }
 
-  public HBaseConnectionImpl( HBaseServiceImpl hBaseService, HBaseBytesUtilShim hBaseBytesUtilShim,
-                              HBaseConnectionPool hBaseConnectionPool ) {
-    this.hBaseService = hBaseService;
+  public HBaseConnectionImpl( HBaseBytesUtilShim hBaseBytesUtilShim, HBaseConnectionPool hBaseConnectionPool ) {
     this.hBaseBytesUtilShim = hBaseBytesUtilShim;
     this.hBaseConnectionPool = hBaseConnectionPool;
   }
 
-  @Override public HBaseService getService() {
-    return hBaseService;
-  }
-
   @Override public HBaseTableImpl getTable( String tableName ) throws IOException {
-    return new HBaseTableImpl( hBaseConnectionPool, hBaseService.getHBaseValueMetaInterfaceFactory(),
+    return new HBaseTableImpl( hBaseConnectionPool, new HBaseValueMetaInterfaceFactoryImpl( this.hBaseBytesUtilShim ),
       hBaseBytesUtilShim, tableName );
   }
 
@@ -78,6 +73,18 @@ public class HBaseConnectionImpl implements HBaseConnection {
     } catch ( Exception e ) {
       throw IOExceptionUtil.wrapIfNecessary( e );
     }
+  }
+
+  @Override public MappingFactoryImpl getMappingFactory() {
+    return new MappingFactoryImpl( hBaseBytesUtilShim, getHBaseValueMetaInterfaceFactory() );
+  }
+
+  @Override public HBaseValueMetaInterfaceFactoryImpl getHBaseValueMetaInterfaceFactory() {
+    return new HBaseValueMetaInterfaceFactoryImpl( hBaseBytesUtilShim );
+  }
+
+  @Override public ByteConversionUtil getByteConversionUtil() {
+    return (ByteConversionUtil) new ByteConversionUtilImpl( hBaseBytesUtilShim );
   }
 
   @Override public void close() throws IOException {
