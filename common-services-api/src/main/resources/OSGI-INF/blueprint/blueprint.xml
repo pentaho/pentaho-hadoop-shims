@@ -39,6 +39,12 @@
       <argument ref="blueprintBundleContext"/>
   </bean>
 
+    <bean class="org.pentaho.big.data.api.jdbc.impl.ClusterInitializingDriver">
+        <argument ref="jdbcUrlParserImpl"/>
+        <argument ref="driverLocator"/>
+        <argument value="${pentaho.jdbc.lazydrivers.num}"/>
+    </bean>
+
   <service ref="driverLocator" interface="org.pentaho.hadoop.shim.api.jdbc.DriverLocator"/>
   <service ref="jdbcUrlParserImpl" interface="org.pentaho.hadoop.shim.api.jdbc.JdbcUrlParser"/>
   <reference id="namedClusterService" interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterService"/>
