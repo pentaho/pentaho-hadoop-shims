@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -43,7 +43,7 @@ import java.util.TreeMap;
 
 import org.apache.hadoop.conf.Configuration;
 
-//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_name=="mapr60" || shim_name=="cdh601"
+//#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_name=="mapr60" || shim_name=="cdh61"
 import org.apache.parquet.hadoop.api.WriteSupport;
 import org.apache.parquet.io.api.Binary;
 import org.apache.parquet.io.api.RecordConsumer;
@@ -53,7 +53,7 @@ import org.apache.parquet.schema.PrimitiveType;
 import org.apache.parquet.schema.Type;
 import org.apache.parquet.schema.Types;
 //#endif
-//#if shim_type=="CDH" && shim_name!="cdh601" || shim_type=="MAPR" && shim_name!="mapr60"
+//#if shim_type=="CDH" && shim_name!="cdh61" || shim_type=="MAPR" && shim_name!="mapr60"
 //$import parquet.hadoop.api.WriteSupport;
 //$import parquet.io.api.Binary;
 //$import parquet.io.api.RecordConsumer;

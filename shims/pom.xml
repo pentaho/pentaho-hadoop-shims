@@ -381,7 +381,7 @@
         <module>cdh512</module>
         <module>cdh513</module>
         <module>cdh514</module>
-        <module>cdh601</module>
+        <module>cdh61</module>
         <module>mapr520</module>
         <module>mapr60</module>
         <module>emr59</module>
@@ -459,6 +459,18 @@
       </activation>
       <modules>
         <module>cdh514</module>
+      </modules>
+    </profile>
+
+    <profile>
+      <id>cdh61</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>cdh61</module>
       </modules>
     </profile>
 
