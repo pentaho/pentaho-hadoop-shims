@@ -2,7 +2,7 @@
 *
 * Pentaho Big Data
 *
-* Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
+* Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
 *
 *******************************************************************************
 *
@@ -25,7 +25,7 @@ import java.io.IOException;
 
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.BufferedMutator;
-//#if shim_name=="hdp30" || shim_name=="cdh601"
+//#if shim_name=="hdp30" || shim_name=="cdh61"
 //$import org.apache.hadoop.hbase.client.BufferedMutatorParams;
 //#endif
 import org.apache.hadoop.hbase.client.Connection;
@@ -72,10 +72,10 @@ class HBase10Table implements HBaseTable {
 
   @Override
   public void setWriteBufferSize( long bufferSize ) throws IOException {
-    //#if shim_name!="hdp30" && shim_name!="cdh601"
+    //#if shim_name!="hdp30" && shim_name!="cdh61"
     tab.setWriteBufferSize( bufferSize );
     //#endif
-    //#if shim_name=="hdp30" || shim_name=="cdh601"
+    //#if shim_name=="hdp30" || shim_name=="cdh61"
     //$mutator = conn.getBufferedMutator( new BufferedMutatorParams( tab.getName() ).writeBufferSize( bufferSize ) );
     //#endif
   }

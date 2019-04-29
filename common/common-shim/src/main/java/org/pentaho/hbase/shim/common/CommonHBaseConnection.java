@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Pentaho Big Data
  * <p/>
- * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
  * <p/>
  * ******************************************************************************
  * <p/>
@@ -273,10 +273,10 @@ public class CommonHBaseConnection extends HBaseConnection {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
     try {
-      //#if shim_name!="hdp30" && shim_name!="cdh601"
+      //#if shim_name!="hdp30" && shim_name!="cdh61"
       org.apache.hadoop.hbase.client.HBaseAdmin.checkHBaseAvailable( m_config );
       //#endif
-      //#if shim_name=="hdp30" || shim_name=="cdh601"
+      //#if shim_name=="hdp30" || shim_name=="cdh61"
       //$org.apache.hadoop.hbase.client.HBaseAdmin.available( m_config );
       //#endif
     } finally {
