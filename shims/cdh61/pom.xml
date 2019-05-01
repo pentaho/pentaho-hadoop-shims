@@ -19,6 +19,7 @@
     <org.apache.oozie.version>5.0.0-cdh6.1.0</org.apache.oozie.version>
     <!-- client folder -->
     <org.apache.hadoop.version>3.0.0-cdh6.1.0</org.apache.hadoop.version>
+    <automaton.version>1.11-8</automaton.version>
     <!-- pmr folder -->
     <org.apache.hbase.version>2.1.0-cdh6.1.0</org.apache.hbase.version>
     <zookeeper.version>3.4.5-cdh6.1.0</zookeeper.version>

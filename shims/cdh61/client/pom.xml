@@ -12,6 +12,17 @@
   <packaging>pom</packaging>
   <dependencies>
     <dependency>
+      <groupId>dk.brics.automaton</groupId>
+      <artifactId>automaton</artifactId>
+      <version>${automaton.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>${slf4j-api.version}</version>
