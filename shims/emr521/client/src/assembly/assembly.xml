@@ -16,6 +16,9 @@
         <include>com.google.code.gson:gson</include>
         <include>joda-time:joda-time</include>
         <include>commons-configuration:commons-configuration</include>
+        <include>org.apache.hbase:hbase-hadoop2-compat</include>
+        <include>org.apache.hbase:hbase-metrics-api</include>
+        <include>org.apache.hbase:hbase-metrics</include>
       </includes>
       <excludes>
         <exclude>org.apache.hadoop:hadoop-yarn-server-nodemanager</exclude>

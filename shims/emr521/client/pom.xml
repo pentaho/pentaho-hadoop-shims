@@ -82,6 +82,21 @@
       <artifactId>hadoop-mapreduce-client-shuffle</artifactId>
       <version>${org.apache.hadoop.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-hadoop2-compat</artifactId>
+      <version>${org.apache.hbase.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-metrics-api</artifactId>
+      <version>${org.apache.hbase.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-metrics</artifactId>
+      <version>${org.apache.hbase.version}</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
