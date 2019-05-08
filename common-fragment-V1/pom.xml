@@ -38,31 +38,31 @@
                 <dependency.pig.classifier>h2</dependency.pig.classifier>
             </properties>
             <dependencies>
-        <dependency>
+                <dependency>
                     <groupId>com.twitter</groupId>
                     <artifactId>parquet-hadoop-bundle</artifactId>
                     <version>${parquet.cloudera.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
                     <groupId>org.apache.avro</groupId>
                     <artifactId>avro</artifactId>
                     <version>${org.apache.avro.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
                     <groupId>org.apache.avro</groupId>
                     <artifactId>avro-mapred</artifactId>
                     <version>${org.apache.avro.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.hive</groupId>
-            <artifactId>hive-jdbc</artifactId>
-            <version>${org.apache.hive.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.hive</groupId>
+                    <artifactId>hive-jdbc</artifactId>
+                    <version>${org.apache.hive.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
                     <groupId>org.apache.orc</groupId>
                     <artifactId>orc-core</artifactId>
                     <version>${org.apache.orc.version}</version>
@@ -72,15 +72,15 @@
                     <groupId>org.apache.sqoop</groupId>
                     <artifactId>sqoop</artifactId>
                     <version>${sqoop.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.hbase</groupId>
-            <artifactId>hbase-server</artifactId>
-            <version>${org.apache.hbase.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.hbase</groupId>
+                    <artifactId>hbase-server</artifactId>
+                    <version>${org.apache.hbase.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
                     <groupId>org.apache.oozie</groupId>
                     <artifactId>oozie-client</artifactId>
                     <version>${org.apache.oozie.version}</version>
@@ -97,6 +97,223 @@
                     <artifactId>pig</artifactId>
                     <version>${pig.version}</version>
                     <classifier>${dependency.pig.classifier}</classifier>
+                    <scope>provided</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>cdh514</id>
+            <properties>
+                <org.apache.hadoop.version>2.6.0-cdh5.14.0</org.apache.hadoop.version>
+                <org.apache.hbase.version>1.2.0-cdh5.14.0</org.apache.hbase.version>
+                <org.apache.hive.version>1.1.0-cdh5.14.0</org.apache.hive.version>
+                <org.apache.oozie.version>4.1.0-cdh5.14.0</org.apache.oozie.version>
+                <parquet.version>1.8.1</parquet.version>
+                <parquet.cloudera.version>1.5.0-cdh5.14.0</parquet.cloudera.version>
+                <pig.version>0.12.0-cdh5.14.0</pig.version>
+                <sqoop.version>1.4.6-cdh5.14.0</sqoop.version>
+                <zookeeper.version>3.4.5-cdh5.14.0</zookeeper.version>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>com.twitter</groupId>
+                    <artifactId>parquet-hadoop</artifactId>
+                    <version>${parquet.cloudera.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.twitter</groupId>
+                    <artifactId>parquet-hadoop-bundle</artifactId>
+                    <version>${parquet.cloudera.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.avro</groupId>
+                    <artifactId>avro</artifactId>
+                    <version>${org.apache.avro.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.avro</groupId>
+                    <artifactId>avro-mapred</artifactId>
+                    <version>${org.apache.avro.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.hive</groupId>
+                    <artifactId>hive-jdbc</artifactId>
+                    <version>${org.apache.hive.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.hive</groupId>
+                    <artifactId>hive-service</artifactId>
+                    <version>${org.apache.hive.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.orc</groupId>
+                    <artifactId>orc-core</artifactId>
+                    <version>${org.apache.orc.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.sqoop</groupId>
+                    <artifactId>sqoop</artifactId>
+                    <version>${sqoop.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-common</artifactId>
+                    <version>${org.apache.hadoop.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-hdfs</artifactId>
+                    <version>${org.apache.hadoop.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-mapreduce-client-core</artifactId>
+                    <version>${org.apache.hadoop.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-yarn-api</artifactId>
+                    <version>${org.apache.hadoop.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.hbase</groupId>
+                    <artifactId>hbase-client</artifactId>
+                    <version>${org.apache.hbase.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.hbase</groupId>
+                    <artifactId>hbase-common</artifactId>
+                    <version>${org.apache.hbase.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.hbase</groupId>
+                    <artifactId>hbase-hadoop-compat</artifactId>
+                    <version>${org.apache.hbase.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.hbase</groupId>
+                    <artifactId>hbase-protocol</artifactId>
+                    <version>${org.apache.hbase.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.hbase</groupId>
+                    <artifactId>hbase-server</artifactId>
+                    <version>${org.apache.hbase.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.oozie</groupId>
+                    <artifactId>oozie-client</artifactId>
+                    <version>${org.apache.oozie.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.parquet</groupId>
+                    <artifactId>parquet-hadoop-bundle</artifactId>
+                    <version>${parquet.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.pig</groupId>
+                    <artifactId>pig</artifactId>
+                    <version>${pig.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.zookeeper</groupId>
+                    <artifactId>zookeeper</artifactId>
+                    <version>${zookeeper.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>emr521</id>
+            <properties>
+                <org.apache.avro.version>1.8.0</org.apache.avro.version>
+                <org.apache.hive.version>2.3.4</org.apache.hive.version>
+                <org.apache.oozie.version>5.0.0</org.apache.oozie.version>
+                <org.apache.hbase.version>1.4.8</org.apache.hbase.version>
+                <org.apache.hadoop.version>2.8.5</org.apache.hadoop.version>
+                <sqoop.version>1.4.7</sqoop.version>
+                <pig.version>0.17.0</pig.version>
+                <parquet.cloudera.version>1.5.0-cdh5.14.0</parquet.cloudera.version>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>com.twitter</groupId>
+                    <artifactId>parquet-hadoop-bundle</artifactId>
+                    <version>${parquet.cloudera.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.avro</groupId>
+                    <artifactId>avro</artifactId>
+                    <version>${org.apache.avro.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.avro</groupId>
+                    <artifactId>avro-mapred</artifactId>
+                    <version>${org.apache.avro.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.hive</groupId>
+                    <artifactId>hive-jdbc</artifactId>
+                    <version>${org.apache.hive.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.orc</groupId>
+                    <artifactId>orc-core</artifactId>
+                    <version>${org.apache.orc.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.sqoop</groupId>
+                    <artifactId>sqoop</artifactId>
+                    <version>${sqoop.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.hbase</groupId>
+                    <artifactId>hbase-server</artifactId>
+                    <version>${org.apache.hbase.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.oozie</groupId>
+                    <artifactId>oozie-client</artifactId>
+                    <version>${org.apache.oozie.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-common</artifactId>
+                    <version>${org.apache.hadoop.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.pig</groupId>
+                    <artifactId>pig</artifactId>
+                    <version>${pig.version}</version>
                     <scope>provided</scope>
                 </dependency>
             </dependencies>
@@ -182,7 +399,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
