@@ -165,6 +165,12 @@
       <artifactId>hive-metastore</artifactId>
       <version>${org.apache.hive.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-client</artifactId>
+      <version>${org.apache.hbase.version}</version>
+      <scope>provided</scope>
+    </dependency>
     <!-- Added next dependency for hbase -->
     <dependency>
       <groupId>com.codahale.metrics</groupId>
