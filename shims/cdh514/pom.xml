@@ -23,6 +23,7 @@
     <org.apache.hbase.version>1.2.0-cdh5.14.0</org.apache.hbase.version>
     <zookeeper.version>3.4.5-cdh5.14.0</zookeeper.version>
     <org.htrace.version>3.2.0-incubating</org.htrace.version>
+    <automaton.version>1.11-8</automaton.version>
   </properties>
   <modules>
     <module>client</module>
