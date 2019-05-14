@@ -28,6 +28,7 @@
         <include>org.apache.hadoop:hadoop-yarn-server-common</include>
         <include>org.apache.hadoop:hadoop-yarn-server-resourcemanager</include>
         <include>org.apache.hadoop:hadoop-yarn-server-web-proxy</include>
+        <include>dk.brics.automaton:automaton</include>
       </includes>
       <excludes>
         <exclude>junit:*</exclude>
