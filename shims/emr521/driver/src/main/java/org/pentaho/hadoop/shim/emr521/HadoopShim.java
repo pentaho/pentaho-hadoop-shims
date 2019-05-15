@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -20,14 +20,18 @@
  *
  ******************************************************************************/
 
-package org.pentaho.hadoop.shim.hdp31;
+package org.pentaho.hadoop.shim.emr521;
 
 import org.pentaho.hadoop.shim.common.HadoopShimImpl;
 
 public class HadoopShim extends HadoopShimImpl {
 
-    public HadoopShim() {
-        super();
-    }
+  public HadoopShim() {
+    super();
+  }
+
+  static {
+    JDBC_DRIVER_MAP.put( "hive2", org.apache.hive.jdbc.HiveDriver.class );
+  }
 
 }

@@ -11,8 +11,34 @@
     <version>8.3.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <properties>
+        <shim.name>hdp26</shim.name>
+        <shim.type>HDP</shim.type>
         <vendor-driver.version>2.6.0.0.hdp</vendor-driver.version>
         <pentaho-code.version>11.0.0.0</pentaho-code.version>
+        <bundle.export.version>8.2.0.0.hdp26</bundle.export.version>
+        <!-- default folder -->
+        <org.xerial.snappy.version>1.1.1.3</org.xerial.snappy.version>
+        <automaton.version>1.11-8</automaton.version>
+        <pig.version>0.16.0.2.6.0.3-8</pig.version>
+        <joda-time.version>2.9.2</joda-time.version>
+        <org.antlr.version>3.5.2</org.antlr.version>
+        <parquet.version>1.8.1</parquet.version>
+
+        <gateway-shell>0.12.0.2.6.0.3-8</gateway-shell>
+        <dependency.pig.classifier>h2</dependency.pig.classifier>
+        <org.apache.oozie.version>4.2.0.2.6.0.3-8</org.apache.oozie.version>
+        <sqoop.version>1.4.6.2.6.0.3-8</sqoop.version>
+        <org.apache.hive.version>1.2.1000.2.6.0.3-8</org.apache.hive.version>
+        <hive-storage-api.version>2.1.1.3-pre-orc</hive-storage-api.version>
+        <org.apache.avro.version>1.8.0</org.apache.avro.version>
+        <hadoop-aws.version>2.7.3</hadoop-aws.version>
+        <!-- client and default folders -->
+        <org.apache.hadoop.version>2.7.3.2.6.0.3-8</org.apache.hadoop.version>
+        <!-- pmr folder -->
+        <org.apache.hbase.version>1.1.2.2.6.0.3-8</org.apache.hbase.version>
+        <zookeeper.version>3.4.6.2.6.0.3-8</zookeeper.version>
+        <htrace-core.version>2.04</htrace-core.version>
+        <protobuf-java.version>2.5.0</protobuf-java.version>
     </properties>
     <dependencies>
 
@@ -199,82 +225,6 @@
                         <Pentaho-Code-Version>${pentaho-code.version}</Pentaho-Code-Version>
                         <DynamicImport-Package>*</DynamicImport-Package>
                         <Import-Package>
-                            <!--
-                            org.pentaho.hadoop.shim;version=${pentaho-osgi-bundles.version},
-                            org.pentaho.hadoop.shim.api;version=${pentaho-osgi-bundles.version},
-                            org.pentaho.hadoop.shim.api.format;version=${pentaho-osgi-bundles.version},
-                            org.pentaho.hadoop.shim.api.fs;version=${pentaho-osgi-bundles.version},
-                            org.pentaho.hadoop.shim.spi;version=${pentaho-osgi-bundles.version},
-                            org.pentaho.big.data.api.cluster.service.locator,
-                            org.pentaho.big.data.api.jdbc;version=${pentaho-osgi-bundles.version},
-                            org.pentaho.bigdata.api.format;version=${pentaho-osgi-bundles.version},
-                            org.pentaho.bigdata.api.mapreduce;version=${pentaho-osgi-bundles.version},
-                            org.pentaho.bigdata.api.sqoop,
-                            org.pentaho.bigdata.api.hbase;version=${pentaho-osgi-bundles.version},
-                            org.pentaho.bigdata.api.pig;version=${pentaho-osgi-bundles.version},
-                            org.pentaho.oozie.shim.api;version=${pentaho-osgi-bundles.version},
-                            org.pentaho.bigdata.api.oozie;version=${pentaho-osgi-bundles.version},
-                            org.pentaho.hbase.shim.spi;version=${pentaho-osgi-bundles.version},
-                            org.osgi.framework,
-                            org.pentaho.bigdata.api.hdfs,
-                            org.apache.log4j,
-                            com.cloudera.sqoop;version=${vendor-driver.version},
-                            org.apache.avro;version=${vendor-driver.version},
-                            org.apache.avro.file;version=${vendor-driver.version},
-                            org.apache.avro.generic;version=${vendor-driver.version},
-                            org.apache.avro.io;version=${vendor-driver.version},
-                            org.apache.avro.util;version=${vendor-driver.version},
-                            org.apache.hadoop.conf;version=${vendor-driver.version},
-                            org.apache.hadoop.filecache;version=${vendor-driver.version},
-                            org.apache.hadoop.fs;version=${vendor-driver.version},
-                            org.apache.hadoop.fs.permission;version=${vendor-driver.version},
-                            org.apache.hadoop.hbase.client;version=${vendor-driver.version},
-                            org.apache.hadoop.hbase.filter;version=${vendor-driver.version},
-                            org.apache.hadoop.hbase;version=${vendor-driver.version},
-                            org.apache.hadoop.hbase.io.compress;version=${vendor-driver.version},
-                            org.apache.hadoop.hbase.io;version=${vendor-driver.version},
-                            org.apache.hadoop.hbase.mapred;version=${vendor-driver.version},
-                            org.apache.hadoop.hbase.util;version=${vendor-driver.version},
-                            org.apache.hadoop.hive.common.type;version=${vendor-driver.version},
-                            org.apache.hadoop.hive.ql.exec.vector;version=${vendor-driver.version},
-                            org.apache.hadoop.hive.serde2.io;version=${vendor-driver.version},
-                            org.apache.hadoop.io;version=${vendor-driver.version},
-                            org.apache.hadoop.io.compress;version=${vendor-driver.version},
-                            org.apache.hadoop.mapred;version=${vendor-driver.version},
-                            org.apache.hadoop.mapreduce.lib.input;version=${vendor-driver.version},
-                            org.apache.hadoop.mapreduce.lib.output;version=${vendor-driver.version},
-                            org.apache.hadoop.mapreduce;version=${vendor-driver.version},
-                            org.apache.hadoop.mapreduce.task;version=${vendor-driver.version},
-                            org.apache.hadoop.net;version=${vendor-driver.version},
-                            org.apache.hadoop.security;version=${vendor-driver.version},
-                            org.apache.hadoop.util;version=${vendor-driver.version},
-                            org.apache.hadoop.yarn.api.records;version=${vendor-driver.version},
-                            org.apache.hive.jdbc;version=${vendor-driver.version},
-                            org.apache.oozie.client;version=${vendor-driver.version},
-                            org.apache.orc;version=${vendor-driver.version},
-                            org.apache.parquet.column;version=${vendor-driver.version},
-                            org.apache.parquet.format.converter;version=${vendor-driver.version},
-                            org.apache.parquet.hadoop.api;version=${vendor-driver.version},
-                            org.apache.parquet.hadoop;version=${vendor-driver.version},
-                            org.apache.parquet.hadoop.metadata;version=${vendor-driver.version},
-                            org.apache.parquet.io.api;version=${vendor-driver.version},
-                            org.apache.parquet.schema;version=${vendor-driver.version},
-                            org.apache.pig.*;version=${vendor-driver.version},
-                            org.apache.pig.impl;version=${vendor-driver.version},
-                            org.apache.pig.tools.parameters;version=${vendor-driver.version},
-                            org.apache.pig.tools.pigscript.parser;version=${vendor-driver.version},
-                            com.fasterxml.jackson.databind;version=${vendor-driver.version},
-                            com.fasterxml.jackson.databind.node;version=${vendor-driver.version},
-                            org.apache.sqoop;version=${vendor-driver.version},
-                            org.slf4j;version=${vendor-driver.version},
-                            parquet.column;version=${vendor-driver.version},
-                            parquet.format.converter;version=${vendor-driver.version},
-                            parquet.hadoop.api;version=${vendor-driver.version},
-                            parquet.hadoop;version=${vendor-driver.version},
-                            parquet.hadoop.metadata;version=${vendor-driver.version},
-                            parquet.io.api;version=${vendor-driver.version},
-                            parquet.schema;version=${vendor-driver.version}
-                            -->
                         </Import-Package>
                         <_exportcontents>
                         </_exportcontents>

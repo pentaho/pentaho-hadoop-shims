@@ -280,6 +280,7 @@
         <module>cdh514</module>
         <module>cdh61</module>
         <module>hdp31</module>
+        <module>emr521</module>
       </modules>
     </profile>
 
