@@ -7,10 +7,10 @@
         <!--<artifactId>pentaho-hadoop-shims</artifactId>-->
         <!--<artifactId>pentaho-hadoop-shims-hdp26-reactor</artifactId>-->
         <artifactId>pentaho-hadoop-shims</artifactId>
-        <version>8.3.0.0-SNAPSHOT</version>
+        <version>9.0.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>pentaho-hadoop-shims-common-dependencies-V1</artifactId>
-    <version>8.3.0.0-SNAPSHOT</version>
+    <version>9.0.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <properties>
         <vendor-driver.version>2.6.0.0.hdp</vendor-driver.version>
