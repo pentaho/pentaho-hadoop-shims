@@ -1,6 +1,0 @@
-  <configuration>
-    <property>
-      <name>zookeeper.znode.parent</name>
-      <value>/hbase-unsecure</value>
-    </property>
-  </configuration>
