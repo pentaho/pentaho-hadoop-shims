@@ -16,18 +16,14 @@
     <commons-lang.version>2.6</commons-lang.version>
     <pentaho-osgi-bundles.version>9.0.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
     <shim-bundle-plugin.version>1.0</shim-bundle-plugin.version>
-
     <org.apache.avro.version>1.8.0</org.apache.avro.version>
     <org.apache.orc.version>1.2.3</org.apache.orc.version>
-
     <org.apache.hadoop.version>3.0.0-cdh6.1.0</org.apache.hadoop.version>
     <org.apache.hbase.version>2.1.0-cdh6.1.0</org.apache.hbase.version>
     <org.apache.hive.version>2.1.1-cdh6.1.0</org.apache.hive.version>
     <org.apache.oozie.version>5.0.0-cdh6.1.0</org.apache.oozie.version>
-    <!--<parquet.version>1.8.1</parquet.version> -->
-    <!--<parquet.cloudera.version>1.5.0-cdh5.14.0</parquet.cloudera.version>-->
     <pig.version>0.17.0-cdh6.1.0</pig.version>
-        <parquet-pig.version>1.9.0-cdh6.1.0</parquet-pig.version>
+    <parquet-pig.version>1.9.0-cdh6.1.0</parquet-pig.version>
     <sqoop.version>1.4.7-cdh6.1.0</sqoop.version>
     <zookeeper.version>3.4.5-cdh6.1.0</zookeeper.version>
     <vendor-driver.version>6.0.1.0.cdh</vendor-driver.version>
@@ -47,18 +43,6 @@
           <artifactId>pentaho-hadoop-shims-common-fragment-V1</artifactId>
           <version>${project.version}</version>
       </dependency>
-      <!--
-      <dependency>
-          <groupId>com.twitter</groupId>
-          <artifactId>parquet-hadoop</artifactId>
-          <version>${parquet.cloudera.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>com.twitter</groupId>
-          <artifactId>parquet-hadoop-bundle</artifactId>
-          <version>${parquet.cloudera.version}</version>
-      </dependency>
-      -->
       <dependency>
           <groupId>org.apache.hadoop</groupId>
           <artifactId>hadoop-yarn-api</artifactId>
