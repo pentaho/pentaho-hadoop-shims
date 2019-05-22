@@ -30,6 +30,7 @@
     <vendor-driver.version>5.14.0.0.cdh</vendor-driver.version>
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
     <joda-time.version>2.9.9</joda-time.version>
+      <jline.version>0.9.94</jline.version>
   </properties>
 
   <dependencies>
@@ -164,6 +165,11 @@
           <artifactId>zookeeper</artifactId>
           <version>${zookeeper.version}</version>
       </dependency>
+      <dependency>
+          <groupId>jline</groupId>
+          <artifactId>jline</artifactId>
+          <version>${jline.version}</version>
+      </dependency>
   </dependencies>
 
       <build>
@@ -189,7 +195,7 @@
                         <resolverFilter>
                             <include>
                                 <!--Needed for Pig-->
-                                *:antlr-runtime,*:automaton,*:pig,*:sqoop,*:joda-time
+                                *:antlr-runtime,*:automaton,*:pig,*:sqoop,*:joda-time,*:jline
                             </include>
                             <transitive>false</transitive>
                         </resolverFilter>
