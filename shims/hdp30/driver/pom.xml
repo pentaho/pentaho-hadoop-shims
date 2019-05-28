@@ -4,15 +4,15 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.pentaho</groupId>
-        <artifactId>pentaho-hadoop-shims-hdp31-reactor</artifactId>
+        <artifactId>pentaho-hadoop-shims-hdp30-reactor</artifactId>
         <version>9.0.0.0-SNAPSHOT</version>
     </parent>
     <groupId>org.pentaho</groupId>
-    <artifactId>pentaho-hadoop-shims-hdp31-driver</artifactId>
+    <artifactId>pentaho-hadoop-shims-hdp30-driver</artifactId>
     <version>9.0.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <properties>
-        <vendor-driver.version>3.1.0.0.hdp</vendor-driver.version>
+        <vendor-driver.version>3.0.0.0.hdp</vendor-driver.version>
         <pentaho-code.version>11.0.0.0</pentaho-code.version>
 
         <shim.name>hdp30</shim.name>
@@ -297,7 +297,7 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>pentaho-hadoop-driver-V1</Bundle-SymbolicName>
-                        <Bundle-Version>3.1.hdp</Bundle-Version>
+                        <Bundle-Version>3.0.hdp</Bundle-Version>
                         <Pentaho-Code-Version>${pentaho-code.version}</Pentaho-Code-Version>
                         <DynamicImport-Package>*</DynamicImport-Package>
                         <Import-Package>
