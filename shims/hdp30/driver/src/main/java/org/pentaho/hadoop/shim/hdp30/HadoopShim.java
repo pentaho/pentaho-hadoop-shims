@@ -20,7 +20,7 @@
  *
  ******************************************************************************/
 
-package org.pentaho.hadoop.shim.hdp31;
+package org.pentaho.hadoop.shim.hdp30;
 
 import org.pentaho.hadoop.shim.common.HadoopShimImpl;
 

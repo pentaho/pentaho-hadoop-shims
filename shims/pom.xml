@@ -279,7 +279,7 @@
         <module>hdp26</module>
         <module>cdh514</module>
         <module>cdh61</module>
-        <module>hdp31</module>
+        <module>hdp30</module>
         <module>emr521</module>
       </modules>
     </profile>
