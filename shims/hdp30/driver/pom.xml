@@ -238,6 +238,11 @@
             <artifactId>commons-configuration2</artifactId>
             <version>${commons-configuration2.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.hive</groupId>
+            <artifactId>hive-standalone-metastore</artifactId>
+            <version>${org.apache.hive.version}</version>
+        </dependency>
 
     </dependencies>
     <build>
@@ -260,6 +265,7 @@
                                 *:commons-configuration,*:commons-configuration2
                             </include>
                             <exclude>
+                                *:jersey*:jar:2.25.1,
                                 *:*log4j*,*:xml-apis,*:xercesImpl,*:tests:*,
                                 <!--Needed for hive-->
                                 org.apache.hadoop:hadoop-yarn-registry
@@ -271,7 +277,7 @@
                                 <!--Needed for Pig-->
                                 *:antlr-runtime,*:automaton,*:pig,*:joda-time,
                                 <!--Needed for Hive-->
-                                *:hive-jdbc,*:hive-metastore,*:libthrift
+                                *:hive-jdbc,*:hive-metastore,*:libthrift,*:hive-standalone-metastore
                             </include>
                             <exclude>
                                 *:tests:*
@@ -293,6 +299,7 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
+                <version>${dependency.maven-bundle-plugin.version}</version>
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
