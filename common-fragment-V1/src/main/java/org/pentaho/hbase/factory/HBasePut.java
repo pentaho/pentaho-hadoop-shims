@@ -22,7 +22,7 @@
 package org.pentaho.hbase.factory;
 
 public interface HBasePut {
-  void setWriteToWAL( boolean writeToWAL );
+  void setWriteToWAL( boolean writeToWAL ) throws Exception;
   void addColumn( byte[] colFamily, byte[] colName, byte[] colValue );
 
 }

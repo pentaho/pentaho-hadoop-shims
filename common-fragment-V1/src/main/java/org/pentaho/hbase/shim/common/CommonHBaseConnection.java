@@ -422,7 +422,7 @@ public class CommonHBaseConnection implements HBaseConnection, IHBaseClientFacto
     for ( String familyName : colFamilyNames ) {
       HColumnDescriptor c = new HColumnDescriptor( familyName );
       configureColumnDescriptor( c, creationProps );
-      tableDescription.addFamily( c );
+      tableDescription.getClass().getMethod( "addFamily", HColumnDescriptor.class ).invoke( tableDescription, c );
     }
 
     m_admin.createTable( tableDescription );
@@ -488,7 +488,7 @@ public class CommonHBaseConnection implements HBaseConnection, IHBaseClientFacto
    * @throws Exception if a problem occurs
    */
   @Override
-  public void addColumnFilterToScan(ColumnFilter cf, HBaseValueMeta columnMeta, VariableSpace vars, boolean matchAny )
+  public void addColumnFilterToScan( ColumnFilter cf, HBaseValueMeta columnMeta, VariableSpace vars, boolean matchAny )
     throws Exception {
 
     checkSourceScan();

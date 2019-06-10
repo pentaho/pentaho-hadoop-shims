@@ -31,10 +31,10 @@ public class HBase10Put implements HBasePut {
   HBase10Put( byte[] key ) {
     this.put = new Put( key );
   }
-  
+
   @Override
-  public void setWriteToWAL( boolean writeToWAL ) {
-    put.setDurability( writeToWAL ? Durability.USE_DEFAULT : Durability.SKIP_WAL );
+  public void setWriteToWAL( boolean writeToWAL ) throws Exception {
+    put.getClass().getMethod( "setDurability", Durability.class ).invoke( put, ( writeToWAL ? Durability.USE_DEFAULT : Durability.SKIP_WAL ) );
   }
 
   @Override
