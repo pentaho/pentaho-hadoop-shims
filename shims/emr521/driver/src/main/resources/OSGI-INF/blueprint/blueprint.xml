@@ -151,7 +151,7 @@
   <!-- End of Hive service definition -->
 
   <!-- Hbase service definition -->
-  <bean id="hbaseShim" class="org.pentaho.hbase.shim.common.CommonHBaseShim"/>
+  <bean id="hbaseShim" class="org.pentaho.hbase.shim.common.HBaseShimImpl"/>
   <service ref="hbaseShim" auto-export="interfaces">
     <service-properties>
       <entry key="shim">

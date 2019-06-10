@@ -55,7 +55,7 @@ class HBase10Admin implements HBaseAdmin {
   public boolean isTableEnabled( String tableName ) throws IOException {
     return admin.isTableEnabled( TableName.valueOf( tableName ) );
   }
-  
+
   @Override
   public boolean isTableAvailable( String tableName ) throws IOException {
     return admin.isTableAvailable( TableName.valueOf( tableName ) );
@@ -83,7 +83,24 @@ class HBase10Admin implements HBaseAdmin {
 
   @Override
   public void createTable( HTableDescriptor tableDesc ) throws IOException {
-    admin.createTable( tableDesc );
+
+    boolean useInterface = false;
+    String tableDescriptorInterface = "org.apache.hadoop.hbase.client.TableDescriptor";
+    for ( Class descInterface : tableDesc.getClass().getInterfaces() ) {
+      if ( descInterface.getName().equals( tableDescriptorInterface ) ) {
+        useInterface = true;
+        break;
+      }
+    }
+    try {
+      if ( useInterface ) {
+        admin.getClass().getMethod( "createTable", Class.forName( tableDescriptorInterface ) ).invoke( admin, tableDesc );
+      } else {
+        admin.getClass().getMethod( "createTable", HTableDescriptor.class ).invoke( admin, tableDesc );
+      }
+    } catch ( Exception ex ) {
+      throw new IOException( ex );
+    }
   }
 
   @Override
