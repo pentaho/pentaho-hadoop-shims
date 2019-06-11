@@ -97,17 +97,17 @@ public class MockHadoopShim implements HadoopShim {
   }
 
   @Override
-  public Class<?> getPentahoMapReduceCombinerClass() {
+  public String getPentahoMapReduceCombinerClass() {
     return null;
   }
 
   @Override
-  public Class<?> getPentahoMapReduceReducerClass() {
+  public String getPentahoMapReduceReducerClass() {
     return null;
   }
 
   @Override
-  public Class<?> getPentahoMapReduceMapRunnerClass() {
+  public String getPentahoMapReduceMapRunnerClass() {
     return null;
   }
 

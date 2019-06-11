@@ -70,7 +70,7 @@ public interface DistributedCacheUtil {
    * @throws Exception Error staging the Kettle environment
    */
   void installKettleEnvironment( FileObject pmrLibArchive, FileSystem fs, Path destination,
-                                 FileObject bigDataPluginFolder, String additionalPlugins ) throws Exception;
+                                 FileObject bigDataPluginFolder, String additionalPlugins, String shimIdentifier ) throws Exception;
 
   /**
    * Stages the source file or folder to a Hadoop file system and sets their permission and replication value

@@ -331,21 +331,21 @@ public class DistributedCacheUtilImplTest {
     DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( );
 
     try {
-      ch.installKettleEnvironment( null, (org.pentaho.hadoop.shim.api.internal.fs.FileSystem) null, null, null, null );
+      ch.installKettleEnvironment( null, (org.pentaho.hadoop.shim.api.internal.fs.FileSystem) null, null, null, null, "" );
       fail( "Expected exception on missing archive" );
     } catch ( NullPointerException ex ) {
       assertEquals( "pmrArchive is required", ex.getMessage() );
     }
 
     try {
-      ch.installKettleEnvironment( KettleVFS.getFileObject( "." ), (org.pentaho.hadoop.shim.api.internal.fs.FileSystem) null, null, null, null );
+      ch.installKettleEnvironment( KettleVFS.getFileObject( "." ), (org.pentaho.hadoop.shim.api.internal.fs.FileSystem) null, null, null, null, "" );
       fail( "Expected exception on missing archive" );
     } catch ( NullPointerException ex ) {
       assertEquals( "destination is required", ex.getMessage() );
     }
 
     try {
-      ch.installKettleEnvironment( KettleVFS.getFileObject( "." ), (org.pentaho.hadoop.shim.api.internal.fs.FileSystem) null, new PathProxy( "." ), null, null );
+      ch.installKettleEnvironment( KettleVFS.getFileObject( "." ), (org.pentaho.hadoop.shim.api.internal.fs.FileSystem) null, new PathProxy( "." ), null, null, "" );
       fail( "Expected exception on missing archive" );
     } catch ( NullPointerException ex ) {
       assertEquals( "big data plugin required", ex.getMessage() );

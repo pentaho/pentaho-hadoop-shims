@@ -28,14 +28,11 @@ import org.apache.hadoop.mapred.FileInputFormat;
 import org.apache.hadoop.mapred.FileOutputFormat;
 import org.apache.hadoop.mapred.InputFormat;
 import org.apache.hadoop.mapred.JobClient;
-import org.apache.hadoop.mapred.MapRunnable;
 import org.apache.hadoop.mapred.Mapper;
 import org.apache.hadoop.mapred.OutputFormat;
 import org.apache.hadoop.mapred.Reducer;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.pentaho.di.i18n.BaseMessages;
-import org.pentaho.hadoop.mapreduce.YarnQueueAclsException;
-import org.pentaho.hadoop.mapreduce.YarnQueueAclsVerifier;
 import org.pentaho.hadoop.shim.api.internal.mapred.RunningJob;
 import org.pentaho.hadoop.shim.common.mapred.RunningJobProxy;
 import org.pentaho.hadoop.shim.ShimConfigsLoader;
@@ -92,8 +89,8 @@ public class ConfigurationProxy extends org.apache.hadoop.mapred.JobConf impleme
   }
 
   @Override
-  public void setMapRunnerClass( Class c ) {
-    super.setMapRunnerClass( (Class<? extends MapRunnable>) c );
+  public void setMapRunnerClass( String className ) {
+    super.set("mapred.map.runner.class", className);
   }
 
   @Override

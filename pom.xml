@@ -286,6 +286,7 @@
         <module>common-fragment-V1</module>
         <module>common-dependencies-V1</module>
         <module>common-services-api</module>
+        <module>mapreduce</module>
       </modules>
     </profile>
 

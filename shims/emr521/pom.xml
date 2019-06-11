@@ -10,5 +10,6 @@
   <packaging>pom</packaging>
   <modules>
     <module>driver</module>
+      <module>pmr</module>
   </modules>
 </project>
