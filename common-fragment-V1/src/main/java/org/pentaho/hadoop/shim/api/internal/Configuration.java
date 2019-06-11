@@ -102,7 +102,7 @@ public interface Configuration {
 
   void setOutputValueClass( Class<?> c );
 
-  void setMapRunnerClass( Class<?> c );
+  void setMapRunnerClass( String className );
 
   void setInputFormat( Class<?> inputFormat );
 

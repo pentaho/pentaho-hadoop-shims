@@ -30,8 +30,6 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.pentaho.di.i18n.BaseMessages;
-import org.pentaho.hadoop.mapreduce.YarnQueueAclsException;
-import org.pentaho.hadoop.mapreduce.YarnQueueAclsVerifier;
 import org.pentaho.hadoop.shim.api.internal.Configuration;
 import org.pentaho.hadoop.shim.api.internal.mapred.RunningJob;
 import org.pentaho.hadoop.shim.ShimConfigsLoader;
@@ -197,10 +195,8 @@ public class ConfigurationProxyV2 implements Configuration {
 
   @SuppressWarnings( "unchecked" )
   @Override
-  public void setMapRunnerClass( Class<?> c ) {
-    if ( org.apache.hadoop.mapred.MapRunnable.class.isAssignableFrom( c ) ) {
-      getJobConf().setMapRunnerClass( (Class<? extends org.apache.hadoop.mapred.MapRunnable>) c );
-    }
+  public void setMapRunnerClass( String className ) {
+    getJobConf().set("mapred.map.runner.class", className);
   }
 
   @SuppressWarnings( "unchecked" )
@@ -273,8 +269,8 @@ public class ConfigurationProxyV2 implements Configuration {
   /**
    * Sets the requisite number of reduce tasks for the MapReduce job submitted with this configuration.  <p>If {@code n}
    * is {@code zero} there will not be a reduce (or sort/shuffle) phase and the output of the map tasks will be written
-   * directly to the distributed file system under the path specified via {@link #setOutputPath(org.pentaho.hadoop
-   * .shim.api.fs.Path)</p>
+   * directly to the distributed file system under the path specified via org.pentaho.hadoop
+   * .shim.api.fs.Path.setOutputPath()
    *
    * @param n the number of reduce tasks required for this job
    * @param n
