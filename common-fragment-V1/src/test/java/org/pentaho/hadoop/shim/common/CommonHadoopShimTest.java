@@ -25,9 +25,6 @@ package org.pentaho.hadoop.shim.common;
 import org.apache.hadoop.util.VersionInfo;
 import org.junit.Test;
 import org.pentaho.di.i18n.BaseMessages;
-import org.pentaho.hadoop.mapreduce.GenericTransCombiner;
-import org.pentaho.hadoop.mapreduce.GenericTransReduce;
-import org.pentaho.hadoop.mapreduce.PentahoMapRunnable;
 import org.pentaho.hadoop.shim.api.ConfigurationException;
 import org.pentaho.hadoop.shim.api.internal.Configuration;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
@@ -214,21 +211,6 @@ public class CommonHadoopShimTest {
     } catch ( NullPointerException ex ) {
       assertNotNull( ex );
     }
-  }
-
-  @Test
-  public void getPentahoMapReduceReducerClass() {
-    assertEquals( GenericTransReduce.class, new CommonHadoopShim().getPentahoMapReduceReducerClass() );
-  }
-
-  @Test
-  public void getPentahoMapReduceCombinerClass() {
-    assertEquals( GenericTransCombiner.class, new CommonHadoopShim().getPentahoMapReduceCombinerClass() );
-  }
-
-  @Test
-  public void getPentahoMapReduceMapRunnerClass() {
-    assertEquals( PentahoMapRunnable.class, new CommonHadoopShim().getPentahoMapReduceMapRunnerClass() );
   }
 
   /*  BAD-215 enable after decisionod enabling functionality

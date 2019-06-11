@@ -149,7 +149,7 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
   }
 
   public void installKettleEnvironment( FileObject pmrArchive, FileSystem fs, Path destination,
-                                        FileObject bigDataPlugin, String additionalPlugins )
+                                        FileObject bigDataPlugin, String additionalPlugins, String shimIdentifier )
     throws IOException, KettleFileException {
     if ( pmrArchive == null ) {
       throw new NullPointerException( "pmrArchive is required" );
@@ -170,7 +170,7 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
     out.close();
 
     stageForCache( extracted, fs, destination, true, false );
-    stageBigDataPlugin( fs, destination, bigDataPlugin );
+    stageBigDataPlugin( fs, destination, bigDataPlugin, shimIdentifier );
 
     // Delete the lock file now that we're done. It is intentional that we're not doing this in a try/finally. If the
     // staging fails for some reason we require the user to forcibly overwrite the (partial) installation
@@ -186,7 +186,7 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
    * @throws KettleFileException
    * @throws IOException
    */
-  private void stageBigDataPlugin( FileSystem fs, Path dest, FileObject pluginFolder )
+  private void stageBigDataPlugin( FileSystem fs, Path dest, FileObject pluginFolder, String shimIdentifier )
     throws KettleFileException, IOException {
     Path pluginsDir = new Path( dest, PATH_PLUGINS );
     Path bigDataPluginDir = new Path( pluginsDir, pluginFolder.getName().getBaseName() );
@@ -196,6 +196,26 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
       if ( !"hadoop-configurations".equals( f.getName().getBaseName() )
         && !"pentaho-mapreduce-libraries.zip".equals( f.getName().getBaseName() ) ) {
         stageForCache( f, fs, new Path( bigDataPluginDir, f.getName().getBaseName() ), true, false );
+      }
+    }
+
+    FileObject pmrLibsDir = null;
+    FileObject hadoopConfigurationsDir = pluginFolder.getChild("hadoop-configurations");
+    if (hadoopConfigurationsDir != null) {
+      FileObject shimDir = hadoopConfigurationsDir.getChild(shimIdentifier);
+      if (shimDir != null) {
+        FileObject shimLibsDir = shimDir.getChild("lib");
+        if (shimLibsDir != null) {
+          pmrLibsDir = shimLibsDir.getChild("pmr");
+        }
+      }
+    }
+
+    Path pdiLib = new Path(dest, "lib");
+
+    if (pmrLibsDir != null) {
+      for ( FileObject f : pmrLibsDir.getChildren()) {
+        stageForCache( f, fs, new Path( pdiLib, f.getName().getBaseName() ), true, false );
       }
     }
   }
@@ -479,15 +499,6 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
     return !dir.exists();
   }
 
-  /**
-   * Extract a zip archive to a temp directory.
-   *
-   * @param archive Zip archive to extract
-   * @return Directory the zip was extracted into
-   * @throws IOException
-   * @throws KettleFileException
-   * @see DistributedCacheUtilImpl#extract(org.apache.commons.vfs.FileObject, org.apache.commons.vfs.FileObject)
-   */
   public FileObject extractToTemp( FileObject archive ) throws IOException, KettleFileException {
     if ( archive == null ) {
       throw new NullPointerException( "archive is required" );
@@ -624,9 +635,9 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
   @Override
   public void installKettleEnvironment( FileObject pmrLibArchive, org.pentaho.hadoop.shim.api.internal.fs.FileSystem fs,
                                         org.pentaho.hadoop.shim.api.internal.fs.Path destination, FileObject bigDataPluginFolder,
-                                        String additionalPlugins ) throws KettleFileException, IOException {
+                                        String additionalPlugins, String shimIdentifier ) throws KettleFileException, IOException {
     installKettleEnvironment( pmrLibArchive, ShimUtils.asFileSystem( fs ), ShimUtils.asPath( destination ),
-      bigDataPluginFolder, additionalPlugins );
+      bigDataPluginFolder, additionalPlugins, shimIdentifier );
 
   }
 

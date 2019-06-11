@@ -17,18 +17,13 @@
 
 package org.pentaho.hadoop.shim.common;
 
-import org.apache.hadoop.io.Writable;
+import org.apache.hadoop.io.*;
 import org.apache.hadoop.net.NetUtils;
 import org.apache.hadoop.util.VersionInfo;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.i18n.BaseMessages;
-import org.pentaho.hadoop.mapreduce.GenericTransCombiner;
-import org.pentaho.hadoop.mapreduce.GenericTransReduce;
-import org.pentaho.hadoop.mapreduce.PentahoMapRunnable;
-import org.pentaho.hadoop.mapreduce.converter.TypeConverterFactory;
 import org.pentaho.hadoop.shim.api.ConfigurationException;
 import org.pentaho.hadoop.shim.ShimRuntimeException;
-import org.pentaho.hadoop.shim.ShimVersion;
 import org.pentaho.hadoop.shim.api.internal.Configuration;
 import org.pentaho.hadoop.shim.api.internal.DistributedCacheUtil;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
@@ -59,6 +54,10 @@ public class CommonHadoopShim implements HadoopShim {
   private static final String SHIM_NOT_SUPPORTED_DRIVER = "org.pentaho.hadoop.shim.common.CommonHadoopShim$NotSupportedDriver";
   private static final String DEFAULT_NAMENODE_PORT = "9000";
   private static final String DEFAULT_JOBTRACKER_PORT = "9001";
+
+  public static final String PENTAHO_MAPREDUCE_GENERIC_COMBINER_CLASS_NAME = "org.pentaho.hadoop.mapreduce.GenericTransCombiner";
+  public static final String PENTAHO_MAPREDUCE_GENERIC_REDUCER_CLASS_NAME = "org.pentaho.hadoop.mapreduce.GenericTransReduce";
+  public static final String PENTAHO_MAPREDUCE_RUNNABLE_CLASS_NAME = "org.pentaho.hadoop.mapreduce.PentahoMapRunnable";
 
   private org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger( getClass() );
 
@@ -366,21 +365,39 @@ public class CommonHadoopShim implements HadoopShim {
 
   @Override
   public Class<? extends Writable> getHadoopWritableCompatibleClass( ValueMetaInterface kettleType ) {
-    return TypeConverterFactory.getWritableForKettleType( kettleType );
+    if ( kettleType == null ) {
+      return NullWritable.class;
+    }
+    switch ( kettleType.getType() ) {
+      case ValueMetaInterface.TYPE_STRING:
+      case ValueMetaInterface.TYPE_BIGNUMBER:
+      case ValueMetaInterface.TYPE_DATE:
+        return Text.class;
+      case ValueMetaInterface.TYPE_INTEGER:
+        return LongWritable.class;
+      case ValueMetaInterface.TYPE_NUMBER:
+        return DoubleWritable.class;
+      case ValueMetaInterface.TYPE_BOOLEAN:
+        return BooleanWritable.class;
+      case ValueMetaInterface.TYPE_BINARY:
+        return BytesWritable.class;
+      default:
+        return Text.class;
+    }
   }
 
   @Override
-  public Class<?> getPentahoMapReduceCombinerClass() {
-    return GenericTransCombiner.class;
+  public String getPentahoMapReduceCombinerClass() {
+    return PENTAHO_MAPREDUCE_GENERIC_COMBINER_CLASS_NAME;
+  };
+
+  @Override
+  public String getPentahoMapReduceReducerClass() {
+    return PENTAHO_MAPREDUCE_GENERIC_REDUCER_CLASS_NAME;
   }
 
   @Override
-  public Class<?> getPentahoMapReduceReducerClass() {
-    return GenericTransReduce.class;
-  }
-
-  @Override
-  public Class<?> getPentahoMapReduceMapRunnerClass() {
-    return PentahoMapRunnable.class;
+  public String getPentahoMapReduceMapRunnerClass() {
+    return  PENTAHO_MAPREDUCE_RUNNABLE_CLASS_NAME;
   }
 }

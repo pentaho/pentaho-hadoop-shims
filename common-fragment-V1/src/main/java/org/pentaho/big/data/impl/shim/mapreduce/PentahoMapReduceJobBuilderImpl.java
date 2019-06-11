@@ -62,8 +62,6 @@ import org.pentaho.di.trans.step.StepMeta;
 import org.pentaho.di.trans.step.StepMetaInterface;
 import org.pentaho.di.version.BuildVersion;
 import org.pentaho.hadoop.PluginPropertiesUtil;
-import org.pentaho.hadoop.mapreduce.InKeyValueOrdinals;
-import org.pentaho.hadoop.mapreduce.OutKeyValueOrdinals;
 import org.pentaho.hadoop.shim.ShimConfigsLoader;
 import org.pentaho.hadoop.shim.api.internal.Configuration;
 import org.pentaho.hadoop.shim.api.internal.fs.FileSystem;
@@ -82,10 +80,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Created by bryan on 1/8/16.
@@ -361,11 +356,10 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
 
     // Verify that the key and value fields are found
     //
-    InKeyValueOrdinals inOrdinals = new InKeyValueOrdinals( injectorRowMeta );
-    if ( inOrdinals.getKeyOrdinal() < 0 ) {
+    if ( !containsCaseInsensitive("key", Arrays.asList(injectorRowMeta.getFieldNames()))) {
       throw new KettleException( BaseMessages.getString( PKG, PENTAHO_MAP_REDUCE_JOB_BUILDER_IMPL_NO_KEY_ORDINAL, inputStepName ) );
     }
-    if ( inOrdinals.getValueOrdinal() < 0 ) {
+    if ( !containsCaseInsensitive("value", Arrays.asList(injectorRowMeta.getFieldNames())) ) {
       throw new KettleException( BaseMessages.getString( PKG, PENTAHO_MAP_REDUCE_JOB_BUILDER_IMPL_NO_VALUE_ORDINAL, inputStepName ) );
     }
 
@@ -412,14 +406,18 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
       // Any other step: verify that the outKey and outValue fields exist...
       //
       RowMetaInterface outputRowMeta = transMeta.getStepFields( outputStepMeta );
-      OutKeyValueOrdinals outOrdinals = new OutKeyValueOrdinals( outputRowMeta );
-      if ( outOrdinals.getKeyOrdinal() < 0 ) {
+      List<String> fieldNames = Arrays.asList(outputRowMeta.getFieldNames());
+      if ( !containsCaseInsensitive("outKey", fieldNames) ) {
         throw new KettleException( BaseMessages.getString( PKG, PENTAHO_MAP_REDUCE_JOB_BUILDER_IMPL_NO_OUTPUT_KEY_ORDINAL, outputStepName ) );
       }
-      if ( outOrdinals.getValueOrdinal() < 0 ) {
+      if ( !containsCaseInsensitive("outValue", fieldNames) ) {
         throw new KettleException( BaseMessages.getString( PKG, PENTAHO_MAP_REDUCE_JOB_BUILDER_IMPL_NO_OUTPUT_VALUE_ORDINAL, outputStepName ) );
       }
     }
+  }
+
+  private boolean containsCaseInsensitive(String s, List<String> l){
+    return l.stream().anyMatch(x -> x.equalsIgnoreCase(s));
   }
 
   @Override
@@ -447,7 +445,7 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
   protected void configure( Configuration conf ) throws Exception {
     callVisitors();
 
-    setMapRunnerClass( hadoopShim.getPentahoMapReduceMapRunnerClass().getCanonicalName() );
+    setMapRunnerClass( hadoopShim.getPentahoMapReduceMapRunnerClass() );
 
     conf.set( TRANSFORMATION_MAP_XML, mapperTransformationXml );
     conf.set( TRANSFORMATION_MAP_INPUT_STEPNAME, mapperInputStep );
@@ -457,22 +455,22 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
       conf.set( TRANSFORMATION_COMBINER_XML, combinerTransformationXml );
       conf.set( TRANSFORMATION_COMBINER_INPUT_STEPNAME, combinerInputStep );
       conf.set( TRANSFORMATION_COMBINER_OUTPUT_STEPNAME, combinerOutputStep );
-      setCombinerClass( hadoopShim.getPentahoMapReduceCombinerClass().getCanonicalName() );
+      setCombinerClass( hadoopShim.getPentahoMapReduceCombinerClass() );
     }
     if ( reducerTransformationXml != null ) {
       conf.set( TRANSFORMATION_REDUCE_XML, reducerTransformationXml );
       conf.set( TRANSFORMATION_REDUCE_INPUT_STEPNAME, reducerInputStep );
       conf.set( TRANSFORMATION_REDUCE_OUTPUT_STEPNAME, reducerOutputStep );
-      setReducerClass( hadoopShim.getPentahoMapReduceReducerClass().getCanonicalName() );
+      setReducerClass( hadoopShim.getPentahoMapReduceReducerClass() );
     }
-    conf.setJarByClass( hadoopShim.getPentahoMapReduceMapRunnerClass() );
+    conf.setJarByClass( Class.forName("org.pentaho.hadoop.mapreduce.PentahoMapReduceJarMarker"));
     conf.set( LOG_LEVEL, logLevel.toString() );
     configureVariableSpace( conf );
     super.configure( conf );
   }
 
   @Override
-  protected MapReduceJobAdvanced submit( Configuration conf ) throws IOException {
+  protected MapReduceJobAdvanced submit( Configuration conf, String shimIdentifier ) throws IOException {
     cleanOutputPath( conf );
 
     FileSystem fs = hadoopShim.getFileSystem( conf );
@@ -518,7 +516,7 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
           FileObject bigDataPluginFolder = vfsPluginDirectory;
           hadoopShim.getDistributedCacheUtil()
             .installKettleEnvironment( pmrLibArchive, fs, kettleEnvInstallDir, bigDataPluginFolder,
-              additionalPluginNames );
+              additionalPluginNames, shimIdentifier );
 
           log.logBasic( BaseMessages
             .getString( PKG, "JobEntryHadoopTransJobExecutor.InstallationOfKettleSuccessful", kettleEnvInstallDir ) );
@@ -542,7 +540,7 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
     }
     JobConf jobConf = conf.getAsDelegateConf( JobConf.class );
     jobConf.getCredentials().addAll( UserGroupInformation.getCurrentUser().getCredentials() );
-    return super.submit( conf );
+    return super.submit( conf, shimIdentifier );
   }
 
   protected void stageMetaStoreForHadoop( Configuration conf, FileSystem fs, String installPath )

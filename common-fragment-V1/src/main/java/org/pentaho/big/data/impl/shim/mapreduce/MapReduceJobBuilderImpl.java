@@ -189,8 +189,7 @@ public class MapReduceJobBuilderImpl implements MapReduceJobBuilder {
       conf.setMapOutputValueClass( valueClass );
     }
     if ( mapRunnerClass != null ) {
-      Class<?> runnerClass = loader.loadClass( mapRunnerClass );
-      conf.setMapRunnerClass( runnerClass );
+      conf.setMapRunnerClass( mapRunnerClass );
     }
 
     if ( mapperClass != null ) {
@@ -267,7 +266,7 @@ public class MapReduceJobBuilderImpl implements MapReduceJobBuilder {
     return fs.asPath( conf.getDefaultFileSystemURL(), outputPath );
   }
 
-  protected MapReduceJobAdvanced submit( Configuration conf ) throws IOException {
+  protected MapReduceJobAdvanced submit( Configuration conf, String shimIdentifier ) throws IOException {
     return new RunningJobMapReduceJobAdvancedImpl( hadoopShim.submitJob( conf ) );
   }
 
@@ -275,7 +274,7 @@ public class MapReduceJobBuilderImpl implements MapReduceJobBuilder {
   public final MapReduceJobAdvanced submit() throws Exception {
     Configuration conf = hadoopShim.createConfiguration( namedCluster.getConfigId() );
     configure( conf );
-    return submit( conf );
+    return submit( conf, namedCluster.getShimIdentifier());
   }
 
   protected String getConfigId() {

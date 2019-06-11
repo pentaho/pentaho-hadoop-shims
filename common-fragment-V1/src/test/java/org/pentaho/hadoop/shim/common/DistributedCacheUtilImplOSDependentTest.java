@@ -190,7 +190,7 @@ public class DistributedCacheUtilImplOSDependentTest {
 
     Path root = new Path( "bin/test/installKettleEnvironment" );
     try {
-      ch.installKettleEnvironment( pmrArchive, fs, root, bigDataPluginDir, null );
+      ch.installKettleEnvironment( pmrArchive, fs, root, bigDataPluginDir, null, "" );
       assertTrue( ch.isKettleEnvironmentInstalledAt( fs, root ) );
     } finally {
       bigDataPluginDir.delete( new AllFileSelector() );
@@ -213,7 +213,7 @@ public class DistributedCacheUtilImplOSDependentTest {
     FileObject additionalPluginDir = DistributedCacheTestUtil.createTestFolderWithContent( pluginName );
     Path root = new Path( "bin/test/installKettleEnvironment" );
     try {
-      ch.installKettleEnvironment( pmrArchive, fs, root, bigDataPluginDir, "bin/test/" + pluginName );
+      ch.installKettleEnvironment( pmrArchive, fs, root, bigDataPluginDir, "bin/test/" + pluginName, "" );
       assertTrue( ch.isKettleEnvironmentInstalledAt( fs, root ) );
       //assertTrue( fs.exists( new Path( root, "plugins/bin/test/" + pluginName ) ) );
     } finally {
@@ -274,7 +274,7 @@ public class DistributedCacheUtilImplOSDependentTest {
 
     Path root = new Path( "bin/test/installKettleEnvironment" );
     try {
-      ch.installKettleEnvironment( pmrArchive, fs, root, bigDataPluginDir, null );
+      ch.installKettleEnvironment( pmrArchive, fs, root, bigDataPluginDir, null, "" );
       assertTrue( ch.isKettleEnvironmentInstalledAt( fs, root ) );
 
       ch.configureWithKettleEnvironment( conf, fs, root );

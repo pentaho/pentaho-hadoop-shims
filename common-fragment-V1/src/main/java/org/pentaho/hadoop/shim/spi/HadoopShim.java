@@ -161,7 +161,7 @@ public interface HadoopShim  {
    * @return the class to use for the Combiner in a Pentaho MapReduce job
    * @deprecated To be replaced with a cleaner API for executing Pentaho MapReduce. Use with care.
    */
-  @Deprecated Class<?> getPentahoMapReduceCombinerClass();
+  @Deprecated String getPentahoMapReduceCombinerClass();
 
   /**
    * Get the {@link Class} to use for the Reducer in a Pentaho MapReduce job.
@@ -169,7 +169,7 @@ public interface HadoopShim  {
    * @return the class to use for the Reducer in a Pentaho MapReduce job
    * @deprecated To be replaced with a cleaner API for executing Pentaho MapReduce. Use with care.
    */
-  @Deprecated Class<?> getPentahoMapReduceReducerClass();
+  @Deprecated String getPentahoMapReduceReducerClass();
 
   /**
    * Get the {@link Class} to use for the MapRunner in a Pentaho MapReduce job.
@@ -177,5 +177,5 @@ public interface HadoopShim  {
    * @return the class to use for the MapRunner in a Pentaho MapReduce job
    * @deprecated To be replaced with a cleaner API for executing Pentaho MapReduce. Use with care.
    */
-  @Deprecated Class<?> getPentahoMapReduceMapRunnerClass();
+  @Deprecated String getPentahoMapReduceMapRunnerClass();
 }

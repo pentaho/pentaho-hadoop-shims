@@ -611,9 +611,9 @@ public class PentahoMapReduceJobBuilderImplTest {
 
   @Test
   public void testConfigureFull() throws Exception {
-    when( hadoopShim.getPentahoMapReduceMapRunnerClass() ).thenReturn( (Class) String.class );
-    when( hadoopShim.getPentahoMapReduceCombinerClass() ).thenReturn( (Class) Void.class );
-    when( hadoopShim.getPentahoMapReduceReducerClass() ).thenReturn( (Class) Integer.class );
+    when( hadoopShim.getPentahoMapReduceMapRunnerClass() ).thenReturn( "" );
+    when( hadoopShim.getPentahoMapReduceCombinerClass() ).thenReturn( "org.pentaho.hadoop.mapreduce.GenericTransCombiner");
+    when( hadoopShim.getPentahoMapReduceReducerClass() ).thenReturn( "org.pentaho.hadoop.mapreduce.GenericTransReduce" );
     pentahoMapReduceJobBuilder.setLogLevel( LogLevel.BASIC );
     pentahoMapReduceJobBuilder.setInputPaths( new String[ 0 ] );
     pentahoMapReduceJobBuilder.setOutputPath( "test" );
@@ -630,7 +630,7 @@ public class PentahoMapReduceJobBuilderImplTest {
     pentahoMapReduceJobBuilder.setReducerInfo( transXml, testRInput, testROutput );
     pentahoMapReduceJobBuilder.configure( configuration );
 
-    verify( configuration ).setMapRunnerClass( String.class );
+    verify( configuration ).setMapRunnerClass( "" );
     verify( configuration ).set( PentahoMapReduceJobBuilderImpl.TRANSFORMATION_MAP_XML, transXml );
     verify( configuration ).set( PentahoMapReduceJobBuilderImpl.TRANSFORMATION_MAP_INPUT_STEPNAME, testMrInput );
     verify( configuration ).set( PentahoMapReduceJobBuilderImpl.TRANSFORMATION_MAP_OUTPUT_STEPNAME, testMrOutput );
@@ -654,9 +654,9 @@ public class PentahoMapReduceJobBuilderImplTest {
 
   @Test
   public void testDeleteLogging() throws Exception {
-    when( hadoopShim.getPentahoMapReduceMapRunnerClass() ).thenReturn( (Class) String.class );
-    when( hadoopShim.getPentahoMapReduceCombinerClass() ).thenReturn( (Class) Void.class );
-    when( hadoopShim.getPentahoMapReduceReducerClass() ).thenReturn( (Class) Integer.class );
+    when( hadoopShim.getPentahoMapReduceMapRunnerClass() ).thenReturn( "" );
+    when( hadoopShim.getPentahoMapReduceCombinerClass() ).thenReturn( "org.pentaho.hadoop.mapreduce.GenericTransCombiner");
+    when( hadoopShim.getPentahoMapReduceReducerClass() ).thenReturn( "org.pentaho.hadoop.mapreduce.GenericTransReduce" );
     pentahoMapReduceJobBuilder.setLogLevel( LogLevel.BASIC );
     pentahoMapReduceJobBuilder.setInputPaths( new String[ 0 ] );
     pentahoMapReduceJobBuilder.setOutputPath( "test" );
@@ -698,7 +698,7 @@ public class PentahoMapReduceJobBuilderImplTest {
     pentahoMapReduceJobBuilder.setMapperInfo( logTransXml, testMrInput, testMrOutput );
     pentahoMapReduceJobBuilder.configure( configuration );
 
-    verify( configuration ).setMapRunnerClass( String.class );
+    verify( configuration ).setMapRunnerClass( "" );
     verify( configuration ).set( PentahoMapReduceJobBuilderImpl.TRANSFORMATION_MAP_XML, transXmlWOLogging );
     verify( configuration ).set( PentahoMapReduceJobBuilderImpl.TRANSFORMATION_MAP_INPUT_STEPNAME, testMrInput );
     verify( configuration ).set( PentahoMapReduceJobBuilderImpl.TRANSFORMATION_MAP_OUTPUT_STEPNAME, testMrOutput );
@@ -744,7 +744,7 @@ public class PentahoMapReduceJobBuilderImplTest {
     when( conf.getAsDelegateConf( any() ) ).thenReturn( jobConf );
     when( conf.get( PentahoMapReduceJobBuilderImpl.PENTAHO_MAPREDUCE_PROPERTY_USE_DISTRIBUTED_CACHE ) )
         .thenReturn( Boolean.toString( false ) );
-    pentahoMapReduceJobBuilder.submit( conf );
+    pentahoMapReduceJobBuilder.submit( conf, "" );
     verify( hadoopShim ).submitJob( conf );
   }
 
@@ -754,7 +754,7 @@ public class PentahoMapReduceJobBuilderImplTest {
     when( conf.get( PentahoMapReduceJobBuilderImpl.PENTAHO_MAPREDUCE_PROPERTY_USE_DISTRIBUTED_CACHE ) )
       .thenReturn( "true" );
     try {
-      pentahoMapReduceJobBuilder.submit( conf );
+      pentahoMapReduceJobBuilder.submit( conf, "" );
     } catch ( IOException e ) {
       assertEquals( BaseMessages.getString( PentahoMapReduceJobBuilderImpl.PKG,
         PentahoMapReduceJobBuilderImpl.JOB_ENTRY_HADOOP_TRANS_JOB_EXECUTOR_INSTALLATION_OF_KETTLE_FAILED ),
@@ -777,7 +777,7 @@ public class PentahoMapReduceJobBuilderImplTest {
     when( conf.get( PentahoMapReduceJobBuilderImpl.PENTAHO_MAPREDUCE_PROPERTY_KETTLE_HDFS_INSTALL_DIR ) )
       .thenReturn( installPath );
     try {
-      pentahoMapReduceJobBuilder.submit( conf );
+      pentahoMapReduceJobBuilder.submit( conf, "" );
     } catch ( IOException e ) {
       // Ignore
     }
@@ -813,7 +813,7 @@ public class PentahoMapReduceJobBuilderImplTest {
     when( conf.get( PentahoMapReduceJobBuilderImpl.MAPREDUCE_APPLICATION_CLASSPATH,
       PentahoMapReduceJobBuilderImpl.DEFAULT_MAPREDUCE_APPLICATION_CLASSPATH ) ).thenReturn( mapreduceClasspath );
 
-    pentahoMapReduceJobBuilder.submit( conf );
+    pentahoMapReduceJobBuilder.submit( conf, "" );
     verify( logChannelInterface ).logBasic( BaseMessages.getString( PentahoMapReduceJobBuilderImpl.PKG,
       PentahoMapReduceJobBuilderImpl.JOB_ENTRY_HADOOP_TRANS_JOB_EXECUTOR_CONFIGURING_JOB_WITH_KETTLE_AT,
       kettleEnvInstallDirUri.getPath() ) );
@@ -850,7 +850,7 @@ public class PentahoMapReduceJobBuilderImplTest {
     when( pmrArchiveGetter.getVfsFilename( conf ) ).thenReturn( archiveName );
 
     try {
-      pentahoMapReduceJobBuilder.submit( conf );
+      pentahoMapReduceJobBuilder.submit( conf, "" );
     } catch ( IOException e ) {
       assertEquals( BaseMessages.getString( PentahoMapReduceJobBuilderImpl.PKG,
         PentahoMapReduceJobBuilderImpl.JOB_ENTRY_HADOOP_TRANS_JOB_EXECUTOR_INSTALLATION_OF_KETTLE_FAILED ),
@@ -896,7 +896,7 @@ public class PentahoMapReduceJobBuilderImplTest {
     when( pmrArchiveGetter.getPmrArchive( conf ) ).thenReturn( mock( FileObject.class ) );
 
     try {
-      pentahoMapReduceJobBuilder.submit( conf );
+      pentahoMapReduceJobBuilder.submit( conf, "" );
     } catch ( IOException e ) {
       assertEquals( BaseMessages.getString( PentahoMapReduceJobBuilderImpl.PKG,
         PentahoMapReduceJobBuilderImpl.JOB_ENTRY_HADOOP_TRANS_JOB_EXECUTOR_INSTALLATION_OF_KETTLE_FAILED ),
@@ -940,7 +940,7 @@ public class PentahoMapReduceJobBuilderImplTest {
       PentahoMapReduceJobBuilderImpl.DEFAULT_MAPREDUCE_APPLICATION_CLASSPATH ) ).thenReturn( mapreduceClasspath );
     when( pmrArchiveGetter.getPmrArchive( conf ) ).thenReturn( mock( FileObject.class ) );
 
-    pentahoMapReduceJobBuilder.submit( conf );
+    pentahoMapReduceJobBuilder.submit( conf, "" );
 
     verify( logChannelInterface ).logBasic( BaseMessages.getString( PentahoMapReduceJobBuilderImpl.PKG,
       PentahoMapReduceJobBuilderImpl.JOB_ENTRY_HADOOP_TRANS_JOB_EXECUTOR_CONFIGURING_JOB_WITH_KETTLE_AT,
