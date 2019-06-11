@@ -45,8 +45,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.pentaho.hadoop.mapreduce.YarnQueueAclsException;
-import org.pentaho.hadoop.mapreduce.YarnQueueAclsVerifier;
 import org.pentaho.hadoop.shim.common.fs.PathProxy;
 
 import java.io.IOException;

@@ -24,6 +24,7 @@ package org.pentaho.hadoop.mapreduce;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.mapreduce.QueueAclsInfo;
 import org.junit.Test;
+import org.pentaho.hadoop.shim.common.YarnQueueAclsVerifier;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

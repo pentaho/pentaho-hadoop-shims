@@ -29,8 +29,6 @@ import org.apache.hadoop.mapreduce.QueueAclsInfo;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.pentaho.hadoop.mapreduce.YarnQueueAclsException;
-import org.pentaho.hadoop.mapreduce.YarnQueueAclsVerifier;
 
 import java.io.IOException;
 
