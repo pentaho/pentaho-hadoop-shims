@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -1539,7 +1539,7 @@ public class AvroNestedReader {
       outputRowData = RowDataUtil.allocateRowData( m_outputRowMeta.size() );
     } else {
       // make sure we allocate enough space for the new fields
-      outputRowData = RowDataUtil.resizeArray( outputRowData, m_outputRowMeta.size() );
+      outputRowData = RowDataUtil.createResizedCopy( outputRowData, m_outputRowMeta.size() );
     }
 
     // get the normal (non expansion-related fields)
