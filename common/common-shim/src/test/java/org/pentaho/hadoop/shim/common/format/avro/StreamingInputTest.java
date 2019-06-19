@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -85,6 +85,40 @@ public class StreamingInputTest {
     testStreamingRecordReader( avroInputFields, null, filePath, expectedResults );
   }
 
+  @Test
+  public void testStreamingInputWithIncomingRow() throws Exception {
+    String filePath = "/avro/StreamingInputTest.avro";
+    List<AvroInputField> avroInputFields = Arrays.asList( new AvroInputField[] {
+      buildAvroInputField( "FirstName", AvroSpec.DataType.STRING, ValueMetaInterface.TYPE_STRING ),
+      buildAvroInputField( "LastName", AvroSpec.DataType.STRING, ValueMetaInterface.TYPE_STRING ),
+      buildAvroInputField( "theDate", AvroSpec.DataType.DATE, ValueMetaInterface.TYPE_DATE ),
+      buildAvroInputField( "theInt", AvroSpec.DataType.INTEGER, ValueMetaInterface.TYPE_INTEGER ),
+      buildAvroInputField( "theNumber", AvroSpec.DataType.DOUBLE, ValueMetaInterface.TYPE_NUMBER ),
+      buildAvroInputField( "theBinary", AvroSpec.DataType.BYTES, ValueMetaInterface.TYPE_BINARY ),
+      buildAvroInputField( "theBoolean", AvroSpec.DataType.BOOLEAN, ValueMetaInterface.TYPE_BOOLEAN ),
+      buildAvroInputField( "theTimestamp", AvroSpec.DataType.TIMESTAMP_MILLIS, ValueMetaInterface.TYPE_TIMESTAMP ),
+      buildAvroInputField( "theInet", AvroSpec.DataType.STRING, ValueMetaInterface.TYPE_INET ),
+      buildAvroInputField( "theDecimal", AvroSpec.DataType.DECIMAL, ValueMetaInterface.TYPE_BIGNUMBER, 20, 10 )
+    } );
+
+    Date date1 = ( dateFormat.parse( "1999/01/01 00:00:00.000" ) );
+    dateFormat.setTimeZone( TimeZone.getTimeZone( "EST" ) ); //The test file was written with EST time zone
+    Timestamp timeStamp1 = new Timestamp( dateFormat.parse( "2001/12/01 00:00:00.000" ).getTime() );
+
+    Object[] expectedResults = new Object[] {
+      "John", "Smith", date1, 1L, 1.1D, "foobar".getBytes(), false, timeStamp1,
+      InetAddress.getByName( "www.pentaho.com" ), new BigDecimal( "1234567890.0987654321" )
+    };
+
+    Object[] incomingRowData = new Object[] { "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9", "f10" };
+    Object[] compareIncomingRowData = new Object[] { "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9", "f10" };
+
+    testStreamingRecordReader( avroInputFields, incomingRowData, filePath, expectedResults );
+    for ( int i = 0; i < compareIncomingRowData.length; i++ ) {
+      assertEquals( compareIncomingRowData[i], incomingRowData[i] );
+    }
+  }
+
   private AvroInputField buildAvroInputField( String name, AvroSpec.DataType avroType, int pentahoType ) {
     return buildAvroInputField( name, avroType, pentahoType, 0, 0 );
   }
@@ -116,6 +150,9 @@ public class StreamingInputTest {
     pentahoAvroInputFormat.setInputStreamFieldName( "stream" );
     pentahoAvroInputFormat.setIsDataBinaryEncoded( true );
     pentahoAvroInputFormat.setUseFieldAsInputStream( true );
+    if ( origValues != null ) {
+      pentahoAvroInputFormat.setIncomingFields( origValues );
+    }
     RowMeta inRowMeta = new RowMeta();
     inRowMeta.addValueMeta( new ValueMetaString( "stream" ) );
     pentahoAvroInputFormat.setIncomingRowMeta( inRowMeta );
