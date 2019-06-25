@@ -364,6 +364,11 @@ public class CommonHadoopShim implements HadoopShim {
   }
 
   @Override
+  public Class[] getHbaseDependencyClasses() {
+    return new Class[0];
+  }
+
+  @Override
   public Class<? extends Writable> getHadoopWritableCompatibleClass( ValueMetaInterface kettleType ) {
     if ( kettleType == null ) {
       return NullWritable.class;
@@ -389,7 +394,7 @@ public class CommonHadoopShim implements HadoopShim {
   @Override
   public String getPentahoMapReduceCombinerClass() {
     return PENTAHO_MAPREDUCE_GENERIC_COMBINER_CLASS_NAME;
-  };
+  }
 
   @Override
   public String getPentahoMapReduceReducerClass() {
