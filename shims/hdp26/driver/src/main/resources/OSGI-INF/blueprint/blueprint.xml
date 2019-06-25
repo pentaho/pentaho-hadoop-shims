@@ -14,7 +14,7 @@
     <!--<service ref="hdp26ShimIdentifier" interface="org.pentaho.hadoop.shim.spi.ShimIdentifierInterface"/>-->
     <service ref="hdp26ShimIdentifier" interface="org.pentaho.hadoop.shim.api.ShimIdentifierInterface"/>
 
-    <bean id="hdp26Hadoop" class="org.pentaho.hadoop.shim.hdp26.HadoopShim" scope="singleton"/>
+    <bean id="hdp26Hadoop" class="org.pentaho.hadoop.shim.HadoopShim" scope="singleton"/>
 
     <service ref="hdp26Hadoop" interface="org.pentaho.hadoop.shim.spi.HadoopShim">
         <service-properties>

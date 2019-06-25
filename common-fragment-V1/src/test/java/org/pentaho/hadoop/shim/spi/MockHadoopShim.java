@@ -92,6 +92,11 @@ public class MockHadoopShim implements HadoopShim {
   }
 
   @Override
+  public Class[] getHbaseDependencyClasses() {
+    return new Class[0];
+  }
+
+  @Override
   public Class<?> getHadoopWritableCompatibleClass( ValueMetaInterface kettleType ) {
     return null;
   }
