@@ -11,7 +11,6 @@
   <packaging>jar</packaging>
   <version>9.0.0.0-SNAPSHOT</version>
   <properties>
-    <log4j.version>1.2.17</log4j.version>
     <commons-io.version>2.4</commons-io.version>
     <xstream.version>1.4.9</xstream.version>
     <shim.type>EMR</shim.type>
@@ -87,7 +86,6 @@
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-      <version>${log4j.version}</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
