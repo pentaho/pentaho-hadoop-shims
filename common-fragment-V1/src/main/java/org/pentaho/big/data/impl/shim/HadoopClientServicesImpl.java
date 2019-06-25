@@ -2,7 +2,6 @@ package org.pentaho.big.data.impl.shim;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.protobuf.Message;
 import com.pentaho.big.data.bundles.impl.shim.hbase.ByteConversionUtilImpl;
 import com.pentaho.big.data.bundles.impl.shim.hbase.HBaseConnectionImpl;
 import com.pentaho.big.data.bundles.impl.shim.hbase.ResultFactoryImpl;
@@ -10,8 +9,6 @@ import com.pentaho.big.data.bundles.impl.shim.hbase.mapping.ColumnFilterFactoryI
 import com.pentaho.big.data.bundles.impl.shim.hbase.mapping.MappingFactoryImpl;
 import com.pentaho.big.data.bundles.impl.shim.hbase.meta.HBaseValueMetaInterfaceFactoryImpl;
 import com.pentaho.big.data.bundles.impl.shim.hdfs.HadoopFileSystemImpl;
-import com.yammer.metrics.core.MetricsRegistry;
-import io.netty.channel.Channel;
 import org.apache.avro.Conversion;
 import org.apache.avro.mapred.AvroWrapper;
 import org.apache.commons.io.FileUtils;
@@ -19,12 +16,6 @@ import org.apache.commons.vfs2.FileObject;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.LocalFileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.hbase.CompatibilityFactory;
-import org.apache.hadoop.hbase.HConstants;
-import org.apache.hadoop.hbase.client.Put;
-import org.apache.hadoop.hbase.mapreduce.TableMapper;
-import org.apache.hadoop.hbase.protobuf.generated.ClientProtos;
-import org.apache.htrace.Trace;
 import org.apache.oozie.client.OozieClient;
 import org.apache.oozie.client.OozieClientException;
 import org.apache.pig.ExecType;
@@ -35,9 +26,10 @@ import org.apache.pig.impl.util.PropertiesUtil;
 import org.apache.pig.tools.grunt.GruntParser;
 import org.apache.pig.tools.parameters.ParameterSubstitutionPreprocessor;
 import org.apache.sqoop.Sqoop;
-import org.apache.zookeeper.ZooKeeper;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Filter;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.wiring.BundleWire;
 import org.osgi.framework.wiring.BundleWiring;
 import org.pentaho.big.data.impl.shim.oozie.OozieJobInfoDelegate;
@@ -80,6 +72,7 @@ public class HadoopClientServicesImpl implements HadoopClientServices {
     private static final String[] EMPTY_STRING_ARRAY = new String[ 0 ];
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger( HadoopClientServicesImpl.class );
     public static final String SQOOP_THROW_ON_ERROR = "sqoop.throwOnError";
+    private static final String ALT_CLASSPATH = "hadoop.alt.classpath";
     private static final String TMPJARS = "tmpjars";
 
     protected NamedCluster namedCluster;
@@ -166,19 +159,20 @@ public class HadoopClientServicesImpl implements HadoopClientServices {
             Configuration c = configuration;
             ClassLoader cl = Thread.currentThread().getContextClassLoader();
             Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
-            String tmpPropertyHolder = System.getProperty( "hadoop.alt.classpath" );
+            String tmpPropertyHolder = System.getProperty( ALT_CLASSPATH );
             try {
                 loadBundleFilesLocations();
-                System.setProperty( "hadoop.alt.classpath", createHadoopAltClasspath() );
+                System.setProperty( ALT_CLASSPATH, createHadoopAltClasspath() );
                 c.set( TMPJARS, getSqoopJarLocation( c ) );
                 if ( args.length > 0 && Arrays.asList( args ).contains( "--as-avrodatafile" ) ) {
                     addDependencyJars( c, Conversion.class, AvroWrapper.class );
                 }
                 if ( args.length > 0 && Arrays.asList( args ).contains( "--hbase-table" ) ) {
-                    addDependencyJars( c, HConstants.class, ClientProtos.class, Put.class,
-                            CompatibilityFactory.class, TableMapper.class, ZooKeeper.class,
-                            Channel.class, Message.class, Lists.class, Trace.class, MetricsRegistry.class
-                    );
+                    Filter serviceFilter = bundleContext.createFilter( "(shim=" + namedCluster.getShimIdentifier() + ")" );
+                    ServiceReference serviceReference = (ServiceReference) bundleContext.getServiceReferences( HadoopShim.class, serviceFilter.toString() ).toArray()[0];
+                    Object service = bundleContext.getService( serviceReference );
+                    Class[] depClasses = (Class[]) service.getClass().getMethod( "getHbaseDependencyClasses" ).invoke( service );
+                    addDependencyJars( c, depClasses );
                 }
                 return Sqoop.runTool( args, ShimUtils.asConfiguration( c ) );
             } catch ( IOException e ) {
@@ -187,9 +181,9 @@ public class HadoopClientServicesImpl implements HadoopClientServices {
             } finally {
                 Thread.currentThread().setContextClassLoader( cl );
                 if ( tmpPropertyHolder == null ) {
-                    System.clearProperty( "hadoop.alt.classpath" );
+                    System.clearProperty( ALT_CLASSPATH );
                 } else {
-                    System.setProperty( "hadoop.alt.classpath", tmpPropertyHolder );
+                    System.setProperty( ALT_CLASSPATH, tmpPropertyHolder );
                 }
             }        } catch ( Exception e ) {
             LOGGER.error( "Error executing sqoop", e );
@@ -416,7 +410,11 @@ public class HadoopClientServicesImpl implements HadoopClientServices {
                 Method method = grunt.getClass().getMethod("setParams", new Class[]{PigServer.class});
                 method.invoke( grunt, pigServer );
             } catch ( Exception e1 ) {
+                throw new org.apache.pig.tools.pigscript.parser.ParseException( "Error constructing Grunt Parser in " + getClass().getName() );
             }
+        }
+        if ( grunt == null ) {
+            throw new org.apache.pig.tools.pigscript.parser.ParseException( "Grunt Parser is null in " + getClass().getName() );
         }
         grunt.setInteractive( false );
         int[] retValues = grunt.parseStopOnError( false );

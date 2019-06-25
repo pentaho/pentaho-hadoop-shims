@@ -13,7 +13,7 @@
 
   <service ref="cdh61ShimIdentifier" interface="org.pentaho.hadoop.shim.api.ShimIdentifierInterface"/>
 
-  <bean id="cdh61Hadoop" class="org.pentaho.hadoop.shim.cdh61.HadoopShim" scope="singleton"/>
+  <bean id="cdh61Hadoop" class="org.pentaho.hadoop.shim.HadoopShim" scope="singleton"/>
 
   <service ref="cdh61Hadoop" interface="org.pentaho.hadoop.shim.spi.HadoopShim">
     <service-properties>

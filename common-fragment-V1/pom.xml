@@ -39,6 +39,11 @@
             </properties>
             <dependencies>
                 <dependency>
+                    <groupId>pentaho</groupId>
+                    <artifactId>pentaho-big-data-impl-shim-common</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+                <dependency>
                     <groupId>com.twitter</groupId>
                     <artifactId>parquet-hadoop-bundle</artifactId>
                     <version>${parquet.cloudera.version}</version>

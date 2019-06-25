@@ -13,7 +13,7 @@
 
   <service ref="emr521ShimIdentifier" interface="org.pentaho.hadoop.shim.api.ShimIdentifierInterface"/>
 
-  <bean id="emr521Hadoop" class="org.pentaho.hadoop.shim.emr521.HadoopShim" scope="singleton"/>
+  <bean id="emr521Hadoop" class="org.pentaho.hadoop.shim.HadoopShim" scope="singleton"/>
 
   <service ref="emr521Hadoop" interface="org.pentaho.hadoop.shim.spi.HadoopShim">
     <service-properties>
