@@ -147,6 +147,15 @@ public interface HadoopShim  {
   RunningJob submitJob( Configuration c ) throws IOException;
 
   /**
+   * Returns the dependency classes nedeed by Sqoop to perform HBase operations
+   * as dictated in the TableMapReduceUtil.addHBaseDependencyJars() method in
+   * the HBase distribution used by the shim.
+   *
+   * @retuen A Class array containing the dependency classes needed
+   */
+  Class[] getHbaseDependencyClasses();
+
+  /**
    * Determine the Hadoop writable type to pass Kettle type back to Hadoop as.
    *
    * @param kettleType Value meta to look up compatible Hadoop Writable class.

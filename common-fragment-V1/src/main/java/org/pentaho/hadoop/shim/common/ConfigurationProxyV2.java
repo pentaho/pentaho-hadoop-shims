@@ -59,6 +59,8 @@ public class ConfigurationProxyV2 implements Configuration {
     job.getConfiguration().addResource( "core-site.xml" );
     job.getConfiguration().addResource( "mapred-site.xml" );
     job.getConfiguration().addResource( "yarn-site.xml" );
+    job.getConfiguration().addResource( "hbase-site.xml" );
+    job.getConfiguration().addResource( "hive-site.xml" );
   }
 
   @VisibleForTesting
@@ -67,7 +69,9 @@ public class ConfigurationProxyV2 implements Configuration {
       ShimConfigsLoader.ClusterConfigNames.CORE_SITE,
       ShimConfigsLoader.ClusterConfigNames.MAPRED_SITE,
       ShimConfigsLoader.ClusterConfigNames.HDFS_SITE,
-      ShimConfigsLoader.ClusterConfigNames.YARN_SITE );
+      ShimConfigsLoader.ClusterConfigNames.YARN_SITE,
+      ShimConfigsLoader.ClusterConfigNames.HBASE_SITE,
+      ShimConfigsLoader.ClusterConfigNames.HIVE_SITE );
   }
 
   public JobConf getJobConf() {
