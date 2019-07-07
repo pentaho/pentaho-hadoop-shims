@@ -6,12 +6,12 @@
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-cdh514-reactor</artifactId>
-    <version>8.3.0.0-SNAPSHOT</version>
+    <version>8.3.2019.05.00-404</version>
   </parent>
 
   <artifactId>pentaho-hadoop-shims-cdh514-hbase-comparators</artifactId>
   <packaging>jar</packaging>
-  <version>8.3.0.0-SNAPSHOT</version>
+  <version>8.3.2019.05.00-404</version>
 
   <dependencies>
     <dependency>

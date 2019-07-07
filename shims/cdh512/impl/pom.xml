@@ -5,11 +5,11 @@
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-cdh512-reactor</artifactId>
-    <version>8.3.0.0-SNAPSHOT</version>
+    <version>8.3.2019.05.00-404</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-cdh512</artifactId>
   <packaging>jar</packaging>
-  <version>8.3.0.0-SNAPSHOT</version>
+  <version>8.3.2019.05.00-404</version>
   <properties>
     <log4j.version>1.2.14</log4j.version>
     <xstream.version>1.4.9</xstream.version>
