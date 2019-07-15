@@ -22,7 +22,6 @@
     <hadoop-azure.version>2.7.1</hadoop-azure.version>
     <hadoop-aws.version>2.7.3</hadoop-aws.version>
     <avro.version>1.8.0</avro.version>
-    <org.apache.httpcomponents.version>4.4</org.apache.httpcomponents.version>
     <!-- client folder -->
     <hadoop-client.version>2.7.3.2.5.0.0-1245</hadoop-client.version>
     <!-- pmr folder -->
