@@ -108,6 +108,16 @@
       </dependency>
       <dependency>
           <groupId>org.apache.hbase</groupId>
+          <artifactId>hbase-metrics-api</artifactId>
+          <version>${org.apache.hbase.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.hbase</groupId>
+          <artifactId>hbase-metrics</artifactId>
+          <version>${org.apache.hbase.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.hbase</groupId>
           <artifactId>hbase-client</artifactId>
           <version>${org.apache.hbase.version}</version>
       </dependency>
@@ -171,7 +181,8 @@
                                 *:parquet-hadoop,*:parquet-hadoop-bundle,*:hadoop-yarn-api,*:avro,*:avro-mapred,*:hive-jdbc,
                                 *:hive-service,*:orc-core,*:hadoop-common,*:hadoop-hdfs,*:hadoop-mapreduce-*,
                                 *:hadoop-yarn-api,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,
-                                *:hbase-server,*:oozie-client,*:parquet-hadoop-bundle,*:zookeeper
+                                *:hbase-server,*:hbase-metrics,*:hbase-metrics-api,*:oozie-client,*:parquet-hadoop-bundle,
+                                *:zookeeper
                             </include>
                             <exclude>
                                 *:*log4j*,*:xml-apis,*:xercesImpl
