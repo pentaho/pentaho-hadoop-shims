@@ -116,6 +116,12 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.pentaho.di.plugins</groupId>
+      <artifactId>pdi-core-plugins-impl</artifactId>
+      <version>${pdi.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-all</artifactId>
     </dependency>
