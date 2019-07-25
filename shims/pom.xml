@@ -96,12 +96,6 @@
   </dependencyManagement>
   <dependencies>
     <dependency>
-      <groupId>org.pentaho.di.plugins</groupId>
-      <artifactId>pdi-core-plugins-impl</artifactId>
-      <version>${pdi.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>pentaho-hadoop-shims-common-shim</artifactId>
       <version>${project.version}</version>

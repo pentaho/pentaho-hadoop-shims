@@ -131,11 +131,6 @@
       <artifactId>kettle-engine</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.pentaho.di.plugins</groupId>
-      <artifactId>pdi-core-plugins-impl</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>pentaho-hadoop-shims-api</artifactId>
     </dependency>
