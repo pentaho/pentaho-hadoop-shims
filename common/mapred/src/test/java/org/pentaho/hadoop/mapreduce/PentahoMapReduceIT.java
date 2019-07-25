@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -31,7 +31,10 @@ import org.junit.Test;
 import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.logging.LogLevel;
+import org.pentaho.di.core.plugins.PluginRegistry;
+import org.pentaho.di.core.plugins.StepPluginType;
 import org.pentaho.di.trans.TransMeta;
+import org.pentaho.di.trans.steps.constant.ConstantMeta;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -41,6 +44,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static java.util.Collections.emptyList;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
@@ -65,6 +69,13 @@ public class PentahoMapReduceIT {
   @BeforeClass
   public static void before() throws KettleException {
     KettleEnvironment.init();
+    PluginRegistry.addPluginType( StepPluginType.getInstance() );
+    PluginRegistry.init( );
+
+    StepPluginType.getInstance().handlePluginAnnotation(
+            ConstantMeta.class,
+            ConstantMeta.class.getAnnotation( org.pentaho.di.core.annotations.Step.class ),
+            emptyList(), false, null );
   }
 
   @Before

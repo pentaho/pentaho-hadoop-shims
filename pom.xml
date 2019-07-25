@@ -179,6 +179,12 @@
         </exclusions>
       </dependency>
       <dependency>
+        <groupId>org.pentaho.di.plugins</groupId>
+        <artifactId>pdi-core-plugins-impl</artifactId>
+        <version>${pdi.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
         <groupId>org.hamcrest</groupId>
         <artifactId>hamcrest-core</artifactId>
         <version>${org.hamcrest.version}</version>
