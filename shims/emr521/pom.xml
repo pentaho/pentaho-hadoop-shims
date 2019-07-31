@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.pentaho</groupId>
-    <artifactId>pentaho-hadoop-shims-hdp30-reactor</artifactId>
+    <artifactId>pentaho-hadoop-shims-list</artifactId>
     <version>9.0.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-emr521-reactor</artifactId>
