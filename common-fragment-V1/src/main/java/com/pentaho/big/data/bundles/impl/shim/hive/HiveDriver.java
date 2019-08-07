@@ -22,6 +22,7 @@
 
 package com.pentaho.big.data.bundles.impl.shim.hive;
 
+import org.pentaho.big.data.api.jdbc.impl.JdbcUrlImpl;
 import org.pentaho.hadoop.shim.api.jdbc.JdbcUrl;
 import org.pentaho.hadoop.shim.api.jdbc.JdbcUrlParser;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
@@ -118,7 +119,7 @@ public class HiveDriver implements Driver {
   }
 
   public Connection doConnect( Driver driver, JdbcUrl url, Properties info ) throws SQLException {
-    return driver.connect( url.toString(), info );
+    return driver.connect( url.toString().replaceFirst( JdbcUrlImpl.PENTAHO_NAMED_CLUSTER + "=[^;]*;", "" ), info );
   }
 
   @Override public final boolean acceptsURL( String url ) throws SQLException {

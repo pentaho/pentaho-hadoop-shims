@@ -1,5 +1,6 @@
 package org.pentaho.hadoop.shim;
 
+import org.apache.hadoop.conf.Configuration;
 import org.pentaho.di.core.Const;
 
 import java.io.File;
@@ -12,6 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.function.Consumer;
@@ -106,6 +108,12 @@ public class ShimConfigsLoader {
     }
 
     return properties;
+  }
+
+  public static Map<String, String> parseFile( URL fileUrl ) {
+    Configuration c = new Configuration();
+    c.addResource( fileUrl );
+    return c.getPropsWithPrefix( "" );
   }
 
   public enum ClusterConfigNames {
