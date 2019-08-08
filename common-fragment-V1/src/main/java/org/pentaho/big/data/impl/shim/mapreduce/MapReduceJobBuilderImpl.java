@@ -280,4 +280,8 @@ public class MapReduceJobBuilderImpl implements MapReduceJobBuilder {
   protected String getConfigId() {
     return namedCluster.getConfigId();
   }
+
+  protected NamedCluster getNamedCluster() {
+    return namedCluster;
+  }
 }
