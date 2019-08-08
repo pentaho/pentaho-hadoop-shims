@@ -206,7 +206,7 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
     } else {
       List<TransformationVisitorService> editableList = new ArrayList<>( visitorServices );
       editableList.add( new TransformationVisitorService() {
-        @Override public void visit( MapReduceTransformations transformations ) {
+        @Override public void visit( MapReduceTransformations transformations, String namedCluster ) {
           //Delete logging into tables
           deleteLogging( transformations.getCombiner() );
           deleteLogging( transformations.getMapper() );
@@ -646,7 +646,7 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
     transformations.setReducer( convert( reducerTransformationXml ) );
 
     for ( TransformationVisitorService visitorService : visitorServices ) {
-      visitorService.visit( transformations );
+      visitorService.visit( transformations, this.getNamedCluster().getConfigId() );
     }
 
     combinerTransformationXml = convert( transformations.getCombiner() );

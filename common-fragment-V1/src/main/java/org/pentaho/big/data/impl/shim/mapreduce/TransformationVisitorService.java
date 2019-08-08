@@ -28,5 +28,5 @@ import org.pentaho.bigdata.api.mapreduce.MapReduceTransformations;
  */
 public interface TransformationVisitorService {
 
-  void visit( MapReduceTransformations transformations );
+  void visit(MapReduceTransformations transformations, String namedCluster );
 }
