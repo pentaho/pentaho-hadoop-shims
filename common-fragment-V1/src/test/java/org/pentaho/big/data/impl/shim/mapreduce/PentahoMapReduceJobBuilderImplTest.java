@@ -725,7 +725,8 @@ public class PentahoMapReduceJobBuilderImplTest {
     pentahoMapReduceJobBuilder.setMapperInfo( transXml, "testMrInput", "testMrOutput" );
 
     List<TransformationVisitorService> badServices = new ArrayList<>();
-    badServices.add( transformations -> {
+
+    badServices.add( ( transformations, namedCluster ) -> {
       try {
         TransConfiguration transConfig = mock( TransConfiguration.class );
         when( transConfig.getXML() ).thenThrow( new IOException( "Some error" ) );

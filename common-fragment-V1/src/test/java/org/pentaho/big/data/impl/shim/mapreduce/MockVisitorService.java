@@ -28,7 +28,7 @@ import org.pentaho.bigdata.api.mapreduce.MapReduceTransformations;
  */
 public class MockVisitorService implements TransformationVisitorService {
     @Override
-    public void visit(MapReduceTransformations transformations) {
+    public void visit(MapReduceTransformations transformations, String namedCluster ) {
         // Do Nothing
     }
 }
