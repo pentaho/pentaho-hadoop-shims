@@ -152,6 +152,10 @@ public class MapReduceServiceImpl implements MapReduceService {
     };
   }
 
+  public void addTransformationVisitorService( TransformationVisitorService service ) {
+    visitorServices.add( service );
+  }
+
   @VisibleForTesting
   Class<?> locateDriverClass( String driverClass, final URL resolvedJarUrl, final HadoopShim shim )
     throws MapReduceExecutionException {
