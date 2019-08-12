@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -196,7 +196,7 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
     this.visitorServices = addDefaultVisitors( visitorServices );
   }
 
-  @VisibleForTesting List<TransformationVisitorService> addDefaultVisitors(
+  public List<TransformationVisitorService> addDefaultVisitors(
     List<TransformationVisitorService> visitorServices ) {
     String ignoreTableLogging =
       System.getProperty( Const.KETTLE_COMPATIBILITY_IGNORE_TABLE_LOGGING, "Y" );
