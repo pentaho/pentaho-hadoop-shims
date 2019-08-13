@@ -69,7 +69,7 @@ public class MapReduceServiceImpl implements MapReduceService {
   private final NamedCluster namedCluster;
   private final HadoopShim hadoopShim;
   private final ExecutorService executorService;
-  private final List<TransformationVisitorService> visitorServices;
+  private final List<TransformationVisitorService> visitorServices = new ArrayList<>();
   private final PluginPropertiesUtil pluginPropertiesUtil;
   private final PluginRegistry pluginRegistry;
 
@@ -88,7 +88,7 @@ public class MapReduceServiceImpl implements MapReduceService {
     this.executorService = executorService;
     this.pluginPropertiesUtil = pluginPropertiesUtil;
     this.pluginRegistry = pluginRegistry;
-    this.visitorServices = visitorServices;
+    this.visitorServices.addAll( visitorServices );
   }
 
   @Override
