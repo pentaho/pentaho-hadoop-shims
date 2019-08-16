@@ -42,7 +42,6 @@
     <org.apache.hive.version>1.2.1000.2.5.0.0-1245</org.apache.hive.version>
     <javax.servlet.jsp.version>2.1</javax.servlet.jsp.version>
     <org.javassist.version>3.18.1-GA</org.javassist.version>
-    <log4j.version>1.2.17</log4j.version>
     <org.apache.derby.version>10.10.2.0</org.apache.derby.version>
     <gateway-shell>0.12.0.2.6.0.3-8</gateway-shell>
     <json-smart>1.1.1</json-smart>
@@ -381,12 +380,6 @@
           <groupId>*</groupId>
         </exclusion>
       </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>${log4j.version}</version>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
