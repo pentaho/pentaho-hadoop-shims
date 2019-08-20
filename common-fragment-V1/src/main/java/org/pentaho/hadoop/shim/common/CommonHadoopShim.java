@@ -133,7 +133,13 @@ public class CommonHadoopShim implements HadoopShim {
 
   @Override
   public String getHadoopVersion() {
-    return VersionInfo.getVersion();
+    ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
+    try {
+      Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
+      return VersionInfo.getVersion();
+    } finally {
+      Thread.currentThread().setContextClassLoader( originalClassLoader );
+    }
   }
 
   @Override
