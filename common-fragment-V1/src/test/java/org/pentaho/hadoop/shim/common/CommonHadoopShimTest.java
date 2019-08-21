@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -24,9 +24,9 @@ package org.pentaho.hadoop.shim.common;
 
 import org.apache.hadoop.util.VersionInfo;
 import org.junit.Test;
-import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.hadoop.shim.api.ConfigurationException;
 import org.pentaho.hadoop.shim.api.internal.Configuration;
+import org.pentaho.hadoop.shim.api.internal.DistributedCacheUtil;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 
 import java.util.ArrayList;
@@ -190,16 +190,14 @@ public class CommonHadoopShimTest {
   }
 
   @Test
-  public void getDistributedCacheUtil() throws Exception {
+  public void getDistributedCacheUtil() {
     HadoopShim shim = new CommonHadoopShim();
     try {
-      shim.getDistributedCacheUtil();
-      //fail( "expected exception" );
+      DistributedCacheUtil dcUtil = shim.getDistributedCacheUtil();
+      assertNotNull( dcUtil );
     } catch ( ConfigurationException ex ) {
-      assertEquals( ex.getMessage(),
-        BaseMessages.getString( CommonHadoopShim.class, "CommonHadoopShim.DistributedCacheUtilMissing" ) );
+      fail( "Caught exception "  + ex.getMessage() );
     }
-
   }
 
   @Test

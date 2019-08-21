@@ -195,7 +195,7 @@ public class MapReduceJobBuilderImplTest {
     verify( configuration ).setNumReduceTasks( numReduceTasks );
     verify( configuration ).setMapOutputKeyClass( String.class );
     verify( configuration ).setMapOutputValueClass( Integer.class );
-    verify( configuration ).setMapRunnerClass( "" );
+    verify( configuration ).setMapRunnerClass( Void.class.getCanonicalName() );
     verify( logChannelInterface ).logBasic( logMeBasic );
     verify( configuration ).set( defA, valA );
     verify( configuration, never() ).set( isNull( String.class ), anyString() );

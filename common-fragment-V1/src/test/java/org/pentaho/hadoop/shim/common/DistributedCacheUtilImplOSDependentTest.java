@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -215,7 +215,7 @@ public class DistributedCacheUtilImplOSDependentTest {
     try {
       ch.installKettleEnvironment( pmrArchive, fs, root, bigDataPluginDir, "bin/test/" + pluginName, "" );
       assertTrue( ch.isKettleEnvironmentInstalledAt( fs, root ) );
-      //assertTrue( fs.exists( new Path( root, "plugins/bin/test/" + pluginName ) ) );
+      assertTrue( fs.exists( new Path( root, "plugins/bin/test/" + pluginName ) ) );
     } finally {
       bigDataPluginDir.delete( new AllFileSelector() );
       additionalPluginDir.delete( new AllFileSelector() );
@@ -286,10 +286,10 @@ public class DistributedCacheUtilImplOSDependentTest {
       assertTrue( conf.get( "mapred.job.classpath.files" ).contains( "lib/kettle-engine.jar" ) );
 
       // Make sure the configuration specific jar made it!
-      //assertTrue( conf.get( "mapred.cache.files" ).contains( "lib/configuration-specific.jar" ) );
+      assertTrue( conf.get( "mapred.cache.files" ).contains( "lib/configuration-specific.jar" ) );
 
       // Make sure our plugins folder is registered
-      //assertTrue( conf.get( "mapred.cache.files" ).contains( "#plugins" ) );
+      assertTrue( conf.get( "mapred.cache.files" ).contains( "#plugins" ) );
 
       // Make sure our libraries aren't included twice
       assertFalse( conf.get( "mapred.cache.files" ).contains( "#lib" ) );
