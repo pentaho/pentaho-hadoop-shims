@@ -75,7 +75,7 @@ public class TypeConverterFactoryTest {
       fail( "Expected exception when looking up converter for class combination that doesn't exist" );
     } catch ( TypeConversionException ex ) {
       assertTrue( "Unexpected exception: " + ex.getMessage(),
-        ex.getMessage().contains( "No converter found to convert" ) );
+        ex.getMessage().contains( "Can't convert from" ) );
     }
 
     factory.registerConverter( Object.class, String.class, converter );

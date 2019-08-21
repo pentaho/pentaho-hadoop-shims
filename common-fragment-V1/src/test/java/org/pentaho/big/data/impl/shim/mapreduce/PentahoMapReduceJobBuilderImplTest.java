@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -577,36 +577,36 @@ public class PentahoMapReduceJobBuilderImplTest {
 
   @Test
   public void testConfigureMinimal() throws Exception {
-//    pentahoMapReduceJobBuilder =
-//      spy( new PentahoMapReduceJobBuilderImpl( namedCluster, hadoopConfiguration, logChannelInterface, variableSpace,
-//        pluginInterface, vfsPluginDirectory, pmrProperties, transFactory, pmrArchiveGetter, visitorServices ) );
-//    when( hadoopShim.getPentahoMapReduceMapRunnerClass() ).thenReturn( (Class) String.class );
-//    pentahoMapReduceJobBuilder.setLogLevel( LogLevel.BASIC );
-//    pentahoMapReduceJobBuilder.setInputPaths( new String[ 0 ] );
-//    pentahoMapReduceJobBuilder.setOutputPath( "test" );
-//    Configuration configuration = mock( Configuration.class );
-//    doAnswer( new Answer() {
-//      @Override public Object answer( InvocationOnMock invocation ) throws Throwable {
-//        return null;
-//      }
-//    } ).when( pentahoMapReduceJobBuilder ).configureVariableSpace( configuration );
-//    when( hadoopShim.getFileSystem( configuration ) ).thenReturn( mock( FileSystem.class ) );
-//    String testMrInput = "testMrInput";
-//    String testMrOutput = "testMrOutput";
-//    pentahoMapReduceJobBuilder.setMapperInfo( transXml, testMrInput, testMrOutput );
-//    pentahoMapReduceJobBuilder.configure( configuration );
-//
-//    verify( configuration ).setMapRunnerClass( String.class );
-//    verify( configuration ).set( PentahoMapReduceJobBuilderImpl.TRANSFORMATION_MAP_XML, transXml );
-//    verify( configuration ).set( PentahoMapReduceJobBuilderImpl.TRANSFORMATION_MAP_INPUT_STEPNAME, testMrInput );
-//    verify( configuration ).set( PentahoMapReduceJobBuilderImpl.TRANSFORMATION_MAP_OUTPUT_STEPNAME, testMrOutput );
-//    verify( configuration ).setJarByClass( String.class );
-//    verify( configuration ).set( PentahoMapReduceJobBuilderImpl.LOG_LEVEL, LogLevel.BASIC.toString() );
-//
-//    verify( pentahoMapReduceJobBuilder ).configureVariableSpace( configuration );
-//
-//    verify( configuration, never() ).setCombinerClass( any( Class.class ) );
-//    verify( configuration, never() ).setReducerClass( any( Class.class ) );
+    pentahoMapReduceJobBuilder =
+      spy( new PentahoMapReduceJobBuilderImpl( namedCluster, hadoopShim, logChannelInterface, variableSpace,
+        pluginInterface, vfsPluginDirectory, pmrProperties, transFactory, pmrArchiveGetter, visitorServices ) );
+    when( hadoopShim.getPentahoMapReduceMapRunnerClass() ).thenReturn( "" );
+    pentahoMapReduceJobBuilder.setLogLevel( LogLevel.BASIC );
+    pentahoMapReduceJobBuilder.setInputPaths( new String[ 0 ] );
+    pentahoMapReduceJobBuilder.setOutputPath( "test" );
+    Configuration configuration = mock( Configuration.class );
+    doAnswer( new Answer() {
+      @Override public Object answer( InvocationOnMock invocation ) throws Throwable {
+        return null;
+      }
+    } ).when( pentahoMapReduceJobBuilder ).configureVariableSpace( configuration );
+    when( hadoopShim.getFileSystem( configuration ) ).thenReturn( mock( FileSystem.class ) );
+    String testMrInput = "testMrInput";
+    String testMrOutput = "testMrOutput";
+    pentahoMapReduceJobBuilder.setMapperInfo( transXml, testMrInput, testMrOutput );
+    pentahoMapReduceJobBuilder.configure( configuration );
+
+    verify( configuration ).setMapRunnerClass( "" );
+    verify( configuration ).set( PentahoMapReduceJobBuilderImpl.TRANSFORMATION_MAP_XML, transXml );
+    verify( configuration ).set( PentahoMapReduceJobBuilderImpl.TRANSFORMATION_MAP_INPUT_STEPNAME, testMrInput );
+    verify( configuration ).set( PentahoMapReduceJobBuilderImpl.TRANSFORMATION_MAP_OUTPUT_STEPNAME, testMrOutput );
+    verify( configuration ).setJarByClass( Class.forName( "org.pentaho.hadoop.mapreduce.PentahoMapReduceJarMarker" ) );
+    verify( configuration ).set( PentahoMapReduceJobBuilderImpl.LOG_LEVEL, LogLevel.BASIC.toString() );
+
+    verify( pentahoMapReduceJobBuilder ).configureVariableSpace( configuration );
+
+    verify( configuration, never() ).setCombinerClass( any( Class.class ) );
+    verify( configuration, never() ).setReducerClass( any( Class.class ) );
   }
 
   @Test
@@ -641,14 +641,14 @@ public class PentahoMapReduceJobBuilderImplTest {
       .set( PentahoMapReduceJobBuilderImpl.TRANSFORMATION_COMBINER_INPUT_STEPNAME, combinerInputStep );
     verify( configuration )
       .set( PentahoMapReduceJobBuilderImpl.TRANSFORMATION_COMBINER_OUTPUT_STEPNAME, combinerOutputStep );
-    verify( configuration ).setCombinerClass( Void.class );
+    verify( configuration ).setCombinerClass( Class.forName( "org.pentaho.hadoop.mapreduce.GenericTransCombiner" ) );
 
     verify( configuration ).set( PentahoMapReduceJobBuilderImpl.TRANSFORMATION_REDUCE_XML, transXml );
     verify( configuration ).set( PentahoMapReduceJobBuilderImpl.TRANSFORMATION_REDUCE_INPUT_STEPNAME, testRInput );
     verify( configuration ).set( PentahoMapReduceJobBuilderImpl.TRANSFORMATION_REDUCE_OUTPUT_STEPNAME, testROutput );
-    verify( configuration ).setReducerClass( Integer.class );
+    verify( configuration ).setReducerClass( Class.forName( "org.pentaho.hadoop.mapreduce.GenericTransReduce" ) );
 
-    verify( configuration ).setJarByClass( String.class );
+    verify( configuration ).setJarByClass( Class.forName( "org.pentaho.hadoop.mapreduce.PentahoMapReduceJarMarker" ) );
     verify( configuration ).set( PentahoMapReduceJobBuilderImpl.LOG_LEVEL, LogLevel.BASIC.toString() );
   }
 
@@ -702,7 +702,7 @@ public class PentahoMapReduceJobBuilderImplTest {
     verify( configuration ).set( PentahoMapReduceJobBuilderImpl.TRANSFORMATION_MAP_XML, transXmlWOLogging );
     verify( configuration ).set( PentahoMapReduceJobBuilderImpl.TRANSFORMATION_MAP_INPUT_STEPNAME, testMrInput );
     verify( configuration ).set( PentahoMapReduceJobBuilderImpl.TRANSFORMATION_MAP_OUTPUT_STEPNAME, testMrOutput );
-    verify( configuration ).setJarByClass( String.class );
+    verify( configuration ).setJarByClass( Class.forName( "org.pentaho.hadoop.mapreduce.PentahoMapReduceJarMarker" ) );
     verify( configuration ).set( PentahoMapReduceJobBuilderImpl.LOG_LEVEL, LogLevel.BASIC.toString() );
   }
 
@@ -735,6 +735,11 @@ public class PentahoMapReduceJobBuilderImplTest {
         throw new RuntimeException( e );
       }
     } );
+
+    PentahoMapReduceJobBuilderImpl builder =
+      new PentahoMapReduceJobBuilderImpl( namedCluster, hadoopShim, logChannelInterface, variableSpace,
+        pluginInterface, vfsPluginDirectory, pmrProperties, transFactory, pmrArchiveGetter, badServices );
+    builder.configure( configuration );
   }
 
   @Test

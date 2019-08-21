@@ -47,24 +47,24 @@ public class ConfigurationProxyV2Test {
   public void checkConfigsInConfigurationAddedHbaseSiteXml() throws IOException {
     ConfigurationProxyV2 configurationProxyV2 = new ConfigurationProxyV2();
     System.out.println( configurationProxyV2.getJobConf() );
-//    assertEquals( "15", configurationProxyV2.get( "hbase.client.primaryCallTimeout.get" ) );
-//    assertEquals( "16", configurationProxyV2.get( "hbase.client.primaryCallTimeout.multiget" ) );
+    assertEquals( "15", configurationProxyV2.get( "hbase.client.primaryCallTimeout.get" ) );
+    assertEquals( "16", configurationProxyV2.get( "hbase.client.primaryCallTimeout.multiget" ) );
   }
 
   @Test
   public void checkConfigsInConfigurationAddedHDFSSiteXml() throws IOException {
     ConfigurationProxyV2 configurationProxyV2 = new ConfigurationProxyV2();
     System.out.println( configurationProxyV2.getJobConf() );
-//    assertEquals( "true", configurationProxyV2.get( "hive.optimize.bucketmapjoin.sortedmerge" ) );
-//    assertEquals( "11000", configurationProxyV2.get( "hive.smbjoin.cache.rows" ) );
+    assertEquals( "true", configurationProxyV2.get( "hive.optimize.bucketmapjoin.sortedmerge" ) );
+    assertEquals( "11000", configurationProxyV2.get( "hive.smbjoin.cache.rows" ) );
   }
 
   @Test
   public void checkConfigsInConfigurationAddedHiveSiteXml() throws IOException {
     ConfigurationProxyV2 configurationProxyV2 = new ConfigurationProxyV2();
     System.out.println( configurationProxyV2.getJobConf() );
-//    assertEquals( "4", configurationProxyV2.get( "dfs.replication" ) );
-//    assertEquals( "true", configurationProxyV2.get( "dfs.client.domain.socket.data.traffic" ) );
+    assertEquals( "4", configurationProxyV2.get( "dfs.replication" ) );
+    assertEquals( "true", configurationProxyV2.get( "dfs.client.domain.socket.data.traffic" ) );
   }
 
   @Test(expected = YarnQueueAclsException.class)

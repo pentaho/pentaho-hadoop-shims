@@ -17,7 +17,6 @@
     <org.safehaus.jug.version>2.0.0</org.safehaus.jug.version>
     <commons-lang.version>2.6</commons-lang.version>
     <com.igormaznitsa.jcp.version>6.1.2</com.igormaznitsa.jcp.version>
-    <dependency.maven-bundle-plugin.version>3.2.0</dependency.maven-bundle-plugin.version>
     <bundle.export.version>8.0.513.cdh</bundle.export.version>
     <org.osgi.core.version>4.3.1</org.osgi.core.version>
     <shim-bundle-plugin.version>1.0</shim-bundle-plugin.version>
