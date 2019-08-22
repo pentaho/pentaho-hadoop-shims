@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -52,6 +52,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.exception.KettleFileException;
@@ -375,7 +376,7 @@ public class DistributedCacheUtilImplTest {
     assertTrue( "Should have found plugin dir: bin/", util.findPluginFolder( "bin" ).length > 0 );
     assertTrue( "Should be able to find nested plugin dir: bin/test/", util.findPluginFolder( "bin/test" ).length > 0 );
 
-    assertTrue( "Should not have found plugin dir: org/", util.findPluginFolder( "org" ).length > 0 );
+    assertTrue( "Should not have found plugin dir: org/", util.findPluginFolder( "org" ).length == 0 );
     System.setProperty( Const.PLUGIN_BASE_FOLDERS_PROP, originalValue );
   }
 
@@ -387,7 +388,7 @@ public class DistributedCacheUtilImplTest {
     Configuration conf = new Configuration();
     util.addFileToClassPath( p1, conf );
     util.addFileToClassPath( p2, conf );
-//    assertEquals( "/testing1:/testing2", conf.get( "mapred.job.classpath.files" ) );
+    assertEquals( "/testing1,/testing2", conf.get( "mapred.job.classpath.files" ) );
   }
 
   @Test
@@ -401,7 +402,7 @@ public class DistributedCacheUtilImplTest {
 
     util.addFileToClassPath( p1, conf );
     util.addFileToClassPath( p2, conf );
-    //assertEquals( "/testing1J/testing2", conf.get( "mapred.job.classpath.files" ) );
+    assertEquals( "/testing1J/testing2", conf.get( "mapred.job.classpath.files" ) );
     System.setProperty( "hadoop.cluster.path.separator", originalValue );
   }
 }
