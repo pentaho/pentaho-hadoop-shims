@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -172,6 +172,10 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
     stageForCache( extracted, fs, destination, true, false );
     stageBigDataPlugin( fs, destination, bigDataPlugin, shimIdentifier );
 
+    if ( !Const.isEmpty( additionalPlugins ) ) {
+      stagePluginsForCache( fs, new Path( destination, PATH_PLUGINS ), additionalPlugins );
+    }
+
     // Delete the lock file now that we're done. It is intentional that we're not doing this in a try/finally. If the
     // staging fails for some reason we require the user to forcibly overwrite the (partial) installation
     fs.delete( lockFile, true );
@@ -313,7 +317,7 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
 
     String classpath = conf.get( "mapred.job.classpath.files" );
     conf.set( "mapred.job.classpath.files", classpath == null ? file.toString()
-      : classpath + "," + file.toString() );
+      : classpath + getClusterPathSeparator() + file.toString() );
     FileSystem fs = FileSystem.get( conf );
     URI uri = fs.makeQualified( file ).toUri();
 
@@ -612,7 +616,7 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
    * @return Path separator to use when building up the classpath to use for the Distributed Cache
    */
   public String getClusterPathSeparator() {
-    return System.getProperty( "hadoop.cluster.path.separator", ":" );
+    return System.getProperty( "hadoop.cluster.path.separator", "," );
   }
 
   // Wrapping/delegating methods
