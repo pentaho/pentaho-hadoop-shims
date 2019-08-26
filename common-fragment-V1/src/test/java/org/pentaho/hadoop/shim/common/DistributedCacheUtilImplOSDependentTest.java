@@ -274,7 +274,7 @@ public class DistributedCacheUtilImplOSDependentTest {
 
     Path root = new Path( "bin/test/installKettleEnvironment" );
     try {
-      ch.installKettleEnvironment( pmrArchive, fs, root, bigDataPluginDir, null, "" );
+      ch.installKettleEnvironment( pmrArchive, fs, root, bigDataPluginDir, null, "test-config" );
       assertTrue( ch.isKettleEnvironmentInstalledAt( fs, root ) );
 
       ch.configureWithKettleEnvironment( conf, fs, root );

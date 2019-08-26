@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -57,7 +57,7 @@ public class TextToIntegerConverterTest {
     try {
       c.convert( null, new Text( "not an integer" ) );
     } catch ( TypeConversionException ex ) {
-      assertTrue( ex.getMessage().contains( "Error converting to" ) );
+      assertTrue( ex.getMessage().contains( "!ErrorConverting!" ) );
     }
 
   }
