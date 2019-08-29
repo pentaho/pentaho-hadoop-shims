@@ -146,7 +146,7 @@ public class HadoopClientServicesImpl implements HadoopClientServices {
     }
 
     public int runSqoop(List<String> argsList, Properties properties ) {
-        Configuration configuration = hadoopShim.createConfiguration( namedCluster.getConfigId() );
+        Configuration configuration = hadoopShim.createConfiguration( namedCluster.getName() );
         for ( Map.Entry<String, String> entry : Maps.fromProperties( properties ).entrySet() ) {
             configuration.set( entry.getKey(), entry.getValue() );
         }
@@ -334,7 +334,7 @@ public class HadoopClientServicesImpl implements HadoopClientServices {
         try ( WriterAppenderManager appenderManager = writerAppenderManagerFactory.create( logChannelInterface, logLevel,
                 name ) ) {
             appenderFile = appenderManager.getFile();
-            Configuration configuration = hadoopShim.createConfiguration( namedCluster.getConfigId() );
+            Configuration configuration = hadoopShim.createConfiguration( namedCluster.getName() );
             if ( executionMode != PigExecutionMode.LOCAL ) {
                 List<String> configMessages = new ArrayList<String>();
                 hadoopShim.configureConnectionInformation( variableSpace.environmentSubstitute( namedCluster.getHdfsHost() ),
@@ -448,7 +448,7 @@ public class HadoopClientServicesImpl implements HadoopClientServices {
     }
 
     public HadoopFileSystem getFileSystem( NamedCluster namedCluster, URI uri ) throws IOException {
-        final Configuration configuration = hadoopShim.createConfiguration( namedCluster.getConfigId() );
+        final Configuration configuration = hadoopShim.createConfiguration( namedCluster.getName() );
         FileSystem fileSystem = (FileSystem) hadoopShim.getFileSystem( configuration ).getDelegate();
         if ( fileSystem instanceof LocalFileSystem) {
             LOGGER.error( "Got a local filesystem, was expecting an hdfs connection" );
@@ -497,7 +497,6 @@ public class HadoopClientServicesImpl implements HadoopClientServices {
             connProps.setProperty( org.pentaho.hadoop.shim.spi.HBaseConnection.DEFAULTS_KEY, defaultConfig );
         }
         connProps.setProperty( "named.cluster", namedCluster.getName() );
-        connProps.setProperty( "named.cluster.config.id", namedCluster.getConfigId() );
         return getConnectionImpl(connProps, logChannelInterface);
     }
 

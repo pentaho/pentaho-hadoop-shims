@@ -128,20 +128,20 @@ public class CommonHBaseConnection implements HBaseConnection, IHBaseClientFacto
       String siteConfig = connProps.getProperty( SITE_KEY );
       String zookeeperQuorum = connProps.getProperty( ZOOKEEPER_QUORUM_KEY );
       String zookeeperPort = connProps.getProperty( ZOOKEEPER_PORT_KEY );
-      String namedClusterConfigId = connProps.getProperty( "named.cluster.config.id" );
+      String namedCluster = connProps.getProperty( "named.cluster" );
 
       m_config = new Configuration();
       try {
         if ( !HBaseConnection.isEmpty( defaultConfig ) ) {
           m_config.addResource( HBaseConnection.stringToURL( defaultConfig ) );
         } else {
-          ShimConfigsLoader.addConfigsAsResources( namedClusterConfigId, m_config::addResource, ShimConfigsLoader.ClusterConfigNames.HBASE_DEFAULT.toString() );
+          ShimConfigsLoader.addConfigsAsResources( namedCluster, m_config::addResource, ShimConfigsLoader.ClusterConfigNames.HBASE_DEFAULT.toString() );
         }
 
         if ( !HBaseConnection.isEmpty( siteConfig ) ) {
           m_config.addResource( HBaseConnection.stringToURL( siteConfig ) );
         } else {
-          ShimConfigsLoader.addConfigsAsResources( namedClusterConfigId, m_config::addResource, ShimConfigsLoader.ClusterConfigNames.HBASE_SITE.toString() );
+          ShimConfigsLoader.addConfigsAsResources( namedCluster, m_config::addResource, ShimConfigsLoader.ClusterConfigNames.HBASE_SITE.toString() );
         }
       } catch ( MalformedURLException e ) {
         throw new IllegalArgumentException(

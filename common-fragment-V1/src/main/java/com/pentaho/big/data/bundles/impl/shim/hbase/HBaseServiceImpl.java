@@ -68,7 +68,6 @@ public class HBaseServiceImpl implements HBaseService {
       zooKeeperHost = variableSpace.environmentSubstitute( namedCluster.getZooKeeperHost() );
       zooKeeperPort = variableSpace.environmentSubstitute( namedCluster.getZooKeeperPort() );
       connProps.setProperty( "named.cluster", namedCluster.getName() );
-      connProps.setProperty( "named.cluster.config.id", namedCluster.getConfigId() );
     }
     if ( !Const.isEmpty( zooKeeperHost ) ) {
       connProps.setProperty( org.pentaho.hadoop.shim.spi.HBaseConnection.ZOOKEEPER_QUORUM_KEY, zooKeeperHost );
