@@ -70,7 +70,7 @@ public class PentahoTwitterInputFormat extends HadoopFormatBase implements IPent
 
     inClassloader( () -> {
       ConfigurationProxy conf = new ConfigurationProxy();
-      ShimConfigsLoader.addConfigsAsResources( namedCluster.getConfigId(), conf::addResource );
+      ShimConfigsLoader.addConfigsAsResources( namedCluster.getName(), conf::addResource );
       job = Job.getInstance( conf );
 
       nativeParquetInputFormat = new ParquetInputFormat<>();

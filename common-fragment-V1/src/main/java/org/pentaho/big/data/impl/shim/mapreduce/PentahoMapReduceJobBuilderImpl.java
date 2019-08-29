@@ -577,11 +577,11 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
     URI configFileLocation = null;
     File configFileSource = null;
     boolean stagingExists = true;
-    File configFilesStagingLocation = new File( metaStoreSnapshotDir + File.separator + ShimConfigsLoader.CONFIGS_DIR_PREFIX + File.separator + getConfigId() );
+    File configFilesStagingLocation = new File( metaStoreSnapshotDir + File.separator + ShimConfigsLoader.CONFIGS_DIR_PREFIX + File.separator + getClusterName() );
     ShimConfigsLoader.ClusterConfigNames[] configFilesNames = ShimConfigsLoader.ClusterConfigNames.values();
     for ( ShimConfigsLoader.ClusterConfigNames configFileName : configFilesNames ) {
       try {
-        configFileLocation = ShimConfigsLoader.getURLToResourceFile( configFileName.toString(), getConfigId() ).toURI();
+        configFileLocation = ShimConfigsLoader.getURLToResourceFile( configFileName.toString(), getClusterName() ).toURI();
         configFileSource = new File( configFileLocation );
         stagingExists = true;
         if ( !configFilesStagingLocation.exists() ) {
@@ -646,7 +646,7 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
     transformations.setReducer( convert( reducerTransformationXml ) );
 
     for ( TransformationVisitorService visitorService : visitorServices ) {
-      visitorService.visit( transformations, this.getNamedCluster().getConfigId() );
+      visitorService.visit( transformations, this.getNamedCluster().getName() );
     }
 
     combinerTransformationXml = convert( transformations.getCombiner() );
