@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -122,9 +122,11 @@ public class HiveDriver implements Driver {
     return driver.connect( url.toString().replaceFirst( JdbcUrlImpl.PENTAHO_NAMED_CLUSTER + "=[^;]*;", "" ), info );
   }
 
-  @Override public final boolean acceptsURL( String url ) throws SQLException {
+  @Override public final boolean acceptsURL( String url ) {
     try {
-      return acceptsURL( url, checkBeforeCallActiveDriver( url ), null );
+      JdbcUrl jdbcUrl = jdbcUrlParser.parse( url );
+      NamedCluster namedCluster = jdbcUrl.getNamedCluster();
+      return acceptsURL( url, checkBeforeCallActiveDriver( url ), namedCluster );
     } catch ( Exception e ) {
       return false;
     }

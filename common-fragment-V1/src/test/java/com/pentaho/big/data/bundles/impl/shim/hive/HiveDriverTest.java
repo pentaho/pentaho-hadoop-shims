@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.jdbc.JdbcUrl;
 import org.pentaho.hadoop.shim.api.jdbc.JdbcUrlParser;
 import org.pentaho.metastore.api.exceptions.MetaStoreException;
@@ -59,15 +60,20 @@ public class HiveDriverTest {
   @Mock JdbcUrl jdbcUrl;
   @Mock Properties properties;
   @Mock Connection connection;
+  @Mock NamedCluster namedCluster;
   HiveDriver hiveDriver;
   String testUrl;
+  String shimId;
 
   @Before
-  public void setup() throws URISyntaxException {
-    hiveDriver = new HiveDriver( delegate, null, true, jdbcUrlParser );
-    testUrl = "testUrl";
+  public void setup() throws URISyntaxException, MetaStoreException {
+    shimId = "1";
+    hiveDriver = new HiveDriver( delegate, shimId, true, jdbcUrlParser );
+    testUrl = "jdbc:hive2://testUrl";
     when( jdbcUrlParser.parse( testUrl ) ).thenReturn( jdbcUrl );
     when( jdbcUrl.toString() ).thenReturn( testUrl );
+    when( jdbcUrl.getNamedCluster() ).thenReturn( namedCluster );
+    when( namedCluster.getShimIdentifier() ).thenReturn( shimId );
   }
 
   @Test
@@ -99,10 +105,10 @@ public class HiveDriverTest {
   public void testSuccess() throws SQLException {
     when( delegate.acceptsURL( testUrl ) ).thenReturn( true );
     when( delegate.connect( testUrl, properties ) ).thenReturn( connection );
-//    assertEquals( connection, hiveDriver.connect( testUrl, properties ) );
+    assertEquals( connection, hiveDriver.connect( testUrl, properties ) );
   }
 
-  @Test( /*expected = RuntimeException.class*/ )
+  @Test( expected = RuntimeException.class )
   public void testException() throws SQLException {
     RuntimeException runtimeException = new RuntimeException();
     when( delegate.acceptsURL( testUrl ) ).thenReturn( true );
@@ -122,7 +128,7 @@ public class HiveDriverTest {
     when( delegate.acceptsURL( testUrl ) ).thenReturn( true );
     when( delegate.connect( testUrl, properties ) ).thenThrow( runtimeException );
     assertNull( hiveDriver.connect( testUrl, properties ) );
-    //verify( delegate ).connect( testUrl, properties );
+    verify( delegate ).connect( testUrl, properties );
   }
 
   @Test
@@ -135,7 +141,7 @@ public class HiveDriverTest {
   @Test
   public void testAcceptsUrlTrue() throws SQLException {
     when( delegate.acceptsURL( testUrl ) ).thenReturn( true );
-    //assertTrue( hiveDriver.acceptsURL( testUrl ) );
+    assertTrue( hiveDriver.acceptsURL( testUrl ) );
   }
 
   @Test
