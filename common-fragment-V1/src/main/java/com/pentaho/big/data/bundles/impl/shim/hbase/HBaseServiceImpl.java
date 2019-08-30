@@ -67,6 +67,8 @@ public class HBaseServiceImpl implements HBaseService {
     if ( namedCluster != null ) {
       zooKeeperHost = variableSpace.environmentSubstitute( namedCluster.getZooKeeperHost() );
       zooKeeperPort = variableSpace.environmentSubstitute( namedCluster.getZooKeeperPort() );
+      connProps.setProperty( "named.cluster", namedCluster.getName() );
+      connProps.setProperty( "named.cluster.config.id", namedCluster.getConfigId() );
     }
     if ( !Const.isEmpty( zooKeeperHost ) ) {
       connProps.setProperty( org.pentaho.hadoop.shim.spi.HBaseConnection.ZOOKEEPER_QUORUM_KEY, zooKeeperHost );
@@ -80,8 +82,7 @@ public class HBaseServiceImpl implements HBaseService {
     if ( !Const.isEmpty( defaultConfig ) ) {
       connProps.setProperty( org.pentaho.hadoop.shim.spi.HBaseConnection.DEFAULTS_KEY, defaultConfig );
     }
-    connProps.setProperty( "named.cluster", namedCluster.getName() );
-    connProps.setProperty( "named.cluster.config.id", namedCluster.getConfigId() );
+
     return new HBaseConnectionImpl( hBaseShim, bytesUtil, connProps, logChannelInterface );
   }
 
