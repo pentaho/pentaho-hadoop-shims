@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -24,12 +24,25 @@ package com.pentaho.big.data.bundles.impl.shim.hbase;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.pentaho.di.core.logging.LogChannelInterface;
 import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
+
 import org.pentaho.hadoop.shim.api.internal.hbase.HBaseBytesUtilShim;
+import org.pentaho.hadoop.shim.spi.HBaseConnection;
 import org.pentaho.hadoop.shim.spi.HBaseShim;
+
+import java.util.ArrayList;
+import java.util.Properties;
+
+import static org.junit.Assert.assertEquals;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -51,8 +64,10 @@ public class HBaseServiceImplTest {
 
     when( hBaseShim.getHBaseConnection() ).thenReturn( hBaseConnection );
     when( hBaseConnection.getBytesUtil() ).thenReturn( hBaseBytesUtilShim );
+    when( namedCluster.getName() ).thenReturn( "namedClusterName" );
+    when( namedCluster.getConfigId() ).thenReturn( "shimConfigId" );
 
-    //hBaseService = new HBaseServiceImpl( namedCluster, hadoopConfiguration );
+    hBaseService = new HBaseServiceImpl( namedCluster, hBaseShim );
   }
 
   @Test
@@ -72,59 +87,58 @@ public class HBaseServiceImplTest {
     when( variableSpace.environmentSubstitute( zkHostRaw ) ).thenReturn( zkHostFinal );
     when( variableSpace.environmentSubstitute( zkPortRaw ) ).thenReturn( zkPortFinal );
 
-    //try (
-//      HBaseConnectionImpl hBaseConnection = hBaseService.getHBaseConnection( variableSpace, siteConfig, defaultConfig,
-//        logChannelInterface ) ) {
-//      hBaseConnection.checkHBaseAvailable();
-//    }
-//    ArgumentCaptor<Properties> propertiesArgumentCaptor = ArgumentCaptor.forClass( Properties.class );
-//    verify( hBaseConnection ).configureConnection( propertiesArgumentCaptor.capture(), eq( new ArrayList
-//      <String>() ) );
-//    Properties properties = propertiesArgumentCaptor.getValue();
-//    assertEquals( zkHostFinal, properties.get( HBaseConnection.ZOOKEEPER_QUORUM_KEY ) );
-//    assertEquals( zkPortFinal, properties.get( HBaseConnection.ZOOKEEPER_PORT_KEY ) );
-//    assertEquals( siteConfig, properties.get( HBaseConnection.SITE_KEY ) );
-//    assertEquals( defaultConfig, properties.get( HBaseConnection.DEFAULTS_KEY ) );
+    try (
+      HBaseConnectionImpl hBaseConnection = hBaseService.getHBaseConnection( variableSpace, siteConfig, defaultConfig,
+        logChannelInterface ) ) {
+      hBaseConnection.checkHBaseAvailable();
+    }
+    ArgumentCaptor<Properties> propertiesArgumentCaptor = ArgumentCaptor.forClass( Properties.class );
+    verify( hBaseConnection ).configureConnection( propertiesArgumentCaptor.capture(), eq( new ArrayList<>() ) );
+    Properties properties = propertiesArgumentCaptor.getValue();
+    assertEquals( zkHostFinal, properties.get( HBaseConnection.ZOOKEEPER_QUORUM_KEY ) );
+    assertEquals( zkPortFinal, properties.get( HBaseConnection.ZOOKEEPER_PORT_KEY ) );
+    assertEquals( siteConfig, properties.get( HBaseConnection.SITE_KEY ) );
+    assertEquals( defaultConfig, properties.get( HBaseConnection.DEFAULTS_KEY ) );
   }
 
   @Test
   public void testGetHBaseConnectionMinimal() throws Exception {
     VariableSpace variableSpace = mock( VariableSpace.class );
     LogChannelInterface logChannelInterface = mock( LogChannelInterface.class );
-//    try ( HBaseConnectionImpl hBaseConnection = hBaseService
-//      .getHBaseConnection( variableSpace, null, null, logChannelInterface ) ) {
-//      hBaseConnection.checkHBaseAvailable();
-//    }
-//    ArgumentCaptor<Properties> propertiesArgumentCaptor = ArgumentCaptor.forClass( Properties.class );
-//    verify( hBaseConnection ).configureConnection( propertiesArgumentCaptor.capture(), eq( new ArrayList
-//      <String>() ) );
-//    Properties properties = propertiesArgumentCaptor.getValue();
-//    assertEquals( 0, properties.size() );
+    try ( HBaseConnectionImpl hBaseConnection = hBaseService
+      .getHBaseConnection( variableSpace, null, null, logChannelInterface ) ) {
+      hBaseConnection.checkHBaseAvailable();
+    }
+    ArgumentCaptor<Properties> propertiesArgumentCaptor = ArgumentCaptor.forClass( Properties.class );
+    verify( hBaseConnection ).configureConnection( propertiesArgumentCaptor.capture(), eq( new ArrayList
+      <String>() ) );
+    Properties properties = propertiesArgumentCaptor.getValue();
+    assertEquals( 2, properties.size() );
   }
 
   @Test
   public void testGetColumnFilterFactory() {
-    //assertNotNull( hBaseService.getColumnFilterFactory() );
+    assertNotNull( hBaseService.getColumnFilterFactory() );
   }
 
   @Test
   public void testGetMappingFactory() {
-    //assertNotNull( hBaseService.getMappingFactory() );
+    assertNotNull( hBaseService.getMappingFactory() );
   }
 
   @Test
   public void testGetHBaseValueMetaInterfaceFactory() {
-   // assertNotNull( hBaseService.getHBaseValueMetaInterfaceFactory() );
+    assertNotNull( hBaseService.getHBaseValueMetaInterfaceFactory() );
   }
 
   @Test
   public void testGetByteConversionUtil() {
-//    assertNotNull( hBaseService.getByteConversionUtil() );
+    assertNotNull( hBaseService.getByteConversionUtil() );
   }
 
   @Test
   public void testGetResultFactory() {
-    //assertNotNull( hBaseService.getResultFactory() );
+    assertNotNull( hBaseService.getResultFactory() );
   }
 
   @Test
@@ -133,13 +147,13 @@ public class HBaseServiceImplTest {
     String defaultConfig = "default";
     VariableSpace variableSpace = mock( VariableSpace.class );
     LogChannelInterface logChannelInterface = mock( LogChannelInterface.class );
-//    hBaseService = new HBaseServiceImpl( null, hadoopConfiguration );
-//    try {
-//      HBaseConnectionImpl hhBaseConnection =
-//          hBaseService.getHBaseConnection( variableSpace, siteConfig, defaultConfig, logChannelInterface );
-//      assertNotNull( hhBaseConnection );
-//    } catch ( NullPointerException e ) {
-//      fail( "No NPE is expected but it occurs" );
-//    }
+    hBaseService = new HBaseServiceImpl( null, hBaseShim );
+    try {
+      HBaseConnectionImpl hhBaseConnection =
+          hBaseService.getHBaseConnection( variableSpace, siteConfig, defaultConfig, logChannelInterface );
+      assertNotNull( hhBaseConnection );
+    } catch ( NullPointerException e ) {
+      fail( "No NPE is expected but it occurs" );
+    }
   }
 }
