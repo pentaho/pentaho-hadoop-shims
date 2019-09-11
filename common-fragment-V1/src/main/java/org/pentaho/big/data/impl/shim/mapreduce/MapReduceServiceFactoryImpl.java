@@ -52,7 +52,7 @@ public class MapReduceServiceFactoryImpl implements NamedClusterServiceFactory<M
 
   @Override
   public boolean canHandle( NamedCluster namedCluster ) {
-    return true;
+    return namedCluster == null ? true : !namedCluster.isUseGateway();
   }
 
   @Override

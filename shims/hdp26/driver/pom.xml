@@ -169,6 +169,17 @@
         </dependency>
         <!--- End dependencies for Pig -->
         <dependency>
+            <groupId>org.apache.knox</groupId>
+            <artifactId>gateway-shell</artifactId>
+            <version>${gateway-shell}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
             <groupId>org.pentaho</groupId>
             <artifactId>pentaho-hadoop-shims-common-fragment-V1</artifactId>
             <version>${project.version}</version>
@@ -188,7 +199,8 @@
                             <include>
                                 *:hadoop-mapreduce-client-core,*:hadoop-yarn-api,*:hadoop-common,*:orc-core,*:avro,
                                 *:parquet-hadoop-bundle,*:sqoop,*:oozie-client,*:hive-jdbc,*:hadoop-hdfs,
-                                *:hbase-server,*:hbase-client,*:hbase-common,*:hadoop-yarn-common,*:avro-mapred
+                                *:hbase-server,*:hbase-client,*:hbase-common,*:hadoop-yarn-common,*:avro-mapred,
+                                *:gateway-shell
                             </include>
                             <exclude>
                                 *:*log4j*,*:xml-apis,*:xercesImpl
