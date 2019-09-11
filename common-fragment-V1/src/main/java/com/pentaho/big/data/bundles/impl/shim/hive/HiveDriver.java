@@ -48,7 +48,7 @@ public class HiveDriver implements Driver {
   public static final String SQL_STATE_NOT_SUPPORTED = "0A000";
   protected final Driver delegate;
   private final boolean defaultConfiguration;
-  private final JdbcUrlParser jdbcUrlParser;
+  protected final JdbcUrlParser jdbcUrlParser;
   private final String hadoopConfigurationId;
 
   public HiveDriver( JdbcUrlParser jdbcUrlParser,
@@ -142,7 +142,7 @@ public class HiveDriver implements Driver {
       return false;
     }
     try {
-      return isRequiredShimUse( namedCluster ) && driver.acceptsURL( url );
+      return isRequiredShimUse( namedCluster, url ) && driver.acceptsURL( url );
     } catch ( Throwable e ) {
       // This should not have happened. If there was an error during processing, assume this driver can't
       // handle the URL and thus return false
@@ -150,7 +150,7 @@ public class HiveDriver implements Driver {
     }
   }
 
-  private boolean isRequiredShimUse( NamedCluster namedCluster ) {
+  protected boolean isRequiredShimUse( NamedCluster namedCluster, String url ) {
     return hadoopConfigurationId != null
       && namedCluster != null && hadoopConfigurationId.equals( namedCluster.getShimIdentifier() );
   }

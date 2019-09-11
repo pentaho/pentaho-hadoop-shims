@@ -55,9 +55,11 @@ public class HadoopFileSystemFactoryImpl implements HadoopFileSystemFactory {
   }
 
   @Override public boolean canHandle( NamedCluster namedCluster ) {
-    return this.shimIdentifier.getId().equals( namedCluster.getShimIdentifier() );
+    String shimIdentifier = namedCluster.getShimIdentifier();
+    //handle only if we do not use gateway
+    return ( shimIdentifier == null && !namedCluster.isUseGateway() )
+      || ( this.shimIdentifier.getId().equals( shimIdentifier ) && !namedCluster.isUseGateway() );
   }
-
   @Override
   public HadoopFileSystem create( NamedCluster namedCluster ) throws IOException {
     return create( namedCluster, null );
