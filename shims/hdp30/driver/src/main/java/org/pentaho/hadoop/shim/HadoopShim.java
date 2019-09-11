@@ -45,6 +45,7 @@ import com.fasterxml.jackson.core.Versioned;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.apache.hadoop.hbase.zookeeper.ZKWatcher;
 
+import org.pentaho.hadoop.shim.common.ConfigurationProxyV2;
 import org.pentaho.hadoop.shim.common.HadoopShimImpl;
 
 public class HadoopShim extends HadoopShimImpl {
@@ -62,6 +63,13 @@ public class HadoopShim extends HadoopShimImpl {
                 Snapshot.class, ZooKeeper.class, Channel.class, Message.class, UnsafeByteOperations.class, Lists.class,
                 Tracer.class, MetricRegistry.class, ArrayUtils.class, ObjectMapper.class, Versioned.class, JsonView.class, ZKWatcher.class
         };
+    }
+
+    @Override
+    public org.pentaho.hadoop.shim.api.internal.Configuration createConfiguration( String namedClusterConfigId ) {
+        ConfigurationProxyV2 conf = (ConfigurationProxyV2) super.createConfiguration( namedClusterConfigId );
+        conf.getJob().getConfiguration().setRestrictSystemProperties( false );
+        return conf;
     }
 
 }
