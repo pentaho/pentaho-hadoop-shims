@@ -589,6 +589,11 @@
             <version>${org.powermock.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.knox</groupId>
+            <artifactId>gateway-shell</artifactId>
+            <version>RELEASE</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
