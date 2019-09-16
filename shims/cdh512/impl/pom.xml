@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-cdh512-reactor</artifactId>
-    <version>7.1-SNAPSHOT</version>
+    <version>71.2017.07.00-43</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-cdh512</artifactId>
-  <packaging>jar</packaging>
-  <version>7.1-SNAPSHOT</version>
+  <version>71.2017.07.00-43</version>
   <properties>
+    <commons-collections.version>3.2.2</commons-collections.version>
     <log4j.version>1.2.14</log4j.version>
     <xstream.version>1.4.4</xstream.version>
-    <commons-collections.version>3.2.2</commons-collections.version>
   </properties>
   <dependencies>
     <dependency>
@@ -34,7 +33,6 @@
       <version>${project.version}</version>
       <type>pom</type>
     </dependency>
-    <!--here provided and test dependencies-->
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
@@ -42,8 +40,8 @@
       <scope>provided</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -106,7 +104,6 @@
         <artifactId>build-helper-maven-plugin</artifactId>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
           <execution>

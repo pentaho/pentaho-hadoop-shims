@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-emr56-reactor</artifactId>
-    <version>7.1-SNAPSHOT</version>
+    <version>71.2017.07.00-43</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-emr56-scope-client</artifactId>
-  <version>7.1-SNAPSHOT</version>
+  <version>71.2017.07.00-43</version>
   <packaging>pom</packaging>
   <properties>
     <dependency.joda-time.revision>2.9.9</dependency.joda-time.revision>
@@ -20,8 +20,8 @@
       <version>${automaton.version}</version>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -36,8 +36,8 @@
       <version>${org.apache.hadoop.version}</version>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -46,8 +46,8 @@
       <artifactId>zookeeper</artifactId>
       <exclusions>
         <exclusion>
-          <groupId>org.slf4j</groupId>
           <artifactId>slf4j-log4j12</artifactId>
+          <groupId>org.slf4j</groupId>
         </exclusion>
       </exclusions>
     </dependency>

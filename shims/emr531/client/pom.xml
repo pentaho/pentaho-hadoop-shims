@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-emr531-reactor</artifactId>
-    <version>7.1-SNAPSHOT</version>
+    <version>71.2017.07.00-43</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-emr531-scope-client</artifactId>
-  <version>7.1-SNAPSHOT</version>
+  <version>71.2017.07.00-43</version>
   <packaging>pom</packaging>
   <dependencies>
     <dependency>
@@ -17,8 +17,8 @@
       <version>${com.amazonaws.version}</version>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -28,8 +28,8 @@
       <version>${com.amazonaws.version}</version>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -39,8 +39,8 @@
       <version>${com.amazonaws.version}</version>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -50,8 +50,8 @@
       <version>${com.amazonaws.version}</version>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -61,8 +61,8 @@
       <version>${com.fasterxml.jackson.core.version}</version>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -72,8 +72,8 @@
       <version>${com.fasterxml.jackson.core.version}</version>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -83,8 +83,8 @@
       <version>${com.fasterxml.jackson.core.version}</version>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -94,8 +94,8 @@
       <version>${org.apache.httpcomponents.version}</version>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -105,8 +105,8 @@
       <version>${org.apache.httpcomponents.version}</version>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -116,8 +116,8 @@
       <version>${automaton.version}</version>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -127,20 +127,20 @@
       <version>${org.apache.hadoop.version}</version>
       <exclusions>
         <exclusion>
-          <groupId>org.codehaus.jackson</groupId>
           <artifactId>jackson-xc</artifactId>
+          <groupId>org.codehaus.jackson</groupId>
         </exclusion>
         <exclusion>
-          <groupId>org.codehaus.jackson</groupId>
           <artifactId>jackson-core-asl</artifactId>
+          <groupId>org.codehaus.jackson</groupId>
         </exclusion>
         <exclusion>
-          <groupId>org.codehaus.jackson</groupId>
           <artifactId>jackson-mapper-asl</artifactId>
+          <groupId>org.codehaus.jackson</groupId>
         </exclusion>
         <exclusion>
-          <groupId>org.codehaus.jackson</groupId>
           <artifactId>jackson-jaxrs</artifactId>
+          <groupId>org.codehaus.jackson</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -150,8 +150,8 @@
       <version>${org.apache.hadoop.version}</version>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
           <artifactId>*</artifactId>
+          <groupId>*</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -160,8 +160,8 @@
       <artifactId>zookeeper</artifactId>
       <exclusions>
         <exclusion>
-          <groupId>org.slf4j</groupId>
           <artifactId>slf4j-log4j12</artifactId>
+          <groupId>org.slf4j</groupId>
         </exclusion>
       </exclusions>
     </dependency>
