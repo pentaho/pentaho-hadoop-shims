@@ -12,38 +12,53 @@
   <packaging>pom</packaging>
   <properties>
     <oss.license.directory>${project.build.directory}/oss_license</oss.license.directory>
+    <xerces.version>2.8.1</xerces.version>
     <com.yammer.metrics.version>2.2.0</com.yammer.metrics.version>
     <org.safehaus.jug.version>2.0.0</org.safehaus.jug.version>
     <commons-lang.version>2.6</commons-lang.version>
     <com.igormaznitsa.jcp.version>6.1.2</com.igormaznitsa.jcp.version>
+    <bundle.export.version>8.0.513.cdh</bundle.export.version>
+    <org.osgi.core.version>4.3.1</org.osgi.core.version>
+    <shim-bundle-plugin.version>1.0</shim-bundle-plugin.version>
+    <bundle.karaf.export.packages>org.apache.htrace;version=${bundle.export.version},
+      org.pentaho.hadoop.mapreduce;version=${bundle.export.version},
+      com.google.common.annotations;version=${bundle.export.version},
+      org.codehaus.jackson;version=${bundle.export.version},
+      org.apache.hadoop.security;version=${bundle.export.version},
+      org.apache.hadoop.security.token;version=${bundle.export.version},
+      org.apache.hadoop.conf;version=${bundle.export.version},
+      org.apache.hadoop.fs;version=${bundle.export.version},
+      org.apache.hadoop.hdfs;version=${bundle.export.version},
+      com.google.protobuf;version=${bundle.export.version},
+      org.apache.commons.codec;version=${bundle.export.version},
+      org.apache.commons.codec.binary;version=${bundle.export.version},
+      org.apache.hadoop.classification;version=${bundle.export.version},
+      org.apache.commons.cli;version=${bundle.export.version},
+      org.apache.hadoop.io;version=${bundle.export.version},
+      org.apache.hadoop.io.compress;version=${bundle.export.version},
+      org.apache.hadoop.net;version=${bundle.export.version},
+      org.apache.hadoop.ipc;version=${bundle.export.version},
+      org.apache.hadoop.ipc.metrics;version=${bundle.export.version},
+      org.apache.hadoop;version=${bundle.export.version},
+      org.apache.hadoop.gateway;version=${bundle.export.version},
+      org.apache.hadoop.util;version=${bundle.export.version},
+      org.apache.hadoop.metrics2;version=${bundle.export.version},
+      org.apache.hadoop.mapred;version=${bundle.export.version},
+      org.apache.hadoop.mapreduce;version=${bundle.export.version},
+      org.apache.zookeeper;version=${bundle.export.version},
+      org.apache.jute;version=${bundle.export.version},
+      org.apache.hadoop.gateway.shell;version=${bundle.export.version},
+      io.netty;version=${bundle.export.version},
+      io.netty.channel;version=${bundle.export.version},
+      io.airlift.compress;version=${bundle.export.version},
+      io.airlift.compress.snappy;version=${bundle.export.version},
+      io.airlift.compress.lzo;version=${bundle.export.version},
+      io.airlift.compress.lz4;version=${bundle.export.version},
+      com.yammer.metrics;version=${bundle.export.version},
+      org.pentaho.hdfs.vfs;version=${bundle.export.version}</bundle.karaf.export.packages>
   </properties>
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>org.pentaho</groupId>
-        <artifactId>pentaho-hadoop-shims-api</artifactId>
-        <version>${pentaho-hadoop-shims-api.version}</version>
-        <scope>provided</scope>
-        <exclusions>
-          <exclusion>
-            <artifactId>*</artifactId>
-            <groupId>*</groupId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.pentaho</groupId>
-        <artifactId>pentaho-hadoop-shims-api</artifactId>
-        <version>${pentaho-hadoop-shims-api.version}</version>
-        <classifier>tests</classifier>
-        <scope>test</scope>
-        <exclusions>
-          <exclusion>
-            <artifactId>*</artifactId>
-            <groupId>*</groupId>
-          </exclusion>
-        </exclusions>
-      </dependency>
       <dependency>
         <groupId>pentaho</groupId>
         <artifactId>pentaho-hdfs-vfs</artifactId>
@@ -67,6 +82,12 @@
             <groupId>*</groupId>
           </exclusion>
         </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.core</artifactId>
+        <version>${org.osgi.core.version}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>com.yammer.metrics</groupId>
@@ -97,49 +118,7 @@
   <dependencies>
     <dependency>
       <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-common-shim</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-common-hbase-comparators-api</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-common-modern</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-common-mapred</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.pentaho</groupId>
       <artifactId>pentaho-hadoop-shims-common-hbase</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-hbase-comparators</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>pentaho-hadoop-shims-common-hadoop-shim</artifactId>
       <version>${project.version}</version>
       <classifier>sources</classifier>
       <scope>provided</scope>
@@ -185,89 +164,10 @@
                 <artifactItems>
                   <artifactItem>
                     <groupId>org.pentaho</groupId>
-                    <artifactId>pentaho-hadoop-shims-common-shim</artifactId>
+                    <artifactId>pentaho-hadoop-shims-common-fragment-V1</artifactId>
                     <classifier>sources</classifier>
                     <overWrite>false</overWrite>
                     <outputDirectory>${project.build.directory}/src</outputDirectory>
-                  </artifactItem>
-                  <artifactItem>
-                    <groupId>org.pentaho</groupId>
-                    <artifactId>pentaho-hadoop-shims-common-modern</artifactId>
-                    <classifier>sources</classifier>
-                    <overWrite>false</overWrite>
-                    <outputDirectory>${project.build.directory}/src</outputDirectory>
-                  </artifactItem>
-                  <artifactItem>
-                    <groupId>org.pentaho</groupId>
-                    <artifactId>pentaho-hadoop-shims-common-hbase-comparators-api</artifactId>
-                    <classifier>sources</classifier>
-                    <overWrite>false</overWrite>
-                    <outputDirectory>${project.build.directory}/src</outputDirectory>
-                    <excludes>**/IDeserializedBooleanComparator.java,**/IDeserializedNumericComparator.java</excludes>
-                  </artifactItem>
-                  <artifactItem>
-                    <groupId>org.pentaho</groupId>
-                    <artifactId>pentaho-hadoop-shims-hbase-comparators</artifactId>
-                    <classifier>sources</classifier>
-                    <overWrite>false</overWrite>
-                    <outputDirectory>${project.build.directory}/src</outputDirectory>
-                    <excludes>**/DeserializedBooleanComparator.java,**/DeserializedNumericComparator.java</excludes>
-                  </artifactItem>
-                  <artifactItem>
-                    <groupId>org.pentaho</groupId>
-                    <artifactId>pentaho-hadoop-shims-common-mapred</artifactId>
-                    <classifier>sources</classifier>
-                    <overWrite>false</overWrite>
-                    <outputDirectory>${project.build.directory}/src</outputDirectory>
-                  </artifactItem>
-                  <artifactItem>
-                    <groupId>org.pentaho</groupId>
-                    <artifactId>pentaho-hadoop-shims-common-hadoop-shim</artifactId>
-                    <classifier>sources</classifier>
-                    <overWrite>false</overWrite>
-                    <outputDirectory>${project.build.directory}/src</outputDirectory>
-                  </artifactItem>
-                  <artifactItem>
-                    <groupId>org.pentaho</groupId>
-                    <artifactId>pentaho-hadoop-shims-common-hbase</artifactId>
-                    <classifier>sources</classifier>
-                    <overWrite>false</overWrite>
-                    <outputDirectory>${project.build.directory}/src</outputDirectory>
-                  </artifactItem>
-                  <artifactItem>
-                    <groupId>org.pentaho</groupId>
-                    <artifactId>pentaho-hadoop-shims-common-shim</artifactId>
-                    <classifier>test-sources</classifier>
-                    <overWrite>false</overWrite>
-                    <outputDirectory>${project.build.directory}/test-src</outputDirectory>
-                  </artifactItem>
-                  <artifactItem>
-                    <groupId>org.pentaho</groupId>
-                    <artifactId>pentaho-hadoop-shims-common-modern</artifactId>
-                    <classifier>test-sources</classifier>
-                    <overWrite>false</overWrite>
-                    <outputDirectory>${project.build.directory}/test-src</outputDirectory>
-                  </artifactItem>
-                  <artifactItem>
-                    <groupId>org.pentaho</groupId>
-                    <artifactId>pentaho-hadoop-shims-hbase-comparators</artifactId>
-                    <classifier>test-sources</classifier>
-                    <overWrite>false</overWrite>
-                    <outputDirectory>${project.build.directory}/test-src</outputDirectory>
-                  </artifactItem>
-                  <artifactItem>
-                    <groupId>org.pentaho</groupId>
-                    <artifactId>pentaho-hadoop-shims-common-hadoop-shim</artifactId>
-                    <classifier>test-sources</classifier>
-                    <overWrite>false</overWrite>
-                    <outputDirectory>${project.build.directory}/test-src</outputDirectory>
-                  </artifactItem>
-                  <artifactItem>
-                    <groupId>org.pentaho</groupId>
-                    <artifactId>pentaho-hadoop-shims-common-mapred</artifactId>
-                    <classifier>test-sources</classifier>
-                    <overWrite>false</overWrite>
-                    <outputDirectory>${project.build.directory}/test-src</outputDirectory>
                   </artifactItem>
                 </artifactItems>
               </configuration>
@@ -375,65 +275,11 @@
         </property>
       </activation>
       <modules>
-        <module>hdp25</module>
-        <module>hdp26</module>
-        <module>hdp30</module>
-        <module>cdh513</module>
         <module>cdh514</module>
         <module>cdh61</module>
-        <module>mapr520</module>
-        <module>mapr60</module>
-        <module>emr511</module>
-        <module>emr521</module>
-        <module>hdi35</module>
-      </modules>
-    </profile>
-
-    <profile>
-      <id>hdp25</id>
-      <activation>
-        <property>
-          <name>!skipDefault</name>
-        </property>
-      </activation>
-      <modules>
-        <module>hdp25</module>
-      </modules>
-    </profile>
-
-    <profile>
-      <id>hdp26</id>
-      <activation>
-        <property>
-          <name>!skipDefault</name>
-        </property>
-      </activation>
-      <modules>
         <module>hdp26</module>
-      </modules>
-    </profile>
-
-    <profile>
-      <id>hdp30</id>
-      <activation>
-        <property>
-          <name>!skipDefault</name>
-        </property>
-      </activation>
-      <modules>
         <module>hdp30</module>
-      </modules>
-    </profile>
-
-    <profile>
-      <id>cdh513</id>
-      <activation>
-        <property>
-          <name>!skipDefault</name>
-        </property>
-      </activation>
-      <modules>
-        <module>cdh513</module>
+        <module>emr521</module>
       </modules>
     </profile>
 
@@ -462,38 +308,26 @@
     </profile>
 
     <profile>
-      <id>mapr520</id>
+      <id>hdp26</id>
       <activation>
         <property>
           <name>!skipDefault</name>
         </property>
       </activation>
       <modules>
-        <module>mapr520</module>
+        <module>hdp26</module>
       </modules>
     </profile>
 
     <profile>
-      <id>mapr60</id>
+      <id>hdp30</id>
       <activation>
         <property>
           <name>!skipDefault</name>
         </property>
       </activation>
       <modules>
-        <module>mapr60</module>
-      </modules>
-    </profile>
-
-    <profile>
-      <id>emr511</id>
-      <activation>
-        <property>
-          <name>!skipDefault</name>
-        </property>
-      </activation>
-      <modules>
-        <module>emr511</module>
+        <module>hdp30</module>
       </modules>
     </profile>
 
@@ -509,16 +343,5 @@
       </modules>
     </profile>
 
-    <profile>
-      <id>hdi35</id>
-      <activation>
-        <property>
-          <name>!skipDefault</name>
-        </property>
-      </activation>
-      <modules>
-        <module>hdi35</module>
-      </modules>
-    </profile>
   </profiles>
 </project>
