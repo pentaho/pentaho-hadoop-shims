@@ -17,6 +17,7 @@
         <pentaho-code.version>11.0.0.0</pentaho-code.version>
         <aws-java-sdk-core.version>1.11.275</aws-java-sdk-core.version>
         <integration-test.src>src/it/java</integration-test.src>
+        <gateway-shell.version>1.0.0.3.0.0.0-1634</gateway-shell.version>
     </properties>
 
     <profiles>
@@ -592,7 +593,7 @@
         <dependency>
             <groupId>org.apache.knox</groupId>
             <artifactId>gateway-shell</artifactId>
-            <version>RELEASE</version>
+            <version>${gateway-shell.version}</version>
         </dependency>
     </dependencies>
     <build>
