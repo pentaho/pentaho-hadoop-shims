@@ -31,6 +31,8 @@
     <org.powermock.version>1.6.2</org.powermock.version>
     <eula-wrap_assign-deps-to-properties-phase></eula-wrap_assign-deps-to-properties-phase>
     <pentaho-osgi-bundles.version>9.0.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
+    <pentaho-big-data-plugin.version>9.0.0.0-SNAPSHOT</pentaho-big-data-plugin.version>
+    <pentaho-platform.version>9.0.0.0-SNAPSHOT</pentaho-platform.version>
     <org.apache.orc.version>1.2.3</org.apache.orc.version>
     <org.apache.parquet.version>1.8.1</org.apache.parquet.version>
     <twitter.parquet.version>1.5.0-cdh5.13.0</twitter.parquet.version>

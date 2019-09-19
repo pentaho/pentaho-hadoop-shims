@@ -419,7 +419,7 @@
           <dependency>
             <groupId>pentaho</groupId>
             <artifactId>pentaho-big-data-impl-shim-common</artifactId>
-            <version>${project.version}</version>
+            <version>${pentaho-big-data-plugin.version}</version>
             <scope>compile</scope>
           </dependency>
           <dependency>
@@ -527,13 +527,13 @@
         <dependency>
             <groupId>pentaho</groupId>
             <artifactId>pentaho-metastore-locator-api</artifactId>
-            <version>${project.version}</version>
+            <version>${pentaho-osgi-bundles.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
           <groupId>pentaho</groupId>
           <artifactId>pentaho-platform-api</artifactId>
-          <version>${project.version}</version>
+          <version>${pentaho-platform.version}</version>
           <scope>test</scope>
           <exclusions>
             <exclusion>
