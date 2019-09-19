@@ -284,11 +284,22 @@
         </property>
       </activation>
       <modules>
-        <module>shim-api</module>
         <module>common-fragment-V1</module>
         <module>common-dependencies-V1</module>
         <module>common-services-api</module>
         <module>mapreduce</module>
+      </modules>
+    </profile>
+
+    <profile>
+      <id>shim-api</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>shim-api</module>
       </modules>
     </profile>
 
