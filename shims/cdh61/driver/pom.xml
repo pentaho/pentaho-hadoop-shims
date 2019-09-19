@@ -100,11 +100,6 @@
           <version>${org.apache.hadoop.version}</version>
       </dependency>
       <dependency>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-yarn-api</artifactId>
-          <version>${org.apache.hadoop.version}</version>
-      </dependency>
-      <dependency>
           <groupId>org.apache.hbase</groupId>
           <artifactId>hbase-client</artifactId>
           <version>${org.apache.hbase.version}</version>
