@@ -24,7 +24,7 @@
         <org.antlr.version>3.5.2</org.antlr.version>
         <parquet.version>1.8.1</parquet.version>
 
-        <gateway-shell>0.12.0.2.6.0.3-8</gateway-shell>
+        <gateway-shell>1.0.0.3.0.0.0-1634</gateway-shell>
         <dependency.pig.classifier>h2</dependency.pig.classifier>
         <org.apache.oozie.version>4.2.0.2.6.0.3-8</org.apache.oozie.version>
         <sqoop.version>1.4.6.2.6.0.3-8</sqoop.version>
