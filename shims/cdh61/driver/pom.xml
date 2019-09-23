@@ -31,6 +31,7 @@
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
     <joda-time.version>2.9.9</joda-time.version>
     <jython.version>2.5.3</jython.version>
+    <jetty.version>9.3.20.v20170531</jetty.version>
   </properties>
 
   <dependencies>
@@ -160,6 +161,104 @@
           <artifactId>jython</artifactId>
           <version>${jython.version}</version>
       </dependency>
+
+      <!-- Guarantee the proper version for Jetty artifacts -->
+      <dependency>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-annotations</artifactId>
+          <version>${jetty.version}</version>
+          <scope>runtime</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-client</artifactId>
+          <version>${jetty.version}</version>
+          <scope>runtime</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-http</artifactId>
+          <version>${jetty.version}</version>
+          <scope>runtime</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-io</artifactId>
+          <version>${jetty.version}</version>
+          <scope>runtime</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-jaas</artifactId>
+          <version>${jetty.version}</version>
+          <scope>runtime</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-jndi</artifactId>
+          <version>${jetty.version}</version>
+          <scope>runtime</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-plus</artifactId>
+          <version>${jetty.version}</version>
+          <scope>runtime</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-rewrite</artifactId>
+          <version>${jetty.version}</version>
+          <scope>runtime</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-runner</artifactId>
+          <version>${jetty.version}</version>
+          <scope>runtime</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-security</artifactId>
+          <version>${jetty.version}</version>
+          <scope>runtime</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-server</artifactId>
+          <version>${jetty.version}</version>
+          <scope>runtime</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-servlet</artifactId>
+          <version>${jetty.version}</version>
+          <scope>runtime</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-util</artifactId>
+          <version>${jetty.version}</version>
+          <scope>runtime</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-util-ajax</artifactId>
+          <version>${jetty.version}</version>
+          <scope>runtime</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-webapp</artifactId>
+          <version>${jetty.version}</version>
+          <scope>runtime</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-xml</artifactId>
+          <version>${jetty.version}</version>
+          <scope>runtime</scope>
+      </dependency>
   </dependencies>
 
       <build>
@@ -175,7 +274,8 @@
                                 *:parquet-hadoop,*:parquet-hadoop-bundle,*:hadoop-yarn-api,*:avro,*:avro-mapred,*:hive-jdbc,
                                 *:hive-service,*:orc-core,*:hadoop-common,*:hadoop-hdfs,*:hadoop-mapreduce-*,
                                 *:hadoop-yarn-api,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,
-                                *:hbase-server,*:oozie-client,*:parquet-hadoop-bundle,*:zookeeper,*:hbase-shaded-miscellaneous
+                                *:hbase-server,*:oozie-client,*:parquet-hadoop-bundle,*:zookeeper,*:hbase-shaded-miscellaneous,
+                                org.eclipse.jetty:*
                             </include>
                             <exclude>
                                 *:*log4j*,*:xml-apis,*:xercesImpl
