@@ -47,7 +47,81 @@
 
         <shim-bundle-plugin.version>1.0</shim-bundle-plugin.version>
         <org.apache.thrift.version>0.9.3</org.apache.thrift.version>
+
+        <!-- Guarantee the proper version for Jetty artifacts -->
+        <!-- Note the difference between \lib and \lib\client -->
+        <jetty.lib-folder.version>9.3.20.v20170531</jetty.lib-folder.version>
+        <jetty.client-folder.version>9.3.19.v20170502</jetty.client-folder.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Guarantee the proper version for Jetty artifacts -->
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-annotations</artifactId>
+                <version>${jetty.lib-folder.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-client</artifactId>
+                <version>${jetty.lib-folder.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-jaas</artifactId>
+                <version>${jetty.lib-folder.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-jndi</artifactId>
+                <version>${jetty.lib-folder.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-plus</artifactId>
+                <version>${jetty.lib-folder.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-rewrite</artifactId>
+                <version>${jetty.lib-folder.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-runner</artifactId>
+                <version>${jetty.lib-folder.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-security</artifactId>
+                <version>${jetty.client-folder.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-servlet</artifactId>
+                <version>${jetty.client-folder.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-webapp</artifactId>
+                <version>${jetty.client-folder.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-xml</artifactId>
+                <version>${jetty.client-folder.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+  
     <dependencies>
 
         <dependency>
@@ -257,6 +331,7 @@
         </dependency>
 
     </dependencies>
+
     <build>
         <plugins>
 
@@ -272,6 +347,7 @@
                                 *:parquet-hadoop-bundle,*:sqoop,*:oozie-client,*:hadoop-hdfs,
                                 *:hadoop-yarn-common,*:avro-mapred,
                                 *:hbase-server,*:hbase-client,*:hbase-common,*:hbase-mapreduce,
+                                org.eclipse.jetty:*,
                                 <!--Needed for Hive-->
                                 *:hive-exec,*:hive-shims,*:hive-service-rpc,*:hive-service,*:hive-common,*:hive-serde,
                                 *:commons-configuration,*:commons-configuration2,*:gateway-shell
