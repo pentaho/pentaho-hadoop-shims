@@ -117,7 +117,7 @@ public class ShimConfigsLoader {
   public static Map<String, String> parseFile( URL fileUrl ) {
     Configuration c = new Configuration();
     c.addResource( fileUrl );
-    return c.getPropsWithPrefix( "" );
+    return c.getValByRegex( ".*" );
   }
 
   public enum ClusterConfigNames {

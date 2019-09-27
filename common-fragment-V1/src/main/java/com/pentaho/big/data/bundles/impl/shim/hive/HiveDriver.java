@@ -142,7 +142,7 @@ public class HiveDriver implements Driver {
       return false;
     }
     try {
-      return isRequiredShimUse( namedCluster, url ) && driver.acceptsURL( url );
+      return isRequiredShim( namedCluster, url ) && driver.acceptsURL( url );
     } catch ( Throwable e ) {
       // This should not have happened. If there was an error during processing, assume this driver can't
       // handle the URL and thus return false
@@ -150,7 +150,7 @@ public class HiveDriver implements Driver {
     }
   }
 
-  protected boolean isRequiredShimUse( NamedCluster namedCluster, String url ) {
+  protected boolean isRequiredShim( NamedCluster namedCluster, String url ) {
     return hadoopConfigurationId != null
       && namedCluster != null && hadoopConfigurationId.equals( namedCluster.getShimIdentifier() );
   }
