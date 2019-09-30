@@ -13,7 +13,6 @@
 
     <properties>
         <shim-bundle-plugin.version>1.0</shim-bundle-plugin.version>
-        <org.osgi.core.version>4.3.1</org.osgi.core.version>
         <pentaho-code.version>11.0.0.0</pentaho-code.version>
         <aws-java-sdk-core.version>1.11.275</aws-java-sdk-core.version>
         <integration-test.src>src/it/java</integration-test.src>
@@ -503,7 +502,6 @@
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
-            <version>${org.osgi.core.version}</version>
             <scope>provided</scope>
         </dependency>
           <dependency>
