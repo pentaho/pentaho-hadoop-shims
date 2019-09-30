@@ -18,7 +18,6 @@
     <commons-lang.version>2.6</commons-lang.version>
     <com.igormaznitsa.jcp.version>6.1.2</com.igormaznitsa.jcp.version>
     <bundle.export.version>8.0.513.cdh</bundle.export.version>
-    <org.osgi.core.version>4.3.1</org.osgi.core.version>
     <shim-bundle-plugin.version>1.0</shim-bundle-plugin.version>
     <bundle.karaf.export.packages>org.apache.htrace;version=${bundle.export.version},
       org.pentaho.hadoop.mapreduce;version=${bundle.export.version},
@@ -86,7 +85,6 @@
       <dependency>
         <groupId>org.osgi</groupId>
         <artifactId>org.osgi.core</artifactId>
-        <version>${org.osgi.core.version}</version>
         <scope>provided</scope>
       </dependency>
       <dependency>
