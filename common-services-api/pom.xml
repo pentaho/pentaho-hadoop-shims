@@ -10,12 +10,12 @@
     <artifactId>pentaho-hadoop-shims-common-services-api</artifactId>
     <version>9.0.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
-
-    <properties>
-      <vendor-driver.version>1.0.0.0</vendor-driver.version>
-      <pentaho-code.version>11.0.0.0</pentaho-code.version>
-    </properties>
     <dependencies>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.pentaho</groupId>
             <artifactId>shim-api</artifactId>
@@ -62,14 +62,14 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>pentaho-hadoop-driver-V1</Bundle-SymbolicName>
-                        <Bundle-Version>9.9.9.9</Bundle-Version>
-                        <Pentaho-Code-Version>${pentaho-code.version}</Pentaho-Code-Version>
                         <DynamicImport-Package>*</DynamicImport-Package>
                         <Import-Package>
                         </Import-Package>
                         <_exportcontents>
                         </_exportcontents>
+                        <Export-Package>
+                            org.pentaho.big.data.api.jdbc.*
+                        </Export-Package>
                         <Embed-Dependency>*</Embed-Dependency>
                     </instructions>
                 </configuration>

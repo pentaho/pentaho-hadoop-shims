@@ -23,8 +23,8 @@
 package org.pentaho.big.data.api.jdbc.impl;
 
 import com.google.common.annotations.VisibleForTesting;
-import org.pentaho.hadoop.shim.api.jdbc.JdbcUrlParser;
 import org.pentaho.di.core.database.DelegatingDriver;
+import org.pentaho.hadoop.shim.api.jdbc.JdbcUrlParser;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
