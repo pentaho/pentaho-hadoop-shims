@@ -22,14 +22,12 @@
 
 package org.pentaho.big.data.api.jdbc.impl;
 
-import org.pentaho.hadoop.shim.api.jdbc.JdbcUrl;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.cluster.NamedClusterService;
+import org.pentaho.hadoop.shim.api.jdbc.JdbcUrl;
 import org.pentaho.metastore.api.IMetaStore;
 import org.pentaho.metastore.api.exceptions.MetaStoreException;
 import org.pentaho.osgi.metastore.locator.api.MetastoreLocator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -44,7 +42,6 @@ import java.util.stream.Collectors;
  */
 public class JdbcUrlImpl implements JdbcUrl {
   public static final String PENTAHO_NAMED_CLUSTER = "pentahoNamedCluster";
-  private static final Logger logger = LoggerFactory.getLogger( JdbcUrlImpl.class );
   private final URI uri;
   private final Map<String, String> queryParams;
   private final NamedClusterService namedClusterService;

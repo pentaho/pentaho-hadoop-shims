@@ -109,7 +109,7 @@ public class DriverLocatorImpl implements DriverLocator {
           return driver;
         }
       } catch ( SQLException e ) {
-        logger.error( "Unable to see if driver " + driver + " acceptsURL " + url );
+        logger.error( String.format( "Unable to see if driver %s acceptsURL %s", driver, url ) );
       }
     }
     return null;

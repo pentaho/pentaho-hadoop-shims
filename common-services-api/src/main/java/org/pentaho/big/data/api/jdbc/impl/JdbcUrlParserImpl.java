@@ -22,9 +22,9 @@
 
 package org.pentaho.big.data.api.jdbc.impl;
 
+import org.pentaho.hadoop.shim.api.cluster.NamedClusterService;
 import org.pentaho.hadoop.shim.api.jdbc.JdbcUrl;
 import org.pentaho.hadoop.shim.api.jdbc.JdbcUrlParser;
-import org.pentaho.hadoop.shim.api.cluster.NamedClusterService;
 import org.pentaho.osgi.metastore.locator.api.MetastoreLocator;
 
 import java.net.URISyntaxException;
