@@ -12,6 +12,7 @@
       <useTransitiveFiltering>false</useTransitiveFiltering>
       <includes>
         <include>org.apache.hbase:hbase-common</include>
+        <include>org.apache.hbase:hbase-mapreduce</include>
       </includes>
       <excludes>
         <exclude>*:tests:*</exclude>
