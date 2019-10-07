@@ -257,6 +257,45 @@
   </build>
 
   <profiles>
+    <profile>
+      <!-- This profile controls the required build configurations for the generation of shim KARs.
+           We are using a profile because descendants modules vary in nature (not all are KARs). -->
+      <id>configure-shim-kars-build</id>
+      <activation>
+        <file>
+          <exists>${basedir}/src/main/feature</exists>
+        </file>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.karaf.tooling</groupId>
+              <artifactId>karaf-maven-plugin</artifactId>
+              <version>${karaf-maven-plugin.version}</version>
+              <executions>
+                <execution>
+                  <id>default-features-generate-descriptor</id>
+                  <configuration>
+                    <includeTransitiveDependency>false</includeTransitiveDependency>
+                    <!-- Feature file at /repository folder is required because of a Bug in Karaf 3.0.3
+                         that resolves bundles paths erroneously otherwise. -->
+                    <outputFile>${project.build.outputDirectory}/repository/features.xml</outputFile>
+                  </configuration>
+                </execution>
+                <execution>
+                  <id>default-features-create-kar</id>
+                  <configuration>
+                    <!-- Use the generated feature file which is at a non standard folder. -->
+                    <featuresFile>${project.build.outputDirectory}/repository/features.xml</featuresFile>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
 
     <profile>
       <id>all</id>
