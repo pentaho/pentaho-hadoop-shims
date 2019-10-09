@@ -347,10 +347,11 @@
                                 *:parquet-hadoop-bundle,*:sqoop,*:oozie-client,*:hadoop-hdfs,
                                 *:hadoop-yarn-common,*:avro-mapred,
                                 *:hbase-server,*:hbase-client,*:hbase-common,*:hbase-mapreduce,
-                                org.eclipse.jetty:*,
                                 <!--Needed for Hive-->
                                 *:hive-exec,*:hive-shims,*:hive-service-rpc,*:hive-service,*:hive-common,*:hive-serde,
-                                *:commons-configuration,*:commons-configuration2,*:gateway-shell
+                                *:commons-configuration,*:commons-configuration2,*:gateway-shell,
+                                <!--Needed for Jetty-->
+                                org.eclipse.jetty:*
                             </include>
                             <exclude>
                                 *:jersey*:jar:2.25.1,
