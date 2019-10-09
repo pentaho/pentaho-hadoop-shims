@@ -13,6 +13,7 @@
       <includes>
         <include>org.apache.hbase:hbase-common</include>
         <include>org.apache.hbase:hbase-mapreduce</include>
+        <include>org.apache.hbase.thirdparty:hbase-shaded-miscellaneous</include>
       </includes>
       <excludes>
         <exclude>*:tests:*</exclude>

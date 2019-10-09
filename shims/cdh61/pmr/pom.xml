@@ -33,6 +33,11 @@
             <artifactId>hbase-mapreduce</artifactId>
             <version>${org.apache.hbase.version}</version>
         </dependency>
+        <dependency>
+    		<groupId>org.apache.hbase.thirdparty</groupId>
+    		<artifactId>hbase-shaded-miscellaneous</artifactId>
+    		<version>${org.apache.hbase.version}</version>
+		</dependency>
     </dependencies>
     <build>
         <plugins>
