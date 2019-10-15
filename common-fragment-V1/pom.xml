@@ -17,6 +17,7 @@
         <aws-java-sdk-core.version>1.11.275</aws-java-sdk-core.version>
         <integration-test.src>src/it/java</integration-test.src>
         <gateway-shell.version>1.0.0.3.0.0.0-1634</gateway-shell.version>
+        <org.apache.felix.version>4.2.1</org.apache.felix.version>
     </properties>
 
     <profiles>
@@ -34,6 +35,11 @@
                 <zookeeper.version>3.4.5-cdh5.14.0</zookeeper.version>
             </properties>
             <dependencies>
+                <dependency>
+                    <groupId>org.apache.karaf.jaas</groupId>
+                    <artifactId>org.apache.karaf.jaas.config</artifactId>
+                    <version>${org.apache.felix.version}</version>
+                </dependency>
                 <dependency>
                     <groupId>com.twitter</groupId>
                     <artifactId>parquet-hadoop</artifactId>
@@ -415,6 +421,10 @@
           <dependency.pig.classifier>h2</dependency.pig.classifier>
         </properties>
         <dependencies>
+            <dependency>
+                <groupId>org.apache.karaf.jaas</groupId>
+                <artifactId>org.apache.karaf.jaas.config</artifactId>
+            </dependency>
           <dependency>
             <groupId>pentaho</groupId>
             <artifactId>pentaho-big-data-impl-shim-common</artifactId>
