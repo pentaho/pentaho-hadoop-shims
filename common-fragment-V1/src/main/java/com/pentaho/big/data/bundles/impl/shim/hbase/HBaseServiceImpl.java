@@ -34,6 +34,7 @@ import org.pentaho.hadoop.shim.api.hbase.ByteConversionUtil;
 import org.pentaho.hadoop.shim.api.hbase.HBaseService;
 import org.pentaho.hadoop.shim.api.hbase.ResultFactory;
 import org.pentaho.hadoop.shim.api.internal.hbase.HBaseBytesUtilShim;
+import org.pentaho.hadoop.shim.spi.HBaseConnection;
 import org.pentaho.hadoop.shim.spi.HBaseShim;
 
 import java.io.IOException;
@@ -67,7 +68,9 @@ public class HBaseServiceImpl implements HBaseService {
     if ( namedCluster != null ) {
       zooKeeperHost = variableSpace.environmentSubstitute( namedCluster.getZooKeeperHost() );
       zooKeeperPort = variableSpace.environmentSubstitute( namedCluster.getZooKeeperPort() );
-      connProps.setProperty( "named.cluster", namedCluster.getName() );
+      connProps.setProperty( HBaseConnection.NAMED_CLUSTER, namedCluster.getName() );
+      connProps.setProperty( HBaseConnection.SHIM_IDENTIFIER, namedCluster.getShimIdentifier() );
+      connProps.setProperty( HBaseConnection.SHIM_IS_MAPR, String.valueOf( namedCluster.isMapr() ) );
     }
     if ( !Const.isEmpty( zooKeeperHost ) ) {
       connProps.setProperty( org.pentaho.hadoop.shim.spi.HBaseConnection.ZOOKEEPER_QUORUM_KEY, zooKeeperHost );
