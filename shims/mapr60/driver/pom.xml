@@ -12,20 +12,16 @@
     <artifactId>pentaho-hadoop-shims-mapr60-driver</artifactId>
   <packaging>bundle</packaging>
   <properties>
-    <commons-lang.version>2.6</commons-lang.version>
     <pentaho-osgi-bundles.version>9.0.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
     <shim-bundle-plugin.version>1.0</shim-bundle-plugin.version>
-    <!--<org.mapr.hadoop.version>6.0.1-mapr</org.mapr.hadoop.version>-->
     <org.apache.avro.version>1.8.0</org.apache.avro.version>
-    <!--<org.apache.orc.version>1.2.3</org.apache.orc.version>-->
-    <!--<org.apache.hadoop.version>2.7.0-mapr-1803</org.apache.hadoop.version>-->
     <org.apache.hadoop.version>2.7.0-mapr-1710</org.apache.hadoop.version>
     <org.apache.hbase.version>1.1.8-mapr-1710</org.apache.hbase.version>
+    <vendor.hbase.version>6.0.0-mapr</vendor.hbase.version>
     <org.apache.hive.version>2.1.1-mapr-1710</org.apache.hive.version>
     <org.apache.oozie.version>4.3.0-mapr-1710</org.apache.oozie.version>
     <parquet.version>1.8.1</parquet.version>
     <pig.version>0.16.0-mapr-1703</pig.version>
-    <!--<parquet-pig.version>1.9.0-cdh6.1.0</parquet-pig.version>-->
     <sqoop.version>1.4.6-mapr-1710</sqoop.version>
     <zookeeper.version>3.4.5-mapr-1710</zookeeper.version>
     <vendor-driver.version>6.0.0.0.mapr</vendor-driver.version>
@@ -35,30 +31,14 @@
     <org.osgi.core.version>4.3.1</org.osgi.core.version>
   </properties>
   <dependencies>
-      <!--
-      <dependency>
-          <groupId>org.mapr.hadoop</groupId>
-          <artifactId>maprfs</artifactId>
-          <version>${org.mapr.hadoop.version}</version>
-      </dependency>
-      -->
-      <!--
-      <dependency>
-          <groupId>org.osgi</groupId>
-          <artifactId>org.osgi.core</artifactId>
-          <version>${org.osgi.core.version}</version>
-          <scope>provided</scope>
-      </dependency>
-      -->
       <dependency>
           <groupId>com.mapr.fs</groupId>
           <artifactId>mapr-hbase</artifactId>
-          <version>6.0.0-mapr</version>
+          <version>${vendor.hbase.version}</version>
       </dependency>
       <dependency>
           <groupId>org.apache.felix</groupId>
           <artifactId>org.apache.felix.framework</artifactId>
-          <version>4.2.1</version>
       </dependency>
       <dependency>
           <groupId>org.pentaho</groupId>
@@ -95,13 +75,6 @@
           <artifactId>hive-service</artifactId>
           <version>${org.apache.hive.version}</version>
       </dependency>
-      <!--
-      <dependency>
-          <groupId>org.apache.orc</groupId>
-          <artifactId>orc-core</artifactId>
-          <version>${org.apache.orc.version}</version>
-      </dependency>
-      -->
       <dependency>
           <groupId>org.apache.sqoop</groupId>
           <artifactId>sqoop</artifactId>
@@ -178,13 +151,6 @@
           <artifactId>pig</artifactId>
           <version>${pig.version}</version>
       </dependency>
-      <!--
-      <dependency>
-          <groupId>org.apache.parquet</groupId>
-          <artifactId>parquet-pig</artifactId>
-          <version>${parquet-pig.version}</version>
-      </dependency>
-      -->
       <dependency>
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper</artifactId>
@@ -199,33 +165,6 @@
 
       <build>
         <plugins>
-            <!--
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>unpack-native-dependencies</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.mapr.hadoop</groupId>
-                                    <artifactId>maprfs</artifactId>
-                                    <type>jar</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/native</outputDirectory>
-                                    <includes>**/libMapRClient.*</includes>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
             <plugin>
                 <groupId>com.pentaho</groupId>
                 <artifactId>shim-bundle-plugin</artifactId>
@@ -284,15 +223,7 @@
                         </_exportcontents>
                         <Embed-Dependency>*</Embed-Dependency>
                         <Bundle-Activator>org.pentaho.hadoop.shim.ShimActivator</Bundle-Activator>
-                        <!--
-                        <Bundle-NativeCode>
-                            /com/mapr/fs/native/Linux/x86_64/libMapRClient.so;osname=linux;processor=x86_64,
-                            /com/mapr/fs/native/Mac/x86_64/libMapRClient.dylib;osname=macosx;processor=x86_64,
-                            /com/mapr/fs/native/Windows/x86_64/MapRClient.dll;osname=win32;processor=x86_64
-                        </Bundle-NativeCode>
-                        -->
                     </instructions>
-
                 </configuration>
             </plugin>
         </plugins>
