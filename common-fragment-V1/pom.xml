@@ -17,6 +17,7 @@
         <aws-java-sdk-core.version>1.11.275</aws-java-sdk-core.version>
         <integration-test.src>src/it/java</integration-test.src>
         <gateway-shell.version>1.0.0.3.0.0.0-1634</gateway-shell.version>
+        <org.apache.felix.version>4.2.1</org.apache.felix.version>
     </properties>
 
     <profiles>
@@ -37,6 +38,7 @@
                 <dependency>
                     <groupId>org.apache.karaf.jaas</groupId>
                     <artifactId>org.apache.karaf.jaas.config</artifactId>
+                    <version>${org.apache.felix.version}</version>
                 </dependency>
                 <dependency>
                     <groupId>com.twitter</groupId>
