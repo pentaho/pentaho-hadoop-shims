@@ -121,7 +121,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-  
     <dependencies>
 
         <dependency>
@@ -349,9 +348,7 @@
                                 *:hbase-server,*:hbase-client,*:hbase-common,*:hbase-mapreduce,
                                 <!--Needed for Hive-->
                                 *:hive-exec,*:hive-shims,*:hive-service-rpc,*:hive-service,*:hive-common,*:hive-serde,
-                                *:commons-configuration,*:commons-configuration2,*:gateway-shell,
-                                <!--Needed for Jetty-->
-                                org.eclipse.jetty:*
+                                *:commons-configuration,*:commons-configuration2,*:gateway-shell
                             </include>
                             <exclude>
                                 *:jersey*:jar:2.25.1,
