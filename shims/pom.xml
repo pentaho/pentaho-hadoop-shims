@@ -7,9 +7,12 @@
     <artifactId>pentaho-hadoop-shims</artifactId>
     <version>9.0.0.0-SNAPSHOT</version>
   </parent>
+
+  <groupId>org.pentaho.hadoop.shims</groupId>
   <artifactId>pentaho-hadoop-shims-list</artifactId>
   <version>9.0.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
+
   <properties>
     <oss.license.directory>${project.build.directory}/oss_license</oss.license.directory>
     <xerces.version>2.8.1</xerces.version>
@@ -154,7 +157,7 @@
               <configuration>
                 <artifactItems>
                   <artifactItem>
-                    <groupId>org.pentaho</groupId>
+                    <groupId>org.pentaho.hadoop.shims</groupId>
                     <artifactId>pentaho-hadoop-shims-common-fragment-V1</artifactId>
                     <classifier>sources</classifier>
                     <overWrite>false</overWrite>
