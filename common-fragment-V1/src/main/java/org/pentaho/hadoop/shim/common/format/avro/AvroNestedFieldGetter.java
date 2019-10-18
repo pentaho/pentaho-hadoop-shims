@@ -30,7 +30,17 @@ import org.pentaho.hadoop.shim.api.format.IAvroInputField;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.pentaho.hadoop.shim.api.format.IAvroInputField.FILENAME_DELIMITER;
+
 public class AvroNestedFieldGetter {
+
+
+  private AvroNestedFieldGetter() {
+    // static methods only, don't create.
+  }
+
+  private static final String KEY = "[*key*]";
+
   /**
    * Builds a list of field objects holding paths corresponding to the leaf primitives in an Avro schema.
    *
@@ -38,12 +48,12 @@ public class AvroNestedFieldGetter {
    * @return a List of field objects
    * @throws KettleException if a problem occurs
    */
-  public static List<? extends IAvroInputField> getLeafFields( Schema s ) throws Exception {
+  public static List<? extends IAvroInputField> getLeafFields( Schema s ) throws KettleException {
     if ( s == null ) {
       return null;
     }
 
-    List<AvroInputField> fields = new ArrayList<AvroInputField>();
+    List<AvroInputField> fields = new ArrayList<>();
 
     String root = "";
 
@@ -53,7 +63,7 @@ public class AvroNestedFieldGetter {
           root += "[0]";
           s = s.getElementType();
         } else {
-          root += "[*key*]";
+          root += KEY;
           s = s.getValueType();
         }
       }
@@ -114,9 +124,6 @@ public class AvroNestedFieldGetter {
     List<Schema.Field> recordFields = s.getFields();
     for ( Schema.Field rField : recordFields ) {
       Schema rSchema = rField.schema();
-      /*
-       * if (rSchema.getType() == Schema.Type.UNION) { rSchema = checkUnion(rSchema); }
-       */
 
       if ( rSchema.getType() == Schema.Type.UNION ) {
         processUnion( path + rField.name(), rSchema, fields );
@@ -125,7 +132,7 @@ public class AvroNestedFieldGetter {
       } else if ( rSchema.getType() == Schema.Type.ARRAY ) {
         processArray( path + rField.name() + "[0]", rSchema, fields );
       } else if ( rSchema.getType() == Schema.Type.MAP ) {
-        processMap( path + rField.name() + "[*key*]", rSchema, fields );
+        processMap( path + rField.name() + KEY, rSchema, fields );
       } else {
         // primitive
         AvroInputField newField =
@@ -150,7 +157,7 @@ public class AvroNestedFieldGetter {
 
     // first check for the presence of primitive/leaf types in this union
     List<Schema> primitives = checkUnionForLeafTypes( s );
-    if ( primitives.size() > 0 ) {
+    if ( !primitives.isEmpty() ) {
       // if there is exactly one primitive then we can set the kettle type
       // for this primitive's type. If there is more than one primitive
       // then we'll have to use String to cover them all
@@ -174,11 +181,9 @@ public class AvroNestedFieldGetter {
     // other unions (according to the spec)
     for ( Schema toCheck : s.getTypes() ) {
       if ( toCheck.getType() == Schema.Type.RECORD ) {
-        String recordName = "[u:" + toCheck.getName() + "]";
-
         processRecord( path, toCheck, fields );
       } else if ( toCheck.getType() == Schema.Type.MAP ) {
-        processMap( path + "[*key*]", toCheck, fields );
+        processMap( path + KEY, toCheck, fields );
       } else if ( toCheck.getType() == Schema.Type.ARRAY ) {
         processArray( path + "[0]", toCheck, fields );
       }
@@ -195,23 +200,7 @@ public class AvroNestedFieldGetter {
    */
   protected static void processMap( String path, Schema s, List<AvroInputField> fields )
     throws KettleException {
-
-    s = s.getValueType(); // type of the values of the map
-
-    if ( s.getType() == Schema.Type.UNION ) {
-      processUnion( path, s, fields );
-    } else if ( s.getType() == Schema.Type.ARRAY ) {
-      processArray( path + "[0]", s, fields );
-    } else if ( s.getType() == Schema.Type.RECORD ) {
-      processRecord( path, s, fields );
-    } else if ( s.getType() == Schema.Type.MAP ) {
-      processMap( path + "[*key*]", s, fields );
-    } else {
-      AvroInputField newField = createAvroField( path, s );
-      if ( newField != null ) {
-        fields.add( newField );
-      }
-    }
+    handleType( path, s.getValueType(), fields );
   }
 
   /**
@@ -224,9 +213,10 @@ public class AvroNestedFieldGetter {
    */
   protected static void processArray( String path, Schema s, List<AvroInputField> fields )
     throws KettleException {
+    handleType( path, s.getElementType(), fields );
+  }
 
-    s = s.getElementType(); // type of the array elements
-
+  private static void handleType( String path, Schema s, List<AvroInputField> fields ) throws KettleException {
     if ( s.getType() == Schema.Type.UNION ) {
       processUnion( path, s, fields );
     } else if ( s.getType() == Schema.Type.ARRAY ) {
@@ -234,7 +224,7 @@ public class AvroNestedFieldGetter {
     } else if ( s.getType() == Schema.Type.RECORD ) {
       processRecord( path, s, fields );
     } else if ( s.getType() == Schema.Type.MAP ) {
-      processMap( path + "[*key*]", s, fields );
+      processMap( path + KEY, s, fields );
     } else {
       AvroInputField newField = createAvroField( path, s );
       if ( newField != null ) {
@@ -255,9 +245,9 @@ public class AvroNestedFieldGetter {
 
     String fieldName = "data";
     if ( path.trim().length() > 0 ) {
-      fieldName = path.substring( path.lastIndexOf( "." ) + 1 );
+      fieldName = path.substring( path.lastIndexOf( '.' ) + 1 );
     }
-    int index = fieldName.indexOf( "[" );
+    int index = fieldName.indexOf( '[' );
     if ( index == 0 ) {
       fieldName = "data";
     } else if ( index > 0 ) {
@@ -265,6 +255,21 @@ public class AvroNestedFieldGetter {
     }
     newField.setAvroFieldName( path ); // set the name to the path, so that for
     newField.setPentahoFieldName( fieldName );
+    newField = setFieldType( s, newField );
+    if ( fieldName.contains( FILENAME_DELIMITER ) && newField != null ) {
+      String[] splits = fieldName.split( FILENAME_DELIMITER );
+      if ( splits.length > 0 && splits.length <= 3 ) {
+        newField.setPentahoFieldName( splits[ 0 ] );
+        newField.setPentahoType( Integer.valueOf( splits[ 1 ] ) );
+      }
+    }
+
+    return newField;
+  }
+
+  @SuppressWarnings ( "squid:S3776" )
+  // suppress complexity warning.  Extracting/consolidating mapping logic would make this _less_ readable.
+  private static AvroInputField setFieldType( Schema s, AvroInputField newField ) {
     switch ( s.getType() ) {
       case BOOLEAN:
         newField.setAvroType( AvroSpec.DataType.BOOLEAN );
@@ -333,14 +338,6 @@ public class AvroNestedFieldGetter {
         // unhandled type
         newField = null;
     }
-    if ( fieldName.contains( AvroInputField.FILENAME_DELIMITER ) && newField != null ) {
-      String[] splits = fieldName.split( AvroInputField.FILENAME_DELIMITER );
-      if ( splits.length > 0 & splits.length <= 3 ) {
-        newField.setPentahoFieldName( splits[ 0 ] );
-        newField.setPentahoType( Integer.valueOf( splits[ 1 ] ) );
-      }
-    }
-
     return newField;
   }
 
@@ -353,7 +350,7 @@ public class AvroNestedFieldGetter {
   protected static List<Schema> checkUnionForLeafTypes( Schema s ) {
 
     List<Schema> types = s.getTypes();
-    List<Schema> primitives = new ArrayList<Schema>();
+    List<Schema> primitives = new ArrayList<>();
 
     for ( Schema toCheck : types ) {
       switch ( toCheck.getType() ) {

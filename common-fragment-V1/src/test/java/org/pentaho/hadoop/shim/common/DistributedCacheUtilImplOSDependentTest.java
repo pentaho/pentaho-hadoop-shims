@@ -81,6 +81,7 @@ public class DistributedCacheUtilImplOSDependentTest {
   }
 
   @Test
+  @SuppressWarnings( "squid:S2699" ) // assertions made in utility method
   public void stageForCache() throws Exception {
     DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl();
 

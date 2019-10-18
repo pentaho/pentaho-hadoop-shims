@@ -21,21 +21,20 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.common.format.orc;
 
-import java.nio.file.FileAlreadyExistsException;
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.mapreduce.Job;
 import org.apache.log4j.Logger;
 import org.apache.orc.TypeDescription;
 import org.pentaho.hadoop.shim.api.format.IOrcOutputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoOrcOutputFormat;
-
-import org.apache.hadoop.mapreduce.Job;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
 import org.pentaho.hadoop.shim.common.format.HadoopFormatBase;
 import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
 
+import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.util.List;
 
 /**
@@ -44,40 +43,38 @@ import java.util.List;
 public class PentahoOrcOutputFormat extends HadoopFormatBase implements IPentahoOrcOutputFormat {
 
   private Job job;
-  private TypeDescription schema;
   private String outputFilename;
   private Configuration conf;
   private COMPRESSION compression = COMPRESSION.NONE;
   private int compressSize = 0;
   private int stripeSize = DEFAULT_STRIPE_SIZE;
-  private int rowIndexStride = 0;
   private List<? extends IOrcOutputField> fields;
 
   private static final Logger logger = Logger.getLogger( PentahoOrcOutputFormat.class );
 
-  public PentahoOrcOutputFormat() throws Exception {
+  public PentahoOrcOutputFormat() throws IOException {
     Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
     conf = new ConfigurationProxy();
     job = Job.getInstance( conf );
     conf.addResource( "hive-site.xml" );
   }
 
-  @Override public IPentahoRecordWriter createRecordWriter() throws Exception {
+  @Override public IPentahoRecordWriter createRecordWriter() {
     logger.info( "Initializing Orc Writer" );
     if ( fields == null ) {
-      throw new Exception( "Invalid state.  The fields to write are null" );
+      throw new IllegalStateException( "Invalid state.  The fields to write are null" );
     }
     if ( outputFilename == null ) {
-      throw new Exception( "Invalid state.  The outputFileName is null" );
+      throw new IllegalStateException( "Invalid state.  The outputFileName is null" );
     }
     OrcSchemaConverter converter = new OrcSchemaConverter();
-    schema = converter.buildTypeDescription( fields );
+    TypeDescription schema = converter.buildTypeDescription( fields );
 
     return new PentahoOrcRecordWriter( fields, schema, outputFilename, conf );
   }
 
   @Override
-  public void setFields( List<? extends IOrcOutputField> fields ) throws Exception {
+  public void setFields( List<? extends IOrcOutputField> fields ) {
     this.fields = fields;
   }
 
@@ -119,11 +116,9 @@ public class PentahoOrcOutputFormat extends HadoopFormatBase implements IPentaho
   @Override
   public void setRowIndexStride( int numRows ) {
     if ( numRows > 0 ) {
-      rowIndexStride = numRows;
       conf.set( CREATE_INDEX_KEY, "true" );
-      conf.set( ROW_INDEX_STRIDE_KEY, Integer.toString( 1024 * 1024 * rowIndexStride ) );
+      conf.set( ROW_INDEX_STRIDE_KEY, Integer.toString( 1024 * 1024 * numRows ) );
     } else if ( numRows == 0 ) {
-      rowIndexStride = numRows;
       conf.set( CREATE_INDEX_KEY, "false" );
       conf.unset( ROW_INDEX_STRIDE_KEY );
     }

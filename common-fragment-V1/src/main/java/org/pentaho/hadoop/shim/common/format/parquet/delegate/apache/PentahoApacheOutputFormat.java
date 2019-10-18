@@ -44,15 +44,14 @@ import org.pentaho.hadoop.shim.common.ConfigurationProxy;
 import org.pentaho.hadoop.shim.common.format.HadoopFormatBase;
 import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
 
+import static org.apache.hadoop.mapreduce.lib.output.FileOutputFormat.setOutputPath;
+
 /**
  * Created by Vasilina_Terehova on 8/3/2017.
  */
 public class PentahoApacheOutputFormat extends HadoopFormatBase implements IPentahoParquetOutputFormat {
 
-  private static final Logger logger = Logger.getLogger( PentahoApacheInputFormat.class );
-  private static final String S3SCHEME = "s3";
-  private static final String S3NSCHEME = "s3n";
-  private static final String S3NROOTBUCKET = S3NSCHEME + "/";
+  private static final Logger logger = Logger.getLogger( PentahoApacheOutputFormat.class );
 
   private Job job;
   private Path outputFile;
@@ -72,7 +71,7 @@ public class PentahoApacheOutputFormat extends HadoopFormatBase implements IPent
   }
 
   @Override
-  public void setFields( List<? extends IParquetOutputField> fields ) throws Exception {
+  public void setFields( List<? extends IParquetOutputField> fields ) {
     this.outputFields = fields;
   }
 
@@ -89,7 +88,7 @@ public class PentahoApacheOutputFormat extends HadoopFormatBase implements IPent
           throw new FileAlreadyExistsException( file );
         }
       }
-      ParquetOutputFormat.setOutputPath( job, outputFile.getParent() );
+      setOutputPath( job, outputFile.getParent() );
     } );
   }
 
@@ -136,39 +135,31 @@ public class PentahoApacheOutputFormat extends HadoopFormatBase implements IPent
 
   @Override
   public void enableDictionary( boolean useDictionary ) throws Exception {
-    inClassloader( () -> {
-      ParquetOutputFormat.setEnableDictionary( job, useDictionary );
-    } );
+    inClassloader( () -> ParquetOutputFormat.setEnableDictionary( job, useDictionary ) );
   }
 
   @Override
   public void setRowGroupSize( int size ) throws Exception {
-    inClassloader( () -> {
-      ParquetOutputFormat.setBlockSize( job, size );
-    } );
+    inClassloader( () -> ParquetOutputFormat.setBlockSize( job, size ) );
   }
 
   @Override
   public void setDataPageSize( int size ) throws Exception {
-    inClassloader( () -> {
-      ParquetOutputFormat.setPageSize( job, size );
-    } );
+    inClassloader( () -> ParquetOutputFormat.setPageSize( job, size ) );
   }
 
   @Override
   public void setDictionaryPageSize( int size ) throws Exception {
-    inClassloader( () -> {
-      ParquetOutputFormat.setDictionaryPageSize( job, size );
-    } );
+    inClassloader( () -> ParquetOutputFormat.setDictionaryPageSize( job, size ) );
   }
 
   @Override
   public IPentahoRecordWriter createRecordWriter() throws Exception {
     if ( outputFile == null ) {
-      throw new RuntimeException( "Output file is not defined" );
+      throw new IllegalStateException( "Output file is not defined" );
     }
-    if ( ( outputFields == null ) || ( outputFields.size() == 0 ) ) {
-      throw new RuntimeException( "Schema is not defined" );
+    if ( ( outputFields == null ) || outputFields.isEmpty() ) {
+      throw new IllegalStateException( "Schema is not defined" );
     }
 
     return inClassloader( () -> {
@@ -183,11 +174,12 @@ public class PentahoApacheOutputFormat extends HadoopFormatBase implements IPent
           (ParquetRecordWriter<RowMetaAndData>) nativeParquetOutputFormat.getRecordWriter( task );
         return new PentahoParquetRecordWriter( recordWriter, task );
       } catch ( IOException e ) {
-        throw new RuntimeException( "Some error accessing parquet files", e );
+        throw new IllegalStateException( "Some error accessing parquet files", e );
       } catch ( InterruptedException e ) {
         // logging here
-        e.printStackTrace();
-        throw new RuntimeException( "This should never happen " + e );
+        Thread.currentThread().interrupt();
+        logger.error( e.getMessage(), e );
+        throw new IllegalStateException( "This should never happen " + e );
       }
     } );
   }

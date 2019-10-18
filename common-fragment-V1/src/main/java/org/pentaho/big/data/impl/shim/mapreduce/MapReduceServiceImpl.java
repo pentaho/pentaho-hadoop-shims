@@ -41,6 +41,8 @@ import org.pentaho.hadoop.shim.api.mapreduce.MapReduceJobSimple;
 import org.pentaho.hadoop.shim.api.mapreduce.MapReduceService;
 import org.pentaho.hadoop.shim.api.mapreduce.PentahoMapReduceJobBuilder;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -72,6 +74,8 @@ public class MapReduceServiceImpl implements MapReduceService {
   private final List<TransformationVisitorService> visitorServices = new ArrayList<>();
   private final PluginPropertiesUtil pluginPropertiesUtil;
   private final PluginRegistry pluginRegistry;
+
+  private static final Logger logger = LoggerFactory.getLogger( MapReduceServiceImpl.class );
 
   public MapReduceServiceImpl( NamedCluster namedCluster, HadoopShim hadoopShim,
                                ExecutorService executorService, List<TransformationVisitorService> visitorServices ) {
@@ -233,16 +237,13 @@ public class MapReduceServiceImpl implements MapReduceService {
   private Class<?> loadClassByName( final String className, final URL jarUrl, final ClassLoader parentClassLoader )
     throws ClassNotFoundException {
     if ( className != null ) {
-      URLClassLoader cl = new URLClassLoader( new URL[] { jarUrl }, parentClassLoader );
-      Class<?> clazz = cl.loadClass( className.replaceAll( "/", "." ) );
-      try {
-        cl.close();
+      try ( URLClassLoader cl = new URLClassLoader( new URL[] { jarUrl }, parentClassLoader ) ) {
+        return cl.loadClass( className.replace( "/", "." ) );
       } catch ( IOException e ) {
+        logger.error( e.getMessage(), e );
       }
-      return clazz;
-    } else {
-      return null;
     }
+    return null;
   }
 
   private Class<?> getClassByName( String className, URL jarUrl, ClassLoader parentClassLoader )
@@ -269,7 +270,7 @@ public class MapReduceServiceImpl implements MapReduceService {
         }
         if ( jarEntry.getName().endsWith( ".class" ) ) {
           String className =
-            jarEntry.getName().substring( 0, jarEntry.getName().indexOf( ".class" ) ).replaceAll( "/", "\\." );
+            jarEntry.getName().substring( 0, jarEntry.getName().indexOf( ".class" ) ).replace( "/", "\\." );
           classes.add( loader.loadClass( className ) );
         }
       }

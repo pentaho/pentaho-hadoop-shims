@@ -34,6 +34,8 @@ import org.pentaho.metastore.api.IMetaStore;
 import org.pentaho.metastore.api.exceptions.MetaStoreException;
 import org.pentaho.metastore.persist.MetaStoreFactory;
 import org.pentaho.osgi.metastore.locator.api.MetastoreLocator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -50,13 +52,15 @@ import java.util.stream.Collectors;
  * Created by bryan on 11/5/15.
  */
 public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocator {
-  public static final String SERVICE_RANKING = "service.ranking";
+  private static final String SERVICE_RANKING = "service.ranking";
   private final Map<String, Multimap<Class<?>, ServiceFactoryAndRanking<?>>> serviceVendorTypeMapping;
   private final ReadWriteLock readWriteLock;
   private String fallbackShim;
   private String defaultShim;
   private final MetastoreLocator metastoreLocator;
-  private final String NAMESPACE = "pentaho";
+  private static final String NAMESPACE = "pentaho";
+
+  private static final Logger logger = LoggerFactory.getLogger( NamedClusterServiceLocatorImpl.class );
 
   public NamedClusterServiceLocatorImpl( String fallbackShim, MetastoreLocator metastoreLocator ) {
     this.fallbackShim = fallbackShim;
@@ -130,7 +134,6 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
       //The named Cluster is not fully defined.  We'll have to use the default shim
       String shim = namedCluster.getShimIdentifier() != null ? namedCluster.getShimIdentifier() : getDefaultShim();
 
-      Collection<ServiceFactoryAndRanking<?>> serviceFactoryAndRankings = null;
       if ( shim != null ) {
         Multimap<Class<?>, ServiceFactoryAndRanking<?>> multimap =
           serviceVendorTypeMapping.computeIfPresent( shim, ( key, value ) -> value );
@@ -153,12 +156,12 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
     MetaStoreFactory metaStoreFactory =
       new MetaStoreFactory<>( DefaultShim.class, metaStore, NAMESPACE );
     try {
-      DefaultShim defaultShim = ( (DefaultShim) metaStoreFactory.loadElement( "DefaultShim" ) );
-      if ( defaultShim != null ) {
-        return defaultShim.getDefaultShim();
+      DefaultShim defShim = ( (DefaultShim) metaStoreFactory.loadElement( "DefaultShim" ) );
+      if ( defShim != null ) {
+        return defShim.getDefaultShim();
       }
     } catch ( MetaStoreException e ) {
-      e.printStackTrace();
+      logger.error( e.getMessage(), e );
     }
     return null;
   }
@@ -170,7 +173,7 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
     try {
       metaStoreFactory.saveElement( new DefaultShim( defaultShimValue ) );
     } catch ( MetaStoreException e ) {
-      e.printStackTrace();
+      logger.error( e.getMessage(), e );
     }
   }
 

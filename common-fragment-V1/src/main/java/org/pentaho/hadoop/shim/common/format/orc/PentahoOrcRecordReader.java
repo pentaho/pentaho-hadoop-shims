@@ -36,7 +36,7 @@ import org.apache.orc.TypeDescription;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.hadoop.shim.api.format.IOrcInputField;
 import org.pentaho.hadoop.shim.api.format.IOrcMetaData;
-import org.pentaho.hadoop.shim.api.format.IPentahoOrcInputFormat;
+import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat;
 import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
 
 import java.io.IOException;
@@ -49,9 +49,8 @@ import java.util.Map;
 /**
  * Created by tkafalas on 11/7/2017.
  */
-public class PentahoOrcRecordReader implements IPentahoOrcInputFormat.IPentahoRecordReader {
+public class PentahoOrcRecordReader implements IPentahoInputFormat.IPentahoRecordReader {
   private static final Logger logger = Logger.getLogger( PentahoOrcRecordReader.class );
-  private final Configuration conf;
   private final List<? extends IOrcInputField> dialogInputFields;  //Comes from Dialog
   private final List<? extends IOrcInputField> orcInputFields;  //Comes from OrcFile combined with custom metadata
   private VectorizedRowBatch batch;
@@ -59,30 +58,23 @@ public class PentahoOrcRecordReader implements IPentahoOrcInputFormat.IPentahoRe
   private int currentBatchRow;
   private TypeDescription typeDescription;
   private Map<String, Integer> schemaToOrcSubcripts;
-  private Path filePath;
-  private FileSystem fs;
   private OrcConverter orcConverter = new OrcConverter();
 
-  public PentahoOrcRecordReader( String fileName, Configuration conf,
-                                 List<? extends IOrcInputField> dialogInputFields ) {
-    this.conf = conf;
+  PentahoOrcRecordReader( String fileName, Configuration conf,
+                          List<? extends IOrcInputField> dialogInputFields ) {
     this.dialogInputFields = dialogInputFields;
 
     Reader reader = null;
     try {
       S3NCredentialUtils.applyS3CredentialsToHadoopConfigurationIfNecessary( fileName, conf );
-      filePath = new Path( S3NCredentialUtils.scrubFilePathIfNecessary( fileName ) );
-      fs = FileSystem.get( filePath.toUri(), conf );
+      Path filePath = new Path( S3NCredentialUtils.scrubFilePathIfNecessary( fileName ) );
+      FileSystem fs = FileSystem.get( filePath.toUri(), conf );
       if ( !fs.exists( filePath ) ) {
         throw new NoSuchFileException( fileName );
       }
 
       if ( fs.getFileStatus( filePath ).isDirectory() ) {
-        PathFilter pathFilter = new PathFilter() {
-          public boolean accept( Path file ) {
-            return file.getName().endsWith( ".orc" );
-          }
-        };
+        PathFilter pathFilter = file -> file.getName().endsWith( ".orc" );
 
         FileStatus[] fileStatuses = fs.listStatus( filePath, pathFilter );
         if ( fileStatuses.length == 0 ) {
@@ -110,14 +102,14 @@ public class PentahoOrcRecordReader implements IPentahoOrcInputFormat.IPentahoRe
     batch = typeDescription.createRowBatch();
 
     //Create a map of orc fields to meta columns
-    Map<String, Integer> orcColumnNumberMap = new HashMap<String, Integer>();
+    Map<String, Integer> orcColumnNumberMap = new HashMap<>();
     int orcFieldNumber = 0;
     for ( String orcFieldName : typeDescription.getFieldNames() ) {
       orcColumnNumberMap.put( orcFieldName, orcFieldNumber++ );
     }
 
     //Create a map of input fields to Orc Column numbers
-    schemaToOrcSubcripts = new HashMap<String, Integer>();
+    schemaToOrcSubcripts = new HashMap<>();
     for ( IOrcInputField inputField : dialogInputFields ) {
       if ( inputField != null ) {
         Integer colNumber = orcColumnNumberMap.get( inputField.getFormatFieldName() );
@@ -148,6 +140,7 @@ public class PentahoOrcRecordReader implements IPentahoOrcInputFormat.IPentahoRe
     recordReader.close();
   }
 
+
   @Override public Iterator<RowMetaAndData> iterator() {
     return new Iterator<RowMetaAndData>() {
 
@@ -158,7 +151,7 @@ public class PentahoOrcRecordReader implements IPentahoOrcInputFormat.IPentahoRe
         try {
           return setNextBatch();
         } catch ( IOException e ) {
-          e.printStackTrace();
+          logger.error( e.getMessage(), e );
           return false;
         }
       }

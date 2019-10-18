@@ -8,6 +8,10 @@ import org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter.PentahoTwi
 
 public class DelegateFormatFactory {
 
+  private DelegateFormatFactory() {
+    // static methods only
+  }
+
   public static Object getInputFormatInstance( NamedCluster namedCluster ) throws Exception {
 
     String shimIdentifier = namedCluster.getShimIdentifier();

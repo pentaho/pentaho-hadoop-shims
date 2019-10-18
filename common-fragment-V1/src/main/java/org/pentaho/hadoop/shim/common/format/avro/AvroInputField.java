@@ -22,7 +22,6 @@
 
 package org.pentaho.hadoop.shim.common.format.avro;
 
-import org.pentaho.di.core.row.ValueMeta;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.hadoop.shim.api.format.AvroSpec;
 import org.pentaho.hadoop.shim.api.format.IAvroInputField;
@@ -34,69 +33,51 @@ import java.util.List;
 
 public class AvroInputField extends BaseFormatInputField implements IAvroInputField {
 
-  ///////// Below added methods/variables to this object - Did this second /////////////
   private List<String> pathParts;
   private List<String> indexedVals = new ArrayList<>();
 
-  private boolean m_isValid;
-  protected String m_cleansedVariableName;
-  protected String m_resolvedFieldName;
 
-  /**
-   * Index of this field in the incoming row stream
-   */
-  //private int m_inputIndex = -1;
-
-  protected ValueMetaInterface m_fieldVM;
-  /**
-   * The name of the variable to hold this field's values
-   */
-  public String m_variableName = "";
-
-  private ValueMeta tempValueMeta;
+  private ValueMetaInterface tempValueMeta;
   private List<String> tempParts;
 
-  //protected static Class<?> PKG = AvroInputMetaBase.class;
-  protected static Class<?> PKG = AvroNestedReader.class;
-
-  public int getOutputIndex() {
+  int getOutputIndex() {
     return outputIndex;
   }
 
-  public void setOutputIndex( int outputIndex ) {
+  void setOutputIndex( int outputIndex ) {
     this.outputIndex = outputIndex;
   }
 
   private int outputIndex; // the index that this field is in the output
   // row structure
 
-  public void setPathParts( List<String> pathParts ) {
+  void setPathParts( List<String> pathParts ) {
     this.pathParts = pathParts;
   }
 
-  public List<String> getPathParts() {
+  List<String> getPathParts() {
 
     return pathParts;
   }
 
-  public ValueMeta getTempValueMeta() {
+  ValueMetaInterface getTempValueMeta() {
     return tempValueMeta;
   }
 
-  public void setTempValueMeta( ValueMeta tempValueMeta ) {
+  void setTempValueMeta( ValueMetaInterface tempValueMeta ) {
     this.tempValueMeta = tempValueMeta;
   }
 
-  public List<String> getTempParts() {
+  List<String> getTempParts() {
     return tempParts;
   }
 
-  public void setTempParts( List<String> tempParts ) {
+  void setTempParts( List<String> tempParts ) {
     this.tempParts = tempParts;
   }
 
-  public void setIndexedVals( List<String> mindexedVals ) {
-    this.indexedVals = mindexedVals;
+  public void setIndexedVals( List<String> indexedVals ) {
+    this.indexedVals = indexedVals;
   }
 
   private void initIndexedVals() {

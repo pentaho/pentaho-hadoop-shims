@@ -40,6 +40,7 @@ import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
 
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -53,16 +54,16 @@ public class PentahoOrcInputFormat extends HadoopFormatBase implements IPentahoO
 
   public PentahoOrcInputFormat( NamedCluster namedCluster ) throws Exception {
     conf = inClassloader( () -> {
-      Configuration conf = new ConfigurationProxy();
-      conf.addResource( "hive-site.xml" );
-      ShimConfigsLoader.addConfigsAsResources( namedCluster.getName(), conf::addResource );
-      return conf;
+      Configuration confProxy = new ConfigurationProxy();
+      confProxy.addResource( "hive-site.xml" );
+      ShimConfigsLoader.addConfigsAsResources( namedCluster.getName(), confProxy::addResource );
+      return confProxy;
     } );
   }
 
   @Override
   public List<IPentahoInputSplit> getSplits() throws Exception {
-    return null;
+    return Collections.emptyList();
   }
 
   @Override
@@ -71,9 +72,7 @@ public class PentahoOrcInputFormat extends HadoopFormatBase implements IPentahoO
       throw new IllegalStateException( "fileName or inputFields must not be null" );
     }
     conf = new Configuration();
-    return inClassloader( () -> {
-      return new PentahoOrcRecordReader( fileName, conf, inputFields );
-    } );
+    return inClassloader( () -> new PentahoOrcRecordReader( fileName, conf, inputFields ) );
   }
 
   @Override
@@ -83,12 +82,12 @@ public class PentahoOrcInputFormat extends HadoopFormatBase implements IPentahoO
     return readSchema( orcReader );
   }
 
-  protected List<IOrcInputField> readSchema( Reader orcReader ) throws Exception {
-    OrcSchemaConverter OrcSchemaConverter = new OrcSchemaConverter();
-    List<IOrcInputField> inputFields = OrcSchemaConverter.buildInputFields( readTypeDescription( orcReader ) );
+  protected List<IOrcInputField> readSchema( Reader orcReader ) {
+    OrcSchemaConverter orcSchemaConverter = new OrcSchemaConverter();
+    List<IOrcInputField> orcInputFields = orcSchemaConverter.buildInputFields( readTypeDescription( orcReader ) );
     IOrcMetaData.Reader orcMetaDataReader = new OrcMetaDataReader( orcReader );
-    orcMetaDataReader.read( inputFields );
-    return inputFields;
+    orcMetaDataReader.read( orcInputFields );
+    return orcInputFields;
   }
 
   public TypeDescription readTypeDescription() throws Exception {
@@ -116,11 +115,7 @@ public class PentahoOrcInputFormat extends HadoopFormatBase implements IPentahoO
         }
 
         if ( fs.getFileStatus( filePath ).isDirectory() ) {
-          PathFilter pathFilter = new PathFilter() {
-            public boolean accept( Path file ) {
-              return file.getName().endsWith( ".orc" );
-            }
-          };
+          PathFilter pathFilter = file -> file.getName().endsWith( ".orc" );
 
           FileStatus[] fileStatuses = fs.listStatus( filePath, pathFilter );
           if ( fileStatuses.length == 0 ) {
@@ -133,7 +128,7 @@ public class PentahoOrcInputFormat extends HadoopFormatBase implements IPentahoO
         orcReader = OrcFile.createReader( filePath,
           OrcFile.readerOptions( conf ).filesystem( fs ) );
       } catch ( IOException e ) {
-        throw new RuntimeException( "Unable to read data from file " + fileName, e );
+        throw new IllegalStateException( "Unable to read data from file " + fileName, e );
       }
       return orcReader;
     } );
