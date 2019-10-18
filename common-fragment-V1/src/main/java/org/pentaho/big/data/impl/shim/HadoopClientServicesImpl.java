@@ -274,10 +274,10 @@ public class HadoopClientServicesImpl implements HadoopClientServices {
       getOut:
       while ( filesIterator.hasNext() ) {
         File file = filesIterator.next();
-        ZipFile zip = new ZipFile( file );
+
         // Process the jar file.
 
-        try {
+        try ( ZipFile zip = new ZipFile( file ) ) {
           // Loop through the jar entries and print the name of each one.
 
           for ( Enumeration list = zip.entries(); list.hasMoreElements(); ) {
@@ -297,8 +297,6 @@ public class HadoopClientServicesImpl implements HadoopClientServices {
               }
             }
           }
-        } finally {
-          zip.close();
         }
       }
     }

@@ -85,7 +85,7 @@ public class HiveDriverTest {
   public void testConnectFailParse() throws SQLException, URISyntaxException {
     String url = "fake-url";
     when( jdbcUrlParser.parse( url ) ).thenThrow( new URISyntaxException( "", "" ) );
-    hiveDriver.connect( url, null );
+    assertNull( hiveDriver.connect( url, null ) );
   }
 
   @Test

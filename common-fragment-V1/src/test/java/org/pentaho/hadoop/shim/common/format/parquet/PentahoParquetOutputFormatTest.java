@@ -55,7 +55,9 @@ import org.pentaho.hadoop.shim.api.format.ParquetSpec;
 import org.pentaho.hadoop.shim.common.format.parquet.delegate.apache.PentahoApacheOutputFormat;
 import org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter.PentahoTwitterOutputFormat;
 
-@RunWith( Parameterized.class )
+import static junit.framework.TestCase.assertTrue;
+
+@RunWith ( Parameterized.class )
 public class PentahoParquetOutputFormatTest {
 
   @Parameterized.Parameters
@@ -96,7 +98,7 @@ public class PentahoParquetOutputFormatTest {
       "recordWriter should be instance of IPentahoInputFormat.IPentahoRecordReader" );
   }
 
-  @Test( expected = RuntimeException.class )
+  @Test ( expected = RuntimeException.class )
   public void createRecordWriterWhenSchemaIsNull() throws Exception {
 
     String tempFile = Files.createTempDirectory( "parquet" ).toUri().toString();
@@ -107,7 +109,7 @@ public class PentahoParquetOutputFormatTest {
     pentahoParquetOutputFormat.createRecordWriter();
   }
 
-  @Test( expected = RuntimeException.class )
+  @Test ( expected = RuntimeException.class )
   public void createRecordWriterWhenPathIsNull() throws Exception {
 
     String tempFile = null;
@@ -137,12 +139,9 @@ public class PentahoParquetOutputFormatTest {
     // long sz2ln=writeData( "2_lzo_nodict.par", VERSION.VERSION_2_0, COMPRESSION.LZO, false );
     long sz2sn = writeData( "2_snappy_nodict.par", VERSION.VERSION_2_0, COMPRESSION.SNAPPY, true );
     long sz2ud = writeData( "2_uncompressed_dict.par", VERSION.VERSION_2_0, COMPRESSION.UNCOMPRESSED, false );
-    if ( sz2un == sz2gn ) {
-      throw new Exception( "GZipped file should have different length than uncompressed" );
-    }
-    if ( sz2un == sz2sn ) {
-      throw new Exception( "Snapped file should have different length than uncompressed" );
-    }
+
+    assertTrue( "GZipped file should have different length than uncompressed", sz2un != sz2gn );
+    assertTrue( "Snapped file should have different length than uncompressed", sz2un != sz2sn );
   }
 
   @Test

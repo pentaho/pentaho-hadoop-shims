@@ -80,6 +80,9 @@ public class WriterAppenderManagerTest {
 
   @Test
   public void testFactory() throws IOException {
-    new WriterAppenderManager.Factory().create( logChannelInterface, logLevel, testName ).close();
+    WriterAppenderManager writerAppenderManager =
+      new WriterAppenderManager.Factory().create( logChannelInterface, logLevel, testName );
+    assertNotNull( writerAppenderManager.getFile() );
+    writerAppenderManager.close();
   }
 }

@@ -53,6 +53,10 @@ import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
 import org.pentaho.hadoop.shim.common.format.parquet.ParquetInputFieldList;
 import org.pentaho.hadoop.shim.common.format.parquet.PentahoInputSplitImpl;
 
+import static org.apache.hadoop.mapreduce.lib.input.FileInputFormat.setInputDirRecursive;
+import static org.apache.hadoop.mapreduce.lib.input.FileInputFormat.setInputPathFilter;
+import static org.apache.hadoop.mapreduce.lib.input.FileInputFormat.setInputPaths;
+
 /**
  * Created by Vasilina_Terehova on 7/25/2017.
  */
@@ -81,9 +85,7 @@ public class PentahoApacheInputFormat extends HadoopFormatBase implements IPenta
   @Override
   public void setSchema( List<IParquetInputField> inputFields ) throws Exception {
     ParquetInputFieldList fieldList = new ParquetInputFieldList( inputFields );
-    inClassloader( () -> {
-      job.getConfiguration().set( ParquetConverter.PARQUET_SCHEMA_CONF_KEY, fieldList.marshall() );
-    } );
+    inClassloader( () -> job.getConfiguration().set( ParquetConverter.PARQUET_SCHEMA_CONF_KEY, fieldList.marshall() ) );
   }
 
   @Override
@@ -96,12 +98,12 @@ public class PentahoApacheInputFormat extends HadoopFormatBase implements IPenta
         throw new NoSuchFileException( file );
       }
       if ( fs.getFileStatus( filePath ).isDirectory() ) { // directory
-        ParquetInputFormat.setInputPaths( job, filePath );
-        ParquetInputFormat.setInputDirRecursive( job, true );
+        setInputPaths( job, filePath );
+        setInputDirRecursive( job, true );
       } else { // file
-        ParquetInputFormat.setInputPaths( job, filePath.getParent() );
-        ParquetInputFormat.setInputDirRecursive( job, false );
-        ParquetInputFormat.setInputPathFilter( job, ReadFileFilter.class );
+        setInputPaths( job, filePath.getParent() );
+        setInputDirRecursive( job, false );
+        setInputPathFilter( job, ReadFileFilter.class );
         job.getConfiguration().set( ReadFileFilter.FILTER_DIR, filePath.getParent().toString() );
         job.getConfiguration().set( ReadFileFilter.FILTER_FILE, filePath.toString() );
       }
@@ -110,7 +112,7 @@ public class PentahoApacheInputFormat extends HadoopFormatBase implements IPenta
 
   @Override
   public void setSplitSize( long blockSize ) throws Exception {
-    inClassloader( () -> {
+    inClassloader( () ->
       /**
        * TODO Files splitting is temporary disabled. We need some UI checkbox for allow it, because some parquet files
        * can't be splitted by errors in previous implementation or other things. Parquet reports source of problem only
@@ -119,8 +121,8 @@ public class PentahoApacheInputFormat extends HadoopFormatBase implements IPenta
        * mapr510 and mapr520 doesn't support SPLIT_FILES property
        */
       // ParquetInputFormat.setMaxInputSplitSize( job, blockSize );
-      job.getConfiguration().setBoolean( ParquetInputFormat.SPLIT_FILES, false );
-    } );
+      job.getConfiguration().setBoolean( ParquetInputFormat.SPLIT_FILES, false )
+    );
   }
 
   @Override
@@ -141,7 +143,7 @@ public class PentahoApacheInputFormat extends HadoopFormatBase implements IPenta
       ReadSupport<RowMetaAndData> readSupport = new PentahoParquetReadSupport();
 
       ParquetRecordReader<RowMetaAndData> nativeRecordReader =
-        new ParquetRecordReader<RowMetaAndData>( readSupport, ParquetInputFormat.getFilter( job
+        new ParquetRecordReader<>( readSupport, ParquetInputFormat.getFilter( job
           .getConfiguration() ) );
       TaskAttemptContextImpl task = new TaskAttemptContextImpl( job.getConfiguration(), new TaskAttemptID() );
       nativeRecordReader.initialize( inputSplit, task );
@@ -160,7 +162,7 @@ public class PentahoApacheInputFormat extends HadoopFormatBase implements IPenta
       FileStatus fileStatus = fs.getFileStatus( filePath );
       List<Footer> footers = ParquetFileReader.readFooters( conf, fileStatus, true );
       if ( footers.isEmpty() ) {
-        return new ArrayList<IParquetInputField>();
+        return new ArrayList<>();
       } else {
         ParquetMetadata meta = footers.get( 0 ).getParquetMetadata();
         MessageType schema = meta.getFileMetaData().getSchema();

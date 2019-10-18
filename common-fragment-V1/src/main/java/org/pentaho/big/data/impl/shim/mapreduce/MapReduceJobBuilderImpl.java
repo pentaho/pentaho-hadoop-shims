@@ -170,90 +170,88 @@ public class MapReduceJobBuilderImpl implements MapReduceJobBuilder {
   protected void configure( Configuration conf ) throws Exception {
     FileSystem fs = hadoopShim.getFileSystem( conf );
     URL[] urls = new URL[] { resolvedJarUrl };
-    URLClassLoader loader = new URLClassLoader( urls, hadoopShim.getClass().getClassLoader() );
-    conf.setJobName( hadoopJobName );
+    try ( URLClassLoader loader = new URLClassLoader( urls, hadoopShim.getClass().getClassLoader() ) ) {
+      conf.setJobName( hadoopJobName );
 
-    if ( outputKeyClass != null ) {
-      Class<?> keyClass = loader.loadClass( outputKeyClass );
-      conf.setOutputKeyClass( keyClass );
-    }
-    if ( outputValueClass != null ) {
-      Class<?> valueClass = loader.loadClass( outputValueClass );
-      conf.setOutputValueClass( valueClass );
-    }
-    if ( mapOutputKeyClass != null ) {
-      Class<?> keyClass = loader.loadClass( mapOutputKeyClass );
-      conf.setMapOutputKeyClass( keyClass );
-    }
-    if ( mapOutputValueClass != null ) {
-      Class<?> valueClass = loader.loadClass( mapOutputValueClass );
-      conf.setMapOutputValueClass( valueClass );
-    }
-    if ( mapRunnerClass != null ) {
-      conf.setMapRunnerClass( mapRunnerClass );
-    }
-
-    if ( mapperClass != null ) {
-      Class<?> mapper = loader.loadClass( mapperClass );
-      conf.setMapperClass( mapper );
-    }
-    if ( combinerClass != null ) {
-      Class<?> combiner = loader.loadClass( combinerClass );
-      conf.setCombinerClass( combiner );
-    }
-    if ( reducerClass != null ) {
-      Class<?> reducer = loader.loadClass( reducerClass );
-      conf.setReducerClass( reducer );
-    }
-
-    if ( inputFormatClass != null ) {
-      Class<?> inputFormat = loader.loadClass( inputFormatClass );
-      conf.setInputFormat( inputFormat );
-    }
-    if ( outputFormatClass != null ) {
-      Class<?> outputFormat = loader.loadClass( outputFormatClass );
-      conf.setOutputFormat( outputFormat );
-    }
-
-    String hdfsHostnameS = variableSpace.environmentSubstitute( namedCluster.getHdfsHost() );
-    String hdfsPortS = variableSpace.environmentSubstitute( namedCluster.getHdfsPort() );
-    String jobTrackerHostnameS = variableSpace.environmentSubstitute( namedCluster.getJobTrackerHost() );
-    String jobTrackerPortS = variableSpace.environmentSubstitute( namedCluster.getJobTrackerPort() );
-    // String defaultFsName = variableSpace.environmentSubstitute( namedCluster.getDefaultFS() );
-    // conf.set( "pentaho.runtime.fs.default.name", conf.get( "fs.defaultFS" ) );
-
-    List<String> configMessages = new ArrayList<String>();
-    hadoopShim.configureConnectionInformation( hdfsHostnameS, hdfsPortS, jobTrackerHostnameS, jobTrackerPortS, conf,
-      configMessages );
-    for ( String m : configMessages ) {
-      log.logBasic( m );
-    }
-
-    List<Path> paths = new ArrayList<Path>();
-    for ( String path : inputPaths ) {
-      paths.add( getPath( conf, fs, path ) );
-    }
-    Path[] finalPaths = paths.toArray( new Path[ paths.size() ] );
-
-    conf.setInputPaths( finalPaths );
-    conf.setOutputPath( getOutputPath( conf, fs ) );
-
-    // process user defined values
-    for ( Map.Entry<String, String> stringStringEntry : userDefined.entrySet() ) {
-      String key = stringStringEntry.getKey();
-      String value = stringStringEntry.getValue();
-      if ( key != null && !"".equals( key ) && value != null && !"".equals( value ) ) {
-        conf.set( key, value );
+      if ( outputKeyClass != null ) {
+        Class<?> keyClass = loader.loadClass( outputKeyClass );
+        conf.setOutputKeyClass( keyClass );
       }
-    }
+      if ( outputValueClass != null ) {
+        Class<?> valueClass = loader.loadClass( outputValueClass );
+        conf.setOutputValueClass( valueClass );
+      }
+      if ( mapOutputKeyClass != null ) {
+        Class<?> keyClass = loader.loadClass( mapOutputKeyClass );
+        conf.setMapOutputKeyClass( keyClass );
+      }
+      if ( mapOutputValueClass != null ) {
+        Class<?> valueClass = loader.loadClass( mapOutputValueClass );
+        conf.setMapOutputValueClass( valueClass );
+      }
+      if ( mapRunnerClass != null ) {
+        conf.setMapRunnerClass( mapRunnerClass );
+      }
 
-    if ( jarUrl != null ) {
-      conf.setJar( jarUrl );
-    }
+      if ( mapperClass != null ) {
+        Class<?> mapper = loader.loadClass( mapperClass );
+        conf.setMapperClass( mapper );
+      }
+      if ( combinerClass != null ) {
+        Class<?> combiner = loader.loadClass( combinerClass );
+        conf.setCombinerClass( combiner );
+      }
+      if ( reducerClass != null ) {
+        Class<?> reducer = loader.loadClass( reducerClass );
+        conf.setReducerClass( reducer );
+      }
 
-    conf.setNumMapTasks( numMapTasks );
-    conf.setNumReduceTasks( numReduceTasks );
-    loader.close();
+      if ( inputFormatClass != null ) {
+        Class<?> inputFormat = loader.loadClass( inputFormatClass );
+        conf.setInputFormat( inputFormat );
+      }
+      if ( outputFormatClass != null ) {
+        Class<?> outputFormat = loader.loadClass( outputFormatClass );
+        conf.setOutputFormat( outputFormat );
+      }
+
+      String hdfsHostnameS = variableSpace.environmentSubstitute( namedCluster.getHdfsHost() );
+      String hdfsPortS = variableSpace.environmentSubstitute( namedCluster.getHdfsPort() );
+      String jobTrackerHostnameS = variableSpace.environmentSubstitute( namedCluster.getJobTrackerHost() );
+      String jobTrackerPortS = variableSpace.environmentSubstitute( namedCluster.getJobTrackerPort() );
+
+      List<String> configMessages = new ArrayList<>();
+      hadoopShim.configureConnectionInformation( hdfsHostnameS, hdfsPortS, jobTrackerHostnameS, jobTrackerPortS, conf,
+        configMessages );
+      for ( String m : configMessages ) {
+        log.logBasic( m );
+      }
+
+      List<Path> paths = new ArrayList<Path>();
+      for ( String path : inputPaths ) {
+        paths.add( getPath( conf, fs, path ) );
+      }
+      Path[] finalPaths = paths.toArray( new Path[ paths.size() ] );
+
+      conf.setInputPaths( finalPaths );
+      conf.setOutputPath( getOutputPath( conf, fs ) );
+
+      // process user defined values
+      for ( Map.Entry<String, String> stringStringEntry : userDefined.entrySet() ) {
+        String key = stringStringEntry.getKey();
+        String value = stringStringEntry.getValue();
+        if ( key != null && !"".equals( key ) && value != null && !"".equals( value ) ) {
+          conf.set( key, value );
+        }
+      }
+
+      if ( jarUrl != null ) {
+        conf.setJar( jarUrl );
+      }
+
+      conf.setNumMapTasks( numMapTasks );
+      conf.setNumReduceTasks( numReduceTasks );
+    }
   }
 
   public VariableSpace getVariableSpace() {
