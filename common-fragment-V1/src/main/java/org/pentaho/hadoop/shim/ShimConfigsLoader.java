@@ -1,14 +1,40 @@
+/*******************************************************************************
+ *
+ * Pentaho Big Data
+ *
+ * Copyright (C) 2019 by Hitachi Vantara : http://www.pentaho.com
+ *
+ *******************************************************************************
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ ******************************************************************************/
+
 package org.pentaho.hadoop.shim;
 
 import org.apache.hadoop.conf.Configuration;
+import org.pentaho.big.data.api.shims.LegacyShimLocator;
 import org.pentaho.di.core.Const;
+import org.pentaho.di.core.logging.LogChannel;
+import org.pentaho.di.core.logging.LogChannelInterface;
+import org.pentaho.di.i18n.BaseMessages;
+import org.pentaho.hadoop.shim.api.ShimIdentifierInterface;
+import org.pentaho.platform.engine.core.system.PentahoSystem;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -20,6 +46,10 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class ShimConfigsLoader {
+
+  private static final Class<?> PKG = ShimConfigsLoader.class; // for i18n purposes, needed by Translator2!!
+  private static LogChannelInterface log = new LogChannel( ShimConfigsLoader.class.getName() );
+
   public static final String CONFIGS_DIR_PREFIX =
     "metastore" + File.separator + "pentaho" + File.separator + "NamedCluster" + File.separator + "Configs";
 
@@ -30,13 +60,14 @@ public class ShimConfigsLoader {
 
   public static URL getURLToResourceFile( String siteFileName, String additionalPath ) {
     try {
-      if ( additionalPath != null ) {
-        Path currentPath = Paths.get(
+      Path currentPath = null;
+      if ( additionalPath != null && !additionalPath.equals( "" ) ) {
+        currentPath = Paths.get(
           Const.getKettleDirectory() + File.separator + CONFIGS_DIR_PREFIX + File.separator + additionalPath
             + File.separator
             + siteFileName );
 
-        if ( Files.exists( currentPath ) ) {
+        if ( currentPath.toFile().exists() ) {
           return currentPath.toAbsolutePath().toFile().toURI().toURL();
         }
 
@@ -44,7 +75,7 @@ public class ShimConfigsLoader {
           Const.getUserHomeDirectory() + File.separator + ".pentaho" + File.separator + CONFIGS_DIR_PREFIX
             + File.separator + additionalPath + File.separator
             + siteFileName );
-        if ( Files.exists( currentPath ) ) {
+        if ( currentPath.toFile().exists() ) {
           return currentPath.toAbsolutePath().toFile().toURI().toURL();
         }
 
@@ -52,14 +83,27 @@ public class ShimConfigsLoader {
           Const.getUserHomeDirectory() + File.separator + CONFIGS_DIR_PREFIX + File.separator + additionalPath
             + File.separator
             + siteFileName );
-        if ( Files.exists( currentPath ) ) {
+        if ( currentPath.toFile().exists() ) {
           return currentPath.toAbsolutePath().toFile().toURI().toURL();
         }
       }
-    } catch ( MalformedURLException ex ) {
-      ex.printStackTrace();
+      // cluster name was missing or else config files were not found; try looking for a legacy configuration
+      String defaultShim = LegacyShimLocator.getLegacyDefaultShimName();
+      List<ShimIdentifierInterface> shimIdentifers = PentahoSystem.getAll( ShimIdentifierInterface.class );
+      for ( ShimIdentifierInterface shim : shimIdentifers ) {
+        if ( shim.getId().equals( defaultShim ) ) {
+          // only return the legacy folder if the shim still exists
+          currentPath = Paths.get( LegacyShimLocator.getLegacyDefaultShimDir( defaultShim ).toString() + File.separator + siteFileName );
+          if ( currentPath.toFile().exists() ) {
+            log.logBasic( BaseMessages.getString( PKG, "ShimConfigsLoader.UsingLegacyConfig" ) );
+            return currentPath.toAbsolutePath().toFile().toURI().toURL();
+          }
+        }
+      }
+      log.logError( BaseMessages.getString( PKG, "ShimConfigsLoader.UnableToFindConfigs" ) );
+    } catch ( IOException ex ) {
+      log.logError( BaseMessages.getString( PKG, "ShimConfigsLoader.ExceptionReadingFile" ), ex );
     }
-
     return null;
   }
 
@@ -75,12 +119,10 @@ public class ShimConfigsLoader {
   public static void addConfigsAsResources( String additionalPath, Consumer<? super URL> configurationConsumer,
                                             ClusterConfigNames... fileNames ) {
     Properties properties = loadConfigProperties( additionalPath );
-    if ( properties != null ) {
-      for ( String propertyName : properties.stringPropertyNames() ) {
-        if ( propertyName.startsWith( "java.system." ) ) {
-          System.setProperty( propertyName.substring( "java.system.".length() ),
-            properties.get( propertyName ).toString() );
-        }
+    for ( String propertyName : properties.stringPropertyNames() ) {
+      if ( propertyName.startsWith( "java.system." ) ) {
+        System.setProperty( propertyName.substring( "java.system.".length() ),
+          properties.get( propertyName ).toString() );
       }
     }
 
@@ -110,7 +152,7 @@ public class ShimConfigsLoader {
         fis.close();
       }
     } catch ( IOException ex ) {
-      ex.printStackTrace();
+      log.logError( BaseMessages.getString( ShimConfigsLoader.class, "ShimConfigsLoader.ExceptionLoadingProperties" ), ex );
     }
 
     return properties;
@@ -138,6 +180,7 @@ public class ShimConfigsLoader {
       this.configName = configName;
     }
 
+    @Override
     public String toString() {
       return this.configName;
     }

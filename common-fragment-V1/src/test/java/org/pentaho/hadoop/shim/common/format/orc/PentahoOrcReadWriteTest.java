@@ -25,6 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.pentaho.di.core.RowMetaAndData;
+import org.pentaho.di.core.logging.KettleLogStore;
 import org.pentaho.di.core.plugins.PluginRegistry;
 import org.pentaho.di.core.row.RowMeta;
 import org.pentaho.di.core.row.ValueMetaInterface;
@@ -98,6 +99,7 @@ public class PentahoOrcReadWriteTest {
 
   @Before
   public void setup() throws Exception {
+    KettleLogStore.init();
     tempFolder.create();
     orcOutputFormat = new PentahoOrcOutputFormat();
 

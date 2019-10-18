@@ -37,6 +37,7 @@ import org.junit.runners.Parameterized;
 import org.mockito.Mockito;
 import org.mockito.internal.util.reflection.Whitebox;
 import org.pentaho.di.core.RowMetaAndData;
+import org.pentaho.di.core.logging.KettleLogStore;
 import org.pentaho.di.core.row.RowMeta;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.core.row.value.ValueMetaBigNumber;
@@ -72,6 +73,7 @@ public class PentahoParquetInputFormatTest {
 
   @Before
   public void resetInputFormatBeforeEachTest() throws Exception {
+    KettleLogStore.init();
     NamedCluster namedCluster = mock( NamedCluster.class );
     switch ( provider ) {
       case "APACHE":
