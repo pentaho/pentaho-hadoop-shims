@@ -32,6 +32,7 @@ import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory;
 import org.pentaho.metastore.stores.memory.MemoryMetaStore;
 import org.pentaho.osgi.metastore.locator.api.MetastoreLocator;
+import org.pentaho.hadoop.shim.api.cluster.NamedClusterService;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,14 +58,16 @@ public class NamedClusterServiceLocatorImplTest {
   private NamedClusterServiceFactory namedClusterServiceFactory4;
   private Object value;
   private MetastoreLocator mockMetastoreLocator;
+  private NamedClusterService namedClusterManager;
 
   @Before
   public void setup() {
     MemoryMetaStore memoryMetaStore = new MemoryMetaStore();
     memoryMetaStore.setName( "memoryMetastore" );
     mockMetastoreLocator = Mockito.mock( MetastoreLocator.class );
+    namedClusterManager = Mockito.mock( NamedClusterService.class );
     Mockito.when( mockMetastoreLocator.getMetastore() ).thenReturn( memoryMetaStore );
-    serviceLocator = new NamedClusterServiceLocatorImpl( "shimA", mockMetastoreLocator );
+    serviceLocator = new NamedClusterServiceLocatorImpl( "shimA", mockMetastoreLocator, namedClusterManager );
     serviceVendorTypeMapping = serviceLocator.getServiceVendorTypeMapping();
     namedCluster = Mockito.mock( NamedCluster.class );
     namedClusterServiceFactory = Mockito.mock( NamedClusterServiceFactory.class );
@@ -91,7 +94,7 @@ public class NamedClusterServiceLocatorImplTest {
 
   @Test
   public void testNoArgConstructor() throws ClusterInitializationException {
-    assertNull( new NamedClusterServiceLocatorImpl( "shimA", mockMetastoreLocator )
+    assertNull( new NamedClusterServiceLocatorImpl( "shimA", mockMetastoreLocator, namedClusterManager )
       .getService( namedCluster, Object.class ) );
     assertEquals( "shimA", serviceLocator.getDefaultShim() );
     serviceLocator.getVendorShimList();
