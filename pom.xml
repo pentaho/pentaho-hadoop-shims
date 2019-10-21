@@ -287,6 +287,8 @@
         <module>common-fragment-V1</module>
         <module>common-dependencies-V1</module>
         <module>mapreduce</module>
+        <module>common-fragments</module>
+        <module>dummy-driver</module>
       </modules>
     </profile>
 

@@ -279,35 +279,15 @@
         <exists>${basedir}/src/main/feature</exists>
       </file>
     </activation>
-    <build>
-      <pluginManagement>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.karaf.tooling</groupId>
-            <artifactId>karaf-maven-plugin</artifactId>
-            <version>${karaf-maven-plugin.version}</version>
-            <executions>
-              <execution>
-                <id>default-features-generate-descriptor</id>
-                <configuration>
-                  <includeTransitiveDependency>false</includeTransitiveDependency>
-                    <!-- Feature file at /repository folder is required because of a Bug in Karaf 3.0.3
-                    that resolves bundles paths erroneously otherwise. -->
-                  <outputFile>${project.build.outputDirectory}/repository/features.xml</outputFile>
-                </configuration>
-              </execution>
-              <execution>
-                <id>default-features-create-kar</id>
-                <configuration>
-                  <!-- Use the generated feature file which is at a non standard folder. -->
-                  <featuresFile>${project.build.outputDirectory}/repository/features.xml</featuresFile>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </pluginManagement>
-    </build>
+      <properties>
+        <karaf-maven-plugin.includeTransitiveDependency>false</karaf-maven-plugin.includeTransitiveDependency>
+        <!-- Fragment bundles should be optional for Hosts but currently the driver bundle is being activated with
+             classes that are only available in fragments. This means that fragments must be available before
+             deploying the driver bundle. We are using the prerequisite feature attribute as a workaround to ensure
+             this happens. -->
+        <karaf-maven-plugin.prerequisiteFeatures>pentaho-hadoop-shims-common-fragments</karaf-maven-plugin.prerequisiteFeatures>
+        <karaf-maven-plugin.aggregateFeatures>true</karaf-maven-plugin.aggregateFeatures>
+      </properties>
   </profile>
 
   <profile>

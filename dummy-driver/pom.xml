@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.pentaho</groupId>
+    <artifactId>pentaho-hadoop-shims</artifactId>
+    <version>9.0.0.0-SNAPSHOT</version>
+  </parent>
+
+  <groupId>org.pentaho.hadoop.shims</groupId>
+  <artifactId>pentaho-hadoop-shims-dummy-driver</artifactId>
+
+  <packaging>bundle</packaging>
+
+  <description>
+    This bundle sole objective is to allow shim driver fragments to be installed by the feature installer in Karaf 4.X.
+    The feature installer verifies all requirements before installing a bundle. Because fragment bundles have a
+    requirement of "Fragment-Host" it is required for a host, where the fragment can attach to, to be installed before
+    installing the fragment. However, the current shim drivers depend on classes from the fragment for activation,
+    as such no shim driver host can be installed without a fragment. To break this circular issue this bundle provides
+    a dummy host to which fragments can attach to and then the real driver hosts can be installed given that the fragments
+    are already deployed.
+  </description>
+
+  <build>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>default-bundle</id>
+              <configuration>
+                <instructions>
+                  <Bundle-SymbolicName>pentaho-hadoop-driver-V1</Bundle-SymbolicName>
+                  <Bundle-Version>0.0.0</Bundle-Version>
+                </instructions>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+  </build>
+
+</project>
