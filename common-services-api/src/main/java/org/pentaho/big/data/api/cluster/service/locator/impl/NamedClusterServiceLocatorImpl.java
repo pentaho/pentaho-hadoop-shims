@@ -28,6 +28,7 @@ import com.google.common.collect.Multimaps;
 import org.pentaho.big.data.api.shims.DefaultShim;
 import org.pentaho.hadoop.shim.api.cluster.ClusterInitializationException;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
+import org.pentaho.hadoop.shim.api.cluster.NamedClusterService;
 import org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory;
 import org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceLocator;
 import org.pentaho.metastore.api.IMetaStore;
@@ -58,13 +59,15 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
   private String fallbackShim;
   private String defaultShim;
   private final MetastoreLocator metastoreLocator;
+  private final NamedClusterService namedClusterManager;
   private static final String NAMESPACE = "pentaho";
 
   private static final Logger logger = LoggerFactory.getLogger( NamedClusterServiceLocatorImpl.class );
 
-  public NamedClusterServiceLocatorImpl( String fallbackShim, MetastoreLocator metastoreLocator ) {
+  public NamedClusterServiceLocatorImpl( String fallbackShim, MetastoreLocator metastoreLocator, NamedClusterService namedClusterManager ) {
     this.fallbackShim = fallbackShim;
     this.metastoreLocator = metastoreLocator;
+    this.namedClusterManager = namedClusterManager;
     readWriteLock = new ReentrantReadWriteLock();
     serviceVendorTypeMapping = new HashMap<>();
   }
@@ -132,7 +135,15 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
     try {
       readLock.lock();
       //The named Cluster is not fully defined.  We'll have to use the default shim
-      String shim = namedCluster.getShimIdentifier() != null ? namedCluster.getShimIdentifier() : getDefaultShim();
+      String shim = namedCluster.getShimIdentifier();
+      NamedCluster storedNamedCluster = namedClusterManager.getNamedClusterByName( namedCluster.getName(), metastoreLocator.getMetastore() );
+      if ( shim == null ) {
+        if ( storedNamedCluster != null ) {
+          shim = storedNamedCluster.getShimIdentifier();
+        } else {
+          shim = getDefaultShim();
+        }
+      }
 
       if ( shim != null ) {
         Multimap<Class<?>, ServiceFactoryAndRanking<?>> multimap =

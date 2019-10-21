@@ -12,9 +12,12 @@
     </cm:default-properties>
   </cm:property-placeholder>
 
+  <reference id="namedClusterManager" interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterService"/>
+
   <bean id="serviceLocatorImpl" class="org.pentaho.big.data.api.cluster.service.locator.impl.NamedClusterServiceLocatorImpl" scope="singleton">
     <argument value="${default.shim}"/>
     <argument ref="metastoreLocator"/>
+    <argument ref="namedClusterManager"/>
   </bean>
 
   <reference-list id="serviceFactories" interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory" availability="optional">
