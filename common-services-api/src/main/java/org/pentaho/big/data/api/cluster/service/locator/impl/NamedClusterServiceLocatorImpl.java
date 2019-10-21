@@ -52,7 +52,7 @@ import java.util.stream.Collectors;
  * Created by bryan on 11/5/15.
  */
 public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocator {
-  private static final String SERVICE_RANKING = "service.ranking";
+  @VisibleForTesting static final String SERVICE_RANKING = "service.ranking";
   private final Map<String, Multimap<Class<?>, ServiceFactoryAndRanking<?>>> serviceVendorTypeMapping;
   private final ReadWriteLock readWriteLock;
   private String fallbackShim;

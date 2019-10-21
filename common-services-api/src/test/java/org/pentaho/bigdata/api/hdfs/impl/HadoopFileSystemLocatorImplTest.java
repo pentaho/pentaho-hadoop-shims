@@ -20,7 +20,6 @@ package org.pentaho.bigdata.api.hdfs.impl;
 import org.junit.Before;
 import org.junit.Test;
 import org.pentaho.hadoop.shim.api.cluster.ClusterInitializationException;
-
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.hdfs.HadoopFileSystem;
 import org.pentaho.hadoop.shim.api.hdfs.HadoopFileSystemFactory;
@@ -31,8 +30,10 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by bryan on 8/3/15.
