@@ -105,7 +105,9 @@ public class ShimConfigsLoader {
 
     try {
       if ( pathToConfigProperties != null ) {
-        properties.load( new FileInputStream( pathToConfigProperties.getFile() ) );
+        FileInputStream fis = new FileInputStream( pathToConfigProperties.getFile() );
+        properties.load( fis );
+        fis.close();
       }
     } catch ( IOException ex ) {
       ex.printStackTrace();
