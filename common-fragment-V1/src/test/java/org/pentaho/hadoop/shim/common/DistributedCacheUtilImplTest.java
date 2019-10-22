@@ -213,7 +213,7 @@ public class DistributedCacheUtilImplTest {
 
       // Look for all files and folders
       List<String> all = ch.findFiles( testFolder, null );
-      assertEquals( 12, all.size() );
+      assertEquals( 15, all.size() );
     } finally {
       testFolder.delete( new AllFileSelector() );
     }

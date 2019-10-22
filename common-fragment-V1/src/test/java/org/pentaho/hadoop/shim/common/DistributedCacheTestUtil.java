@@ -48,6 +48,7 @@ public class DistributedCacheTestUtil {
     root.resolveFile( "jar2.jar" ).createFile();
     root.resolveFile( "folder" ).resolveFile( "file.txt" ).createFile();
     root.resolveFile( "pentaho-mapreduce-libraries.zip" ).createFile();
+    root.resolveFile( "system/karaf/system" ).createFolder();
 
     createTestHadoopConfiguration( rootName );
 
