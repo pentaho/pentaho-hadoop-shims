@@ -128,10 +128,23 @@ public class CommonHBaseConnection implements HBaseConnection, IHBaseClientFacto
       String siteConfig = connProps.getProperty( SITE_KEY );
       String zookeeperQuorum = connProps.getProperty( ZOOKEEPER_QUORUM_KEY );
       String zookeeperPort = connProps.getProperty( ZOOKEEPER_PORT_KEY );
-      String namedCluster = connProps.getProperty( "named.cluster" );
+      String namedCluster = connProps.getProperty( NAMED_CLUSTER );
+      boolean namedClusterIsMapr = Boolean.parseBoolean( connProps.getProperty( SHIM_IS_MAPR, "false" ) );
 
       m_config = new Configuration();
       try {
+        if ( namedClusterIsMapr ) {
+          ShimConfigsLoader.addConfigsAsResources( namedCluster, m_config::addResource,
+            ShimConfigsLoader.ClusterConfigNames.CORE_SITE.toString() );
+          ShimConfigsLoader.addConfigsAsResources( namedCluster, m_config::addResource,
+            ShimConfigsLoader.ClusterConfigNames.HDFS_SITE.toString() );
+          ShimConfigsLoader.addConfigsAsResources( namedCluster, m_config::addResource,
+            ShimConfigsLoader.ClusterConfigNames.YARN_SITE.toString() );
+          ShimConfigsLoader.addConfigsAsResources( namedCluster, m_config::addResource,
+            ShimConfigsLoader.ClusterConfigNames.MAPRED_SITE.toString() );
+          ShimConfigsLoader.addConfigsAsResources( namedCluster, m_config::addResource,
+            ShimConfigsLoader.ClusterConfigNames.HIVE_SITE.toString() );
+        }
         if ( !HBaseConnection.isEmpty( defaultConfig ) ) {
           m_config.addResource( HBaseConnection.stringToURL( defaultConfig ) );
         } else {
@@ -206,7 +219,7 @@ public class CommonHBaseConnection implements HBaseConnection, IHBaseClientFacto
   }
 
   private String getActiveShimConfigurationId( Properties connectionProperties ) {
-    return connectionProperties.getProperty( ACTIVE_SHIM_VERSION, "" );
+    return connectionProperties.getProperty( "shim.identifier", connectionProperties.getProperty( ACTIVE_SHIM_VERSION, "" ) );
   }
 
   private boolean doZookeeperQuorumInNamedClusterAndConfigMatch( String zookeeperQuorum ) {
