@@ -26,7 +26,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import org.pentaho.big.data.api.shims.DefaultShim;
-import org.pentaho.hadoop.shim.api.cluster.ClusterInitializationException;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.cluster.NamedClusterService;
 import org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory;
@@ -38,7 +37,7 @@ import org.pentaho.osgi.metastore.locator.api.MetastoreLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,11 +46,11 @@ import java.util.TreeSet;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.stream.Collectors;
 
 /**
  * Created by bryan on 11/5/15.
  */
+@SuppressWarnings ( "WeakerAccess" )
 public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocator {
   @VisibleForTesting static final String SERVICE_RANKING = "service.ranking";
   private final Map<String, Multimap<Class<?>, ServiceFactoryAndRanking<?>>> serviceVendorTypeMapping;
@@ -64,7 +63,8 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
 
   private static final Logger logger = LoggerFactory.getLogger( NamedClusterServiceLocatorImpl.class );
 
-  public NamedClusterServiceLocatorImpl( String fallbackShim, MetastoreLocator metastoreLocator, NamedClusterService namedClusterManager ) {
+  public NamedClusterServiceLocatorImpl( String fallbackShim, MetastoreLocator metastoreLocator,
+                                         NamedClusterService namedClusterManager ) {
     this.fallbackShim = fallbackShim;
     this.metastoreLocator = metastoreLocator;
     this.namedClusterManager = namedClusterManager;
@@ -88,8 +88,8 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
       String shim = (String) properties.get( "shim" );
 
       Multimap<Class<?>, ServiceFactoryAndRanking<?>> serviceFactoryMap =
-        Multimaps.newSortedSetMultimap( new HashMap<Class<?>, Collection<ServiceFactoryAndRanking<?>>>(),
-          () -> new TreeSet<ServiceFactoryAndRanking<?>>( ( o1, o2 ) -> {
+        Multimaps.newSortedSetMultimap( new HashMap<>(),
+          () -> new TreeSet<>( ( o1, o2 ) -> {
             if ( o1.ranking == o2.ranking ) {
               return o1.namedClusterServiceFactory.toString().compareTo( o2.namedClusterServiceFactory.toString() );
             }
@@ -129,21 +129,11 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
     }
   }
 
-  @Override public <T> T getService( NamedCluster namedCluster, Class<T> serviceClass )
-    throws ClusterInitializationException {
+  @Override public <T> T getService( NamedCluster namedCluster, Class<T> serviceClass ) {
     Lock readLock = readWriteLock.readLock();
     try {
       readLock.lock();
-      //The named Cluster is not fully defined.  We'll have to use the default shim
-      String shim = namedCluster.getShimIdentifier();
-      NamedCluster storedNamedCluster = namedClusterManager.getNamedClusterByName( namedCluster.getName(), metastoreLocator.getMetastore() );
-      if ( shim == null ) {
-        if ( storedNamedCluster != null ) {
-          shim = storedNamedCluster.getShimIdentifier();
-        } else {
-          shim = getDefaultShim();
-        }
-      }
+      String shim = getShimForService( namedCluster );
 
       if ( shim != null ) {
         Multimap<Class<?>, ServiceFactoryAndRanking<?>> multimap =
@@ -162,7 +152,28 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
     return null;
   }
 
-  private String readMetaStore() {
+  /**
+   * If namedCluster is defined, will use it to try to determine the
+   * associated shim.  Otherwise returns the default shim name.
+   */
+  private String getShimForService( NamedCluster namedCluster ) {
+    if ( namedCluster == null ) {
+      return getDefaultShim();
+    }
+    String shim = namedCluster.getShimIdentifier();
+    NamedCluster storedNamedCluster =
+      namedClusterManager.getNamedClusterByName( namedCluster.getName(), metastoreLocator.getMetastore() );
+    if ( shim == null ) {
+      if ( storedNamedCluster != null ) {
+        shim = storedNamedCluster.getShimIdentifier();
+      } else {
+        shim = getDefaultShim();
+      }
+    }
+    return shim;
+  }
+
+  private String readDefaultShimFromMetastore() {
     IMetaStore metaStore = metastoreLocator.getMetastore();
     MetaStoreFactory metaStoreFactory =
       new MetaStoreFactory<>( DefaultShim.class, metaStore, NAMESPACE );
@@ -177,7 +188,7 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
     return null;
   }
 
-  private void writeMetaStore( String defaultShimValue ) {
+  private void writeDefaultShimToMetastore( String defaultShimValue ) {
     IMetaStore metaStore = metastoreLocator.getMetastore();
     MetaStoreFactory metaStoreFactory =
       new MetaStoreFactory<>( DefaultShim.class, metaStore, NAMESPACE );
@@ -189,14 +200,14 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
   }
 
   public List<String> getVendorShimList() {
-    return serviceVendorTypeMapping.keySet().stream().collect( Collectors.toList() );
+    return new ArrayList<>( serviceVendorTypeMapping.keySet() );
   }
 
   public String getDefaultShim() {
     if ( defaultShim != null ) {
       return defaultShim;
     }
-    defaultShim = readMetaStore();
+    defaultShim = readDefaultShimFromMetastore();
     if ( defaultShim == null ) {
       setDefaultShim( fallbackShim );
     }
@@ -205,7 +216,7 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
   }
 
   public void setDefaultShim( String defaultShim ) {
-    writeMetaStore( defaultShim );
+    writeDefaultShimToMetastore( defaultShim );
     this.defaultShim = defaultShim;
   }
 
