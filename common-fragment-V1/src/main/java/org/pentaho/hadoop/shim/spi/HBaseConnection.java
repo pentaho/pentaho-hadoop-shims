@@ -46,6 +46,9 @@ public interface HBaseConnection {
   public static final String ZOOKEEPER_PORT_KEY = "hbase.zookeeper.property.clientPort";
   //constant for active shim configuration id
   public static final String ACTIVE_SHIM_VERSION = "ACTIVE_SHIM_VERSION";
+  public static final String NAMED_CLUSTER = "named.cluster";
+  public static final String SHIM_IS_MAPR = "shim.isMapr";
+  public static final String SHIM_IDENTIFIER = "shim.identifier";
 
   // constant table creation option keys (commented out keys don't exist as
   // options for HColumnDescriptor in 0.90.3)

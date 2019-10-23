@@ -37,6 +37,10 @@
       </properties>
       <dependencies>
         <dependency>
+           <groupId>org.apache.karaf.jaas</groupId>
+           <artifactId>org.apache.karaf.jaas.config</artifactId>
+        </dependency>
+        <dependency>
           <groupId>com.twitter</groupId>
           <artifactId>parquet-hadoop</artifactId>
           <version>${parquet.cloudera.version}</version>
@@ -417,6 +421,10 @@
         <dependency.pig.classifier>h2</dependency.pig.classifier>
       </properties>
       <dependencies>
+        <dependency>
+          <groupId>org.apache.karaf.jaas</groupId>
+          <artifactId>org.apache.karaf.jaas.config</artifactId>
+        </dependency>
         <dependency>
           <groupId>pentaho</groupId>
           <artifactId>pentaho-big-data-impl-shim-common</artifactId>

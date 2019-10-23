@@ -65,6 +65,8 @@ public class HBaseServiceImplTest {
     when( hBaseShim.getHBaseConnection() ).thenReturn( hBaseConnection );
     when( hBaseConnection.getBytesUtil() ).thenReturn( hBaseBytesUtilShim );
     when( namedCluster.getName() ).thenReturn( "namedClusterName" );
+    when( namedCluster.getShimIdentifier() ).thenReturn( "shimidentifier" );
+    when( namedCluster.isMapr() ).thenReturn( false );
 
     hBaseService = new HBaseServiceImpl( namedCluster, hBaseShim );
   }
@@ -112,7 +114,7 @@ public class HBaseServiceImplTest {
     verify( hBaseConnection ).configureConnection( propertiesArgumentCaptor.capture(), eq( new ArrayList
       <String>() ) );
     Properties properties = propertiesArgumentCaptor.getValue();
-    assertEquals( 1, properties.size() );
+    assertEquals( 3, properties.size() );
   }
 
   @Test

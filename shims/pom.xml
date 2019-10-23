@@ -313,6 +313,7 @@
         <module>hdp26</module>
         <module>hdp30</module>
         <module>emr521</module>
+        <module>mapr60</module>
       </modules>
     </profile>
 
@@ -373,6 +374,18 @@
       </activation>
       <modules>
         <module>emr521</module>
+      </modules>
+    </profile>
+
+    <profile>
+      <id>mapr60</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>mapr60</module>
       </modules>
     </profile>
 
