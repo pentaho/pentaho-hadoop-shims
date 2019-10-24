@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="
+            http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
+
+  <bean id="apacheShimIdentifier" class="org.pentaho.hadoop.shim.api.internal.ShimIdentifier" scope="singleton">
+    <argument value="apache"/>
+    <argument value="Apache"/>
+    <argument value="3.0"/>
+    <argument value="COMMUNITY"/>
+  </bean>
+
+  <service ref="apacheShimIdentifier" interface="org.pentaho.hadoop.shim.api.ShimIdentifierInterface"/>
+
+  <bean id="apacheHadoop" class="org.pentaho.hadoop.shim.HadoopShim" scope="singleton"/>
+
+  <service ref="apacheHadoop" interface="org.pentaho.hadoop.shim.spi.HadoopShim">
+    <service-properties>
+      <entry key="shim">
+        <value type="java.lang.String">apache</value>
+      </entry>
+    </service-properties>
+  </service>
+
+
+  <bean id="apacheFormatShim" class="org.pentaho.hadoop.shim.common.CommonFormatShim">
+  </bean>
+
+  <service ref="apacheFormatShim" auto-export="interfaces">
+    <service-properties>
+      <entry key="shim">
+        <value type="java.lang.String">apache</value>
+      </entry>
+      <entry key="service">
+        <value type="java.lang.String">format</value>
+      </entry>
+    </service-properties>
+  </service>
+
+  <bean id="apacheFormatServiceFactory" class="org.pentaho.big.data.impl.shim.format.FormatServiceFactory">
+    <argument ref="apacheFormatShim"/>
+  </bean>
+
+  <service ref="apacheFormatServiceFactory"
+           interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
+    <service-properties>
+      <entry key="shim">
+        <value type="java.lang.String">apache</value>
+      </entry>
+      <entry key="service">
+        <value type="java.lang.String">format</value>
+      </entry>
+    </service-properties>
+  </service>
+
+
+</blueprint>
