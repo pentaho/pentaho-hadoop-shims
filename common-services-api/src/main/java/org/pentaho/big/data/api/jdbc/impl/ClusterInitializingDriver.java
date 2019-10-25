@@ -63,14 +63,16 @@ public class ClusterInitializingDriver implements Driver {
     this( jdbcUrlParser, driverRegistry, null );
   }
 
+  // Called by Blueprint
   public ClusterInitializingDriver( JdbcUrlParser jdbcUrlParser,
                                     DriverLocatorImpl driverRegistry, Integer numLazyProxies ) {
-    this( jdbcUrlParser, driverRegistry, numLazyProxies, DriverManager::registerDriver );
+    this( jdbcUrlParser, driverRegistry, numLazyProxies, DriverManager::registerDriver,
+      DriverManager::deregisterDriver );
   }
 
   public ClusterInitializingDriver( JdbcUrlParser jdbcUrlParser,
                                     DriverLocatorImpl driverRegistry, Integer numLazyProxies,
-                                    HasRegisterDriver hasRegisterDriver ) {
+                                    HasRegisterDriver hasRegisterDriver, HasDeregisterDriver hasDeregisterDriver ) {
     this.jdbcUrlParser = jdbcUrlParser;
     int lazyProxies = Optional.ofNullable( numLazyProxies ).orElse( 5 );
     try {
@@ -80,7 +82,7 @@ public class ClusterInitializingDriver implements Driver {
     }
     for ( int i = 0; i < lazyProxies; i++ ) {
       try {
-        new LazyDelegatingDriver( driverRegistry, hasRegisterDriver );
+        new LazyDelegatingDriver( driverRegistry, hasRegisterDriver, hasDeregisterDriver );
       } catch ( SQLException e ) {
         logger.warn( "Failed to register " + LazyDelegatingDriver.class.getName(), e );
       }

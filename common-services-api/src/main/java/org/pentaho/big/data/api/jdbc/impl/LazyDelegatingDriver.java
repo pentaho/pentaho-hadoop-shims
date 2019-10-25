@@ -45,19 +45,23 @@ import java.util.logging.Logger;
 public class LazyDelegatingDriver implements Driver {
   private final DriverLocatorImpl driverLocator;
   private final HasRegisterDriver hasRegisterDriver;
+  private final HasDeregisterDriver hasDeregisterDriver;
   private Driver delegate;
   private DelegatingDriver delegatingDriver;
 
   public LazyDelegatingDriver( DriverLocatorImpl driverLocator ) throws SQLException {
-    this( driverLocator, DriverManager::registerDriver );
+    this( driverLocator, DriverManager::registerDriver, DriverManager::deregisterDriver );
   }
 
-  public LazyDelegatingDriver( DriverLocatorImpl driverLocator, HasRegisterDriver hasRegisterDriver )
+  public LazyDelegatingDriver( DriverLocatorImpl driverLocator,
+                               HasRegisterDriver hasRegisterDriver, HasDeregisterDriver hasDeregisterDriver )
     throws SQLException {
     this.driverLocator = driverLocator;
     this.hasRegisterDriver = hasRegisterDriver;
+    this.hasDeregisterDriver = hasDeregisterDriver;
     this.delegatingDriver = new DelegatingDriver( this );
     hasRegisterDriver.registerDriver( delegatingDriver );
+    hasDeregisterDriver.deregisterDriver( delegatingDriver );
   }
 
   private synchronized <T> T findAndProcess( FunctionWithSQLException<Driver, T> attempt, Predicate<T> success,
@@ -72,7 +76,7 @@ public class LazyDelegatingDriver implements Driver {
         T result = attempt.apply( driver );
         if ( success.test( result ) ) {
           delegate = driver;
-          new LazyDelegatingDriver( driverLocator, hasRegisterDriver );
+          new LazyDelegatingDriver( driverLocator, hasRegisterDriver, hasDeregisterDriver );
           driverLocator.registerDriverServiceReferencePair( serviceReference, delegatingDriver, false );
           return result;
         }
