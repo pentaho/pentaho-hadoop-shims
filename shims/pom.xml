@@ -314,6 +314,7 @@
         <module>hdp30</module>
         <module>emr521</module>
         <module>mapr60</module>
+        <module>apache</module>
       </modules>
     </profile>
 
