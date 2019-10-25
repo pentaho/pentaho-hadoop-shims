@@ -31,7 +31,7 @@
     <parquet.version>1.10.0.3.0.0.0-1634</parquet.version>
     <org.antlr.version>3.5.2</org.antlr.version>
     <joda-time.version>2.9.9</joda-time.version>
-
+    <aws-java-sdk-core.version>1.11.275</aws-java-sdk-core.version>
     <shim-bundle-plugin.version>1.0</shim-bundle-plugin.version>
     <org.apache.thrift.version>0.9.3</org.apache.thrift.version>
 
@@ -39,6 +39,7 @@
     <!-- Note the difference between \lib and \lib\client -->
     <jetty.lib-folder.version>9.3.20.v20170531</jetty.lib-folder.version>
     <jetty.client-folder.version>9.3.19.v20170502</jetty.client-folder.version>
+    <jackson-dataformat.version>2.9.10</jackson-dataformat.version>
   </properties>
 
   <dependencies>
@@ -108,7 +109,7 @@
     </dependency>
 
     <dependency>
-      <groupId>org.pentaho</groupId>
+      <groupId>org.pentaho.hadoop.shims</groupId>
       <artifactId>pentaho-hadoop-shims-common-fragment-V1</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -163,12 +164,12 @@
     <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-bundle</artifactId>
-      <version>1.11.271</version>
+      <version>${aws-java-sdk-core.version}</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-cbor</artifactId>
-      <version>2.9.10</version>
+      <version>${jackson-dataformat.version}</version>
     </dependency>
 
     <dependency>
