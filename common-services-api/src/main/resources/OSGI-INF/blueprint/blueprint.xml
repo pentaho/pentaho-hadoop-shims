@@ -4,9 +4,9 @@
     xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
     xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
     
-    <cm:property-placeholder persistent-id="pentaho.default.shim" update-strategy="reload">
+    <cm:property-placeholder persistent-id="pentaho.shim" update-strategy="reload">
     <cm:default-properties>
-      <cm:property name="default.shim" value="hdp26" />
+      <cm:property name="internal.shim" value="apache" />
       <cm:property name="orderedModules" value="Hadoop Configuration,Hadoop File System,Map Reduce,Oozie,Zookeeper"/>
       <cm:property name="pentaho.jdbc.lazydrivers.num" value="5"/>
     </cm:default-properties>
@@ -15,7 +15,7 @@
   <reference id="namedClusterManager" interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterService"/>
 
   <bean id="serviceLocatorImpl" class="org.pentaho.big.data.api.cluster.service.locator.impl.NamedClusterServiceLocatorImpl" scope="singleton">
-    <argument value="${default.shim}"/>
+    <argument value="${internal.shim}"/>
     <argument ref="metastoreLocator"/>
     <argument ref="namedClusterManager"/>
   </bean>

@@ -34,6 +34,4 @@ public interface NamedClusterServiceLocator {
   List<String> getVendorShimList();
 
   String getDefaultShim();
-
-  void setDefaultShim( String defaultShim );
 }
