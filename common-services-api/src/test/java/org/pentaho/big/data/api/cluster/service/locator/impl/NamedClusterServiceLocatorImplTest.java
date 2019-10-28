@@ -97,7 +97,7 @@ public class NamedClusterServiceLocatorImplTest {
   public void testNoArgConstructor() {
     assertNull( new NamedClusterServiceLocatorImpl( SHIM_A, mockMetastoreLocator, namedClusterManager )
       .getService( namedCluster, Object.class ) );
-    assertEquals( SHIM_A, serviceLocator.getDefaultShim() );
+    assertEquals( SHIM_A, serviceLocator.internalShim );
     serviceLocator.getVendorShimList();
   }
 
@@ -178,11 +178,5 @@ public class NamedClusterServiceLocatorImplTest {
     assertNull( service );
   }
 
-  @Test
-  public void testDefaultShim() {
-    assertEquals( SHIM_A, serviceLocator.getDefaultShim() );
-    serviceLocator.setDefaultShim( SHIM_B );
-    assertEquals( SHIM_B, serviceLocator.getDefaultShim() );
-  }
 
 }

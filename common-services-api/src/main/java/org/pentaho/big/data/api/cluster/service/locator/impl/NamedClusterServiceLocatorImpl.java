@@ -23,16 +23,13 @@
 package org.pentaho.big.data.api.cluster.service.locator.impl;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
-import org.pentaho.big.data.api.shims.DefaultShim;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.cluster.NamedClusterService;
 import org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory;
 import org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceLocator;
-import org.pentaho.metastore.api.IMetaStore;
-import org.pentaho.metastore.api.exceptions.MetaStoreException;
-import org.pentaho.metastore.persist.MetaStoreFactory;
 import org.pentaho.osgi.metastore.locator.api.MetastoreLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,17 +52,16 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
   @VisibleForTesting static final String SERVICE_RANKING = "service.ranking";
   private final Map<String, Multimap<Class<?>, ServiceFactoryAndRanking<?>>> serviceVendorTypeMapping;
   private final ReadWriteLock readWriteLock;
-  private String fallbackShim;
-  private String defaultShim;
+  @VisibleForTesting final String internalShim;
   private final MetastoreLocator metastoreLocator;
   private final NamedClusterService namedClusterManager;
-  private static final String NAMESPACE = "pentaho";
 
   private static final Logger logger = LoggerFactory.getLogger( NamedClusterServiceLocatorImpl.class );
 
-  public NamedClusterServiceLocatorImpl( String fallbackShim, MetastoreLocator metastoreLocator,
+  public NamedClusterServiceLocatorImpl( String internalShim, MetastoreLocator metastoreLocator,
                                          NamedClusterService namedClusterManager ) {
-    this.fallbackShim = fallbackShim;
+    Preconditions.checkNotNull( internalShim, "Set internal.shim in karaf/etc/pentaho.shim.cfg" );
+    this.internalShim = internalShim;
     this.metastoreLocator = metastoreLocator;
     this.namedClusterManager = namedClusterManager;
     readWriteLock = new ReentrantReadWriteLock();
@@ -134,7 +130,7 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
     try {
       readLock.lock();
       String shim = getShimForService( namedCluster );
-
+      logger.debug( "NamedClusterServiceLocator.getService({}, {})", namedCluster, serviceClass );
       if ( shim != null ) {
         Multimap<Class<?>, ServiceFactoryAndRanking<?>> multimap =
           serviceVendorTypeMapping.computeIfPresent( shim, ( key, value ) -> value );
@@ -149,6 +145,7 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
     } finally {
       readLock.unlock();
     }
+    logger.error( "Could not find service for {} associated with named cluster {}", serviceClass, namedCluster );
     return null;
   }
 
@@ -158,7 +155,7 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
    */
   private String getShimForService( NamedCluster namedCluster ) {
     if ( namedCluster == null ) {
-      return getDefaultShim();
+      return this.internalShim;
     }
     String shim = namedCluster.getShimIdentifier();
     NamedCluster storedNamedCluster =
@@ -167,57 +164,23 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
       if ( storedNamedCluster != null ) {
         shim = storedNamedCluster.getShimIdentifier();
       } else {
-        shim = getDefaultShim();
+        shim = this.internalShim;
       }
     }
     return shim;
-  }
-
-  private String readDefaultShimFromMetastore() {
-    IMetaStore metaStore = metastoreLocator.getMetastore();
-    MetaStoreFactory metaStoreFactory =
-      new MetaStoreFactory<>( DefaultShim.class, metaStore, NAMESPACE );
-    try {
-      DefaultShim defShim = ( (DefaultShim) metaStoreFactory.loadElement( "DefaultShim" ) );
-      if ( defShim != null ) {
-        return defShim.getDefaultShim();
-      }
-    } catch ( MetaStoreException e ) {
-      logger.error( e.getMessage(), e );
-    }
-    return null;
-  }
-
-  private void writeDefaultShimToMetastore( String defaultShimValue ) {
-    IMetaStore metaStore = metastoreLocator.getMetastore();
-    MetaStoreFactory metaStoreFactory =
-      new MetaStoreFactory<>( DefaultShim.class, metaStore, NAMESPACE );
-    try {
-      metaStoreFactory.saveElement( new DefaultShim( defaultShimValue ) );
-    } catch ( MetaStoreException e ) {
-      logger.error( e.getMessage(), e );
-    }
   }
 
   public List<String> getVendorShimList() {
     return new ArrayList<>( serviceVendorTypeMapping.keySet() );
   }
 
-  public String getDefaultShim() {
-    if ( defaultShim != null ) {
-      return defaultShim;
-    }
-    defaultShim = readDefaultShimFromMetastore();
-    if ( defaultShim == null ) {
-      setDefaultShim( fallbackShim );
-    }
-
-    return defaultShim;
-  }
-
-  public void setDefaultShim( String defaultShim ) {
-    writeDefaultShimToMetastore( defaultShim );
-    this.defaultShim = defaultShim;
+  /**
+   * @deprecated to be removed once NamedClusterResolver is refactored.
+   * If you see this post 9.0 kick @mkambol in the shins.
+   */
+  @Deprecated
+  @Override public String getDefaultShim() {
+    return internalShim;
   }
 
   static class ServiceFactoryAndRanking<T> {
