@@ -122,13 +122,19 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-  
+
   <dependencies>
 
     <dependency>
       <groupId>org.pentaho.hadoop.shims</groupId>
       <artifactId>pentaho-hadoop-shims-common-fragment-V1</artifactId>
       <version>${project.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.pentaho</groupId>
@@ -403,6 +409,12 @@
           </instructions>
         </configuration>
       </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+      </plugin>
+
     </plugins>
   </build>
 </project>

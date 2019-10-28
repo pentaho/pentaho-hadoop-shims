@@ -21,11 +21,6 @@
     </dependency>
     <dependency>
       <groupId>org.pentaho.hadoop.shims</groupId>
-      <artifactId>pentaho-hadoop-shims-common-fragment-V1</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.pentaho.hadoop.shims</groupId>
       <artifactId>pentaho-hadoop-shims-mapr60-driver</artifactId>
       <version>${project.version}</version>
     </dependency>
