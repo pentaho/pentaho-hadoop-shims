@@ -36,6 +36,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.pentaho.di.core.RowMetaAndData;
+import org.pentaho.di.core.logging.KettleLogStore;
 import org.pentaho.di.core.row.RowMeta;
 import org.pentaho.di.core.row.value.ValueMetaBigNumber;
 import org.pentaho.di.core.row.value.ValueMetaBoolean;
@@ -72,6 +73,7 @@ public class PentahoParquetOutputFormatTest {
 
   @Before
   public void resetInputFormatBeforeEachTest() throws Exception {
+    KettleLogStore.init();
     switch ( provider ) {
       case "APACHE":
         pentahoParquetOutputFormat = new PentahoApacheOutputFormat();

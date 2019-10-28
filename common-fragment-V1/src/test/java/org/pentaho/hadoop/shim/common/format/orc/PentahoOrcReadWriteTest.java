@@ -25,6 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.pentaho.di.core.RowMetaAndData;
+import org.pentaho.di.core.logging.KettleLogStore;
 import org.pentaho.di.core.plugins.PluginRegistry;
 import org.pentaho.di.core.row.RowMeta;
 import org.pentaho.di.core.row.ValueMetaInterface;
@@ -99,6 +100,7 @@ public class PentahoOrcReadWriteTest {
   @Before
   public void setup() throws Exception {
     tempFolder.create();
+    KettleLogStore.init();
     orcOutputFormat = new PentahoOrcOutputFormat();
 
     // Set up the Orc Schema Description and rowMeta for the first set of fields.
