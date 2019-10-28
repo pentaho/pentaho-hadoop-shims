@@ -8,10 +8,10 @@
   </parent>
   <artifactId>pentaho-hadoop-shims-mapr61-hbase-comparators</artifactId>
   <packaging>jar</packaging>
+  <version>8.3.0.0-SNAPSHOT</version>
   <properties>
     <maven-surefire-plugin.argLine>-Djava.security.auth.login.config=${project.basedir}/mapr.login.conf</maven-surefire-plugin.argLine>
   </properties>
-  <version>8.3.0.0-SNAPSHOT</version>
   <dependencies>
     <dependency>
       <groupId>org.pentaho</groupId>
