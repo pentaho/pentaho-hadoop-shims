@@ -51,6 +51,12 @@ public class ClusterInitializingDriver implements Driver {
 
   private final JdbcUrlParser jdbcUrlParser;
 
+  private final HasRegisterDriver hasRegisterDriver;
+  private final HasDeregisterDriver hasDeregisterDriver;
+
+  private DelegatingDriver delegatingDriver;
+  private LazyDelegatingDriver[] lazyDelegatingDrivers;
+
   static {
     BIG_DATA_DRIVER_URL_PATTERNS.add( ".+:hive:.*" );
     BIG_DATA_DRIVER_URL_PATTERNS.add( ".+:hive2:.*" );
@@ -63,28 +69,59 @@ public class ClusterInitializingDriver implements Driver {
     this( jdbcUrlParser, driverRegistry, null );
   }
 
+  // Called by Blueprint
   public ClusterInitializingDriver( JdbcUrlParser jdbcUrlParser,
                                     DriverLocatorImpl driverRegistry, Integer numLazyProxies ) {
-    this( jdbcUrlParser, driverRegistry, numLazyProxies, DriverManager::registerDriver );
+    this( jdbcUrlParser, driverRegistry, numLazyProxies, DriverManager::registerDriver,
+      DriverManager::deregisterDriver );
   }
 
   public ClusterInitializingDriver( JdbcUrlParser jdbcUrlParser,
                                     DriverLocatorImpl driverRegistry, Integer numLazyProxies,
-                                    HasRegisterDriver hasRegisterDriver ) {
+                                    HasRegisterDriver hasRegisterDriver, HasDeregisterDriver hasDeregisterDriver ) {
     this.jdbcUrlParser = jdbcUrlParser;
+
+    this.hasRegisterDriver = hasRegisterDriver;
+    this.hasDeregisterDriver = hasDeregisterDriver;
+
     int lazyProxies = Optional.ofNullable( numLazyProxies ).orElse( 5 );
     try {
-      hasRegisterDriver.registerDriver( new DelegatingDriver( this ) );
+      delegatingDriver = new DelegatingDriver( this );
+      hasRegisterDriver.registerDriver( delegatingDriver );
     } catch ( SQLException e ) {
       logger.warn( "Unable to register cluster initializing driver", e );
     }
+
+    lazyDelegatingDrivers = new LazyDelegatingDriver[lazyProxies];
     for ( int i = 0; i < lazyProxies; i++ ) {
       try {
-        new LazyDelegatingDriver( driverRegistry, hasRegisterDriver );
+        lazyDelegatingDrivers[i] = new LazyDelegatingDriver( driverRegistry, hasRegisterDriver, hasDeregisterDriver );
       } catch ( SQLException e ) {
         logger.warn( "Failed to register " + LazyDelegatingDriver.class.getName(), e );
       }
     }
+  }
+
+  // Called by Blueprint
+  public void destroy() {
+    try {
+      if ( delegatingDriver != null ) {
+        hasDeregisterDriver.deregisterDriver( delegatingDriver );
+      }
+    } catch ( SQLException e ) {
+      logger.warn( "Unable to deregister cluster initializing driver", e );
+    } finally {
+      delegatingDriver = null;
+    }
+
+    for ( int i = 0; i != lazyDelegatingDrivers.length; ++i ) {
+      if ( lazyDelegatingDrivers[i] != null ) {
+        lazyDelegatingDrivers[i].destroy();
+        lazyDelegatingDrivers[i] = null;
+      }
+    }
+
+    lazyDelegatingDrivers = null;
   }
 
   @Override

@@ -24,6 +24,7 @@ package org.pentaho.big.data.api.jdbc.impl;
 
 import org.osgi.framework.ServiceReference;
 import org.pentaho.di.core.database.DelegatingDriver;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.Driver;
@@ -45,19 +46,46 @@ import java.util.logging.Logger;
 public class LazyDelegatingDriver implements Driver {
   private final DriverLocatorImpl driverLocator;
   private final HasRegisterDriver hasRegisterDriver;
+  private final HasDeregisterDriver hasDeregisterDriver;
   private Driver delegate;
   private DelegatingDriver delegatingDriver;
+  private LazyDelegatingDriver lazyDelegatingDriver;
+
+  protected static org.slf4j.Logger logger = LoggerFactory.getLogger( LazyDelegatingDriver.class );
 
   public LazyDelegatingDriver( DriverLocatorImpl driverLocator ) throws SQLException {
-    this( driverLocator, DriverManager::registerDriver );
+    this( driverLocator, DriverManager::registerDriver, DriverManager::deregisterDriver );
   }
 
-  public LazyDelegatingDriver( DriverLocatorImpl driverLocator, HasRegisterDriver hasRegisterDriver )
+  public LazyDelegatingDriver( DriverLocatorImpl driverLocator,
+                               HasRegisterDriver hasRegisterDriver, HasDeregisterDriver hasDeregisterDriver )
     throws SQLException {
     this.driverLocator = driverLocator;
     this.hasRegisterDriver = hasRegisterDriver;
+    this.hasDeregisterDriver = hasDeregisterDriver;
     this.delegatingDriver = new DelegatingDriver( this );
     hasRegisterDriver.registerDriver( delegatingDriver );
+  }
+
+  public void destroy() {
+    try {
+      // it's our responsibility to deregister delegatingDriver: we're the ones that registered it (in the constructor
+      // above) and driverLocator is instructed not to do so (in findAndProcess bellow)
+      // not sure if it can already be deregistered by the DriverLocatorImpl's Service Listener, but it doesn't hurt
+      // trying
+      if ( delegatingDriver != null ) {
+        hasDeregisterDriver.deregisterDriver( delegatingDriver );
+      }
+    } catch ( SQLException e ) {
+      logger.warn( "Failed to deregister " + LazyDelegatingDriver.class.getName(), e );
+    } finally {
+      delegatingDriver = null;
+    }
+
+    if ( lazyDelegatingDriver != null ) {
+      lazyDelegatingDriver.destroy();
+      lazyDelegatingDriver = null;
+    }
   }
 
   private synchronized <T> T findAndProcess( FunctionWithSQLException<Driver, T> attempt, Predicate<T> success,
@@ -72,7 +100,10 @@ public class LazyDelegatingDriver implements Driver {
         T result = attempt.apply( driver );
         if ( success.test( result ) ) {
           delegate = driver;
-          new LazyDelegatingDriver( driverLocator, hasRegisterDriver );
+
+          // why do we need this LazyDelegatingDriver? keeping reference to deregister it later
+          lazyDelegatingDriver = new LazyDelegatingDriver( driverLocator, hasRegisterDriver, hasDeregisterDriver );
+
           driverLocator.registerDriverServiceReferencePair( serviceReference, delegatingDriver, false );
           return result;
         }
