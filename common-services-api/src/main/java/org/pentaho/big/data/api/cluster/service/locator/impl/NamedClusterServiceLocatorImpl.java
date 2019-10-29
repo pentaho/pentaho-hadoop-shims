@@ -23,9 +23,6 @@
 package org.pentaho.big.data.api.cluster.service.locator.impl;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.cluster.NamedClusterService;
 import org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory;
@@ -35,22 +32,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.TreeSet;
+import java.util.Objects;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import static java.util.Optional.ofNullable;
 
 /**
  * Created by bryan on 11/5/15.
  */
 @SuppressWarnings ( "WeakerAccess" )
 public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocator {
-  @VisibleForTesting static final String SERVICE_RANKING = "service.ranking";
-  private final Map<String, Multimap<Class<?>, ServiceFactoryAndRanking<?>>> serviceVendorTypeMapping;
+  @VisibleForTesting final Map<String, Map<Class<?>, NamedClusterServiceFactory<?>>> serviceVendorTypeMapping;
   private final ReadWriteLock readWriteLock;
   @VisibleForTesting final String internalShim;
   private final MetastoreLocator metastoreLocator;
@@ -60,41 +58,30 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
 
   public NamedClusterServiceLocatorImpl( String internalShim, MetastoreLocator metastoreLocator,
                                          NamedClusterService namedClusterManager ) {
-    Preconditions.checkNotNull( internalShim, "Set internal.shim in karaf/etc/pentaho.shim.cfg" );
-    this.internalShim = internalShim;
+    this.internalShim = Objects.requireNonNull(
+      internalShim, "Set internal.shim in karaf/etc/pentaho.shim.cfg" );
     this.metastoreLocator = metastoreLocator;
     this.namedClusterManager = namedClusterManager;
     readWriteLock = new ReentrantReadWriteLock();
     serviceVendorTypeMapping = new HashMap<>();
   }
 
-  @VisibleForTesting
-  Map<String, Multimap<Class<?>, ServiceFactoryAndRanking<?>>> getServiceVendorTypeMapping() {
-    return serviceVendorTypeMapping;
-  }
-
   public void factoryAdded( NamedClusterServiceFactory<?> namedClusterServiceFactory, Map properties ) {
-    if ( namedClusterServiceFactory == null ) {
+    String shim = (String) properties.get( "shim" );
+    if ( namedClusterServiceFactory == null
+      || namedClusterServiceFactory.getServiceClass() == null
+      || shim == null ) {
+      logger.debug( "Undefined NamedClusterServiceFactory added." );
       return;
     }
-    Class<?> serviceClass = namedClusterServiceFactory.getServiceClass();
     Lock writeLock = readWriteLock.writeLock();
     try {
       writeLock.lock();
-      String shim = (String) properties.get( "shim" );
-
-      Multimap<Class<?>, ServiceFactoryAndRanking<?>> serviceFactoryMap =
-        Multimaps.newSortedSetMultimap( new HashMap<>(),
-          () -> new TreeSet<>( ( o1, o2 ) -> {
-            if ( o1.ranking == o2.ranking ) {
-              return o1.namedClusterServiceFactory.toString().compareTo( o2.namedClusterServiceFactory.toString() );
-            }
-            return o2.ranking - o1.ranking;
-          } ) );
-      serviceVendorTypeMapping.putIfAbsent( shim, serviceFactoryMap );
-      Multimap<Class<?>, ServiceFactoryAndRanking<?>> classMultiMap = serviceVendorTypeMapping.get( shim );
-      classMultiMap.get( serviceClass ).add( new ServiceFactoryAndRanking( (Integer) properties.get( SERVICE_RANKING ),
-        namedClusterServiceFactory ) );
+      serviceVendorTypeMapping.putIfAbsent( shim, new HashMap<>() );
+      Map<Class<?>, NamedClusterServiceFactory<?>> classServiceMap =
+        serviceVendorTypeMapping.get( shim );
+      Objects.requireNonNull( classServiceMap )
+        .put( namedClusterServiceFactory.getServiceClass(), namedClusterServiceFactory );
     } finally {
       writeLock.unlock();
     }
@@ -102,6 +89,7 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
 
   public void factoryRemoved( NamedClusterServiceFactory<?> namedClusterServiceFactory, Map properties ) {
     if ( namedClusterServiceFactory == null ) {
+      logger.debug( "Undefined NamedClusterServiceFactory removed." );
       return;
     }
     Class<?> serviceClass = namedClusterServiceFactory.getServiceClass();
@@ -109,19 +97,10 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
     try {
       writeLock.lock();
       String shim = (String) properties.get( "shim" );
-      Optional.ofNullable( serviceVendorTypeMapping.get( shim ) ).ifPresent(
-        v -> v.remove( serviceClass,
-          new ServiceFactoryAndRanking( (Integer) properties.get( SERVICE_RANKING ), namedClusterServiceFactory ) )
-      );
-      housekeepShim( shim );
+      ofNullable( serviceVendorTypeMapping.get( shim ) )
+        .ifPresent( serviceFactories -> serviceFactories.remove( serviceClass ) );
     } finally {
       writeLock.unlock();
-    }
-  }
-
-  private void housekeepShim( String shim ) {
-    if ( serviceVendorTypeMapping.containsKey( shim ) && serviceVendorTypeMapping.get( shim ).size() == 0 ) {
-      serviceVendorTypeMapping.remove( shim );
     }
   }
 
@@ -129,18 +108,13 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
     Lock readLock = readWriteLock.readLock();
     try {
       readLock.lock();
-      String shim = getShimForService( namedCluster );
+      String shim = Objects.requireNonNull( getShimForService( namedCluster ) );
       logger.debug( "NamedClusterServiceLocator.getService({}, {})", namedCluster, serviceClass );
-      if ( shim != null ) {
-        Multimap<Class<?>, ServiceFactoryAndRanking<?>> multimap =
-          serviceVendorTypeMapping.computeIfPresent( shim, ( key, value ) -> value );
-        if ( multimap != null && multimap.get( serviceClass ) != null ) {
-          for ( ServiceFactoryAndRanking<?> serviceFactoryAndRanking : multimap.get( serviceClass ) ) {
-            if ( serviceFactoryAndRanking.namedClusterServiceFactory.canHandle( namedCluster ) ) {
-              return serviceClass.cast( serviceFactoryAndRanking.namedClusterServiceFactory.create( namedCluster ) );
-            }
-          }
-        }
+      Map<Class<?>, NamedClusterServiceFactory<?>> serviceMap =
+        serviceVendorTypeMapping.getOrDefault( shim, Collections.emptyMap() );
+      NamedClusterServiceFactory<?> serviceFactory = serviceMap.get( serviceClass );
+      if ( serviceFactory != null && serviceFactory.canHandle( namedCluster ) ) {
+        return serviceClass.cast( serviceFactory.create( namedCluster ) );
       }
     } finally {
       readLock.unlock();
@@ -183,17 +157,4 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
     return internalShim;
   }
 
-  static class ServiceFactoryAndRanking<T> {
-    final int ranking;
-    final NamedClusterServiceFactory<T> namedClusterServiceFactory;
-
-    ServiceFactoryAndRanking( Integer ranking, NamedClusterServiceFactory<T> namedClusterServiceFactory ) {
-      if ( ranking == null ) {
-        this.ranking = 0;
-      } else {
-        this.ranking = ranking;
-      }
-      this.namedClusterServiceFactory = namedClusterServiceFactory;
-    }
-  }
 }
