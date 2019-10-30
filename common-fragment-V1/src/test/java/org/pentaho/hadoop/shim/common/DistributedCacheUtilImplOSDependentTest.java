@@ -95,7 +95,7 @@ public class DistributedCacheUtilImplOSDependentTest {
       Configuration conf = new Configuration();
       FileSystem fs = DistributedCacheTestUtil.getLocalFileSystem( conf );
 
-      DistributedCacheTestUtil.stageForCacheTester( ch, source, fs, root, dest, 6, 6 );
+      DistributedCacheTestUtil.stageForCacheTester( ch, source, fs, root, dest, 6, 9 );
     } finally {
       source.delete( new AllFileSelector() );
     }
@@ -117,7 +117,7 @@ public class DistributedCacheUtilImplOSDependentTest {
       assertTrue( fs.exists( dest ) );
       assertTrue( fs.getFileStatus( dest ).isDir() );
 
-      DistributedCacheTestUtil.stageForCacheTester( ch, source, fs, root, dest, 6, 6 );
+      DistributedCacheTestUtil.stageForCacheTester( ch, source, fs, root, dest, 6, 9 );
     } finally {
       source.delete( new AllFileSelector() );
     }
@@ -140,7 +140,7 @@ public class DistributedCacheUtilImplOSDependentTest {
       assertTrue( fs.exists( pluginInstallPath ) );
       ContentSummary summary = fs.getContentSummary( pluginInstallPath );
       assertEquals( 6, summary.getFileCount() );
-      assertEquals( 6, summary.getDirectoryCount() );
+      assertEquals( 9, summary.getDirectoryCount() );
     } finally {
       pluginDir.delete( new AllFileSelector() );
       fs.delete( pluginsDir, true );
@@ -162,7 +162,7 @@ public class DistributedCacheUtilImplOSDependentTest {
         ch.stageForCache( source, fs, dest, true );
 
         List<Path> files = ch.findFiles( fs, dest, null );
-        assertEquals( 5, files.size() );
+        assertEquals( 6, files.size() );
 
         files = ch.findFiles( fs, dest, Pattern.compile( ".*jar$" ) );
         assertEquals( 2, files.size() );
@@ -191,6 +191,7 @@ public class DistributedCacheUtilImplOSDependentTest {
       .createTestFolderWithContent( DistributedCacheUtilImpl.PENTAHO_BIG_DATA_PLUGIN_FOLDER_NAME );
 
     Path root = new Path( "bin/test/installKettleEnvironment" );
+    System.setProperty("karaf.home", "bin/test/installKettleEnvironment/system/karaf" );
     try {
       ch.installKettleEnvironment( pmrArchive, fs, root, bigDataPluginDir, null, "" );
       assertTrue( ch.isKettleEnvironmentInstalledAt( fs, root ) );

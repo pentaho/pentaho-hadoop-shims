@@ -23,6 +23,7 @@
 package org.pentaho.hadoop.shim.common;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.AllFileSelector;
 import org.apache.commons.vfs2.FileDepthSelector;
 import org.apache.commons.vfs2.FileObject;
@@ -31,7 +32,6 @@ import org.apache.commons.vfs2.FileSelector;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileType;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.filecache.DistributedCache;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
@@ -45,16 +45,24 @@ import org.pentaho.di.core.plugins.PluginFolderInterface;
 import org.pentaho.di.core.vfs.KettleVFS;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.hadoop.shim.ShimRuntimeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -62,6 +70,8 @@ import java.util.zip.ZipInputStream;
  * Utility to work with Hadoop's Distributed Cache
  */
 public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.internal.DistributedCacheUtil {
+
+  protected static Logger logger = LoggerFactory.getLogger( DistributedCacheUtilImpl.class );
 
   /**
    * Path within the installation directory to deploy libraries
@@ -112,6 +122,10 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
    * Prefix for properties we want to omit when copying to the cluster
    */
   private static final String AUTH_PREFIX = "pentaho.authentication";
+  public static final String SYSTEM_KARAF_SYSTEM_ORG_PENTAHO_HADOOP_SHIMS =
+    "system/karaf/system/org/pentaho/hadoop/shims";
+  public static final String SYSTEM_KARAF_SYSTEM_COM_PENTAHO_HADOOP_SHIMS =
+    "system/karaf/system/com/pentaho/hadoop/shims";
 
 
   /**
@@ -169,15 +183,47 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
     out.close();
 
     stageForCache( extracted, fs, destination, true, false );
+    java.nio.file.Path kettleHomeDir = Paths.get( System.getProperty( "karaf.home" ) ).getParent().getParent();
+    stagePentahoHadoopShims( fs, destination, kettleHomeDir );
     stageBigDataPlugin( fs, destination, bigDataPlugin, shimIdentifier );
 
-    if ( !Const.isEmpty( additionalPlugins ) ) {
+    if ( StringUtils.isNotEmpty( additionalPlugins ) ) {
       stagePluginsForCache( fs, new Path( destination, PATH_PLUGINS ), additionalPlugins );
     }
 
     // Delete the lock file now that we're done. It is intentional that we're not doing this in a try/finally. If the
     // staging fails for some reason we require the user to forcibly overwrite the (partial) installation
     fs.delete( lockFile, true );
+  }
+
+  private Map<String, String> getAbsoluteAndRelativePathOfFilesToCopy( java.nio.file.Path dir, String childDir )
+    throws IOException {
+    Map<String, String> files = new HashMap<>();
+
+    if ( dir.resolve( childDir ).toFile().exists() ) {
+      try ( Stream<java.nio.file.Path> input = Files.walk( dir.resolve( childDir ) ) ) {
+        files = input.filter( x -> x.toFile().isFile() )
+          .collect( Collectors
+            .toMap( java.nio.file.Path::toString, x -> x.toString().replace( dir.toString() + Path.SEPARATOR, "" ) ) );
+      }
+    }
+    return files;
+  }
+
+  private void stagePentahoHadoopShims( FileSystem fs, Path dest, java.nio.file.Path kettleHomeDir )
+    throws IOException {
+    Map<String, String> files =
+      getAbsoluteAndRelativePathOfFilesToCopy( kettleHomeDir, SYSTEM_KARAF_SYSTEM_ORG_PENTAHO_HADOOP_SHIMS );
+    files
+      .putAll( getAbsoluteAndRelativePathOfFilesToCopy( kettleHomeDir, SYSTEM_KARAF_SYSTEM_COM_PENTAHO_HADOOP_SHIMS ) );
+
+    files.forEach( ( localPath, relativePath ) -> {
+      try {
+        stageForCache( KettleVFS.getFileObject( localPath ), fs, new Path( dest, relativePath ), true, false );
+      } catch ( IOException | KettleFileException e ) {
+        logger.info( "Failed to stage the shims to distributed cache." );
+      }
+    } );
   }
 
   /**
@@ -266,7 +312,7 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
    * @throws IOException
    */
   public void configureWithKettleEnvironment( Configuration conf, FileSystem fs, Path kettleInstallDir )
-    throws KettleFileException, IOException {
+    throws IOException {
     Path libDir = new Path( kettleInstallDir, PATH_LIB );
     // Add all files to the classpath found in the lib directory
     List<Path> libraryJars = findFiles( fs, libDir, null );
@@ -285,7 +331,7 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
    * @throws IOException
    */
   public void addCachedFilesToClasspath( List<Path> files, Configuration conf ) throws IOException {
-    DistributedCache.createSymlink( conf );
+    org.apache.hadoop.mapreduce.filecache.DistributedCache.createSymlink( conf );
     for ( Path file : files ) {
       // We need to disqualify the path so Distributed Cache in 0.20.2 can properly add the resources to
       // the classpath: https://issues.apache.org/jira/browse/MAPREDUCE-752
@@ -305,8 +351,6 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
   public void addFileToClassPath( Path file, Configuration conf )
     throws IOException {
 
-    // TODO Replace this with a Hadoop shim if we end up having version-specific implementations scattered around
-
     // Save off the classloader, to make sure the version info can be loaded successfully from the hadoop-common JAR
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader( VersionInfo.class.getClassLoader() );
@@ -320,7 +364,7 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
     FileSystem fs = FileSystem.get( conf );
     URI uri = fs.makeQualified( file ).toUri();
 
-    DistributedCache.addCacheFile( uri, conf );
+    org.apache.hadoop.mapreduce.filecache.DistributedCache.addCacheFile( uri, conf );
   }
 
   /**
@@ -331,11 +375,12 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
    * @param conf  Configuration to modify
    * @throws IOException
    */
-  public void addCachedFiles( List<Path> paths, Configuration conf ) throws IOException {
-    DistributedCache.createSymlink( conf );
+  public void addCachedFiles( List<Path> paths, Configuration conf ) {
+    org.apache.hadoop.mapreduce.filecache.DistributedCache.createSymlink( conf );
     for ( Path path : paths ) {
       // Build a URI and set the path's short name in the fragment so the file is copied properly
-      DistributedCache.addCacheFile( URI.create( path.toUri() + "#" + path.getName() ), conf );
+      org.apache.hadoop.mapreduce.filecache.DistributedCache
+        .addCacheFile( URI.create( path.toUri() + "#" + path.getName() ), conf );
     }
   }
 
