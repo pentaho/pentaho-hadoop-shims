@@ -37,7 +37,6 @@
     <org.mortbay.jetty.version>6.1.26.hwx</org.mortbay.jetty.version>
     <org.apache.hbase.version>1.1.2.2.5.0.0-1245</org.apache.hbase.version>
     <javax.mail.version>1.4.1</javax.mail.version>
-    <com.thoughtworks.xstream.version>1.4.9</com.thoughtworks.xstream.version>
     <org.apache.hadoop.version>2.7.3.2.5.0.0-1245</org.apache.hadoop.version>
     <org.apache.hive.version>1.2.1000.2.5.0.0-1245</org.apache.hive.version>
     <javax.servlet.jsp.version>2.1</javax.servlet.jsp.version>
@@ -351,7 +350,6 @@
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
-      <version>${com.thoughtworks.xstream.version}</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>

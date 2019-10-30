@@ -13,7 +13,6 @@
   <properties>
     <log4j.version>1.2.17</log4j.version>
     <commons-io.version>2.4</commons-io.version>
-    <xstream.version>1.4.9</xstream.version>
     <shim.type>EMR</shim.type>
   </properties>
   <dependencies>
@@ -65,7 +64,6 @@
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
-      <version>${xstream.version}</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
