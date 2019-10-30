@@ -23,6 +23,7 @@ package org.pentaho.hadoop.shim.common.format.orc;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.pentaho.di.core.logging.KettleLogStore;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.format.IOrcInputField;
 
@@ -41,6 +42,7 @@ public class PentahoOrcInputFormatTest {
 
   @Before
   public void setup() throws Exception {
+    KettleLogStore.init();
     pentahoOrcInputFormat = new PentahoOrcInputFormat( mock( NamedCluster.class ) );
     mockSchemaDescription = new ArrayList<IOrcInputField>();
   }
