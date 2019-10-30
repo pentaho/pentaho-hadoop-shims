@@ -23,6 +23,7 @@
 package org.pentaho.big.data.api.cluster.service.locator.impl;
 
 import com.google.common.annotations.VisibleForTesting;
+import org.pentaho.big.data.api.shims.LegacyShimLocator;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.cluster.NamedClusterService;
 import org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory;
@@ -31,6 +32,7 @@ import org.pentaho.osgi.metastore.locator.api.MetastoreLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -134,12 +136,20 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
     String shim = namedCluster.getShimIdentifier();
     NamedCluster storedNamedCluster =
       namedClusterManager.getNamedClusterByName( namedCluster.getName(), metastoreLocator.getMetastore() );
+    if ( ( shim == null ) && ( storedNamedCluster != null ) ) {
+      shim = storedNamedCluster.getShimIdentifier();
+    }
     if ( shim == null ) {
-      if ( storedNamedCluster != null ) {
-        shim = storedNamedCluster.getShimIdentifier();
-      } else {
-        shim = this.internalShim;
+      // Named cluster is not fully defined in the metastore; might be a legacy configuration.
+      try {
+        shim = LegacyShimLocator.getLegacyDefaultShimName();
+      } catch ( IOException e ) {
+        // do nothing
       }
+    }
+    if ( shim == null ) {
+      // No legacy configuration, use the default shim.
+      shim = this.internalShim;
     }
     return shim;
   }
@@ -156,5 +166,4 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
   @Override public String getDefaultShim() {
     return internalShim;
   }
-
 }

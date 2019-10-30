@@ -23,11 +23,13 @@
 package com.pentaho.big.data.bundles.impl.shim.hive;
 
 import org.pentaho.big.data.api.jdbc.impl.JdbcUrlImpl;
+import org.pentaho.big.data.api.shims.LegacyShimLocator;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.jdbc.JdbcUrl;
 import org.pentaho.hadoop.shim.api.jdbc.JdbcUrlParser;
-import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.common.DriverProxyInvocationChain;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.Driver;
@@ -151,8 +153,25 @@ public class HiveDriver implements Driver {
   }
 
   protected boolean isRequiredShim( NamedCluster namedCluster, String url ) {
-    return hadoopConfigurationId != null
-      && namedCluster != null && hadoopConfigurationId.equals( namedCluster.getShimIdentifier() );
+    // Either hadoopConfigurationId matches the namedCluster shim ID, or the namedCluster shim ID is null and
+    // hadoopConfigurationId matches the shim identified in the legacy properties file (legacy configuration support)
+    boolean useThisShim = false;
+    if ( namedCluster != null && namedCluster.getShimIdentifier() != null ) {
+      useThisShim = hadoopConfigurationId != null && hadoopConfigurationId.equals( namedCluster.getShimIdentifier() );
+    } else {
+      useThisShim = hadoopConfigurationId.equals( getLegacyDefaultShimName() );
+    }
+    return useThisShim;
+  }
+
+  private String getLegacyDefaultShimName() {
+    String defaultShimName = null;
+    try {
+      defaultShimName = LegacyShimLocator.getLegacyDefaultShimName();
+    } catch ( IOException e ) {
+      // do nothing; fallback failed
+    }
+    return defaultShimName;
   }
 
   protected Driver checkBeforeCallActiveDriver( String url ) throws SQLException {
