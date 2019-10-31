@@ -6,10 +6,10 @@
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-hdp25-reactor</artifactId>
-    <version>8.3.0.0-SNAPSHOT</version>
+    <version>8.3.2019.05.00-571</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-hdp25</artifactId>
-  <version>8.3.0.0-SNAPSHOT</version>
+  <version>8.3.2019.05.00-571</version>
   <properties>
     <org.xerial.snappy.version>1.1.1.3</org.xerial.snappy.version>
     <com.google.code.findbugs.version>3.0.0</com.google.code.findbugs.version>
