@@ -12,7 +12,6 @@
   <version>8.3.0.0-SNAPSHOT</version>
   <properties>
     <log4j.version>1.2.15</log4j.version>
-    <xstream.version>1.4.9</xstream.version>
     <maprfs.version>5.2.0-mapr</maprfs.version>
     <commons-configuration.version>1.6</commons-configuration.version>
     <shim.type>MAPR</shim.type>
@@ -49,7 +48,6 @@
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
-      <version>${xstream.version}</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
