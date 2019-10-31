@@ -48,6 +48,7 @@ import org.pentaho.hadoop.shim.ShimRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -204,7 +205,7 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
       try ( Stream<java.nio.file.Path> input = Files.walk( dir.resolve( childDir ) ) ) {
         files = input.filter( x -> x.toFile().isFile() )
           .collect( Collectors
-            .toMap( java.nio.file.Path::toString, x -> x.toString().replace( dir.toString() + Path.SEPARATOR, "" ) ) );
+            .toMap( java.nio.file.Path::toString, x -> x.toString().replace( dir.toString() + File.separator, "" ) ) );
       }
     }
     return files;
