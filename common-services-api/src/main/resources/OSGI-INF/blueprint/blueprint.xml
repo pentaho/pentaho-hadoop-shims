@@ -42,7 +42,7 @@
       <argument ref="blueprintBundleContext"/>
   </bean>
 
-    <bean class="org.pentaho.big.data.api.jdbc.impl.ClusterInitializingDriver">
+    <bean class="org.pentaho.big.data.api.jdbc.impl.ClusterInitializingDriver" destroy-method="destroy">
         <argument ref="jdbcUrlParserImpl"/>
         <argument ref="driverLocator"/>
         <argument value="${pentaho.jdbc.lazydrivers.num}"/>

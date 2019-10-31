@@ -47,6 +47,7 @@ public class DriverLocatorImpl implements DriverLocator {
   public static final String DATA_SOURCE_TYPE_BIGDATA = "(dataSourceType=bigdata)";
   private final BundleContext bundleContext;
   private final HasRegisterDriver hasRegisterDriver;
+  private final HasDeregisterDriver hasDeregisterDriver;
   private final Map<ServiceReference<Driver>, List<Driver>> registeredDrivers;
 
   public DriverLocatorImpl( BundleContext bundleContext ) {
@@ -58,6 +59,7 @@ public class DriverLocatorImpl implements DriverLocator {
                             Map<ServiceReference<Driver>, List<Driver>> registeredDrivers ) {
     this.bundleContext = bundleContext;
     this.hasRegisterDriver = hasRegisterDriver;
+    this.hasDeregisterDriver = hasDeregisterDriver;
     this.registeredDrivers = registeredDrivers;
     this.bundleContext.addServiceListener( event -> {
       ServiceReference<?> serviceReference = event.getServiceReference();
@@ -118,6 +120,8 @@ public class DriverLocatorImpl implements DriverLocator {
   public synchronized void registerDriverServiceReferencePair( ServiceReference<Driver> serviceReference, Driver driver,
                                                                boolean shouldRegisterExternally ) {
     try {
+      // this registerDriverServiceReferencePair method is currently only called in LazyDelegatingDriver.findAndProcess
+      // and shouldRegisterExternally is always false... so lets assume we don't have the responsibility of deregister it
       if ( shouldRegisterExternally ) {
         hasRegisterDriver.registerDriver( driver );
       }
