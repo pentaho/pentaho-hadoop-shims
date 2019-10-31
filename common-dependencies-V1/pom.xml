@@ -20,6 +20,11 @@
   <dependencies>
 
     <dependency>
+      <groupId>org.pentaho</groupId>
+      <artifactId>pentaho-hadoop-shims-common-mapreduce</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-mapreduce-client-core</artifactId>
       <version>${org.apache.hadoop.version}</version>
@@ -154,14 +159,12 @@
               </exclude>
               <transitive>true</transitive>
             </resolverFilter>
-            <!--
             <resolverFilter>
               <include>
-                *:pig
+                org.pentaho:pentaho-hadoop-shims-common-mapreduce
               </include>
               <transitive>false</transitive>
             </resolverFilter>
-            -->
           </resolverFilters>
         </configuration>
         <executions>
