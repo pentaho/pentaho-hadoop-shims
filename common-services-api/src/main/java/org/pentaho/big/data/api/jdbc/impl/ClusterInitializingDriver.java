@@ -54,8 +54,8 @@ public class ClusterInitializingDriver implements Driver {
   private final HasRegisterDriver hasRegisterDriver;
   private final HasDeregisterDriver hasDeregisterDriver;
 
-  private DelegatingDriver delegatingDriver;
-  private LazyDelegatingDriver[] lazyDelegatingDrivers;
+  DelegatingDriver delegatingDriver;
+  LazyDelegatingDriver[] lazyDelegatingDrivers;
 
   static {
     BIG_DATA_DRIVER_URL_PATTERNS.add( ".+:hive:.*" );

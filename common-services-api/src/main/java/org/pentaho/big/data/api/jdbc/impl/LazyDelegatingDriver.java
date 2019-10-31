@@ -48,8 +48,8 @@ public class LazyDelegatingDriver implements Driver {
   private final HasRegisterDriver hasRegisterDriver;
   private final HasDeregisterDriver hasDeregisterDriver;
   private Driver delegate;
-  private DelegatingDriver delegatingDriver;
-  private LazyDelegatingDriver lazyDelegatingDriver;
+  DelegatingDriver delegatingDriver;
+  LazyDelegatingDriver lazyDelegatingDriver;
 
   protected static org.slf4j.Logger logger = LoggerFactory.getLogger( LazyDelegatingDriver.class );
 
