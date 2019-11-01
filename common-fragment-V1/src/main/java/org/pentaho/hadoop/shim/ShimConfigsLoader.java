@@ -61,6 +61,9 @@ public class ShimConfigsLoader {
       getURLToResourceFile( ClusterConfigNames.CONFIGS_PROP.toString(), additionalPath ) );
   }
 
+  // complexity rule suppressed because the level of nesting is not significant and moving logic to other methods
+  // would make it more difficult to trace
+  @SuppressWarnings( "squid:S3776" )
   public static URL getURLToResourceFile( String siteFileName, String additionalPath ) {
     try {
       Path currentPath = null;
@@ -113,9 +116,11 @@ public class ShimConfigsLoader {
           }
         }
       }
-      log.logError( BaseMessages.getString( PKG, "ShimConfigsLoader.UnableToFindConfigs" ) );
+      log.logError( BaseMessages.getString( PKG, "ShimConfigsLoader.UnableToFindConfigs" ),
+        siteFileName, additionalPath );
     } catch ( IOException ex ) {
-      log.logError( BaseMessages.getString( PKG, "ShimConfigsLoader.ExceptionReadingFile" ), ex );
+      log.logError( BaseMessages.getString( PKG, "ShimConfigsLoader.ExceptionReadingFile" ),
+        siteFileName, additionalPath, ex.getStackTrace() );
     }
     return null;
   }
