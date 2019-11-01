@@ -186,7 +186,7 @@
               <include>
                 *:parquet-hadoop,*:parquet-hadoop-bundle,*:hadoop-yarn-api,*:avro,*:avro-mapred,*:hive-jdbc,
                 *:hive-service,*:orc-core,*:hadoop-common,*:hadoop-hdfs,*:hadoop-mapreduce-*,
-                *:hadoop-yarn-api,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,
+                *:hadoop-yarn-common,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,
                 *:hbase-server,*:hbase-metrics,*:hbase-metrics-api,*:oozie-client,*:parquet-hadoop-bundle,
                 *:zookeeper
               </include>
