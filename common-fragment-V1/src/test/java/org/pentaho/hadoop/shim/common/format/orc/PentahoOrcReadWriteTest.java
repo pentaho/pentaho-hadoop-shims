@@ -99,7 +99,6 @@ public class PentahoOrcReadWriteTest {
 
   @Before
   public void setup() throws Exception {
-    KettleLogStore.init();
     tempFolder.create();
     KettleLogStore.init();
     orcOutputFormat = new PentahoOrcOutputFormat();

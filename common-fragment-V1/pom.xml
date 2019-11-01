@@ -550,12 +550,6 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>pentaho</groupId>
-        <artifactId>pentaho-platform-core</artifactId>
-        <version>${pdi.version}</version>
-        <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>pentaho-hadoop-shims-common-mapreduce</artifactId>
       <version>${project.version}</version>

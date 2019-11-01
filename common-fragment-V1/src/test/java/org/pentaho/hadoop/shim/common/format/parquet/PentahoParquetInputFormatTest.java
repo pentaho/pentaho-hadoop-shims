@@ -73,7 +73,6 @@ public class PentahoParquetInputFormatTest {
 
   @Before
   public void resetInputFormatBeforeEachTest() throws Exception {
-    KettleLogStore.init();
     NamedCluster namedCluster = mock( NamedCluster.class );
     KettleLogStore.init();
     switch ( provider ) {

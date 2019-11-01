@@ -69,7 +69,7 @@
             <_exportcontents>
             </_exportcontents>
             <Export-Package>
-              org.pentaho.big.data.api.shims.*,org.pentaho.big.data.api.jdbc.*
+              org.pentaho.big.data.api.jdbc.*
             </Export-Package>
             <Embed-Dependency>*</Embed-Dependency>
           </instructions>

@@ -23,7 +23,6 @@
 package org.pentaho.hadoop.shim;
 
 import org.apache.hadoop.conf.Configuration;
-import org.pentaho.big.data.api.shims.LegacyShimLocator;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.logging.LogChannel;
 import org.pentaho.di.core.logging.LogChannelInterface;
@@ -31,8 +30,6 @@ import org.pentaho.di.core.plugins.LifecyclePluginType;
 import org.pentaho.di.core.plugins.PluginInterface;
 import org.pentaho.di.core.plugins.PluginRegistry;
 import org.pentaho.di.i18n.BaseMessages;
-import org.pentaho.hadoop.shim.api.ShimIdentifierInterface;
-import org.pentaho.platform.engine.core.system.PentahoSystem;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -98,19 +95,6 @@ public class ShimConfigsLoader {
           + File.separator + CONFIGS_DIR_PREFIX + File.separator + additionalPath + File.separator + siteFileName );
         if ( currentPath.toFile().exists() ) {
           return currentPath.toAbsolutePath().toFile().toURI().toURL();
-        }
-      }
-      // cluster name was missing or else config files were not found; try looking for a legacy configuration
-      String defaultShim = LegacyShimLocator.getLegacyDefaultShimName();
-      List<ShimIdentifierInterface> shimIdentifers = PentahoSystem.getAll( ShimIdentifierInterface.class );
-      for ( ShimIdentifierInterface shim : shimIdentifers ) {
-        if ( shim.getId().equals( defaultShim ) ) {
-          // only return the legacy folder if the shim still exists
-          currentPath = Paths.get( LegacyShimLocator.getLegacyDefaultShimDir( defaultShim ).toString() + File.separator + siteFileName );
-          if ( currentPath.toFile().exists() ) {
-            log.logBasic( BaseMessages.getString( PKG, "ShimConfigsLoader.UsingLegacyConfig" ) );
-            return currentPath.toAbsolutePath().toFile().toURI().toURL();
-          }
         }
       }
       log.logError( BaseMessages.getString( PKG, "ShimConfigsLoader.UnableToFindConfigs" ) );
