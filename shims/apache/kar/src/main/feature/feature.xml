@@ -1,4 +1,4 @@
-<features name="${project.artifactId}-repo" xmlns="http://karaf.apache.org/xmlns/features/v1.2.1">
+<features name="${project.artifactId}-repo" xmlns="http://karaf.apache.org/xmlns/features/v1.6.0">
   <feature name="${project.artifactId}" version="${project.version}">
 
     <details>${project.description}</details>

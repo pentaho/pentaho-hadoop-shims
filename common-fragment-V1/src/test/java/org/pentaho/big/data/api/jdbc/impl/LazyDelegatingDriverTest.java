@@ -54,6 +54,7 @@ import static org.mockito.Mockito.when;
 public class LazyDelegatingDriverTest {
   @Mock DriverLocatorImpl driverRegistry;
   @Mock HasRegisterDriver hasRegisterDriver;
+  @Mock HasDeregisterDriver hasDeregisterDriver;
   @Mock ServiceReference<Driver> badDriverServiceReference;
   @Mock Driver badDriver;
   @Mock ServiceReference<Driver> goodDriverServiceReference;
@@ -80,7 +81,7 @@ public class LazyDelegatingDriverTest {
     testUrl = "testUrl";
     majorVersion = 10;
     minorVersion = 11;
-    lazyDelegatingDriver = new LazyDelegatingDriver( driverRegistry, hasRegisterDriver );
+    lazyDelegatingDriver = new LazyDelegatingDriver( driverRegistry, hasRegisterDriver, hasDeregisterDriver );
     drivers = new ArrayList<>();
     drivers.add( makeEntry( badDriverServiceReference, badDriver ) );
     drivers.add( makeEntry( goodDriverServiceReference, driver ) );
