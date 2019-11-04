@@ -234,16 +234,18 @@ public class MapReduceServiceImpl implements MapReduceService {
     return jarFile;
   }
 
+  // SonarLint warning for rule "Resources should be closed" was suppressed because the loaded class'
+  // classloader need to remain open in case the class needs other classes from the same jar from which
+  // the class was loaded.
+  @SuppressWarnings( "squid:S2095" )
   private Class<?> loadClassByName( final String className, final URL jarUrl, final ClassLoader parentClassLoader )
     throws ClassNotFoundException {
     if ( className != null ) {
-      try ( URLClassLoader cl = new URLClassLoader( new URL[] { jarUrl }, parentClassLoader ) ) {
-        return cl.loadClass( className.replace( "/", "." ) );
-      } catch ( IOException e ) {
-        logger.error( e.getMessage(), e );
-      }
+      URLClassLoader cl = new URLClassLoader( new URL[] { jarUrl }, parentClassLoader );
+      return cl.loadClass( className.replaceAll( "/", "." ) );
+    } else {
+      return null;
     }
-    return null;
   }
 
   private Class<?> getClassByName( String className, URL jarUrl, ClassLoader parentClassLoader )
