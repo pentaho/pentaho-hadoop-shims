@@ -164,8 +164,7 @@
                   <groupId>org.pentaho.hadoop.shims</groupId>
                   <artifactId>pentaho-hadoop-shims-common-fragment-V1</artifactId>
                   <outputDirectory>${project.build.directory}/src</outputDirectory>
-                  <includes>**/*.properties</includes>
-                  <excludes>META-INF/</excludes>
+                  <includes>**/*.properties,META-INF/services/*</includes>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.pentaho.hadoop.shims</groupId>
