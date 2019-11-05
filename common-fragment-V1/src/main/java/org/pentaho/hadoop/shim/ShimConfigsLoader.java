@@ -22,14 +22,17 @@
 
 package org.pentaho.hadoop.shim;
 
+import org.apache.commons.vfs2.FileObject;
 import org.apache.hadoop.conf.Configuration;
 import org.pentaho.big.data.api.shims.LegacyShimLocator;
 import org.pentaho.di.core.Const;
+import org.pentaho.di.core.exception.KettleFileException;
 import org.pentaho.di.core.logging.LogChannel;
 import org.pentaho.di.core.logging.LogChannelInterface;
 import org.pentaho.di.core.plugins.LifecyclePluginType;
 import org.pentaho.di.core.plugins.PluginInterface;
 import org.pentaho.di.core.plugins.PluginRegistry;
+import org.pentaho.di.core.vfs.KettleVFS;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.hadoop.shim.api.ShimIdentifierInterface;
 
@@ -37,8 +40,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -65,41 +66,41 @@ public class ShimConfigsLoader {
   @SuppressWarnings( "squid:S3776" )
   public static URL getURLToResourceFile( String siteFileName, String additionalPath ) {
     try {
-      Path currentPath = null;
+      FileObject currentPath = null;
       if ( additionalPath != null && !additionalPath.equals( "" ) ) {
-        currentPath = Paths.get(
+        currentPath = KettleVFS.getFileObject(
           Const.getKettleDirectory() + File.separator + CONFIGS_DIR_PREFIX + File.separator + additionalPath
             + File.separator
             + siteFileName );
 
-        if ( currentPath.toFile().exists() ) {
-          return currentPath.toAbsolutePath().toFile().toURI().toURL();
+        if ( currentPath.exists() ) {
+          return currentPath.getURL();
         }
 
-        currentPath = Paths.get(
+        currentPath = KettleVFS.getFileObject(
           Const.getUserHomeDirectory() + File.separator + ".pentaho" + File.separator + CONFIGS_DIR_PREFIX
             + File.separator + additionalPath + File.separator
             + siteFileName );
-        if ( currentPath.toFile().exists() ) {
-          return currentPath.toAbsolutePath().toFile().toURI().toURL();
+        if ( currentPath.exists() ) {
+          return currentPath.getURL();
         }
 
-        currentPath = Paths.get(
+        currentPath = KettleVFS.getFileObject(
           Const.getUserHomeDirectory() + File.separator + CONFIGS_DIR_PREFIX + File.separator + additionalPath
             + File.separator
             + siteFileName );
-        if ( currentPath.toFile().exists() ) {
-          return currentPath.toAbsolutePath().toFile().toURI().toURL();
+        if ( currentPath.exists() ) {
+          return currentPath.getURL();
         }
 
         // normal metastore locations failed, see if there's a metastore in the big-data-plugin folder
         // this should only exist if this instance of pentaho were created to run on a yarn cluster
         PluginInterface pluginInterface =
           PluginRegistry.getInstance().findPluginWithId( LifecyclePluginType.class, "HadoopSpoonPlugin" );
-        currentPath = Paths.get( pluginInterface.getPluginDirectory().getPath()
+        currentPath = KettleVFS.getFileObject( pluginInterface.getPluginDirectory().getPath()
           + File.separator + CONFIGS_DIR_PREFIX + File.separator + additionalPath + File.separator + siteFileName );
-        if ( currentPath.toFile().exists() ) {
-          return currentPath.toAbsolutePath().toFile().toURI().toURL();
+        if ( currentPath.exists() ) {
+          return currentPath.getURL();
         }
       }
       // cluster name was missing or else config files were not found; try looking for a legacy configuration
@@ -108,16 +109,17 @@ public class ShimConfigsLoader {
       for ( ShimIdentifierInterface shim : shimIdentifers ) {
         if ( shim.getId().equals( defaultShim ) ) {
           // only return the legacy folder if the shim still exists
-          currentPath = Paths.get( LegacyShimLocator.getLegacyDefaultShimDir( defaultShim ).toString() + File.separator + siteFileName );
-          if ( currentPath.toFile().exists() ) {
+          currentPath = KettleVFS.getFileObject(
+            LegacyShimLocator.getLegacyDefaultShimDir( defaultShim ).toString() + File.separator + siteFileName );
+          if ( currentPath.exists() ) {
             log.logBasic( BaseMessages.getString( PKG, "ShimConfigsLoader.UsingLegacyConfig" ) );
-            return currentPath.toAbsolutePath().toFile().toURI().toURL();
+            return currentPath.getURL();
           }
         }
       }
       log.logError( BaseMessages.getString( PKG, "ShimConfigsLoader.UnableToFindConfigs" ),
         siteFileName, additionalPath );
-    } catch ( IOException ex ) {
+    } catch ( KettleFileException | IOException ex ) {
       log.logError( BaseMessages.getString( PKG, "ShimConfigsLoader.ExceptionReadingFile" ),
         siteFileName, additionalPath, ex.getStackTrace() );
     }
