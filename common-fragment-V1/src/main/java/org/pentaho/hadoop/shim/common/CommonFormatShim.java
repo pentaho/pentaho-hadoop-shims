@@ -41,7 +41,7 @@ import org.pentaho.hadoop.shim.spi.FormatShim;
 public class CommonFormatShim implements FormatShim {
 
   @Override
-  public <T extends IPentahoInputFormat> T createInputFormat( Class<T> type, NamedCluster namedCluster )
+  public <T extends IPentahoInputFormat> T  createInputFormat( Class<T> type, NamedCluster namedCluster )
     throws Exception {
     if ( type.isAssignableFrom( IPentahoParquetInputFormat.class ) ) {
       return (T) DelegateFormatFactory.getInputFormatInstance( namedCluster );

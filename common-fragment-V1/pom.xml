@@ -37,8 +37,8 @@
       </properties>
       <dependencies>
         <dependency>
-           <groupId>org.apache.karaf.jaas</groupId>
-           <artifactId>org.apache.karaf.jaas.config</artifactId>
+          <groupId>org.apache.karaf.jaas</groupId>
+          <artifactId>org.apache.karaf.jaas.config</artifactId>
         </dependency>
         <dependency>
           <groupId>com.twitter</groupId>
@@ -508,6 +508,10 @@
         </exclusion>
       </exclusions>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.karaf.jaas</groupId>
+      <artifactId>org.apache.karaf.jaas.config</artifactId>
     </dependency>
     <dependency>
       <groupId>org.osgi</groupId>

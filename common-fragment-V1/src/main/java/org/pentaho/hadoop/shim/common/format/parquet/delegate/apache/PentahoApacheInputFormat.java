@@ -72,7 +72,11 @@ public class PentahoApacheInputFormat extends HadoopFormatBase implements IPenta
 
     inClassloader( () -> {
       ConfigurationProxy conf = new ConfigurationProxy();
-      ShimConfigsLoader.addConfigsAsResources( namedCluster.getName(), conf::addResource );
+
+      if ( namedCluster != null ) {
+        // if named cluster is not defined, no need to add cluster resource configs
+        ShimConfigsLoader.addConfigsAsResources( namedCluster.getName(), conf::addResource );
+      }
       job = Job.getInstance( conf );
 
       nativeParquetInputFormat = new ParquetInputFormat<>();
@@ -94,6 +98,7 @@ public class PentahoApacheInputFormat extends HadoopFormatBase implements IPenta
       S3NCredentialUtils.applyS3CredentialsToHadoopConfigurationIfNecessary( file, job.getConfiguration() );
       Path filePath = new Path( S3NCredentialUtils.scrubFilePathIfNecessary( file ) );
       FileSystem fs = FileSystem.get( filePath.toUri(), job.getConfiguration() );
+      filePath = fs.makeQualified( filePath );
       if ( !fs.exists( filePath ) ) {
         throw new NoSuchFileException( file );
       }
