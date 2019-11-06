@@ -40,4 +40,11 @@ public class ImpalaDriver extends HiveDriver {
                        JdbcUrlParser jdbcUrlParser ) {
     super( delegate, hadoopConfigurationId, defaultConfiguration, jdbcUrlParser );
   }
+
+  @Override
+  protected boolean checkBeforeAccepting( String url ) {
+    return ( hadoopConfigurationId != null )
+      && url.matches( ".+:impala:.*" )
+      && !url.contains( SIMBA_SPECIFIC_URL_PARAMETER );
+  }
 }

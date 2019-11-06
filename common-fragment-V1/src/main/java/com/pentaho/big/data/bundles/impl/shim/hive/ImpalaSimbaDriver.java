@@ -51,7 +51,10 @@ public class ImpalaSimbaDriver extends HiveSimbaDriver {
     return delegate;
   }
 
+  @Override
   protected boolean checkBeforeAccepting( String url ) {
-    return url.matches( ".+:impala:.*" );
+    return ( hadoopConfigurationId != null )
+      && url.matches( ".+:impala:.*" )
+      && url.contains( SIMBA_SPECIFIC_URL_PARAMETER );
   }
 }
