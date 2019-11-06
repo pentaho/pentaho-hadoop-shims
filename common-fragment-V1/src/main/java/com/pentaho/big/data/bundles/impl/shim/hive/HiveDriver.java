@@ -51,7 +51,7 @@ public class HiveDriver implements Driver {
   protected final Driver delegate;
   private final boolean defaultConfiguration;
   protected final JdbcUrlParser jdbcUrlParser;
-  private final String hadoopConfigurationId;
+  protected final String hadoopConfigurationId;
 
   public HiveDriver( JdbcUrlParser jdbcUrlParser,
                      String className, String shimVersion )
@@ -187,48 +187,48 @@ public class HiveDriver implements Driver {
   }
 
   @Override public DriverPropertyInfo[] getPropertyInfo( String url, Properties info ) throws SQLException {
-    Driver delegate = this.delegate;
-    if ( delegate == null ) {
+    Driver driverDelegate = this.delegate;
+    if ( driverDelegate == null ) {
       return null;
     }
-    return delegate.getPropertyInfo( url, info );
+    return driverDelegate.getPropertyInfo( url, info );
   }
 
   @Override public int getMajorVersion() {
-    Driver delegate = this.delegate;
-    if ( delegate == null ) {
+    Driver driverDelegate = this.delegate;
+    if ( driverDelegate == null ) {
       return -1;
     }
-    return delegate.getMajorVersion();
+    return driverDelegate.getMajorVersion();
   }
 
   @Override public int getMinorVersion() {
-    Driver delegate = this.delegate;
-    if ( delegate == null ) {
+    Driver driverDelegate = this.delegate;
+    if ( driverDelegate == null ) {
       return -1;
     }
-    return delegate.getMinorVersion();
+    return driverDelegate.getMinorVersion();
   }
 
   @Override public boolean jdbcCompliant() {
-    Driver delegate = this.delegate;
-    if ( delegate == null ) {
+    Driver driverDelegate = this.delegate;
+    if ( driverDelegate == null ) {
       return false;
     }
     try {
-      return delegate.jdbcCompliant();
+      return driverDelegate.jdbcCompliant();
     } catch ( Throwable e ) {
       return false;
     }
   }
 
   @Override public Logger getParentLogger() throws SQLFeatureNotSupportedException {
-    Driver delegate = this.delegate;
-    if ( delegate == null ) {
+    Driver driverDelegate = this.delegate;
+    if ( driverDelegate == null ) {
       return null;
     }
     try {
-      return delegate.getParentLogger();
+      return driverDelegate.getParentLogger();
     } catch ( Throwable e ) {
       if ( e instanceof SQLFeatureNotSupportedException ) {
         throw e;

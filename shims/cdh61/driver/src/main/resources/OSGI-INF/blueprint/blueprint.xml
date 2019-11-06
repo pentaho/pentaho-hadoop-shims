@@ -112,13 +112,13 @@
 
   <bean id="cdh61ImpalaDriver" class="com.pentaho.big.data.bundles.impl.shim.hive.ImpalaDriver">
     <argument ref="jdbcUrlParser"/>
-    <argument value="org.apache.hive.jdbc.HiveDriver"/>
+    <argument value="com.cloudera.impala.jdbc41.Driver"/>
     <argument value="cdh61"/>
   </bean>
 
   <bean id="cdh61ImpalaSimbaDriver" class="com.pentaho.big.data.bundles.impl.shim.hive.ImpalaSimbaDriver">
     <argument ref="jdbcUrlParser"/>
-    <argument value="org.apache.hive.jdbc.HiveDriver"/>
+    <argument value="com.cloudera.impala.jdbc41.Driver"/>
     <argument value="cdh61"/>
   </bean>
 
