@@ -62,9 +62,19 @@ public class HiveDriver implements Driver {
   public HiveDriver( JdbcUrlParser jdbcUrlParser,
                      String className, String shimVersion, String driverType )
     throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-    this( DriverProxyInvocationChain.getProxy( Driver.class, (Driver) Class.forName( className ).newInstance() ),
-      shimVersion,
-      true, jdbcUrlParser );
+    Driver driverClass = null;
+    boolean driverFound = false;
+    try {
+      driverClass = (Driver) Class.forName( className ).newInstance();
+      driverFound = true;
+    } catch ( ClassNotFoundException e ) {
+      // allow class to initialize but prevent driver from actually being called
+      driverClass = (Driver) Class.forName( "org.apache.hive.jdbc.HiveDriver" ).newInstance();
+    }
+    this.hadoopConfigurationId = driverFound ? shimVersion : null;
+    this.delegate = DriverProxyInvocationChain.getProxy( Driver.class, driverClass );
+    this.defaultConfiguration = true;
+    this.jdbcUrlParser = jdbcUrlParser;
   }
 
   public HiveDriver( Driver delegate, String hadoopConfigurationId, boolean defaultConfiguration,
