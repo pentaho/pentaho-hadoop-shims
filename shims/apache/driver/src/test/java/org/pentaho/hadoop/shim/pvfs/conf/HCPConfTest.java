@@ -77,6 +77,9 @@ public class HCPConfTest {
   @Test public void mapPath() {
     Path result = hcpConf.mapPath( path );
     assertThat( result.toString(), equalTo( "s3a://nstest/somedir/somechild" ) );
+    assertThat( hcpConf.mapPath( path, new Path( "s3a://nstest/dir/file" ) ).toString(),
+      equalTo( "pvfs://namedConn/dir/file" ) );
+
   }
 
   @Test public void testConf() {

@@ -58,6 +58,12 @@ public class HCPConf extends PvfsConf {
     }
   }
 
+  @Override public Path mapPath( Path pvfsPath, Path realFsPath ) {
+    URI uri = realFsPath.toUri();
+    return new Path( pvfsPath.toUri().getScheme(),
+      pvfsPath.toUri().getHost(), "/" + uri.getPath() );
+  }
+
   @Override public Configuration conf( Path pvfsPath ) {
     validatePath( pvfsPath );
     Configuration conf = new Configuration();
@@ -82,6 +88,8 @@ public class HCPConf extends PvfsConf {
     conf.set( "fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem" );
     conf.set( "fs.s3a.connection.ssl.enabled", "true" );
     conf.set( "fs.s3a.attempts.maximum", "3" );
+
+    conf.set( "fs.s3a.impl.disable.cache", "true" ); // caching managed by PvfsHadoopBridge
 
     if ( acceptSelfSignedCertificates ) {
       conf.set( Constants.S3_CLIENT_FACTORY_IMPL, "org.pentaho.hadoop.shim.pvfs.SelfSignedS3ClientFactory" );

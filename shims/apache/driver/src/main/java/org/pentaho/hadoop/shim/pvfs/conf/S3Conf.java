@@ -34,6 +34,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -42,8 +43,30 @@ import static org.apache.hadoop.fs.Path.SEPARATOR;
 
 public class S3Conf extends PvfsConf {
 
+  private final String accessKey;
+  private final String secretKey;
+  private final String sessionToken;
+  private final String credentialsFilePath;
+
   public S3Conf( ConnectionDetails details ) {
     super( details );
+    Map<String, String> props = details.getProperties();
+    credentialsFilePath = props.get( "credentialsFilePath" );
+
+    if ( shouldGetCredsFromFile( props.get( "accessKey" ), props.get( "credentialsFilePath" ) ) ) {
+      AWSCredentials creds = getCredsFromFile( props, credentialsFilePath );
+      accessKey = creds.getAWSAccessKeyId();
+      secretKey = creds.getAWSSecretKey();
+      if ( creds instanceof BasicSessionCredentials ) {
+        sessionToken = ( (BasicSessionCredentials) creds ).getSessionToken();
+      } else {
+        sessionToken = null;
+      }
+    } else {
+      accessKey = props.get( "accessKey" );
+      secretKey = props.get( "secretKey" );
+      sessionToken = props.get( "sessionToken" );
+    }
   }
 
   @Override public boolean supportsConnection() {
@@ -51,6 +74,7 @@ public class S3Conf extends PvfsConf {
   }
 
   @Override public Path mapPath( Path pvfsPath ) {
+    validatePath( pvfsPath );
     String[] splitPath = pvfsPath.toUri().getPath().split( "/" );
 
     Preconditions.checkArgument( splitPath.length > 0 );
@@ -63,23 +87,15 @@ public class S3Conf extends PvfsConf {
     }
   }
 
+  @Override public Path mapPath( Path pvfsPath, Path realFsPath ) {
+    URI uri = realFsPath.toUri();
+    return new Path( pvfsPath.toUri().getScheme(),
+      pvfsPath.toUri().getHost(), "/" + uri.getHost() + uri.getPath() );
+  }
+
   @Override public Configuration conf( Path pvfsPath ) {
+    validatePath( pvfsPath );
     Configuration conf = new Configuration();
-    Map<String, String> props = details.getProperties();
-
-    String accessKey = props.get( "accessKey" );
-    String secretKey = props.get( "secretKey" );
-    String sessionToken = props.get( "sessionToken" );
-    String credentialsFilePath = props.get( "credentialsFilePath" );
-    if ( isNullOrEmpty( accessKey ) && !isNullOrEmpty( credentialsFilePath ) ) {
-      AWSCredentials creds = getCredsFromFile( props, credentialsFilePath );
-      accessKey = creds.getAWSAccessKeyId();
-      secretKey = creds.getAWSSecretKey();
-
-      if ( creds instanceof BasicSessionCredentials ) {
-        sessionToken = ( (BasicSessionCredentials) creds ).getSessionToken();
-      }
-    }
     conf.set( "fs.s3a.access.key", accessKey );
     conf.set( "fs.s3a.secret.key", secretKey );
     if ( !isNullOrEmpty( sessionToken ) ) {
@@ -92,8 +108,14 @@ public class S3Conf extends PvfsConf {
     conf.set( "fs.s3a.connection.ssl.enabled", "true" );
     conf.set( "fs.s3a.attempts.maximum", "3" );
 
-    conf.set( "fs.s3.buffer.dir", System.getProperty( "java.io.tmpdir" ) );
+    conf.set( "fs.s3a.impl.disable.cache", "true" ); // caching managed by PvfsHadoopBridge
+
+    conf.set( "fs.s3a.buffer.dir", System.getProperty( "java.io.tmpdir" ) );
     return conf;
+  }
+
+  private boolean shouldGetCredsFromFile( String accessKey, String credentialsFilePath ) {
+    return isNullOrEmpty( accessKey ) && !isNullOrEmpty( credentialsFilePath );
   }
 
   private AWSCredentials getCredsFromFile( Map<String, String> props, String credentialsFilePath ) {
@@ -106,5 +128,26 @@ public class S3Conf extends PvfsConf {
         String.format( "Failed to load credentials for profile [%s] from %s",
           props.get( "profileName" ), credentialsFilePath ), e );
     }
+  }
+
+  @Override public boolean equals( Object o ) {
+    if ( this == o ) {
+      return true;
+    }
+    if ( o == null || getClass() != o.getClass() ) {
+      return false;
+    }
+    if ( !super.equals( o ) ) {
+      return false;
+    }
+    S3Conf s3Conf = (S3Conf) o;
+    return Objects.equals( accessKey, s3Conf.accessKey )
+      && Objects.equals( secretKey, s3Conf.secretKey )
+      && Objects.equals( sessionToken, s3Conf.sessionToken )
+      && Objects.equals( credentialsFilePath, s3Conf.credentialsFilePath );
+  }
+
+  @Override public int hashCode() {
+    return Objects.hash( super.hashCode(), accessKey, secretKey, sessionToken, credentialsFilePath );
   }
 }
