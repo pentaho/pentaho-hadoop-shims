@@ -47,6 +47,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
@@ -85,8 +86,8 @@ public class PvfsHadoopBridgeTest {
 
   @Test
   public void makeQualified() {
-    assertThat( bridge.makeQualified( path ).toUri(),
-      equalTo( tempFile.toURI() ) );
+    assertThat( bridge.makeQualified( path ),
+      equalTo( path ) );
   }
 
   @Test
@@ -99,13 +100,33 @@ public class PvfsHadoopBridgeTest {
   }
 
   @Test
+  public void checkPath() {
+    Path unsupportedPath = new Path( "pvfs", "noSuchConnectionName", "/foo/bar.txt" );
+    Path supportedPath = new Path( "pvfs", "definedConnection", "/foo/bar.txt" );
+    when( pvfsConf.mapPath( unsupportedPath ) )
+      .thenReturn( new Path( "badscheme", "badauthority", "/" ) );
+    when( pvfsConf.mapPath( supportedPath ) )
+      .thenReturn( new Path( "file", "", "/tmp" ) );
+
+    try {
+      bridge.checkPath( unsupportedPath );
+      fail( "Expected exception" );
+    } catch ( Exception e ) {
+      assertTrue( e.getCause().getMessage().contains( "badscheme" ) );
+    }
+    bridge.checkPath( supportedPath );
+
+  }
+
+  @Test
   /**
    * Verifies proxying to the underlying fs implementation works correctly, using
    * the LocalFileSystem impl.
    */
   public void testIOOps() throws IOException {
-    Path child = new Path( tempFile.getParent(), "child" );
-    Path child2 = new Path( tempFile.getParent(), "child_renamed" );
+    assertTrue( bridge.getFileStatus( new Path( "pvfs", "", tempFile.getPath() ) ).isFile() );
+    Path child = bridge.makeQualified( new Path( tempFile.getParent(), "child" ) );
+    Path child2 = bridge.makeQualified( new Path( tempFile.getParent(), "child_renamed" ) );
     assertTrue( bridge.mkdirs( child ) );
     assertTrue( bridge.rename( child, child2 ) );
     assertTrue( new File( child2.toUri().getPath() ).exists() );
@@ -125,8 +146,10 @@ public class PvfsHadoopBridgeTest {
 
   @Test
   public void setGetWorkingDirectory() {
-    Path wd = new Path( folder.getRoot().toURI() );
-    bridge.setWorkingDirectory( wd );
-    assertThat( bridge.getWorkingDirectory(), equalTo( wd ) );
+    Path pvfsPath = new Path( "pvfs", "", folder.getRoot().toURI().getPath() );
+    Path newWd = new Path( folder.getRoot().toURI() );
+    when( pvfsConf.mapPath( any( Path.class ) ) ).thenReturn( newWd );
+    bridge.setWorkingDirectory( pvfsPath );
+    assertThat( bridge.getWorkingDirectory(), equalTo( newWd ) );
   }
 }

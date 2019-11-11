@@ -20,9 +20,7 @@
  *
  ******************************************************************************/
 
-
 package org.pentaho.hadoop.shim.pvfs.conf;
-
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -38,7 +36,9 @@ import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -50,9 +50,11 @@ public class S3ConfTest {
   private Path path;
   @Mock private ConnectionDetails hcpConn;
   @Mock private ConnectionDetails s3Conn;
+  @Mock private ConnectionDetails otherS3Conn;
+  private Map<String, String> props = new HashMap<>();
 
   @Before public void before() {
-    Map<String, String> props = new HashMap<>();
+
     props.put( "accessKey", "ACCESSKEY" );
     props.put( "secretKey", "SECRETKEY" );
     props.put( "sessionToken", ":LKJL:KJJL" );
@@ -76,6 +78,9 @@ public class S3ConfTest {
   @Test public void mapPath() {
     Path result = s3Conf.mapPath( path );
     assertThat( result.toString(), equalTo( "s3a://bucket/somedir/somechild" ) );
+
+    assertThat( s3Conf.mapPath( path, new Path( "s3a://bucket/dir/file" ) ).toString(),
+      equalTo( "pvfs://namedConn/bucket/dir/file" ) );
   }
 
   @Test public void testConf() {
@@ -85,4 +90,22 @@ public class S3ConfTest {
     assertThat( conf.get( "fs.s3a.access.key" ), equalTo( "ACCESSKEY" ) );
     assertThat( conf.get( "fs.s3a.secret.key" ), equalTo( "SECRETKEY" ) );
   }
+
+  @Test public void testEquals() {
+    assertNotEquals( null, s3Conf );
+    assertEquals( s3Conf, s3Conf );
+    assertNotEquals( s3Conf, hcpConn );
+    when( otherS3Conn.getProperties() ).thenReturn( new HashMap<>( props ) );
+    when( otherS3Conn.getType() ).thenReturn( "s3" );
+
+    S3Conf otherS3Conf = new S3Conf( otherS3Conn );
+
+    assertEquals( otherS3Conf, s3Conf );
+    // change sessiontoken
+    otherS3Conn.getProperties().put( "sessionToken", "otherSessionToken" );
+    assertNotEquals( otherS3Conf, s3Conf );
+
+    assertNotEquals( s3Conf.hashCode(), hcpConn.hashCode() );
+  }
+
 }
