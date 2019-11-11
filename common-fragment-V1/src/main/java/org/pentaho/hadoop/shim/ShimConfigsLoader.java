@@ -110,7 +110,7 @@ public class ShimConfigsLoader {
         if ( shim.getId().equals( defaultShim ) ) {
           // only return the legacy folder if the shim still exists
           currentPath = KettleVFS.getFileObject(
-            LegacyShimLocator.getLegacyDefaultShimDir( defaultShim ).toString() + File.separator + siteFileName );
+            LegacyShimLocator.getLegacyDefaultShimDir( defaultShim ) + File.separator + siteFileName );
           if ( currentPath.exists() ) {
             log.logBasic( BaseMessages.getString( PKG, "ShimConfigsLoader.UsingLegacyConfig" ) );
             return currentPath.getURL();
