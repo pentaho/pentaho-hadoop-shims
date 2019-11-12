@@ -117,7 +117,7 @@ public class ShimConfigsLoader {
           }
         }
       }
-      log.logError( BaseMessages.getString( PKG, "ShimConfigsLoader.UnableToFindConfigs" ),
+      log.logBasic( BaseMessages.getString( PKG, "ShimConfigsLoader.UnableToFindConfigs" ),
         siteFileName, additionalPath );
     } catch ( KettleFileException | IOException ex ) {
       log.logError( BaseMessages.getString( PKG, "ShimConfigsLoader.ExceptionReadingFile" ),
