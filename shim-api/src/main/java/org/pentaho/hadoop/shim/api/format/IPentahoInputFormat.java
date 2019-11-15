@@ -22,6 +22,7 @@
 package org.pentaho.hadoop.shim.api.format;
 
 import java.io.Closeable;
+import java.util.Collections;
 import java.util.List;
 
 import org.pentaho.di.core.RowMetaAndData;
@@ -31,7 +32,9 @@ public interface IPentahoInputFormat {
   /**
    * Get split parts.
    */
-  List<IPentahoInputSplit> getSplits() throws Exception;
+  default List<IPentahoInputSplit> getSplits() {
+    return Collections.emptyList();
+  }
 
   /**
    * Read one split part.

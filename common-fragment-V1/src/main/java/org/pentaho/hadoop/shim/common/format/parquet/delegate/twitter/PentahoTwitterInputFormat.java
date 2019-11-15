@@ -126,7 +126,7 @@ public class PentahoTwitterInputFormat extends HadoopFormatBase implements IPent
   }
 
   @Override
-  public List<IPentahoInputSplit> getSplits() throws Exception {
+  public List<IPentahoInputSplit> getSplits() {
     return inClassloader( () -> {
       List<InputSplit> splits = nativeParquetInputFormat.getSplits( job );
       return splits.stream().map( PentahoInputSplitImpl::new ).collect( Collectors.toList() );

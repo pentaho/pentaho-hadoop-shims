@@ -35,11 +35,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 
 public class PentahoAvroInputFormatTest {
 
@@ -55,8 +53,8 @@ public class PentahoAvroInputFormatTest {
   }
 
   @Test
-  public void getSplits() throws Exception {
-    assertNull( format.getSplits() );
+  public void getSplits() {
+    assertTrue( format.getSplits().isEmpty() );
   }
 
   @Test( expected = Exception.class )
