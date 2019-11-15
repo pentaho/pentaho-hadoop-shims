@@ -28,37 +28,44 @@ package org.pentaho.hadoop.shim.common.format;
  */
 public class HadoopFormatBase {
 
-  protected <R> R inClassloader( SupplierWithException<R> action ) throws Exception {
+  protected <R> R inClassloader( SupplierWithException<R> action ) {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     try {
       Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
-
-      return action.get();
-
+      try {
+        return action.get();
+      } catch ( Exception e ) {
+        throw new IllegalStateException( e );
+      }
     } finally {
       Thread.currentThread().setContextClassLoader( cl );
     }
   }
 
-  protected <R> void inClassloader( RunnableWithException<R> action ) throws Exception {
+  protected void inClassloader( RunnableWithException action ) {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     try {
       Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
-
-      action.get();
-
+      try {
+        action.get();
+      } catch ( Exception e ) {
+        throw new IllegalStateException( e );
+      }
     } finally {
       Thread.currentThread().setContextClassLoader( cl );
     }
   }
 
+  // we should rethink this design.  I believe this was a
+  // convenience to allow actions in lambdas that may thrown checked
+  // exceptions.
   @FunctionalInterface
   public interface SupplierWithException<T> {
-    public T get() throws Exception;
+    T get() throws Exception;
   }
 
   @FunctionalInterface
-  public interface RunnableWithException<T> {
-    public void get() throws Exception;
+  public interface RunnableWithException {
+    void get() throws Exception;
   }
 }

@@ -70,11 +70,6 @@ public class PentahoAvroInputFormat implements IPentahoAvroInputFormat {
   }
 
   @Override
-  public List<IPentahoInputSplit> getSplits() throws Exception {
-    return null;
-  }
-
-  @Override
   public IPentahoRecordReader createRecordReader( IPentahoInputSplit split ) throws Exception {
 
     DataFileStream<Object> nestedDfs = null;

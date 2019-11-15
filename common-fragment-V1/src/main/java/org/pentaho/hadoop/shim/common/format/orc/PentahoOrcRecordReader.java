@@ -64,31 +64,7 @@ public class PentahoOrcRecordReader implements IPentahoInputFormat.IPentahoRecor
                           List<? extends IOrcInputField> dialogInputFields ) {
     this.dialogInputFields = dialogInputFields;
 
-    Reader reader = null;
-    try {
-      S3NCredentialUtils.applyS3CredentialsToHadoopConfigurationIfNecessary( fileName, conf );
-      Path filePath = new Path( S3NCredentialUtils.scrubFilePathIfNecessary( fileName ) );
-      FileSystem fs = FileSystem.get( filePath.toUri(), conf );
-      if ( !fs.exists( filePath ) ) {
-        throw new NoSuchFileException( fileName );
-      }
-
-      if ( fs.getFileStatus( filePath ).isDirectory() ) {
-        PathFilter pathFilter = file -> file.getName().endsWith( ".orc" );
-
-        FileStatus[] fileStatuses = fs.listStatus( filePath, pathFilter );
-        if ( fileStatuses.length == 0 ) {
-          throw new NoSuchFileException( fileName );
-        }
-
-        filePath = fileStatuses[ 0 ].getPath();
-      }
-
-      reader = OrcFile.createReader( filePath,
-        OrcFile.readerOptions( conf ).filesystem( fs ) );
-    } catch ( IOException e ) {
-      throw new IllegalArgumentException( "Unable to read data from file " + fileName, e );
-    }
+    Reader reader = getReader( fileName, conf );
     try {
       recordReader = reader.rows();
     } catch ( IOException e ) {
@@ -127,6 +103,31 @@ public class PentahoOrcRecordReader implements IPentahoInputFormat.IPentahoRecor
       setNextBatch();
     } catch ( IOException e ) {
       throw new IllegalArgumentException( "No rows to read in " + fileName, e );
+    }
+  }
+
+  static Reader getReader( String fileName, Configuration conf ) {
+
+    try {
+      S3NCredentialUtils.applyS3CredentialsToHadoopConfigurationIfNecessary( fileName, conf );
+      Path filePath = new Path( S3NCredentialUtils.scrubFilePathIfNecessary( fileName ) );
+      FileSystem fs = FileSystem.get( filePath.toUri(), conf );
+      if ( !fs.exists( filePath ) ) {
+        throw new NoSuchFileException( fileName );
+      }
+      if ( fs.getFileStatus( filePath ).isDirectory() ) {
+        PathFilter pathFilter = file -> file.getName().endsWith( ".orc" );
+
+        FileStatus[] fileStatuses = fs.listStatus( filePath, pathFilter );
+        if ( fileStatuses.length == 0 ) {
+          throw new NoSuchFileException( fileName );
+        }
+        filePath = fileStatuses[ 0 ].getPath();
+      }
+      return OrcFile.createReader( filePath,
+        OrcFile.readerOptions( conf ).filesystem( fs ) );
+    } catch ( IOException e ) {
+      throw new IllegalArgumentException( "Unable to read data from file " + fileName, e );
     }
   }
 

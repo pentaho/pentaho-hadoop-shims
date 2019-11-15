@@ -62,7 +62,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.Assert.*;
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 
@@ -70,7 +73,7 @@ import static org.mockito.Mockito.mock;
  * Created by tkafalas on 11/3/2017.
  */
 public class PentahoOrcReadWriteTest {
-  private List<? extends IOrcInputField> orcInputFields;
+  private List<IOrcInputField> orcInputFields;
   private RowMeta rowMeta;
   private Object[][] rowData;
   private PentahoOrcOutputFormat orcOutputFormat;

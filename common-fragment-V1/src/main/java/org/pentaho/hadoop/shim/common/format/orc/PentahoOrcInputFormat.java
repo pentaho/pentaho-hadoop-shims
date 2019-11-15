@@ -22,12 +22,7 @@
 package org.pentaho.hadoop.shim.common.format.orc;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.FileStatus;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.fs.PathFilter;
 import org.apache.orc.Reader;
-import org.apache.orc.OrcFile;
 import org.apache.orc.TypeDescription;
 import org.pentaho.hadoop.shim.ShimConfigsLoader;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
@@ -38,51 +33,49 @@ import org.pentaho.hadoop.shim.common.ConfigurationProxy;
 import org.pentaho.hadoop.shim.common.format.HadoopFormatBase;
 import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
 
-import java.io.IOException;
-import java.nio.file.NoSuchFileException;
-import java.util.Collections;
 import java.util.List;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Created by tkafalas on 11/7/2017.
  */
 public class PentahoOrcInputFormat extends HadoopFormatBase implements IPentahoOrcInputFormat {
 
+  private static final String NOT_NULL_MSG = "filename and inputfields must not be null";
   private String fileName;
   private List<? extends IOrcInputField> inputFields;
-  private Configuration conf;
 
-  public PentahoOrcInputFormat( NamedCluster namedCluster ) throws Exception {
-    conf = inClassloader( () -> {
-      Configuration confProxy = new ConfigurationProxy();
-      confProxy.addResource( "hive-site.xml" );
-      ShimConfigsLoader.addConfigsAsResources( namedCluster.getName(), confProxy::addResource );
-      return confProxy;
-    } );
-  }
+  private final Configuration conf;
 
-  @Override
-  public List<IPentahoInputSplit> getSplits() throws Exception {
-    return Collections.emptyList();
-  }
-
-  @Override
-  public IPentahoRecordReader createRecordReader( IPentahoInputSplit split ) throws Exception {
-    if ( fileName == null || inputFields == null ) {
-      throw new IllegalStateException( "fileName or inputFields must not be null" );
+  public PentahoOrcInputFormat( NamedCluster namedCluster ) {
+    if ( namedCluster == null ) {
+      conf = new Configuration();
+    } else {
+      conf = inClassloader( () -> {
+        Configuration confProxy = new ConfigurationProxy();
+        confProxy.addResource( "hive-site.xml" );
+        ShimConfigsLoader.addConfigsAsResources( namedCluster.getName(), confProxy::addResource );
+        return confProxy;
+      } );
     }
-    conf = new Configuration();
+  }
+
+  @Override
+  public IPentahoRecordReader createRecordReader( IPentahoInputSplit split ) {
+    requireNonNull( fileName, NOT_NULL_MSG );
+    requireNonNull( inputFields, NOT_NULL_MSG );
     return inClassloader( () -> new PentahoOrcRecordReader( fileName, conf, inputFields ) );
   }
 
   @Override
-  public List<IOrcInputField> readSchema() throws Exception {
-    checkNullFileName();
-    Reader orcReader = getReader();
-    return readSchema( orcReader );
+  public List<IOrcInputField> readSchema() {
+    return inClassloader( () -> readSchema(
+      PentahoOrcRecordReader.getReader(
+        requireNonNull( fileName, NOT_NULL_MSG ), conf ) ) );
   }
 
-  protected List<IOrcInputField> readSchema( Reader orcReader ) {
+  private List<IOrcInputField> readSchema( Reader orcReader ) {
     OrcSchemaConverter orcSchemaConverter = new OrcSchemaConverter();
     List<IOrcInputField> orcInputFields = orcSchemaConverter.buildInputFields( readTypeDescription( orcReader ) );
     IOrcMetaData.Reader orcMetaDataReader = new OrcMetaDataReader( orcReader );
@@ -90,48 +83,8 @@ public class PentahoOrcInputFormat extends HadoopFormatBase implements IPentahoO
     return orcInputFields;
   }
 
-  public TypeDescription readTypeDescription() throws Exception {
-    checkNullFileName();
-    Reader orcReader = getReader();
-    return readTypeDescription( orcReader );
-  }
-
-  public TypeDescription readTypeDescription( Reader orcReader ) {
+  private TypeDescription readTypeDescription( Reader orcReader ) {
     return orcReader.getSchema();
-  }
-
-  private Reader getReader() throws Exception {
-    return inClassloader( () -> {
-      checkNullFileName();
-      Path filePath;
-      FileSystem fs;
-      Reader orcReader;
-      try {
-        S3NCredentialUtils.applyS3CredentialsToHadoopConfigurationIfNecessary( fileName, conf );
-        filePath = new Path( fileName );
-        fs = FileSystem.get( filePath.toUri(), conf );
-        if ( !fs.exists( filePath ) ) {
-          throw new NoSuchFileException( fileName );
-        }
-
-        if ( fs.getFileStatus( filePath ).isDirectory() ) {
-          PathFilter pathFilter = file -> file.getName().endsWith( ".orc" );
-
-          FileStatus[] fileStatuses = fs.listStatus( filePath, pathFilter );
-          if ( fileStatuses.length == 0 ) {
-            throw new NoSuchFileException( fileName );
-          }
-
-          filePath = fileStatuses[ 0 ].getPath();
-        }
-
-        orcReader = OrcFile.createReader( filePath,
-          OrcFile.readerOptions( conf ).filesystem( fs ) );
-      } catch ( IOException e ) {
-        throw new IllegalStateException( "Unable to read data from file " + fileName, e );
-      }
-      return orcReader;
-    } );
   }
 
   /**
@@ -141,24 +94,14 @@ public class PentahoOrcInputFormat extends HadoopFormatBase implements IPentahoO
    * name
    */
   @Override
-  public void setSchema( List<? extends IOrcInputField> inputFields ) throws Exception {
+  public void setSchema( List<IOrcInputField> inputFields ) {
     this.inputFields = inputFields;
   }
 
   @Override
-  public void setInputFile( String fileName ) throws Exception {
+  public void setInputFile( String fileName ) {
     this.fileName = S3NCredentialUtils.scrubFilePathIfNecessary( fileName );
   }
 
-  @Override
-  public void setSplitSize( long blockSize ) throws Exception {
-    //do nothing 
-  }
-
-  public void checkNullFileName() {
-    if ( fileName == null ) {
-      throw new IllegalStateException( "fileName must not be null" );
-    }
-  }
 
 }

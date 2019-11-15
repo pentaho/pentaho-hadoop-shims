@@ -27,20 +27,16 @@ public interface IPentahoOrcInputFormat extends IPentahoInputFormat {
   /**
    * Read schema for display to user.
    */
-  List<? extends IOrcInputField> readSchema() throws Exception;
+  List<IOrcInputField> readSchema();
 
   /**
    * Set schema for file reading.
    */
-  void setSchema( List<? extends IOrcInputField> OrcInputField ) throws Exception;
+  void setSchema( List<IOrcInputField> orcInputField );
 
   /**
    * Set input file.
    */
-  void setInputFile( String file ) throws Exception;
+  void setInputFile( String file );
 
-  /**
-   * Split size, bytes.
-   */
-  void setSplitSize( long blockSize ) throws Exception;
 }
