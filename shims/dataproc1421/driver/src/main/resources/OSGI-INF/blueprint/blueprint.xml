@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="
+            http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
+
+    <bean id="dataproc1421ShimIdentifier" class="org.pentaho.hadoop.shim.api.internal.ShimIdentifier" scope="singleton">
+        <argument value="dataproc1421"/>
+        <argument value="Google Dataproc"/>
+        <argument value="1.4.21"/>
+        <argument value="COMMUNITY"/>
+    </bean>
+
+    <service ref="dataproc1421ShimIdentifier" interface="org.pentaho.hadoop.shim.api.ShimIdentifierInterface"/>
+
+    <bean id="dataproc1421Hadoop" class="org.pentaho.hadoop.shim.HadoopShim" scope="singleton"/>
+
+    <service ref="dataproc1421Hadoop" interface="org.pentaho.hadoop.shim.spi.HadoopShim">
+        <service-properties>
+            <entry key="shim">
+                <value type="java.lang.String">dataproc1421</value>
+            </entry>
+        </service-properties>
+    </service>
+
+    <bean id="hadoopFileSystem" class="com.pentaho.big.data.bundles.impl.shim.hdfs.HadoopFileSystemFactoryImpl">
+        <argument ref="dataproc1421Hadoop"/>
+        <argument ref="dataproc1421ShimIdentifier"/>
+    </bean>
+
+    <service ref="hadoopFileSystem" interface="org.pentaho.hadoop.shim.api.hdfs.HadoopFileSystemFactory"/>
+
+    <bean id="dataproc1421FormatShim" class="org.pentaho.hadoop.shim.common.CommonFormatShim"/>
+
+    <service ref="dataproc1421FormatShim" auto-export="interfaces">
+        <service-properties>
+            <entry key="shim">
+                <value type="java.lang.String">dataproc1421</value>
+            </entry>
+            <entry key="service">
+                <value type="java.lang.String">format</value>
+            </entry>
+        </service-properties>
+    </service>
+
+    <bean id="dataproc1421FormatServiceFactory" class="org.pentaho.big.data.impl.shim.format.FormatServiceFactory">
+        <argument ref="dataproc1421FormatShim"/>
+    </bean>
+
+    <service ref="dataproc1421FormatServiceFactory"
+             interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
+        <service-properties>
+            <entry key="shim">
+                <value type="java.lang.String">dataproc1421</value>
+            </entry>
+            <entry key="service">
+                <value type="java.lang.String">format</value>
+            </entry>
+        </service-properties>
+    </service>
+
+    <bean id="dataproc1421MapReduceServiceFactory" class="org.pentaho.big.data.impl.shim.mapreduce.MapReduceServiceFactoryImpl">
+        <argument ref="dataproc1421Hadoop"/>
+        <argument ref="executorService"/>
+        <argument ref="transformationVisitorList"/>
+    </bean>
+    <reference id="executorService" interface="java.util.concurrent.ExecutorService"/>
+
+    <service ref="dataproc1421MapReduceServiceFactory" interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
+        <service-properties>
+            <entry key="shim">
+                <value type="java.lang.String">dataproc1421</value>
+            </entry>
+            <entry key="service">
+                <value type="java.lang.String">mapreduce</value>
+            </entry>
+        </service-properties>
+    </service>
+
+    <reference-list id="transformationVisitorList" interface="org.pentaho.big.data.impl.shim.mapreduce.TransformationVisitorService"
+                    availability="optional"/>
+
+    <!-- Hadoop client services definition -->
+    <bean id="dataproc1421HadoopServicesFactory" class="org.pentaho.big.data.impl.shim.HadoopClientServicesFactory">
+        <argument ref="dataproc1421Hadoop"/>
+        <argument ref="blueprintBundleContext"/>
+    </bean>
+    <service ref="dataproc1421HadoopServicesFactory" interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
+        <service-properties>
+            <entry key="shim">
+                <value type="java.lang.String">dataproc1421</value>
+            </entry>
+            <entry key="service">
+                <value type="java.lang.String">shimservices</value>
+            </entry>
+        </service-properties>
+    </service>
+    <!-- End of Hadoop client services definition -->
+
+    <!-- Hive service definition -->
+    <bean id="dataproc1421HiveDriver" class="com.pentaho.big.data.bundles.impl.shim.hive.HiveDriver">
+        <argument ref="jdbcUrlParser"/>
+        <argument value="org.apache.hive.jdbc.HiveDriver"/>
+        <argument value="dataproc1421"/>
+    </bean>
+
+    <service ref="dataproc1421HiveDriver" interface="java.sql.Driver">
+        <service-properties>
+            <entry key="dataSourceType" value="bigdata"/>
+        </service-properties>
+    </service>
+
+    <bean id="dataproc1421SparkSimbaDriver" class="com.pentaho.big.data.bundles.impl.shim.hive.SparkSimbaDriver">
+        <argument ref="jdbcUrlParser"/>
+        <argument value="org.apache.hive.jdbc.HiveDriver"/>
+        <argument value="dataproc1421"/>
+    </bean>
+
+    <service ref="dataproc1421SparkSimbaDriver" interface="java.sql.Driver">
+        <service-properties>
+            <entry key="dataSourceType" value="bigdata"/>
+        </service-properties>
+    </service>
+
+    <reference id="jdbcUrlParser" interface="org.pentaho.hadoop.shim.api.jdbc.JdbcUrlParser"/>
+
+    <!-- End of Hive service definition -->
+
+    <!-- Hbase service definition -->
+    <bean id="hbaseShim" class="org.pentaho.hbase.shim.common.HBaseShimImpl"/>
+    <service ref="hbaseShim" auto-export="interfaces">
+        <service-properties>
+            <entry key="shim">
+                <value type="java.lang.String">dataproc1421</value>
+            </entry>
+            <entry key="service">
+                <value type="java.lang.String">hbase</value>
+            </entry>
+        </service-properties>
+    </service>
+
+    <bean id="dataproc1421HBaseServiceFactory" class="com.pentaho.big.data.bundles.impl.shim.hbase.HBaseServiceFactory">
+        <argument ref="hbaseShim"/>
+    </bean>
+
+    <service ref="dataproc1421HBaseServiceFactory" interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
+        <service-properties>
+            <entry key="shim">
+                <value type="java.lang.String">dataproc1421</value>
+            </entry>
+            <entry key="service">
+                <value type="java.lang.String">hbase</value>
+            </entry>
+        </service-properties>
+    </service>
+    <!-- End of Hbase service definition -->
+
+</blueprint>
