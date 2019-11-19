@@ -182,7 +182,9 @@ public class HadoopClientServicesImpl implements HadoopClientServices {
         loadBundleFilesLocations();
         System.setProperty( ALT_CLASSPATH, createHadoopAltClasspath() );
         c.set( TMPJARS, getSqoopJarLocation( c ) );
-        if ( args.length > 0 && Arrays.asList( args ).contains( "--as-avrodatafile" ) ) {
+        if ( args.length > 0
+          && ( Arrays.asList( args ).contains( "--as-avrodatafile" )
+            || Arrays.asList( args ).contains( "--export-dir" ) ) ) { // BACKLOG-32217: Avro libs needed for export
           addDependencyJars( c, Conversion.class, AvroWrapper.class );
         }
         if ( args.length > 0 && Arrays.asList( args ).contains( "--hbase-table" ) ) {
