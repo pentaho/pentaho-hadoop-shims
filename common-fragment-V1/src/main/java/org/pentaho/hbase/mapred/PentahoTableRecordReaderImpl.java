@@ -50,6 +50,7 @@ import org.pentaho.hbase.factory.HBaseTable;
  */
 public class PentahoTableRecordReaderImpl {
   static final Log LOG = LogFactory.getLog( PentahoTableRecordReaderImpl.class );
+  public static final int ZERO = 0;
 
   private byte[] startRow;
   private byte[] endRow;
@@ -74,28 +75,21 @@ public class PentahoTableRecordReaderImpl {
     if ( ( endRow != null ) && ( endRow.length > 0 ) ) {
       if ( trrRowFilter != null ) {
         scan = new Scan( firstRow, endRow );
-        // scan.addColumns(trrInputColumns);
         configureScanWithInputColumns( scan, trrInputColumns );
         scan.setFilter( trrRowFilter );
 
         scan.setCacheBlocks( false );
-        // this.scanner = this.htable.getScanner(scan);
       } else {
         LOG.debug( "TIFB.restart, firstRow: " + Bytes.toStringBinary( firstRow ) + ", endRow: "
           + Bytes.toStringBinary( endRow ) );
         scan = new Scan( firstRow, endRow );
-        // scan.addColumns(trrInputColumns);
         configureScanWithInputColumns( scan, trrInputColumns );
-        // this.scanner = this.htable.getScanner(scan);
       }
     } else {
       LOG.debug( "TIFB.restart, firstRow: " + Bytes.toStringBinary( firstRow ) + ", no endRow" );
 
       scan = new Scan( firstRow );
-      // scan.addColumns(trrInputColumns);
       configureScanWithInputColumns( scan, trrInputColumns );
-      // scan.setFilter(trrRowFilter);
-      // this.scanner = this.htable.getScanner(scan);
     }
 
     if ( scanCacheRows > 0 ) {
@@ -122,14 +116,19 @@ public class PentahoTableRecordReaderImpl {
     for ( byte[] familyAndQualifier : inputColumns ) {
       byte[][] fq = null;
       try {
-        Method method = KeyValue.class.getMethod( "parseColumn", new Class[] { byte[].class } );
-        fq = (byte[][]) method.invoke( familyAndQualifier );
+        Method method = KeyValue.class.getMethod( "parseColumn", (Class[]) new Class[] { byte[].class } );
+        fq = (byte[][]) method.invoke( null, familyAndQualifier );
       } catch ( Exception e1 ) {
         try {
-          Method method = CellUtil.class.getMethod( "parseColumn", new Class[] { byte[].class } );
-          fq = (byte[][]) method.invoke( familyAndQualifier );
+          Method method = CellUtil.class.getMethod( "parseColumn", (Class[]) new Class[] { byte[].class } );
+          fq = (byte[][]) method.invoke( null, familyAndQualifier );
         } catch ( Exception e2 ) {
+          LOG.debug( "TIFB.configureScanWithInputColumns: error calling the parseColumn method." );
         }
+      }
+
+      if ( fq == null ) {
+        return;
       }
 
       if ( fq.length > 1 && fq[ 1 ] != null && fq[ 1 ].length > 0 ) {
@@ -222,14 +221,14 @@ public class PentahoTableRecordReaderImpl {
   }
 
   public long getPos() {
-    // This should be the ordinal tuple in the range;
+    // This should be the ordinal tuple in the range
     // not clear how to calculate...
-    return 0;
+    return ZERO;
   }
 
   public float getProgress() {
     // Depends on the total number of tuples and getPos
-    return 0;
+    return ZERO;
   }
 
   /**
@@ -262,15 +261,7 @@ public class PentahoTableRecordReaderImpl {
         try {
           Method m = result.getClass().getMethod( "copyFrom", Result.class );
           m.invoke( value, result );
-        } catch ( NoSuchMethodException e ) {
-          throw new IOException( e );
-        } catch ( SecurityException e ) {
-          throw new IOException( e );
-        } catch ( IllegalAccessException e ) {
-          throw new IOException( e );
-        } catch ( IllegalArgumentException e ) {
-          throw new IOException( e );
-        } catch ( InvocationTargetException e ) {
+        } catch ( NoSuchMethodException | SecurityException | IllegalAccessException | InvocationTargetException e ) {
           throw new IOException( e );
         }
 
