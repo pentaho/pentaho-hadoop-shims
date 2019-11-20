@@ -22,6 +22,7 @@
 
 package com.pentaho.big.data.bundles.impl.shim.hbase;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 
 import org.pentaho.di.core.exception.KettleException;
@@ -32,6 +33,7 @@ import org.pentaho.hadoop.shim.api.internal.hbase.HBaseBytesUtilShim;
 import org.pentaho.hadoop.shim.api.internal.hbase.HBaseValueMeta;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Created by bryan on 1/21/16.
@@ -125,7 +127,7 @@ public class ByteConversionUtilImpl implements ByteConversionUtil {
     return HBaseValueMeta.encodeObject( obj );
   }
 
-  @Override public byte[] compoundKey( String... keys ) throws IOException {
+  @Override public byte[] compoundKey( String... keys ) {
     StringBuilder stringBuilder = new StringBuilder();
     for ( String key : keys ) {
       stringBuilder.append( key );
@@ -137,7 +139,7 @@ public class ByteConversionUtilImpl implements ByteConversionUtil {
     return toBytes( stringBuilder.toString() );
   }
 
-  @Override public String[] splitKey( byte[] compoundKey ) throws IOException {
+  @Override public String[] splitKey( byte[] compoundKey ) {
     return toString( compoundKey ).split( HBaseValueMeta.SEPARATOR );
   }
 
@@ -145,7 +147,7 @@ public class ByteConversionUtilImpl implements ByteConversionUtil {
     return HBaseValueMeta.objectIndexValuesToString( values );
   }
 
-  @Override public Object[] stringIndexListToObjects( String list ) throws IllegalArgumentException {
+  @Override public Object[] stringIndexListToObjects( String list ) {
     return HBaseValueMeta.stringIndexListToObjects( list );
   }
 
@@ -159,5 +161,12 @@ public class ByteConversionUtilImpl implements ByteConversionUtil {
 
   @Override public boolean isImmutableBytesWritable( Object o ) {
     return o instanceof ImmutableBytesWritable;
+  }
+
+  @Override public Object convertToImmutableBytesWritable( Object o )
+    throws InvocationTargetException, IllegalAccessException {
+    ImmutableBytesWritable ibw = new ImmutableBytesWritable(  );
+    BeanUtils.copyProperties( ibw, o );
+    return ibw;
   }
 }
