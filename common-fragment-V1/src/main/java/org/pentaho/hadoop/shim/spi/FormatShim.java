@@ -28,7 +28,7 @@ import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat;
 import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat;
 
 public interface FormatShim extends PentahoHadoopShim {
-  <T extends IPentahoInputFormat> T createInputFormat( Class<T> type, NamedCluster namedCluster ) throws Exception;
+  <T extends IPentahoInputFormat> T createInputFormat( Class<T> type, NamedCluster namedCluster );
 
-  <T extends IPentahoOutputFormat> T createOutputFormat( Class<T> type, NamedCluster namedCluster ) throws Exception;
+  <T extends IPentahoOutputFormat> T createOutputFormat( Class<T> type, NamedCluster namedCluster );
 }

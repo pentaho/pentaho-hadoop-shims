@@ -24,9 +24,12 @@ package org.pentaho.hadoop.shim.api.format;
 import org.pentaho.di.core.row.ValueMetaInterface;
 
 import java.util.Arrays;
-import java.util.ArrayList;
+
+import static java.util.Arrays.asList;
+
 
 public class OrcSpec {
+  @SuppressWarnings( "squid:S1192" ) // string constants
   public enum DataType {
     NULL( 0, true, "null", null, false, "Null", ValueMetaInterface.TYPE_NONE ),
     BOOLEAN( 1, true, "LongColumnVector", null, true, "Boolean", ValueMetaInterface.TYPE_BOOLEAN ),
@@ -55,13 +58,6 @@ public class OrcSpec {
     private final boolean displayable;
     private final String name;
     private final int pdiType;
-    private static final ArrayList<DataType> enumValues = new ArrayList<DataType>() {
-      {
-        for ( DataType dataType : DataType.values() ) {
-          add( dataType.getId(), dataType );
-        }
-      }
-    };
 
     DataType( int id, boolean isPrimitiveType, String baseType, String logicalType, boolean displayable, String name,
               int pdiType ) {
@@ -75,7 +71,8 @@ public class OrcSpec {
     }
 
     public static DataType getDataType( int id ) {
-      return enumValues.get( id );
+      // DataType.values() returns vals in order they are defined
+      return asList( DataType.values() ).get( id );
     }
 
     public int getId() {

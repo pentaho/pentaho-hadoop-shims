@@ -158,12 +158,4 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
     return new ArrayList<>( serviceVendorTypeMapping.keySet() );
   }
 
-  /**
-   * @deprecated to be removed once NamedClusterResolver is refactored.
-   * If you see this post 9.0 kick @mkambol in the shins.
-   */
-  @Deprecated
-  @Override public String getDefaultShim() {
-    return internalShim;
-  }
 }

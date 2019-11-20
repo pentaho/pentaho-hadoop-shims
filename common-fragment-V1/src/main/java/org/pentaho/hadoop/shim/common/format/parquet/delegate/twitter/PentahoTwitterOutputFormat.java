@@ -50,15 +50,13 @@ import java.util.List;
 public class PentahoTwitterOutputFormat extends HadoopFormatBase implements IPentahoParquetOutputFormat {
 
   private static final Logger logger = Logger.getLogger( PentahoTwitterOutputFormat.class );
-  private static final String S3SCHEME = "s3";
   private static final String S3NSCHEME = "s3n";
-  private static final String S3NROOTBUCKET = S3NSCHEME + "/";
 
   private Job job;
   private Path outputFile;
   private List<? extends IParquetOutputField> outputFields;
 
-  public PentahoTwitterOutputFormat() throws Exception {
+  public PentahoTwitterOutputFormat()  {
     logger.info( "We are initializing parquet output format" );
 
     inClassloader( () -> {
@@ -136,39 +134,31 @@ public class PentahoTwitterOutputFormat extends HadoopFormatBase implements IPen
 
   @Override
   public void enableDictionary( boolean useDictionary ) throws Exception {
-    inClassloader( () -> {
-      ParquetOutputFormat.setEnableDictionary( job, useDictionary );
-    } );
+    inClassloader( () -> ParquetOutputFormat.setEnableDictionary( job, useDictionary ) );
   }
 
   @Override
   public void setRowGroupSize( int size ) throws Exception {
-    inClassloader( () -> {
-      ParquetOutputFormat.setBlockSize( job, size );
-    } );
+    inClassloader( () -> ParquetOutputFormat.setBlockSize( job, size ) );
   }
 
   @Override
   public void setDataPageSize( int size ) throws Exception {
-    inClassloader( () -> {
-      ParquetOutputFormat.setPageSize( job, size );
-    } );
+    inClassloader( () -> ParquetOutputFormat.setPageSize( job, size ) );
   }
 
   @Override
   public void setDictionaryPageSize( int size ) throws Exception {
-    inClassloader( () -> {
-      ParquetOutputFormat.setDictionaryPageSize( job, size );
-    } );
+    inClassloader( () -> ParquetOutputFormat.setDictionaryPageSize( job, size ) );
   }
 
   @Override
   public IPentahoRecordWriter createRecordWriter() throws Exception {
     if ( outputFile == null ) {
-      throw new RuntimeException( "Output file is not defined" );
+      throw new IllegalStateException( "Output file is not defined" );
     }
-    if ( ( outputFields == null ) || ( outputFields.size() == 0 ) ) {
-      throw new RuntimeException( "Schema is not defined" );
+    if ( ( outputFields == null ) || ( outputFields.isEmpty() ) ) {
+      throw new IllegalStateException( "Schema is not defined" );
     }
 
     return inClassloader( () -> {
@@ -183,11 +173,11 @@ public class PentahoTwitterOutputFormat extends HadoopFormatBase implements IPen
           (ParquetRecordWriter<RowMetaAndData>) nativeParquetOutputFormat.getRecordWriter( task );
         return new PentahoParquetRecordWriter( recordWriter, task );
       } catch ( IOException e ) {
-        throw new RuntimeException( "Some error accessing parquet files", e );
+        throw new IllegalStateException( "Some error accessing parquet files", e );
       } catch ( InterruptedException e ) {
         // logging here
-        e.printStackTrace();
-        throw new RuntimeException( "This should never happen " + e );
+        Thread.currentThread().interrupt();
+        throw new IllegalStateException( "This should never happen " + e );
       }
     } );
   }

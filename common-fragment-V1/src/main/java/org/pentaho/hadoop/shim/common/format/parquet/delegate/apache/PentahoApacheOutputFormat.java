@@ -57,7 +57,7 @@ public class PentahoApacheOutputFormat extends HadoopFormatBase implements IPent
   private Path outputFile;
   private List<? extends IParquetOutputField> outputFields;
 
-  public PentahoApacheOutputFormat() throws Exception {
+  public PentahoApacheOutputFormat()  {
     logger.info( "We are initializing parquet output format" );
 
     inClassloader( () -> {

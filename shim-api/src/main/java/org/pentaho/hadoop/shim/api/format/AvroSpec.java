@@ -22,9 +22,10 @@
 
 package org.pentaho.hadoop.shim.api.format;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 
 public class AvroSpec {
+  @SuppressWarnings( "squid:S1192" ) // string constants
   public enum DataType {
     NULL( 0, true, "null", null, "Null" ),
     BOOLEAN( 1, true, "boolean", null, "Boolean" ),
@@ -54,14 +55,6 @@ public class AvroSpec {
     private final String logicalType;
     private final String name;
 
-    private static final ArrayList<DataType> enumValues = new ArrayList<DataType>();
-
-    static {
-      for ( DataType dataType : DataType.values() ) {
-        enumValues.add( dataType.getId(), dataType );
-      }
-    }
-
     DataType( int id, boolean isPrimitiveType, String baseType, String logicalType, String name ) {
       this.id = id;
       this.isPrimitive = isPrimitiveType;
@@ -71,7 +64,8 @@ public class AvroSpec {
     }
 
     public static DataType getDataType( int id ) {
-      return enumValues.get( id );
+      // Enum values() returns vals in order they are defined
+      return Arrays.asList( DataType.values() ).get( id );
     }
 
     public int getId() {
