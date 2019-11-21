@@ -611,6 +611,11 @@
       <artifactId>gateway-shell</artifactId>
       <version>${gateway-shell.version}</version>
     </dependency>
+    <dependency>
+      <groupId>pentaho</groupId>
+      <artifactId>pentaho-osgi-utils-impl</artifactId>
+      <version>${pentaho-osgi-bundles.version}</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
