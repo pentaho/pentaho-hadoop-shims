@@ -33,6 +33,7 @@ import org.pentaho.di.core.util.Utils;
 import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.hadoop.PluginPropertiesUtil;
+import org.pentaho.hadoop.shim.ShimConfigsLoader;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.mapreduce.MapReduceExecutionException;
 import org.pentaho.hadoop.shim.api.mapreduce.MapReduceJarInfo;
@@ -51,10 +52,13 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -94,7 +98,7 @@ public class MapReduceServiceImpl implements MapReduceService {
   @Override
   public MapReduceJobSimple executeSimple( URL resolvedJarUrl, String driverClass, final String commandLineArgs )
     throws MapReduceExecutionException {
-    final Class<?> mainClass = locateDriverClass( driverClass, resolvedJarUrl, hadoopShim );
+    final Class<?> mainClass = locateDriverClass( driverClass, resolvedJarUrl, hadoopShim, true );
     return new FutureMapReduceJobSimpleImpl( executorService, mainClass, commandLineArgs );
   }
 
@@ -122,7 +126,7 @@ public class MapReduceServiceImpl implements MapReduceService {
   @Override
   public MapReduceJarInfo getJarInfo( URL resolvedJarUrl ) throws IOException, ClassNotFoundException {
     ClassLoader classLoader = getClass().getClassLoader();
-    List<Class<?>> classesInJarWithMain = getClassesInJarWithMain( resolvedJarUrl.toExternalForm(), classLoader );
+    List<Class<?>> classesInJarWithMain = getClassesInJarWithMain( resolvedJarUrl.toExternalForm() );
     List<String> classNamesInJarWithMain = new ArrayList<>( classesInJarWithMain.size() );
     for ( Class<?> aClass : classesInJarWithMain ) {
       classNamesInJarWithMain.add( aClass.getCanonicalName() );
@@ -132,7 +136,7 @@ public class MapReduceServiceImpl implements MapReduceService {
 
     Class<?> mainClassFromManifest = null;
     try {
-      mainClassFromManifest = getMainClassFromManifest( resolvedJarUrl, classLoader );
+      mainClassFromManifest = getMainClassFromManifest( resolvedJarUrl, classLoader, false );
     } catch ( Exception e ) {
       // Ignore
     }
@@ -157,14 +161,14 @@ public class MapReduceServiceImpl implements MapReduceService {
   }
 
   @VisibleForTesting
-  Class<?> locateDriverClass( String driverClass, final URL resolvedJarUrl, final HadoopShim shim )
+  Class<?> locateDriverClass( String driverClass, final URL resolvedJarUrl, final HadoopShim shim, boolean addConfigFiles )
     throws MapReduceExecutionException {
     try {
       if ( Utils.isEmpty( driverClass ) ) {
-        Class<?> mainClass = getMainClassFromManifest( resolvedJarUrl, shim.getClass().getClassLoader() );
+        Class<?> mainClass = getMainClassFromManifest( resolvedJarUrl, shim.getClass().getClassLoader(), addConfigFiles );
         if ( mainClass == null ) {
           List<Class<?>> mainClasses =
-            getClassesInJarWithMain( resolvedJarUrl.toExternalForm(), shim.getClass().getClassLoader() );
+            getClassesInJarWithMain( resolvedJarUrl.toExternalForm() );
           if ( mainClasses.size() == 1 ) {
             return mainClasses.get( 0 );
           } else if ( mainClasses.isEmpty() ) {
@@ -177,7 +181,7 @@ public class MapReduceServiceImpl implements MapReduceService {
         }
         return mainClass;
       } else {
-        return getClassByName( driverClass, resolvedJarUrl, shim.getClass().getClassLoader() );
+        return getClassByName( driverClass, resolvedJarUrl, shim.getClass().getClassLoader(), addConfigFiles );
       }
     } catch ( MapReduceExecutionException mrEx ) {
       throw mrEx;
@@ -186,10 +190,10 @@ public class MapReduceServiceImpl implements MapReduceService {
     }
   }
 
-  private List<Class<?>> getClassesInJarWithMain( String jarUrl, ClassLoader parentClassloader )
+  private List<Class<?>> getClassesInJarWithMain( String jarUrl )
     throws MalformedURLException {
-    ArrayList<Class<?>> mainClasses = new ArrayList<Class<?>>();
-    List<Class<?>> allClasses = getClassesInJar( jarUrl, parentClassloader );
+    ArrayList<Class<?>> mainClasses = new ArrayList<>();
+    List<Class<?>> allClasses = getClassesInJar( jarUrl );
     for ( Class<?> clazz : allClasses ) {
       try {
         Method mainMethod = clazz.getMethod( "main", new Class[] { String[].class } );
@@ -203,13 +207,13 @@ public class MapReduceServiceImpl implements MapReduceService {
     return mainClasses;
   }
 
-  private Class<?> getMainClassFromManifest( URL jarUrl, ClassLoader parentClassLoader )
-    throws IOException, ClassNotFoundException {
+  private Class<?> getMainClassFromManifest( URL jarUrl, ClassLoader parentClassLoader, boolean addConfigFiles )
+    throws IOException, ClassNotFoundException, URISyntaxException {
     JarFile jarFile = getJarFile( jarUrl, parentClassLoader );
     try {
       Manifest manifest = jarFile.getManifest();
       String className = manifest == null ? null : manifest.getMainAttributes().getValue( "Main-Class" );
-      return loadClassByName( className, jarUrl, parentClassLoader );
+      return loadClassByName( className, jarUrl, parentClassLoader, addConfigFiles );
     } finally {
       jarFile.close();
     }
@@ -234,29 +238,41 @@ public class MapReduceServiceImpl implements MapReduceService {
   // classloader need to remain open in case the class needs other classes from the same jar from which
   // the class was loaded.
   @SuppressWarnings( "squid:S2095" )
-  private Class<?> loadClassByName( final String className, final URL jarUrl, final ClassLoader parentClassLoader )
-    throws ClassNotFoundException {
+  private Class<?> loadClassByName( final String className, final URL jarUrl, final ClassLoader parentClassLoader, boolean addConfigFiles )
+    throws ClassNotFoundException, MalformedURLException, URISyntaxException {
     if ( className != null ) {
-      URLClassLoader cl = new URLClassLoader( new URL[] { jarUrl }, parentClassLoader );
-      return cl.loadClass( className.replaceAll( "/", "." ) );
+      // ignoring this warning; paths are to the local file system so no host name lookup should happen
+      @SuppressWarnings( "squid:S2112" )
+      Set<URL> urlSet = new HashSet<>();
+      if ( addConfigFiles ) {
+        List<URL> urlList = new ArrayList<>();
+        ShimConfigsLoader.addConfigsAsResources( namedCluster.getName(), urlList::add );
+        for ( URL url : urlList ) {
+          // get the parent dir of each config file
+          urlSet.add( Paths.get( url.toURI() ).getParent().toUri().toURL() );
+        }
+      }
+      urlSet.add( jarUrl );
+      URLClassLoader cl = new URLClassLoader( urlSet.toArray( new URL[0] ), parentClassLoader );
+      return cl.loadClass( className.replace( "/", "." ) );
     } else {
       return null;
     }
   }
 
-  private Class<?> getClassByName( String className, URL jarUrl, ClassLoader parentClassLoader )
-    throws IOException, ClassNotFoundException {
+  private Class<?> getClassByName( String className, URL jarUrl, ClassLoader parentClassLoader, boolean addConfigFiles )
+    throws IOException, ClassNotFoundException, URISyntaxException {
     JarFile jarFile = getJarFile( jarUrl, parentClassLoader );
     try {
-      return loadClassByName( className, jarUrl, parentClassLoader );
+      return loadClassByName( className, jarUrl, parentClassLoader, addConfigFiles );
     } finally {
       jarFile.close();
     }
   }
 
-  private List<Class<?>> getClassesInJar( String jarUrl, ClassLoader parentClassloader )
+  private List<Class<?>> getClassesInJar( String jarUrl )
     throws MalformedURLException {
-    ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
+    ArrayList<Class<?>> classes = new ArrayList<>();
     URL url = new URL( jarUrl );
     URL[] urls = new URL[] { url };
     try ( URLClassLoader loader = new URLClassLoader( urls, getClass().getClassLoader() );
