@@ -23,10 +23,12 @@ package org.pentaho.hadoop.shim.api.format;
 
 import org.pentaho.di.core.row.ValueMetaInterface;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
+import static java.util.Arrays.asList;
+
 public class ParquetSpec {
+  @SuppressWarnings( "squid:S1192" ) // string constants
   public enum DataType {
     NULL( 0, true, "null", null, false, "Null", ValueMetaInterface.TYPE_NONE ),
     BINARY( 1, true, "binary", null, true, "ByteArray", ValueMetaInterface.TYPE_BINARY ),
@@ -70,13 +72,6 @@ public class ParquetSpec {
     private final boolean displayable;
     private final String name;
     private final int pdiType;
-    private static final ArrayList<ParquetSpec.DataType> enumValues = new ArrayList<ParquetSpec.DataType>() {
-      {
-        for ( ParquetSpec.DataType dataType : ParquetSpec.DataType.values() ) {
-          add( dataType.getId(), dataType );
-        }
-      }
-    };
 
     DataType( int id, boolean isPrimitiveType, String baseType, String logicalType, boolean displayable, String name,
               int pdiType ) {
@@ -90,7 +85,8 @@ public class ParquetSpec {
     }
 
     public static ParquetSpec.DataType getDataType( int id ) {
-      return enumValues.get( id );
+      // enum .values() returns vals in order they are defined
+      return asList( DataType.values() ).get( id );
     }
 
     public int getId() {

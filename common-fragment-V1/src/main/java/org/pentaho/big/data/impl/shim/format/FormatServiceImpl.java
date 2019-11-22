@@ -46,8 +46,7 @@ public class FormatServiceImpl implements FormatService {
   }
 
   @Override
-  public <T extends IPentahoInputFormat> T createInputFormat( Class<T> type, NamedCluster namedCluster )
-    throws Exception {
+  public <T extends IPentahoInputFormat> T createInputFormat( Class<T> type, NamedCluster namedCluster ) {
     return Optional.ofNullable(
       formatShim.createInputFormat( type, namedCluster ) )
       .orElseThrow( () -> new IllegalStateException(
@@ -57,8 +56,7 @@ public class FormatServiceImpl implements FormatService {
   }
 
   @Override
-  public <T extends IPentahoOutputFormat> T createOutputFormat( Class<T> type, NamedCluster namedCluster )
-    throws Exception {
+  public <T extends IPentahoOutputFormat> T createOutputFormat( Class<T> type, NamedCluster namedCluster ) {
     return Optional.ofNullable(
       formatShim.createOutputFormat( type, namedCluster ) )
       .orElseThrow( () -> new IllegalStateException(
