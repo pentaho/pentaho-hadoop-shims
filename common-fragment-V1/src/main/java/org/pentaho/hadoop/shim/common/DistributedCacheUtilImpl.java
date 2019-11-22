@@ -184,9 +184,8 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
     out.close();
 
     stageForCache( extracted, fs, destination, true, false );
-    java.nio.file.Path shimDriverInstallationDirectory =
-      Paths.get( org.pentaho.hadoop.shim.DriverManager.getShimDriverInstallationDirectory() );
-    stagePentahoHadoopShims( fs, destination, shimDriverInstallationDirectory );
+    java.nio.file.Path kettleHomeDir = Paths.get( System.getProperty( "karaf.home" ) ).getParent().getParent();
+    stagePentahoHadoopShims( fs, destination, kettleHomeDir );
     stageBigDataPlugin( fs, destination, bigDataPlugin, shimIdentifier );
 
     if ( StringUtils.isNotEmpty( additionalPlugins ) ) {
@@ -198,12 +197,12 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
     fs.delete( lockFile, true );
   }
 
-  private Map<String, String> getDrivers( java.nio.file.Path dir )
+  private Map<String, String> getAbsoluteAndRelativePathOfFilesToCopy( java.nio.file.Path dir, String childDir )
     throws IOException {
     Map<String, String> files = new HashMap<>();
 
-    if ( dir.toFile().exists() ) {
-      try ( Stream<java.nio.file.Path> input = Files.walk( dir ) ) {
+    if ( dir.resolve( childDir ).toFile().exists() ) {
+      try ( Stream<java.nio.file.Path> input = Files.walk( dir.resolve( childDir ) ) ) {
         files = input.filter( x -> x.toFile().isFile() )
           .collect( Collectors
             .toMap( java.nio.file.Path::toString, x -> x.toString().replace( dir.toString() + File.separator, "" ) ) );
@@ -212,15 +211,16 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
     return files;
   }
 
-  private void stagePentahoHadoopShims( FileSystem fs, Path dest, java.nio.file.Path shimDriverInstallationDirectory )
+  private void stagePentahoHadoopShims( FileSystem fs, Path dest, java.nio.file.Path kettleHomeDir )
     throws IOException {
     Map<String, String> files =
-      getDrivers( shimDriverInstallationDirectory );
+      getAbsoluteAndRelativePathOfFilesToCopy( kettleHomeDir, SYSTEM_KARAF_SYSTEM_ORG_PENTAHO_HADOOP_SHIMS );
+    files
+      .putAll( getAbsoluteAndRelativePathOfFilesToCopy( kettleHomeDir, SYSTEM_KARAF_SYSTEM_COM_PENTAHO_HADOOP_SHIMS ) );
 
     files.forEach( ( localPath, relativePath ) -> {
       try {
-        stageForCache( KettleVFS.getFileObject( localPath ), fs,
-          new Path( dest, "drivers" + Path.SEPARATOR + relativePath ), true, false );
+        stageForCache( KettleVFS.getFileObject( localPath ), fs, new Path( dest, relativePath ), true, false );
       } catch ( IOException | KettleFileException e ) {
         logger.info( "Failed to stage the shims to distributed cache." );
       }
