@@ -23,6 +23,7 @@
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
     <joda-time.version>2.9.2</joda-time.version>
     <org.antlr.version>3.5.2</org.antlr.version>
+    <jython.version>2.5.3</jython.version>
     <automaton.version>1.11-8</automaton.version>
   </properties>
   <dependencies>
@@ -160,6 +161,11 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>org.python</groupId>
+      <artifactId>jython</artifactId>
+      <version>${jython.version}</version>
+    </dependency>
     <!--- End dependencies for Pig -->
     <dependency>
       <groupId>org.pentaho.hadoop.shims</groupId>
@@ -192,7 +198,7 @@
             <resolverFilter>
               <include>
                 <!--Needed for Pig-->
-                *:antlr-runtime,*:automaton,*:pig,*:sqoop,*:joda-time
+                *:antlr-runtime,*:automaton,*:pig,*:sqoop,*:joda-time,*:jython
               </include>
               <transitive>false</transitive>
             </resolverFilter>
