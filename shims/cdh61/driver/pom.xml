@@ -323,6 +323,7 @@
             <_exportcontents>
             </_exportcontents>
             <Embed-Dependency>*</Embed-Dependency>
+            <Include-Resource>{maven-resources}</Include-Resource>
           </instructions>
         </configuration>
       </plugin>
