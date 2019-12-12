@@ -137,7 +137,9 @@ public class AvroNestedRecordReader implements IPentahoAvroInputFormat.IPentahoR
 
   @Override
   public void close() throws IOException {
-
+    if ( nativeAvroRecordReader != null ) {
+      nativeAvroRecordReader.close();
+    }
   }
 
   private boolean hasExpandedRows() {
