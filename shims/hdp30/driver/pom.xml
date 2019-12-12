@@ -337,7 +337,7 @@
                 *:hadoop-yarn-common,*:avro-mapred,
                 *:hbase-server,*:hbase-client,*:hbase-common,*:hbase-mapreduce,*:jetty*,
                 <!--Needed for Hive-->
-                *:hive-exec,*:hive-shims,*:hive-service-rpc,*:hive-service,*:hive-common,*:hive-serde,
+                *:hive-exec,*:hive-shims,*:hive-service-rpc,*:hive-service,*:hive-common,*:hive-serde,*:hive-jdbc,
                 *:commons-configuration,*:commons-configuration2,*:gateway-shell
               </include>
               <exclude>
@@ -353,7 +353,7 @@
                 <!--Needed for Pig-->
                 *:antlr-runtime,*:automaton,*:pig,*:joda-time,
                 <!--Needed for Hive-->
-                *:hive-jdbc,*:hive-metastore,*:libthrift,*:hive-standalone-metastore
+                *:hive-metastore,*:libthrift,*:hive-standalone-metastore
               </include>
               <exclude>
                 *:tests:*
