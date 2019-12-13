@@ -29,12 +29,13 @@ import org.pentaho.metastore.api.IMetaStore;
 import org.pentaho.metastore.api.exceptions.MetaStoreException;
 import org.pentaho.osgi.metastore.locator.api.MetastoreLocator;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -42,10 +43,14 @@ import java.util.stream.Collectors;
  */
 public class JdbcUrlImpl implements JdbcUrl {
   public static final String PENTAHO_NAMED_CLUSTER = "pentahoNamedCluster";
-  private final URI uri;
+  private String scheme;
+  private String host;
+  private String port;
+  private String path;
   private final Map<String, String> queryParams;
   private final NamedClusterService namedClusterService;
   private final MetastoreLocator metastoreLocator;
+  private Pattern uriPattern = Pattern.compile( "^(.*)://([^:]*):?(\\d*)?/(.*)$" );
 
   public JdbcUrlImpl( String url, NamedClusterService namedClusterService, MetastoreLocator metastoreLocator )
     throws URISyntaxException {
@@ -54,29 +59,40 @@ public class JdbcUrlImpl implements JdbcUrl {
     if ( !url.startsWith( "jdbc:" ) ) {
       throw new URISyntaxException( url, "Should start with \"jdbc:\"" );
     }
-    uri = new URI( url.substring( 5 ) );
-    String query = null;
-    String path = uri.getPath();
-    if ( path != null ) {
-      int beginIndex = path.indexOf( ';' );
-      if ( beginIndex >= 0 ) {
-        query = path.substring( beginIndex );
+    Matcher m = uriPattern.matcher( url.substring( 5 ) );
+    if ( m.matches() ) {
+      scheme = m.group( 1 );
+      host = m.group( 2 );
+      port = m.group( 3 );
+      path = m.group( 4 );
+      String query = null;
+      if ( path != null ) {
+        int beginIndex = path.indexOf( ';' );
+        if ( beginIndex >= 0 ) {
+          query = path.substring( beginIndex );
+        }
       }
-    }
-    if ( query == null ) {
-      queryParams = new HashMap<>();
+      if ( query == null ) {
+        queryParams = new HashMap<>();
+      } else {
+        queryParams = queryStringToParamMap( query );
+      }
     } else {
-      queryParams = Arrays.asList( query.split( ";" ) ).stream()
-        .map( s -> {
-          int i = s.indexOf( '=' );
-          if ( i < 0 || i >= s.length() - 1 ) {
-            return null;
-          }
-          return new String[] { s.substring( 0, i ), s.substring( i + 1 ) };
-        } )
-        .filter( Objects::nonNull )
-        .collect( Collectors.toMap( r -> r[ 0 ], t -> t[ 1 ] ) );
+      throw new URISyntaxException( url, "Could not parse URL" );
     }
+  }
+
+  private Map<String, String> queryStringToParamMap( String query ) {
+    return Arrays.asList( query.split( ";" ) ).stream()
+      .map( s -> {
+        int i = s.indexOf( '=' );
+        if ( i < 0 || i >= s.length() - 1 ) {
+          return null;
+        }
+        return new String[] { s.substring( 0, i ), s.substring( i + 1 ) };
+      } )
+      .filter( Objects::nonNull )
+      .collect( Collectors.toMap( r -> r[ 0 ], t -> t[ 1 ] ) );
   }
 
   @Override public String toString() {
@@ -85,13 +101,14 @@ public class JdbcUrlImpl implements JdbcUrl {
       .filter( Objects::nonNull )
       .sorted( String::compareToIgnoreCase )
       .collect( Collectors.joining( ";" ) );
-    String path = uri.getPath();
-    int semicolon = path.indexOf( ';' );
+    String tempPath = path;
+    int semicolon = tempPath.indexOf( ';' );
     if ( semicolon >= 0 ) {
-      path = path.substring( 0, semicolon );
+      tempPath = tempPath.substring( 0, semicolon );
     }
-    return "jdbc:" + uri.getScheme() + "://" + uri.getHost() + ":" + uri.getPort() + path
-      + ( queryParameters != null && queryParameters.length() > 0 ? ";" + queryParameters : "" );
+    return "jdbc:" + scheme + "://" + host
+      + ( port == null || port.equals( "" ) ? "" : ":" + port ) + "/"
+      + tempPath + ( queryParameters != null && queryParameters.length() > 0 ? ";" + queryParameters : "" );
   }
 
   @Override public void setQueryParam( String key, String value ) {
@@ -117,6 +134,6 @@ public class JdbcUrlImpl implements JdbcUrl {
 
   @Override
   public String getHost() {
-    return uri.getHost();
+    return host;
   }
 }
