@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +49,7 @@ import static java.util.Optional.ofNullable;
  */
 @SuppressWarnings ( "WeakerAccess" )
 public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocator {
-  @VisibleForTesting final Map<String, Map<Class<?>, NamedClusterServiceFactory<?>>> serviceVendorTypeMapping;
+  @VisibleForTesting final Map<String, Map<Class<?>, List<NamedClusterServiceFactory<?>>>> serviceVendorTypeMapping;
   private final ReadWriteLock readWriteLock;
   @VisibleForTesting final String internalShim;
   private final MetastoreLocator metastoreLocator;
@@ -80,10 +79,13 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
     try {
       writeLock.lock();
       serviceVendorTypeMapping.putIfAbsent( shim, new HashMap<>() );
-      Map<Class<?>, NamedClusterServiceFactory<?>> classServiceMap =
+      Map<Class<?>, List<NamedClusterServiceFactory<?>>> classServiceMap =
         serviceVendorTypeMapping.get( shim );
-      Objects.requireNonNull( classServiceMap )
-        .put( namedClusterServiceFactory.getServiceClass(), namedClusterServiceFactory );
+      Class<?> serviceClass = namedClusterServiceFactory.getServiceClass();
+      //Create the list of objects if not present
+      classServiceMap.putIfAbsent( serviceClass, new ArrayList<>() );
+      //Add the service Factory to the list
+      Objects.requireNonNull( classServiceMap ).get( serviceClass ).add( namedClusterServiceFactory );
     } finally {
       writeLock.unlock();
     }
@@ -112,12 +114,24 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
       readLock.lock();
       String shim = Objects.requireNonNull( getShimForService( namedCluster ) );
       logger.debug( "NamedClusterServiceLocator.getService({}, {})", namedCluster, serviceClass );
-      Map<Class<?>, NamedClusterServiceFactory<?>> serviceMap =
-        serviceVendorTypeMapping.getOrDefault( shim, Collections.emptyMap() );
-      NamedClusterServiceFactory<?> serviceFactory = serviceMap.get( serviceClass );
-      if ( serviceFactory != null && serviceFactory.canHandle( namedCluster ) ) {
-        return serviceClass.cast( serviceFactory.create( namedCluster ) );
+
+      Map<Class<?>, List<NamedClusterServiceFactory<?>>> serviceMap = serviceVendorTypeMapping.get( shim );
+      if ( serviceMap != null ) {
+        List<NamedClusterServiceFactory<?>> serviceFactoryList = serviceMap.get( serviceClass );
+        //We must have a list here because there can be multiple factories registered under the same shim and class
+        //It is expected that the NamedClusterServiceFactory.canHandle( namedCluster ) method will determine which
+        //factory is returned.  (eg: Both MapReduceImpersonationServiceFactor and KnoxMapReduceServiceFactor create
+        //a MapReduceService.  But the knox factory should be returned for knox clusters and the impersonation factory
+        //for all non-knox clusters.)
+        if ( serviceFactoryList != null ) {
+          for ( NamedClusterServiceFactory serviceFactory : serviceFactoryList ) {
+            if ( serviceFactory.canHandle( namedCluster ) ) {
+              return serviceClass.cast( serviceFactory.create( namedCluster ) );
+            }
+          }
+        }
       }
+
     } finally {
       readLock.unlock();
     }
