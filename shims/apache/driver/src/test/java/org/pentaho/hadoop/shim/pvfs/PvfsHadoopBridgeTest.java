@@ -45,6 +45,7 @@ import java.io.IOException;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -75,6 +76,7 @@ public class PvfsHadoopBridgeTest {
     when( pvfsConf.supportsConnection() ).thenReturn( true );
     when( pvfsConf.conf( any( Path.class ) ) ).thenReturn( new Configuration() );
     when( connectionManager.getConnectionDetails( anyString() ) ).thenReturn( details );
+    when( details.getType() ).thenReturn( "snw" );
 
     bridge = new PvfsHadoopBridge( singletonList( confFactory ), connectionManager );
   }
@@ -97,6 +99,17 @@ public class PvfsHadoopBridgeTest {
       is.readFully( content );
     }
     assertThat( new String( content ), equalTo( TMPFILE_CONTENTS ) );
+  }
+
+  @Test
+  public void openUnsupported() throws IOException {
+    when( pvfsConf.supportsConnection() ).thenReturn( false );
+    byte[] content = new byte[ 10 ];
+    try ( FSDataInputStream is = bridge.open( path, 5 ) ) {
+      is.readFully( content );
+    } catch ( IllegalStateException e ) {
+      assertEquals( "Unsupported VFS connection type:  snw", e.getMessage() );
+    }
   }
 
   @Test

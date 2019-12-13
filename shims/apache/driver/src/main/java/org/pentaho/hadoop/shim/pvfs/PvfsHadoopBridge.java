@@ -34,6 +34,7 @@ import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.util.Progressable;
 import org.pentaho.di.connections.ConnectionDetails;
 import org.pentaho.di.connections.ConnectionManager;
+import org.pentaho.di.connections.ConnectionProvider;
 import org.pentaho.hadoop.shim.pvfs.conf.HCPConf;
 import org.pentaho.hadoop.shim.pvfs.conf.PvfsConf;
 import org.pentaho.hadoop.shim.pvfs.conf.S3Conf;
@@ -215,6 +216,14 @@ public class PvfsHadoopBridge extends FileSystem {
       .map( f -> f.get( details ) )
       .filter( PvfsConf::supportsConnection )
       .findFirst()
-      .orElseThrow( () -> new IllegalStateException( "Unsupported VFS connection type:  " + details.getType() ) );
+      .orElseThrow( () -> new IllegalStateException( "Unsupported VFS connection type:  " + getProviderName( details ) ) );
+  }
+
+  private String getProviderName( ConnectionDetails details ) {
+    return connMgr.getProviders().stream()
+      .filter( connectionProvider -> connectionProvider.getKey().equals( details.getType() ) )
+      .findFirst()
+      .map( ConnectionProvider::getName )
+      .orElse( details.getType() );
   }
 }
