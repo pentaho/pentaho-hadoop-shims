@@ -124,8 +124,6 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
    */
   private static final String AUTH_PREFIX = "pentaho.authentication";
 
-  private static final String DEFAULT_DRIVERS_DIR = "./drivers";
-
   /**
    * Creates the path to a lock file within the provided directory
    *
@@ -183,7 +181,7 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
     stageForCache( extracted, fs, destination, true, false );
 
     java.nio.file.Path shimDriverInstallationDirectory =
-      Paths.get( System.getProperty( Const.SHIM_DRIVER_DEPLOYMENT_LOCATION, DEFAULT_DRIVERS_DIR ) );
+      Paths.get( Const.getShimDriverDeploymentLocation() );
 
     stagePentahoHadoopShims( fs, destination, shimDriverInstallationDirectory );
     stageBigDataPlugin( fs, destination, bigDataPlugin, shimIdentifier );
