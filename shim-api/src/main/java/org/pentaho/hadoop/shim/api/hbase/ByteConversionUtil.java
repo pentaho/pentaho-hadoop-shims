@@ -86,5 +86,6 @@ public interface ByteConversionUtil {
 
   boolean isImmutableBytesWritable( Object o );
 
-  Object convertToImmutableBytesWritable( Object o ) throws InvocationTargetException, IllegalAccessException;
+  Object convertToImmutableBytesWritable( Object o )
+    throws InvocationTargetException, IllegalAccessException, NoSuchMethodException;
 }

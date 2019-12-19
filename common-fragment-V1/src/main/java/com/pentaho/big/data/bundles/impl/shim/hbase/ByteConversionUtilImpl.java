@@ -22,7 +22,6 @@
 
 package com.pentaho.big.data.bundles.impl.shim.hbase;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 
 import org.pentaho.di.core.exception.KettleException;
@@ -164,9 +163,10 @@ public class ByteConversionUtilImpl implements ByteConversionUtil {
   }
 
   @Override public Object convertToImmutableBytesWritable( Object o )
-    throws InvocationTargetException, IllegalAccessException {
-    ImmutableBytesWritable ibw = new ImmutableBytesWritable(  );
-    BeanUtils.copyProperties( ibw, o );
-    return ibw;
+    throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
+    return new ImmutableBytesWritable(
+      (byte[]) o.getClass().getMethod( "copyBytes" ).invoke( o ),
+      (Integer) o.getClass().getMethod( "getOffset" ).invoke( o ),
+      (Integer) o.getClass().getMethod( "getLength" ).invoke( o ) );
   }
 }

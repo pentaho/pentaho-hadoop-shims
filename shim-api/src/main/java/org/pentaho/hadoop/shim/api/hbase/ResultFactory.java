@@ -22,8 +22,6 @@
 
 package org.pentaho.hadoop.shim.api.hbase;
 
-import java.lang.reflect.InvocationTargetException;
-
 /**
  * Created by bryan on 1/29/16.
  */
@@ -31,6 +29,4 @@ public interface ResultFactory {
   boolean canHandle( Object object );
 
   Result create( Object object ) throws ResultFactoryException;
-
-  Object convertToResult( Object object ) throws InvocationTargetException, IllegalAccessException;
 }
