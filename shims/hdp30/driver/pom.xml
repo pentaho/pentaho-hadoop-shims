@@ -41,7 +41,7 @@
     <geronimo-servlet_3.0_spec.version>1.0</geronimo-servlet_3.0_spec.version>
     <org.apache.hive.version>3.1.0.3.0.0.0-1634</org.apache.hive.version>
     <org.apache.hadoop.version>3.1.0.3.0.0.0-1634</org.apache.hadoop.version>
-    <org.apache.orc.version>1.2.3</org.apache.orc.version>
+    <org.apache.orc.version>1.5.1.3.0.0.0-1634</org.apache.orc.version>
     <parquet.version>1.10.0.3.0.0.0-1634</parquet.version>
     <org.antlr.version>3.5.2</org.antlr.version>
     <joda-time.version>2.9.9</joda-time.version>
