@@ -56,6 +56,8 @@ public class CommonHadoopShim implements HadoopShim {
 
   private static final String FS_HDFS_IMPL = "fs.hdfs.impl";
   private static final String FS_FILE_IMPL = "fs.file.impl";
+  private static final String IPC_CLIENT_CONNECT_TIMEOUT = "ipc.client.connect.max.retries.on.timeouts";
+  private static final String IPC_CLIENT_CONNECT_TIMEOUT_NUM = "5";
   private static final String MAPRED_JOB_TRACKER = "mapred.job.tracker";
   private static final String SHIM_NOT_SUPPORTED_DRIVER =
     "org.pentaho.hadoop.shim.common.CommonHadoopShim$NotSupportedDriver";
@@ -228,6 +230,7 @@ public class CommonHadoopShim implements HadoopShim {
     conf.set( FS_FILE_IMPL,
       org.apache.hadoop.fs.LocalFileSystem.class.getName()
     );
+    conf.set( IPC_CLIENT_CONNECT_TIMEOUT, IPC_CLIENT_CONNECT_TIMEOUT_NUM );
     try ( FileSystemProxy fsp = new FileSystemProxy(
       org.apache.hadoop.fs.FileSystem.get( ShimUtils.asConfiguration( conf ) ) ) ) {
       return fsp;
@@ -246,6 +249,7 @@ public class CommonHadoopShim implements HadoopShim {
     conf.set( FS_FILE_IMPL,
       org.apache.hadoop.fs.LocalFileSystem.class.getName()
     );
+    conf.set( IPC_CLIENT_CONNECT_TIMEOUT, IPC_CLIENT_CONNECT_TIMEOUT_NUM );
     try ( FileSystemProxy fsp = new FileSystemProxy(
       org.apache.hadoop.fs.FileSystem.get( uri, ShimUtils.asConfiguration( conf ), user ) ) ) {
       return fsp;
@@ -264,6 +268,7 @@ public class CommonHadoopShim implements HadoopShim {
     conf.set( FS_FILE_IMPL,
       org.apache.hadoop.fs.LocalFileSystem.class.getName()
     );
+    conf.set( IPC_CLIENT_CONNECT_TIMEOUT, IPC_CLIENT_CONNECT_TIMEOUT_NUM );
     try ( FileSystemProxy fsp = new FileSystemProxy(
       org.apache.hadoop.fs.FileSystem.get( uri, ShimUtils.asConfiguration( conf ) ) ) ) {
       return fsp;
