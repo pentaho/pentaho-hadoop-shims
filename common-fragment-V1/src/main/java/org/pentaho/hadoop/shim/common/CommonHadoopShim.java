@@ -26,6 +26,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.net.NetUtils;
 import org.apache.hadoop.util.VersionInfo;
+import org.pentaho.big.data.api.shims.LegacyShimLocator;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.hadoop.shim.api.ConfigurationException;
@@ -57,7 +58,6 @@ public class CommonHadoopShim implements HadoopShim {
   private static final String FS_HDFS_IMPL = "fs.hdfs.impl";
   private static final String FS_FILE_IMPL = "fs.file.impl";
   private static final String IPC_CLIENT_CONNECT_TIMEOUT = "ipc.client.connect.max.retries.on.timeouts";
-  private static final String IPC_CLIENT_CONNECT_TIMEOUT_NUM = "5";
   private static final String MAPRED_JOB_TRACKER = "mapred.job.tracker";
   private static final String SHIM_NOT_SUPPORTED_DRIVER =
     "org.pentaho.hadoop.shim.common.CommonHadoopShim$NotSupportedDriver";
@@ -69,6 +69,8 @@ public class CommonHadoopShim implements HadoopShim {
   public static final String PENTAHO_MAPREDUCE_GENERIC_REDUCER_CLASS_NAME =
     "org.pentaho.hadoop.mapreduce.GenericTransReduce";
   public static final String PENTAHO_MAPREDUCE_RUNNABLE_CLASS_NAME = "org.pentaho.hadoop.mapreduce.PentahoMapRunnable";
+  public static final String HADOOPFS_IPC_CLIENT_CONNECT_MAX_RETRIES_ON_TIMEOUTS =
+    "hadoopfs.ipc.client.connect.max.retries.on.timeouts";
 
   private org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger( getClass() );
 
@@ -230,7 +232,11 @@ public class CommonHadoopShim implements HadoopShim {
     conf.set( FS_FILE_IMPL,
       org.apache.hadoop.fs.LocalFileSystem.class.getName()
     );
-    conf.set( IPC_CLIENT_CONNECT_TIMEOUT, IPC_CLIENT_CONNECT_TIMEOUT_NUM );
+    Properties legacyPluginProps = LegacyShimLocator.getLegacyBigDataProps();
+    String timeoutNum = legacyPluginProps.getProperty( HADOOPFS_IPC_CLIENT_CONNECT_MAX_RETRIES_ON_TIMEOUTS );
+    if ( null != timeoutNum && !timeoutNum.equals( "" ) ) {
+      conf.set( IPC_CLIENT_CONNECT_TIMEOUT, timeoutNum );
+    }
     try ( FileSystemProxy fsp = new FileSystemProxy(
       org.apache.hadoop.fs.FileSystem.get( ShimUtils.asConfiguration( conf ) ) ) ) {
       return fsp;
@@ -249,7 +255,11 @@ public class CommonHadoopShim implements HadoopShim {
     conf.set( FS_FILE_IMPL,
       org.apache.hadoop.fs.LocalFileSystem.class.getName()
     );
-    conf.set( IPC_CLIENT_CONNECT_TIMEOUT, IPC_CLIENT_CONNECT_TIMEOUT_NUM );
+    Properties legacyPluginProps = LegacyShimLocator.getLegacyBigDataProps();
+    String timeoutNum = legacyPluginProps.getProperty( HADOOPFS_IPC_CLIENT_CONNECT_MAX_RETRIES_ON_TIMEOUTS );
+    if ( null != timeoutNum && !timeoutNum.equals( "" ) ) {
+      conf.set( IPC_CLIENT_CONNECT_TIMEOUT, timeoutNum );
+    }
     try ( FileSystemProxy fsp = new FileSystemProxy(
       org.apache.hadoop.fs.FileSystem.get( uri, ShimUtils.asConfiguration( conf ), user ) ) ) {
       return fsp;
@@ -268,7 +278,11 @@ public class CommonHadoopShim implements HadoopShim {
     conf.set( FS_FILE_IMPL,
       org.apache.hadoop.fs.LocalFileSystem.class.getName()
     );
-    conf.set( IPC_CLIENT_CONNECT_TIMEOUT, IPC_CLIENT_CONNECT_TIMEOUT_NUM );
+    Properties legacyPluginProps = LegacyShimLocator.getLegacyBigDataProps();
+    String timeoutNum = legacyPluginProps.getProperty( HADOOPFS_IPC_CLIENT_CONNECT_MAX_RETRIES_ON_TIMEOUTS );
+    if ( null != timeoutNum && !timeoutNum.equals( "" ) ) {
+      conf.set( IPC_CLIENT_CONNECT_TIMEOUT, timeoutNum );
+    }
     try ( FileSystemProxy fsp = new FileSystemProxy(
       org.apache.hadoop.fs.FileSystem.get( uri, ShimUtils.asConfiguration( conf ) ) ) ) {
       return fsp;
