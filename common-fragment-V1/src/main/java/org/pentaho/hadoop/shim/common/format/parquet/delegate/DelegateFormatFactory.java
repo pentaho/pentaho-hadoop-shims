@@ -48,7 +48,7 @@ public class DelegateFormatFactory {
     if ( shimUsesTwitterLibs( namedCluster ) ) {
       return new PentahoTwitterOutputFormat();
     } else {
-      return new PentahoApacheOutputFormat();
+      return new PentahoApacheOutputFormat( namedCluster );
     }
   }
 

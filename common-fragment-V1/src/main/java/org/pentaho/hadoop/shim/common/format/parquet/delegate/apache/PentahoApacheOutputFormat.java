@@ -38,6 +38,8 @@ import org.apache.parquet.hadoop.ParquetOutputFormat;
 import org.apache.parquet.hadoop.ParquetRecordWriter;
 import org.apache.parquet.hadoop.metadata.CompressionCodecName;
 import org.pentaho.di.core.RowMetaAndData;
+import org.pentaho.hadoop.shim.ShimConfigsLoader;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.format.IParquetOutputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoParquetOutputFormat;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
@@ -57,11 +59,20 @@ public class PentahoApacheOutputFormat extends HadoopFormatBase implements IPent
   private Path outputFile;
   private List<? extends IParquetOutputField> outputFields;
 
-  public PentahoApacheOutputFormat()  {
+  public PentahoApacheOutputFormat() {
+    this( null );
+  }
+
+  public PentahoApacheOutputFormat( NamedCluster namedCluster ) {
     logger.info( "We are initializing parquet output format" );
 
     inClassloader( () -> {
       ConfigurationProxy conf = new ConfigurationProxy();
+
+      if ( namedCluster != null ) {
+        // if named cluster is not defined, no need to add cluster resource configs
+        ShimConfigsLoader.addConfigsAsResources( namedCluster.getName(), conf::addResource );
+      }
 
       job = Job.getInstance( conf );
 
