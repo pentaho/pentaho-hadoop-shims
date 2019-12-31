@@ -59,7 +59,7 @@ public class CommonFormatShim implements FormatShim {
     } else if ( type.isAssignableFrom( IPentahoAvroOutputFormat.class ) ) {
       return (T) new PentahoAvroOutputFormat();
     } else if ( type.isAssignableFrom( IPentahoOrcOutputFormat.class ) ) {
-      return (T) new PentahoOrcOutputFormat();
+      return (T) new PentahoOrcOutputFormat( namedCluster );
     }
     throw new IllegalArgumentException( "Not supported scheme format" );
   }
