@@ -27,6 +27,8 @@ import org.apache.hadoop.fs.Path;
 import org.apache.orc.TypeDescription;
 import org.pentaho.di.core.logging.LogChannel;
 import org.pentaho.di.core.logging.LogChannelInterface;
+import org.pentaho.hadoop.shim.ShimConfigsLoader;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.format.IOrcOutputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoOrcOutputFormat;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
@@ -51,9 +53,19 @@ public class PentahoOrcOutputFormat extends HadoopFormatBase implements IPentaho
   private static final LogChannelInterface logger = LogChannel.GENERAL;
 
   public PentahoOrcOutputFormat() {
+    this( null );
+  }
+
+  public PentahoOrcOutputFormat( NamedCluster namedCluster ) {
     Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
     conf = new ConfigurationProxy();
-    conf.addResource( "hive-site.xml" );
+
+    if ( namedCluster != null ) {
+      // if named cluster is not defined, no need to add cluster resource configs
+      ShimConfigsLoader.addConfigsAsResources( namedCluster.getName(), conf::addResource );
+    } else {
+      conf.addResource( "hive-site.xml" );
+    }
   }
 
   @Override public IPentahoRecordWriter createRecordWriter() {
