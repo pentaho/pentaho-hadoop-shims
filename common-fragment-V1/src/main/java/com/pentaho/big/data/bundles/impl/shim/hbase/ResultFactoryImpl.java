@@ -22,13 +22,9 @@
 
 package com.pentaho.big.data.bundles.impl.shim.hbase;
 
-
-import org.apache.commons.beanutils.BeanUtils;
 import org.pentaho.hadoop.shim.api.hbase.ResultFactory;
 import org.pentaho.hadoop.shim.api.hbase.ResultFactoryException;
 import org.pentaho.hadoop.shim.api.internal.hbase.HBaseBytesUtilShim;
-
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * Created by bryan on 1/29/16.
@@ -53,11 +49,5 @@ public class ResultFactoryImpl implements ResultFactory {
     } catch ( ClassCastException e ) {
       throw new ResultFactoryException( e );
     }
-  }
-
-  @Override public Object convertToResult( Object object ) throws InvocationTargetException, IllegalAccessException {
-    org.apache.hadoop.hbase.client.Result result = new org.apache.hadoop.hbase.client.Result();
-    BeanUtils.copyProperties( result, object );
-    return result;
   }
 }
