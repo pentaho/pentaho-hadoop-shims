@@ -21,6 +21,7 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -154,7 +155,7 @@ public class PentahoTwitterInputFormat extends HadoopFormatBase implements IPent
   @Override
   public List<IParquetInputField> readSchema( String file ) throws Exception {
     return inClassloader( () -> {
-      ConfigurationProxy conf = new ConfigurationProxy();
+      Configuration conf = job.getConfiguration();
       S3NCredentialUtils.applyS3CredentialsToHadoopConfigurationIfNecessary( file, conf );
       Path filePath = new Path( S3NCredentialUtils.scrubFilePathIfNecessary( file ) );
       FileSystem fs = FileSystem.get( filePath.toUri(), conf );
