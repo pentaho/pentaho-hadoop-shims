@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -80,6 +80,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -148,6 +149,9 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
     "JobEntryHadoopTransJobExecutor.UnableToLocateArchive";
   public static final String JOB_ENTRY_HADOOP_TRANS_JOB_EXECUTOR_KETTLE_INSTALLATION_MISSING_FROM =
     "JobEntryHadoopTransJobExecutor.KettleInstallationMissingFrom";
+  private static final String KEYTAB_AUTHENTICATION_LOCATION = "pentaho.authentication.default.kerberos.keytabLocation";
+  private static final String KEYTAB_IMPERSONATION_LOCATION =
+    "pentaho.authentication.default.mapping.server.credentials.kerberos.keytabLocation";
   public static final String VARIABLE_SPACE = "variableSpace";
   private final HadoopShim hadoopShim;
   private final LogChannelInterface log;
@@ -588,28 +592,42 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
   }
 
   private void stageConfigurationFiles( String metaStoreSnapshotDir ) {
-    URI configFileLocation = null;
-    File configFileSource = null;
-    boolean stagingExists = true;
     File configFilesStagingLocation = new File(
       metaStoreSnapshotDir + File.separator + ShimConfigsLoader.CONFIGS_DIR_PREFIX + File.separator
         + getClusterName() );
     ShimConfigsLoader.ClusterConfigNames[] configFilesNames = ShimConfigsLoader.ClusterConfigNames.values();
+    Properties configProps = ShimConfigsLoader.loadConfigProperties( getClusterName() );
     for ( ShimConfigsLoader.ClusterConfigNames configFileName : configFilesNames ) {
-      try {
-        configFileLocation =
-          ShimConfigsLoader.getURLToResourceFile( configFileName.toString(), getClusterName() ).toURI();
-        configFileSource = new File( configFileLocation );
-        stagingExists = true;
-        if ( !configFilesStagingLocation.exists() ) {
-          stagingExists = configFilesStagingLocation.mkdirs();
-        }
-        if ( configFileSource.exists() && stagingExists ) {
-          FileUtils.copyFileToDirectory( configFileSource, configFilesStagingLocation );
-        }
-      } catch ( Exception e ) {
-        //Do nothing
+      copyConfigFileToStaging( configFilesStagingLocation, configFileName.toString() );
+    }
+    String keytabAuthFilePath = configProps.getProperty( KEYTAB_AUTHENTICATION_LOCATION, "" );
+    if ( !keytabAuthFilePath.isEmpty() ) {
+      copyConfigFileToStaging( configFilesStagingLocation, Paths.get( keytabAuthFilePath ).getFileName().toString() );
+    }
+    String keytabImpersFilePath = configProps.getProperty( KEYTAB_IMPERSONATION_LOCATION, "" );
+    if ( !keytabImpersFilePath.isEmpty() ) {
+      copyConfigFileToStaging( configFilesStagingLocation, Paths.get( keytabImpersFilePath ).getFileName().toString() );
+    }
+  }
+
+  private void copyConfigFileToStaging( File configFilesStagingLocation,
+                                        String configFileName ) {
+    URI configFileLocation;
+    File configFileSource;
+    boolean stagingExists;
+    try {
+      configFileLocation =
+        ShimConfigsLoader.getURLToResourceFile( configFileName, getClusterName() ).toURI();
+      configFileSource = new File( configFileLocation );
+      stagingExists = true;
+      if ( !configFilesStagingLocation.exists() ) {
+        stagingExists = configFilesStagingLocation.mkdirs();
       }
+      if ( configFileSource.exists() && stagingExists ) {
+        FileUtils.copyFileToDirectory( configFileSource, configFilesStagingLocation );
+      }
+    } catch ( Exception e ) {
+      //Do nothing
     }
   }
 
