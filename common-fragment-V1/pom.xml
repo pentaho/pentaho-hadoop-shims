@@ -615,19 +615,16 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
+        <artifactId>maven-compiler-plugin</artifactId>
         <executions>
+          <!-- dependencies for IT compile get hosed by shim-bundle-plugin,
+               I'm not sure why that happens, but as workaround disabling
+               IT compile.  All tests are run as part of test phase. -->
           <execution>
-            <id>add-integration-test-sources</id>
-            <phase>generate-test-sources</phase>
-            <goals>
-              <goal>add-test-source</goal>
-            </goals>
+            <id>test-integration_compile</id>
+            <phase>${test-integration_compile-phase}</phase>
             <configuration>
-              <sources>
-                <source>${integration-test.src}</source>
-              </sources>
+              <skip>true</skip>
             </configuration>
           </execution>
         </executions>
