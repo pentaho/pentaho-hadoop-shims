@@ -42,6 +42,7 @@ import org.pentaho.hadoop.shim.pvfs.conf.PvfsConf;
 import java.io.File;
 import java.io.IOException;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -51,6 +52,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith( MockitoJUnitRunner.class )
@@ -165,4 +167,21 @@ public class PvfsHadoopBridgeTest {
     bridge.setWorkingDirectory( pvfsPath );
     assertThat( bridge.getWorkingDirectory(), equalTo( newWd ) );
   }
+
+  @Test
+  public void connectionNamesParsedCorrectly() {
+    asList(
+      "authority with spaces",
+      "authorityMixedCase",
+      "under_scores",
+      "UPPERCASE",
+      "Dashes-dashes",
+      "!@!@$!@)(*)(*&*(&( {}|``~" ).forEach(
+        connectionName -> {
+          bridge.getConnectionDetails( new Path( "pvfs", connectionName, "/path/to/file" ) );
+          verify( connectionManager ).getConnectionDetails( connectionName );
+        } );
+
+  }
+
 }
