@@ -226,15 +226,23 @@ public class PvfsHadoopBridge extends FileSystem {
   }
 
   @VisibleForTesting ConnectionDetails getConnectionDetails( Path path ) {
+    return connMgr.getConnectionDetails( getConnectionName( path ) );
+  }
+
+  /**
+   * Retrieves the Pentaho VFS connection name associated with path, if one is present.
+   *
+   * @param path input path, expected to have pvfs scheme.
+   * @return PVFS connection name
+   */
+  public static String getConnectionName( Path path ) {
     try {
-      String connectionName = ( (ConnectionFileName) new ConnectionFileNameParser()
+      return ( (ConnectionFileName) new ConnectionFileNameParser()
         .parseUri( null, null, path.toString() ) ).getConnection();
-      return connMgr.getConnectionDetails( connectionName );
     } catch ( FileSystemException e ) {
       LOGGER.warn( "Failed to retrieve connection details with unexpected exception", e );
       return null;
     }
-
   }
 
   private String getProviderName( ConnectionDetails details ) {
