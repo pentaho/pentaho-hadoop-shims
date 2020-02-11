@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -39,6 +39,7 @@ import java.util.stream.Collectors;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.apache.hadoop.fs.Path.SEPARATOR;
+import static org.pentaho.hadoop.shim.pvfs.PvfsHadoopBridge.getConnectionName;
 
 
 public class S3Conf extends PvfsConf {
@@ -90,7 +91,7 @@ public class S3Conf extends PvfsConf {
   @Override public Path mapPath( Path pvfsPath, Path realFsPath ) {
     URI uri = realFsPath.toUri();
     return new Path( pvfsPath.toUri().getScheme(),
-      pvfsPath.toUri().getHost(), "/" + uri.getHost() + uri.getPath() );
+      getConnectionName( pvfsPath ), "/" + uri.getHost() + uri.getPath() );
   }
 
   @Override public Configuration conf( Path pvfsPath ) {
