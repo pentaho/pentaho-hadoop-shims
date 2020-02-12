@@ -24,11 +24,13 @@ package org.pentaho.hadoop.shim;
 
 import org.pentaho.hadoop.shim.common.ConfigurationProxyV2;
 import org.pentaho.hadoop.shim.common.HadoopShimImpl;
+import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
 
 public class HadoopShim extends HadoopShimImpl {
 
   public HadoopShim() {
     super();
+    S3NCredentialUtils.setS3nIsSupported( false );
   }
 
   @Override
