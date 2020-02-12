@@ -31,7 +31,10 @@ import java.net.URI;
 public class S3NCredentialUtils {
 
   private static final String S3NSCHEME = "s3n";
+  private static final String S3ASCHEME = "s3a";
   private static final String S3NROOTBUCKET = S3NSCHEME + "/";
+
+  private static boolean s3nIsSupported = true;
 
   public static void applyS3CredentialsToHadoopConfigurationIfNecessary( String filename, Configuration conf ) {
     Path outputFile = new Path( scrubFilePathIfNecessary( filename ) );
@@ -46,6 +49,20 @@ public class S3NCredentialUtils {
   }
 
   public static String scrubFilePathIfNecessary( String filename ) {
-    return filename != null ? filename.replace( S3NROOTBUCKET, "" ) : filename;
+    if ( filename != null ) {
+      filename = filename.replace( S3NROOTBUCKET, "" );
+      if ( !s3nIsSupported ) {
+        filename = filename.replace( S3NSCHEME, S3ASCHEME );
+      }
+    }
+    return filename;
+  }
+
+  public static void setS3nIsSupported( boolean supported ) {
+    s3nIsSupported = supported;
+  }
+
+  public static boolean isS3nIsSupported() {
+    return s3nIsSupported;
   }
 }
