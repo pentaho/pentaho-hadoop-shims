@@ -5,12 +5,12 @@
 <parent>
   <groupId>org.pentaho</groupId>
   <artifactId>pentaho-hadoop-shims</artifactId>
-  <version>9.0.0.0-SNAPSHOT</version>
+  <version>9.1.0.0-SNAPSHOT</version>
 </parent>
 
 <groupId>org.pentaho.hadoop.shims</groupId>
 <artifactId>pentaho-hadoop-shims-list</artifactId>
-<version>9.0.0.0-SNAPSHOT</version>
+<version>9.1.0.0-SNAPSHOT</version>
 <packaging>pom</packaging>
 
 <properties>
@@ -19,6 +19,7 @@
   <com.yammer.metrics.version>2.2.0</com.yammer.metrics.version>
   <org.safehaus.jug.version>2.0.0</org.safehaus.jug.version>
   <commons-lang.version>2.6</commons-lang.version>
+  <com.codahale.metrics.version>3.0.1</com.codahale.metrics.version>
   <com.igormaznitsa.jcp.version>6.1.2</com.igormaznitsa.jcp.version>
   <bundle.export.version>8.0.513.cdh</bundle.export.version>
   <shim-bundle-plugin.version>1.0</shim-bundle-plugin.version>
@@ -150,11 +151,7 @@
         <executions>
           <execution>
             <id>unpack-common-sources</id>
-            <phase>none</phase>
-          </execution>
-          <execution>
-            <id>unpack-fragment</id>
-            <phase>generate-resources</phase>
+            <phase>process-sources</phase>
             <goals>
               <goal>unpack</goal>
             </goals>
@@ -163,14 +160,9 @@
                 <artifactItem>
                   <groupId>org.pentaho.hadoop.shims</groupId>
                   <artifactId>pentaho-hadoop-shims-common-fragment-V1</artifactId>
+                  <classifier>sources</classifier>
+                  <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}/src</outputDirectory>
-                  <includes>**/*.properties,META-INF/services/*</includes>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.pentaho.hadoop.shims</groupId>
-                  <artifactId>pentaho-hadoop-shims-common-fragment-V1</artifactId>
-                  <outputDirectory>${project.build.directory}/classes</outputDirectory>
-                  <includes>**/*.class</includes>
                 </artifactItem>
               </artifactItems>
             </configuration>

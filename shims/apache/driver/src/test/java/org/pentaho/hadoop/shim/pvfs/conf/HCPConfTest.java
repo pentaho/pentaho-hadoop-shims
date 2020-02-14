@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -77,6 +77,16 @@ public class HCPConfTest {
   @Test public void mapPath() {
     Path result = hcpConf.mapPath( path );
     assertThat( result.toString(), equalTo( "s3a://nstest/somedir/somechild" ) );
+    assertThat( hcpConf.mapPath( path, new Path( "s3a://nstest/dir/file" ) ).toString(),
+      equalTo( "pvfs://namedConn/dir/file" ) );
+  }
+
+  @Test public void mapPathWithSpaces() {
+    Path pathWithSpaces = new Path( "pvfs://nam ed Conn/somedir/somechild" );
+    Path result = hcpConf.mapPath( pathWithSpaces );
+    assertThat( result.toString(), equalTo( "s3a://nstest/somedir/somechild" ) );
+    assertThat( hcpConf.mapPath( pathWithSpaces, new Path( "s3a://nstest/dir/file" ) ).toString(),
+      equalTo( "pvfs://nam ed Conn/dir/file" ) );
   }
 
   @Test public void testConf() {

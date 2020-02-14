@@ -5,11 +5,11 @@
   <parent>
     <groupId>org.pentaho.hadoop.shims</groupId>
     <artifactId>pentaho-hadoop-shims-hdp30-reactor</artifactId>
-    <version>9.0.0.0-SNAPSHOT</version>
+    <version>9.1.0.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>pentaho-hadoop-shims-hdp30-driver</artifactId>
-  <version>9.0.0.0-SNAPSHOT</version>
+  <version>9.1.0.0-SNAPSHOT</version>
   <packaging>bundle</packaging>
 
   <properties>
@@ -41,7 +41,7 @@
     <geronimo-servlet_3.0_spec.version>1.0</geronimo-servlet_3.0_spec.version>
     <org.apache.hive.version>3.1.0.3.0.0.0-1634</org.apache.hive.version>
     <org.apache.hadoop.version>3.1.0.3.0.0.0-1634</org.apache.hadoop.version>
-    <org.apache.orc.version>1.2.3</org.apache.orc.version>
+    <org.apache.orc.version>1.5.1.3.0.0.0-1634</org.apache.orc.version>
     <parquet.version>1.10.0.3.0.0.0-1634</parquet.version>
     <org.antlr.version>3.5.2</org.antlr.version>
     <joda-time.version>2.9.9</joda-time.version>
@@ -129,12 +129,6 @@
       <groupId>org.pentaho.hadoop.shims</groupId>
       <artifactId>pentaho-hadoop-shims-common-fragment-V1</artifactId>
       <version>${project.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.pentaho</groupId>
@@ -207,12 +201,6 @@
       <artifactId>hive-exec</artifactId>
       <classifier>core</classifier>
       <version>${org.apache.hive.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hive</groupId>
@@ -223,12 +211,6 @@
       <groupId>org.apache.hive</groupId>
       <artifactId>hive-jdbc</artifactId>
       <version>${hive-jdbc.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.knox</groupId>
@@ -355,12 +337,12 @@
                 *:hadoop-yarn-common,*:avro-mapred,
                 *:hbase-server,*:hbase-client,*:hbase-common,*:hbase-mapreduce,*:jetty*,
                 <!--Needed for Hive-->
-                *:hive-exec,*:hive-shims,*:hive-service-rpc,*:hive-service,*:hive-common,*:hive-serde,
+                *:hive-exec,*:hive-shims,*:hive-service-rpc,*:hive-service,*:hive-common,*:hive-serde,*:hive-jdbc,
                 *:commons-configuration,*:commons-configuration2,*:gateway-shell
               </include>
               <exclude>
-                *:jersey*:jar:2.25.1,
-                *:*log4j*,*:xml-apis,*:xercesImpl,*:tests:*,
+                *:jersey*:jar:2.25.1,*:*log4j*,*:xml-apis,*:xercesImpl,*:tests:*,*:commons-logging,*:commons-math3,
+                *:commons-pool,*:commons-dbcp,
                 <!--Needed for hive-->
                 org.apache.hadoop:hadoop-yarn-registry
               </exclude>
@@ -371,7 +353,7 @@
                 <!--Needed for Pig-->
                 *:antlr-runtime,*:automaton,*:pig,*:joda-time,
                 <!--Needed for Hive-->
-                *:hive-jdbc,*:hive-metastore,*:libthrift,*:hive-standalone-metastore
+                *:hive-metastore,*:libthrift,*:hive-standalone-metastore
               </include>
               <exclude>
                 *:tests:*
@@ -393,7 +375,6 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <version>${dependency.maven-bundle-plugin.version}</version>
         <extensions>true</extensions>
         <configuration>
           <instructions>
@@ -406,13 +387,9 @@
             <_exportcontents>
             </_exportcontents>
             <Embed-Dependency>*</Embed-Dependency>
+            <Include-Resource>{maven-resources}</Include-Resource>
           </instructions>
         </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
       </plugin>
 
     </plugins>

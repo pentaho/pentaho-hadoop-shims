@@ -25,7 +25,7 @@ import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 
 public interface FormatService {
 
-  <T extends IPentahoInputFormat> T createInputFormat( Class<T> type, NamedCluster namedCluster ) throws Exception;
+  <T extends IPentahoInputFormat> T createInputFormat( Class<T> type, NamedCluster namedCluster );
 
-  <T extends IPentahoOutputFormat> T createOutputFormat( Class<T> type, NamedCluster namedCluster ) throws Exception;
+  <T extends IPentahoOutputFormat> T createOutputFormat( Class<T> type, NamedCluster namedCluster );
 }

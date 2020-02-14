@@ -140,4 +140,8 @@ public interface NamedCluster extends Cloneable, VariableSpace {
       return c1.getName().compareToIgnoreCase( c2.getName() );
     }
   };
+
+  String decodePassword( String password );
+
+  String encodePassword( String password );
 }

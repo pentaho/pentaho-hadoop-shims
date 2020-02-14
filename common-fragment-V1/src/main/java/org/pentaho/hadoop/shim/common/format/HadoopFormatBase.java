@@ -28,37 +28,41 @@ package org.pentaho.hadoop.shim.common.format;
  */
 public class HadoopFormatBase {
 
-  protected <R> R inClassloader( SupplierWithException<R> action ) throws Exception {
+  protected <R, E extends Exception> R inClassloader( SupplierWithException<R, E> action ) {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     try {
       Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
-
-      return action.get();
-
+      try {
+        return action.get();
+      } catch ( Exception e ) {
+        throw new IllegalStateException( e );
+      }
     } finally {
       Thread.currentThread().setContextClassLoader( cl );
     }
   }
 
-  protected <R> void inClassloader( RunnableWithException<R> action ) throws Exception {
+  protected <E extends Exception> void inClassloader( RunnableWithException<E> action ) {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     try {
       Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
-
-      action.get();
-
+      try {
+        action.get();
+      } catch ( Exception e ) {
+        throw new IllegalStateException( e );
+      }
     } finally {
       Thread.currentThread().setContextClassLoader( cl );
     }
   }
 
   @FunctionalInterface
-  public interface SupplierWithException<T> {
-    public T get() throws Exception;
+  public interface SupplierWithException<T, E extends Exception> {
+    T get() throws E;
   }
 
   @FunctionalInterface
-  public interface RunnableWithException<T> {
-    public void get() throws Exception;
+  public interface RunnableWithException<E extends Exception> {
+    void get() throws E;
   }
 }

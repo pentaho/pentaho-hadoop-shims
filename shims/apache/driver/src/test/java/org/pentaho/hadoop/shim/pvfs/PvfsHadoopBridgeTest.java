@@ -42,13 +42,17 @@ import org.pentaho.hadoop.shim.pvfs.conf.PvfsConf;
 import java.io.File;
 import java.io.IOException;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith( MockitoJUnitRunner.class )
@@ -74,6 +78,7 @@ public class PvfsHadoopBridgeTest {
     when( pvfsConf.supportsConnection() ).thenReturn( true );
     when( pvfsConf.conf( any( Path.class ) ) ).thenReturn( new Configuration() );
     when( connectionManager.getConnectionDetails( anyString() ) ).thenReturn( details );
+    when( details.getType() ).thenReturn( "snw" );
 
     bridge = new PvfsHadoopBridge( singletonList( confFactory ), connectionManager );
   }
@@ -85,8 +90,8 @@ public class PvfsHadoopBridgeTest {
 
   @Test
   public void makeQualified() {
-    assertThat( bridge.makeQualified( path ).toUri(),
-      equalTo( tempFile.toURI() ) );
+    assertThat( bridge.makeQualified( path ),
+      equalTo( path ) );
   }
 
   @Test
@@ -99,13 +104,44 @@ public class PvfsHadoopBridgeTest {
   }
 
   @Test
+  public void openUnsupported() throws IOException {
+    when( pvfsConf.supportsConnection() ).thenReturn( false );
+    byte[] content = new byte[ 10 ];
+    try ( FSDataInputStream is = bridge.open( path, 5 ) ) {
+      is.readFully( content );
+    } catch ( IllegalStateException e ) {
+      assertEquals( "Unsupported VFS connection type:  snw", e.getMessage() );
+    }
+  }
+
+  @Test
+  public void checkPath() {
+    Path unsupportedPath = new Path( "pvfs", "noSuchConnectionName", "/foo/bar.txt" );
+    Path supportedPath = new Path( "pvfs", "definedConnection", "/foo/bar.txt" );
+    when( pvfsConf.mapPath( unsupportedPath ) )
+      .thenReturn( new Path( "badscheme", "badauthority", "/" ) );
+    when( pvfsConf.mapPath( supportedPath ) )
+      .thenReturn( new Path( "file", "", "/tmp" ) );
+
+    try {
+      bridge.checkPath( unsupportedPath );
+      fail( "Expected exception" );
+    } catch ( Exception e ) {
+      assertTrue( e.getCause().getMessage().contains( "badscheme" ) );
+    }
+    bridge.checkPath( supportedPath );
+
+  }
+
+  @Test
   /**
    * Verifies proxying to the underlying fs implementation works correctly, using
    * the LocalFileSystem impl.
    */
   public void testIOOps() throws IOException {
-    Path child = new Path( tempFile.getParent(), "child" );
-    Path child2 = new Path( tempFile.getParent(), "child_renamed" );
+    assertTrue( bridge.getFileStatus( new Path( "pvfs", "", tempFile.getPath() ) ).isFile() );
+    Path child = bridge.makeQualified( new Path( tempFile.getParent(), "child" ) );
+    Path child2 = bridge.makeQualified( new Path( tempFile.getParent(), "child_renamed" ) );
     assertTrue( bridge.mkdirs( child ) );
     assertTrue( bridge.rename( child, child2 ) );
     assertTrue( new File( child2.toUri().getPath() ).exists() );
@@ -125,8 +161,27 @@ public class PvfsHadoopBridgeTest {
 
   @Test
   public void setGetWorkingDirectory() {
-    Path wd = new Path( folder.getRoot().toURI() );
-    bridge.setWorkingDirectory( wd );
-    assertThat( bridge.getWorkingDirectory(), equalTo( wd ) );
+    Path pvfsPath = new Path( "pvfs", "", folder.getRoot().toURI().getPath() );
+    Path newWd = new Path( folder.getRoot().toURI() );
+    when( pvfsConf.mapPath( any( Path.class ) ) ).thenReturn( newWd );
+    bridge.setWorkingDirectory( pvfsPath );
+    assertThat( bridge.getWorkingDirectory(), equalTo( newWd ) );
   }
+
+  @Test
+  public void connectionNamesParsedCorrectly() {
+    asList(
+      "authority with spaces",
+      "authorityMixedCase",
+      "under_scores",
+      "UPPERCASE",
+      "Dashes-dashes",
+      "!@!@$!@)(*)(*&*(&( {}|``~" ).forEach(
+        connectionName -> {
+          bridge.getConnectionDetails( new Path( "pvfs", connectionName, "/path/to/file" ) );
+          verify( connectionManager ).getConnectionDetails( connectionName );
+        } );
+
+  }
+
 }

@@ -24,16 +24,17 @@ package org.pentaho.hadoop.shim.common.format.orc;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.mapreduce.Job;
-import org.apache.log4j.Logger;
 import org.apache.orc.TypeDescription;
+import org.pentaho.di.core.logging.LogChannel;
+import org.pentaho.di.core.logging.LogChannelInterface;
+import org.pentaho.hadoop.shim.ShimConfigsLoader;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.format.IOrcOutputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoOrcOutputFormat;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
 import org.pentaho.hadoop.shim.common.format.HadoopFormatBase;
 import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
 
-import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.List;
 
@@ -42,7 +43,6 @@ import java.util.List;
  */
 public class PentahoOrcOutputFormat extends HadoopFormatBase implements IPentahoOrcOutputFormat {
 
-  private Job job;
   private String outputFilename;
   private Configuration conf;
   private COMPRESSION compression = COMPRESSION.NONE;
@@ -50,17 +50,26 @@ public class PentahoOrcOutputFormat extends HadoopFormatBase implements IPentaho
   private int stripeSize = DEFAULT_STRIPE_SIZE;
   private List<? extends IOrcOutputField> fields;
 
-  private static final Logger logger = Logger.getLogger( PentahoOrcOutputFormat.class );
+  private static final LogChannelInterface logger = LogChannel.GENERAL;
 
-  public PentahoOrcOutputFormat() throws IOException {
+  public PentahoOrcOutputFormat() {
+    this( null );
+  }
+
+  public PentahoOrcOutputFormat( NamedCluster namedCluster ) {
     Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
     conf = new ConfigurationProxy();
-    job = Job.getInstance( conf );
-    conf.addResource( "hive-site.xml" );
+
+    if ( namedCluster != null ) {
+      // if named cluster is not defined, no need to add cluster resource configs
+      ShimConfigsLoader.addConfigsAsResources( namedCluster.getName(), conf::addResource );
+    } else {
+      conf.addResource( "hive-site.xml" );
+    }
   }
 
   @Override public IPentahoRecordWriter createRecordWriter() {
-    logger.info( "Initializing Orc Writer" );
+    logger.logDetailed( "Initializing Orc Writer" );
     if ( fields == null ) {
       throw new IllegalStateException( "Invalid state.  The fields to write are null" );
     }
@@ -80,9 +89,9 @@ public class PentahoOrcOutputFormat extends HadoopFormatBase implements IPentaho
 
   @Override public void setOutputFile( String file, boolean override ) throws Exception {
     this.outputFilename = S3NCredentialUtils.scrubFilePathIfNecessary( file );
-    S3NCredentialUtils.applyS3CredentialsToHadoopConfigurationIfNecessary( file, job.getConfiguration() );
+    S3NCredentialUtils.applyS3CredentialsToHadoopConfigurationIfNecessary( file, conf );
     Path outputFile = new Path( outputFilename );
-    FileSystem fs = FileSystem.get( outputFile.toUri(), job.getConfiguration() );
+    FileSystem fs = FileSystem.get( outputFile.toUri(), conf );
     if ( fs.exists( outputFile ) ) {
       if ( override ) {
         fs.delete( outputFile, true );

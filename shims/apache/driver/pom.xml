@@ -5,10 +5,10 @@
   <parent>
     <groupId>org.pentaho.hadoop.shims</groupId>
     <artifactId>pentaho-hadoop-shims-apache-reactor</artifactId>
-    <version>9.0.0.0-SNAPSHOT</version>
+    <version>9.1.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-apache-driver</artifactId>
-  <version>9.0.0.0-SNAPSHOT</version>
+  <version>9.1.0.0-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <properties>
     <vendor-driver.version>3.0.0.0.apache</vendor-driver.version>
@@ -25,7 +25,7 @@
     <commons-configuration2.version>2.1.1</commons-configuration2.version>
     <mockito-all.version>1.10.19</mockito-all.version>
     <org.apache.hadoop.version>3.1.0.3.0.0.0-1634</org.apache.hadoop.version>
-    <org.apache.orc.version>1.2.3</org.apache.orc.version>
+    <org.apache.orc.version>1.6.1</org.apache.orc.version>
     <parquet.version>1.10.0.3.0.0.0-1634</parquet.version>
     <joda-time.version>2.9.9</joda-time.version>
     <aws-java-sdk-core.version>1.11.275</aws-java-sdk-core.version>
@@ -108,12 +108,6 @@
       <groupId>org.pentaho.hadoop.shims</groupId>
       <artifactId>pentaho-hadoop-shims-common-fragment-V1</artifactId>
       <version>${project.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.pentaho</groupId>
@@ -267,7 +261,6 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <version>${dependency.maven-bundle-plugin.version}</version>
         <extensions>true</extensions>
         <configuration>
           <instructions>
@@ -282,11 +275,6 @@
             <Embed-Dependency>*</Embed-Dependency>
           </instructions>
         </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
       </plugin>
 
     </plugins>

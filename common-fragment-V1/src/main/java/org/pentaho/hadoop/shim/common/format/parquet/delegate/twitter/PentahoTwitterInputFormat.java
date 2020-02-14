@@ -21,6 +21,7 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -65,7 +66,7 @@ public class PentahoTwitterInputFormat extends HadoopFormatBase implements IPent
   private ParquetInputFormat<RowMetaAndData> nativeParquetInputFormat;
   private Job job;
 
-  public PentahoTwitterInputFormat( NamedCluster namedCluster ) throws Exception {
+  public PentahoTwitterInputFormat( NamedCluster namedCluster ) {
     logger.info( "We are initializing parquet input format" );
 
     inClassloader( () -> {
@@ -83,9 +84,7 @@ public class PentahoTwitterInputFormat extends HadoopFormatBase implements IPent
   @Override
   public void setSchema( List<IParquetInputField> inputFields ) throws Exception {
     ParquetInputFieldList fieldList = new ParquetInputFieldList( inputFields );
-    inClassloader( () -> {
-      job.getConfiguration().set( ParquetConverter.PARQUET_SCHEMA_CONF_KEY, fieldList.marshall() );
-    } );
+    inClassloader( () -> job.getConfiguration().set( ParquetConverter.PARQUET_SCHEMA_CONF_KEY, fieldList.marshall() ) );
   }
 
   @Override
@@ -111,6 +110,7 @@ public class PentahoTwitterInputFormat extends HadoopFormatBase implements IPent
   }
 
   @Override
+  @SuppressWarnings( "squid:CommentedOutCodeLine" )
   public void setSplitSize( long blockSize ) throws Exception {
     inClassloader( () -> {
       /**
@@ -126,7 +126,7 @@ public class PentahoTwitterInputFormat extends HadoopFormatBase implements IPent
   }
 
   @Override
-  public List<IPentahoInputSplit> getSplits() throws Exception {
+  public List<IPentahoInputSplit> getSplits() {
     return inClassloader( () -> {
       List<InputSplit> splits = nativeParquetInputFormat.getSplits( job );
       return splits.stream().map( PentahoInputSplitImpl::new ).collect( Collectors.toList() );
@@ -143,7 +143,7 @@ public class PentahoTwitterInputFormat extends HadoopFormatBase implements IPent
       ReadSupport<RowMetaAndData> readSupport = new PentahoParquetReadSupport();
 
       ParquetRecordReader<RowMetaAndData> nativeRecordReader =
-        new ParquetRecordReader<RowMetaAndData>( readSupport, ParquetInputFormat.getFilter( job
+        new ParquetRecordReader<>( readSupport, ParquetInputFormat.getFilter( job
           .getConfiguration() ) );
       TaskAttemptContextImpl task = new TaskAttemptContextImpl( job.getConfiguration(), new TaskAttemptID() );
       nativeRecordReader.initialize( inputSplit, task );
@@ -155,14 +155,14 @@ public class PentahoTwitterInputFormat extends HadoopFormatBase implements IPent
   @Override
   public List<IParquetInputField> readSchema( String file ) throws Exception {
     return inClassloader( () -> {
-      ConfigurationProxy conf = new ConfigurationProxy();
+      Configuration conf = job.getConfiguration();
       S3NCredentialUtils.applyS3CredentialsToHadoopConfigurationIfNecessary( file, conf );
       Path filePath = new Path( S3NCredentialUtils.scrubFilePathIfNecessary( file ) );
       FileSystem fs = FileSystem.get( filePath.toUri(), conf );
       FileStatus fileStatus = fs.getFileStatus( filePath );
       List<Footer> footers = ParquetFileReader.readFooters( conf, fileStatus, true );
       if ( footers.isEmpty() ) {
-        return new ArrayList<IParquetInputField>();
+        return new ArrayList<>();
       } else {
         ParquetMetadata meta = footers.get( 0 ).getParquetMetadata();
         MessageType schema = meta.getFileMetaData().getSchema();

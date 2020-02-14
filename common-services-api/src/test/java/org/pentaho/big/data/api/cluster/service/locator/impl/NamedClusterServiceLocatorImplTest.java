@@ -51,11 +51,13 @@ public class NamedClusterServiceLocatorImplTest {
   private static final String SHIM_A = "shimA";
   private static final String SHIM_B = "shimB";
   private static final String SHIM_C = "shimC";
-  private Map<String, Map<Class<?>, NamedClusterServiceFactory<?>>> serviceVendorTypeMapping;
+  private Map<String, Map<Class<?>, List<NamedClusterServiceFactory<?>>>> serviceVendorTypeMapping;
   private NamedClusterServiceLocatorImpl serviceLocator;
   @Mock private NamedCluster namedCluster;
+  @Mock private NamedCluster namedCluster2;
   @Mock private NamedClusterServiceFactory namedClusterServiceFactory;
   @Mock private NamedClusterServiceFactory namedClusterServiceFactory2;
+  @Mock private NamedClusterServiceFactory namedClusterServiceFactory3;
   @Mock private MetastoreLocator mockMetastoreLocator;
   @Mock private NamedClusterService namedClusterManager;
   private Object value = new Object();
@@ -70,10 +72,14 @@ public class NamedClusterServiceLocatorImplTest {
     serviceVendorTypeMapping = serviceLocator.serviceVendorTypeMapping;
     when( namedClusterServiceFactory.getServiceClass() ).thenReturn( Object.class );
     when( namedClusterServiceFactory2.getServiceClass() ).thenReturn( String.class );
-    when( namedClusterServiceFactory.toString() ).thenReturn( "d" );
+    when( namedClusterServiceFactory3.getServiceClass() ).thenReturn( Object.class );
+
+    when( namedClusterServiceFactory.create( namedCluster ) ).thenReturn( "0" );
+    when( namedClusterServiceFactory3.create( namedCluster ) ).thenReturn( "3" );
     serviceLocator.factoryAdded( namedClusterServiceFactory, ImmutableMap.of( "shim", SHIM_A ) );
     serviceLocator.factoryAdded( namedClusterServiceFactory, ImmutableMap.of( "shim", SHIM_B ) );
     serviceLocator.factoryAdded( namedClusterServiceFactory2, ImmutableMap.of( "shim", SHIM_C ) );
+    serviceLocator.factoryAdded( namedClusterServiceFactory3, ImmutableMap.of( "shim", SHIM_A ) );
   }
 
   @Test
@@ -137,5 +143,22 @@ public class NamedClusterServiceLocatorImplTest {
     assertNull( service );
   }
 
+  @Test
+  public void testTwoFactoriesOnSameShimAndClass() {
+    //When more than one FactoryService is registered under the same shim and class,
+    // it is expected that the canHandle will pick the proper service factory for
+    // the named cluster.
+    when( namedClusterServiceFactory.canHandle( namedCluster ) ).thenReturn( false );
+    when( namedClusterServiceFactory3.canHandle( namedCluster ) ).thenReturn( true );
+
+    Object service = serviceLocator.getService( namedCluster, Object.class );
+    assertEquals( "3", service );
+
+    when( namedClusterServiceFactory.canHandle( namedCluster ) ).thenReturn( true );
+    when( namedClusterServiceFactory3.canHandle( namedCluster ) ).thenReturn( false );
+
+    service = serviceLocator.getService( namedCluster, Object.class );
+    assertEquals( "0", service );
+  }
 
 }

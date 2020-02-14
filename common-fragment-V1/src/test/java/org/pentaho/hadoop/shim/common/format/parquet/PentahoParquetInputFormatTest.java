@@ -26,7 +26,13 @@ import java.nio.file.NoSuchFileException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.TimeZone;
+import java.util.TreeSet;
 
 import org.apache.hadoop.fs.Path;
 import org.junit.Before;
@@ -55,6 +61,7 @@ import org.pentaho.hadoop.shim.common.format.parquet.delegate.apache.PentahoApac
 import org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter.PentahoTwitterInputFormat;
 
 
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 @RunWith( Parameterized.class )
@@ -84,7 +91,7 @@ public class PentahoParquetInputFormatTest {
         pentahoParquetInputFormat = new PentahoTwitterInputFormat( namedCluster );
         break;
       default:
-        Assert.fail( "Invalid provider name used." );
+        fail( "Invalid provider name used." );
     }
   }
 
@@ -113,7 +120,7 @@ public class PentahoParquetInputFormatTest {
         pentahoInputSplit = new PentahoInputSplitImpl( twitterParquetInputSplit );
         break;
       default:
-        Assert.fail( "Invalid provider name used." );
+        fail( "Invalid provider name used." );
     }
 
     IPentahoRecordReader recordReader =
@@ -146,11 +153,14 @@ public class PentahoParquetInputFormatTest {
     Exception exception = null;
     try {
       pentahoParquetInputFormat.setInputFile( "/test test/out.txt" );
+      fail( "Expected exception.  No such file." );
     } catch ( Exception e ) {
       exception = e;
     }
     //BACKLOG-19435: NoSuchFileException or IOException (mapr) is expected after this change not URISyntaxException
-    Assert.assertTrue( exception instanceof NoSuchFileException || exception instanceof IOException );
+    Assert
+      .assertTrue( exception.getCause() instanceof NoSuchFileException
+        || exception.getCause() instanceof IOException );
   }
 
   private void readData( String file ) throws Exception {

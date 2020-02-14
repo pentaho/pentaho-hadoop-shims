@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -33,7 +34,6 @@ import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
-import org.apache.log4j.Logger;
 import org.apache.parquet.hadoop.Footer;
 import org.apache.parquet.hadoop.ParquetFileReader;
 import org.apache.parquet.hadoop.ParquetInputFormat;
@@ -42,6 +42,8 @@ import org.apache.parquet.hadoop.api.ReadSupport;
 import org.apache.parquet.hadoop.metadata.ParquetMetadata;
 import org.apache.parquet.schema.MessageType;
 import org.pentaho.di.core.RowMetaAndData;
+import org.pentaho.di.core.logging.LogChannel;
+import org.pentaho.di.core.logging.LogChannelInterface;
 import org.pentaho.hadoop.shim.ShimConfigsLoader;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.format.IParquetInputField;
@@ -62,13 +64,13 @@ import static org.apache.hadoop.mapreduce.lib.input.FileInputFormat.setInputPath
  */
 public class PentahoApacheInputFormat extends HadoopFormatBase implements IPentahoParquetInputFormat {
 
-  private static final Logger logger = Logger.getLogger( PentahoApacheInputFormat.class );
+  private static final LogChannelInterface logger = LogChannel.GENERAL;
 
   private ParquetInputFormat<RowMetaAndData> nativeParquetInputFormat;
   private Job job;
 
-  public PentahoApacheInputFormat( NamedCluster namedCluster ) throws Exception {
-    logger.info( "We are initializing parquet input format" );
+  public PentahoApacheInputFormat( NamedCluster namedCluster ) {
+    logger.logBasic( "We are initializing parquet input format" );
 
     inClassloader( () -> {
       ConfigurationProxy conf = new ConfigurationProxy();
@@ -116,6 +118,7 @@ public class PentahoApacheInputFormat extends HadoopFormatBase implements IPenta
   }
 
   @Override
+  @SuppressWarnings( "squid:CommentedOutCodeLine" )
   public void setSplitSize( long blockSize ) throws Exception {
     inClassloader( () ->
       /**
@@ -131,7 +134,7 @@ public class PentahoApacheInputFormat extends HadoopFormatBase implements IPenta
   }
 
   @Override
-  public List<IPentahoInputSplit> getSplits() throws Exception {
+  public List<IPentahoInputSplit> getSplits() {
     return inClassloader( () -> {
       List<InputSplit> splits = nativeParquetInputFormat.getSplits( job );
       return splits.stream().map( PentahoInputSplitImpl::new ).collect( Collectors.toList() );
@@ -160,7 +163,7 @@ public class PentahoApacheInputFormat extends HadoopFormatBase implements IPenta
   @Override
   public List<IParquetInputField> readSchema( String file ) throws Exception {
     return inClassloader( () -> {
-      ConfigurationProxy conf = new ConfigurationProxy();
+      Configuration conf = job.getConfiguration();
       S3NCredentialUtils.applyS3CredentialsToHadoopConfigurationIfNecessary( file, conf );
       Path filePath = new Path( S3NCredentialUtils.scrubFilePathIfNecessary( file ) );
       FileSystem fs = FileSystem.get( filePath.toUri(), conf );

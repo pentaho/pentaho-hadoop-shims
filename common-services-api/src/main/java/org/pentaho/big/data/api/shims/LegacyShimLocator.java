@@ -34,8 +34,6 @@ import org.pentaho.hadoop.shim.api.ShimIdentifierInterface;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Properties;
 
@@ -44,6 +42,7 @@ public class LegacyShimLocator {
   private static final String ACTIVE_HADOOP_CONFIGURATION = "active.hadoop.configuration";
   private static final String HADOOP_CONFIGURATIONS_PATH = "hadoop.configurations.path";
   private static final String BIG_DATA_PLUGIN_PROPERTIES = "plugin.properties";
+  public static final String HADOOP_SPOON_PLUGIN = "HadoopSpoonPlugin";
   private List<ShimIdentifierInterface> registeredShims;
   private static LegacyShimLocator instance;
 
@@ -67,7 +66,7 @@ public class LegacyShimLocator {
 
   public static String getLegacyDefaultShimName() throws IOException {
     PluginInterface pluginInterface =
-      PluginRegistry.getInstance().findPluginWithId( LifecyclePluginType.class, "HadoopSpoonPlugin" );
+      PluginRegistry.getInstance().findPluginWithId( LifecyclePluginType.class, HADOOP_SPOON_PLUGIN );
     Properties legacyProperties;
 
     try {
@@ -78,17 +77,36 @@ public class LegacyShimLocator {
     }
   }
 
-  public static Path getLegacyDefaultShimDir( String shimFolder ) throws IOException {
+  public static String getLegacyDefaultShimDir( String shimFolder ) throws IOException {
     PluginInterface pluginInterface =
-      PluginRegistry.getInstance().findPluginWithId( LifecyclePluginType.class, "HadoopSpoonPlugin" );
+      PluginRegistry.getInstance().findPluginWithId( LifecyclePluginType.class, HADOOP_SPOON_PLUGIN );
     Properties legacyProperties;
 
     try {
       legacyProperties = loadProperties( pluginInterface, BIG_DATA_PLUGIN_PROPERTIES );
       String legacyShimsFolder = legacyProperties.getProperty( HADOOP_CONFIGURATIONS_PATH );
-      return Paths.get( pluginInterface.getPluginDirectory().getPath() + Const.FILE_SEPARATOR + legacyShimsFolder + Const.FILE_SEPARATOR + shimFolder );
+      FileObject shimDirectoryObject =
+        KettleVFS.getFileObject( pluginInterface.getPluginDirectory().getPath() + Const.FILE_SEPARATOR
+          + legacyShimsFolder + Const.FILE_SEPARATOR + shimFolder );
+      return shimDirectoryObject.getURL().getPath();
     } catch ( KettleFileException | NullPointerException e ) {
       throw new IOException( e );
+    }
+  }
+
+  /**
+   * Get the values from big data plugin plugin.properties
+   *
+   * @return Properties object containing the values from big data plugin plugin.properties
+   */
+  public static Properties getLegacyBigDataProps() {
+    PluginInterface pluginInterface =
+      PluginRegistry.getInstance().findPluginWithId( LifecyclePluginType.class, HADOOP_SPOON_PLUGIN );
+
+    try {
+      return loadProperties( pluginInterface, BIG_DATA_PLUGIN_PROPERTIES );
+    } catch ( KettleFileException | IOException e ) {
+      return new Properties();
     }
   }
 

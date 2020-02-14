@@ -23,6 +23,8 @@
 package org.pentaho.hadoop.shim.common.format.parquet.delegate;
 
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
+import org.pentaho.hadoop.shim.api.format.IPentahoParquetInputFormat;
+import org.pentaho.hadoop.shim.api.format.IPentahoParquetOutputFormat;
 import org.pentaho.hadoop.shim.common.format.parquet.delegate.apache.PentahoApacheInputFormat;
 import org.pentaho.hadoop.shim.common.format.parquet.delegate.apache.PentahoApacheOutputFormat;
 import org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter.PentahoTwitterInputFormat;
@@ -34,7 +36,7 @@ public class DelegateFormatFactory {
     // static methods only
   }
 
-  public static Object getInputFormatInstance( NamedCluster namedCluster ) throws Exception {
+  public static IPentahoParquetInputFormat getInputFormatInstance( NamedCluster namedCluster )  {
     if ( shimUsesTwitterLibs( namedCluster ) ) {
       return new PentahoTwitterInputFormat( namedCluster );
     } else {
@@ -42,11 +44,11 @@ public class DelegateFormatFactory {
     }
   }
 
-  public static Object getOutputFormatInstance( NamedCluster namedCluster ) throws Exception {
+  public static IPentahoParquetOutputFormat getOutputFormatInstance( NamedCluster namedCluster )  {
     if ( shimUsesTwitterLibs( namedCluster ) ) {
       return new PentahoTwitterOutputFormat();
     } else {
-      return new PentahoApacheOutputFormat();
+      return new PentahoApacheOutputFormat( namedCluster );
     }
   }
 

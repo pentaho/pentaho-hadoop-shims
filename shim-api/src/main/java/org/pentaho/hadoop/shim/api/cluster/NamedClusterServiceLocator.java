@@ -32,6 +32,4 @@ public interface NamedClusterServiceLocator {
   <T> T getService( NamedCluster namedCluster, Class<T> serviceClass ) throws ClusterInitializationException;
 
   List<String> getVendorShimList();
-
-  String getDefaultShim();
 }

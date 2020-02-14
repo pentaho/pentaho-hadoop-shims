@@ -27,6 +27,7 @@ import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.row.ValueMetaInterface;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Created by bryan on 1/19/16.
@@ -78,10 +79,13 @@ public interface ByteConversionUtil {
 
   String objectIndexValuesToString( Object[] values );
 
-  Object[] stringIndexListToObjects( String list ) throws IllegalArgumentException;
+  Object[] stringIndexListToObjects( String list );
 
   byte[] encodeKeyValue( Object o, ValueMetaInterface valueMetaInterface, Mapping.KeyType keyType )
     throws KettleException;
 
   boolean isImmutableBytesWritable( Object o );
+
+  Object convertToImmutableBytesWritable( Object o )
+    throws InvocationTargetException, IllegalAccessException, NoSuchMethodException;
 }

@@ -41,8 +41,7 @@ import org.pentaho.hadoop.shim.spi.FormatShim;
 public class CommonFormatShim implements FormatShim {
 
   @Override
-  public <T extends IPentahoInputFormat> T  createInputFormat( Class<T> type, NamedCluster namedCluster )
-    throws Exception {
+  public <T extends IPentahoInputFormat> T  createInputFormat( Class<T> type, NamedCluster namedCluster ) {
     if ( type.isAssignableFrom( IPentahoParquetInputFormat.class ) ) {
       return (T) DelegateFormatFactory.getInputFormatInstance( namedCluster );
     } else if ( type.isAssignableFrom( IPentahoAvroInputFormat.class ) ) {
@@ -54,14 +53,13 @@ public class CommonFormatShim implements FormatShim {
   }
 
   @Override
-  public <T extends IPentahoOutputFormat> T createOutputFormat( Class<T> type, NamedCluster namedCluster )
-    throws Exception {
+  public <T extends IPentahoOutputFormat> T createOutputFormat( Class<T> type, NamedCluster namedCluster ) {
     if ( type.isAssignableFrom( IPentahoParquetOutputFormat.class ) ) {
       return (T) DelegateFormatFactory.getOutputFormatInstance( namedCluster );
     } else if ( type.isAssignableFrom( IPentahoAvroOutputFormat.class ) ) {
       return (T) new PentahoAvroOutputFormat();
     } else if ( type.isAssignableFrom( IPentahoOrcOutputFormat.class ) ) {
-      return (T) new PentahoOrcOutputFormat();
+      return (T) new PentahoOrcOutputFormat( namedCluster );
     }
     throw new IllegalArgumentException( "Not supported scheme format" );
   }
