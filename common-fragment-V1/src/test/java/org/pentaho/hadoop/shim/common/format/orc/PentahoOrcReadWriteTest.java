@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -24,6 +24,7 @@ package org.pentaho.hadoop.shim.common.format.orc;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.pentaho.di.core.Const;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.logging.KettleLogStore;
 import org.pentaho.di.core.plugins.PluginRegistry;
@@ -178,7 +179,7 @@ public class PentahoOrcReadWriteTest {
         String.valueOf( ValueMetaInterface.TYPE_TIMESTAMP ), "1234" },
     };
 
-    // Populate three rows of values.  These are values we will write rows with.  Whe we read back the rows from the
+    // Populate three rows of values.  These are values we will write rows with.  When we read back the rows from the
     // file they will be compared with these values to know it made the round trip.
     rowData = new Object[][]
       { { "Row1Field1", "Row1Field2", 3.1, new BigDecimal( 4.1, MathContext.DECIMAL64 ),
@@ -237,6 +238,8 @@ public class PentahoOrcReadWriteTest {
 
     orcOutputFormat.setFields( fields );
 
+    // Under PDI-18369, the default behaviour for Timestamp to Integer conversion has changed
+    System.setProperty( Const.KETTLE_TIMESTAMP_OUTPUT_FORMAT, Const.KETTLE_TIMESTAMP_OUTPUT_FORMAT_MILLISECONDS );
   }
 
   @Test
