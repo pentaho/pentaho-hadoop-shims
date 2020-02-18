@@ -40,11 +40,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Properties;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -52,6 +48,9 @@ public class ShimConfigsLoader {
 
   private static final Class<?> PKG = ShimConfigsLoader.class; // for i18n purposes, needed by Translator2!!
   private static LogChannelInterface log = new LogChannel( ShimConfigsLoader.class.getName() );
+
+  public static Set<String> CLUSTER_NAME_FOR_LOGGING = new HashSet<String>();
+  public static Set<String> SITE_FILE_NAME = new HashSet<String>();
 
   public static final String CONFIGS_DIR_PREFIX =
     "metastore" + File.separator + "pentaho" + File.separator + "NamedCluster" + File.separator + "Configs";
@@ -117,8 +116,18 @@ public class ShimConfigsLoader {
           }
         }
       }
-      log.logBasic( BaseMessages.getString( PKG, "ShimConfigsLoader.UnableToFindConfigs" ),
-        siteFileName, additionalPath );
+
+      // Work around to avoid multiple logging for VFS
+      if ( ( CLUSTER_NAME_FOR_LOGGING.isEmpty() ) || ( !CLUSTER_NAME_FOR_LOGGING.contains(additionalPath) ) ) {
+        SITE_FILE_NAME.clear();
+        log.logBasic( BaseMessages.getString( PKG, "ShimConfigsLoader.UnableToFindConfigs" ), siteFileName, additionalPath );
+        CLUSTER_NAME_FOR_LOGGING.add(additionalPath);
+        SITE_FILE_NAME.add(siteFileName);
+      } else if ( ( SITE_FILE_NAME.isEmpty() ) || ( !SITE_FILE_NAME.contains(siteFileName) ) ) {
+        log.logBasic( BaseMessages.getString( PKG, "ShimConfigsLoader.UnableToFindConfigs" ), siteFileName, additionalPath );
+        SITE_FILE_NAME.add(siteFileName);
+      }
+
     } catch ( KettleFileException | IOException ex ) {
       log.logError( BaseMessages.getString( PKG, "ShimConfigsLoader.ExceptionReadingFile" ),
         siteFileName, additionalPath, ex.getStackTrace() );

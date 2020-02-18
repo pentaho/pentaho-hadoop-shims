@@ -50,6 +50,11 @@ public class ConfigurationProxyV2 implements Configuration {
 
   public ConfigurationProxyV2( String namedCluster ) throws IOException {
     job = Job.getInstance();
+
+    // Reset static HashSets for logging
+    ShimConfigsLoader.CLUSTER_NAME_FOR_LOGGING.clear();
+    ShimConfigsLoader.SITE_FILE_NAME.clear();
+
     addConfigsForJobConf( namedCluster );
   }
 
