@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -31,8 +31,8 @@ import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.util.StringUtils;
 import org.pentaho.di.core.Const;
+import org.pentaho.hadoop.hbase.factory.HBase10ClientFactory;
 import org.pentaho.hadoop.shim.api.internal.process.RequiredCredentialsToken;
-import org.pentaho.hbase.factory.HBaseClientFactoryLocator;
 
 import java.io.IOException;
 
@@ -111,7 +111,13 @@ public class PentahoTableInputFormat extends TableInputFormat {
 
     Configuration conf = HBaseConfiguration.create( job );
 
-    delegate = HBaseClientFactoryLocator.getHBaseClientFactory( conf ).getTableInputFormatImpl( this, conf );
+    HBase10ClientFactory hBase10ClientFactory = null;
+    try {
+      hBase10ClientFactory = new HBase10ClientFactory( conf );
+      delegate = hBase10ClientFactory.getTableInputFormatImpl( this, conf );
+    } catch ( IOException e ) {
+      PLOG.error( StringUtils.stringifyException( e ) );
+    }
 
     try {
       setHBaseTable( conf, tableName );
