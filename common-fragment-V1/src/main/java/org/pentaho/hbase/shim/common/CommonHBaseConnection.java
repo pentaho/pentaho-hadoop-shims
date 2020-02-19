@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Pentaho Big Data
  * <p/>
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
  * <p/>
  * ******************************************************************************
  * <p/>
@@ -44,6 +44,7 @@ import org.pentaho.di.core.logging.KettleLogStore;
 import org.pentaho.di.core.logging.LogChannelInterface;
 import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.di.i18n.BaseMessages;
+import org.pentaho.hadoop.hbase.factory.HBase10ClientFactory;
 import org.pentaho.hadoop.shim.ShimConfigsLoader;
 import org.pentaho.hadoop.shim.api.internal.hbase.ColumnFilter;
 import org.pentaho.hadoop.shim.api.internal.hbase.HBaseBytesUtilShim;
@@ -52,11 +53,11 @@ import org.pentaho.hadoop.shim.api.internal.hbase.Mapping;
 import org.pentaho.hadoop.shim.spi.HBaseConnection;
 import org.pentaho.hbase.factory.HBaseAdmin;
 import org.pentaho.hbase.factory.HBaseClientFactory;
-import org.pentaho.hbase.factory.HBaseClientFactoryLocator;
 import org.pentaho.hbase.factory.HBasePut;
 import org.pentaho.hbase.factory.HBaseTable;
 import org.pentaho.hbase.shim.fake.FakeNamedCluster;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -267,8 +268,14 @@ public class CommonHBaseConnection implements HBaseConnection, IHBaseClientFacto
     return false;
   }
 
+  @SuppressWarnings( "squid:S1148" )
   public HBaseClientFactory getHBaseClientFactory( Configuration configuration ) {
-    return HBaseClientFactoryLocator.getHBaseClientFactory( configuration );
+    try {
+      return new HBase10ClientFactory( configuration );
+    } catch ( IOException e ) {
+      e.printStackTrace();
+      return null;
+    }
   }
 
   @Override

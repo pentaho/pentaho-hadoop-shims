@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -31,7 +31,7 @@ import org.apache.hadoop.hbase.mapred.Table10InputFormatDiscloser;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hbase.factory.HBaseAdmin;
 import org.pentaho.hbase.factory.HBaseClientFactory;
-import org.pentaho.hbase.factory.HBaseClientFactoryLocator;
+
 import org.pentaho.hbase.factory.HBasePut;
 import org.pentaho.hbase.factory.HBaseTable;
 import org.pentaho.hbase.mapred.PentahoTableInputFormat;
@@ -44,7 +44,7 @@ public class HBase10ClientFactory implements HBaseClientFactory {
   protected Connection conn = null;
   protected NamedCluster namedCluster;
 
-  public HBase10ClientFactory( Configuration conf ) throws Exception {
+  public HBase10ClientFactory( Configuration conf ) throws IOException {
     this.conf = conf;
     if ( conf != null ) {
       conn = ConnectionFactory.createConnection( conf );
@@ -119,10 +119,17 @@ public class HBase10ClientFactory implements HBaseClientFactory {
         return invoker.getTable() != null;
       }
 
+      // the exception being caught and logged here was previously caught and logged in a different class
+      @SuppressWarnings( {"squid:S2259", "squid:S1148"} )
       @Override protected PentahoTableRecordReader createRecordReader( final Configuration config ) {
         return new PentahoTableRecordReader() {
           @Override public void setHTable( Table table ) {
-            HBaseClientFactory hbcf = HBaseClientFactoryLocator.getHBaseClientFactory( config );
+            HBaseClientFactory hbcf = null;
+            try {
+              hbcf = new HBase10ClientFactory( config );
+            } catch ( IOException e ) {
+              e.printStackTrace();
+            }
             getImpl().setHTable( hbcf.wrap( table ) );
           }
         };
