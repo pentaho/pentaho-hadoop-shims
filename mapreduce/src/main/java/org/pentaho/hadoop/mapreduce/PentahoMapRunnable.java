@@ -34,6 +34,8 @@ import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.logging.KettleLogStore;
 import org.pentaho.di.core.logging.KettleLoggingEvent;
 import org.pentaho.di.core.logging.LogLevel;
+import org.pentaho.di.core.logging.LogChannel;
+import org.pentaho.di.core.logging.LogChannelInterface;
 import org.pentaho.di.core.row.RowMeta;
 import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.di.core.variables.Variables;
@@ -64,6 +66,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class PentahoMapRunnable<K1, V1, K2, V2> implements MapRunnable<K1, V1, K2, V2> {
   public static final String KETTLE_PMR_PLUGIN_TIMEOUT = "KETTLE_PMR_PLUGIN_TIMEOUT";
+
+  private static LogChannelInterface log = new LogChannel( PentahoMapRunnable.class.getName() );
 
   private long pluginWaitTimeout;
 
@@ -140,7 +144,7 @@ public class PentahoMapRunnable<K1, V1, K2, V2> implements MapRunnable<K1, V1, K
           try {
             pluginWaitTimeout = Long.parseLong( variableSpace.getVariable( variableName ) );
           } catch ( Exception e ) {
-            System.out.println( "Unable to parse plugin wait timeout, defaulting to 5 minutes" );
+            log.logBasic("Unable to parse plugin wait timeout, defaulting to 5 minutes" );
           }
         }
       }
@@ -172,7 +176,7 @@ public class PentahoMapRunnable<K1, V1, K2, V2> implements MapRunnable<K1, V1, K
       logLevel = LogLevel.valueOf( stringLogLevel );
       setDebugStatus( "Log level set to " + stringLogLevel );
     } else {
-      System.out.println( "Could not retrieve the log level from the job configuration.  logLevel will not be set." );
+      log.logBasic( "Could not retrieve the log level from the job configuration.  logLevel will not be set." );
     }
 
     long deadline = 0;
@@ -182,8 +186,7 @@ public class PentahoMapRunnable<K1, V1, K2, V2> implements MapRunnable<K1, V1, K
 
       if ( first ) {
         deadline = pluginWaitTimeout + System.currentTimeMillis();
-        System.out
-          .println( PentahoMapRunnable.class + ": Trans creation checking starting now " + new Date().toString() );
+        log.logBasic( PentahoMapRunnable.class + ": Trans creation checking starting now " + new Date().toString() );
         first = false;
       }
 
@@ -192,7 +195,7 @@ public class PentahoMapRunnable<K1, V1, K2, V2> implements MapRunnable<K1, V1, K
         StepMetaInterface stepMetaInterface = stepMeta.getStepMetaInterface();
         if ( stepMetaInterface instanceof MissingTrans ) {
           MissingTrans missingTrans = (MissingTrans) stepMetaInterface;
-          System.out.println(
+          log.logBasic(
             MissingTrans.class + "{stepName: " + missingTrans.getStepName() + ", missingPluginId: " + missingTrans
               .getMissingPluginId() + "}" );
           missingTranses.add( missingTrans );
@@ -200,7 +203,7 @@ public class PentahoMapRunnable<K1, V1, K2, V2> implements MapRunnable<K1, V1, K
       }
 
       if ( missingTranses.size() == 0 ) {
-        System.out.println( PentahoMapRunnable.class + ": Done waiting on plugins now " + new Date().toString() );
+        log.logBasic( PentahoMapRunnable.class + ": Done waiting on plugins now " + new Date().toString() );
         break;
       } else {
         if ( System.currentTimeMillis() > deadline ) {
@@ -343,14 +346,14 @@ public class PentahoMapRunnable<K1, V1, K2, V2> implements MapRunnable<K1, V1, K
 
   public void setDebugStatus( Reporter reporter, String message ) {
     if ( debug ) {
-      System.out.println( message );
+      log.logBasic( message );
       reporter.setStatus( message );
     }
   }
 
   private void setDebugStatus( String message ) {
     if ( debug ) {
-      System.out.println( message );
+      log.logBasic( message );
     }
   }
 
