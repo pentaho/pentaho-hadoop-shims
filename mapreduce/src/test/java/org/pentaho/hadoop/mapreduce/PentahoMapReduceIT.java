@@ -97,7 +97,7 @@ public class PentahoMapReduceIT {
       IntStream.rangeClosed( 1, ROWS_TO_CALCULATE ).mapToObj( value -> String.valueOf( WORDS_TO_CALCULATE ) )
         .collect( Collectors.toList() );
     if ( log.isBasic() ) {
-      log.logBasic( "Mapper input data: " + ROWS_TO_CALCULATE + " rows of [" + WORDS_TO_CALCULATE + "]" );
+      log.logDebug( "Mapper input data: " + ROWS_TO_CALCULATE + " rows of [" + WORDS_TO_CALCULATE + "]" );
     }
     reader = new MockRecordReader( wordsToCalculate );
     // execute mapper
@@ -106,15 +106,15 @@ public class PentahoMapReduceIT {
     outputCollectorMock.close();
     long stop = System.currentTimeMillis();
 
-    if ( log.isBasic() ) {
-      log.logBasic( "Executed " + ROWS_TO_CALCULATE + " in " + ( stop - start ) + "ms" );
-      log.logBasic( "Average: " + ( ( stop - start ) / (float) ROWS_TO_CALCULATE ) + "ms" );
-      log.logBasic( "Rows/Second: " + ( ROWS_TO_CALCULATE / ( ( stop - start ) / 1000f ) ) );
+    if ( log.isDebug() ) {
+      log.logDebug( "Executed " + ROWS_TO_CALCULATE + " in " + ( stop - start ) + "ms" );
+      log.logDebug( "Average: " + ( ( stop - start ) / (float) ROWS_TO_CALCULATE ) + "ms" );
+      log.logDebug( "Rows/Second: " + ( ROWS_TO_CALCULATE / ( ( stop - start ) / 1000f ) ) );
     }
 
-    if ( log.isBasic() ) {
+    if ( log.isDebug() ) {
       outputCollectorMock.getCollection()
-        .forEach( ( k, v ) -> log.logBasic( "Mapper output data: " + k + "=" + v ) );
+        .forEach( ( k, v ) -> log.logDebug( "Mapper output data: " + k + "=" + v ) );
     }
     assertNull( "Exception thrown", mapRunnable.getException() );
     assertNotNull( outputCollectorMock );
@@ -133,9 +133,9 @@ public class PentahoMapReduceIT {
 
     // input data for reducer is going to be taken from mapper output data
     reducerInputCollectorMock = outputCollectorMock;
-    if ( log.isBasic() ) {
+    if ( log.isDebug() ) {
       reducerInputCollectorMock.getCollection()
-        .forEach( ( k, v ) -> log.logBasic( "Reducer input data: " + k + "=" + v ) );
+        .forEach( ( k, v ) -> log.logDebug( "Reducer input data: " + k + "=" + v ) );
     }
     outputCollectorMock = new MockOutputCollector();
 
@@ -150,9 +150,9 @@ public class PentahoMapReduceIT {
     outputCollectorMock.close();
     stop = System.currentTimeMillis();
 
-    if ( log.isBasic() ) {
+    if ( log.isDebug() ) {
       outputCollectorMock.getCollection()
-        .forEach( ( k, v ) -> log.logBasic( "Reducer output data: " + k + "=" + v ) );
+        .forEach( ( k, v ) -> log.logDebug( "Reducer output data: " + k + "=" + v ) );
     }
     // verifying reduced data
     assertNull( "Exception thrown", genericTransReduce.getException() );
