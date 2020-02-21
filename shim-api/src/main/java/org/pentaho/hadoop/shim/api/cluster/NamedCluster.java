@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -140,4 +140,8 @@ public interface NamedCluster extends Cloneable, VariableSpace {
       return c1.getName().compareToIgnoreCase( c2.getName() );
     }
   };
+
+  String decodePassword( String password );
+
+  String encodePassword( String password );
 }
