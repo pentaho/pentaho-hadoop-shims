@@ -96,7 +96,7 @@ public class PentahoMapReduceIT {
     List<String> wordsToCalculate =
       IntStream.rangeClosed( 1, ROWS_TO_CALCULATE ).mapToObj( value -> String.valueOf( WORDS_TO_CALCULATE ) )
         .collect( Collectors.toList() );
-    if ( log.isBasic() ) {
+    if ( log.isDebug() ) {
       log.logDebug( "Mapper input data: " + ROWS_TO_CALCULATE + " rows of [" + WORDS_TO_CALCULATE + "]" );
     }
     reader = new MockRecordReader( wordsToCalculate );
