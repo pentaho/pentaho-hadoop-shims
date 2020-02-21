@@ -54,8 +54,6 @@ public class PentahoMapReduceIT {
 
   private static LogChannelInterface log = new LogChannel( PentahoMapReduceIT.class.getName() );
 
-  //Turn off debug messages for the tests.
-  private static final boolean DEBUG_MODE = false;
   private static final String WORDS_TO_CALCULATE = "zebra giraffe hippo elephant tiger";
   private Reporter reporterMock = mock( Reporter.class );
   private PentahoMapRunnable mapRunnable;
@@ -79,6 +77,8 @@ public class PentahoMapReduceIT {
     mrJobConfig = new JobConf();
     //Turn off all debug messages from PentahoMapRunnable to reduce unit test logs.Turn it on if it needs for debug.
     mrJobConfig.set( "logLevel", LogLevel.ERROR.name() );
+    //Turn off debug messages for the tests.
+    log.setLogLevel(LogLevel.BASIC);
   }
 
   @Test
@@ -96,7 +96,7 @@ public class PentahoMapReduceIT {
     List<String> wordsToCalculate =
       IntStream.rangeClosed( 1, ROWS_TO_CALCULATE ).mapToObj( value -> String.valueOf( WORDS_TO_CALCULATE ) )
         .collect( Collectors.toList() );
-    if ( DEBUG_MODE ) {
+    if ( log.isBasic() ) {
       log.logBasic( "Mapper input data: " + ROWS_TO_CALCULATE + " rows of [" + WORDS_TO_CALCULATE + "]" );
     }
     reader = new MockRecordReader( wordsToCalculate );
@@ -106,13 +106,13 @@ public class PentahoMapReduceIT {
     outputCollectorMock.close();
     long stop = System.currentTimeMillis();
 
-    if ( DEBUG_MODE ) {
+    if ( log.isBasic() ) {
       log.logBasic( "Executed " + ROWS_TO_CALCULATE + " in " + ( stop - start ) + "ms" );
       log.logBasic( "Average: " + ( ( stop - start ) / (float) ROWS_TO_CALCULATE ) + "ms" );
       log.logBasic( "Rows/Second: " + ( ROWS_TO_CALCULATE / ( ( stop - start ) / 1000f ) ) );
     }
 
-    if ( DEBUG_MODE ) {
+    if ( log.isBasic() ) {
       outputCollectorMock.getCollection()
         .forEach( ( k, v ) -> log.logBasic( "Mapper output data: " + k + "=" + v ) );
     }
@@ -133,7 +133,7 @@ public class PentahoMapReduceIT {
 
     // input data for reducer is going to be taken from mapper output data
     reducerInputCollectorMock = outputCollectorMock;
-    if ( DEBUG_MODE ) {
+    if ( log.isBasic() ) {
       reducerInputCollectorMock.getCollection()
         .forEach( ( k, v ) -> log.logBasic( "Reducer input data: " + k + "=" + v ) );
     }
@@ -150,7 +150,7 @@ public class PentahoMapReduceIT {
     outputCollectorMock.close();
     stop = System.currentTimeMillis();
 
-    if ( DEBUG_MODE ) {
+    if ( log.isBasic() ) {
       outputCollectorMock.getCollection()
         .forEach( ( k, v ) -> log.logBasic( "Reducer output data: " + k + "=" + v ) );
     }

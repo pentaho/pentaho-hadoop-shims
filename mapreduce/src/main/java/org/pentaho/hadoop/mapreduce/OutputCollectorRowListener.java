@@ -201,7 +201,7 @@ public class OutputCollectorRowListener<K, V> extends RowAdapter {
    */
   public void setDebugStatus( Reporter reporter, String message ) {
     if ( debug ) {
-      log.logBasic( message );
+      log.logDebug( message );
       reporter.setStatus( message );
     }
   }

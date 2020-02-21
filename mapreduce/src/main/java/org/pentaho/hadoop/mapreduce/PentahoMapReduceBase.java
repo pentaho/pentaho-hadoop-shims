@@ -172,9 +172,10 @@ public class PentahoMapReduceBase<K, V> extends MapReduceBase {
     }
 
     if ( debug ) {
-      log.logBasic( "Job configuration>" );
-      log.logBasic( "Output key class: " + outClassK.getName() );
-      log.logBasic( "Output value class: " + outClassV.getName() );
+      log.setLogLevel(LogLevel.DEBUG);
+      log.logDebug( "Job configuration>" );
+      log.logDebug( "Output key class: " + outClassK.getName() );
+      log.logDebug( "Output value class: " + outClassV.getName() );
     }
 
     //  set the log level to what the level of the job is
@@ -375,13 +376,15 @@ public class PentahoMapReduceBase<K, V> extends MapReduceBase {
 
   public void setDebugStatus( Reporter reporter, String message ) {
     if ( debug ) {
-      log.logBasic( message );
+      log.setLogLevel(LogLevel.DEBUG);
+      log.logDebug( message );
       reporter.setStatus( message );
     }
   }
 
   private void setDebugStatus( String message ) {
     if ( debug ) {
+      log.setLogLevel(LogLevel.DEBUG);
       log.logDebug( message );
     }
   }
