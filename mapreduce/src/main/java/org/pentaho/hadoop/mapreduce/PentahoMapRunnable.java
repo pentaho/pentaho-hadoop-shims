@@ -346,13 +346,15 @@ public class PentahoMapRunnable<K1, V1, K2, V2> implements MapRunnable<K1, V1, K
 
   public void setDebugStatus( Reporter reporter, String message ) {
     if ( debug ) {
-      log.logBasic( message );
+      log.setLogLevel(LogLevel.DEBUG);
+      log.logDebug( message );
       reporter.setStatus( message );
     }
   }
 
   private void setDebugStatus( String message ) {
     if ( debug ) {
+      log.setLogLevel(LogLevel.DEBUG);
       log.logBasic( message );
     }
   }
