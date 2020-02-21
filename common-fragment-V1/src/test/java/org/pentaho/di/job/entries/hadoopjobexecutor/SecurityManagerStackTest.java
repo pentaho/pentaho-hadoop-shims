@@ -30,10 +30,14 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import org.pentaho.di.core.logging.LogChannel;
+import org.pentaho.di.core.logging.LogChannelInterface;
 
 import org.junit.Test;
 
 public class SecurityManagerStackTest {
+
+  private static LogChannelInterface log = new LogChannel( SecurityManagerStackTest.class.getName() );
 
   @Test( expected = IllegalArgumentException.class )
   public void setSecurityManager_null() {
@@ -115,13 +119,13 @@ public class SecurityManagerStackTest {
         NoExitSecurityManager sm = new NoExitSecurityManager( null );
         try {
           Thread.sleep( random.nextInt( 1000 ) );
-          System.out.println( "set: " + sm );
+          log.logBasic( "set: " + sm );
           stack.setSecurityManager( sm );
           Thread.sleep( random.nextInt( 1000 ) );
         } catch ( Exception ex ) {
           /* ignore */
         } finally {
-          System.out.println( "rm : \t" + sm );
+          log.logBasic( "rm : \t" + sm );
           stack.removeSecurityManager( sm );
         }
         return null;

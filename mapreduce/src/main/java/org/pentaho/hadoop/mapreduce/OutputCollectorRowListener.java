@@ -32,10 +32,16 @@ import org.pentaho.hadoop.mapreduce.PentahoMapRunnable.Counter;
 import org.pentaho.hadoop.mapreduce.converter.TypeConverterFactory;
 import org.pentaho.hadoop.mapreduce.converter.spi.ITypeConverter;
 
+import org.pentaho.di.core.logging.LogChannel;
+import org.pentaho.di.core.logging.LogChannelInterface;
+
 /**
  * Row Listener that forwards rows along to an {@link OutputCollector}.
  */
 public class OutputCollectorRowListener<K, V> extends RowAdapter {
+
+  private static LogChannelInterface log = new LogChannel( OutputCollectorRowListener.class.getName() );
+
   private boolean debug;
 
   private Reporter reporter;
@@ -195,7 +201,7 @@ public class OutputCollectorRowListener<K, V> extends RowAdapter {
    */
   public void setDebugStatus( Reporter reporter, String message ) {
     if ( debug ) {
-      System.out.println( message );
+      log.logBasic( message );
       reporter.setStatus( message );
     }
   }

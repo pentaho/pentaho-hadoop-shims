@@ -46,11 +46,17 @@ import java.util.stream.IntStream;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
+import org.pentaho.di.core.logging.LogChannel;
+import org.pentaho.di.core.logging.LogChannelInterface;
+
 /**
  * @author Tatsiana_Kasiankova
  */
 @SuppressWarnings( { "unchecked", "rawtypes" } )
 public class PentahoMapRunnableTest {
+
+  private static LogChannelInterface log = new LogChannel( PentahoMapRunnableTest.class.getName() );
+
   private static final String WORD_TO_COUNT_TEMPLATE = "word";
   private static final String INTERNAL_HADOOP_NODE_NUMBER = "Internal.Hadoop.NodeNumber";
   private static final String MAPRED_TASK_ID = "mapred.task.id";
@@ -208,7 +214,7 @@ public class PentahoMapRunnableTest {
         logChannels + EXPECTED_CHANNELS_PER_RUN, LoggingRegistry.getInstance().getMap().size() );
     }
     outputCollectorMock.close();
-    // outputCollectorMock.getCollection().forEach( ( k, v ) -> System.out.println( "outputCollectorMock: Item : " + k +
+    // outputCollectorMock.getCollection().forEach( ( k, v ) -> log.logBasic( "outputCollectorMock: Item : " + k +
     // " Count : " + v ) );
     // verifying the arrays of word count for the each word
     for ( int i = RUNS; i > 0; i-- ) {

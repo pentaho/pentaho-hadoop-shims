@@ -35,7 +35,12 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.pentaho.di.core.vfs.KettleVFS;
 
+import org.pentaho.di.core.logging.LogChannel;
+import org.pentaho.di.core.logging.LogChannelInterface;
+
 public class DistributedCacheTestUtil {
+
+  private static LogChannelInterface log = new LogChannel( DistributedCacheTestUtil.class.getName() );
 
   static FileObject createTestFolderWithContent() throws Exception {
     return createTestFolderWithContent( "sample-folder" );
@@ -107,7 +112,7 @@ public class DistributedCacheTestUtil {
     } finally {
       // Clean up after ourself
       if ( !fs.delete( root, true ) ) {
-        System.err.println( "error deleting FileSystem temp dir " + root );
+        log.logError( "error deleting FileSystem temp dir " + root );
       }
     }
   }

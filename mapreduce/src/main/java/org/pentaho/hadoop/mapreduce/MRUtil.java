@@ -38,12 +38,18 @@ import org.pentaho.di.trans.TransExecutionConfiguration;
 import org.pentaho.di.trans.TransMeta;
 import org.pentaho.di.trans.TransMeta.TransformationType;
 
+import org.pentaho.di.core.logging.LogChannel;
+import org.pentaho.di.core.logging.LogChannelInterface;
+
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.UUID;
 
 public class MRUtil {
+
+  private static LogChannelInterface log = new LogChannel( MRUtil.class.getName() );
+
   /**
    * Path to the directory to load plugins from. This must be accessible from all TaskTracker nodes.
    */
@@ -102,9 +108,9 @@ public class MRUtil {
       System.setProperty( Const.PLUGIN_BASE_FOLDERS_PROP, pluginDir );
       System.setProperty( Const.PENTAHO_METASTORE_FOLDER, metaStoreDir );
 
-      System.out.println( BaseMessages.getString( MRUtil.class, "KettleHome.Info", kettleHome ) );
-      System.out.println( BaseMessages.getString( MRUtil.class, "PluginDirectory.Info", pluginDir ) );
-      System.out.println( BaseMessages.getString( MRUtil.class, "MetasStoreDirectory.Info", metaStoreDir ) );
+      log.logBasic( BaseMessages.getString( MRUtil.class, "KettleHome.Info", kettleHome ) );
+      log.logBasic( BaseMessages.getString( MRUtil.class, "PluginDirectory.Info", pluginDir ) );
+      log.logBasic( BaseMessages.getString( MRUtil.class, "MetasStoreDirectory.Info", metaStoreDir ) );
 
       KettleEnvironment.init();
     }

@@ -68,11 +68,17 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
+import org.pentaho.di.core.logging.LogChannel;
+import org.pentaho.di.core.logging.LogChannelInterface;
+
 
 /**
  * Created by tkafalas on 11/3/2017.
  */
 public class PentahoOrcReadWriteTest {
+
+  private static LogChannelInterface log = new LogChannel( PentahoOrcReadWriteTest.class.getName() );
+
   private List<IOrcInputField> orcInputFields;
   private RowMeta rowMeta;
   private Object[][] rowData;
@@ -280,13 +286,13 @@ public class PentahoOrcReadWriteTest {
       e.printStackTrace();
     }
     //Write the Orc File
-    System.out.println( "Writing file " + filePath );
+    log.logBasic( "Writing file " + filePath );
     testRecordWriter();
     //Test that we can extract the schema (TypeDescription) from the file
-    System.out.println( "reading Schema " + filePath );
+    log.logBasic( "reading Schema " + filePath );
     testGetSchema();
     //Read it back and check values
-    System.out.println( "Reading file " + filePath );
+    log.logBasic( "Reading file " + filePath );
     testRecordReader();
   }
 

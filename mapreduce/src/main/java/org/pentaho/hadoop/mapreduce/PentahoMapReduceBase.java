@@ -30,6 +30,8 @@ import org.apache.hadoop.mapred.Reporter;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.logging.LogLevel;
+import org.pentaho.di.core.logging.LogChannel;
+import org.pentaho.di.core.logging.LogChannelInterface;
 import org.pentaho.di.core.row.RowMeta;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.variables.VariableSpace;
@@ -45,6 +47,8 @@ import java.util.UUID;
 
 @SuppressWarnings( "deprecation" )
 public class PentahoMapReduceBase<K, V> extends MapReduceBase {
+
+  private static LogChannelInterface log = new LogChannel( PentahoMapReduceBase.class.getName() );
 
   protected static enum Counter {
     INPUT_RECORDS,
@@ -168,9 +172,9 @@ public class PentahoMapReduceBase<K, V> extends MapReduceBase {
     }
 
     if ( debug ) {
-      System.out.println( "Job configuration>" );
-      System.out.println( "Output key class: " + outClassK.getName() );
-      System.out.println( "Output value class: " + outClassV.getName() );
+      log.logBasic( "Job configuration>" );
+      log.logBasic( "Output key class: " + outClassK.getName() );
+      log.logBasic( "Output value class: " + outClassV.getName() );
     }
 
     //  set the log level to what the level of the job is
@@ -179,7 +183,7 @@ public class PentahoMapReduceBase<K, V> extends MapReduceBase {
       logLevel = LogLevel.valueOf( stringLogLevel );
       setDebugStatus( "Log level set to " + stringLogLevel );
     } else {
-      System.out.println( "Could not retrieve the log level from the job configuration.  logLevel will not be set." );
+      log.logBasic( "Could not retrieve the log level from the job configuration.  logLevel will not be set." );
     }
 
     createTrans( job );
@@ -371,14 +375,14 @@ public class PentahoMapReduceBase<K, V> extends MapReduceBase {
 
   public void setDebugStatus( Reporter reporter, String message ) {
     if ( debug ) {
-      System.out.println( message );
+      log.logBasic( message );
       reporter.setStatus( message );
     }
   }
 
   private void setDebugStatus( String message ) {
     if ( debug ) {
-      System.out.println( message );
+      log.logDebug( message );
     }
   }
 }
