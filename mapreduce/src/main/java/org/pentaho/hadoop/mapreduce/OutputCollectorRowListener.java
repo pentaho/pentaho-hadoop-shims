@@ -178,11 +178,9 @@ public class OutputCollectorRowListener<K, V> extends RowAdapter {
           }
         } else {
           OutKeyValueOrdinals outOrdinals = new OutKeyValueOrdinals( rowMeta );
-          if ( outOrdinals.getKeyOrdinal() < 0 || outOrdinals.getValueOrdinal() < 0 ) {
-            if ( log.isDebug() ) {
-              setDebugStatus( reporter,
-                "outKey or outValue is missing from the transformation output step" ); //$NON-NLS-1$
-            }
+          if ( ( outOrdinals.getKeyOrdinal() < 0 || outOrdinals.getValueOrdinal() < 0 ) && log.isDebug() ) {
+            setDebugStatus( reporter,
+              "outKey or outValue is missing from the transformation output step" ); //$NON-NLS-1$
           }
           if ( log.isDebug() ) {
             setDebugStatus( reporter, "Unknown issue with received data from transformation" ); //$NON-NLS-1$
