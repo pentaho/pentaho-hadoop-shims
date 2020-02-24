@@ -92,13 +92,13 @@ public class OutputCollectorRowListener<K, V> extends RowAdapter {
 
         // TODO Implement type safe converters
 
-        if ( debug ) {
+        if ( log.isDebug() ) {
           setDebugStatus( reporter,
             "Begin conversion of output key [from:" + ( row[ outOrdinals.getKeyOrdinal() ] == null ? null
               : row[ outOrdinals.getKeyOrdinal() ].getClass() ) + "] [to:" + outClassK
               + "]" ); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        if ( debug ) {
+        if ( log.isDebug() ) {
           setDebugStatus( reporter, "getConverter: " + ( row[ outOrdinals.getKeyOrdinal() ] == null ? null
             : row[ outOrdinals.getKeyOrdinal() ].getClass() ) );
           setDebugStatus( reporter, "out class: " + outClassK );
@@ -108,7 +108,7 @@ public class OutputCollectorRowListener<K, V> extends RowAdapter {
           .getConverter(
             row[ outOrdinals.getKeyOrdinal() ] == null ? null : row[ outOrdinals.getKeyOrdinal() ].getClass(),
             outClassK );
-        if ( debug ) {
+        if ( log.isDebug() ) {
           setDebugStatus( reporter, "ordinals key: " + outOrdinals.getKeyOrdinal() );
           setDebugStatus( reporter, "rowMeta: " + rowMeta );
           setDebugStatus( reporter, "rowMeta: " + rowMeta.getMetaXML() );
@@ -119,7 +119,7 @@ public class OutputCollectorRowListener<K, V> extends RowAdapter {
         Object outKey =
           converter.convert( rowMeta.getValueMeta( outOrdinals.getKeyOrdinal() ), row[ outOrdinals.getKeyOrdinal() ] );
 
-        if ( debug ) {
+        if ( log.isDebug() ) {
           setDebugStatus( reporter,
             "Begin conversion of output value [from:" + ( row[ outOrdinals.getValueOrdinal() ] == null ? null
               //$NON-NLS-1$
@@ -129,7 +129,7 @@ public class OutputCollectorRowListener<K, V> extends RowAdapter {
         ITypeConverter valueConverter = typeConverterFactory.getConverter(
           row[ outOrdinals.getValueOrdinal() ] == null ? null : row[ outOrdinals.getValueOrdinal() ].getClass(),
           outClassV );
-        if ( debug ) {
+        if ( log.isDebug() ) {
           setDebugStatus( reporter, "ordinals value: " + outOrdinals.getValueOrdinal() );
           setDebugStatus( reporter, "rowMeta: " + rowMeta );
           setDebugStatus( reporter, "rowMeta: " + rowMeta.getMetaXML() );
@@ -140,7 +140,7 @@ public class OutputCollectorRowListener<K, V> extends RowAdapter {
           .convert( rowMeta.getValueMeta( outOrdinals.getValueOrdinal() ), row[ outOrdinals.getValueOrdinal() ] );
 
         if ( outKey != null && outVal != null ) {
-          if ( debug ) {
+          if ( log.isDebug() ) {
             setDebugStatus( reporter,
               "Collecting output record [" + outKey + "] - [" + outVal
                 + "]" ); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -154,13 +154,13 @@ public class OutputCollectorRowListener<K, V> extends RowAdapter {
           output.collect( k, v );
         } else {
           if ( outKey == null ) {
-            if ( debug ) {
+            if ( log.isDebug() ) {
               setDebugStatus( reporter, "Transformation returned a null key" ); //$NON-NLS-1$
             }
             reporter.incrCounter( Counter.OUT_RECORD_WITH_NULL_KEY, 1 );
           }
           if ( outVal == null ) {
-            if ( debug ) {
+            if ( log.isDebug() ) {
               setDebugStatus( reporter, "Transformation returned a null value" ); //$NON-NLS-1$
             }
             reporter.incrCounter( Counter.OUT_RECORD_WITH_NULL_VALUE, 1 );
@@ -168,11 +168,11 @@ public class OutputCollectorRowListener<K, V> extends RowAdapter {
         }
       } else {
         if ( row == null || rowMeta.isEmpty() ) {
-          if ( debug ) {
+          if ( log.isDebug() ) {
             setDebugStatus( reporter, "Invalid row received from transformation" ); //$NON-NLS-1$
           }
         } else if ( rowMeta.size() < 2 ) {
-          if ( debug ) {
+          if ( log.isDebug() ) {
             setDebugStatus( reporter,
               "Invalid row format. Expected key/value columns, but received " + rowMeta.size() //$NON-NLS-1$
                 + " columns" ); //$NON-NLS-1$
@@ -180,12 +180,12 @@ public class OutputCollectorRowListener<K, V> extends RowAdapter {
         } else {
           OutKeyValueOrdinals outOrdinals = new OutKeyValueOrdinals( rowMeta );
           if ( outOrdinals.getKeyOrdinal() < 0 || outOrdinals.getValueOrdinal() < 0 ) {
-            if ( debug ) {
+            if ( log.isDebug() ) {
               setDebugStatus( reporter,
                 "outKey or outValue is missing from the transformation output step" ); //$NON-NLS-1$
             }
           }
-          if ( debug ) {
+          if ( log.isDebug() ) {
             setDebugStatus( reporter, "Unknown issue with received data from transformation" ); //$NON-NLS-1$
           }
         }
@@ -201,8 +201,7 @@ public class OutputCollectorRowListener<K, V> extends RowAdapter {
    * Set the reporter status if {@code debug == true}.
    */
   public void setDebugStatus( Reporter reporter, String message ) {
-    if ( debug ) {
-      log.setLogLevel(LogLevel.DEBUG);
+    if ( log.isDebug() ) {
       log.logDebug( message );
       reporter.setStatus( message );
     }

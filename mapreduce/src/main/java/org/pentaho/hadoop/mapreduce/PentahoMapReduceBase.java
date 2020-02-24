@@ -82,8 +82,6 @@ public class PentahoMapReduceBase<K, V> extends MapReduceBase {
 
   protected String id = UUID.randomUUID().toString();
 
-  protected boolean debug = false;
-
   protected LogLevel logLevel;
 
   //  the transformation that will be used as a mapper or reducer
@@ -109,7 +107,7 @@ public class PentahoMapReduceBase<K, V> extends MapReduceBase {
   public void configure( JobConf job ) {
     super.configure( job );
 
-    debug = "true".equalsIgnoreCase( job.get( "debug" ) ); //$NON-NLS-1$
+    //debug = "true".equalsIgnoreCase( job.get( "debug" ) ); //$NON-NLS-1$
 
     transMapXml = job.get( "transformation-map-xml" );
     transCombinerXml = job.get( "transformation-combiner-xml" );
@@ -171,8 +169,7 @@ public class PentahoMapReduceBase<K, V> extends MapReduceBase {
         throw new IllegalArgumentException( "Unsupported MapReduce operation: " + mrOperation );
     }
 
-    if ( debug ) {
-      log.setLogLevel(LogLevel.DEBUG);
+    if ( log.isDebug() ) {
       log.logDebug( "Job configuration>" );
       log.logDebug( "Output key class: " + outClassK.getName() );
       log.logDebug( "Output value class: " + outClassV.getName() );
@@ -223,7 +220,7 @@ public class PentahoMapReduceBase<K, V> extends MapReduceBase {
     row[ valueOrdinal ] =
       inConverterV != null ? inConverterV.convert( injectorRowMeta.getValueMeta( valueOrdinal ), value ) : value;
 
-    if ( debug ) {
+    if ( log.isDebug() ) {
       setDebugStatus( reporter, "Injecting input record [" + row[ keyOrdinal ] + "] - [" + row[ valueOrdinal ] + "]" );
     }
 
@@ -375,16 +372,14 @@ public class PentahoMapReduceBase<K, V> extends MapReduceBase {
   }
 
   public void setDebugStatus( Reporter reporter, String message ) {
-    if ( debug ) {
-      log.setLogLevel(LogLevel.DEBUG);
+    if ( log.isDebug() ) {
       log.logDebug( message );
       reporter.setStatus( message );
     }
   }
 
   private void setDebugStatus( String message ) {
-    if ( debug ) {
-      log.setLogLevel(LogLevel.DEBUG);
+    if ( log.isDebug() ) {
       log.logDebug( message );
     }
   }

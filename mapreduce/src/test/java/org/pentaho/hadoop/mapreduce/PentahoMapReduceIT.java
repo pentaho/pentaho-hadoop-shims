@@ -77,8 +77,6 @@ public class PentahoMapReduceIT {
     mrJobConfig = new JobConf();
     //Turn off all debug messages from PentahoMapRunnable to reduce unit test logs.Turn it on if it needs for debug.
     mrJobConfig.set( "logLevel", LogLevel.ERROR.name() );
-    //Turn off debug messages for the tests.
-    log.setLogLevel(LogLevel.BASIC);
   }
 
   @Test
