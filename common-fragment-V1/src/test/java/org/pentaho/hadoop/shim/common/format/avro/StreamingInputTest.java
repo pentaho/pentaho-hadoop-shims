@@ -56,7 +56,13 @@ import java.util.TimeZone;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
+import org.pentaho.di.core.logging.LogChannel;
+import org.pentaho.di.core.logging.LogChannelInterface;
+
 public class StreamingInputTest {
+
+  private static LogChannelInterface log = new LogChannel( StreamingInputTest.class.getName() );
+
   private DateFormat dateFormat = new SimpleDateFormat( "yyyy/MM/dd HH:mm:ss.SSS" );
 
   @Test
@@ -187,7 +193,7 @@ public class StreamingInputTest {
             new String( (byte[]) actualValue ) );
         } else if ( expectedValue instanceof InetAddress ) {
           //The inet address is too dynamic to check
-          System.out.println( "Skipping INET check" );
+          log.logBasic( "Skipping INET check" );
           //byte[] origAddress = ( (InetAddress) expectedValue ).getAddress();
           //byte[] readAddress = ( (InetAddress) actualValue ).getAddress();
           //assertEquals( errMsg, new String( origAddress ), new String( readAddress ) );

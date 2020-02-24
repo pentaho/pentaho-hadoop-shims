@@ -30,6 +30,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import org.pentaho.di.core.logging.LogChannel;
+import org.pentaho.di.core.logging.LogChannelInterface;
+
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
@@ -42,10 +45,12 @@ import static org.junit.Assert.assertEquals;
  */
 public class ConfigurationProxyV2Test {
 
+  private static LogChannelInterface log = new LogChannel( ConfigurationProxyV2Test.class.getName() );
+
   @Test
   public void checkConfigsInConfigurationAddedHbaseSiteXml() throws IOException {
     ConfigurationProxyV2 configurationProxyV2 = new ConfigurationProxyV2();
-    System.out.println( configurationProxyV2.getJobConf() );
+    log.logBasic( configurationProxyV2.getJobConf().toString() );
     assertEquals( "15", configurationProxyV2.get( "hbase.client.primaryCallTimeout.get" ) );
     assertEquals( "16", configurationProxyV2.get( "hbase.client.primaryCallTimeout.multiget" ) );
   }
@@ -53,7 +58,7 @@ public class ConfigurationProxyV2Test {
   @Test
   public void checkConfigsInConfigurationAddedHDFSSiteXml() throws IOException {
     ConfigurationProxyV2 configurationProxyV2 = new ConfigurationProxyV2();
-    System.out.println( configurationProxyV2.getJobConf() );
+    log.logBasic( configurationProxyV2.getJobConf().toString() );
     assertEquals( "true", configurationProxyV2.get( "hive.optimize.bucketmapjoin.sortedmerge" ) );
     assertEquals( "11000", configurationProxyV2.get( "hive.smbjoin.cache.rows" ) );
   }
@@ -61,7 +66,7 @@ public class ConfigurationProxyV2Test {
   @Test
   public void checkConfigsInConfigurationAddedHiveSiteXml() throws IOException {
     ConfigurationProxyV2 configurationProxyV2 = new ConfigurationProxyV2();
-    System.out.println( configurationProxyV2.getJobConf() );
+    log.logBasic( configurationProxyV2.getJobConf().toString() );
     assertEquals( "4", configurationProxyV2.get( "dfs.replication" ) );
     assertEquals( "true", configurationProxyV2.get( "dfs.client.domain.socket.data.traffic" ) );
   }

@@ -93,8 +93,6 @@ public class PentahoMapRunnable<K1, V1, K2, V2> implements MapRunnable<K1, V1, K
 
   protected String id = UUID.randomUUID().toString();
 
-  protected boolean debug = false;
-
   //  the transformation that will be used as a mapper or reducer
   protected Trans trans;
 
@@ -113,7 +111,7 @@ public class PentahoMapRunnable<K1, V1, K2, V2> implements MapRunnable<K1, V1, K
   public void configure( JobConf job ) {
     pluginWaitTimeout = TimeUnit.MINUTES.toMillis( 5 );
 
-    debug = "true".equalsIgnoreCase( job.get( "debug" ) ); //$NON-NLS-1$
+    //debug = "true".equalsIgnoreCase( job.get( "debug" ) ); //$NON-NLS-1$
 
     transMapXml = job.get( "transformation-map-xml" );
     transReduceXml = job.get( "transformation-reduce-xml" );
@@ -243,7 +241,7 @@ public class PentahoMapRunnable<K1, V1, K2, V2> implements MapRunnable<K1, V1, K
       inConverterV != null ? inConverterV.convert( injectorRowMeta.getValueMeta( valueOrdinal ), value )
         : value;
 
-    if ( debug ) {
+    if ( log.isDebug() ) {
       setDebugStatus( reporter, "Injecting input record [" + row[ keyOrdinal ] + "] - [" + row[ valueOrdinal ] + "]" );
     }
 
@@ -345,14 +343,14 @@ public class PentahoMapRunnable<K1, V1, K2, V2> implements MapRunnable<K1, V1, K
   }
 
   public void setDebugStatus( Reporter reporter, String message ) {
-    if ( debug ) {
-      log.logBasic( message );
+    if ( log.isDebug() ) {
+      log.logDebug( message );
       reporter.setStatus( message );
     }
   }
 
   private void setDebugStatus( String message ) {
-    if ( debug ) {
+    if ( log.isDebug() ) {
       log.logBasic( message );
     }
   }
@@ -382,7 +380,7 @@ public class PentahoMapRunnable<K1, V1, K2, V2> implements MapRunnable<K1, V1, K
         setDebugStatus( "Sharing the VariableSpace from the PDI job." );
         trans.shareVariablesWith( variableSpace );
 
-        if ( debug ) {
+        if ( log.isDebug() ) {
 
           //  list the variables
           List<String> variables = Arrays.asList( trans.listVariables() );
@@ -418,7 +416,7 @@ public class PentahoMapRunnable<K1, V1, K2, V2> implements MapRunnable<K1, V1, K
         setDebugStatus( reporter, "Locating output step: " + mapOutputStepName );
         StepInterface outputStep = trans.findRunThread( mapOutputStepName );
         if ( outputStep != null ) {
-          rowCollector = new OutputCollectorRowListener( output, outClassK, outClassV, reporter, debug );
+          rowCollector = new OutputCollectorRowListener( output, outClassK, outClassV, reporter, log.isDebug() );
           //          rowCollector = OutputCollectorRowListener.build(output, outputRowMeta, outClassK, outClassV,
           // reporter, debug);
           outputStep.addRowListener( rowCollector );

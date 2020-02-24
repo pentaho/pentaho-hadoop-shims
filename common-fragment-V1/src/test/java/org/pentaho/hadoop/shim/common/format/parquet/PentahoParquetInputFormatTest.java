@@ -64,8 +64,13 @@ import org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter.PentahoTwi
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
+import org.pentaho.di.core.logging.LogChannel;
+import org.pentaho.di.core.logging.LogChannelInterface;
+
 @RunWith( Parameterized.class )
 public class PentahoParquetInputFormatTest {
+
+  private static LogChannelInterface log = new LogChannel( PentahoParquetInputFormatTest.class.getName() );
 
   @Parameterized.Parameters
   public static Iterable<Object[]> data() {
@@ -247,7 +252,7 @@ public class PentahoParquetInputFormatTest {
   }
 
   private List<RowMetaAndData> readFile( String file, List<IParquetInputField> readSchema ) throws Exception {
-    System.out.println( "Read '" + file + "' as schema: " + readSchema );
+    log.logBasic( "Read '" + file + "' as schema: " + readSchema );
     pentahoParquetInputFormat.setInputFile( getClass().getClassLoader().getResource( file ).toExternalForm() );
     pentahoParquetInputFormat.setSchema( readSchema );
 

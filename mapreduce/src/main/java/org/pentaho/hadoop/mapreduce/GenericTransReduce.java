@@ -33,7 +33,6 @@ import org.apache.hadoop.io.WritableComparable;
 import org.apache.hadoop.mapred.OutputCollector;
 import org.apache.hadoop.mapred.Reducer;
 import org.apache.hadoop.mapred.Reporter;
-import org.apache.log4j.Logger;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.row.RowMeta;
 import org.pentaho.di.core.row.RowMetaInterface;
@@ -45,6 +44,9 @@ import org.pentaho.di.trans.step.StepMetaInterface;
 import org.pentaho.hadoop.mapreduce.converter.TypeConverterFactory;
 import org.pentaho.hadoop.mapreduce.converter.spi.ITypeConverter;
 
+import org.pentaho.di.core.logging.LogChannel;
+import org.pentaho.di.core.logging.LogChannelInterface;
+
 /**
  * A reducer class that just emits the sum of the input values.
  */
@@ -53,7 +55,7 @@ public class GenericTransReduce<K extends WritableComparable<?>, V extends Itera
   extends PentahoMapReduceBase<K2, V2> implements
   Reducer<K, V, K2, V2> {
 
-  private static Logger logger = Logger.getLogger( GenericTransReduce.class );
+  private static LogChannelInterface log = new LogChannel( GenericTransReduce.class.getName() );
 
   protected RowProducer rowProducer;
   protected Object value;
@@ -85,7 +87,7 @@ public class GenericTransReduce<K extends WritableComparable<?>, V extends Itera
   public void reduce( final K key, final Iterator<V> values, final OutputCollector<K2, V2> output,
                       final Reporter reporter ) throws IOException {
     try {
-      if ( debug ) {
+      if ( log.isDebug() ) {
         reporter.setStatus( "Begin processing record" );
       }
 
@@ -215,7 +217,7 @@ public class GenericTransReduce<K extends WritableComparable<?>, V extends Itera
       setDebugStatus( reporter, "Sharing the VariableSpace from the PDI job." );
       trans.shareVariablesWith( variableSpace );
 
-      if ( debug ) {
+      if ( log.isDebug() ) {
 
         //  list the variables
         List<String> variables = Arrays.asList( trans.listVariables() );
@@ -240,7 +242,7 @@ public class GenericTransReduce<K extends WritableComparable<?>, V extends Itera
     setDebugStatus( reporter, "Locating output step: " + outputStepName );
     StepInterface outputStep = trans.findRunThread( outputStepName );
     if ( outputStep != null ) {
-      rowCollector = new OutputCollectorRowListener( output, outClassK, outClassV, reporter, debug );
+      rowCollector = new OutputCollectorRowListener( output, outClassK, outClassV, reporter, log.isDebug() );
       outputStep.addRowListener( rowCollector );
 
       injectorRowMeta = new RowMeta();

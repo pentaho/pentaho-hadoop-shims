@@ -25,13 +25,14 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.Reporter;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.logging.LogLevel;
+import org.pentaho.di.core.logging.LogChannel;
+import org.pentaho.di.core.logging.LogChannelInterface;
 import org.pentaho.di.trans.TransMeta;
 
 import java.io.IOException;
@@ -50,8 +51,9 @@ import static org.mockito.Mockito.mock;
  */
 @SuppressWarnings( { "unchecked", "rawtypes" } )
 public class PentahoMapReduceIT {
-  //Turn off debug messages for the tests.
-  private static final boolean DEBUG_MODE = false;
+
+  private static LogChannelInterface log = new LogChannel( PentahoMapReduceIT.class.getName() );
+
   private static final String WORDS_TO_CALCULATE = "zebra giraffe hippo elephant tiger";
   private Reporter reporterMock = mock( Reporter.class );
   private PentahoMapRunnable mapRunnable;
@@ -92,8 +94,8 @@ public class PentahoMapReduceIT {
     List<String> wordsToCalculate =
       IntStream.rangeClosed( 1, ROWS_TO_CALCULATE ).mapToObj( value -> String.valueOf( WORDS_TO_CALCULATE ) )
         .collect( Collectors.toList() );
-    if ( DEBUG_MODE ) {
-      System.out.println( "Mapper input data: " + ROWS_TO_CALCULATE + " rows of [" + WORDS_TO_CALCULATE + "]" );
+    if ( log.isDebug() ) {
+      log.logDebug( "Mapper input data: " + ROWS_TO_CALCULATE + " rows of [" + WORDS_TO_CALCULATE + "]" );
     }
     reader = new MockRecordReader( wordsToCalculate );
     // execute mapper
@@ -102,15 +104,15 @@ public class PentahoMapReduceIT {
     outputCollectorMock.close();
     long stop = System.currentTimeMillis();
 
-    if ( DEBUG_MODE ) {
-      System.out.println( "Executed " + ROWS_TO_CALCULATE + " in " + ( stop - start ) + "ms" );
-      System.out.println( "Average: " + ( ( stop - start ) / (float) ROWS_TO_CALCULATE ) + "ms" );
-      System.out.println( "Rows/Second: " + ( ROWS_TO_CALCULATE / ( ( stop - start ) / 1000f ) ) );
+    if ( log.isDebug() ) {
+      log.logDebug( "Executed " + ROWS_TO_CALCULATE + " in " + ( stop - start ) + "ms" );
+      log.logDebug( "Average: " + ( ( stop - start ) / (float) ROWS_TO_CALCULATE ) + "ms" );
+      log.logDebug( "Rows/Second: " + ( ROWS_TO_CALCULATE / ( ( stop - start ) / 1000f ) ) );
     }
 
-    if ( DEBUG_MODE ) {
+    if ( log.isDebug() ) {
       outputCollectorMock.getCollection()
-        .forEach( ( k, v ) -> System.out.println( "Mapper output data: " + k + "=" + v ) );
+        .forEach( ( k, v ) -> log.logDebug( "Mapper output data: " + k + "=" + v ) );
     }
     assertNull( "Exception thrown", mapRunnable.getException() );
     assertNotNull( outputCollectorMock );
@@ -129,9 +131,9 @@ public class PentahoMapReduceIT {
 
     // input data for reducer is going to be taken from mapper output data
     reducerInputCollectorMock = outputCollectorMock;
-    if ( DEBUG_MODE ) {
+    if ( log.isDebug() ) {
       reducerInputCollectorMock.getCollection()
-        .forEach( ( k, v ) -> System.out.println( "Reducer input data: " + k + "=" + v ) );
+        .forEach( ( k, v ) -> log.logDebug( "Reducer input data: " + k + "=" + v ) );
     }
     outputCollectorMock = new MockOutputCollector();
 
@@ -146,9 +148,9 @@ public class PentahoMapReduceIT {
     outputCollectorMock.close();
     stop = System.currentTimeMillis();
 
-    if ( DEBUG_MODE ) {
+    if ( log.isDebug() ) {
       outputCollectorMock.getCollection()
-        .forEach( ( k, v ) -> System.out.println( "Reducer output data: " + k + "=" + v ) );
+        .forEach( ( k, v ) -> log.logDebug( "Reducer output data: " + k + "=" + v ) );
     }
     // verifying reduced data
     assertNull( "Exception thrown", genericTransReduce.getException() );
