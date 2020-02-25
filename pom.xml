@@ -50,6 +50,7 @@
     <htrace-core.version>3.1.0-incubating</htrace-core.version>
     <zookeeper.version>3.4.6.2.6.0.3-8</zookeeper.version>
     <maven-bundle-plugin.version>3.5.1</maven-bundle-plugin.version>
+    <org.apache.hbase.thirdparty.version>2.1.0</org.apache.hbase.thirdparty.version>
   </properties>
 
   <dependencyManagement>

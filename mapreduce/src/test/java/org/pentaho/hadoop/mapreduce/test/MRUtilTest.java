@@ -28,6 +28,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.exception.KettleException;
+import org.pentaho.di.core.logging.KettleLogStore;
 import org.pentaho.di.core.plugins.PluginRegistry;
 import org.pentaho.di.core.row.value.ValueMetaPluginType;
 import org.pentaho.di.trans.Trans;
@@ -54,6 +55,7 @@ public class MRUtilTest {
   public static void before() throws KettleException {
     PluginRegistry.addPluginType( ValueMetaPluginType.getInstance() );
     PluginRegistry.init( true );
+    KettleLogStore.init();
     transMeta = getTestTransMeta();
     transExecConfig = getTestTransExecConfig( transMeta );
   }
