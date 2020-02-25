@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -26,6 +26,7 @@ import org.apache.hadoop.hbase.client.Result;
 import org.junit.Before;
 import org.junit.Test;
 import org.pentaho.di.core.variables.VariableSpace;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.internal.Configuration;
 import org.pentaho.hadoop.shim.api.hbase.HBaseConnection;
 import org.pentaho.hadoop.shim.api.internal.hbase.ColumnFilter;
@@ -57,6 +58,7 @@ public class HBaseConnectionWrapperTest {
   private List list;
   private Properties properties;
   private NavigableMap navigableMap;
+  private NamedCluster namedCluster;
 
   @Before
   public void setup() {
@@ -68,6 +70,7 @@ public class HBaseConnectionWrapperTest {
     list = mock( List.class );
     properties = mock( Properties.class );
     navigableMap = mock( NavigableMap.class );
+    namedCluster = mock( NamedCluster.class );
   }
 
   @Test
@@ -79,8 +82,8 @@ public class HBaseConnectionWrapperTest {
 
   @Test
   public void testConfigureConnection() throws Exception {
-    hBaseConnectionWrapper.configureConnection( properties, list );
-    verify( delegate ).configureConnection( properties, list );
+    hBaseConnectionWrapper.configureConnection( properties, namedCluster, list );
+    verify( delegate ).configureConnection( properties, namedCluster, list );
   }
 
   @Test

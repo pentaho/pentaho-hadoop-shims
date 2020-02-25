@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -50,7 +50,6 @@ import java.util.List;
 public class PentahoTwitterOutputFormat extends HadoopFormatBase implements IPentahoParquetOutputFormat {
 
   private static final Logger logger = Logger.getLogger( PentahoTwitterOutputFormat.class );
-  private static final String S3NSCHEME = "s3n";
 
   private Job job;
   private Path outputFile;

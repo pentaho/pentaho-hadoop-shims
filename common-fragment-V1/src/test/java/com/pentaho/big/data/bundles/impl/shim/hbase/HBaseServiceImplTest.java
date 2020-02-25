@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -94,7 +94,8 @@ public class HBaseServiceImplTest {
       hBaseConnection.checkHBaseAvailable();
     }
     ArgumentCaptor<Properties> propertiesArgumentCaptor = ArgumentCaptor.forClass( Properties.class );
-    verify( hBaseConnection ).configureConnection( propertiesArgumentCaptor.capture(), eq( new ArrayList<>() ) );
+    verify( hBaseConnection )
+      .configureConnection( propertiesArgumentCaptor.capture(), eq( namedCluster ), eq( new ArrayList<>() ) );
     Properties properties = propertiesArgumentCaptor.getValue();
     assertEquals( zkHostFinal, properties.get( HBaseConnection.ZOOKEEPER_QUORUM_KEY ) );
     assertEquals( zkPortFinal, properties.get( HBaseConnection.ZOOKEEPER_PORT_KEY ) );
@@ -111,8 +112,8 @@ public class HBaseServiceImplTest {
       hBaseConnection.checkHBaseAvailable();
     }
     ArgumentCaptor<Properties> propertiesArgumentCaptor = ArgumentCaptor.forClass( Properties.class );
-    verify( hBaseConnection ).configureConnection( propertiesArgumentCaptor.capture(), eq( new ArrayList
-      <String>() ) );
+    verify( hBaseConnection )
+      .configureConnection( propertiesArgumentCaptor.capture(), eq( namedCluster ), eq( new ArrayList <String>() ) );
     Properties properties = propertiesArgumentCaptor.getValue();
     assertEquals( 3, properties.size() );
   }

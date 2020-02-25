@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -24,6 +24,7 @@ package org.pentaho.hbase.shim.fake;
 
 import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.hadoop.shim.ShimVersion;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.internal.hbase.ColumnFilter;
 import org.pentaho.hadoop.shim.api.internal.hbase.HBaseBytesUtilShim;
 import org.pentaho.hadoop.shim.api.internal.hbase.HBaseValueMeta;
@@ -528,7 +529,7 @@ public class FakeHBaseConnection implements HBaseConnection {
   }
 
   @Override
-  public void configureConnection( Properties connProps, List<String> logMessages )
+  public void configureConnection( Properties connProps, NamedCluster namedCluster, List<String> logMessages )
     throws Exception {
     String defaultConfig = connProps.getProperty( DEFAULTS_KEY );
     String siteConfig = connProps.getProperty( SITE_KEY );

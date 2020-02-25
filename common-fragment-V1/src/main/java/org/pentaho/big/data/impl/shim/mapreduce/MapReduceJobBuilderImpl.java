@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -272,7 +272,7 @@ public class MapReduceJobBuilderImpl implements MapReduceJobBuilder {
 
   @Override
   public final MapReduceJobAdvanced submit() throws Exception {
-    Configuration conf = hadoopShim.createConfiguration( namedCluster.getName() );
+    Configuration conf = hadoopShim.createConfiguration( namedCluster );
     configure( conf );
     return submit( conf, namedCluster.getShimIdentifier() );
   }

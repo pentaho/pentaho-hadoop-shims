@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -21,9 +21,11 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.common.format.parquet.delegate.apache;
 
+import java.io.InputStream;
 import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 import org.apache.hadoop.conf.Configuration;
@@ -77,7 +79,8 @@ public class PentahoApacheInputFormat extends HadoopFormatBase implements IPenta
 
       if ( namedCluster != null ) {
         // if named cluster is not defined, no need to add cluster resource configs
-        ShimConfigsLoader.addConfigsAsResources( namedCluster.getName(), conf::addResource );
+        BiConsumer<InputStream, String> consumer = ( is, filename ) -> conf.addResource( is, filename );
+        ShimConfigsLoader.addConfigsAsResources( namedCluster, consumer );
       }
       job = Job.getInstance( conf );
 

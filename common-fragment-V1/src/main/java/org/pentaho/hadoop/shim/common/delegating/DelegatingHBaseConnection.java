@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -23,6 +23,7 @@
 package org.pentaho.hadoop.shim.common.delegating;
 
 import org.pentaho.di.core.variables.VariableSpace;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.internal.Configuration;
 import org.pentaho.hadoop.shim.api.internal.hbase.ColumnFilter;
 import org.pentaho.hadoop.shim.api.internal.hbase.HBaseBytesUtilShim;
@@ -84,8 +85,8 @@ public class DelegatingHBaseConnection implements HBaseConnection, HBaseConnecti
   }
 
   @Override
-  public void configureConnection( Properties connProps, List<String> logMessages ) throws Exception {
-    delegate.configureConnection( connProps, logMessages );
+  public void configureConnection( Properties connProps, NamedCluster namedCluster, List<String> logMessages ) throws Exception {
+    delegate.configureConnection( connProps, namedCluster, logMessages );
   }
 
   @Override
