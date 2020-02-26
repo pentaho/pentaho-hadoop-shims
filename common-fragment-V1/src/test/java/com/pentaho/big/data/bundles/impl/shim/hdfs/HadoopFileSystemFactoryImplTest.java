@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -62,7 +62,7 @@ public class HadoopFileSystemFactoryImplTest {
     isActiveConfiguration = true;
     hadoopShim = mock( HadoopShim.class );
     configuration = mock( Configuration.class );
-    when( hadoopShim.createConfiguration( identifier ) ).thenReturn( configuration );
+    when( hadoopShim.createConfiguration( namedCluster ) ).thenReturn( configuration );
     fileSystem = mock( FileSystem.class );
     when( fileSystem.getDelegate() ).thenReturn( new DistributedFileSystem() );
     when( hadoopShim.getFileSystem( configuration ) ).thenReturn( fileSystem );

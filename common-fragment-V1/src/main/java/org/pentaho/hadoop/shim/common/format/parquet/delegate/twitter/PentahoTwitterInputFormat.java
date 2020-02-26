@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -42,9 +42,11 @@ import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
 import org.pentaho.hadoop.shim.common.format.parquet.ParquetInputFieldList;
 import org.pentaho.hadoop.shim.common.format.parquet.PentahoInputSplitImpl;
 
+import java.io.InputStream;
 import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 import parquet.hadoop.Footer;
@@ -71,7 +73,8 @@ public class PentahoTwitterInputFormat extends HadoopFormatBase implements IPent
 
     inClassloader( () -> {
       ConfigurationProxy conf = new ConfigurationProxy();
-      ShimConfigsLoader.addConfigsAsResources( namedCluster.getName(), conf::addResource );
+      BiConsumer<InputStream, String> consumer = ( is, filename ) -> conf.addResource( is, filename );
+      ShimConfigsLoader.addConfigsAsResources( namedCluster, consumer );
       job = Job.getInstance( conf );
 
       nativeParquetInputFormat = new ParquetInputFormat<>();

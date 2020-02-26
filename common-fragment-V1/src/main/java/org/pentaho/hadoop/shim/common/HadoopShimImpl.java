@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Pentaho Big Data
  * <p>
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
  * <p>
  * ******************************************************************************
  * <p>
@@ -19,12 +19,14 @@ package org.pentaho.hadoop.shim.common;
 
 import org.pentaho.hadoop.shim.ShimException;
 import org.pentaho.hadoop.shim.ShimRuntimeException;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.internal.mapred.RunningJob;
 
 import java.io.IOException;
 import java.util.List;
 
 public class HadoopShimImpl extends CommonHadoopShim {
+  private static final String UNABLE_TO_CREATE_MESSAGE = "Unable to create configuration for new mapreduce api: ";
 
   @Override
   protected String getDefaultNamenodePort() {
@@ -61,7 +63,7 @@ public class HadoopShimImpl extends CommonHadoopShim {
     try {
       return new ConfigurationProxyV2();
     } catch ( IOException e ) {
-      throw new ShimRuntimeException( "Unable to create configuration for new mapreduce api: ", e );
+      throw new ShimRuntimeException( UNABLE_TO_CREATE_MESSAGE, e );
     } finally {
       Thread.currentThread().setContextClassLoader( cl );
     }
@@ -74,7 +76,20 @@ public class HadoopShimImpl extends CommonHadoopShim {
     try {
       return new ConfigurationProxyV2( namedCluster );
     } catch ( IOException e ) {
-      throw new ShimRuntimeException( "Unable to create configuration for new mapreduce api: ", e );
+      throw new ShimRuntimeException( UNABLE_TO_CREATE_MESSAGE, e );
+    } finally {
+      Thread.currentThread().setContextClassLoader( cl );
+    }
+  }
+
+  @Override
+  public org.pentaho.hadoop.shim.api.internal.Configuration createConfiguration( NamedCluster namedCluster ) {
+    ClassLoader cl = Thread.currentThread().getContextClassLoader();
+    Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
+    try {
+      return new ConfigurationProxyV2( namedCluster );
+    } catch ( IOException e ) {
+      throw new ShimRuntimeException( UNABLE_TO_CREATE_MESSAGE, e );
     } finally {
       Thread.currentThread().setContextClassLoader( cl );
     }

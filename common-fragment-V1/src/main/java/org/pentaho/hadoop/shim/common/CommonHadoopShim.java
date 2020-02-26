@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Pentaho Big Data
  * <p>
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
  * <p>
  * ******************************************************************************
  * <p>
@@ -215,6 +215,21 @@ public class CommonHadoopShim implements HadoopShim {
     Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
     try {
       return new org.pentaho.hadoop.shim.common.ConfigurationProxy( namedCluster );
+    } finally {
+      Thread.currentThread().setContextClassLoader( cl );
+    }
+  }
+
+  @Override
+  public Configuration createConfiguration( NamedCluster namedCluster ) {
+    ClassLoader cl = Thread.currentThread().getContextClassLoader();
+    Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
+    try {
+      //For the time being I'm using ConfigurationProxyV2 here until I see a reason to limit the site files as in
+      // ConfigurationProxy
+      return new ConfigurationProxyV2( namedCluster );
+    } catch ( IOException e ) {
+      throw new ShimRuntimeException( "Unable to create configuration for new mapreduce api: ", e );
     } finally {
       Thread.currentThread().setContextClassLoader( cl );
     }

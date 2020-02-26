@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.pentaho.di.core.logging.LogChannelInterface;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.spi.HBaseConnection;
 import org.pentaho.hadoop.shim.spi.HBaseShim;
 
@@ -51,6 +52,7 @@ public class HBaseConnectionPoolTest {
   private LogChannelInterface logChannelInterface;
   private HBaseConnectionPool hBaseConnectionPool;
   private List<HBaseConnectionTestImpls.HBaseConnectionWithResultField> mockConnections;
+  private NamedCluster namedCluster;
 
   @Before
   public void setup() {
@@ -65,8 +67,10 @@ public class HBaseConnectionPoolTest {
       }
     } );
     props = mock( Properties.class );
+    namedCluster = mock( NamedCluster.class );
+
     logChannelInterface = mock( LogChannelInterface.class );
-    hBaseConnectionPool = new HBaseConnectionPool( hBaseShim, props, logChannelInterface );
+    hBaseConnectionPool = new HBaseConnectionPool( hBaseShim, props, logChannelInterface, namedCluster );
   }
 
   @Test
@@ -309,17 +313,17 @@ public class HBaseConnectionPoolTest {
     hBaseShim = mock( HBaseShim.class );
     HBaseConnection hBaseConnection = mock( HBaseConnectionTestImpls.HBaseConnectionWithResultField.class );
     when( hBaseShim.getHBaseConnection() ).thenReturn( hBaseConnection );
-    hBaseConnectionPool = new HBaseConnectionPool( hBaseShim, props, logChannelInterface );
+    hBaseConnectionPool = new HBaseConnectionPool( hBaseShim, props, logChannelInterface, namedCluster );
     final String message = "message";
     doAnswer( new Answer<Void>() {
       @Override public Void answer( InvocationOnMock invocation ) throws Throwable {
-        ( (List<String>) invocation.getArguments()[ 1 ] ).add( message );
+        ( (List<String>) invocation.getArguments()[ 2 ] ).add( message );
         return null;
       }
-    } ).when( hBaseConnection ).configureConnection( eq( props ), anyList() );
+    } ).when( hBaseConnection ).configureConnection( eq( props ), eq( namedCluster ), anyList() );
     hBaseConnectionPool.getConnectionHandle();
     verify( logChannelInterface ).logBasic( message );
-    hBaseConnectionPool = new HBaseConnectionPool( hBaseShim, props, null );
+    hBaseConnectionPool = new HBaseConnectionPool( hBaseShim, props, null, namedCluster );
     hBaseConnectionPool.getConnectionHandle();
   }
 
@@ -328,9 +332,9 @@ public class HBaseConnectionPoolTest {
     hBaseShim = mock( HBaseShim.class );
     HBaseConnection hBaseConnection = mock( HBaseConnectionTestImpls.HBaseConnectionWithResultField.class );
     when( hBaseShim.getHBaseConnection() ).thenReturn( hBaseConnection );
-    hBaseConnectionPool = new HBaseConnectionPool( hBaseShim, props, logChannelInterface );
+    hBaseConnectionPool = new HBaseConnectionPool( hBaseShim, props, logChannelInterface, namedCluster );
     Exception exception = new Exception();
-    doThrow( exception ).when( hBaseConnection ).configureConnection( eq( props ), anyList() );
+    doThrow( exception ).when( hBaseConnection ).configureConnection( eq( props ), eq( namedCluster ), anyList() );
     try {
       hBaseConnectionPool.getConnectionHandle();
     } catch ( IOException e ) {
@@ -345,7 +349,7 @@ public class HBaseConnectionPoolTest {
     hBaseShim = mock( HBaseShim.class );
     HBaseConnection hBaseConnection = mock( HBaseConnectionTestImpls.HBaseConnectionWithResultField.class );
     when( hBaseShim.getHBaseConnection() ).thenReturn( hBaseConnection );
-    hBaseConnectionPool = new HBaseConnectionPool( hBaseShim, props, logChannelInterface );
+    hBaseConnectionPool = new HBaseConnectionPool( hBaseShim, props, logChannelInterface, namedCluster );
     Exception exception = new Exception();
     doThrow( exception ).when( hBaseConnection ).newSourceTable( table );
     try {
@@ -363,7 +367,7 @@ public class HBaseConnectionPoolTest {
     hBaseShim = mock( HBaseShim.class );
     HBaseConnection hBaseConnection = mock( HBaseConnectionTestImpls.HBaseConnectionWithResultField.class );
     when( hBaseShim.getHBaseConnection() ).thenReturn( hBaseConnection );
-    hBaseConnectionPool = new HBaseConnectionPool( hBaseShim, props, logChannelInterface );
+    hBaseConnectionPool = new HBaseConnectionPool( hBaseShim, props, logChannelInterface, namedCluster );
     Exception exception = new Exception();
     doThrow( exception ).when( hBaseConnection ).newTargetTable( table, properties );
     try {
