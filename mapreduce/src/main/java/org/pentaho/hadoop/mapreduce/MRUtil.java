@@ -108,11 +108,12 @@ public class MRUtil {
       System.setProperty( Const.PLUGIN_BASE_FOLDERS_PROP, pluginDir );
       System.setProperty( Const.PENTAHO_METASTORE_FOLDER, metaStoreDir );
 
+      KettleEnvironment.init();
+
       log.logBasic( BaseMessages.getString( MRUtil.class, "KettleHome.Info", kettleHome ) );
       log.logBasic( BaseMessages.getString( MRUtil.class, "PluginDirectory.Info", pluginDir ) );
       log.logBasic( BaseMessages.getString( MRUtil.class, "MetasStoreDirectory.Info", metaStoreDir ) );
 
-      KettleEnvironment.init();
     }
   }
 
