@@ -28,7 +28,6 @@ import com.pentaho.big.data.bundles.impl.shim.hbase.mapping.MappingFactoryImpl;
 import com.pentaho.big.data.bundles.impl.shim.hbase.meta.HBaseValueMetaInterfaceFactoryImpl;
 import com.pentaho.big.data.bundles.impl.shim.hbase.table.HBaseTableImpl;
 import org.pentaho.di.core.logging.LogChannelInterface;
-import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.hbase.ByteConversionUtil;
 import org.pentaho.hadoop.shim.api.hbase.HBaseConnection;
 import org.pentaho.hadoop.shim.api.internal.hbase.HBaseBytesUtilShim;
@@ -46,9 +45,8 @@ public class HBaseConnectionImpl implements HBaseConnection {
   private final HBaseBytesUtilShim hBaseBytesUtilShim;
 
   public HBaseConnectionImpl( HBaseShim hBaseShim, HBaseBytesUtilShim hBaseBytesUtilShim,
-                              Properties connectionProps, LogChannelInterface logChannelInterface,
-                              NamedCluster namedCluster ) {
-    this( hBaseBytesUtilShim, new HBaseConnectionPool( hBaseShim, connectionProps, logChannelInterface, namedCluster ) );
+                              Properties connectionProps, LogChannelInterface logChannelInterface ) throws IOException {
+    this( hBaseBytesUtilShim, new HBaseConnectionPool( hBaseShim, connectionProps, logChannelInterface ) );
   }
 
   public HBaseConnectionImpl( HBaseBytesUtilShim hBaseBytesUtilShim, HBaseConnectionPool hBaseConnectionPool ) {

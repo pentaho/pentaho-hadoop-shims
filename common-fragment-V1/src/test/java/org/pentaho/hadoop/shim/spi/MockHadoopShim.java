@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -24,7 +24,6 @@ package org.pentaho.hadoop.shim.spi;
 
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.hadoop.shim.ShimVersion;
-import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.internal.Configuration;
 import org.pentaho.hadoop.shim.api.internal.DistributedCacheUtil;
 import org.pentaho.hadoop.shim.api.internal.fs.FileSystem;
@@ -58,11 +57,6 @@ public class MockHadoopShim implements HadoopShim {
 
   @Override
   public Configuration createConfiguration( String namedCluster ) {
-    return null;
-  }
-
-  @Override
-  public Configuration createConfiguration( NamedCluster namedCluster ) {
     return null;
   }
 

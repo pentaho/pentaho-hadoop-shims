@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -23,7 +23,6 @@
 package org.pentaho.hbase.shim.common.wrapper;
 
 import org.pentaho.di.core.variables.VariableSpace;
-import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.internal.Configuration;
 import org.pentaho.hadoop.shim.api.internal.hbase.ColumnFilter;
 import org.pentaho.hadoop.shim.api.internal.hbase.HBaseBytesUtilShim;
@@ -54,9 +53,7 @@ public interface HBaseConnectionInterface {
 
   public abstract void closeTargetTable() throws Exception;
 
-  public abstract void configureConnection( Properties connProps,
-                                            NamedCluster namedCluster,
-                                            List<String> logMessages ) throws Exception;
+  public abstract void configureConnection( Properties connProps, List<String> logMessages ) throws Exception;
 
   public abstract void createTable( String tableName, List<String> colFamilyNames, Properties creationProps )
     throws Exception;

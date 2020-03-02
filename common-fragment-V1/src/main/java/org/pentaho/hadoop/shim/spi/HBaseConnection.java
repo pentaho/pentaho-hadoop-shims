@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -29,7 +29,6 @@ import java.util.NavigableMap;
 import java.util.Properties;
 
 import org.pentaho.di.core.variables.VariableSpace;
-import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.internal.Configuration;
 import org.pentaho.hadoop.shim.api.internal.hbase.HBaseBytesUtilShim;
 import org.pentaho.hadoop.shim.api.internal.hbase.ColumnFilter;
@@ -85,11 +84,10 @@ public interface HBaseConnection {
    * Configure the HBase connection using the supplied connection properties
    *
    * @param connProps   the properties supplying connection details
-   * @param namedCluster the NamedCluster associated with the connection
    * @param logMessages will hold any log messages generated during the connection configuration process
    * @throws Exception if a problem occurs
    */
-  public abstract void configureConnection( Properties connProps, NamedCluster namedCluster,
+  public abstract void configureConnection( Properties connProps,
                                             List<String> logMessages ) throws Exception;
 
   /**

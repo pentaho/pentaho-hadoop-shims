@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -23,7 +23,6 @@
 package com.pentaho.big.data.bundles.impl.shim.hbase.connectionPool;
 
 import org.pentaho.di.core.logging.LogChannelInterface;
-import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.spi.HBaseConnection;
 import org.pentaho.hadoop.shim.spi.HBaseShim;
 import org.pentaho.hbase.shim.common.CommonHBaseConnection;
@@ -45,16 +44,14 @@ public class HBaseConnectionPool implements Closeable {
   private final HBaseShim hBaseShim;
   protected final Properties connectionProps;
   protected final LogChannelInterface logChannelInterface;
-  protected final NamedCluster namedCluster;
 
   public HBaseConnectionPool( HBaseShim hBaseShim, Properties connectionProps,
-                              LogChannelInterface logChannelInterface, NamedCluster namedCluster ) {
+                              LogChannelInterface logChannelInterface ) {
     this.hBaseShim = hBaseShim;
     this.connectionProps = connectionProps;
     this.logChannelInterface = logChannelInterface;
     availableConnections = new HashSet<>();
     inUseConnections = new HashSet<>();
-    this.namedCluster = namedCluster;
   }
 
   private HBaseConnectionPoolConnection findBestMatch( String sourceTable ) {
@@ -136,7 +133,7 @@ public class HBaseConnectionPool implements Closeable {
       ( hBaseShim != null ? hBaseShim.getHBaseConnection() : new CommonHBaseConnection() );
     try {
       List<String> messages = new ArrayList<>();
-      hBaseConnection.configureConnection( connectionProps, namedCluster, messages );
+      hBaseConnection.configureConnection( connectionProps, messages );
       if ( logChannelInterface != null ) {
         for ( String message : messages ) {
           logChannelInterface.logBasic( message );

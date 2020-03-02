@@ -29,17 +29,12 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.security.UserGroupInformation;
-import org.pentaho.di.core.osgi.api.NamedClusterSiteFile;
 import org.pentaho.di.i18n.BaseMessages;
-import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.internal.Configuration;
 import org.pentaho.hadoop.shim.api.internal.mapred.RunningJob;
 import org.pentaho.hadoop.shim.ShimConfigsLoader;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * User: Dzmitry Stsiapanau Date: 7/22/14 Time: 11:59 AM
@@ -61,28 +56,6 @@ public class ConfigurationProxyV2 implements Configuration {
     ShimConfigsLoader.SITE_FILE_NAME.clear();
 
     addConfigsForJobConf( namedCluster );
-  }
-
-  public ConfigurationProxyV2( NamedCluster namedCluster ) throws IOException {
-    job = Job.getInstance();
-    addConfigsFromNamedCluster( namedCluster );
-  }
-
-  private void addConfigsFromNamedCluster( NamedCluster nc ) {
-    if ( nc.getSiteFiles().isEmpty() ) {
-      addConfigsForJobConf();  //Backwards compatibility if there are no site files present
-    } else {
-      List<String> siteFileNames = Arrays.asList(
-        new String[] { "hdfs-site.xml", "core-site.xml", "mapred-site.xml", "yarn-site.xml", "hbase-site.xml",
-          "hive-site.xml" } );
-      for ( NamedClusterSiteFile namedClusterSiteFile : nc.getSiteFiles() ) {
-        if ( siteFileNames.contains( namedClusterSiteFile.getSiteFileName() ) ) {
-          job.getConfiguration()
-            .addResource( new ByteArrayInputStream( namedClusterSiteFile.getSiteFileContents().getBytes() ),
-              namedClusterSiteFile.getSiteFileName() );
-        }
-      }
-    }
   }
 
   @VisibleForTesting

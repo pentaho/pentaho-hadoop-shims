@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -84,7 +84,8 @@ public class HBaseServiceImpl implements HBaseService {
     if ( !Const.isEmpty( defaultConfig ) ) {
       connProps.setProperty( org.pentaho.hadoop.shim.spi.HBaseConnection.DEFAULTS_KEY, defaultConfig );
     }
-    return new HBaseConnectionImpl( hBaseShim, bytesUtil, connProps, logChannelInterface, namedCluster );
+
+    return new HBaseConnectionImpl( hBaseShim, bytesUtil, connProps, logChannelInterface );
   }
 
   @Override public ColumnFilterFactoryImpl getColumnFilterFactory() {

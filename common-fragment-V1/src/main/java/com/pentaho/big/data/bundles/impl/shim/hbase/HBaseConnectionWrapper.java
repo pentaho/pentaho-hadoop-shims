@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -25,7 +25,6 @@ package com.pentaho.big.data.bundles.impl.shim.hbase;
 import com.google.common.annotations.VisibleForTesting;
 import org.apache.hadoop.hbase.client.Result;
 import org.pentaho.di.core.variables.VariableSpace;
-import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.internal.hbase.ColumnFilter;
 import org.pentaho.hadoop.shim.api.internal.hbase.HBaseBytesUtilShim;
 import org.pentaho.hadoop.shim.api.internal.hbase.HBaseValueMeta;
@@ -57,9 +56,8 @@ public class HBaseConnectionWrapper implements HBaseConnection {
     return delegate.getBytesUtil();
   }
 
-  @Override public void configureConnection( Properties properties, NamedCluster namedCluster, List<String> list )
-    throws Exception {
-    delegate.configureConnection( properties, namedCluster, list );
+  @Override public void configureConnection( Properties properties, List<String> list ) throws Exception {
+    delegate.configureConnection( properties, list );
   }
 
   @Override public void checkHBaseAvailable() throws Exception {

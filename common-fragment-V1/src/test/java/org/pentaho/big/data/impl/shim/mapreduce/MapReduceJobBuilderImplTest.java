@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -91,7 +91,7 @@ public class MapReduceJobBuilderImplTest {
     when( runningJob.setupProgress() ).thenReturn( magicSetupNumber );
 
     when( hadoopShim.createConfiguration() ).thenReturn( configuration );
-    when( hadoopShim.createConfiguration( namedCluster ) ).thenReturn( configuration );
+    when( hadoopShim.createConfiguration( any() ) ).thenReturn( configuration );
     when( hadoopShim.getFileSystem( configuration ) ).thenReturn( fileSystem );
     when( hadoopShim.submitJob( configuration ) ).thenReturn( runningJob );
     fsUrl = "hdfs://";

@@ -46,7 +46,6 @@ import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.hadoop.hbase.factory.HBase10ClientFactory;
 import org.pentaho.hadoop.shim.ShimConfigsLoader;
-import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.internal.hbase.ColumnFilter;
 import org.pentaho.hadoop.shim.api.internal.hbase.HBaseBytesUtilShim;
 import org.pentaho.hadoop.shim.api.internal.hbase.HBaseValueMeta;
@@ -56,9 +55,9 @@ import org.pentaho.hbase.factory.HBaseAdmin;
 import org.pentaho.hbase.factory.HBaseClientFactory;
 import org.pentaho.hbase.factory.HBasePut;
 import org.pentaho.hbase.factory.HBaseTable;
+import org.pentaho.hbase.shim.fake.FakeNamedCluster;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -72,7 +71,6 @@ import java.util.List;
 import java.util.NavigableMap;
 import java.util.Properties;
 import java.util.Set;
-import java.util.function.BiConsumer;
 
 /**
  * Concrete implementation for Hadoop 20.x.
@@ -122,10 +120,8 @@ public class CommonHBaseConnection implements HBaseConnection, IHBaseClientFacto
     return new Integer( shimConfigurationId.replaceAll( "\\D", "" ).substring( 0, 1 ) );
   }
 
-  @SuppressWarnings( "squid:S3776" )
   @Override
-  public void configureConnection( Properties connProps, NamedCluster namedCluster,
-                                   List<String> logMessages ) {
+  public void configureConnection( Properties connProps, List<String> logMessages ) throws Exception {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
     try {
@@ -133,35 +129,34 @@ public class CommonHBaseConnection implements HBaseConnection, IHBaseClientFacto
       String siteConfig = connProps.getProperty( SITE_KEY );
       String zookeeperQuorum = connProps.getProperty( ZOOKEEPER_QUORUM_KEY );
       String zookeeperPort = connProps.getProperty( ZOOKEEPER_PORT_KEY );
+      String namedCluster = connProps.getProperty( NAMED_CLUSTER );
       boolean namedClusterIsMapr = Boolean.parseBoolean( connProps.getProperty( SHIM_IS_MAPR, "false" ) );
 
       m_config = new Configuration();
-      BiConsumer<InputStream, String> consumer = ( is, filename ) -> m_config.addResource( is, filename );
-
       try {
         if ( namedClusterIsMapr ) {
-          ShimConfigsLoader.addConfigsAsResources( namedCluster, consumer,
+          ShimConfigsLoader.addConfigsAsResources( namedCluster, m_config::addResource,
             ShimConfigsLoader.ClusterConfigNames.CORE_SITE.toString() );
-          ShimConfigsLoader.addConfigsAsResources( namedCluster, consumer,
+          ShimConfigsLoader.addConfigsAsResources( namedCluster, m_config::addResource,
             ShimConfigsLoader.ClusterConfigNames.HDFS_SITE.toString() );
-          ShimConfigsLoader.addConfigsAsResources( namedCluster, consumer,
+          ShimConfigsLoader.addConfigsAsResources( namedCluster, m_config::addResource,
             ShimConfigsLoader.ClusterConfigNames.YARN_SITE.toString() );
-          ShimConfigsLoader.addConfigsAsResources( namedCluster, consumer,
+          ShimConfigsLoader.addConfigsAsResources( namedCluster, m_config::addResource,
             ShimConfigsLoader.ClusterConfigNames.MAPRED_SITE.toString() );
-          ShimConfigsLoader.addConfigsAsResources( namedCluster, consumer,
+          ShimConfigsLoader.addConfigsAsResources( namedCluster, m_config::addResource,
             ShimConfigsLoader.ClusterConfigNames.HIVE_SITE.toString() );
         }
         if ( !HBaseConnection.isEmpty( defaultConfig ) ) {
           m_config.addResource( HBaseConnection.stringToURL( defaultConfig ) );
         } else {
-          ShimConfigsLoader.addConfigsAsResources( namedCluster, consumer,
+          ShimConfigsLoader.addConfigsAsResources( namedCluster, m_config::addResource,
             ShimConfigsLoader.ClusterConfigNames.HBASE_DEFAULT.toString() );
         }
 
         if ( !HBaseConnection.isEmpty( siteConfig ) ) {
           m_config.addResource( HBaseConnection.stringToURL( siteConfig ) );
         } else {
-          ShimConfigsLoader.addConfigsAsResources( namedCluster, consumer,
+          ShimConfigsLoader.addConfigsAsResources( namedCluster, m_config::addResource,
             ShimConfigsLoader.ClusterConfigNames.HBASE_SITE.toString() );
         }
       } catch ( MalformedURLException e ) {
@@ -205,7 +200,7 @@ public class CommonHBaseConnection implements HBaseConnection, IHBaseClientFacto
       }
 
       m_factory = getHBaseClientFactory( m_config );
-      m_factory.setNamedCluster( namedCluster );
+      m_factory.setNamedCluster( new FakeNamedCluster( connProps.getProperty( "named.cluster" ) ) );
 
       m_admin = m_factory.getHBaseAdmin();
     } finally {

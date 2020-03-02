@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Pentaho Big Data
  * <p>
- * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
  * <p>
  * ******************************************************************************
  * <p>
@@ -87,21 +87,7 @@ public interface HadoopShim {
    */
   Configuration createConfiguration();
 
-  /**
-   * @deprecated Use the {@link #createConfiguration(NamedCluster)} method
-   * @param namedCluster
-   * @return
-   */
-  @Deprecated
   Configuration createConfiguration( String namedCluster );
-
-  /**
-   * Create the configuration from the sites files in the NamedCluster
-   *
-   * @param namedCluster
-   * @return
-   */
-  Configuration createConfiguration( NamedCluster namedCluster );
 
   /**
    * Look up a file system abstraction using the configuration provided

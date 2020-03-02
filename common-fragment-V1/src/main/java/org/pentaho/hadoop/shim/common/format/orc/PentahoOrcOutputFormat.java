@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2019-2020 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -35,10 +35,8 @@ import org.pentaho.hadoop.shim.common.ConfigurationProxy;
 import org.pentaho.hadoop.shim.common.format.HadoopFormatBase;
 import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
 
-import java.io.InputStream;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.List;
-import java.util.function.BiConsumer;
 
 /**
  * Created by tkafalas on 11/3/2017.
@@ -64,8 +62,7 @@ public class PentahoOrcOutputFormat extends HadoopFormatBase implements IPentaho
 
     if ( namedCluster != null ) {
       // if named cluster is not defined, no need to add cluster resource configs
-      BiConsumer<InputStream, String> consumer = ( is, filename ) -> conf.addResource( is, filename );
-      ShimConfigsLoader.addConfigsAsResources( namedCluster, consumer );
+      ShimConfigsLoader.addConfigsAsResources( namedCluster.getName(), conf::addResource );
     } else {
       conf.addResource( "hive-site.xml" );
     }

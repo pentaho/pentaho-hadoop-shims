@@ -1,24 +1,3 @@
-/*******************************************************************************
- *
- * Pentaho Big Data
- *
- * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
- *
- *******************************************************************************
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- ******************************************************************************/
 package org.pentaho.big.data.impl.shim;
 
 import com.google.common.collect.Lists;
@@ -185,7 +164,7 @@ public class HadoopClientServicesImpl implements HadoopClientServices {
   }
 
   public int runSqoop( List<String> argsList, Properties properties ) {
-    Configuration configuration = hadoopShim.createConfiguration( namedCluster );
+    Configuration configuration = hadoopShim.createConfiguration( namedCluster.getName() );
     for ( Map.Entry<String, String> entry : Maps.fromProperties( properties ).entrySet() ) {
       configuration.set( entry.getKey(), entry.getValue() );
     }
@@ -377,7 +356,7 @@ public class HadoopClientServicesImpl implements HadoopClientServices {
     try ( WriterAppenderManager appenderManager = writerAppenderManagerFactory.create( logChannelInterface, logLevel,
       name ) ) {
       appenderFile = appenderManager.getFile();
-      Configuration configuration = hadoopShim.createConfiguration( namedCluster );
+      Configuration configuration = hadoopShim.createConfiguration( namedCluster.getName() );
       if ( executionMode != PigExecutionMode.LOCAL ) {
         List<String> configMessages = new ArrayList<String>();
         hadoopShim.configureConnectionInformation( variableSpace.environmentSubstitute( namedCluster.getHdfsHost() ),
@@ -495,7 +474,7 @@ public class HadoopClientServicesImpl implements HadoopClientServices {
   }
 
   public HadoopFileSystem getFileSystem( NamedCluster namedCluster, URI uri ) throws IOException {
-    final Configuration configuration = hadoopShim.createConfiguration( namedCluster );
+    final Configuration configuration = hadoopShim.createConfiguration( namedCluster.getName() );
     FileSystem fileSystem = (FileSystem) hadoopShim.getFileSystem( configuration ).getDelegate();
     if ( fileSystem instanceof LocalFileSystem ) {
       LOGGER.error( "Got a local filesystem, was expecting an hdfs connection" );
@@ -521,7 +500,7 @@ public class HadoopClientServicesImpl implements HadoopClientServices {
 
   protected HBaseConnectionImpl getConnectionImpl( Properties connProps, LogChannelInterface logChannelInterface )
     throws IOException {
-    return new HBaseConnectionImpl( null, bytesUtil, connProps, logChannelInterface, namedCluster );
+    return new HBaseConnectionImpl( null, bytesUtil, connProps, logChannelInterface );
   }
 
   public HBaseConnection getHBaseConnection( VariableSpace variableSpace, String siteConfig, String defaultConfig,
