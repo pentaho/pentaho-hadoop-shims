@@ -288,6 +288,7 @@
       <module>hdp30</module>
       <module>emr521</module>
       <module>mapr60</module>
+      <module>dataproc1421</module>
       <module>apache</module>
     </modules>
   </profile>
@@ -340,5 +341,16 @@
     </modules>
   </profile>
 
+  <profile>
+    <id>dataproc1421</id>
+    <activation>
+      <property>
+        <name>!skipDefault</name>
+      </property>
+    </activation>
+    <modules>
+      <module>dataproc1421</module>
+    </modules>
+  </profile>
 </profiles>
 </project>
