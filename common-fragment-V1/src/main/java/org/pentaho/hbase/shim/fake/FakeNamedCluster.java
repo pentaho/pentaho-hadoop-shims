@@ -266,12 +266,4 @@ public class FakeNamedCluster implements NamedCluster {
     throws KettleValueException {
     return null;
   }
-
-  @Override public String decodePassword( String password ) {
-    return password;
-  }
-
-  @Override public String encodePassword( String password ) {
-    return password;
-  }
 }
