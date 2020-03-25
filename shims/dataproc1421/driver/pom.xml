@@ -18,6 +18,17 @@
       <version>${gcs-connector.version}</version>
     </dependency>
     <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>${dataproc.guava.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
       <groupId>org.pentaho.hadoop.shims</groupId>
       <artifactId>pentaho-hadoop-shims-common-fragment-V1</artifactId>
       <version>${project.version}</version>
@@ -92,12 +103,11 @@
       <artifactId>hive-exec</artifactId>
       <classifier>core</classifier>
       <version>${org.apache.hive.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
+    </dependency>
+	<dependency>
+      <groupId>org.apache.hive</groupId>
+      <artifactId>hive-service</artifactId>
+      <version>${org.apache.hive.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hive</groupId>
@@ -108,12 +118,6 @@
       <groupId>org.apache.hive</groupId>
       <artifactId>hive-jdbc</artifactId>
       <version>${hive-jdbc.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
 
@@ -127,11 +131,22 @@
       <artifactId>hadoop-client</artifactId>
       <version>${org.apache.hadoop.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.apache.hbase</groupId>
-      <artifactId>hbase-server</artifactId>
-      <version>${org.apache.hbase.version}</version>
+	<dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-common</artifactId>
+      <version>${org.apache.hadoop.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-mapreduce-client-core</artifactId>
+      <version>${org.apache.hadoop.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-mapreduce-client-jobclient</artifactId>
+      <version>${org.apache.hadoop.version}</version>
+    </dependency>
+
     <dependency>
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-client</artifactId>
@@ -144,9 +159,31 @@
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-hadoop-compat</artifactId>
+      <version>${org.apache.hbase.version}</version>
+    </dependency>
+	<dependency>
+      <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-mapreduce</artifactId>
       <version>${org.apache.hbase.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-protocol</artifactId>
+      <version>${org.apache.hbase.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-server</artifactId>
+      <version>${org.apache.hbase.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>hadoop-hdfs</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
     <!-- The following added for Pig -->
     <dependency>
       <groupId>org.antlr</groupId>
@@ -198,7 +235,6 @@
       <artifactId>commons-configuration2</artifactId>
       <version>${commons-configuration2.version}</version>
     </dependency>
-
   </dependencies>
 
   <build>
@@ -214,12 +250,14 @@
               <include>
                 *:parquet-hadoop,*:parquet-hadoop-bundle,*:hadoop-yarn-api,*:avro,*:avro-mapred,*:hive-jdbc,
                 *:hive-service,*:orc-core,*:hadoop-common,*:hadoop-hdfs,*:hadoop-mapreduce-*,
-                *:hadoop-yarn-api,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,
+                *:hadoop-yarn-*,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,
                 *:hbase-server,*:oozie-client,*:parquet-hadoop-bundle,*:zookeeper,*:hbase-shaded-miscellaneous,
-                org.eclipse.jetty:*,*:gcs-connector
+                org.eclipse.jetty:*,*:gcs-connector,com.google.*:*,org.checkerframework:checker-qual,
+                org.codehaus.mojo:animal-sniffer-annotations
               </include>
               <exclude>
-                *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool,*:commons-dbcp
+                *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool,*:commons-dbcp,
+                *:jersey-guava
               </exclude>
               <transitive>true</transitive>
             </resolverFilter>

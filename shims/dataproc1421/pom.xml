@@ -17,6 +17,7 @@
 
     <!-- GCP properties -->
     <gcs-connector.version>hadoop2-1.9.17</gcs-connector.version>
+    <dataproc.guava.version>24.0-jre</dataproc.guava.version>
 
     <!-- default folder -->
     <org.apache.hbase.version>2.2.0</org.apache.hbase.version>
@@ -50,7 +51,7 @@
   </properties>
   <modules>
     <module>driver</module>
-	<module>pmr</module>
+    <module>pmr</module>
     <module>kar</module>
   </modules>
 </project>
