@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -35,6 +35,7 @@ import org.apache.avro.io.DatumWriter;
 import org.apache.commons.lang.StringUtils;
 import org.pentaho.di.core.exception.KettleFileException;
 import org.pentaho.di.core.vfs.KettleVFS;
+import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.hadoop.shim.api.format.AvroSpec;
 import org.pentaho.hadoop.shim.api.format.IAvroOutputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoAvroOutputFormat;
@@ -61,6 +62,7 @@ public class PentahoAvroOutputFormat implements IPentahoAvroOutputFormat {
   private String schemaFilename;
   private Schema schema = null;
   ObjectNode schemaObjectNode = null;
+  private VariableSpace variableSpace;
 
   @Override
   public IPentahoRecordWriter createRecordWriter() throws Exception {
@@ -75,7 +77,7 @@ public class PentahoAvroOutputFormat implements IPentahoAvroOutputFormat {
     DatumWriter<GenericRecord> datumWriter = new GenericDatumWriter<GenericRecord>( schema );
     DataFileWriter<GenericRecord> dataFileWriter = new DataFileWriter<GenericRecord>( datumWriter );
     dataFileWriter.setCodec( codecFactory );
-    dataFileWriter.create( schema, KettleVFS.getOutputStream( outputFilename, false ) );
+    dataFileWriter.create( schema, KettleVFS.getOutputStream( outputFilename, variableSpace, false ) );
     return new PentahoAvroRecordWriter( dataFileWriter, schema, fields );
   }
 
@@ -110,13 +112,12 @@ public class PentahoAvroOutputFormat implements IPentahoAvroOutputFormat {
 
 
   @Override public void setOutputFile( String file, boolean override ) throws Exception {
-    if ( !override && KettleVFS.fileExists( file ) ) {
+    if ( !override && KettleVFS.fileExists( file, variableSpace ) ) {
       throw new FileAlreadyExistsException( file );
     }
 
     this.outputFilename = file;
   }
-
 
   @Override
   public void setCompression( COMPRESSION compression ) {
@@ -234,8 +235,13 @@ public class PentahoAvroOutputFormat implements IPentahoAvroOutputFormat {
     if ( schemaObjectNode != null && schemaFilename != null ) {
       ObjectMapper mapper = new ObjectMapper();
       ObjectWriter writer = mapper.writer( new DefaultPrettyPrinter() );
-      writer.writeValue( KettleVFS.getOutputStream( schemaFilename, false ), schemaObjectNode );
+      writer.writeValue( KettleVFS.getOutputStream( schemaFilename, variableSpace, false ), schemaObjectNode );
     }
+  }
+
+  @Override
+  public void setVariableSpace( VariableSpace variableSpace ) {
+    this.variableSpace = variableSpace;
   }
 
 }
