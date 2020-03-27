@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -20,6 +20,8 @@
  *
  ******************************************************************************/
 package org.pentaho.hadoop.shim.api.format;
+
+import org.pentaho.di.core.variables.VariableSpace;
 
 import java.util.List;
 
@@ -42,4 +44,9 @@ public interface IPentahoAvroOutputFormat extends IPentahoOutputFormat {
   void setDocValue( String docValue );
 
   void setSchemaFilename( String schemaFilename );
+
+  @SuppressWarnings( "squid:S00112" )
+  default void setVariableSpace( VariableSpace variableSpace ) {
+    throw new UnsupportedOperationException();
+  }
 }
