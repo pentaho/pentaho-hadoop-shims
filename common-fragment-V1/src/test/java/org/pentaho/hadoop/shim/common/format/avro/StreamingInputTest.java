@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -22,8 +22,10 @@
 package org.pentaho.hadoop.shim.common.format.avro;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.pentaho.di.core.RowMetaAndData;
+import org.pentaho.di.core.logging.KettleLogStore;
 import org.pentaho.di.core.plugins.PluginRegistry;
 import org.pentaho.di.core.row.RowMeta;
 import org.pentaho.di.core.row.ValueMetaInterface;
@@ -64,6 +66,11 @@ public class StreamingInputTest {
   private static LogChannelInterface log = new LogChannel( StreamingInputTest.class.getName() );
 
   private DateFormat dateFormat = new SimpleDateFormat( "yyyy/MM/dd HH:mm:ss.SSS" );
+
+  @BeforeClass
+  public static void beforeClass() {
+    KettleLogStore.init();
+  }
 
   @Test
   public void testStreamingInput() throws Exception {
