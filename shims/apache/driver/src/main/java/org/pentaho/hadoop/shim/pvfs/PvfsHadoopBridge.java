@@ -25,7 +25,6 @@ package org.pentaho.hadoop.shim.pvfs;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import org.apache.commons.vfs2.FileSystemException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FSDataOutputStream;
@@ -39,21 +38,24 @@ import org.pentaho.di.connections.ConnectionManager;
 import org.pentaho.di.connections.ConnectionProvider;
 import org.pentaho.di.connections.vfs.provider.ConnectionFileName;
 import org.pentaho.di.connections.vfs.provider.ConnectionFileNameParser;
+import org.pentaho.hadoop.shim.api.format.org.pentaho.hadoop.shim.pvfs.api.PvfsHadoopBridgeFileSystemExtension;
 import org.pentaho.hadoop.shim.pvfs.conf.HCPConf;
 import org.pentaho.hadoop.shim.pvfs.conf.PvfsConf;
 import org.pentaho.hadoop.shim.pvfs.conf.S3Conf;
+import org.pentaho.hadoop.shim.pvfs.conf.SnwConf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
+import org.apache.commons.vfs2.FileSystemException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-public class PvfsHadoopBridge extends FileSystem {
+public class PvfsHadoopBridge extends FileSystem implements PvfsHadoopBridgeFileSystemExtension {
 
   private FileSystem fs;
 
@@ -70,7 +72,7 @@ public class PvfsHadoopBridge extends FileSystem {
 
   @SuppressWarnings( "unused" )
   public PvfsHadoopBridge() {
-    confFactories = Arrays.asList( S3Conf::new, HCPConf::new );
+    confFactories = Arrays.asList( S3Conf::new, HCPConf::new, SnwConf::new );
     connMgr = ConnectionManager.getInstance();
   }
 
@@ -251,5 +253,10 @@ public class PvfsHadoopBridge extends FileSystem {
       .findFirst()
       .map( ConnectionProvider::getName )
       .orElse( details.getType() );
+  }
+
+  public String generateAlias( String pvfsPath ) {
+    Path path = new Path( pvfsPath );
+    return getPvfsConf( path ).generateAlias( pvfsPath );
   }
 }

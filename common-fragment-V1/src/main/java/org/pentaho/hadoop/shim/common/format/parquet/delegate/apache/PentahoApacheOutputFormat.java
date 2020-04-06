@@ -23,6 +23,7 @@ package org.pentaho.hadoop.shim.common.format.parquet.delegate.apache;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -44,6 +45,7 @@ import org.pentaho.hadoop.shim.ShimConfigsLoader;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.format.IParquetOutputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoParquetOutputFormat;
+import org.pentaho.hadoop.shim.api.format.org.pentaho.hadoop.shim.pvfs.api.PvfsHadoopBridgeFileSystemExtension;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
 import org.pentaho.hadoop.shim.common.format.HadoopFormatBase;
 import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
@@ -207,5 +209,17 @@ public class PentahoApacheOutputFormat extends HadoopFormatBase implements IPent
     public Path getDefaultWorkFile( TaskAttemptContext context, String extension ) throws IOException {
       return outputFile;
     }
+  }
+
+  public String generateAlias( String pvfsPath ) {
+    return inClassloader( () -> {
+        FileSystem fs = FileSystem.get( new URI( pvfsPath ), job.getConfiguration() );
+        if ( fs instanceof PvfsHadoopBridgeFileSystemExtension ) {
+          return ( (PvfsHadoopBridgeFileSystemExtension) fs ).generateAlias( pvfsPath );
+        } else {
+          return null;
+        }
+      }
+    );
   }
 }

@@ -29,6 +29,7 @@ import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.mapreduce.TaskType;
 import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
 import org.apache.log4j.Logger;
+import org.pentaho.hadoop.shim.api.format.org.pentaho.hadoop.shim.pvfs.api.PvfsHadoopBridgeFileSystemExtension;
 import parquet.column.ParquetProperties;
 import parquet.hadoop.ParquetOutputFormat;
 import parquet.hadoop.ParquetRecordWriter;
@@ -41,6 +42,7 @@ import org.pentaho.hadoop.shim.common.format.HadoopFormatBase;
 import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.List;
 
@@ -190,5 +192,17 @@ public class PentahoTwitterOutputFormat extends HadoopFormatBase implements IPen
     public Path getDefaultWorkFile( TaskAttemptContext context, String extension ) throws IOException {
       return outputFile;
     }
+  }
+
+  public String generateAlias( String pvfsPath ) {
+    return inClassloader( () -> {
+        FileSystem fs = FileSystem.get( new URI( pvfsPath ), job.getConfiguration() );
+        if ( fs instanceof PvfsHadoopBridgeFileSystemExtension ) {
+          return ( (PvfsHadoopBridgeFileSystemExtension) fs ).generateAlias( pvfsPath );
+        } else {
+          return null;
+        }
+      }
+    );
   }
 }

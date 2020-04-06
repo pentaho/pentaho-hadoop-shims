@@ -57,6 +57,7 @@ import org.pentaho.hadoop.shim.common.format.parquet.delegate.apache.PentahoApac
 import org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter.PentahoTwitterOutputFormat;
 
 import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertNull;
 
 @RunWith ( Parameterized.class )
 public class PentahoParquetOutputFormatTest {
