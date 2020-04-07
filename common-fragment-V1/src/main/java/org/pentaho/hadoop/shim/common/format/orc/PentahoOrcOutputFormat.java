@@ -31,11 +31,13 @@ import org.pentaho.hadoop.shim.ShimConfigsLoader;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.format.IOrcOutputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoOrcOutputFormat;
+import org.pentaho.hadoop.shim.api.format.org.pentaho.hadoop.shim.pvfs.api.PvfsHadoopBridgeFileSystemExtension;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
 import org.pentaho.hadoop.shim.common.format.HadoopFormatBase;
 import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
 
 import java.io.InputStream;
+import java.net.URI;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -147,5 +149,17 @@ public class PentahoOrcOutputFormat extends HadoopFormatBase implements IPentaho
       conf.unset( COMPRESS_SIZE_KEY );
       conf.set( COMPRESSION_KEY, compression.toString() );
     }
+  }
+
+  public String generateAlias( String pvfsPath ) {
+    return inClassloader( () -> {
+        FileSystem fs = FileSystem.get( new URI( pvfsPath ), conf );
+        if ( fs instanceof PvfsHadoopBridgeFileSystemExtension ) {
+          return ( (PvfsHadoopBridgeFileSystemExtension) fs ).generateAlias( pvfsPath );
+        } else {
+          return null;
+        }
+      }
+    );
   }
 }

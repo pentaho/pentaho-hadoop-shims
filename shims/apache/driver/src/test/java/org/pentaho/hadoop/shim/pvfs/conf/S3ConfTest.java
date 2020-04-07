@@ -19,7 +19,6 @@
  * limitations under the License.
  *
  ******************************************************************************/
-
 package org.pentaho.hadoop.shim.pvfs.conf;
 
 import org.apache.hadoop.conf.Configuration;

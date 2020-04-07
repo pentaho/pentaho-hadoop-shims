@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -60,4 +60,13 @@ public interface IPentahoParquetOutputFormat extends IPentahoOutputFormat {
    * @param size size in bytes
    */
   void setDictionaryPageSize( int size ) throws Exception;
+
+  /**
+   * This method should be called on any url before using the  Hadoop FileSystem api.  If a non-null url is returned
+   * then that url should be used to process a temporary staging file.  VFS should then be used to copy to this
+   * temporary file to its final destination.
+   * @param pvfsPath The uri of the file to be operated on.
+   * @return The uri to use instead, or null if the path is ok as is.
+   */
+  public String generateAlias( String pvfsPath );
 }

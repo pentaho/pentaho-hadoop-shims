@@ -28,6 +28,7 @@ import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.util.Shell;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -152,8 +153,10 @@ public class PvfsHadoopBridgeTest {
     }
     assertTrue( new File( child2.toUri().getPath(), "file" ).exists() );
 
-    FileStatus[] status = bridge.listStatus( child2 );
-    assertThat( status.length, equalTo( 1 ) );
+    if ( !Shell.WINDOWS ) {  //This causes a native link error in windows probably due to insufficient winutils
+      FileStatus[] status = bridge.listStatus( child2 );
+      assertThat( status.length, equalTo( 1 ) );
+    }
 
     bridge.delete( child2, true );
     assertFalse( new File( child2.toUri().getPath(), "file" ).exists() );
@@ -182,6 +185,12 @@ public class PvfsHadoopBridgeTest {
           verify( connectionManager ).getConnectionDetails( connectionName );
         } );
 
+  }
+
+  @Test
+  public void generateAliasTest() {
+    when( pvfsConf.generateAlias( any( String.class ) ) ).thenReturn( "aliasFileName" );
+    assertEquals( "aliasFileName", bridge.generateAlias( "/anyPath" ) );
   }
 
 }

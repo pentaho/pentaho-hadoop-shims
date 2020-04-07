@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -70,7 +70,6 @@ public abstract class PvfsConf {
 
   public abstract Configuration conf( Path pvfsPath );
 
-
   void validatePath( Path pvfsPath ) {
     if ( !supportsConnection() || !pvfsPath.toUri().getScheme().equals( "pvfs" ) ) {
       throw new IllegalStateException( pvfsPath.toString() + " not supported by " + details.getClass().getName() );
@@ -106,5 +105,10 @@ public abstract class PvfsConf {
       return Objects.hash( this );
     }
     return Objects.hash( details.getProperties() );
+  }
+
+  @SuppressWarnings( "squid:S1172" )
+  public String generateAlias( String pvfsPath ) {
+    return null;
   }
 }
