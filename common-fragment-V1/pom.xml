@@ -14,7 +14,6 @@
   <packaging>bundle</packaging>
 
   <properties>
-    <shim-bundle-plugin.version>1.0</shim-bundle-plugin.version>
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
     <aws-java-sdk-core.version>1.11.275</aws-java-sdk-core.version>
     <integration-test.src>src/it/java</integration-test.src>
@@ -630,7 +629,7 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>com.pentaho</groupId>
+        <groupId>org.pentaho</groupId>
         <artifactId>shim-bundle-plugin</artifactId>
         <version>${shim-bundle-plugin.version}</version>
         <configuration>

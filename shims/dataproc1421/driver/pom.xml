@@ -34,7 +34,7 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.pentaho</groupId>
+      <groupId>org.pentaho</groupId>
       <artifactId>shim-bundle-plugin</artifactId>
       <version>${shim-bundle-plugin.version}</version>
     </dependency>
@@ -241,7 +241,7 @@
     <plugins>
 
       <plugin>
-        <groupId>com.pentaho</groupId>
+        <groupId>org.pentaho</groupId>
         <artifactId>shim-bundle-plugin</artifactId>
         <version>${shim-bundle-plugin.version}</version>
         <configuration>

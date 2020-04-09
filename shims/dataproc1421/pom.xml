@@ -13,7 +13,6 @@
     <shim.name>dataproc1421</shim.name>
     <vendor-driver.version>1.4.21</vendor-driver.version>
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
-    <shim-bundle-plugin.version>1.0</shim-bundle-plugin.version>
 
     <!-- GCP properties -->
     <gcs-connector.version>hadoop2-1.9.17</gcs-connector.version>
