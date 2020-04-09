@@ -22,7 +22,6 @@
   <com.codahale.metrics.version>3.0.1</com.codahale.metrics.version>
   <com.igormaznitsa.jcp.version>6.1.2</com.igormaznitsa.jcp.version>
   <bundle.export.version>8.0.513.cdh</bundle.export.version>
-  <shim-bundle-plugin.version>1.0</shim-bundle-plugin.version>
   <bundle.karaf.export.packages>org.apache.htrace;version=${bundle.export.version},
     org.pentaho.hadoop.mapreduce;version=${bundle.export.version},
     com.google.common.annotations;version=${bundle.export.version},

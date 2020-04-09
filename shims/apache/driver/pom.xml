@@ -29,7 +29,6 @@
     <parquet.version>1.10.0.3.0.0.0-1634</parquet.version>
     <joda-time.version>2.9.9</joda-time.version>
     <aws-java-sdk-core.version>1.11.275</aws-java-sdk-core.version>
-    <shim-bundle-plugin.version>1.0</shim-bundle-plugin.version>
     <org.apache.thrift.version>0.9.3</org.apache.thrift.version>
 
     <!-- Guarantee the proper version for Jetty artifacts -->
@@ -110,7 +109,7 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.pentaho</groupId>
+      <groupId>org.pentaho</groupId>
       <artifactId>shim-bundle-plugin</artifactId>
       <version>${shim-bundle-plugin.version}</version>
     </dependency>
@@ -212,7 +211,7 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>com.pentaho</groupId>
+        <groupId>org.pentaho</groupId>
         <artifactId>shim-bundle-plugin</artifactId>
         <version>${shim-bundle-plugin.version}</version>
         <configuration>

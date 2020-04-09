@@ -15,7 +15,6 @@
   <properties>
     <commons-lang.version>2.6</commons-lang.version>
     <pentaho-osgi-bundles.version>9.1.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
-    <shim-bundle-plugin.version>1.0</shim-bundle-plugin.version>
     <org.apache.avro.version>1.8.0</org.apache.avro.version>
     <org.apache.orc.version>1.2.3</org.apache.orc.version>
     <org.apache.hadoop.version>2.6.0-cdh5.14.0</org.apache.hadoop.version>
@@ -170,7 +169,7 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>com.pentaho</groupId>
+        <groupId>org.pentaho</groupId>
         <artifactId>shim-bundle-plugin</artifactId>
         <version>${shim-bundle-plugin.version}</version>
         <configuration>
