@@ -27,6 +27,7 @@ import org.pentaho.di.connections.ConnectionDetails;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -72,6 +73,6 @@ public class SnwConf extends PvfsConf {
       throw new IllegalStateException( "Could not create a temporary work folder to hold the snowflake file" );
     }
     UUID uuid = UUID.randomUUID();
-    return "file:/" + tempDir.toString() + java.io.File.separator + uuid.toString();
+    return Paths.get( tempDir.toString() + java.io.File.separator + uuid.toString() ).toUri().toString();
   }
 }
