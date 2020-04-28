@@ -186,6 +186,11 @@
 
     <!-- The following added for Pig -->
     <dependency>
+      <groupId>org.python</groupId>
+      <artifactId>jython</artifactId>
+      <version>${jython.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.antlr</groupId>
       <artifactId>antlr-runtime</artifactId>
       <version>${org.antlr.version}</version>
