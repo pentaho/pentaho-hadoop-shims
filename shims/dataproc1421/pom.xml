@@ -48,6 +48,9 @@
     <org.antlr.version>3.5.2</org.antlr.version>
     <joda-time.version>2.9.9</joda-time.version>
     <org.apache.thrift.version>0.9.3</org.apache.thrift.version>
+
+    <!-- Dependency for Pig -->
+    <jython.version>2.5.3</jython.version>
   </properties>
   <modules>
     <module>driver</module>
