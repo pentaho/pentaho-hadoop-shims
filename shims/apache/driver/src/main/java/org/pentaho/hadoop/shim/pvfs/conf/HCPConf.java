@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -34,6 +34,7 @@ import java.util.Base64;
 import java.util.Map;
 
 import static org.pentaho.di.core.util.Utils.isEmpty;
+import static org.pentaho.hadoop.shim.pvfs.PvfsHadoopBridge.getConnectionName;
 
 
 public class HCPConf extends PvfsConf {
@@ -61,7 +62,7 @@ public class HCPConf extends PvfsConf {
   @Override public Path mapPath( Path pvfsPath, Path realFsPath ) {
     URI uri = realFsPath.toUri();
     return new Path( pvfsPath.toUri().getScheme(),
-      pvfsPath.toUri().getHost(), "/" + uri.getPath() );
+      getConnectionName( pvfsPath ), "/" + uri.getPath() );
   }
 
   @Override public Configuration conf( Path pvfsPath ) {

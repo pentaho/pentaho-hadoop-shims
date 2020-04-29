@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -23,7 +23,9 @@
 package org.pentaho.hadoop.shim.pvfs;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import org.apache.commons.vfs2.FileSystemException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FSDataOutputStream;
@@ -35,9 +37,13 @@ import org.apache.hadoop.util.Progressable;
 import org.pentaho.di.connections.ConnectionDetails;
 import org.pentaho.di.connections.ConnectionManager;
 import org.pentaho.di.connections.ConnectionProvider;
+import org.pentaho.di.connections.vfs.provider.ConnectionFileName;
+import org.pentaho.di.connections.vfs.provider.ConnectionFileNameParser;
 import org.pentaho.hadoop.shim.pvfs.conf.HCPConf;
 import org.pentaho.hadoop.shim.pvfs.conf.PvfsConf;
 import org.pentaho.hadoop.shim.pvfs.conf.S3Conf;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
@@ -47,14 +53,13 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.cache.Cache;
-
 public class PvfsHadoopBridge extends FileSystem {
 
   private FileSystem fs;
 
   private final List<PvfsConf.ConfFactory> confFactories;
   private final ConnectionManager connMgr;
+  private static final Logger LOGGER = LoggerFactory.getLogger( PvfsHadoopBridge.class );
 
   @SuppressWarnings( "UnstableApiUsage" )
   // Cache was beta in version 11, which is the version hadoop 3.1 uses.
@@ -208,7 +213,7 @@ public class PvfsHadoopBridge extends FileSystem {
   }
 
   private PvfsConf getPvfsConf( Path path ) {
-    ConnectionDetails details = connMgr.getConnectionDetails( path.toUri().getHost() );
+    ConnectionDetails details = getConnectionDetails( path );
     if ( details == null ) {
       throw new IllegalStateException( "Could not find named connection " + path.toUri().getHost() );
     }
@@ -216,7 +221,28 @@ public class PvfsHadoopBridge extends FileSystem {
       .map( f -> f.get( details ) )
       .filter( PvfsConf::supportsConnection )
       .findFirst()
-      .orElseThrow( () -> new IllegalStateException( "Unsupported VFS connection type:  " + getProviderName( details ) ) );
+      .orElseThrow(
+        () -> new IllegalStateException( "Unsupported VFS connection type:  " + getProviderName( details ) ) );
+  }
+
+  @VisibleForTesting ConnectionDetails getConnectionDetails( Path path ) {
+    return connMgr.getConnectionDetails( getConnectionName( path ) );
+  }
+
+  /**
+   * Retrieves the Pentaho VFS connection name associated with path, if one is present.
+   *
+   * @param path input path, expected to have pvfs scheme.
+   * @return PVFS connection name
+   */
+  public static String getConnectionName( Path path ) {
+    try {
+      return ( (ConnectionFileName) new ConnectionFileNameParser()
+        .parseUri( null, null, path.toString() ) ).getConnection();
+    } catch ( FileSystemException e ) {
+      LOGGER.warn( "Failed to retrieve connection details with unexpected exception", e );
+      return null;
+    }
   }
 
   private String getProviderName( ConnectionDetails details ) {
