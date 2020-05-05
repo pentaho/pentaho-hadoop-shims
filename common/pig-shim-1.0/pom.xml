@@ -5,10 +5,10 @@
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-common</artifactId>
-    <version>8.3.0.0-SNAPSHOT</version>
+    <version>8.3.2019.05.00-827</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-common-pig-shim-1.0</artifactId>
-  <version>8.3.0.0-SNAPSHOT</version>
+  <version>8.3.2019.05.00-827</version>
   <properties>
     <org.apache.pig.version>0.8.1</org.apache.pig.version>
   </properties>
