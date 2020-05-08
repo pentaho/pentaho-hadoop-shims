@@ -258,7 +258,7 @@
                 *:hadoop-yarn-*,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,
                 *:hbase-server,*:oozie-client,*:parquet-hadoop-bundle,*:zookeeper,*:hbase-shaded-miscellaneous,
                 org.eclipse.jetty:*,*:gcs-connector,com.google.*:*,org.checkerframework:checker-qual,
-                org.codehaus.mojo:animal-sniffer-annotations
+                org.codehaus.mojo:animal-sniffer-annotations,*:hbase-mapreduce
               </include>
               <exclude>
                 *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool,*:commons-dbcp,
