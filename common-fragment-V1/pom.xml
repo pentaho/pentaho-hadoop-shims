@@ -610,6 +610,13 @@
       <artifactId>gateway-shell</artifactId>
       <version>${gateway-shell.version}</version>
     </dependency>
+    <dependency>
+      <groupId>pentaho-kettle</groupId>
+      <artifactId>kettle-core</artifactId>
+      <version>${project.version}</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
