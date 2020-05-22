@@ -20,6 +20,7 @@
     <hadoop-aws.version>3.1.0.3.0.0.0-1634</hadoop-aws.version>
     <!-- client and default folders -->
     <hadoop.version>3.1.0.3.0.0.0-1634</hadoop.version>
+    <gcs-connector.version>hadoop2-1.9.17</gcs-connector.version>
     <!-- pmr folder -->
     <commons-configuration.version>1.6</commons-configuration.version>
     <commons-configuration2.version>2.1.1</commons-configuration2.version>
@@ -166,6 +167,19 @@
       <artifactId>jackson-dataformat-cbor</artifactId>
     </dependency>
 
+    <!-- Dependencies for GCS connectivity   -->
+    <dependency>
+      <groupId>com.google.cloud.bigdataoss</groupId>
+      <artifactId>gcs-connector</artifactId>
+      <version>${gcs-connector.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>21.0</version>
+      <scope>provided</scope>
+    </dependency>
+
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-aws</artifactId>
@@ -225,7 +239,8 @@
                 *:avro-mapred,
                 org.eclipse.jetty:*,
                 <!--Needed for Hive-->
-                *:commons-configuration,*:commons-configuration2
+                *:commons-configuration,*:commons-configuration2,
+                *:gcs-connector
               </include>
               <exclude>
                 org.slf4j:*,
