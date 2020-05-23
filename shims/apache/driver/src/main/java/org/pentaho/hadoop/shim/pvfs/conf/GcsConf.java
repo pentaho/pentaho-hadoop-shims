@@ -31,6 +31,7 @@ import org.pentaho.di.connections.ConnectionDetails;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.apache.hadoop.fs.Path.SEPARATOR;
@@ -82,5 +83,23 @@ public class GcsConf extends PvfsConf {
         config.set( "fs.gs.http.connect-timeout", "20000" );
         config.set( "fs.gs.performance.cache.enable", "false" ); // caching managed by PvfsHadoopBridge
         return config;
+    }
+
+    @Override public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+        if ( !super.equals( o ) ) {
+            return false;
+        }
+        GcsConf gcsConf = (GcsConf) o;
+        return Objects.equals( credentialsKeyPath, gcsConf.credentialsKeyPath );
+    }
+
+    @Override public int hashCode() {
+        return Objects.hash( super.hashCode(), credentialsKeyPath );
     }
 }
