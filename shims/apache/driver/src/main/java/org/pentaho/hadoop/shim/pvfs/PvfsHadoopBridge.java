@@ -73,7 +73,7 @@ public class PvfsHadoopBridge extends FileSystem implements PvfsHadoopBridgeFile
 
   @SuppressWarnings( "unused" )
   public PvfsHadoopBridge() {
-    confFactories = Arrays.asList( S3Conf::new, HCPConf::new, SnwConf::new, GcsConf::new);
+    confFactories = Arrays.asList( S3Conf::new, HCPConf::new, SnwConf::new, GcsConf::new );
     connMgr = ConnectionManager.getInstance();
   }
 
