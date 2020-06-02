@@ -343,7 +343,7 @@
                 *:jersey*:jar:2.25.1,*:*log4j*,*:xml-apis,*:xercesImpl,*:tests:*,*:commons-logging,*:commons-math3,
                 *:commons-pool,*:commons-dbcp,
                 <!--Needed for hive-->
-                org.apache.hadoop:hadoop-yarn-registry
+                org.apache.hadoop:hadoop-yarn-registry,*:janino
               </exclude>
               <transitive>true</transitive>
             </resolverFilter>

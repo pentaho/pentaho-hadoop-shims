@@ -262,7 +262,7 @@
               </include>
               <exclude>
                 *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool,*:commons-dbcp,
-                *:jersey-guava
+                *:jersey-guava,*:janino
               </exclude>
               <transitive>true</transitive>
             </resolverFilter>
