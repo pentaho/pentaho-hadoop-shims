@@ -280,7 +280,8 @@
                 org.eclipse.jetty:*
               </include>
               <exclude>
-                *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool,*:commons-dbcp
+                *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool,*:commons-dbcp,
+                *:janino
               </exclude>
               <transitive>true</transitive>
             </resolverFilter>
