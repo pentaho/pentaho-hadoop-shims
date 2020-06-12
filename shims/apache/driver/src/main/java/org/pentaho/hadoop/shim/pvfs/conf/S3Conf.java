@@ -47,6 +47,8 @@ public class S3Conf extends PvfsConf {
   private final String accessKey;
   private final String secretKey;
   private final String sessionToken;
+  private String endpoint;
+  private String pathStyleAccess;
   private final String credentialsFilePath;
 
   public S3Conf( ConnectionDetails details ) {
@@ -67,6 +69,9 @@ public class S3Conf extends PvfsConf {
       accessKey = props.get( "accessKey" );
       secretKey = props.get( "secretKey" );
       sessionToken = props.get( "sessionToken" );
+      // Use only when VFS is configured for generic S3 connection
+      endpoint = props.get( "endpoint" );
+      pathStyleAccess = props.get( "pathStyleAccess" );
     }
   }
 
@@ -112,6 +117,11 @@ public class S3Conf extends PvfsConf {
     conf.set( "fs.s3a.impl.disable.cache", "true" ); // caching managed by PvfsHadoopBridge
 
     conf.set( "fs.s3a.buffer.dir", System.getProperty( "java.io.tmpdir" ) );
+
+    // Use only when VFS is configured for generic S3 connection
+    conf.set( "fs.s3a.endpoint", endpoint );
+    conf.set( "fs.s3a.path.style.access", pathStyleAccess );
+
     return conf;
   }
 
@@ -145,10 +155,12 @@ public class S3Conf extends PvfsConf {
     return Objects.equals( accessKey, s3Conf.accessKey )
       && Objects.equals( secretKey, s3Conf.secretKey )
       && Objects.equals( sessionToken, s3Conf.sessionToken )
+      && Objects.equals( endpoint, s3Conf.endpoint )
+      && Objects.equals( pathStyleAccess, s3Conf.pathStyleAccess )
       && Objects.equals( credentialsFilePath, s3Conf.credentialsFilePath );
   }
 
   @Override public int hashCode() {
-    return Objects.hash( super.hashCode(), accessKey, secretKey, sessionToken, credentialsFilePath );
+    return Objects.hash( super.hashCode(), accessKey, secretKey, sessionToken, endpoint, pathStyleAccess, credentialsFilePath );
   }
 }

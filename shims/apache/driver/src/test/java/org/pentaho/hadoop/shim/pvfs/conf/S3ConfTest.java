@@ -60,6 +60,8 @@ public class S3ConfTest {
     props.put( "credentialsFilePath", "~/.aws/credentials" );
     props.put( "region", "us-west-1" );
     props.put( "profileName", "default" );
+    props.put( "endpoint", "http://localhost:9000" );
+    props.put( "pathStyleAccess", "true" );
 
     when( hcpConn.getType() ).thenReturn( "hcp" );
     when( s3Conn.getProperties() ).thenReturn( props );
@@ -97,6 +99,8 @@ public class S3ConfTest {
       equalTo( "org.apache.hadoop.fs.s3a.TemporaryAWSCredentialsProvider" ) );
     assertThat( conf.get( "fs.s3a.access.key" ), equalTo( "ACCESSKEY" ) );
     assertThat( conf.get( "fs.s3a.secret.key" ), equalTo( "SECRETKEY" ) );
+    assertThat( conf.get( "fs.s3a.endpoint" ), equalTo( "http://localhost:9000" ) );
+    assertThat( conf.get( "fs.s3a.path.style.access" ), equalTo( "true" ) );
   }
 
   @Test public void testEquals() {
