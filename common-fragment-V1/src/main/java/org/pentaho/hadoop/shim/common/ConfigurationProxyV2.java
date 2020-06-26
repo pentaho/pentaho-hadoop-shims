@@ -82,6 +82,7 @@ public class ConfigurationProxyV2 implements Configuration {
               namedClusterSiteFile.getSiteFileName() );
         }
       }
+      ShimConfigsLoader.setSystemProperties( nc.getName() );
     }
   }
 

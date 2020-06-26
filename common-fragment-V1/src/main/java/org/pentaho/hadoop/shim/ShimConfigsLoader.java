@@ -184,6 +184,13 @@ public class ShimConfigsLoader {
 
   public static void addConfigsAsResources( String additionalPath, Consumer<? super URL> configurationConsumer,
                                             ClusterConfigNames... fileNames ) {
+    setSystemProperties( additionalPath );
+
+    addConfigsAsResources( additionalPath, configurationConsumer,
+      Arrays.stream( fileNames ).map( ClusterConfigNames::toString ).collect( Collectors.toList() ) );
+  }
+
+  public static void setSystemProperties( String additionalPath ) {
     Properties properties = loadConfigProperties( additionalPath );
     for ( String propertyName : properties.stringPropertyNames() ) {
       if ( propertyName.startsWith( "java.system." ) ) {
@@ -191,9 +198,6 @@ public class ShimConfigsLoader {
           properties.get( propertyName ).toString() );
       }
     }
-
-    addConfigsAsResources( additionalPath, configurationConsumer,
-      Arrays.stream( fileNames ).map( ClusterConfigNames::toString ).collect( Collectors.toList() ) );
   }
 
   public static void addConfigsAsResources( String additionalPath, Consumer<? super URL> configurationConsumer,
