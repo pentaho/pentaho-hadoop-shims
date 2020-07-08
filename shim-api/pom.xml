@@ -45,7 +45,7 @@
           <instructions>
             <Bundle-Version>${pentaho-osgi-bundles.version}</Bundle-Version>
             <DynamicImport-Package>*</DynamicImport-Package>
-            <Import-Package></Import-Package>
+            <Import-Package>org.pentaho.hadoop.shim.api</Import-Package>
             <Export-Package>
               org.pentaho.hadoop.shim.api.*;version=${pentaho-osgi-bundles.version}
             </Export-Package>

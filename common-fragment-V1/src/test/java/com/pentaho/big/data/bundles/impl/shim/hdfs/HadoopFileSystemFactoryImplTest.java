@@ -26,7 +26,7 @@ import org.apache.hadoop.fs.LocalFileSystem;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
 import org.junit.Before;
 import org.junit.Test;
-import org.pentaho.hadoop.shim.api.ShimIdentifierInterface;
+import org.pentaho.hadoop.shim.api.core.ShimIdentifierInterface;
 import org.pentaho.hadoop.shim.api.hdfs.HadoopFileSystem;
 import org.pentaho.hadoop.shim.api.internal.Configuration;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;

@@ -72,7 +72,7 @@
 
   <bean id="baseMessagesMessageGetterFactoryImpl" class="org.pentaho.runtime.test.i18n.impl.BaseMessagesMessageGetterFactoryImpl" scope="singleton"/>
 
-  <reference-list id="shimIdentifiers" interface="org.pentaho.hadoop.shim.api.ShimIdentifierInterface" availability="optional" />
+  <reference-list id="shimIdentifiers" interface="org.pentaho.hadoop.shim.api.core.ShimIdentifierInterface" availability="optional" />
 
   <bean id="legacyShimLocator" class="org.pentaho.big.data.api.shims.LegacyShimLocator" scope="singleton">
     <argument ref="shimIdentifiers"/>
