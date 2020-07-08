@@ -309,6 +309,7 @@
         </property>
       </activation>
       <modules>
+        <module>shim-api-core</module>
         <module>shim-api</module>
       </modules>
     </profile>

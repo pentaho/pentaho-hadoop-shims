@@ -20,6 +20,12 @@
     </dependency>
     <dependency>
       <groupId>org.pentaho</groupId>
+      <artifactId>shim-api-core</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.pentaho</groupId>
       <artifactId>shim-api</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>

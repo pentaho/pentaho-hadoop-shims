@@ -25,7 +25,7 @@ import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.hdfs.HadoopFileSystem;
 import org.pentaho.hadoop.shim.api.hdfs.HadoopFileSystemFactory;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
-import org.pentaho.hadoop.shim.api.ShimIdentifierInterface;
+import org.pentaho.hadoop.shim.api.core.ShimIdentifierInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
