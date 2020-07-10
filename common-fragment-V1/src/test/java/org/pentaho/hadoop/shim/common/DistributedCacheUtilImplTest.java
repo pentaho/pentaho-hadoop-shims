@@ -44,6 +44,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.vfs2.AllFileSelector;
+import org.apache.commons.vfs2.FileName;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSelector;
 import org.apache.hadoop.conf.Configuration;
@@ -223,14 +224,8 @@ public class DistributedCacheUtilImplTest {
   public void findFiles_vfs_hdfs() throws Exception {
 
     DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl();
-
-    URL url = new URL( "http://localhost:8020/path/to/file" );
-    Configuration conf = mock( Configuration.class );
-    FileSystem fs = mock( FileSystem.class );
-    FileObject source = mock( FileObject.class );
-    Path dest = mock( Path.class );
     FileObject hdfsDest = mock( FileObject.class );
-    Path root = mock( Path.class );
+
 
     FileObject[] fileObjects = new FileObject[ 12 ];
     for ( int i = 0; i < fileObjects.length; i++ ) {
@@ -240,28 +235,13 @@ public class DistributedCacheUtilImplTest {
       doReturn( fileUrl ).when( fileObject ).getURL();
     }
 
-    doReturn( url ).when( source ).getURL();
-    doReturn( conf ).when( fs ).getConf();
-    doReturn( 0 ).when( conf ).getInt( any( String.class ), anyInt() );
-    doReturn( true ).when( source ).exists();
     doReturn( fileObjects ).when( hdfsDest ).findFiles( any( FileSelector.class ) );
-    doReturn( true ).when( fs ).delete( root, true );
-    doReturn( fileObjects.length ).when( source ).delete( any( AllFileSelector.class ) );
-    doNothing().when( fs ).copyFromLocalFile( any( Path.class ), any( Path.class ) );
-    doNothing().when( fs ).setPermission( any( Path.class ), any( FsPermission.class ) );
-    doReturn( true ).when( fs ).setReplication( any( Path.class ), anyShort() );
 
     try {
-      try {
-        ch.stageForCache( source, fs, dest, true );
-
-        List<String> files = ch.findFiles( hdfsDest, null );
-        assertEquals( 12, files.size() );
-      } finally {
-        fs.delete( root, true );
-      }
-    } finally {
-      source.delete( new AllFileSelector() );
+      List<String> files = ch.findFiles( hdfsDest, null );
+      assertEquals( 12, files.size() );
+    } catch ( Exception e ) {
+      fail( e.getMessage() );
     }
   }
 
@@ -312,6 +292,32 @@ public class DistributedCacheUtilImplTest {
   }
 
   @Test
+  public void stageForCache_exclude_file() throws Exception {
+    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl();
+
+    Configuration conf = new Configuration();
+    FileSystem fs = DistributedCacheTestUtil.getLocalFileSystem( conf );
+
+    FileObject source = DistributedCacheTestUtil.createTestFolderWithContent();
+    try {
+      Path root = new Path( "bin/test/stageForCache_exclude_file" );
+      Path dest = new Path( root, "dest" );
+
+      try {
+        ch.stageForCache( source, fs, dest, "foo,jar2,bar", false, true );
+        assertTrue( fs.exists( new Path( dest, "jar1.jar" ) ) );
+        assertTrue( fs.exists( new Path( dest, "folder/file.txt" ) ) );
+        assertTrue( fs.exists( new Path( dest, "pentaho-mapreduce-libraries.zip" ) ) );
+        assertFalse( fs.exists( new Path( dest, "jar2.jar" ) ) );
+      } finally {
+        fs.delete( root, true );
+      }
+    } finally {
+      source.delete( new AllFileSelector() );
+    }
+  }
+
+  @Test
   public void addCachedFilesToClasspath() throws IOException {
     DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl();
     Configuration conf = new Configuration();
@@ -337,7 +343,7 @@ public class DistributedCacheUtilImplTest {
 
     try {
       ch.installKettleEnvironment( null, (org.pentaho.hadoop.shim.api.internal.fs.FileSystem) null, null, null, null,
-        "" );
+        "", "" );
       fail( "Expected exception on missing archive" );
     } catch ( NullPointerException ex ) {
       assertEquals( "pmrArchive is required", ex.getMessage() );
@@ -345,7 +351,7 @@ public class DistributedCacheUtilImplTest {
 
     try {
       ch.installKettleEnvironment( KettleVFS.getFileObject( "." ),
-        (org.pentaho.hadoop.shim.api.internal.fs.FileSystem) null, null, null, null, "" );
+        (org.pentaho.hadoop.shim.api.internal.fs.FileSystem) null, null, null, null, "", "" );
       fail( "Expected exception on missing archive" );
     } catch ( NullPointerException ex ) {
       assertEquals( "destination is required", ex.getMessage() );
@@ -353,7 +359,7 @@ public class DistributedCacheUtilImplTest {
 
     try {
       ch.installKettleEnvironment( KettleVFS.getFileObject( "." ),
-        (org.pentaho.hadoop.shim.api.internal.fs.FileSystem) null, new PathProxy( "." ), null, null, "" );
+        (org.pentaho.hadoop.shim.api.internal.fs.FileSystem) null, new PathProxy( "." ), null, null, "", "" );
       fail( "Expected exception on missing archive" );
     } catch ( NullPointerException ex ) {
       assertEquals( "big data plugin required", ex.getMessage() );
@@ -364,14 +370,14 @@ public class DistributedCacheUtilImplTest {
   public void stagePluginsForCache_no_folders() throws Exception {
     DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl();
     ch.stagePluginsForCache( DistributedCacheTestUtil.getLocalFileSystem( new Configuration() ),
-      new Path( "bin/test/plugins-installation-dir" ), null );
+      new Path( "bin/test/plugins-installation-dir" ), null, "" );
   }
 
   @Test( expected = KettleFileException.class )
   public void stagePluginsForCache_invalid_folder() throws Exception {
     DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl();
     ch.stagePluginsForCache( DistributedCacheTestUtil.getLocalFileSystem( new Configuration() ),
-      new Path( "bin/test/plugins-installation-dir" ), "bin/bogus-plugin-name" );
+      new Path( "bin/test/plugins-installation-dir" ), "bin/bogus-plugin-name", "" );
   }
 
   @Test
