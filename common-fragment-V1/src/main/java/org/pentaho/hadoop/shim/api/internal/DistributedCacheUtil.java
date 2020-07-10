@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -60,16 +60,20 @@ public interface DistributedCacheUtil {
   /**
    * Installs the contents of a pre-configured Kettle environment into a Hadoop file system.
    *
-   * @param pmrLibArchive       Archive to stage into the file system
-   * @param fs                  File system to write to
-   * @param destination         Directory to stage environment into
-   * @param bigDataPluginFolder Location of the big data plugin to stage into the Kettle environment
-   * @param additionalPlugins   Comma-separated list of directory paths relative to a root Kettle plugin folder
-   *                            representing directories that should be copied into the installation
+   * @param pmrLibArchive          Archive to stage into the file system
+   * @param fs                     File system to write to
+   * @param destination            Directory to stage environment into
+   * @param bigDataPluginFolder    Location of the big data plugin to stage into the Kettle environment
+   * @param additionalPlugins      Comma-separated list of directory paths relative to a root Kettle plugin folder
+   *                               representing directories that should be copied into the installation
+   * @param excludePluginFileNames Comma-separated list of file prefixes to exclude from files copied from the plugin
+   *                               folders listed in additionalPlugins
+   * @param shimIdentifier         Shim identifier, e.g. cdh61
    * @throws Exception Error staging the Kettle environment
    */
   void installKettleEnvironment( FileObject pmrLibArchive, FileSystem fs, Path destination,
-                                 FileObject bigDataPluginFolder, String additionalPlugins, String shimIdentifier )
+                                 FileObject bigDataPluginFolder, String additionalPlugins,
+                                 String excludePluginFileNames, String shimIdentifier )
     throws Exception;
 
   /**
@@ -88,7 +92,7 @@ public interface DistributedCacheUtil {
    * @throws IOException Destination exists is not a directory, Source does not exist or destination exists and
    *                     overwrite is false.
    */
-  void stageForCache( FileObject source, FileSystem fs, Path dest, boolean overwrite, boolean isPublic )
+  void stageForCache( FileObject source, FileSystem fs, Path dest, String excludeFiles, boolean overwrite, boolean isPublic )
     throws IOException;
 
   /**

@@ -100,6 +100,7 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
   public static final String PENTAHO_MAPREDUCE_PROPERTY_KETTLE_HDFS_INSTALL_DIR = "pmr.kettle.dfs.install.dir";
   public static final String PENTAHO_MAPREDUCE_PROPERTY_KETTLE_INSTALLATION_ID = "pmr.kettle.installation.id";
   public static final String PENTAHO_MAPREDUCE_PROPERTY_ADDITIONAL_PLUGINS = "pmr.kettle.additional.plugins";
+  public static final String PENTAHO_MAPREDUCE_PROPERTY_EXCLUDE_FILES = "pmr.kettle.exclude.plugin.files";
   public static final String PENTAHO_MAP_REDUCE_JOB_BUILDER_IMPL_INPUT_STEP_NOT_SPECIFIED =
     "PentahoMapReduceJobBuilderImpl.InputStepNotSpecified";
   public static final String PENTAHO_MAP_REDUCE_JOB_BUILDER_IMPL_INPUT_STEP_NOT_FOUND =
@@ -521,6 +522,8 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
           // Load additional plugin folders as requested
           String additionalPluginNames =
             getProperty( conf, pmrProperties, PENTAHO_MAPREDUCE_PROPERTY_ADDITIONAL_PLUGINS, null );
+          String excludePluginFileNames =
+            getProperty( conf, pmrProperties, PENTAHO_MAPREDUCE_PROPERTY_EXCLUDE_FILES, null );
           if ( pmrLibArchive == null ) {
             throw new KettleException(
               BaseMessages.getString( PKG, JOB_ENTRY_HADOOP_TRANS_JOB_EXECUTOR_UNABLE_TO_LOCATE_ARCHIVE,
@@ -533,7 +536,7 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
           FileObject bigDataPluginFolder = vfsPluginDirectory;
           hadoopShim.getDistributedCacheUtil()
             .installKettleEnvironment( pmrLibArchive, fs, kettleEnvInstallDir, bigDataPluginFolder,
-              additionalPluginNames, shimIdentifier );
+              additionalPluginNames, excludePluginFileNames, shimIdentifier );
 
           log.logBasic( BaseMessages
             .getString( PKG, "JobEntryHadoopTransJobExecutor.InstallationOfKettleSuccessful", kettleEnvInstallDir ) );
@@ -574,7 +577,7 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
     snapshotMetaStore( localMetaStoreSnapshotDirPath.toString() );
 
     hadoopShim.getDistributedCacheUtil()
-      .stageForCache( localMetaStoreSnapshotDirObject, fs, hdfsMetaStoreDirForCurrentJobPath, true, true );
+      .stageForCache( localMetaStoreSnapshotDirObject, fs, hdfsMetaStoreDirForCurrentJobPath, "", true, true );
     hadoopShim.getDistributedCacheUtil().addCachedFiles( conf, fs, hdfsMetaStoreDirForCurrentJobPath, null );
   }
 
