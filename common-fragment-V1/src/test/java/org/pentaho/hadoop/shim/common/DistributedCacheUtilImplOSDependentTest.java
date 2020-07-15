@@ -24,6 +24,7 @@ package org.pentaho.hadoop.shim.common;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.List;
@@ -135,7 +136,7 @@ public class DistributedCacheUtilImplOSDependentTest {
     FileObject pluginDir = DistributedCacheTestUtil.createTestFolderWithContent();
 
     try {
-      ch.stagePluginsForCache( fs, pluginsDir, "bin/test/sample-folder" );
+      ch.stagePluginsForCache( fs, pluginsDir, "bin/test/sample-folder", "" );
       Path pluginInstallPath = new Path( pluginsDir, "bin/test/sample-folder" );
       assertTrue( fs.exists( pluginInstallPath ) );
       ContentSummary summary = fs.getContentSummary( pluginInstallPath );
@@ -193,7 +194,7 @@ public class DistributedCacheUtilImplOSDependentTest {
     Path root = new Path( "bin/test/installKettleEnvironment" );
     System.setProperty("karaf.home", "bin/test/installKettleEnvironment/system/karaf" );
     try {
-      ch.installKettleEnvironment( pmrArchive, fs, root, bigDataPluginDir, null, "" );
+      ch.installKettleEnvironment( pmrArchive, fs, root, bigDataPluginDir, null, "", "" );
       assertTrue( ch.isKettleEnvironmentInstalledAt( fs, root ) );
     } finally {
       bigDataPluginDir.delete( new AllFileSelector() );
@@ -217,7 +218,7 @@ public class DistributedCacheUtilImplOSDependentTest {
     FileObject additionalPluginDir = DistributedCacheTestUtil.createTestFolderWithContent( pluginName );
     Path root = new Path( "bin/test/installKettleEnvironment" );
     try {
-      ch.installKettleEnvironment( pmrArchive, fs, root, bigDataPluginDir, "bin/test/" + pluginName, "" );
+      ch.installKettleEnvironment( pmrArchive, fs, root, bigDataPluginDir, "bin/test/" + pluginName, "", "" );
       assertTrue( ch.isKettleEnvironmentInstalledAt( fs, root ) );
       assertTrue( fs.exists( new Path( root, "plugins/bin/test/" + pluginName ) ) );
     } finally {
@@ -279,7 +280,7 @@ public class DistributedCacheUtilImplOSDependentTest {
 
     Path root = new Path( "bin/test/installKettleEnvironment" );
     try {
-      ch.installKettleEnvironment( pmrArchive, fs, root, bigDataPluginDir, null, "test-config" );
+      ch.installKettleEnvironment( pmrArchive, fs, root, bigDataPluginDir, null, "", "test-config" );
       assertTrue( ch.isKettleEnvironmentInstalledAt( fs, root ) );
 
       ch.configureWithKettleEnvironment( conf, fs, root );
@@ -304,6 +305,8 @@ public class DistributedCacheUtilImplOSDependentTest {
       assertFalse( conf.get( "mapred.cache.files" ).contains( "pentaho-big-data-plugin/jar2.jar" ) );
       assertFalse( conf.get( "mapred.cache.files" ).contains( "pentaho-big-data-plugin/folder/file.txt" ) );
 
+    } catch ( Exception e ) {
+      fail( e.getMessage() );
     } finally {
       bigDataPluginDir.delete( new AllFileSelector() );
       fs.delete( root, true );

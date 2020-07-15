@@ -47,10 +47,16 @@ public class DistributedCacheTestUtil {
   }
 
   static FileObject createTestFolderWithContent( String rootFolderName ) throws Exception {
+    return createTestFolderWithContent( rootFolderName, 2 );
+  }
+
+  static FileObject createTestFolderWithContent( String rootFolderName, int numJars ) throws Exception {
     String rootName = "bin/test/" + rootFolderName;
     FileObject root = KettleVFS.getFileObject( rootName );
-    root.resolveFile( "jar1.jar" ).createFile();
-    root.resolveFile( "jar2.jar" ).createFile();
+    for ( int i = 1; i < numJars + 1; i++ ) {
+      String jarName = "jar" + i + ".jar";
+      root.resolveFile( jarName ).createFile();
+    }
     root.resolveFile( "folder" ).resolveFile( "file.txt" ).createFile();
     root.resolveFile( "pentaho-mapreduce-libraries.zip" ).createFile();
     root.resolveFile( "system/karaf/system" ).createFolder();
