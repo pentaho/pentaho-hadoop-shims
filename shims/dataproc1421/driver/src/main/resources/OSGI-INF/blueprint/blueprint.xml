@@ -7,7 +7,7 @@
     <bean id="dataproc1421ShimIdentifier" class="org.pentaho.hadoop.shim.api.internal.ShimIdentifier" scope="singleton">
         <argument value="dataproc1421"/>
         <argument value="Google Dataproc"/>
-        <argument value="1.4.21"/>
+        <argument value="1.4"/>
         <argument value="COMMUNITY"/>
     </bean>
 
