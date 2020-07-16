@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -22,7 +22,7 @@
 
 package org.pentaho.hadoop.shim.api.internal;
 
-import org.pentaho.hadoop.shim.api.ShimIdentifierInterface;
+import org.pentaho.hadoop.shim.api.core.ShimIdentifierInterface;
 
 public class ShimIdentifier implements ShimIdentifierInterface {
   private String id;

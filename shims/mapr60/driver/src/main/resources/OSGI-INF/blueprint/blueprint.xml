@@ -11,7 +11,7 @@
     <argument value="COMMUNITY"/>
   </bean>
 
-  <service ref="mapr60ShimIdentifier" interface="org.pentaho.hadoop.shim.api.ShimIdentifierInterface"/>
+  <service ref="mapr60ShimIdentifier" interface="org.pentaho.hadoop.shim.api.core.ShimIdentifierInterface"/>
 
   <bean id="mapr60Hadoop" class="org.pentaho.hadoop.shim.HadoopShim" scope="singleton"/>
 

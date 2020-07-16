@@ -12,7 +12,7 @@
     </bean>
 
     <!--<service ref="hdp26ShimIdentifier" interface="org.pentaho.hadoop.shim.spi.ShimIdentifierInterface"/>-->
-    <service ref="hdp26ShimIdentifier" interface="org.pentaho.hadoop.shim.api.ShimIdentifierInterface"/>
+    <service ref="hdp26ShimIdentifier" interface="org.pentaho.hadoop.shim.api.core.ShimIdentifierInterface"/>
 
     <bean id="hdp26Hadoop" class="org.pentaho.hadoop.shim.HadoopShim" scope="singleton"/>
 
