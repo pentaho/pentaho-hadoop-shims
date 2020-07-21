@@ -74,7 +74,6 @@ public class OrcConverter {
                                  Map<String, Integer> schemaToOrcSubcripts,
                                  List<? extends IOrcInputField> orcInputFields ) {
 
-    int orcColumn;
     for ( IOrcInputField inputField : dialogInputFields ) {
       IOrcInputField orcField = getFormatField( inputField.getFormatFieldName(), orcInputFields );
       if ( inputField != null ) {
@@ -109,54 +108,58 @@ public class OrcConverter {
   protected static Object convertFromSourceToTargetDataType( ColumnVector columnVector, int currentBatchRow,
                                                              int orcValueMetaInterface ) {
 
-    if ( columnVector.isNull[ currentBatchRow ] ) {
+    int indexToLookup = columnVector.isRepeating ? 0 : currentBatchRow;
+    if ( columnVector.isNull[ indexToLookup ] ) {
       return null;
     }
     switch ( orcValueMetaInterface ) {
       case ValueMetaInterface.TYPE_INET:
         try {
-          return InetAddress.getByName( new String( ( (BytesColumnVector) columnVector ).vector[ currentBatchRow ],
-            ( (BytesColumnVector) columnVector ).start[ currentBatchRow ],
-            ( (BytesColumnVector) columnVector ).length[ currentBatchRow ] ) );
+          return InetAddress.getByName( new String( ( (BytesColumnVector) columnVector ).vector[ indexToLookup ],
+            ( (BytesColumnVector) columnVector ).start[ indexToLookup ],
+            ( (BytesColumnVector) columnVector ).length[ indexToLookup ] ) );
         } catch ( UnknownHostException e ) {
           e.printStackTrace();
         }
+        break;
 
       case ValueMetaInterface.TYPE_STRING:
-        return new String( ( (BytesColumnVector) columnVector ).vector[ currentBatchRow ],
-          ( (BytesColumnVector) columnVector ).start[ currentBatchRow ],
-          ( (BytesColumnVector) columnVector ).length[ currentBatchRow ] );
+        return new String( ( (BytesColumnVector) columnVector ).vector[ indexToLookup ],
+          ( (BytesColumnVector) columnVector ).start[ indexToLookup ],
+          ( (BytesColumnVector) columnVector ).length[ indexToLookup ] );
 
       case ValueMetaInterface.TYPE_INTEGER:
-        return (long) ( (LongColumnVector) columnVector ).vector[ currentBatchRow ];
+        return ( (LongColumnVector) columnVector ).vector[ indexToLookup ];
 
       case ValueMetaInterface.TYPE_NUMBER:
-        return ( (DoubleColumnVector) columnVector ).vector[ currentBatchRow ];
+        return ( (DoubleColumnVector) columnVector ).vector[ indexToLookup ];
 
       case ValueMetaInterface.TYPE_BIGNUMBER:
-        HiveDecimalWritable obj = ( (DecimalColumnVector) columnVector ).vector[ currentBatchRow ];
+        HiveDecimalWritable obj = ( (DecimalColumnVector) columnVector ).vector[ indexToLookup ];
         return obj.getHiveDecimal().bigDecimalValue();
 
       case ValueMetaInterface.TYPE_TIMESTAMP:
-        Timestamp timestamp = new Timestamp( ( (TimestampColumnVector) columnVector ).time[ currentBatchRow ] );
-        timestamp.setNanos( ( (TimestampColumnVector) columnVector ).nanos[ currentBatchRow ] );
+        Timestamp timestamp = new Timestamp( ( (TimestampColumnVector) columnVector ).time[ indexToLookup ] );
+        timestamp.setNanos( ( (TimestampColumnVector) columnVector ).nanos[ indexToLookup ] );
         return timestamp;
 
       case ValueMetaInterface.TYPE_DATE:
         LocalDate localDate =
-          LocalDate.ofEpochDay( 0 ).plusDays( ( (LongColumnVector) columnVector ).vector[ currentBatchRow ] );
+          LocalDate.ofEpochDay( 0 ).plusDays( ( (LongColumnVector) columnVector ).vector[ indexToLookup ] );
         Date dateValue = Date.from( localDate.atStartOfDay( ZoneId.systemDefault() ).toInstant() );
         return dateValue;
 
       case ValueMetaInterface.TYPE_BOOLEAN:
-        return ( (LongColumnVector) columnVector ).vector[ currentBatchRow ] == 0 ? false : true;
+        return ( (LongColumnVector) columnVector ).vector[ indexToLookup ] != 0;
 
       case ValueMetaInterface.TYPE_BINARY:
-        byte[] origBytes = ( (BytesColumnVector) columnVector ).vector[ currentBatchRow ];
-        int startPos = ( (BytesColumnVector) columnVector ).start[ currentBatchRow ];
+        byte[] origBytes = ( (BytesColumnVector) columnVector ).vector[ indexToLookup ];
+        int startPos = ( (BytesColumnVector) columnVector ).start[ indexToLookup ];
         byte[] newBytes = Arrays.copyOfRange( origBytes, startPos,
-          startPos + ( (BytesColumnVector) columnVector ).length[ currentBatchRow ] );
+          startPos + ( (BytesColumnVector) columnVector ).length[ indexToLookup ] );
         return newBytes;
+      default:
+        return null;
     }
 
     //if none of the cases match return a null
