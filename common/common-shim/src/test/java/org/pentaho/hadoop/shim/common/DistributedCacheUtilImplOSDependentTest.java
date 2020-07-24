@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -140,7 +140,7 @@ public class DistributedCacheUtilImplOSDependentTest {
     FileObject pluginDir = DistributedCacheTestUtil.createTestFolderWithContent();
 
     try {
-      ch.stagePluginsForCache( fs, pluginsDir, "bin/test/sample-folder" );
+      ch.stagePluginsForCache( fs, pluginsDir, "bin/test/sample-folder", "" );
       Path pluginInstallPath = new Path( pluginsDir, "bin/test/sample-folder" );
       assertTrue( fs.exists( pluginInstallPath ) );
       ContentSummary summary = fs.getContentSummary( pluginInstallPath );
@@ -196,7 +196,7 @@ public class DistributedCacheUtilImplOSDependentTest {
 
     Path root = new Path( "bin/test/installKettleEnvironment" );
     try {
-      ch.installKettleEnvironment( pmrArchive, fs, root, bigDataPluginDir, null );
+      ch.installKettleEnvironment( pmrArchive, fs, root, bigDataPluginDir, null, "" );
       assertTrue( ch.isKettleEnvironmentInstalledAt( fs, root ) );
     } finally {
       bigDataPluginDir.delete( new AllFileSelector() );
@@ -219,7 +219,7 @@ public class DistributedCacheUtilImplOSDependentTest {
     FileObject additionalPluginDir = DistributedCacheTestUtil.createTestFolderWithContent( pluginName );
     Path root = new Path( "bin/test/installKettleEnvironment" );
     try {
-      ch.installKettleEnvironment( pmrArchive, fs, root, bigDataPluginDir, "bin/test/" + pluginName );
+      ch.installKettleEnvironment( pmrArchive, fs, root, bigDataPluginDir, "bin/test/" + pluginName, "" );
       assertTrue( ch.isKettleEnvironmentInstalledAt( fs, root ) );
       assertTrue( fs.exists( new Path( root, "plugins/bin/test/" + pluginName ) ) );
     } finally {
@@ -280,7 +280,7 @@ public class DistributedCacheUtilImplOSDependentTest {
 
     Path root = new Path( "bin/test/installKettleEnvironment" );
     try {
-      ch.installKettleEnvironment( pmrArchive, fs, root, bigDataPluginDir, null );
+      ch.installKettleEnvironment( pmrArchive, fs, root, bigDataPluginDir, null, "" );
       assertTrue( ch.isKettleEnvironmentInstalledAt( fs, root ) );
 
       ch.configureWithKettleEnvironment( conf, fs, root );

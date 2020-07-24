@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -69,7 +69,8 @@ public interface DistributedCacheUtil {
    * @throws Exception Error staging the Kettle environment
    */
   void installKettleEnvironment( FileObject pmrLibArchive, FileSystem fs, Path destination,
-                                 FileObject bigDataPluginFolder, String additionalPlugins ) throws Exception;
+                                 FileObject bigDataPluginFolder, String additionalPlugins,
+                                 String excludePluginFileNames ) throws Exception;
 
   /**
    * Stages the source file or folder to a Hadoop file system and sets their permission and replication value
@@ -87,7 +88,8 @@ public interface DistributedCacheUtil {
    * @throws IOException Destination exists is not a directory, Source does not exist or destination exists and
    *                     overwrite is false.
    */
-  void stageForCache( FileObject source, FileSystem fs, Path dest, boolean overwrite, boolean isPublic ) throws IOException;
+  void stageForCache( FileObject source, FileSystem fs, Path dest, String excludeFiles, boolean overwrite, boolean isPublic )
+    throws IOException;
 
   /**
    * Register a list of files from a Hadoop file system to be available and placed on the classpath when the
