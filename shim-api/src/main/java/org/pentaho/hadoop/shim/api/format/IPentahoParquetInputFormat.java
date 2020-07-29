@@ -40,6 +40,11 @@ public interface IPentahoParquetInputFormat extends IPentahoInputFormat {
   void setInputFile( String file ) throws Exception;
 
   /**
+   * Set input files.
+   */
+  void setInputFiles( String[] files ) throws Exception;
+
+  /**
    * Split size, bytes.
    */
   void setSplitSize( long blockSize ) throws Exception;
