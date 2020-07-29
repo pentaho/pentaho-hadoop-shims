@@ -27,9 +27,11 @@ import org.apache.hadoop.mapreduce.Cluster;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.QueueAclsInfo;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import org.pentaho.di.core.logging.KettleLogStore;
 import org.pentaho.di.core.logging.LogChannel;
 import org.pentaho.di.core.logging.LogChannelInterface;
 
@@ -46,6 +48,11 @@ import static org.junit.Assert.assertEquals;
 public class ConfigurationProxyV2Test {
 
   private static LogChannelInterface log = new LogChannel( ConfigurationProxyV2Test.class.getName() );
+
+  @BeforeClass
+  public static void setup() {
+    KettleLogStore.init();
+  }
 
   @Test
   public void checkConfigsInConfigurationAddedHbaseSiteXml() throws IOException {
