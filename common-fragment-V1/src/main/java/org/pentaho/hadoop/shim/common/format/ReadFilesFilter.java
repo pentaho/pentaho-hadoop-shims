@@ -45,7 +45,7 @@ public class ReadFilesFilter implements PathFilter, Configurable {
     this.conf = conf;
   }
 
-  @SuppressWarnings("squid:S112")
+  @SuppressWarnings( "squid:S112" )
   @Override public boolean accept( Path path ) {
     boolean returnValue = false;
     try {
