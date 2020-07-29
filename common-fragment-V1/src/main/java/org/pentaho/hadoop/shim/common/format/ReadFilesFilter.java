@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -45,15 +45,16 @@ public class ReadFilesFilter implements PathFilter, Configurable {
     this.conf = conf;
   }
 
+  @SuppressWarnings("squid:S112")
   @Override public boolean accept( Path path ) {
     boolean returnValue = false;
     try {
       FileSystem fs = path.getFileSystem( conf );
-      if ( conf.get( DIRECTORY ) != null && fs.isDirectory( path ) ) {
-        returnValue = true;
-      } else if ( conf.get( FILE ) != null && fs.isFile( path ) ) {
+      if ( ( conf.get( DIRECTORY ) != null && fs.isDirectory( path ) ) || ( conf.get( FILE ) != null && fs
+        .isFile( path ) ) ) {
         returnValue = true;
       }
+
       if ( conf.get( DIRECTORY ) == null && conf.get( FILE ) == null ) {
         throw new RuntimeException( "Required configuration is  not defined" );
       }

@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -23,6 +23,7 @@ package org.pentaho.hadoop.shim.api.format;
 
 import java.util.List;
 
+@SuppressWarnings( { "squid:S1452", "squid:S112" } )
 public interface IPentahoParquetInputFormat extends IPentahoInputFormat {
   /**
    * Read schema for display to user.
