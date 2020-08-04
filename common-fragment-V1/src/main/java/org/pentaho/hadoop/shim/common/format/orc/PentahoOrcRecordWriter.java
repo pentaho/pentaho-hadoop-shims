@@ -97,7 +97,8 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
     outputRowMetaAndData = new RowMetaAndData( outputRowMeta, new Object[ fieldNumber.get() ] );
 
     try {
-      S3NCredentialUtils.applyS3CredentialsToHadoopConfigurationIfNecessary( filePath, conf );
+      S3NCredentialUtils util = new S3NCredentialUtils();
+      util.applyS3CredentialsToHadoopConfigurationIfNecessary( filePath, conf );
       Path outputFile = new Path( S3NCredentialUtils.scrubFilePathIfNecessary( filePath ) );
       writer = OrcFile.createWriter( outputFile,
         OrcFile.writerOptions( conf )

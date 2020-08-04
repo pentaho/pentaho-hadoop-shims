@@ -98,7 +98,8 @@ public class PentahoApacheInputFormat extends HadoopFormatBase implements IPenta
 
   @Override public void setInputFile( String file ) throws Exception {
     inClassloader( () -> {
-      S3NCredentialUtils.applyS3CredentialsToHadoopConfigurationIfNecessary( file, job.getConfiguration() );
+      S3NCredentialUtils util = new S3NCredentialUtils();
+      util.applyS3CredentialsToHadoopConfigurationIfNecessary( file, job.getConfiguration() );
       Path filePath = new Path( S3NCredentialUtils.scrubFilePathIfNecessary( file ) );
       FileSystem fs = FileSystem.get( filePath.toUri(), job.getConfiguration() );
       filePath = fs.makeQualified( filePath );
@@ -125,7 +126,8 @@ public class PentahoApacheInputFormat extends HadoopFormatBase implements IPenta
       String[] filePaths = new String[files.length];
       int i = 0;
       for ( String file : files ) {
-        S3NCredentialUtils.applyS3CredentialsToHadoopConfigurationIfNecessary( file, job.getConfiguration() );
+        S3NCredentialUtils util = new S3NCredentialUtils();
+        util.applyS3CredentialsToHadoopConfigurationIfNecessary( file, job.getConfiguration() );
         Path filePath = new Path( S3NCredentialUtils.scrubFilePathIfNecessary( file ) );
         FileSystem fs = FileSystem.get( filePath.toUri(), job.getConfiguration() );
         filePath = fs.makeQualified( filePath );
@@ -195,7 +197,8 @@ public class PentahoApacheInputFormat extends HadoopFormatBase implements IPenta
   @Override public List<IParquetInputField> readSchema( String file ) throws Exception {
     return inClassloader( () -> {
       Configuration conf = job.getConfiguration();
-      S3NCredentialUtils.applyS3CredentialsToHadoopConfigurationIfNecessary( file, conf );
+      S3NCredentialUtils util = new S3NCredentialUtils();
+      util.applyS3CredentialsToHadoopConfigurationIfNecessary( file, conf );
       Path filePath = new Path( S3NCredentialUtils.scrubFilePathIfNecessary( file ) );
       FileSystem fs = FileSystem.get( filePath.toUri(), conf );
       FileStatus fileStatus = fs.getFileStatus( filePath );
