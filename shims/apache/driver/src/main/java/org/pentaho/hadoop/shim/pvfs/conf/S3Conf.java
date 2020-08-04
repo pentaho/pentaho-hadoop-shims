@@ -119,8 +119,13 @@ public class S3Conf extends PvfsConf {
     conf.set( "fs.s3a.buffer.dir", System.getProperty( "java.io.tmpdir" ) );
 
     // Use only when VFS is configured for generic S3 connection
-    conf.set( "fs.s3a.endpoint", endpoint );
-    conf.set( "fs.s3a.path.style.access", pathStyleAccess );
+    if ( !isNullOrEmpty( endpoint ) ) {
+      conf.set( "fs.s3a.endpoint", endpoint );
+    }
+
+    if ( !isNullOrEmpty( pathStyleAccess ) ) {
+      conf.set( "fs.s3a.path.style.access", pathStyleAccess );
+    }
 
     return conf;
   }
