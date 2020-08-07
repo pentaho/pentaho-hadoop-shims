@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -313,33 +313,6 @@ public class DistributedCacheUtilImplTest {
   }
 
   @Test
-  public void stageForCache_exclude_file() throws Exception {
-    DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
-
-    Configuration conf = new Configuration();
-    FileSystem fs = DistributedCacheTestUtil.getLocalFileSystem( conf );
-
-    FileObject source = DistributedCacheTestUtil.createTestFolderWithContent( "sample-folder", 3 );
-    try {
-      Path root = new Path( "bin/test/stageForCache_exclude_file" );
-      Path dest = new Path( root, "dest" );
-
-      try {
-        ch.stageForCache( source, fs, dest, "foo,jar2,bar,jar3", false, true );
-        assertTrue( fs.exists( new Path( dest, "jar1.jar" ) ) );
-        assertTrue( fs.exists( new Path( dest, "folder/file.txt" ) ) );
-        assertTrue( fs.exists( new Path( dest, "pentaho-mapreduce-libraries.zip" ) ) );
-        assertFalse( fs.exists( new Path( dest, "jar2.jar" ) ) );
-        assertFalse( fs.exists( new Path( dest, "jar3.jar" ) ) );
-      } finally {
-        fs.delete( root, true );
-      }
-    } finally {
-      source.delete( new AllFileSelector() );
-    }
-  }
-
-  @Test
   public void addCachedFilesToClasspath() throws IOException {
     DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
     Configuration conf = new Configuration();
@@ -364,23 +337,21 @@ public class DistributedCacheUtilImplTest {
     DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
 
     try {
-      ch.installKettleEnvironment( null, (org.pentaho.hadoop.shim.api.fs.FileSystem) null, null, null, null,
-        "" );
+      ch.installKettleEnvironment( null, (org.pentaho.hadoop.shim.api.fs.FileSystem) null, null, null, null );
       fail( "Expected exception on missing archive" );
     } catch ( NullPointerException ex ) {
       assertEquals( "pmrArchive is required", ex.getMessage() );
     }
 
     try {
-      ch.installKettleEnvironment( KettleVFS.getFileObject( "." ), (org.pentaho.hadoop.shim.api.fs.FileSystem) null, null, null, null, "" );
+      ch.installKettleEnvironment( KettleVFS.getFileObject( "." ), (org.pentaho.hadoop.shim.api.fs.FileSystem) null, null, null, null );
       fail( "Expected exception on missing archive" );
     } catch ( NullPointerException ex ) {
       assertEquals( "destination is required", ex.getMessage() );
     }
 
     try {
-      ch.installKettleEnvironment( KettleVFS.getFileObject( "." ),
-        (org.pentaho.hadoop.shim.api.fs.FileSystem) null, new PathProxy( "." ), null, null, "" );
+      ch.installKettleEnvironment( KettleVFS.getFileObject( "." ), (org.pentaho.hadoop.shim.api.fs.FileSystem) null, new PathProxy( "." ), null, null );
       fail( "Expected exception on missing archive" );
     } catch ( NullPointerException ex ) {
       assertEquals( "big data plugin required", ex.getMessage() );
@@ -390,15 +361,13 @@ public class DistributedCacheUtilImplTest {
   @Test( expected = IllegalArgumentException.class )
   public void stagePluginsForCache_no_folders() throws Exception {
     DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
-    ch.stagePluginsForCache( DistributedCacheTestUtil.getLocalFileSystem( new Configuration() ),
-      new Path( "bin/test/plugins-installation-dir" ), null, "" );
+    ch.stagePluginsForCache( DistributedCacheTestUtil.getLocalFileSystem( new Configuration() ), new Path( "bin/test/plugins-installation-dir" ), null );
   }
 
   @Test( expected = KettleFileException.class )
   public void stagePluginsForCache_invalid_folder() throws Exception {
     DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl( TEST_CONFIG );
-    ch.stagePluginsForCache( DistributedCacheTestUtil.getLocalFileSystem( new Configuration() ),
-      new Path( "bin/test/plugins-installation-dir" ), "bin/bogus-plugin-name", "" );
+    ch.stagePluginsForCache( DistributedCacheTestUtil.getLocalFileSystem( new Configuration() ), new Path( "bin/test/plugins-installation-dir" ), "bin/bogus-plugin-name" );
   }
 
   @Test
