@@ -69,8 +69,7 @@ public interface DistributedCacheUtil {
    * @throws Exception Error staging the Kettle environment
    */
   void installKettleEnvironment( FileObject pmrLibArchive, FileSystem fs, Path destination,
-                                 FileObject bigDataPluginFolder, String additionalPlugins,
-                                 String excludePluginFileNames ) throws Exception;
+                                 FileObject bigDataPluginFolder, String additionalPlugins ) throws Exception;
 
   /**
    * Stages the source file or folder to a Hadoop file system and sets their permission and replication value
@@ -88,7 +87,7 @@ public interface DistributedCacheUtil {
    * @throws IOException Destination exists is not a directory, Source does not exist or destination exists and
    *                     overwrite is false.
    */
-  void stageForCache( FileObject source, FileSystem fs, Path dest, String excludeFiles, boolean overwrite, boolean isPublic )
+  void stageForCache( FileObject source, FileSystem fs, Path dest, boolean overwrite, boolean isPublic )
     throws IOException;
 
   /**

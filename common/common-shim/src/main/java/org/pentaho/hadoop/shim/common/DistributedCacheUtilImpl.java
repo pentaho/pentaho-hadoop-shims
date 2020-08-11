@@ -130,6 +130,8 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.Dis
    */
   private static final String AUTH_PREFIX = "pentaho.authentication";
 
+  private static final String PDI_CORE_PLUGINS_UI = "pdi-core-plugins-ui";
+
   /**
    * The Hadoop Configuration this Distributed Cache Utility is part of
    */
@@ -178,8 +180,7 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.Dis
   }
 
   public void installKettleEnvironment( FileObject pmrArchive, FileSystem fs, Path destination,
-                                        FileObject bigDataPlugin, String additionalPlugins,
-                                        String excludePluginFileNames )
+                                        FileObject bigDataPlugin, String additionalPlugins )
     throws IOException, KettleFileException {
     if ( pmrArchive == null ) {
       throw new NullPointerException( "pmrArchive is required" );
@@ -204,7 +205,7 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.Dis
     stageBigDataPlugin( fs, destination, bigDataPlugin );
 
     if ( !Const.isEmpty( additionalPlugins ) ) {
-      stagePluginsForCache( fs, new Path( destination, PATH_PLUGINS ), additionalPlugins, excludePluginFileNames );
+      stagePluginsForCache( fs, new Path( destination, PATH_PLUGINS ), additionalPlugins );
     }
 
     // Delete the lock file now that we're done. It is intentional that we're not doing this in a try/finally. If the
@@ -274,8 +275,7 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.Dis
    * @throws KettleFileException Error locating a plugin folder
    * @throws IOException         Error copying
    */
-  public void stagePluginsForCache( FileSystem fs, Path pluginsDir, String pluginFolderNames,
-                                    String excludePluginFileNames )
+  public void stagePluginsForCache( FileSystem fs, Path pluginsDir, String pluginFolderNames )
     throws KettleFileException, IOException {
     if ( pluginFolderNames == null ) {
       throw new IllegalArgumentException( "pluginFolderNames required" );
@@ -294,7 +294,7 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.Dis
       FileObject localFile = (FileObject) localFileTuple[ 0 ];
       String relativePath = (String) localFileTuple[ 1 ];
       Path pluginDir = new Path( pluginsDir, relativePath );
-      stageForCache( localFile, fs, pluginDir, excludePluginFileNames, true, false );
+      stageForCache( localFile, fs, pluginDir, PDI_CORE_PLUGINS_UI, true, false );
     }
   }
 
@@ -750,19 +750,17 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.Dis
   @Override
   public void installKettleEnvironment( FileObject pmrLibArchive, org.pentaho.hadoop.shim.api.fs.FileSystem fs,
                                         org.pentaho.hadoop.shim.api.fs.Path destination, FileObject bigDataPluginFolder,
-                                        String additionalPlugins, String excludePluginFileNames )
-    throws KettleFileException, IOException {
+                                        String additionalPlugins ) throws KettleFileException, IOException {
     installKettleEnvironment( pmrLibArchive, ShimUtils.asFileSystem( fs ), ShimUtils.asPath( destination ),
-      bigDataPluginFolder, additionalPlugins, excludePluginFileNames );
+      bigDataPluginFolder, additionalPlugins );
 
   }
 
   @Override public void stageForCache( FileObject source, org.pentaho.hadoop.shim.api.fs.FileSystem fs,
-                                       org.pentaho.hadoop.shim.api.fs.Path dest, String excludePluginFileNames,
-                                       boolean overwrite, boolean isPublic )
+                                       org.pentaho.hadoop.shim.api.fs.Path dest, boolean overwrite, boolean isPublic )
     throws IOException {
     try {
-      stageForCache( source, ShimUtils.asFileSystem( fs ), ShimUtils.asPath( dest ), excludePluginFileNames, overwrite, isPublic );
+      stageForCache( source, ShimUtils.asFileSystem( fs ), ShimUtils.asPath( dest ), "", overwrite, isPublic );
     } catch ( KettleFileException e ) {
       throw new IOException( e );
     }
