@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -284,7 +284,7 @@ public class MapReduceServiceImpl implements MapReduceService {
         }
         if ( jarEntry.getName().endsWith( ".class" ) ) {
           String className =
-            jarEntry.getName().substring( 0, jarEntry.getName().indexOf( ".class" ) ).replace( "/", "\\." );
+            jarEntry.getName().substring( 0, jarEntry.getName().indexOf( ".class" ) ).replace( "/", "." );
           classes.add( loader.loadClass( className ) );
         }
       }
