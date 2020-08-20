@@ -296,7 +296,7 @@ public class MapReduceServiceImpl implements MapReduceService {
         }
         if ( jarEntry.getName().endsWith( ".class" ) ) {
           String className =
-            jarEntry.getName().substring( 0, jarEntry.getName().indexOf( ".class" ) ).replace( "/", "\\." );
+            jarEntry.getName().substring( 0, jarEntry.getName().indexOf( ".class" ) ).replace( "/", "." );
           classes.add( loader.loadClass( className ) );
         }
       }
