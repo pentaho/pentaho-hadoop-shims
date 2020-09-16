@@ -25,7 +25,7 @@
     <parquet.cloudera.version>1.5.0-cdh5.14.0</parquet.cloudera.version>
     <pig.version>0.12.0-cdh5.14.0</pig.version>
     <sqoop.version>1.4.6-cdh5.14.0</sqoop.version>
-    <zookeeper.version>3.4.5-cdh5.14.0</zookeeper.version>
+    <zookeeper.version>3.4.14</zookeeper.version>
     <vendor-driver.version>5.14.0.0.cdh</vendor-driver.version>
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
     <joda-time.version>2.9.9</joda-time.version>
