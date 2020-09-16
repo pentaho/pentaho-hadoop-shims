@@ -19,7 +19,7 @@
     <org.apache.orc.version>1.2.3</org.apache.orc.version>
     <org.apache.hadoop.version>2.6.0-cdh5.14.0</org.apache.hadoop.version>
     <org.apache.hbase.version>1.2.0-cdh5.14.0</org.apache.hbase.version>
-    <org.apache.hive.version>1.1.0-cdh5.14.0</org.apache.hive.version>
+    <org.apache.hive.version>3.1.3000.7.2.0.2-2</org.apache.hive.version>
     <org.apache.oozie.version>4.1.0-cdh5.14.0</org.apache.oozie.version>
     <parquet.version>1.8.1</parquet.version>
     <parquet.cloudera.version>1.5.0-cdh5.14.0</parquet.cloudera.version>
