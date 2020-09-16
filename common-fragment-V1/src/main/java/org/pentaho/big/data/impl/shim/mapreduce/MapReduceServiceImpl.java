@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -23,9 +23,9 @@
 package org.pentaho.big.data.impl.shim.mapreduce;
 
 import com.google.common.annotations.VisibleForTesting;
-
 import org.pentaho.di.core.exception.KettleFileException;
 import org.pentaho.di.core.logging.LogChannelInterface;
+import org.pentaho.di.core.osgi.api.NamedClusterSiteFile;
 import org.pentaho.di.core.plugins.LifecyclePluginType;
 import org.pentaho.di.core.plugins.PluginInterface;
 import org.pentaho.di.core.plugins.PluginRegistry;
@@ -33,7 +33,6 @@ import org.pentaho.di.core.util.Utils;
 import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.hadoop.PluginPropertiesUtil;
-import org.pentaho.hadoop.shim.ShimConfigsLoader;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.mapreduce.MapReduceExecutionException;
 import org.pentaho.hadoop.shim.api.mapreduce.MapReduceJarInfo;
@@ -46,12 +45,15 @@ import org.pentaho.hadoop.shim.spi.HadoopShim;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -239,14 +241,24 @@ public class MapReduceServiceImpl implements MapReduceService {
   // the class was loaded.
   @SuppressWarnings( "squid:S2095" )
   private Class<?> loadClassByName( final String className, final URL jarUrl, final ClassLoader parentClassLoader, boolean addConfigFiles )
-    throws ClassNotFoundException, MalformedURLException, URISyntaxException {
+    throws ClassNotFoundException, IOException, URISyntaxException {
     if ( className != null ) {
       // ignoring this warning; paths are to the local file system so no host name lookup should happen
       @SuppressWarnings( "squid:S2112" )
       Set<URL> urlSet = new HashSet<>();
       if ( addConfigFiles ) {
         List<URL> urlList = new ArrayList<>();
-        ShimConfigsLoader.addConfigsAsResources( namedCluster.getName(), urlList::add );
+        List<NamedClusterSiteFile> siteFiles = namedCluster.getSiteFiles();
+        Path tempDir = Files.createTempDirectory( "siteFiles" );
+        for ( NamedClusterSiteFile siteFile : siteFiles ) {
+          String fileContents = siteFile.getSiteFileContents();
+          String fileName = siteFile.getSiteFileName();
+          if ( fileContents.length() > 0 ) {
+            OutputStream outputStream = Files.newOutputStream( tempDir.resolve( fileName ) );
+            outputStream.write( fileContents.getBytes() );
+            urlList.add( tempDir.resolve( fileName ).toUri().toURL() );
+          }
+        }
         for ( URL url : urlList ) {
           // get the parent dir of each config file
           urlSet.add( Paths.get( url.toURI() ).getParent().toUri().toURL() );
@@ -284,7 +296,7 @@ public class MapReduceServiceImpl implements MapReduceService {
         }
         if ( jarEntry.getName().endsWith( ".class" ) ) {
           String className =
-            jarEntry.getName().substring( 0, jarEntry.getName().indexOf( ".class" ) ).replace( "/", "\\." );
+            jarEntry.getName().substring( 0, jarEntry.getName().indexOf( ".class" ) ).replace( "/", "." );
           classes.add( loader.loadClass( className ) );
         }
       }

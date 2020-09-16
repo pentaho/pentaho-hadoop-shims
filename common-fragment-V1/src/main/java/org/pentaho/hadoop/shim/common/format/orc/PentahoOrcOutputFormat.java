@@ -47,14 +47,13 @@ import java.util.function.BiConsumer;
  */
 public class PentahoOrcOutputFormat extends HadoopFormatBase implements IPentahoOrcOutputFormat {
 
+  private static final LogChannelInterface logger = LogChannel.GENERAL;
   private String outputFilename;
-  private Configuration conf;
+  private final Configuration conf;
   private COMPRESSION compression = COMPRESSION.NONE;
   private int compressSize = 0;
   private int stripeSize = DEFAULT_STRIPE_SIZE;
   private List<? extends IOrcOutputField> fields;
-
-  private static final LogChannelInterface logger = LogChannel.GENERAL;
 
   public PentahoOrcOutputFormat() {
     this( null );
@@ -94,7 +93,8 @@ public class PentahoOrcOutputFormat extends HadoopFormatBase implements IPentaho
 
   @Override public void setOutputFile( String file, boolean override ) throws Exception {
     this.outputFilename = S3NCredentialUtils.scrubFilePathIfNecessary( file );
-    S3NCredentialUtils.applyS3CredentialsToHadoopConfigurationIfNecessary( file, conf );
+    S3NCredentialUtils util = new S3NCredentialUtils();
+    util.applyS3CredentialsToHadoopConfigurationIfNecessary( file, conf );
     Path outputFile = new Path( outputFilename );
     FileSystem fs = FileSystem.get( outputFile.toUri(), conf );
     if ( fs.exists( outputFile ) ) {

@@ -109,7 +109,8 @@ public class PentahoOrcRecordReader implements IPentahoInputFormat.IPentahoRecor
   static Reader getReader( String fileName, Configuration conf ) {
 
     try {
-      S3NCredentialUtils.applyS3CredentialsToHadoopConfigurationIfNecessary( fileName, conf );
+      S3NCredentialUtils util = new S3NCredentialUtils();
+      util.applyS3CredentialsToHadoopConfigurationIfNecessary( fileName, conf );
       Path filePath = new Path( S3NCredentialUtils.scrubFilePathIfNecessary( fileName ) );
       FileSystem fs = FileSystem.get( filePath.toUri(), conf );
       if ( !fs.exists( filePath ) ) {

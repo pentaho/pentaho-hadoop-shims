@@ -78,7 +78,8 @@ public class PentahoTwitterOutputFormat extends HadoopFormatBase implements IPen
   @Override
   public void setOutputFile( String file, boolean override ) throws Exception {
     inClassloader( () -> {
-      S3NCredentialUtils.applyS3CredentialsToHadoopConfigurationIfNecessary( file, job.getConfiguration() );
+      S3NCredentialUtils util = new S3NCredentialUtils();
+      util.applyS3CredentialsToHadoopConfigurationIfNecessary( file, job.getConfiguration() );
       outputFile = new Path( S3NCredentialUtils.scrubFilePathIfNecessary( file ) );
       FileSystem fs = FileSystem.get( outputFile.toUri(), job.getConfiguration() );
       if ( fs.exists( outputFile ) ) {

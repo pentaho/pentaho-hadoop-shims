@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -94,6 +94,21 @@ public interface NamedClusterService {
    * @throws MetaStoreException
    */
   List<NamedCluster> list( IMetaStore metastore ) throws MetaStoreException;
+
+  /**
+   * This method lists the NamedClusters in the given IMetaStore.  If an exception is thrown when parsing the data for
+   * a given NamedCluster.  The exception will be added to the exceptionList, but list generation will continue.
+   *
+   * @param metastore the IMetaStore to operate with
+   * @param exceptionList As list to hold any exceptions that occur
+   * @return the list of NamedClusters in the provided IMetaStore
+   * @throws MetaStoreException
+   */
+  public default List<NamedCluster> list( IMetaStore metastore, List<MetaStoreException> exceptionList )
+    throws MetaStoreException {
+    //Implementation not used.  For compile purposes only
+    return list( metastore );
+  }
 
   /**
    * This method returns the list of NamedCluster names in the IMetaStore

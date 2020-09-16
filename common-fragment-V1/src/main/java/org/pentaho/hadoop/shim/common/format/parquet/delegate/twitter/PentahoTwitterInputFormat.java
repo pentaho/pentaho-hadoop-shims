@@ -38,17 +38,10 @@ import org.pentaho.hadoop.shim.api.format.IPentahoParquetInputFormat;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
 import org.pentaho.hadoop.shim.common.format.HadoopFormatBase;
 import org.pentaho.hadoop.shim.common.format.ReadFileFilter;
+import org.pentaho.hadoop.shim.common.format.ReadFilesFilter;
 import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
 import org.pentaho.hadoop.shim.common.format.parquet.ParquetInputFieldList;
 import org.pentaho.hadoop.shim.common.format.parquet.PentahoInputSplitImpl;
-
-import java.io.InputStream;
-import java.nio.file.NoSuchFileException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
-
 import parquet.hadoop.Footer;
 import parquet.hadoop.ParquetFileReader;
 import parquet.hadoop.ParquetInputFormat;
@@ -57,6 +50,16 @@ import parquet.hadoop.api.ReadSupport;
 import parquet.hadoop.metadata.ParquetMetadata;
 import parquet.schema.MessageType;
 
+import java.io.InputStream;
+import java.nio.file.NoSuchFileException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+
+import static org.apache.hadoop.mapreduce.lib.input.FileInputFormat.setInputDirRecursive;
+import static org.apache.hadoop.mapreduce.lib.input.FileInputFormat.setInputPathFilter;
+import static org.apache.hadoop.mapreduce.lib.input.FileInputFormat.setInputPaths;
 
 /**
  * Created by Vasilina_Terehova on 7/25/2017.
@@ -84,16 +87,15 @@ public class PentahoTwitterInputFormat extends HadoopFormatBase implements IPent
     } );
   }
 
-  @Override
-  public void setSchema( List<IParquetInputField> inputFields ) throws Exception {
+  @Override public void setSchema( List<IParquetInputField> inputFields ) throws Exception {
     ParquetInputFieldList fieldList = new ParquetInputFieldList( inputFields );
     inClassloader( () -> job.getConfiguration().set( ParquetConverter.PARQUET_SCHEMA_CONF_KEY, fieldList.marshall() ) );
   }
 
-  @Override
-  public void setInputFile( String file ) throws Exception {
+  @Override public void setInputFile( String file ) throws Exception {
     inClassloader( () -> {
-      S3NCredentialUtils.applyS3CredentialsToHadoopConfigurationIfNecessary( file, job.getConfiguration() );
+      S3NCredentialUtils util = new S3NCredentialUtils();
+      util.applyS3CredentialsToHadoopConfigurationIfNecessary( file, job.getConfiguration() );
       Path filePath = new Path( S3NCredentialUtils.scrubFilePathIfNecessary( file ) );
       FileSystem fs = FileSystem.get( filePath.toUri(), job.getConfiguration() );
       if ( !fs.exists( filePath ) ) {
@@ -112,9 +114,41 @@ public class PentahoTwitterInputFormat extends HadoopFormatBase implements IPent
     } );
   }
 
-  @Override
-  @SuppressWarnings( "squid:CommentedOutCodeLine" )
-  public void setSplitSize( long blockSize ) throws Exception {
+  @Override public void setInputFiles( String[] files ) throws Exception {
+    inClassloader( () -> {
+
+      boolean pathIsDir = false;
+      String[] filePaths = new String[files.length];
+      int i = 0;
+      for ( String file : files ) {
+        S3NCredentialUtils util = new S3NCredentialUtils();
+        util.applyS3CredentialsToHadoopConfigurationIfNecessary( file, job.getConfiguration() );
+        Path filePath = new Path( S3NCredentialUtils.scrubFilePathIfNecessary( file ) );
+        FileSystem fs = FileSystem.get( filePath.toUri(), job.getConfiguration() );
+        filePath = fs.makeQualified( filePath );
+        if ( !fs.exists( filePath ) ) {
+          throw new NoSuchFileException( file );
+        }
+        filePaths[i++] = filePath.getName();
+        if ( fs.getFileStatus( filePath ).isDirectory() ) { // directory
+          pathIsDir = true;
+        }
+      }
+      if ( pathIsDir ) { // directory
+        setInputPaths( job, String.join( ",", filePaths ) );
+        setInputDirRecursive( job, true );
+        job.getConfiguration().set( ReadFilesFilter.DIRECTORY, "true" );
+      } else { // file
+        setInputPaths( job, String.join( ",", filePaths ) );
+        setInputDirRecursive( job, false );
+        setInputPathFilter( job, ReadFilesFilter.class );
+        job.getConfiguration().set( ReadFilesFilter.FILE, "true" );
+      }
+    } );
+  }
+
+  @Override @SuppressWarnings( "squid:CommentedOutCodeLine" ) public void setSplitSize( long blockSize )
+      throws Exception {
     inClassloader( () -> {
       /**
        * TODO Files splitting is temporary disabled. We need some UI checkbox for allow it, because some parquet files
@@ -128,8 +162,7 @@ public class PentahoTwitterInputFormat extends HadoopFormatBase implements IPent
     } );
   }
 
-  @Override
-  public List<IPentahoInputSplit> getSplits() {
+  @Override public List<IPentahoInputSplit> getSplits() {
     return inClassloader( () -> {
       List<InputSplit> splits = nativeParquetInputFormat.getSplits( job );
       return splits.stream().map( PentahoInputSplitImpl::new ).collect( Collectors.toList() );
@@ -137,17 +170,16 @@ public class PentahoTwitterInputFormat extends HadoopFormatBase implements IPent
   }
 
   // for parquet not actual to point split
-  @Override
-  public IPentahoRecordReader createRecordReader( IPentahoInputSplit split ) throws Exception {
+  @Override public IPentahoRecordReader createRecordReader( IPentahoInputSplit split ) throws Exception {
     return inClassloader( () -> {
       PentahoInputSplitImpl pentahoInputSplit = (PentahoInputSplitImpl) split;
       InputSplit inputSplit = pentahoInputSplit.getInputSplit();
 
       ReadSupport<RowMetaAndData> readSupport = new PentahoParquetReadSupport();
 
-      ParquetRecordReader<RowMetaAndData> nativeRecordReader =
-        new ParquetRecordReader<>( readSupport, ParquetInputFormat.getFilter( job
-          .getConfiguration() ) );
+      ParquetRecordReader<RowMetaAndData>
+          nativeRecordReader =
+          new ParquetRecordReader<>( readSupport, ParquetInputFormat.getFilter( job.getConfiguration() ) );
       TaskAttemptContextImpl task = new TaskAttemptContextImpl( job.getConfiguration(), new TaskAttemptID() );
       nativeRecordReader.initialize( inputSplit, task );
 
@@ -155,11 +187,11 @@ public class PentahoTwitterInputFormat extends HadoopFormatBase implements IPent
     } );
   }
 
-  @Override
-  public List<IParquetInputField> readSchema( String file ) throws Exception {
+  @Override public List<IParquetInputField> readSchema( String file ) throws Exception {
     return inClassloader( () -> {
       Configuration conf = job.getConfiguration();
-      S3NCredentialUtils.applyS3CredentialsToHadoopConfigurationIfNecessary( file, conf );
+      S3NCredentialUtils util = new S3NCredentialUtils();
+      util.applyS3CredentialsToHadoopConfigurationIfNecessary( file, conf );
       Path filePath = new Path( S3NCredentialUtils.scrubFilePathIfNecessary( file ) );
       FileSystem fs = FileSystem.get( filePath.toUri(), conf );
       FileStatus fileStatus = fs.getFileStatus( filePath );
