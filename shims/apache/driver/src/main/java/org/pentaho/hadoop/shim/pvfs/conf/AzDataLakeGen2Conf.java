@@ -25,7 +25,11 @@ package org.pentaho.hadoop.shim.pvfs.conf;
 import com.google.common.base.Preconditions;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.azurebfs.AbfsConfiguration;
 import org.apache.hadoop.fs.azurebfs.AzureBlobFileSystem;
+import org.apache.hadoop.fs.azurebfs.constants.ConfigurationKeys;
+import org.apache.hadoop.fs.azurebfs.services.AuthType;
+//import org.apache.hadoop.fs.azurebfs.AzureBlobFileSystem;
 import org.pentaho.di.connections.ConnectionDetails;
 
 import java.net.URI;
@@ -76,10 +80,18 @@ public class AzDataLakeGen2Conf extends PvfsConf {
 
   @Override public Configuration conf( Path pvfsPath ) {
     Configuration config = new Configuration();
-    //TODO: Needs to be tested and updated
-    config.set( "fs.AbstractFileSystem.gs.impl", "org.apache.hadoop.fs.azurebfs.AzureBlobFileSystem" );
-    config.set( "fs.azure.account.auth.type.abfswales1.dfs.core.windows.net", "SharedKey" );
-    config.set( "fs.azure.account.key.abfswales1.dfs.core.windows.net", sharedKey );
+    // https://github.com/apache/hadoop/blob/51598d8b1be20726b744ce29928684784061f8cf/hadoop-tools/hadoop-azure/src/site/markdown/testing_azure.md
+    config.set( "fs.abfs.impl", "org.apache.hadoop.fs.azurebfs.AzureBlobFileSystem" );
+    config.set("fs.AbstractFileSystem.abfs.impl", "org.apache.hadoop.fs.azurebfs.Abfs");
+//    config.set(ConfigurationKeys.FS_AZURE_ACCOUNT_KEY_PROPERTY_NAME, accountName);
+
+    config.set("fs.azure.abfs.account.name", accountName + ".dfs.core.windows.net");
+    config.set( "fs.azure.account.auth.type." + accountName + ".dfs.core.windows.net", "SharedKey" );
+    config.set( "fs.azure.account.key." + accountName + ".dfs.core.windows.net", sharedKey );
+//    config.set(ConfigurationKeys.FS_AZURE_ACCOUNT_AUTH_TYPE_PROPERTY_NAME, AuthType.SharedKey.name());
+    config.set("fs.azure.secure.mode", "false");
+    config.set("fs.azure.local.sas.key.mode", "false");
+    config.set("fs.azure.enable.check.access", "true");
     //TODO: Add various other Auth modes and configurations
     return config;
   }

@@ -21,7 +21,7 @@
     <!-- client and default folders -->
     <hadoop.version>3.1.0.3.0.0.0-1634</hadoop.version>
     <gcs-connector.version>hadoop2-1.9.17</gcs-connector.version>
-    <hadoop-azure.version>3.3.0</hadoop-azure.version>
+    <hadoop-azure.version>3.2.1</hadoop-azure.version>
     <!-- pmr folder -->
     <commons-configuration.version>1.6</commons-configuration.version>
     <commons-configuration2.version>2.1.1</commons-configuration2.version>
@@ -193,6 +193,14 @@
       <version>${hadoop-azure.version}</version>
     </dependency>
 
+<!--   FIXME: Remove this dependency as it is used for dev purposes only -->
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-azure-datalake</artifactId>
+      <version>${hadoop-aws.version}</version>
+    </dependency>
+
+
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
@@ -243,6 +251,7 @@
                 *:com.fasterxml.jackson.dataformat,*:hadoop-mapreduce-client-core,*:hadoop-common,*:orc-core,*:avro,
                 *:hadoop-aws,
                 *:hadoop-azure,
+                *:hadoop-azure-datalake,
                 com.amazonaws:*,
                 *:parquet-hadoop-bundle,*:hadoop-hdfs,
                 *:avro-mapred,
