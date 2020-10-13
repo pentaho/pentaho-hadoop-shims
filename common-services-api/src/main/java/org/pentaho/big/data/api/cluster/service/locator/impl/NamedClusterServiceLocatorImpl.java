@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -47,7 +47,7 @@ import static java.util.Optional.ofNullable;
 /**
  * Created by bryan on 11/5/15.
  */
-@SuppressWarnings ( "WeakerAccess" )
+@SuppressWarnings( "WeakerAccess" )
 public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocator {
   @VisibleForTesting final Map<String, Map<Class<?>, List<NamedClusterServiceFactory<?>>>> serviceVendorTypeMapping;
   private final ReadWriteLock readWriteLock;
@@ -108,11 +108,17 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
     }
   }
 
-  @Override public <T> T getService( NamedCluster namedCluster, Class<T> serviceClass ) {
+  @Override
+  public <T> T getService( NamedCluster namedCluster, Class<T> serviceClass ) {
+    return getService( namedCluster, serviceClass, null );
+  }
+
+  @Override
+  public <T> T getService( NamedCluster namedCluster, Class<T> serviceClass, String embeddedMetaStoreProviderKey ) {
     Lock readLock = readWriteLock.readLock();
     try {
       readLock.lock();
-      String shim = Objects.requireNonNull( getShimForService( namedCluster ) );
+      String shim = Objects.requireNonNull( getShimForService( namedCluster, embeddedMetaStoreProviderKey ) );
       logger.debug( "NamedClusterServiceLocator.getService({}, {})", namedCluster, serviceClass );
 
       Map<Class<?>, List<NamedClusterServiceFactory<?>>> serviceMap = serviceVendorTypeMapping.get( shim );
@@ -140,18 +146,25 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
   }
 
   /**
-   * If namedCluster is defined, will use it to try to determine the
-   * associated shim.  Otherwise returns the default shim name.
+   * If namedCluster is defined, will use it to try to determine the associated shim.  Otherwise returns the default
+   * shim name.
    */
-  private String getShimForService( NamedCluster namedCluster ) {
+  private String getShimForService( NamedCluster namedCluster, String embeddedMetaStoreProviderKey ) {
     if ( namedCluster == null ) {
       return this.internalShim;
     }
     String shim = namedCluster.getShimIdentifier();
     NamedCluster storedNamedCluster =
       namedClusterManager.getNamedClusterByName( namedCluster.getName(), metastoreLocator.getMetastore() );
-    if ( ( shim == null ) && ( storedNamedCluster != null ) ) {
+    if ( shim == null && storedNamedCluster != null ) {
       shim = storedNamedCluster.getShimIdentifier();
+    }
+    if ( shim == null && storedNamedCluster == null && embeddedMetaStoreProviderKey != null ) {
+      storedNamedCluster = namedClusterManager.getNamedClusterByName( namedCluster.getName(),
+        metastoreLocator.getExplicitMetastore( embeddedMetaStoreProviderKey ) );
+      if ( storedNamedCluster != null ) {
+        shim = storedNamedCluster.getShimIdentifier();
+      }
     }
     if ( shim == null ) {
       // Named cluster is not fully defined in the metastore; might be a legacy configuration.
