@@ -14,7 +14,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <junit.version>4.11</junit.version>
+    <junit.version>4.13.1</junit.version>
     <eula-wrap_create-dist-phase></eula-wrap_create-dist-phase>
     <org.mockito.version>1.10.19</org.mockito.version>
     <org.hamcrest.version>1.3</org.hamcrest.version>
