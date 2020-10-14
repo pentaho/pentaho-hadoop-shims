@@ -24,18 +24,18 @@ package org.pentaho.hadoop.shim;
 
 
 import com.google.protobuf.Message;
-import org.apache.hadoop.hbase.CompatibilityFactory;
-import org.apache.hadoop.hbase.HConstants;
-import org.apache.hadoop.hbase.client.Put;
-import org.apache.hadoop.hbase.mapreduce.TableMapper;
+//import org.apache.hadoop.hbase.CompatibilityFactory;
+//import org.apache.hadoop.hbase.HConstants;
+//import org.apache.hadoop.hbase.client.Put;
+//import org.apache.hadoop.hbase.mapreduce.TableMapper;
 import org.apache.zookeeper.ZooKeeper;
 import org.pentaho.di.core.exception.KettlePluginException;
 import org.pentaho.hadoop.shim.common.HadoopShimImpl;
-import org.apache.hadoop.hbase.protobuf.generated.ClientProtos;
+//import org.apache.hadoop.hbase.protobuf.generated.ClientProtos;
 import io.netty.channel.Channel;
 import com.google.common.collect.Lists;
 import org.apache.htrace.Trace;
-import com.yammer.metrics.core.MetricsRegistry;
+//import com.yammer.metrics.core.MetricsRegistry;
 
 import java.util.Properties;
 
@@ -55,8 +55,8 @@ public class HadoopShim extends HadoopShimImpl {
   @Override
   public Class[] getHbaseDependencyClasses() {
     return new Class[]{
-      HConstants.class, ClientProtos.class, Put.class, CompatibilityFactory.class, TableMapper.class,
-      ZooKeeper.class, Channel.class, Message.class, Lists.class, Trace.class, MetricsRegistry.class
+//      HConstants.class, ClientProtos.class, Put.class, CompatibilityFactory.class, TableMapper.class,
+      ZooKeeper.class, Channel.class, Message.class, Lists.class, Trace.class //, MetricsRegistry.class
     };
   }
 

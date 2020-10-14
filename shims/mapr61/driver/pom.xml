@@ -15,13 +15,13 @@
     <pentaho-osgi-bundles.version>9.1.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
     <org.apache.avro.version>1.8.0</org.apache.avro.version>
     <org.apache.hadoop.version>2.7.0-mapr-1808</org.apache.hadoop.version>
-    <org.apache.hbase.version>1.1.8-mapr-1703</org.apache.hbase.version>
+    <org.apache.hbase.version>1.1.8-mapr-1901</org.apache.hbase.version>
     <vendor.hbase.version>6.1.0-mapr</vendor.hbase.version>
-    <org.apache.hive.version>2.1.1-mapr-1710</org.apache.hive.version>
-    <org.apache.oozie.version>4.3.0-mapr-1808</org.apache.oozie.version>
+    <org.apache.hive.version>2.3.3-mapr-1901</org.apache.hive.version>
+    <org.apache.oozie.version>5.1.0.0-mapr-1901</org.apache.oozie.version>
     <parquet.version>1.8.1</parquet.version>
-    <pig.version>0.16.0-mapr-1703</pig.version>
-    <sqoop.version>1.4.6-mapr-1710</sqoop.version>
+    <pig.version>0.16.0-mapr-1901</pig.version>
+    <sqoop.version>1.4.7</sqoop.version>
     <zookeeper.version>3.4.5-mapr-1710</zookeeper.version>
     <vendor-driver.version>6.1.0.0.mapr</vendor-driver.version>
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
