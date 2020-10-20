@@ -193,14 +193,6 @@
       <version>${hadoop-azure.version}</version>
     </dependency>
 
-<!--   FIXME: Remove this dependency as it is used for dev purposes only -->
-    <dependency>
-      <groupId>org.apache.hadoop</groupId>
-      <artifactId>hadoop-azure-datalake</artifactId>
-      <version>${hadoop-aws.version}</version>
-    </dependency>
-
-
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>

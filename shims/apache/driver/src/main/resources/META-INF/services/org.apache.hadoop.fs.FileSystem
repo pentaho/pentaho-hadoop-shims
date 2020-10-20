@@ -1,1 +1,2 @@
 org.pentaho.hadoop.shim.pvfs.PvfsHadoopBridge
+org.apache.hadoop.fs.azurebfs.AzureBlobFileSystem

@@ -111,6 +111,8 @@ public class PentahoOrcRecordReader implements IPentahoInputFormat.IPentahoRecor
     try {
       S3NCredentialUtils util = new S3NCredentialUtils();
       util.applyS3CredentialsToHadoopConfigurationIfNecessary( fileName, conf );
+      //TODO: Add Azure configurations similar to S3 and check if the hadoop issue can be fixed.
+      // i.e add configurations from AzDataLakeGen2Conf.conf() here
       Path filePath = new Path( S3NCredentialUtils.scrubFilePathIfNecessary( fileName ) );
       FileSystem fs = FileSystem.get( filePath.toUri(), conf );
       if ( !fs.exists( filePath ) ) {
