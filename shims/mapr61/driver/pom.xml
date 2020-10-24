@@ -21,7 +21,7 @@
     <org.apache.oozie.version>5.1.0.0-mapr-1901</org.apache.oozie.version>
     <parquet.version>1.8.1</parquet.version>
     <pig.version>0.16.0-mapr-1901</pig.version>
-    <sqoop.version>1.4.7</sqoop.version>
+    <sqoop.version>1.4.7-mapr-2009</sqoop.version>
     <zookeeper.version>3.4.5-mapr-1710</zookeeper.version>
     <vendor-driver.version>6.1.0.0.mapr</vendor-driver.version>
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
