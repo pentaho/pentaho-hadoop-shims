@@ -189,4 +189,25 @@ public class HBaseConnectionImpl extends CommonHBaseConnection implements HBaseC
       }
     } );
   }
+
+  @Override public List<String> listNamespaces() throws Exception {
+    return doWithContextClassLoader( new Callable<List<String>>() {
+
+      @Override
+      public List<String> call() throws Exception {
+        return HBaseConnectionImpl.super.listNamespaces();
+      }
+    } );
+  }
+
+  @Override public List<String> listTableNamesByNamespace( String namespace ) throws Exception {
+    return doWithContextClassLoader( new Callable<List<String>>() {
+
+      @Override
+      public List<String> call() throws Exception {
+        return HBaseConnectionImpl.super.listTableNamesByNamespace( namespace );
+      }
+    } );
+  }
+
 }
