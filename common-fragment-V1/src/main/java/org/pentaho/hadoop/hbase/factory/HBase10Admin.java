@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -22,8 +22,12 @@
 package org.pentaho.hadoop.hbase.factory;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.hadoop.hbase.HTableDescriptor;
+import org.apache.hadoop.hbase.NamespaceDescriptor;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Admin;
 import org.apache.hadoop.hbase.client.Connection;
@@ -107,5 +111,15 @@ class HBase10Admin implements HBaseAdmin {
   @Override
   public void close() throws IOException {
     admin.close();
+  }
+
+  @Override public List<String> listNamespaces() throws Exception {
+    NamespaceDescriptor[] namespaceDescriptors = admin.listNamespaceDescriptors();
+    return Stream.of( namespaceDescriptors ).map( NamespaceDescriptor::getName ).collect( Collectors.toList() );
+  }
+
+  @Override public List<String> listTableNamesByNamespace( String namespace ) throws Exception {
+    TableName[] tableNames = admin.listTableNamesByNamespace( namespace );
+    return Stream.of( tableNames ).map( TableName::getNameAsString ).collect( Collectors.toList() );
   }
 }

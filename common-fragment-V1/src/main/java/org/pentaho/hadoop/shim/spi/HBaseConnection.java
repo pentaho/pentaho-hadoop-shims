@@ -35,6 +35,7 @@ import org.pentaho.hadoop.shim.api.internal.hbase.HBaseBytesUtilShim;
 import org.pentaho.hadoop.shim.api.internal.hbase.ColumnFilter;
 import org.pentaho.hadoop.shim.api.internal.hbase.HBaseValueMeta;
 
+@SuppressWarnings( "squid:S112" )
 public interface HBaseConnection {
 
   // version key
@@ -474,4 +475,12 @@ public interface HBaseConnection {
   public abstract void close() throws Exception;
 
   public abstract void obtainAuthTokenForJob( Configuration conf ) throws Exception;
+
+  default List<String> listNamespaces() throws Exception {
+    throw new UnsupportedOperationException( "This method has not supported with the present HbaseConnection" );
+  }
+
+  default List<String> listTableNamesByNamespace( String namespace ) throws Exception {
+    throw new UnsupportedOperationException( "This method has not supported with the present HbaseConnection" );
+  }
 }
