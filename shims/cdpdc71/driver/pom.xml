@@ -17,19 +17,19 @@
     <pentaho-osgi-bundles.version>9.1.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
     <org.apache.avro.version>1.8.0</org.apache.avro.version>
     <org.apache.orc.version>1.2.3</org.apache.orc.version>
-    <org.apache.hadoop.version>3.0.0-cdh6.1.0</org.apache.hadoop.version>
-    <org.apache.hbase.version>2.1.0-cdh6.1.0</org.apache.hbase.version>
-    <org.apache.hive.version>2.1.1-cdh6.1.0</org.apache.hive.version>
-    <org.apache.oozie.version>5.0.0-cdh6.1.0</org.apache.oozie.version>
+    <org.apache.hadoop.version>3.1.1.7.1.3.0-100</org.apache.hadoop.version>
+    <org.apache.hbase.version>2.2.3.7.1.3.0-100</org.apache.hbase.version>
+    <org.apache.hive.version>3.1.3000.7.1.3.0-100</org.apache.hive.version>
+    <org.apache.oozie.version>5.1.0.7.1.3.0-100</org.apache.oozie.version>
     <pig.version>0.17.0-cdh6.1.0</pig.version>
-    <parquet-pig.version>1.9.0-cdh6.1.0</parquet-pig.version>
-    <sqoop.version>1.4.7-cdh6.1.0</sqoop.version>
-    <zookeeper.version>3.4.5-cdh6.1.0</zookeeper.version>
-    <vendor-driver.version>6.0.1.0.cdh</vendor-driver.version>
+    <parquet-pig.version>1.10.99.7.1.3.0-100</parquet-pig.version>
+    <sqoop.version>1.4.7.7.1.3.0-100</sqoop.version>
+    <zookeeper.version>3.5.5.7.1.3.0-100</zookeeper.version>
+    <vendor-driver.version>7.1.3.0</vendor-driver.version>
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
-    <joda-time.version>2.9.9</joda-time.version>
+    <joda-time.version>2.10</joda-time.version>
     <jython.version>2.5.3</jython.version>
-    <jetty.version>9.3.20.v20170531</jetty.version>
+    <jetty.version>9.4.26.v20200117</jetty.version>
   </properties>
 
   <dependencyManagement>
