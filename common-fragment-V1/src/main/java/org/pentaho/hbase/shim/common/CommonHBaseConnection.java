@@ -1108,4 +1108,14 @@ public class CommonHBaseConnection implements HBaseConnection, IHBaseClientFacto
   public void obtainAuthTokenForJob( org.pentaho.hadoop.shim.api.internal.Configuration conf ) throws Exception {
 
   }
+
+  @Override public List<String> listNamespaces() throws Exception {
+    checkConfiguration();
+    return m_admin.listNamespaces();
+  }
+
+  @Override public List<String> listTableNamesByNamespace( String namespace ) throws Exception {
+    checkConfiguration();
+    return m_admin.listTableNamesByNamespace( namespace );
+  }
 }

@@ -600,9 +600,6 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
         + getClusterName() );
     ShimConfigsLoader.ClusterConfigNames[] configFilesNames = ShimConfigsLoader.ClusterConfigNames.values();
     Properties configProps = ShimConfigsLoader.loadConfigProperties( getClusterName() );
-    for ( ShimConfigsLoader.ClusterConfigNames configFileName : configFilesNames ) {
-      copyConfigFileToStaging( configFilesStagingLocation, configFileName.toString() );
-    }
     String keytabAuthFilePath = configProps.getProperty( KEYTAB_AUTHENTICATION_LOCATION, "" );
     if ( !keytabAuthFilePath.isEmpty() ) {
       copyConfigFileToStaging( configFilesStagingLocation, Paths.get( keytabAuthFilePath ).getFileName().toString() );

@@ -31,5 +31,8 @@ import java.util.List;
 public interface NamedClusterServiceLocator {
   <T> T getService( NamedCluster namedCluster, Class<T> serviceClass ) throws ClusterInitializationException;
 
+  <T> T getService( NamedCluster namedCluster, Class<T> serviceClass, String embeddedMetaStoreProviderKey )
+    throws ClusterInitializationException;
+
   List<String> getVendorShimList();
 }

@@ -313,4 +313,12 @@ public class HBaseConnectionWrapper implements HBaseConnection {
   HBaseConnection getRealImpl() {
     return realImpl;
   }
+
+  @Override public List<String> listNamespaces() throws Exception {
+    return delegate.listNamespaces();
+  }
+
+  @Override public List<String> listTableNamesByNamespace( String namespace ) throws Exception {
+    return delegate.listTableNamesByNamespace( namespace );
+  }
 }

@@ -61,11 +61,13 @@ public class NamedClusterServiceLocatorImplTest {
   @Mock private MetastoreLocator mockMetastoreLocator;
   @Mock private NamedClusterService namedClusterManager;
   private Object value = new Object();
+  private String valueString = new String();
+  MemoryMetaStore memoryMetaStore;
 
 
   @Before
   public void setup() {
-    MemoryMetaStore memoryMetaStore = new MemoryMetaStore();
+    memoryMetaStore = new MemoryMetaStore();
     memoryMetaStore.setName( "memoryMetastore" );
     when( mockMetastoreLocator.getMetastore() ).thenReturn( memoryMetaStore );
     serviceLocator = new NamedClusterServiceLocatorImpl( SHIM_A, mockMetastoreLocator, namedClusterManager );
@@ -75,11 +77,14 @@ public class NamedClusterServiceLocatorImplTest {
     when( namedClusterServiceFactory3.getServiceClass() ).thenReturn( Object.class );
 
     when( namedClusterServiceFactory.create( namedCluster ) ).thenReturn( "0" );
+    when( namedClusterServiceFactory2.create( namedCluster ) ).thenReturn( "2" );
     when( namedClusterServiceFactory3.create( namedCluster ) ).thenReturn( "3" );
     serviceLocator.factoryAdded( namedClusterServiceFactory, ImmutableMap.of( "shim", SHIM_A ) );
     serviceLocator.factoryAdded( namedClusterServiceFactory, ImmutableMap.of( "shim", SHIM_B ) );
     serviceLocator.factoryAdded( namedClusterServiceFactory2, ImmutableMap.of( "shim", SHIM_C ) );
     serviceLocator.factoryAdded( namedClusterServiceFactory3, ImmutableMap.of( "shim", SHIM_A ) );
+    when( namedClusterManager.getNamedClusterByName( namedCluster.getName(), memoryMetaStore ) ).thenReturn( namedCluster2 );
+    when( namedClusterManager.getNamedClusterByName( namedCluster.getName(), null) ).thenReturn( null );
   }
 
   @Test
@@ -116,17 +121,23 @@ public class NamedClusterServiceLocatorImplTest {
   }
 
   @Test
-  public void testGetServiceFirst() {
+  public void testGetService() {
     when( namedClusterServiceFactory.canHandle( namedCluster ) ).thenReturn( true );
     when( namedClusterServiceFactory.create( namedCluster ) ).thenReturn( value );
     assertEquals( value, serviceLocator.getService( namedCluster, Object.class ) );
   }
 
   @Test
-  public void testGetServiceLast() {
+  public void testGetServiceWithAccessToEmbeddedMetastore() {
+    String embeddedMetastoreKey = "theMetastoreKey";
     when( namedClusterServiceFactory.canHandle( namedCluster ) ).thenReturn( true );
+    when( namedClusterServiceFactory2.canHandle( namedCluster ) ).thenReturn( true );
     when( namedClusterServiceFactory.create( namedCluster ) ).thenReturn( value );
-    assertEquals( value, serviceLocator.getService( namedCluster, Object.class ) );
+    when( mockMetastoreLocator.getMetastore() ).thenReturn( null );  //disable the normal metastore
+    when( mockMetastoreLocator.getExplicitMetastore( embeddedMetastoreKey ) )
+      .thenReturn( memoryMetaStore ); // and set to embedded metastore
+    when( namedCluster2.getShimIdentifier() ).thenReturn( SHIM_C );
+    assertEquals( "2", serviceLocator.getService( namedCluster, String.class, embeddedMetastoreKey ) );
   }
 
   @Test

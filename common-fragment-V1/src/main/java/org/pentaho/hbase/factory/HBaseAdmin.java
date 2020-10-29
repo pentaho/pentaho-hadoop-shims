@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -22,9 +22,11 @@
 package org.pentaho.hbase.factory;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.hadoop.hbase.HTableDescriptor;
 
+@SuppressWarnings( "squid:S112" )
 public interface HBaseAdmin {
   HTableDescriptor[] listTables() throws IOException;
 
@@ -47,4 +49,12 @@ public interface HBaseAdmin {
   void createTable( HTableDescriptor tableDesc ) throws IOException;
 
   void close() throws IOException;
+
+  default List<String> listNamespaces() throws Exception {
+    throw new UnsupportedOperationException( "This method has not supported with the present HbaseConnection" );
+  }
+
+  default List<String> listTableNamesByNamespace( String namespace ) throws Exception {
+    throw new UnsupportedOperationException( "This method has not supported with the present HbaseConnection" );
+  }
 }

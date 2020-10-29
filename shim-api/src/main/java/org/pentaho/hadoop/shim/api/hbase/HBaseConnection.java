@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -56,5 +56,12 @@ public interface HBaseConnection extends Closeable {
 
   ByteConversionUtil getByteConversionUtil();
 
+  default List<String> listNamespaces() throws IOException {
+    throw new UnsupportedOperationException( "This method has not supported with the present HbaseConnection" );
+  }
+
+  default List<String> listTableNamesByNamespace( String namespace ) throws IOException {
+    throw new UnsupportedOperationException( "This method has not supported with the present HbaseConnection" );
+  }
 }
 
