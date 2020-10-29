@@ -476,11 +476,7 @@ public interface HBaseConnection {
 
   public abstract void obtainAuthTokenForJob( Configuration conf ) throws Exception;
 
-  default List<String> listNamespaces() throws Exception {
-    throw new UnsupportedOperationException( "This method has not supported with the present HbaseConnection" );
-  }
+  public abstract List<String> listNamespaces() throws Exception;
 
-  default List<String> listTableNamesByNamespace( String namespace ) throws Exception {
-    throw new UnsupportedOperationException( "This method has not supported with the present HbaseConnection" );
-  }
+  public abstract List<String> listTableNamesByNamespace( String namespace ) throws Exception;
 }
