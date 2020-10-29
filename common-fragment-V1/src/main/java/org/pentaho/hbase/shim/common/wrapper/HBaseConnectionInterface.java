@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.NavigableMap;
 import java.util.Properties;
 
+@SuppressWarnings( "squid:S112" )
 public interface HBaseConnectionInterface {
 
   public abstract void addColumnFilterToScan( ColumnFilter cf, HBaseValueMeta columnMeta, VariableSpace vars,
@@ -136,5 +137,9 @@ public interface HBaseConnectionInterface {
   public abstract void close() throws Exception;
 
   public abstract void obtainAuthTokenForJob( Configuration conf ) throws Exception;
+
+  public abstract List<String> listNamespaces() throws Exception;
+
+  public abstract List<String> listTableNamesByNamespace( String namespace ) throws Exception;
 
 }
