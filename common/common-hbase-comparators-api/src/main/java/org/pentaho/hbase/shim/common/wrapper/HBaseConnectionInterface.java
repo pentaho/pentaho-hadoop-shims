@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.NavigableMap;
 import java.util.Properties;
 
+@SuppressWarnings( "squid:S112" )
 public interface HBaseConnectionInterface {
 
   public abstract void addColumnFilterToScan( ColumnFilter cf, HBaseValueMeta columnMeta, VariableSpace vars,
@@ -95,7 +96,7 @@ public interface HBaseConnectionInterface {
     throws Exception;
 
   public abstract byte[]
-  getRowColumnLatest( Object aRow, String colFamilyName, String colName, boolean colNameIsBinary ) throws Exception;
+    getRowColumnLatest( Object aRow, String colFamilyName, String colName, boolean colNameIsBinary ) throws Exception;
 
   public abstract NavigableMap<byte[], byte[]> getRowFamilyMap( Object aRow, String familyName ) throws Exception;
 
@@ -133,5 +134,9 @@ public interface HBaseConnectionInterface {
   public abstract void close() throws Exception;
 
   public abstract void obtainAuthTokenForJob( Configuration conf ) throws Exception;
+
+  public abstract List<String> listNamespaces() throws Exception;
+
+  public abstract List<String> listTableNamesByNamespace( String namespace ) throws Exception;
 
 }
