@@ -1,34 +1,29 @@
 /*******************************************************************************
- *
- * Pentaho Big Data
- *
- * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
- *
- *******************************************************************************
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- ******************************************************************************/
-
+*
+* Pentaho Big Data
+*
+* Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
+*
+*******************************************************************************
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with
+* the License. You may obtain a copy of the License at
+*
+*    http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+******************************************************************************/
 package org.pentaho.hadoop.hbase.factory;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.hadoop.hbase.HTableDescriptor;
-import org.apache.hadoop.hbase.NamespaceDescriptor;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Admin;
 import org.apache.hadoop.hbase.client.Connection;
@@ -94,15 +89,5 @@ class HBase10Admin implements HBaseAdmin {
   @Override
   public void close() throws IOException {
     admin.close();
-  }
-
-  @Override public List<String> listNamespaces() throws Exception {
-    NamespaceDescriptor[] namespaceDescriptors = admin.listNamespaceDescriptors();
-    return Stream.of( namespaceDescriptors ).map( NamespaceDescriptor::getName ).collect( Collectors.toList() );
-  }
-
-  @Override public List<String> listTableNamesByNamespace( String namespace ) throws Exception {
-    TableName[] tableNames = admin.listTableNamesByNamespace( namespace );
-    return Stream.of( tableNames ).map( TableName::getNameAsString ).collect( Collectors.toList() );
   }
 }
