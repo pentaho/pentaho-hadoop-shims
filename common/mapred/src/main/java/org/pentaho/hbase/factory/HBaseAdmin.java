@@ -1,33 +1,30 @@
 /*******************************************************************************
- *
- * Pentaho Big Data
- *
- * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
- *
- *******************************************************************************
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- ******************************************************************************/
-
+*
+* Pentaho Big Data
+*
+* Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
+*
+*******************************************************************************
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with
+* the License. You may obtain a copy of the License at
+*
+*    http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+******************************************************************************/
 package org.pentaho.hbase.factory;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.apache.hadoop.hbase.HTableDescriptor;
 
-@SuppressWarnings( "squid:S112" )
 public interface HBaseAdmin {
   HTableDescriptor[] listTables() throws IOException;
   boolean tableExists( String tableName ) throws IOException;
@@ -40,12 +37,4 @@ public interface HBaseAdmin {
   void deleteTable( String tableName ) throws IOException;
   void createTable( HTableDescriptor tableDesc ) throws IOException;
   void close() throws IOException;
-
-  default List<String> listNamespaces() throws Exception {
-    throw new UnsupportedOperationException( "This method has not supported with the present HbaseConnection" );
-  }
-
-  default List<String> listTableNamesByNamespace( String namespace ) throws Exception {
-    throw new UnsupportedOperationException( "This method has not supported with the present HbaseConnection" );
-  }
 }

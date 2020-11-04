@@ -52,7 +52,6 @@ import org.pentaho.hadoop.shim.api.Configuration;
  *
  * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
  */
-@SuppressWarnings( "squid:S112" )
 public class FakeHBaseConnection extends HBaseConnection {
 
   public static class BytesComparator implements Comparator<byte[]> {
@@ -847,15 +846,5 @@ public class FakeHBaseConnection extends HBaseConnection {
 
   @Override
   public void obtainAuthTokenForJob( Configuration conf ) throws Exception {
-  }
-
-  @Override
-  public List<String> listNamespaces() throws Exception {
-    return new ArrayList<>();
-  }
-
-  @Override
-  public List<String> listTableNamesByNamespace( String namespace ) throws Exception {
-    return new ArrayList<>();
   }
 }
