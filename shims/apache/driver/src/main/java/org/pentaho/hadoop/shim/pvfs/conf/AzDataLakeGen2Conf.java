@@ -66,7 +66,6 @@ public class AzDataLakeGen2Conf extends PvfsConf {
     Preconditions.checkArgument( splitPath.length > 0 );
     String bucket = splitPath[1] + "@" + accountName + ".dfs.core.windows.net";
     String path = SEPARATOR + Arrays.stream( splitPath ).skip( 2 ).collect( Collectors.joining( SEPARATOR ) );
-//            fileName = "abfss://devcontainer@hitachidevus/renamedTestFolder/job-inputs_orc_orc_snappy";
     try {
       return new Path( new URI( scheme, bucket, path, null ) );
     } catch ( URISyntaxException e ) {
@@ -77,23 +76,27 @@ public class AzDataLakeGen2Conf extends PvfsConf {
   @Override public Path mapPath( Path pvfsPath, Path realFsPath ) {
     URI uri = realFsPath.toUri();
     return new Path( pvfsPath.toUri().getScheme(),
-            getConnectionName( pvfsPath ), "/" + uri.getHost() + uri.getPath() );
+            getConnectionName( pvfsPath ), "/" + uri.getUserInfo() + uri.getPath() );
   }
 
   @Override public Configuration conf( Path pvfsPath ) {
     Configuration config = new Configuration();
     // https://github.com/apache/hadoop/blob/51598d8b1be20726b744ce29928684784061f8cf/hadoop-tools/hadoop-azure/src/site/markdown/testing_azure.md
-    config.set( "fs.abfs.impl", "org.apache.hadoop.fs.azurebfs.AzureBlobFileSystem" );
-    config.set("fs.AbstractFileSystem.abfs.impl", "org.apache.hadoop.fs.azurebfs.Abfs");
+//    https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-common/core-default.xml
+    config.set( "fs.abfss.impl", "org.apache.hadoop.fs.azurebfs.SecureAzureBlobFileSystem" );
+    config.set("fs.AbstractFileSystem.abfss.impl", "org.apache.hadoop.fs.azurebfs.Abfss");
 //    config.set(ConfigurationKeys.FS_AZURE_ACCOUNT_KEY_PROPERTY_NAME, accountName);
 
-    config.set("fs.azure.abfs.account.name", accountName + ".dfs.core.windows.net");
+    config.set("fs.azure.abfss.account.name", accountName + ".dfs.core.windows.net");
     config.set( "fs.azure.account.auth.type." + accountName + ".dfs.core.windows.net", "SharedKey" );
     config.set( "fs.azure.account.key." + accountName + ".dfs.core.windows.net", sharedKey );
 //    config.set(ConfigurationKeys.FS_AZURE_ACCOUNT_AUTH_TYPE_PROPERTY_NAME, AuthType.SharedKey.name());
     config.set("fs.azure.secure.mode", "false");
     config.set("fs.azure.local.sas.key.mode", "false");
     config.set("fs.azure.enable.check.access", "true");
+    config.set( "fs.abfss.impl.disable.cache", "true" ); // caching managed by PvfsHadoopBridge
+
+    config.set( "fs.abfss.buffer.dir", System.getProperty( "java.io.tmpdir" ) );
     //TODO: Add various other Auth modes and configurations
     return config;
   }
