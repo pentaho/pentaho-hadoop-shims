@@ -291,12 +291,4 @@ public class DelegatingHBaseConnection extends HBaseConnection implements HBaseC
   public void obtainAuthTokenForJob( Configuration conf ) throws Exception {
     delegate.obtainAuthTokenForJob( conf );
   }
-
-  @Override public List<String> listNamespaces() throws Exception {
-    return delegate.listNamespaces();
-  }
-
-  @Override public List<String> listTableNamesByNamespace( String namespace ) throws Exception {
-    return delegate.listTableNamesByNamespace( namespace );
-  }
 }
