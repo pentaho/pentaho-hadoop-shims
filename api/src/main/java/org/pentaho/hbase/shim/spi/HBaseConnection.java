@@ -33,6 +33,7 @@ import org.pentaho.hadoop.shim.api.Configuration;
 import org.pentaho.hbase.shim.api.ColumnFilter;
 import org.pentaho.hbase.shim.api.HBaseValueMeta;
 
+@SuppressWarnings( "squid:S112" )
 public abstract class HBaseConnection {
 
   // version key
@@ -493,4 +494,8 @@ public abstract class HBaseConnection {
   public abstract void close() throws Exception;
 
   public abstract void obtainAuthTokenForJob( Configuration conf ) throws Exception;
+
+  public abstract List<String> listNamespaces() throws Exception;
+
+  public abstract List<String> listTableNamesByNamespace( String namespace ) throws Exception;
 }
