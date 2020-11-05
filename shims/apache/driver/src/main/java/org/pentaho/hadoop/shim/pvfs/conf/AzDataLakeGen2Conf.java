@@ -39,20 +39,33 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.apache.hadoop.fs.Path.SEPARATOR;
 import static org.pentaho.hadoop.shim.pvfs.PvfsHadoopBridge.getConnectionName;
 
 public class AzDataLakeGen2Conf extends PvfsConf {
 
   private final String accountName;
-  private final String sharedKey;
+  private String sharedKey;
   private final String scheme;
+  private String clientId;
+  private String clientSecret;
+  private String tenantId;
+  private String sasToken;
 
   public AzDataLakeGen2Conf( ConnectionDetails details ) {
     super( details );
     scheme = new SecureAzureBlobFileSystem().getScheme();
     accountName = details.getProperties().get( "accountName" );
-    sharedKey = details.getProperties().get( "sharedKey" );
+    if ( isSharedKeyAuthentication( details.getProperties().get( "sharedKey" ) ) ) {
+      sharedKey = details.getProperties().get( "sharedKey" );
+    } else if ( isAzureADAuthentication( details.getProperties().get( "clientId" ), details.getProperties().get( "clientSecret" ), details.getProperties().get( "tenantId" ) ) ) {
+      clientId = details.getProperties().get( "clientId" );
+      clientSecret = details.getProperties().get( "clientSecret" );
+      tenantId = details.getProperties().get( "tenantId" );
+    } else if ( isSASTokenAuthentication( details.getProperties().get( "sasToken" ) ) ) {
+      sasToken = details.getProperties().get( "sasToken" );
+    }
   }
 
   @Override public boolean supportsConnection() {
@@ -84,21 +97,44 @@ public class AzDataLakeGen2Conf extends PvfsConf {
     // https://github.com/apache/hadoop/blob/51598d8b1be20726b744ce29928684784061f8cf/hadoop-tools/hadoop-azure/src/site/markdown/testing_azure.md
 //    https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-common/core-default.xml
     config.set( "fs.abfss.impl", "org.apache.hadoop.fs.azurebfs.SecureAzureBlobFileSystem" );
-    config.set("fs.AbstractFileSystem.abfss.impl", "org.apache.hadoop.fs.azurebfs.Abfss");
+    config.set( "fs.AbstractFileSystem.abfss.impl", "org.apache.hadoop.fs.azurebfs.Abfss" );
 //    config.set(ConfigurationKeys.FS_AZURE_ACCOUNT_KEY_PROPERTY_NAME, accountName);
 
-    config.set("fs.azure.abfss.account.name", accountName + ".dfs.core.windows.net");
-    config.set( "fs.azure.account.auth.type." + accountName + ".dfs.core.windows.net", "SharedKey" );
-    config.set( "fs.azure.account.key." + accountName + ".dfs.core.windows.net", sharedKey );
+    config.set( "fs.azure.abfss.account.name", accountName + ".dfs.core.windows.net" );
+    if ( !isNullOrEmpty( sharedKey ) ) {
+      config.set( "fs.azure.account.auth.type." + accountName + ".dfs.core.windows.net", "SharedKey" );
+      config.set( "fs.azure.account.key." + accountName + ".dfs.core.windows.net", sharedKey );
+    } else if ( !isNullOrEmpty( clientId ) && !isNullOrEmpty( clientSecret ) && !isNullOrEmpty( tenantId ) ) {
+      config.set( "fs.azure.account.auth.type." + accountName + ".dfs.core.windows.net", "OAuth" );
+      config.set( "fs.azure.account.oauth.provider.type." + accountName + ".dfs.core.windows.net", "org.apache.hadoop.fs.azurebfs.oauth2.ClientCredsTokenProvider" );
+      config.set( "fs.azure.account.oauth2.client.endpoint." + accountName + ".dfs.core.windows.net", "https://login.microsoftonline.com/" + tenantId + "/oauth2/token" );
+      config.set( "fs.azure.account.oauth2.client.id." + accountName + ".dfs.core.windows.net", clientId );
+      config.set( "fs.azure.account.oauth2.client.secret." + accountName + ".dfs.core.windows.net", clientSecret );
+    } else if ( !isNullOrEmpty( sasToken ) ) {
+      config.set( "fs.azure.account.auth.type." + accountName + ".dfs.core.windows.net", "SAS");
+      config.set( "fs.azure.sas." + accountName + ".dfs.core.windows.net", sasToken);
+    }
 //    config.set(ConfigurationKeys.FS_AZURE_ACCOUNT_AUTH_TYPE_PROPERTY_NAME, AuthType.SharedKey.name());
-    config.set("fs.azure.secure.mode", "false");
-    config.set("fs.azure.local.sas.key.mode", "false");
-    config.set("fs.azure.enable.check.access", "true");
+    config.set( "fs.azure.secure.mode", "false" );
+    config.set( "fs.azure.local.sas.key.mode", "false" );
+    config.set( "fs.azure.enable.check.access", "true" );
     config.set( "fs.abfss.impl.disable.cache", "true" ); // caching managed by PvfsHadoopBridge
 
     config.set( "fs.abfss.buffer.dir", System.getProperty( "java.io.tmpdir" ) );
     //TODO: Add various other Auth modes and configurations
     return config;
+  }
+
+  private boolean isSharedKeyAuthentication( String sharedKey ) {
+    return !isNullOrEmpty( sharedKey );
+  }
+
+  private boolean isAzureADAuthentication( String clientId, String clientSecret, String tenantId ) {
+    return !isNullOrEmpty( clientId ) && !isNullOrEmpty( clientSecret ) && !isNullOrEmpty( tenantId );
+  }
+
+  private boolean isSASTokenAuthentication( String sasToken ) {
+    return !isNullOrEmpty( sasToken );
   }
 
   @Override public boolean equals( Object o ) {
