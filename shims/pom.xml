@@ -288,6 +288,7 @@
       <module>emr521</module>
       <module>mapr60</module>
       <module>dataproc1421</module>
+      <module>mapr61</module>
       <module>apache</module>
     </modules>
   </profile>
@@ -350,6 +351,18 @@
     <modules>
       <module>dataproc1421</module>
     </modules>
+    </profile>
+  <profile>
+    <id>mapr61</id>
+    <activation>
+      <property>
+        <name>!skipDefault</name>
+      </property>
+    </activation>
+    <modules>
+      <module>mapr61</module>
+    </modules>
   </profile>
+
 </profiles>
 </project>
