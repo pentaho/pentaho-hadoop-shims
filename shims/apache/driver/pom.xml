@@ -35,7 +35,7 @@
     <!-- Guarantee the proper version for Jetty artifacts -->
     <!-- Note the difference between \lib and \lib\client -->
     <jetty.lib-folder.version>9.3.20.v20170531</jetty.lib-folder.version>
-    <jetty.client-folder.version>9.3.19.v20170502</jetty.client-folder.version>
+    <jetty.client-folder.version>9.4.34.v20201102</jetty.client-folder.version>
   </properties>
 
   <dependencies>
