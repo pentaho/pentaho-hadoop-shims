@@ -5,11 +5,11 @@
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-hdp26-reactor</artifactId>
-    <version>8.3.0.0-SNAPSHOT</version>
+    <version>8.3.2020.11.00-1072</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-hdp26</artifactId>
   <packaging>jar</packaging>
-  <version>8.3.0.0-SNAPSHOT</version>
+  <version>8.3.2020.11.00-1072</version>
   <properties>
     <shim.type>HDP</shim.type>
   </properties>
