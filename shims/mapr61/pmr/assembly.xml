@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <assembly>
   <id>plugin</id>
-  <baseDirectory>mapr60</baseDirectory>
+  <baseDirectory>mapr61</baseDirectory>
   <formats>
     <format>zip</format>
   </formats>
