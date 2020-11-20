@@ -4,38 +4,38 @@
            xsi:schemaLocation="
             http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
 
-  <bean id="mapr60ShimIdentifier" class="org.pentaho.hadoop.shim.api.internal.ShimIdentifier" scope="singleton">
-    <argument value="mapr60"/>
+  <bean id="mapr61ShimIdentifier" class="org.pentaho.hadoop.shim.api.internal.ShimIdentifier" scope="singleton">
+    <argument value="mapr61"/>
     <argument value="Map-R"/>
-    <argument value="6.0"/>
+    <argument value="6.1"/>
     <argument value="COMMUNITY"/>
   </bean>
 
-  <service ref="mapr60ShimIdentifier" interface="org.pentaho.hadoop.shim.api.core.ShimIdentifierInterface"/>
+  <service ref="mapr61ShimIdentifier" interface="org.pentaho.hadoop.shim.api.core.ShimIdentifierInterface"/>
 
-  <bean id="mapr60Hadoop" class="org.pentaho.hadoop.shim.HadoopShim" scope="singleton"/>
+  <bean id="mapr61Hadoop" class="org.pentaho.hadoop.shim.HadoopShim" scope="singleton"/>
 
-  <service ref="mapr60Hadoop" interface="org.pentaho.hadoop.shim.spi.HadoopShim">
+  <service ref="mapr61Hadoop" interface="org.pentaho.hadoop.shim.spi.HadoopShim">
     <service-properties>
       <entry key="shim">
-        <value type="java.lang.String">mapr60</value>
+        <value type="java.lang.String">mapr61</value>
       </entry>
     </service-properties>
   </service>
 
   <bean id="hadoopFileSystem" class="com.pentaho.big.data.bundles.impl.shim.hdfs.HadoopFileSystemFactoryImpl">
-    <argument ref="mapr60Hadoop"/>
-    <argument ref="mapr60ShimIdentifier"/>
+    <argument ref="mapr61Hadoop"/>
+    <argument ref="mapr61ShimIdentifier"/>
   </bean>
 
   <service ref="hadoopFileSystem" interface="org.pentaho.hadoop.shim.api.hdfs.HadoopFileSystemFactory"/>
 
-  <bean id="mapr60FormatShim" class="org.pentaho.hadoop.shim.common.CommonFormatShim"/>
+  <bean id="mapr61FormatShim" class="org.pentaho.hadoop.shim.common.CommonFormatShim"/>
 
-  <service ref="mapr60FormatShim" auto-export="interfaces">
+  <service ref="mapr61FormatShim" auto-export="interfaces">
     <service-properties>
       <entry key="shim">
-        <value type="java.lang.String">mapr60</value>
+        <value type="java.lang.String">mapr61</value>
       </entry>
       <entry key="service">
         <value type="java.lang.String">format</value>
@@ -43,15 +43,15 @@
     </service-properties>
   </service>
 
-  <bean id="mapr60FormatServiceFactory" class="org.pentaho.big.data.impl.shim.format.FormatServiceFactory">
-    <argument ref="mapr60FormatShim"/>
+  <bean id="mapr61FormatServiceFactory" class="org.pentaho.big.data.impl.shim.format.FormatServiceFactory">
+    <argument ref="mapr61FormatShim"/>
   </bean>
 
-  <service ref="mapr60FormatServiceFactory"
+  <service ref="mapr61FormatServiceFactory"
            interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
     <service-properties>
       <entry key="shim">
-        <value type="java.lang.String">mapr60</value>
+        <value type="java.lang.String">mapr61</value>
       </entry>
       <entry key="service">
         <value type="java.lang.String">format</value>
@@ -59,17 +59,17 @@
     </service-properties>
   </service>
 
-  <bean id="mapr60MapReduceServiceFactory" class="org.pentaho.big.data.impl.shim.mapreduce.MapReduceServiceFactoryImpl">
-    <argument ref="mapr60Hadoop"/>
+  <bean id="mapr61MapReduceServiceFactory" class="org.pentaho.big.data.impl.shim.mapreduce.MapReduceServiceFactoryImpl">
+    <argument ref="mapr61Hadoop"/>
     <argument ref="executorService"/>
     <argument ref="transformationVisitorList"/>
   </bean>
   <reference id="executorService" interface="java.util.concurrent.ExecutorService"/>
 
-  <service ref="mapr60MapReduceServiceFactory" interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
+  <service ref="mapr61MapReduceServiceFactory" interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
     <service-properties>
       <entry key="shim">
-        <value type="java.lang.String">mapr60</value>
+        <value type="java.lang.String">mapr61</value>
       </entry>
       <entry key="service">
         <value type="java.lang.String">mapreduce</value>
@@ -81,14 +81,14 @@
                   availability="optional"/>
 
   <!-- Hadoop client services definition -->
-  <bean id="mapr60HadoopServicesFactory" class="org.pentaho.big.data.impl.shim.HadoopClientServicesFactory">
-    <argument ref="mapr60Hadoop"/>
+  <bean id="mapr61HadoopServicesFactory" class="org.pentaho.big.data.impl.shim.HadoopClientServicesFactory">
+    <argument ref="mapr61Hadoop"/>
     <argument ref="blueprintBundleContext"/>
   </bean>
-  <service ref="mapr60HadoopServicesFactory" interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
+  <service ref="mapr61HadoopServicesFactory" interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
     <service-properties>
       <entry key="shim">
-        <value type="java.lang.String">mapr60</value>
+        <value type="java.lang.String">mapr61</value>
       </entry>
       <entry key="service">
         <value type="java.lang.String">shimservices</value>
@@ -98,49 +98,49 @@
   <!-- End of Hadoop client services definition -->
 
   <!-- Hive service definition -->
-  <bean id="mapr60HiveDriver" class="com.pentaho.big.data.bundles.impl.shim.hive.HiveDriver">
+  <bean id="mapr61HiveDriver" class="com.pentaho.big.data.bundles.impl.shim.hive.HiveDriver">
     <argument ref="jdbcUrlParser"/>
     <argument value="org.apache.hive.jdbc.HiveDriver"/>
-    <argument value="mapr60"/>
+    <argument value="mapr61"/>
   </bean>
 
-  <service ref="mapr60HiveDriver" interface="java.sql.Driver">
+  <service ref="mapr61HiveDriver" interface="java.sql.Driver">
     <service-properties>
       <entry key="dataSourceType" value="bigdata"/>
     </service-properties>
   </service>
 
-  <bean id="mapr60ImpalaDriver" class="com.pentaho.big.data.bundles.impl.shim.hive.ImpalaDriver">
+  <bean id="mapr61ImpalaDriver" class="com.pentaho.big.data.bundles.impl.shim.hive.ImpalaDriver">
     <argument ref="jdbcUrlParser"/>
     <argument value="org.apache.hive.jdbc.HiveDriver"/>
-    <argument value="mapr60"/>
+    <argument value="mapr61"/>
   </bean>
 
-  <bean id="mapr60ImpalaSimbaDriver" class="com.pentaho.big.data.bundles.impl.shim.hive.ImpalaSimbaDriver">
+  <bean id="mapr61ImpalaSimbaDriver" class="com.pentaho.big.data.bundles.impl.shim.hive.ImpalaSimbaDriver">
     <argument ref="jdbcUrlParser"/>
     <argument value="org.apache.hive.jdbc.HiveDriver"/>
-    <argument value="mapr60"/>
+    <argument value="mapr61"/>
   </bean>
 
-  <bean id="mapr60SparkSimbaDriver" class="com.pentaho.big.data.bundles.impl.shim.hive.SparkSimbaDriver">
+  <bean id="mapr61SparkSimbaDriver" class="com.pentaho.big.data.bundles.impl.shim.hive.SparkSimbaDriver">
     <argument ref="jdbcUrlParser"/>
     <argument value="org.apache.hive.jdbc.HiveDriver"/>
-    <argument value="mapr60"/>
+    <argument value="mapr61"/>
   </bean>
 
-  <service ref="mapr60ImpalaDriver" interface="java.sql.Driver">
+  <service ref="mapr61ImpalaDriver" interface="java.sql.Driver">
     <service-properties>
       <entry key="dataSourceType" value="bigdata"/>
     </service-properties>
   </service>
 
-  <service ref="mapr60ImpalaSimbaDriver" interface="java.sql.Driver">
+  <service ref="mapr61ImpalaSimbaDriver" interface="java.sql.Driver">
     <service-properties>
       <entry key="dataSourceType" value="bigdata"/>
     </service-properties>
   </service>
 
-  <service ref="mapr60SparkSimbaDriver" interface="java.sql.Driver">
+  <service ref="mapr61SparkSimbaDriver" interface="java.sql.Driver">
     <service-properties>
       <entry key="dataSourceType" value="bigdata"/>
     </service-properties>
@@ -155,7 +155,7 @@
   <service ref="hbaseShim" auto-export="interfaces">
     <service-properties>
       <entry key="shim">
-        <value type="java.lang.String">mapr60</value>
+        <value type="java.lang.String">mapr61</value>
       </entry>
       <entry key="service">
         <value type="java.lang.String">hbase</value>
@@ -163,14 +163,14 @@
     </service-properties>
   </service>
 
-  <bean id="mapr60HBaseServiceFactory" class="com.pentaho.big.data.bundles.impl.shim.hbase.HBaseServiceFactory">
+  <bean id="mapr61HBaseServiceFactory" class="com.pentaho.big.data.bundles.impl.shim.hbase.HBaseServiceFactory">
     <argument ref="hbaseShim"/>
   </bean>
 
-  <service ref="mapr60HBaseServiceFactory" interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
+  <service ref="mapr61HBaseServiceFactory" interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
     <service-properties>
       <entry key="shim">
-        <value type="java.lang.String">mapr60</value>
+        <value type="java.lang.String">mapr61</value>
       </entry>
       <entry key="service">
         <value type="java.lang.String">hbase</value>

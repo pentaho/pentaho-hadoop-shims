@@ -4,11 +4,11 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.pentaho.hadoop.shims</groupId>
-    <artifactId>pentaho-hadoop-shims-mapr60-reactor</artifactId>
+    <artifactId>pentaho-hadoop-shims-mapr61-reactor</artifactId>
     <version>9.2.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>pentaho-hadoop-shims-mapr60-driver</artifactId>
+  <artifactId>pentaho-hadoop-shims-mapr61-driver</artifactId>
   <version>9.2.0.0-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <properties>
@@ -211,7 +211,7 @@
         <configuration>
           <instructions>
             <Bundle-SymbolicName>pentaho-hadoop-driver-V1</Bundle-SymbolicName>
-            <Bundle-Version>6.0.mapr</Bundle-Version>
+            <Bundle-Version>6.1.mapr</Bundle-Version>
             <Pentaho-Code-Version>${pentaho-code.version}</Pentaho-Code-Version>
             <DynamicImport-Package>*</DynamicImport-Package>
             <excludes>
