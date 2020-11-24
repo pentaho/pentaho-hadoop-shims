@@ -102,17 +102,18 @@ public class AzDataLakeGen2Conf extends PvfsConf {
 
     config.set( "fs.azure.abfss.account.name", accountName + ".dfs.core.windows.net" );
     if ( !isNullOrEmpty( sharedKey ) ) {
-      config.set( "fs.azure.account.auth.type." + accountName + ".dfs.core.windows.net", "SharedKey" );
+      config.set( "fs.azure.account.auth.type." + accountName + ".dfs.core.windows.net", AuthType.SharedKey.name() );
       config.set( "fs.azure.account.key." + accountName + ".dfs.core.windows.net", sharedKey );
     } else if ( !isNullOrEmpty( clientId ) && !isNullOrEmpty( clientSecret ) && !isNullOrEmpty( tenantId ) ) {
-      config.set( "fs.azure.account.auth.type." + accountName + ".dfs.core.windows.net", "OAuth" );
+      config.set( "fs.azure.account.auth.type." + accountName + ".dfs.core.windows.net", AuthType.OAuth.name() );
       config.set( "fs.azure.account.oauth.provider.type." + accountName + ".dfs.core.windows.net", "org.apache.hadoop.fs.azurebfs.oauth2.ClientCredsTokenProvider" );
       config.set( "fs.azure.account.oauth2.client.endpoint." + accountName + ".dfs.core.windows.net", "https://login.microsoftonline.com/" + tenantId + "/oauth2/token" );
       config.set( "fs.azure.account.oauth2.client.id." + accountName + ".dfs.core.windows.net", clientId );
       config.set( "fs.azure.account.oauth2.client.secret." + accountName + ".dfs.core.windows.net", clientSecret );
     } else if ( !isNullOrEmpty( sasToken ) ) {
-      config.set( "fs.azure.account.auth.type." + accountName + ".dfs.core.windows.net", "SAS");
-      config.set( "fs.azure.sas." + accountName + ".dfs.core.windows.net", sasToken);
+      config.set( "fs.azure.account.auth.type." + accountName + ".dfs.core.windows.net", AuthType.SAS.name());
+      config.set( "fs.azure.sas.token.provider.type", "org.pentaho.hadoop.shim.pvfs.conf.providers.PentahoAzureSasTokenProvider");
+      config.set( "fs.azure.sas.token", sasToken);
     }
 //    config.set(ConfigurationKeys.FS_AZURE_ACCOUNT_AUTH_TYPE_PROPERTY_NAME, AuthType.SharedKey.name());
     config.set( "fs.azure.secure.mode", "false" );
