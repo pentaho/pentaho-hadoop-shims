@@ -19,7 +19,7 @@
     <org.apache.orc.version>1.2.3</org.apache.orc.version>
     <org.apache.hadoop.version>3.1.1.7.1.3.0-100</org.apache.hadoop.version>
     <org.apache.hbase.version>2.2.3.7.1.3.0-100</org.apache.hbase.version>
-    <org.apache.hive.version>2.1.1-cdh6.1.0</org.apache.hive.version>
+    <org.apache.hive.version>3.1.3000.7.1.3.0-100</org.apache.hive.version>
     <org.apache.oozie.version>5.1.0.7.1.3.0-100</org.apache.oozie.version>
     <pig.version>0.17.0-cdh6.1.0</pig.version>
     <parquet-pig.version>1.10.99.7.1.3.0-100</parquet-pig.version>
@@ -145,6 +145,27 @@
       <artifactId>pentaho-hadoop-shims-common-fragment-V1</artifactId>
       <version>${project.version}</version>
     </dependency>
+	<dependency>
+      <groupId>org.apache.hive</groupId>
+      <artifactId>hive-service</artifactId>
+      <version>${org.apache.hive.version}</version>
+	  <exclusions>
+        <exclusion>
+          <groupId>dnsjava</groupId>
+          <artifactId>dnsjava</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+	<dependency>
+      <groupId>org.apache.hive</groupId>
+      <artifactId>hive-jdbc</artifactId>
+      <version>${org.apache.hive.version}</version>
+    </dependency>
+	<dependency>
+      <groupId>dnsjava</groupId>
+      <artifactId>dnsjava</artifactId>
+      <version>3.3.1</version>
+    </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-yarn-api</artifactId>
@@ -159,16 +180,6 @@
       <groupId>org.apache.avro</groupId>
       <artifactId>avro-mapred</artifactId>
       <version>${org.apache.avro.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.hive</groupId>
-      <artifactId>hive-jdbc</artifactId>
-      <version>${org.apache.hive.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.hive</groupId>
-      <artifactId>hive-service</artifactId>
-      <version>${org.apache.hive.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.orc</groupId>
