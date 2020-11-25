@@ -125,6 +125,13 @@
       <version>${org.apache.hadoop.version}</version>
     </dependency>
 
+  <!-- Dependency for hadoop-common-3.3.0 which causes bundle packaging issues -->
+    <dependency>
+      <groupId>dnsjava</groupId>
+      <artifactId>dnsjava</artifactId>
+      <version>3.3.1</version>
+    </dependency>
+
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-common</artifactId>
