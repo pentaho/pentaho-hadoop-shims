@@ -39,7 +39,13 @@ import org.pentaho.di.connections.ConnectionProvider;
 import org.pentaho.di.connections.vfs.provider.ConnectionFileName;
 import org.pentaho.di.connections.vfs.provider.ConnectionFileNameParser;
 import org.pentaho.hadoop.shim.api.format.org.pentaho.hadoop.shim.pvfs.api.PvfsHadoopBridgeFileSystemExtension;
-import org.pentaho.hadoop.shim.pvfs.conf.*;
+
+import org.pentaho.hadoop.shim.pvfs.conf.ADLSGen2Conf;
+import org.pentaho.hadoop.shim.pvfs.conf.GcsConf;
+import org.pentaho.hadoop.shim.pvfs.conf.HCPConf;
+import org.pentaho.hadoop.shim.pvfs.conf.PvfsConf;
+import org.pentaho.hadoop.shim.pvfs.conf.S3Conf;
+import org.pentaho.hadoop.shim.pvfs.conf.SnwConf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +75,7 @@ public class PvfsHadoopBridge extends FileSystem implements PvfsHadoopBridgeFile
 
   @SuppressWarnings( "unused" )
   public PvfsHadoopBridge() {
-    confFactories = Arrays.asList( S3Conf::new, HCPConf::new, SnwConf::new, GcsConf::new, AzDataLakeGen2Conf::new);
+    confFactories = Arrays.asList( S3Conf::new, HCPConf::new, SnwConf::new, GcsConf::new, ADLSGen2Conf::new );
     connMgr = ConnectionManager.getInstance();
   }
 
