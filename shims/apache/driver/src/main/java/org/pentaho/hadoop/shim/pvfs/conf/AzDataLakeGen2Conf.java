@@ -94,8 +94,11 @@ public class AzDataLakeGen2Conf extends PvfsConf {
 
   @Override public Configuration conf( Path pvfsPath ) {
     Configuration config = new Configuration();
-    // https://github.com/apache/hadoop/blob/51598d8b1be20726b744ce29928684784061f8cf/hadoop-tools/hadoop-azure/src/site/markdown/testing_azure.md
-//    https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-common/core-default.xml
+    /**
+     * Azure Connector configurations can be found here :
+     * https://github.com/apache/hadoop/blob/51598d8b1be20726b744ce29928684784061f8cf/hadoop-tools/hadoop-azure/src/site/markdown/testing_azure.md
+     * https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-common/core-default.xml
+     */
     config.set( "fs.abfss.impl", "org.apache.hadoop.fs.azurebfs.SecureAzureBlobFileSystem" );
     config.set( "fs.AbstractFileSystem.abfss.impl", "org.apache.hadoop.fs.azurebfs.Abfss" );
 //    config.set(ConfigurationKeys.FS_AZURE_ACCOUNT_KEY_PROPERTY_NAME, accountName);
@@ -111,9 +114,9 @@ public class AzDataLakeGen2Conf extends PvfsConf {
       config.set( "fs.azure.account.oauth2.client.id." + accountName + ".dfs.core.windows.net", clientId );
       config.set( "fs.azure.account.oauth2.client.secret." + accountName + ".dfs.core.windows.net", clientSecret );
     } else if ( !isNullOrEmpty( sasToken ) ) {
-      config.set( "fs.azure.account.auth.type." + accountName + ".dfs.core.windows.net", AuthType.SAS.name());
-      config.set( "fs.azure.sas.token.provider.type", "org.pentaho.hadoop.shim.pvfs.conf.providers.PentahoAzureSasTokenProvider");
-      config.set( "fs.azure.sas.token", sasToken);
+      config.set( "fs.azure.account.auth.type." + accountName + ".dfs.core.windows.net", AuthType.SAS.name() );
+      config.set( "fs.azure.sas.token.provider.type", "org.pentaho.hadoop.shim.pvfs.conf.providers.PentahoAzureSasTokenProvider" );
+      config.set( "fs.azure.sas.token", sasToken.substring( 1 ) );
     }
 //    config.set(ConfigurationKeys.FS_AZURE_ACCOUNT_AUTH_TYPE_PROPERTY_NAME, AuthType.SharedKey.name());
     config.set( "fs.azure.secure.mode", "false" );
@@ -122,7 +125,6 @@ public class AzDataLakeGen2Conf extends PvfsConf {
     config.set( "fs.abfss.impl.disable.cache", "true" ); // caching managed by PvfsHadoopBridge
 
     config.set( "fs.abfss.buffer.dir", System.getProperty( "java.io.tmpdir" ) );
-    //TODO: Add various other Auth modes and configurations
     return config;
   }
 
