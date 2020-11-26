@@ -57,11 +57,11 @@ public interface HBaseConnection extends Closeable {
   ByteConversionUtil getByteConversionUtil();
 
   default List<String> listNamespaces() throws IOException {
-    throw new UnsupportedOperationException( "This method has not supported with the present HbaseConnection" );
+    throw new UnsupportedOperationException( "This method is not supported with the present HbaseConnection" );
   }
 
   default List<String> listTableNamesByNamespace( String namespace ) throws IOException {
-    throw new UnsupportedOperationException( "This method has not supported with the present HbaseConnection" );
+    throw new UnsupportedOperationException( "This method is not supported with the present HbaseConnection" );
   }
 }
 
