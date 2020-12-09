@@ -501,18 +501,6 @@
     </profile>
 
     <profile>
-      <id>mapr61</id>
-      <activation>
-        <property>
-          <name>!skipDefault</name>
-        </property>
-      </activation>
-      <modules>
-        <module>mapr61</module>
-      </modules>
-    </profile>
-
-    <profile>
       <id>emr59</id>
       <activation>
         <property>
