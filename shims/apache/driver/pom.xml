@@ -25,7 +25,7 @@
     <commons-configuration.version>1.6</commons-configuration.version>
     <commons-configuration2.version>2.1.1</commons-configuration2.version>
     <mockito-all.version>1.10.19</mockito-all.version>
-    <org.apache.hadoop.version>3.1.0.3.0.0.0-1634</org.apache.hadoop.version>
+    <org.apache.hadoop.version>3.3.0</org.apache.hadoop.version>
     <org.apache.orc.version>1.6.1</org.apache.orc.version>
     <parquet.version>1.10.0.3.0.0.0-1634</parquet.version>
     <joda-time.version>2.9.9</joda-time.version>
@@ -125,10 +125,23 @@
       <version>${org.apache.hadoop.version}</version>
     </dependency>
 
+  <!-- Dependency for hadoop-common-3.3.0 which causes bundle packaging issues -->
+    <dependency>
+      <groupId>dnsjava</groupId>
+      <artifactId>dnsjava</artifactId>
+      <version>3.3.1</version>
+    </dependency>
+
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-common</artifactId>
       <version>${org.apache.hadoop.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>dnsjava</groupId>
+          <artifactId>dnsjava</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.orc</groupId>
@@ -172,6 +185,11 @@
       <groupId>com.google.cloud.bigdataoss</groupId>
       <artifactId>gcs-connector</artifactId>
       <version>${gcs-connector.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-azure</artifactId>
+      <version>3.3.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -234,6 +252,7 @@
               <include>
                 *:com.fasterxml.jackson.dataformat,*:hadoop-mapreduce-client-core,*:hadoop-common,*:orc-core,*:avro,
                 *:hadoop-aws,
+                *:hadoop-azure,
                 com.amazonaws:*,
                 *:parquet-hadoop-bundle,*:hadoop-hdfs,
                 *:avro-mapred,
