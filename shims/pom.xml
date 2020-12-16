@@ -289,6 +289,7 @@
       <module>mapr60</module>
       <module>dataproc1421</module>
       <module>apache</module>
+      <module>mapr61</module>
     </modules>
   </profile>
 
@@ -349,6 +350,18 @@
     </activation>
     <modules>
       <module>dataproc1421</module>
+    </modules>
+  </profile>
+
+  <profile>
+    <id>mapr61</id>
+    <activation>
+      <property>
+        <name>!skipDefault</name>
+      </property>
+    </activation>
+    <modules>
+      <module>mapr61</module>
     </modules>
   </profile>
 </profiles>
