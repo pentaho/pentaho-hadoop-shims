@@ -11,7 +11,7 @@
   <version>9.2.0.0-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <properties>
-    <vendor-driver.version>3.0.0.0.apache</vendor-driver.version>
+    <vendor-driver.version>3.3.0.0.apache</vendor-driver.version>
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
 
     <shim.name>apache</shim.name>
@@ -19,7 +19,7 @@
     <org.apache.avro.version>1.8.0</org.apache.avro.version>
     <hadoop-aws.version>3.3.0</hadoop-aws.version>
     <!-- client and default folders -->
-    <hadoop.version>3.1.0.3.0.0.0-1634</hadoop.version>
+    <hadoop.version>3.3.0</hadoop.version>
     <gcs-connector.version>hadoop2-1.9.17</gcs-connector.version>
     <!-- pmr folder -->
     <commons-configuration.version>1.6</commons-configuration.version>
