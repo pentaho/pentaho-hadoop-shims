@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2019-2020 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019-2021 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -34,6 +34,7 @@ import org.apache.parquet.hadoop.ParquetOutputFormat;
 import org.apache.parquet.hadoop.ParquetRecordWriter;
 import org.apache.parquet.hadoop.metadata.CompressionCodecName;
 import org.pentaho.di.core.RowMetaAndData;
+import org.pentaho.di.core.util.StringUtil;
 import org.pentaho.hadoop.shim.ShimConfigsLoader;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.format.IParquetOutputField;
@@ -45,7 +46,6 @@ import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -209,7 +209,7 @@ public class PentahoApacheOutputFormat extends HadoopFormatBase implements IPent
           return S3NCredentialUtils.scrubFilePathIfNecessary( pvfsPath );
         }
 
-        FileSystem fs = FileSystem.get( new URI( pvfsPath ), job.getConfiguration() );
+        FileSystem fs = FileSystem.get( StringUtil.toUri( pvfsPath ), job.getConfiguration() );
         if ( fs instanceof PvfsHadoopBridgeFileSystemExtension ) {
           return ( (PvfsHadoopBridgeFileSystemExtension) fs ).generateAlias( pvfsPath );
         } else {

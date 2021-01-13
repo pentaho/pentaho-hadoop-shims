@@ -27,7 +27,7 @@
     <mockito-all.version>1.10.19</mockito-all.version>
     <org.apache.hadoop.version>3.3.0</org.apache.hadoop.version>
     <org.apache.orc.version>1.6.1</org.apache.orc.version>
-    <parquet.version>1.10.0.3.0.0.0-1634</parquet.version>
+    <parquet.version>1.11.1</parquet.version>
     <joda-time.version>2.9.9</joda-time.version>
     <aws-java-sdk-core.version>1.11.275</aws-java-sdk-core.version>
     <org.apache.thrift.version>0.9.3</org.apache.thrift.version>
