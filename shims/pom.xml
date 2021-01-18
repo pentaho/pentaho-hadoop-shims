@@ -290,6 +290,7 @@
       <module>dataproc1421</module>
       <module>apache</module>
       <module>mapr61</module>
+      <module>cdpdc71</module>
     </modules>
   </profile>
 
@@ -362,6 +363,18 @@
     </activation>
     <modules>
       <module>mapr61</module>
+    </modules>
+  </profile>
+
+  <profile>
+    <id>cdpdc71</id>
+    <activation>
+      <property>
+        <name>!skipDefault</name>
+      </property>
+    </activation>
+    <modules>
+      <module>cdpdc71</module>
     </modules>
   </profile>
 </profiles>
