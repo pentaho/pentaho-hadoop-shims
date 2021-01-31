@@ -5,11 +5,11 @@
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims-mapr60-reactor</artifactId>
-    <version>8.3.0.0-SNAPSHOT</version>
+    <version>8.3.2019.05.00-1150</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-mapr60</artifactId>
   <packaging>jar</packaging>
-  <version>8.3.0.0-SNAPSHOT</version>
+  <version>8.3.2019.05.00-1150</version>
   <properties>
     <log4j.version>1.2.15</log4j.version>
     <maprfs.version>6.0.0-mapr</maprfs.version>
