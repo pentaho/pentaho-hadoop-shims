@@ -14,18 +14,20 @@
 
   <properties>
     <commons-lang.version>2.6</commons-lang.version>
-    <pentaho-osgi-bundles.version>9.2.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
-    <org.apache.avro.version>1.8.0</org.apache.avro.version>
-    <org.apache.orc.version>1.2.3</org.apache.orc.version>
-    <org.apache.hadoop.version>3.1.1.7.1.3.0-100</org.apache.hadoop.version>
-    <org.apache.hbase.version>2.2.3.7.1.3.0-100</org.apache.hbase.version>
-    <org.apache.hive.version>3.1.3000.7.1.3.0-100</org.apache.hive.version>
-    <org.apache.oozie.version>5.1.0.7.1.3.0-100</org.apache.oozie.version>
-    <pig.version>0.17.0-cdh6.1.0</pig.version>
-    <parquet-pig.version>1.10.99.7.1.3.0-100</parquet-pig.version>
-    <sqoop.version>1.4.7.7.1.3.0-100</sqoop.version>
-    <zookeeper.version>3.5.5.7.1.3.0-100</zookeeper.version>
-    <vendor-driver.version>7.1.3.0</vendor-driver.version>
+
+    <pentaho-osgi-bundles.version>9.1.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
+    <org.apache.avro.version>1.8.2.7.1.4.0-203</org.apache.avro.version>
+    <org.apache.orc.version>1.5.1.7.1.4.0-203</org.apache.orc.version>
+    <parquet.version>1.10.99.7.1.4.0-203</parquet.version>
+    <org.apache.hadoop.version>3.1.1.7.1.4.0-203</org.apache.hadoop.version>
+    <org.apache.hbase.version>2.2.3.7.1.4.0-203</org.apache.hbase.version>
+    <org.apache.hive.version>3.1.3000.7.1.4.0-203</org.apache.hive.version>
+    <org.apache.oozie.version>5.1.0.7.1.4.0-203</org.apache.oozie.version>
+    <pig.version>0.16.0.7.1.4.0-203</pig.version>
+    <parquet-pig.version>1.10.99.7.1.4.0-203</parquet-pig.version>
+    <sqoop.version>1.4.7.7.1.4.0-203</sqoop.version>
+    <zookeeper.version>3.5.5.7.1.4.0-203</zookeeper.version>
+    <vendor-driver.version>7.1.4.0-203</vendor-driver.version>
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
     <joda-time.version>2.10</joda-time.version>
     <jython.version>2.5.3</jython.version>
@@ -174,17 +176,32 @@
           <groupId>dnsjava</groupId>
           <artifactId>dnsjava</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.calcite.avatica</groupId>
+          <artifactId>avatica</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>dnsjava</groupId>
-      <artifactId>dnsjava</artifactId>
-      <version>3.3.1</version>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>2.8.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-avro</artifactId>
+      <version>${parquet.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.orc</groupId>
       <artifactId>orc-core</artifactId>
       <version>${org.apache.orc.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.threeten</groupId>
+          <artifactId>threeten-extra</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.sqoop</groupId>
@@ -284,7 +301,7 @@
           <resolverFilters>
             <resolverFilter>
               <include>
-                *:parquet-hadoop,*:parquet-hadoop-bundle,*:hadoop-yarn-api,*:avro,*:avro-mapred,*:hive-jdbc,
+                *:parquet-hadoop,*:parquet-hadoop-bundle,*:parquet-avro,*:hadoop-yarn-api,*:avro,*:avro-mapred,*:hive-jdbc,
                 *:hive-service,*:orc-core,*:hadoop-common,*:hadoop-hdfs,*:hadoop-mapreduce-*,
                 *:hadoop-yarn-api,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,
                 *:hbase-server,*:oozie-client,*:parquet-hadoop-bundle,*:zookeeper,*:hbase-shaded-miscellaneous,
@@ -322,7 +339,7 @@
         <configuration>
           <instructions>
             <Bundle-SymbolicName>pentaho-hadoop-driver-V1</Bundle-SymbolicName>
-            <Bundle-Version>6.1.cdh</Bundle-Version>
+            <Bundle-Version>7.1.cdpdc</Bundle-Version>
             <Pentaho-Code-Version>${pentaho-code.version}</Pentaho-Code-Version>
             <DynamicImport-Package>*</DynamicImport-Package>
             <excludes>
