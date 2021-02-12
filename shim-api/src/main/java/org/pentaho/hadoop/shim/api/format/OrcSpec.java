@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2021 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -48,7 +48,7 @@ public class OrcSpec {
     DATE( 14, true, "LongColumnVector", null, true, "Date", ValueMetaInterface.TYPE_DATE ),
     STRUCT( 15, true, "StructColumnVector", null, false, "Struct", ValueMetaInterface.TYPE_NONE ),
     LIST( 16, true, "ListColumnVector", null, false, "List", ValueMetaInterface.TYPE_NONE ),
-    MAP( 17, true, "MapColumnVector", null, false, "List", ValueMetaInterface.TYPE_NONE ),
+    MAP( 17, true, "MapColumnVector", null, false, "Map", ValueMetaInterface.TYPE_NONE ),
     UNION( 18, true, "UnionColumnVector", null, false, "Union", ValueMetaInterface.TYPE_NONE );
 
     private final int id;
