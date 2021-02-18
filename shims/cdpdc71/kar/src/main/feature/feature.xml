@@ -1,5 +1,5 @@
 <features name="${project.artifactId}-repo" xmlns="http://karaf.apache.org/xmlns/features/v1.6.0">
-  <feature name="${project.artifactId}" version="9.1.2020.09.00-C247">
+  <feature name="${project.artifactId}" version="${project.version}">
 
     <details>${project.description}</details>
 
