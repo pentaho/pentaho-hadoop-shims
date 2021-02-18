@@ -17,17 +17,17 @@
     <dependency>
       <groupId>org.pentaho.hadoop.shims</groupId>
       <artifactId>pentaho-hadoop-shims-common-dependencies-V1</artifactId>
-      <version>${project.version}</version>
+      <version>9.1.2020.09.00-325</version>
     </dependency>
     <dependency>
       <groupId>org.pentaho.hadoop.shims</groupId>
       <artifactId>pentaho-hadoop-shims-common-fragment-V1</artifactId>
-      <version>${project.version}</version>
+      <version>9.1.2020.09.00-325</version>
     </dependency>
     <dependency>
       <groupId>org.pentaho.hadoop.shims</groupId>
       <artifactId>pentaho-hadoop-shims-cdpdc71-driver</artifactId>
-      <version>${project.version}</version>
+      <version>9.1.2020.09.00-C247</version>
     </dependency>
   </dependencies>
 
