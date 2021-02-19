@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.pentaho.hadoop.shims</groupId>
     <artifactId>pentaho-hadoop-shims-dataproc1421-reactor</artifactId>
-    <version>9.1.2020.09.00-325</version>
+    <version>9.1.2020.09.00-324</version>
   </parent>
 
   <artifactId>pentaho-hadoop-shims-dataproc1421-pmr-libs</artifactId>

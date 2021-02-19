@@ -10,7 +10,7 @@
 
 <groupId>org.pentaho.hadoop.shims</groupId>
 <artifactId>pentaho-hadoop-shims-list</artifactId>
-<version>9.1.2020.09.00-325</version>
+<version>9.1.2020.09.00-324</version>
 <packaging>pom</packaging>
 
 <properties>
