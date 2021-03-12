@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2021 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -22,11 +22,12 @@
 package org.pentaho.big.data.impl.shim.mapreduce;
 
 import org.pentaho.bigdata.api.mapreduce.MapReduceTransformations;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 
 /**
  * Created by ccaspanello on 8/29/2016.
  */
 public interface TransformationVisitorService {
 
-  void visit( MapReduceTransformations transformations, String namedCluster );
+  void visit( MapReduceTransformations transformations, NamedCluster namedCluster );
 }

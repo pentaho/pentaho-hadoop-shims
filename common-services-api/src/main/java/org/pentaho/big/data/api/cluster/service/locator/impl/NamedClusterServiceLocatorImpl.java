@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2021 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -154,9 +154,12 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
       return this.internalShim;
     }
     String shim = namedCluster.getShimIdentifier();
+    if ( shim != null ) {
+      return shim;
+    }
     NamedCluster storedNamedCluster =
       namedClusterManager.getNamedClusterByName( namedCluster.getName(), metastoreLocator.getMetastore() );
-    if ( shim == null && storedNamedCluster != null ) {
+    if ( storedNamedCluster != null ) {
       shim = storedNamedCluster.getShimIdentifier();
     }
     if ( shim == null && storedNamedCluster == null && embeddedMetaStoreProviderKey != null ) {

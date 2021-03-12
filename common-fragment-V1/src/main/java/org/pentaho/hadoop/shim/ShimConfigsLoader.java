@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2019-2020 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019-2021 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -127,14 +127,19 @@ public class ShimConfigsLoader {
       }
 
       // Work around to avoid multiple logging for VFS
-      if ( ( CLUSTER_NAME_FOR_LOGGING.isEmpty() ) || ( !CLUSTER_NAME_FOR_LOGGING.contains( additionalPath ) ) ) {
-        SITE_FILE_NAME.clear();
-        log.logBasic( BaseMessages.getString( PKG, "ShimConfigsLoader.UnableToFindConfigs" ), siteFileName, additionalPath );
-        CLUSTER_NAME_FOR_LOGGING.add( additionalPath );
-        SITE_FILE_NAME.add( siteFileName );
-      } else if ( ( SITE_FILE_NAME.isEmpty() ) || ( !SITE_FILE_NAME.contains( siteFileName ) ) ) {
-        log.logBasic( BaseMessages.getString( PKG, "ShimConfigsLoader.UnableToFindConfigs" ), siteFileName, additionalPath );
-        SITE_FILE_NAME.add( siteFileName );
+      // Don't report if the cluster had no name
+      if ( additionalPath != null && !"".equals( additionalPath ) ) {
+        if ( !CLUSTER_NAME_FOR_LOGGING.contains( additionalPath ) ) {
+          SITE_FILE_NAME.clear();
+          log.logBasic( BaseMessages.getString( PKG, "ShimConfigsLoader.UnableToFindConfigs" ), siteFileName,
+            additionalPath );
+          CLUSTER_NAME_FOR_LOGGING.add( additionalPath );
+          SITE_FILE_NAME.add( siteFileName );
+        } else if ( !SITE_FILE_NAME.contains( siteFileName ) ) {
+          log.logBasic( BaseMessages.getString( PKG, "ShimConfigsLoader.UnableToFindConfigs" ), siteFileName,
+            additionalPath );
+          SITE_FILE_NAME.add( siteFileName );
+        }
       }
 
     } catch ( KettleFileException | IOException ex ) {

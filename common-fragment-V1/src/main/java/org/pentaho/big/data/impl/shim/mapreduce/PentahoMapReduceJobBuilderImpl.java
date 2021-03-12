@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2021 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -215,7 +215,7 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
     } else {
       List<TransformationVisitorService> editableList = new ArrayList<>( visitorServices );
       editableList.add( new TransformationVisitorService() {
-        @Override public void visit( MapReduceTransformations transformations, String namedCluster ) {
+        @Override public void visit( MapReduceTransformations transformations, NamedCluster namedCluster ) {
           //Delete logging into tables
           deleteLogging( transformations.getCombiner() );
           deleteLogging( transformations.getMapper() );
@@ -681,7 +681,7 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
     transformations.setReducer( convert( reducerTransformationXml ) );
 
     for ( TransformationVisitorService visitorService : visitorServices ) {
-      visitorService.visit( transformations, this.getNamedCluster().getName() );
+      visitorService.visit( transformations, this.getNamedCluster() );
     }
 
     combinerTransformationXml = convert( transformations.getCombiner() );
