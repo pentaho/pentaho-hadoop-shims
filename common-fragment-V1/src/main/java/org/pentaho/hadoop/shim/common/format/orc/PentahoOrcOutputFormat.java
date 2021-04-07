@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2019-2020 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019-2021 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -27,6 +27,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.orc.TypeDescription;
 import org.pentaho.di.core.logging.LogChannel;
 import org.pentaho.di.core.logging.LogChannelInterface;
+import org.pentaho.di.core.util.StringUtil;
 import org.pentaho.hadoop.shim.ShimConfigsLoader;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.format.IOrcOutputField;
@@ -153,7 +154,7 @@ public class PentahoOrcOutputFormat extends HadoopFormatBase implements IPentaho
 
   public String generateAlias( String pvfsPath ) {
     return inClassloader( () -> {
-        FileSystem fs = FileSystem.get( new URI( pvfsPath ), conf );
+        FileSystem fs = FileSystem.get( StringUtil.toUri( pvfsPath ), conf );
         if ( fs instanceof PvfsHadoopBridgeFileSystemExtension ) {
           return ( (PvfsHadoopBridgeFileSystemExtension) fs ).generateAlias( pvfsPath );
         } else {
