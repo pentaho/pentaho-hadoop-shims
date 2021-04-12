@@ -50,9 +50,9 @@ import static org.mockito.Mockito.mock;
  * @author Tatsiana_Kasiankova
  */
 @SuppressWarnings( { "unchecked", "rawtypes" } )
-public class PentahoMapReduceIT {
+public class PentahoMapReduceTest {
 
-  private static LogChannelInterface log = new LogChannel( PentahoMapReduceIT.class.getName() );
+  private static LogChannelInterface log = new LogChannel( PentahoMapReduceTest.class.getName() );
 
   private static final String WORDS_TO_CALCULATE = "zebra giraffe hippo elephant tiger";
   private Reporter reporterMock = mock( Reporter.class );
