@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2018-2021 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -26,6 +26,7 @@ import org.apache.avro.LogicalTypes;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.util.Utf8;
+import org.codehaus.jackson.node.NullNode;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.core.row.value.ValueMetaBase;
 import org.pentaho.hadoop.shim.api.format.AvroSpec;
@@ -86,7 +87,7 @@ public class AvroToPdiConverter {
 
     Object pentahoData = null;
 
-    if ( avroData != null ) {
+    if ( isNotNull( avroData ) ) {
       if ( avroData instanceof Utf8 ) {
         avroData = avroData.toString();
       }
@@ -138,7 +139,7 @@ public class AvroToPdiConverter {
 
   private Object convertToPentahoType( int pentahoType, Float avroData ) {
     Object pentahoData = null;
-    if ( avroData != null ) {
+    if ( isNotNull( avroData ) ) {
       try {
         switch ( pentahoType ) {
           case ValueMetaInterface.TYPE_STRING:
@@ -172,7 +173,7 @@ public class AvroToPdiConverter {
 
   private Object convertToPentahoType( int pentahoType, ByteBuffer avroData, Schema field ) {
     Object pentahoData = null;
-    if ( avroData != null ) {
+    if ( isNotNull( avroData ) ) {
       try {
         switch ( pentahoType ) {
           case ValueMetaInterface.TYPE_BIGNUMBER:
@@ -207,7 +208,7 @@ public class AvroToPdiConverter {
 
   private Object convertToPentahoType( int pentahoType, Long avroData ) {
     Object pentahoData = null;
-    if ( avroData != null ) {
+    if ( isNotNull( avroData ) ) {
       try {
         switch ( pentahoType ) {
           case ValueMetaInterface.TYPE_STRING:
@@ -241,7 +242,7 @@ public class AvroToPdiConverter {
 
   private Object convertToPentahoType( int pentahoType, Integer avroData ) {
     Object pentahoData = null;
-    if ( avroData != null ) {
+    if ( isNotNull( avroData ) ) {
       try {
         switch ( pentahoType ) {
           case ValueMetaInterface.TYPE_STRING:
@@ -276,7 +277,7 @@ public class AvroToPdiConverter {
 
   private Object convertToPentahoType( int pentahoType, Double avroData ) {
     Object pentahoData = null;
-    if ( avroData != null ) {
+    if ( isNotNull( avroData ) ) {
       try {
         switch ( pentahoType ) {
           case ValueMetaInterface.TYPE_STRING:
@@ -310,7 +311,7 @@ public class AvroToPdiConverter {
 
   private Object convertToPentahoType( int pentahoType, Boolean avroData ) {
     Object pentahoData = null;
-    if ( avroData != null ) {
+    if ( isNotNull( avroData ) ) {
       try {
         switch ( pentahoType ) {
           case ValueMetaInterface.TYPE_STRING:
@@ -338,7 +339,7 @@ public class AvroToPdiConverter {
 
   private Object convertToPentahoType( int pentahoType, String avroData, IAvroInputField avroInputField ) {
     Object pentahoData = null;
-    if ( avroData != null ) {
+    if ( isNotNull( avroData ) ) {
       try {
         switch ( pentahoType ) {
           case ValueMetaInterface.TYPE_INET:
@@ -381,7 +382,7 @@ public class AvroToPdiConverter {
 
   private Object convertToPentahoType( int pentahoType, byte[] avroData, Schema field ) {
     Object pentahoData = null;
-    if ( avroData != null ) {
+    if ( isNotNull( avroData ) ) {
       try {
         switch ( pentahoType ) {
           case ValueMetaInterface.TYPE_BINARY:
@@ -403,5 +404,9 @@ public class AvroToPdiConverter {
     } else {
       return false;
     }
+  }
+
+  private boolean isNotNull( Object avroData ) {
+    return avroData != null && !( avroData instanceof NullNode );
   }
 }
