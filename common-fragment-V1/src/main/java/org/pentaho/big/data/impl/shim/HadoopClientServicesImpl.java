@@ -238,15 +238,13 @@ public class HadoopClientServicesImpl implements HadoopClientServices {
   private void configureShim( Configuration conf ) throws Exception {
     List<String> messages = Lists.newArrayList();
 
-    if ( namedCluster.isMapr() ) {
-      hadoopShim.configureConnectionInformation( "", "", "", "", conf, messages );
-    } else {
+
       hadoopShim.configureConnectionInformation(
         namedCluster.environmentSubstitute( namedCluster.getHdfsHost() ),
         namedCluster.environmentSubstitute( namedCluster.getHdfsPort() ),
         namedCluster.environmentSubstitute( namedCluster.getJobTrackerHost() ),
         namedCluster.environmentSubstitute( namedCluster.getJobTrackerPort() ), conf, messages );
-    }
+
 
     for ( String m : messages ) {
       LOGGER.info( m );
