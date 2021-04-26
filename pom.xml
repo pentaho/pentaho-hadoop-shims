@@ -22,7 +22,7 @@
     <platform.version>9.2.0.0-SNAPSHOT</platform.version>
     <eula-wrap_attach-dist-phase></eula-wrap_attach-dist-phase>
     <commons-beanutils.version>1.9.3</commons-beanutils.version>
-    <commons-io.version>2.4</commons-io.version>
+    <commons-io.version>2.7</commons-io.version>
     <xerces.version>2.8.1</xerces.version>
     <oss-licenses.version>9.2.0.0-SNAPSHOT</oss-licenses.version>
     <eula-wrap_create-izpack-installer-jar-phase></eula-wrap_create-izpack-installer-jar-phase>
