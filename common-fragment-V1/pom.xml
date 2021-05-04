@@ -329,6 +329,9 @@
     </profile>
     <profile>
       <id>emr521</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
       <properties>
         <org.apache.avro.version>1.8.0</org.apache.avro.version>
         <org.apache.hive.version>2.3.4</org.apache.hive.version>
@@ -404,9 +407,6 @@
     </profile>
     <profile>
       <id>hdp26</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
       <properties>
         <org.apache.avro.version>1.8.0</org.apache.avro.version>
         <org.apache.hbase.version>1.1.2.2.6.0.3-8</org.apache.hbase.version>
