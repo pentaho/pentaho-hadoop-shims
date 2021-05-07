@@ -5,13 +5,13 @@
     <parent>
         <groupId>org.pentaho.hadoop.shims</groupId>
         <artifactId>pentaho-hadoop-shims-mapr61-reactor</artifactId>
-        <version>9.3.0.0-SNAPSHOT</version>
+        <version>9.3.2021.05.00-13</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>pentaho-hadoop-shims-mapr61-pmr-libs</artifactId>
 
-    <version>9.3.0.0-SNAPSHOT</version>
+    <version>9.3.2021.05.00-13</version>
     <packaging>pom</packaging>
     <properties>
         <org.apache.hbase.version>1.1.8-mapr-1901</org.apache.hbase.version>
