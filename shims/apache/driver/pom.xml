@@ -191,13 +191,11 @@
       <artifactId>hadoop-azure</artifactId>
       <version>3.3.0</version>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/org.apache.hadoop/hadoop-azure-datalake -->
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-azure-datalake</artifactId>
       <version>3.3.0</version>
     </dependency>
-
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>

@@ -27,7 +27,6 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.adl.AdlConfKeys;
 import org.apache.hadoop.fs.adl.AdlFileSystem;
-import org.apache.hadoop.fs.azurebfs.services.AuthType;
 import org.pentaho.di.connections.ConnectionDetails;
 
 import java.io.IOException;
@@ -44,7 +43,6 @@ import static org.pentaho.hadoop.shim.pvfs.PvfsHadoopBridge.getConnectionName;
 public class ADLSGen1Conf extends PvfsConf {
 
   private static final String AZURE_AUTH_TYPE = "fs.adl.oauth2.access.token.provider.type";
-  private static final String FS_ADL_ACCOUNT= "fs.adl.account.";
 
   private final String accountFQDN;
   private final String scheme;
@@ -91,8 +89,12 @@ public class ADLSGen1Conf extends PvfsConf {
   @Override
   public Path mapPath( Path pvfsPath, Path realFsPath ) {
     URI uri = realFsPath.toUri();
+    String userInfo = uri.getUserInfo();
+    if ( uri.getUserInfo() == null ) {
+      userInfo = "";
+    }
     return new Path( pvfsPath.toUri().getScheme(),
-      getConnectionName( pvfsPath ), "/" + uri.getUserInfo() + uri.getPath() );
+      getConnectionName( pvfsPath ), "/" + userInfo + uri.getPath() );
   }
 
   @Override
@@ -100,9 +102,7 @@ public class ADLSGen1Conf extends PvfsConf {
     Configuration config = new Configuration();
     /**
      * Azure Connector configurations can be found here :
-     * https://github.com/apache/hadoop/blob/51598d8b1be20726b744ce29928684784061f8cf/hadoop-tools/hadoop-azure/src
-     * /site/markdown/testing_azure.md
-     * https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-common/core-default.xml
+     * https://hadoop.apache.org/docs/r2.8.0/hadoop-azure-datalake/index.html
      */
     config.set( "fs.adl.impl", "org.apache.hadoop.fs.adl.AdlFileSystem" );
     config.set( "fs.AbstractFileSystem.adl.impl", "org.apache.hadoop.fs.adl.Adl" );
@@ -112,14 +112,10 @@ public class ADLSGen1Conf extends PvfsConf {
       config.set( "fs.adl.oauth2.client.id", clientId );
       config.set( "fs.adl.oauth2.credential", clientSecret );
     }
-    /*config.set( "fs.azure.local.sas.key.mode", "false" );
-    config.set( "fs.azure.enable.check.access", "true" );
-    config.set( "fs.abfss.impl.disable.cache", "true" ); // caching managed by PvfsHadoopBridge
-    config.set( "fs.abfss.b uffer.dir", System.getProperty( "java.io.tmpdir" ) );*/
     return config;
   }
 
-  private boolean isServiceToServiceAuthentication(String clientId, String clientSecret, String authTokenEndpoint ) {
+  private boolean isServiceToServiceAuthentication( String clientId, String clientSecret, String authTokenEndpoint ) {
     return !isNullOrEmpty( clientId ) && !isNullOrEmpty( clientSecret ) && !isNullOrEmpty( authTokenEndpoint );
   }
 
@@ -134,12 +130,12 @@ public class ADLSGen1Conf extends PvfsConf {
     if ( !super.equals( o ) ) {
       return false;
     }
-    ADLSGen1Conf adlsConf = (ADLSGen1Conf) o;
-    return Objects.equals(accountFQDN, adlsConf.accountFQDN);
+    ADLSGen1Conf adlsConf = ( ADLSGen1Conf ) o;
+    return Objects.equals( accountFQDN, adlsConf.accountFQDN );
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash( super.hashCode(), accountFQDN);
+    return Objects.hash( super.hashCode(), accountFQDN );
   }
 }
