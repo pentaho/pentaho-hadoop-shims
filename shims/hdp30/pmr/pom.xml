@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.pentaho.hadoop.shims</groupId>
     <artifactId>pentaho-hadoop-shims-hdp30-reactor</artifactId>
-    <version>9.1.0.0-SNAPSHOT</version>
+    <version>9.1.2020.09.00-614</version>
   </parent>
 
   <artifactId>pentaho-hadoop-shims-hdp30-pmr-libs</artifactId>
