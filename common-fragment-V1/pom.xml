@@ -561,7 +561,7 @@
     <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>pentaho-hadoop-shims-common-mapreduce</artifactId>
-      <version>${project.version}</version>
+      <version>9.1.2020.09.00-C251</version>
       <scope>test</scope>
     </dependency>
     <dependency>

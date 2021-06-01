@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>pentaho-hadoop-shims-common-mapreduce</artifactId>
-  <version>9.1.2020.09.00-324</version>
+  <version>9.1.2020.09.00-C251</version>
   <packaging>jar</packaging>
 
   <profiles>
@@ -49,7 +49,7 @@
     <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>shim-api</artifactId>
-      <version>${project.version}</version>
+      <version>9.1.2020.09.00-324</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
