@@ -48,13 +48,13 @@ import java.util.function.BiConsumer;
  */
 public class PentahoOrcOutputFormat extends HadoopFormatBase implements IPentahoOrcOutputFormat {
 
-  private static final LogChannelInterface logger = LogChannel.GENERAL;
-  private String outputFilename;
-  private final Configuration conf;
-  private COMPRESSION compression = COMPRESSION.NONE;
-  private int compressSize = 0;
-  private int stripeSize = DEFAULT_STRIPE_SIZE;
-  private List<? extends IOrcOutputField> fields;
+  protected static final LogChannelInterface logger = LogChannel.GENERAL;
+  protected String outputFilename;
+  protected Configuration conf;
+  protected COMPRESSION compression = COMPRESSION.NONE;
+  protected int compressSize = 0;
+  protected int stripeSize = DEFAULT_STRIPE_SIZE;
+  protected List<? extends IOrcOutputField> fields;
 
   public PentahoOrcOutputFormat() {
     this( null );
