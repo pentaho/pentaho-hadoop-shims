@@ -77,16 +77,16 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoRecordWriter {
   private final TypeDescription schema;
-  protected VectorizedRowBatch batch;
-  protected int batchRowNumber;
-  protected Writer writer;
-  protected final IValueMetaConverter valueMetaConverter = new ValueMetaConverter();
+  private VectorizedRowBatch batch;
+  private int batchRowNumber;
+  private Writer writer;
+  private final IValueMetaConverter valueMetaConverter = new ValueMetaConverter();
   private final String dateFormatString = ValueMetaBase.DEFAULT_DATE_FORMAT_MASK; //TODO: Get this from UI
   private SimpleDateFormat datePattern = new SimpleDateFormat( dateFormatString );
-  protected RowMeta outputRowMeta = new RowMeta();
-  protected RowMetaAndData outputRowMetaAndData;
-  protected static final Logger logger = Logger.getLogger( PentahoOrcRecordWriter.class );
-  protected List<? extends IOrcOutputField> fields;
+  private RowMeta outputRowMeta = new RowMeta();
+  private RowMetaAndData outputRowMetaAndData;
+  private static final Logger logger = Logger.getLogger( PentahoOrcRecordWriter.class );
+  private List<? extends IOrcOutputField> fields;
 
   public PentahoOrcRecordWriter( List<? extends IOrcOutputField> fields, TypeDescription schema, String filePath,
                                  Configuration conf ) {
@@ -112,7 +112,7 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
     // new OrcMetaDataWriter( writer ).write( fields );
   }
 
-  protected void setOutputMeta( AtomicInteger fieldNumber, IOrcOutputField field ) {
+  private void setOutputMeta( AtomicInteger fieldNumber, IOrcOutputField field ) {
     outputRowMeta.addValueMeta( getValueMetaInterface( field.getPentahoFieldName(), field.getOrcType().getPdiType() ) );
     fieldNumber.getAndIncrement();
   }
@@ -265,7 +265,7 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
   }
 
 
-  protected int getOrcDate( Date date, TimeZone timeZone ) {
+  private int getOrcDate( Date date, TimeZone timeZone ) {
     if ( timeZone == null ) {
       timeZone = TimeZone.getDefault();
     }
@@ -281,7 +281,7 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
     }
   }
 
-  protected void setBytesColumnVector( BytesColumnVector bytesColumnVector, byte[] value ) {
+  private void setBytesColumnVector( BytesColumnVector bytesColumnVector, byte[] value ) {
     bytesColumnVector.vector[ batchRowNumber ] = value;
     bytesColumnVector.start[ batchRowNumber ] = 0;
     bytesColumnVector.length[ batchRowNumber ] = value.length;

@@ -66,10 +66,10 @@ import static org.apache.hadoop.mapreduce.lib.input.FileInputFormat.setInputPath
  */
 public class PentahoApacheInputFormat extends HadoopFormatBase implements IPentahoParquetInputFormat {
 
-  protected static final LogChannelInterface logger = LogChannel.GENERAL;
+  private static final LogChannelInterface logger = LogChannel.GENERAL;
 
   private ParquetInputFormat<RowMetaAndData> nativeParquetInputFormat;
-  protected Job job;
+  private Job job;
 
   public PentahoApacheInputFormat( NamedCluster namedCluster ) {
     logger.logBasic( "We are initializing parquet input format" );
