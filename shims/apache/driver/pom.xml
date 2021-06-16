@@ -192,11 +192,6 @@
       <version>3.3.0</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.hadoop</groupId>
-      <artifactId>hadoop-azure-datalake</artifactId>
-      <version>3.3.0</version>
-    </dependency>
-    <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>21.0</version>
@@ -258,7 +253,6 @@
                 *:com.fasterxml.jackson.dataformat,*:hadoop-mapreduce-client-core,*:hadoop-common,*:orc-core,*:avro,
                 *:hadoop-aws,
                 *:hadoop-azure,
-                *:hadoop-azure-datalake,
                 com.amazonaws:*,
                 *:parquet-hadoop-bundle,*:hadoop-hdfs,
                 *:avro-mapred,
