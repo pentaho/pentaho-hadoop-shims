@@ -291,7 +291,6 @@
       <module>mapr61</module>
       <module>cdpdc71</module>
       <module>apache</module>
-      <module>hdi40</module>
     </modules>
   </profile>
 
@@ -374,17 +373,6 @@
     </activation>
     <modules>
       <module>cdpdc71</module>
-    </modules>
-  </profile>
-  <profile>
-    <id>hdi40</id>
-    <activation>
-      <property>
-        <name>!skipDefault</name>
-      </property>
-    </activation>
-    <modules>
-      <module>hdi40</module>
     </modules>
   </profile>
 
