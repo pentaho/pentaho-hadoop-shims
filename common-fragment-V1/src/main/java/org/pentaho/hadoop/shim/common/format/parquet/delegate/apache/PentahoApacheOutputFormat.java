@@ -57,10 +57,10 @@ import static org.apache.hadoop.mapreduce.lib.output.FileOutputFormat.setOutputP
  */
 public class PentahoApacheOutputFormat extends HadoopFormatBase implements IPentahoParquetOutputFormat {
 
-  protected static final Logger logger = Logger.getLogger( PentahoApacheOutputFormat.class );
+  private static final Logger logger = Logger.getLogger( PentahoApacheOutputFormat.class );
 
-  protected Job job;
-  protected Path outputFile;
+  private Job job;
+  private Path outputFile;
   private List<? extends IParquetOutputField> outputFields;
 
   public PentahoApacheOutputFormat() {

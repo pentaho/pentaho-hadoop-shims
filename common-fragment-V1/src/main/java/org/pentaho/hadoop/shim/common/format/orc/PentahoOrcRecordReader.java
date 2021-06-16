@@ -50,30 +50,21 @@ import java.util.Map;
  * Created by tkafalas on 11/7/2017.
  */
 public class PentahoOrcRecordReader implements IPentahoInputFormat.IPentahoRecordReader {
-  protected static Logger logger = Logger.getLogger( PentahoOrcRecordReader.class );
-  protected List<? extends IOrcInputField> dialogInputFields;  //Comes from Dialog
-  protected List<? extends IOrcInputField> orcInputFields;  //Comes from OrcFile combined with custom metadata
-  protected VectorizedRowBatch batch;
-  protected RecordReader recordReader;
-  protected int currentBatchRow;
-  protected TypeDescription typeDescription;
-  protected Map<String, Integer> schemaToOrcSubcripts;
-  protected OrcConverter orcConverter = new OrcConverter();
+  private static final Logger logger = Logger.getLogger( PentahoOrcRecordReader.class );
+  private final List<? extends IOrcInputField> dialogInputFields;  //Comes from Dialog
+  private final List<? extends IOrcInputField> orcInputFields;  //Comes from OrcFile combined with custom metadata
+  private VectorizedRowBatch batch;
+  private RecordReader recordReader;
+  private int currentBatchRow;
+  private TypeDescription typeDescription;
+  private Map<String, Integer> schemaToOrcSubcripts;
+  private OrcConverter orcConverter = new OrcConverter();
 
-  protected PentahoOrcRecordReader( String fileName, Configuration conf,
+  PentahoOrcRecordReader( String fileName, Configuration conf,
                           List<? extends IOrcInputField> dialogInputFields ) {
     this.dialogInputFields = dialogInputFields;
 
     Reader reader = getReader( fileName, conf );
-    readRows( fileName, reader );
-  }
-
-  protected PentahoOrcRecordReader( String fileName, List<? extends IOrcInputField> dialogInputFields, Reader reader ) {
-    this.dialogInputFields = dialogInputFields;
-    readRows( fileName, reader );
-  }
-
-  private void readRows( String fileName, Reader reader ) {
     try {
       recordReader = reader.rows();
     } catch ( IOException e ) {
@@ -100,8 +91,8 @@ public class PentahoOrcRecordReader implements IPentahoInputFormat.IPentahoRecor
         Integer colNumber = orcColumnNumberMap.get( inputField.getFormatFieldName() );
         if ( colNumber == null ) {
           throw new IllegalArgumentException(
-                  "Column " + inputField.getFormatFieldName()
-                          + " does not exist in the ORC file.  Please use the getFields button" );
+            "Column " + inputField.getFormatFieldName()
+              + " does not exist in the ORC file.  Please use the getFields button" );
         } else {
           schemaToOrcSubcripts.put( inputField.getPentahoFieldName(), colNumber );
         }
@@ -142,7 +133,7 @@ public class PentahoOrcRecordReader implements IPentahoInputFormat.IPentahoRecor
   }
 
 
-  protected boolean setNextBatch() throws IOException {
+  private boolean setNextBatch() throws IOException {
     currentBatchRow = 0;
     return recordReader.nextBatch( batch );
   }

@@ -44,11 +44,11 @@ import static java.util.Objects.requireNonNull;
  */
 public class PentahoOrcInputFormat extends HadoopFormatBase implements IPentahoOrcInputFormat {
 
-  protected static final String NOT_NULL_MSG = "filename and inputfields must not be null";
-  protected String fileName;
-  protected List<? extends IOrcInputField> inputFields;
+  private static final String NOT_NULL_MSG = "filename and inputfields must not be null";
+  private String fileName;
+  private List<? extends IOrcInputField> inputFields;
 
-  protected Configuration conf;
+  private final Configuration conf;
 
   public PentahoOrcInputFormat( NamedCluster namedCluster ) {
     if ( namedCluster == null ) {
@@ -78,7 +78,7 @@ public class PentahoOrcInputFormat extends HadoopFormatBase implements IPentahoO
         requireNonNull( fileName, NOT_NULL_MSG ), conf ) ) );
   }
 
-  protected List<IOrcInputField> readSchema( Reader orcReader ) {
+  private List<IOrcInputField> readSchema( Reader orcReader ) {
     OrcSchemaConverter orcSchemaConverter = new OrcSchemaConverter();
     List<IOrcInputField> orcInputFields = orcSchemaConverter.buildInputFields( readTypeDescription( orcReader ) );
     IOrcMetaData.Reader orcMetaDataReader = new OrcMetaDataReader( orcReader );
@@ -86,7 +86,7 @@ public class PentahoOrcInputFormat extends HadoopFormatBase implements IPentahoO
     return orcInputFields;
   }
 
-  protected TypeDescription readTypeDescription( Reader orcReader ) {
+  private TypeDescription readTypeDescription( Reader orcReader ) {
     return orcReader.getSchema();
   }
 
