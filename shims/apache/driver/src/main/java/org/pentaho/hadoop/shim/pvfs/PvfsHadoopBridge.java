@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2019-2021 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -41,7 +41,6 @@ import org.pentaho.di.connections.vfs.provider.ConnectionFileNameParser;
 import org.pentaho.hadoop.shim.api.format.org.pentaho.hadoop.shim.pvfs.api.PvfsHadoopBridgeFileSystemExtension;
 
 import org.pentaho.hadoop.shim.pvfs.conf.ADLSGen2Conf;
-import org.pentaho.hadoop.shim.pvfs.conf.ADLSGen1Conf;
 import org.pentaho.hadoop.shim.pvfs.conf.GcsConf;
 import org.pentaho.hadoop.shim.pvfs.conf.HCPConf;
 import org.pentaho.hadoop.shim.pvfs.conf.PvfsConf;
@@ -76,7 +75,7 @@ public class PvfsHadoopBridge extends FileSystem implements PvfsHadoopBridgeFile
 
   @SuppressWarnings( "unused" )
   public PvfsHadoopBridge() {
-    confFactories = Arrays.asList( S3Conf::new, HCPConf::new, SnwConf::new, GcsConf::new, ADLSGen2Conf::new, ADLSGen1Conf::new );
+    confFactories = Arrays.asList( S3Conf::new, HCPConf::new, SnwConf::new, GcsConf::new, ADLSGen2Conf::new );
     connMgr = ConnectionManager.getInstance();
   }
 
