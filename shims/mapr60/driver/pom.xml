@@ -5,14 +5,14 @@
   <parent>
     <groupId>org.pentaho.hadoop.shims</groupId>
     <artifactId>pentaho-hadoop-shims-mapr60-reactor</artifactId>
-    <version>9.3.0.0-SNAPSHOT</version>
+    <version>9.3.2021.05.00-96</version>
   </parent>
 
   <artifactId>pentaho-hadoop-shims-mapr60-driver</artifactId>
-  <version>9.3.0.0-SNAPSHOT</version>
+  <version>9.3.2021.05.00-96</version>
   <packaging>bundle</packaging>
   <properties>
-    <pentaho-osgi-bundles.version>9.3.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
+    <pentaho-osgi-bundles.version>9.3.0.0-96</pentaho-osgi-bundles.version>
     <org.apache.avro.version>1.8.0</org.apache.avro.version>
     <org.apache.hadoop.version>2.7.0-mapr-1710</org.apache.hadoop.version>
     <org.apache.hbase.version>1.1.8-mapr-1710</org.apache.hbase.version>
