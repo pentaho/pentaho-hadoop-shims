@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2021 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -157,11 +157,21 @@ public interface NamedCluster extends Cloneable, VariableSpace {
     //default here just for compile purposes
   }
 
+
+  /*
+  @deprecated As of version 9.3.  Use the {@link #addSiteFile( NamedClusterSiteFile namedClusterSiteFile ) method
+   */
+  @Deprecated
   default void addSiteFile( String fileName, String content ) {
     //default here just for compile purposes
   }
 
+  default void addSiteFile( NamedClusterSiteFile namedClusterSiteFile ) {
+    //default here just for compile purposes
+  }
+
   default InputStream getSiteFileInputStream( String siteFileName ) {
+    //default here just for compile purposes
     return null;
   }
 }
