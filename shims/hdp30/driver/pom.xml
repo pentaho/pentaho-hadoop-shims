@@ -146,6 +146,11 @@
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-mapreduce-client-app</artifactId>
+      <version>${org.apache.hadoop.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-yarn-api</artifactId>
       <version>${org.apache.hadoop.version}</version>
     </dependency>
@@ -331,7 +336,8 @@
           <resolverFilters>
             <resolverFilter>
               <include>
-                *:hadoop-mapreduce-client-core,*:hadoop-yarn-api,*:hadoop-common,*:orc-core,*:avro,
+                *:hadoop-mapreduce-client-core,*:hadoop-mapreduce-client-app,*:hadoop-yarn-api,*:hadoop-common,
+                *:orc-core,*:avro,
                 *:parquet-hadoop-bundle,*:sqoop,*:oozie-client,*:hadoop-hdfs,
                 *:hadoop-yarn-common,*:avro-mapred,
                 *:hbase-server,*:hbase-client,*:hbase-common,*:hbase-mapreduce,*:jetty*,
