@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2021 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -148,7 +148,7 @@ public class HadoopClientServicesImpl implements HadoopClientServices {
     this.bundleContext = bundleContext;
     this.hadoopShim = hadoopShim;
     this.namedCluster = namedCluster;
-    this.oozieClient = new OozieClient( namedCluster.getOozieUrl() );
+    this.oozieClient = namedCluster.getOozieUrl() != null ? new OozieClient( namedCluster.getOozieUrl() ) : null;
     this.writerAppenderManagerFactory = new WriterAppenderManager.Factory();
     this.bytesUtil = new CommonHBaseBytesUtil();
   }
