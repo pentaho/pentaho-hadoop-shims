@@ -14,7 +14,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <org.apache.hbase.version>1.2.0-cdh5.14.0</org.apache.hbase.version>
+    <org.apache.hbase.version>1.4.0</org.apache.hbase.version>
   </properties>
 
   <dependencies>
