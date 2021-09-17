@@ -24,7 +24,6 @@
     <!-- pmr folder -->
     <commons-configuration.version>1.6</commons-configuration.version>
     <commons-configuration2.version>2.1.1</commons-configuration2.version>
-    <mockito-all.version>1.10.19</mockito-all.version>
     <org.apache.hadoop.version>3.3.0</org.apache.hadoop.version>
     <org.apache.orc.version>1.6.1</org.apache.orc.version>
     <parquet.version>1.11.1</parquet.version>
@@ -247,8 +246,8 @@
 
     <dependency>
       <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <version>${mockito-all.version}</version>
+      <artifactId>mockito-core</artifactId>
+      <version>${org.mockito.version}</version>
       <scope>test</scope>
     </dependency>
 

@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2021 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -34,9 +34,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
-import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.bigdata.api.mapreduce.PentahoMapReduceOutputStepMetaInterface;
 import org.pentaho.di.core.CheckResult;
 import org.pentaho.di.core.CheckResultInterface;
@@ -68,6 +67,7 @@ import org.pentaho.di.trans.step.StepInterface;
 import org.pentaho.di.trans.step.StepMeta;
 import org.pentaho.di.trans.step.StepMetaInterface;
 import org.pentaho.hadoop.shim.api.ConfigurationException;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.internal.Configuration;
 import org.pentaho.hadoop.shim.api.internal.DistributedCacheUtil;
 import org.pentaho.hadoop.shim.api.internal.fs.FileSystem;
@@ -77,6 +77,7 @@ import org.pentaho.hadoop.shim.spi.HadoopShim;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -86,6 +87,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.eq;
@@ -124,8 +126,6 @@ public class PentahoMapReduceJobBuilderImplTest {
   private VariableSpace variableSpace = new Variables();
   private List<TransformationVisitorService> visitorServices = new ArrayList<>();
   private String transXml;
-  // = "<transformation_configuration><transformation><info><log></log></info></transformation
-  // ></transformation_configuration>";
 
   @Before
   public void setup() throws Exception {
@@ -298,7 +298,7 @@ public class PentahoMapReduceJobBuilderImplTest {
         return null;
       }
     } ).when( pentahoMapReduceOutputStepMetaInterface )
-      .checkPmr( anyList(), eq( transMeta ), eq( outputStepMeta ), any( RowMetaInterface.class ) );
+      .checkPmr( anyList(), eq( transMeta ), eq( outputStepMeta ), (RowMetaInterface) isNull() );
     when( outputStepMeta.getStepMetaInterface() ).thenReturn( pentahoMapReduceOutputStepMetaInterface );
     when( transMeta.findStep( outputStepName ) ).thenReturn( outputStepMeta );
     try {
@@ -325,14 +325,6 @@ public class PentahoMapReduceJobBuilderImplTest {
     final StepMeta outputStepMeta = mock( StepMeta.class );
     PentahoMapReduceOutputStepMetaInterface pentahoMapReduceOutputStepMetaInterface =
       mock( PentahoMapReduceOutputStepMetaInterface.class );
-    doAnswer( new Answer<Void>() {
-      @Override public Void answer( InvocationOnMock invocation ) throws Throwable {
-        List<CheckResultInterface> checkResultInterfaces = (List<CheckResultInterface>) invocation.getArguments()[ 0 ];
-        checkResultInterfaces.add( new CheckResult( CheckResultInterface.TYPE_RESULT_OK, "test", outputStepMeta ) );
-        return null;
-      }
-    } ).when( pentahoMapReduceOutputStepMetaInterface )
-      .checkPmr( anyList(), eq( transMeta ), eq( outputStepMeta ), any( RowMetaInterface.class ) );
     when( outputStepMeta.getStepMetaInterface() ).thenReturn( pentahoMapReduceOutputStepMetaInterface );
     when( transMeta.findStep( outputStepName ) ).thenReturn( outputStepMeta );
     pentahoMapReduceJobBuilder.verifyTransMeta( transMeta, inputStepName, outputStepName );
@@ -586,6 +578,7 @@ public class PentahoMapReduceJobBuilderImplTest {
     pentahoMapReduceJobBuilder.setLogLevel( LogLevel.BASIC );
     pentahoMapReduceJobBuilder.setInputPaths( new String[ 0 ] );
     pentahoMapReduceJobBuilder.setOutputPath( "test" );
+    pentahoMapReduceJobBuilder.setResolvedJarUrl( new URL( "file:///" ) );
     Configuration configuration = mock( Configuration.class );
     doAnswer( new Answer() {
       @Override public Object answer( InvocationOnMock invocation ) throws Throwable {
@@ -621,6 +614,7 @@ public class PentahoMapReduceJobBuilderImplTest {
     pentahoMapReduceJobBuilder.setLogLevel( LogLevel.BASIC );
     pentahoMapReduceJobBuilder.setInputPaths( new String[ 0 ] );
     pentahoMapReduceJobBuilder.setOutputPath( "test" );
+    pentahoMapReduceJobBuilder.setResolvedJarUrl( new URL( "file:///" ) );
     Configuration configuration = mock( Configuration.class );
     when( hadoopShim.getFileSystem( configuration ) ).thenReturn( mock( FileSystem.class ) );
     String testMrInput = "testMrInput";
@@ -659,13 +653,10 @@ public class PentahoMapReduceJobBuilderImplTest {
   @Test
   public void testDeleteLogging() throws Exception {
     when( hadoopShim.getPentahoMapReduceMapRunnerClass() ).thenReturn( "" );
-    when( hadoopShim.getPentahoMapReduceCombinerClass() )
-      .thenReturn( "org.pentaho.hadoop.mapreduce.GenericTransCombiner" );
-    when( hadoopShim.getPentahoMapReduceReducerClass() )
-      .thenReturn( "org.pentaho.hadoop.mapreduce.GenericTransReduce" );
     pentahoMapReduceJobBuilder.setLogLevel( LogLevel.BASIC );
     pentahoMapReduceJobBuilder.setInputPaths( new String[ 0 ] );
     pentahoMapReduceJobBuilder.setOutputPath( "test" );
+    pentahoMapReduceJobBuilder.setResolvedJarUrl( new URL( "file:///" ) );
     Configuration configuration = mock( Configuration.class );
     when( hadoopShim.getFileSystem( configuration ) ).thenReturn( mock( FileSystem.class ) );
     String testMrInput = "testMrInput";
@@ -841,7 +832,6 @@ public class PentahoMapReduceJobBuilderImplTest {
     DistributedCacheUtil distributedCacheUtil = mock( DistributedCacheUtil.class );
     Path kettleEnvInstallDir = mock( Path.class );
     URI kettleEnvInstallDirUri = new URI( "http://testUri/path" );
-    when( kettleEnvInstallDir.toUri() ).thenReturn( kettleEnvInstallDirUri );
 
     when( hadoopShim.getFileSystem( conf ) ).thenReturn( fileSystem );
     when( hadoopShim.getDistributedCacheUtil() ).thenReturn( distributedCacheUtil );
@@ -855,9 +845,6 @@ public class PentahoMapReduceJobBuilderImplTest {
       .thenReturn( installId );
     when( fileSystem.asPath( installPath, installId ) ).thenReturn( kettleEnvInstallDir );
     when( distributedCacheUtil.isKettleEnvironmentInstalledAt( fileSystem, kettleEnvInstallDir ) ).thenReturn( false );
-    String mapreduceClasspath = "mapreduceClasspath";
-    when( conf.get( PentahoMapReduceJobBuilderImpl.MAPREDUCE_APPLICATION_CLASSPATH,
-      PentahoMapReduceJobBuilderImpl.DEFAULT_MAPREDUCE_APPLICATION_CLASSPATH ) ).thenReturn( mapreduceClasspath );
     String archiveName = "archiveName";
     when( pmrArchiveGetter.getVfsFilename( conf ) ).thenReturn( archiveName );
 

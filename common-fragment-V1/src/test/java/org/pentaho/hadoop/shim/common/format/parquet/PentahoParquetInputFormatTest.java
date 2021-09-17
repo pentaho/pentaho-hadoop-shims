@@ -21,29 +21,17 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.common.format.parquet;
 
-import java.io.IOException;
-import java.nio.file.NoSuchFileException;
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.TimeZone;
-import java.util.TreeSet;
-
 import org.apache.hadoop.fs.Path;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.mockito.Mockito;
-import org.mockito.internal.util.reflection.Whitebox;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.logging.KettleLogStore;
+import org.pentaho.di.core.logging.LogChannel;
+import org.pentaho.di.core.logging.LogChannelInterface;
 import org.pentaho.di.core.row.RowMeta;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.core.row.value.ValueMetaBigNumber;
@@ -60,12 +48,22 @@ import org.pentaho.hadoop.shim.api.format.IPentahoParquetInputFormat;
 import org.pentaho.hadoop.shim.common.format.parquet.delegate.apache.PentahoApacheInputFormat;
 import org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter.PentahoTwitterInputFormat;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.nio.file.NoSuchFileException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.TimeZone;
+import java.util.TreeSet;
 
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
-
-import org.pentaho.di.core.logging.LogChannel;
-import org.pentaho.di.core.logging.LogChannelInterface;
+import static org.mockito.Mockito.when;
 
 @RunWith( Parameterized.class )
 public class PentahoParquetInputFormatTest {
@@ -113,15 +111,15 @@ public class PentahoParquetInputFormatTest {
       case "APACHE":
         org.apache.parquet.hadoop.ParquetInputSplit apacheParquetInputSplit =
           Mockito.spy( org.apache.parquet.hadoop.ParquetInputSplit.class );
-        Whitebox.setInternalState( apacheParquetInputSplit, "rowGroupOffsets", new long[] { 4 } );
-        Whitebox.setInternalState( apacheParquetInputSplit, "file", new Path( parquetFilePath ) );
+        when( apacheParquetInputSplit.getRowGroupOffsets() ).thenReturn( new long[] { 4 } );
+        when( apacheParquetInputSplit.getPath() ).thenReturn( new Path( parquetFilePath ) );
         pentahoInputSplit = new PentahoInputSplitImpl( apacheParquetInputSplit );
         break;
       case "TWITTER":
         parquet.hadoop.ParquetInputSplit twitterParquetInputSplit =
           Mockito.spy( parquet.hadoop.ParquetInputSplit.class );
-        Whitebox.setInternalState( twitterParquetInputSplit, "rowGroupOffsets", new long[] { 4 } );
-        Whitebox.setInternalState( twitterParquetInputSplit, "file", new Path( parquetFilePath ) );
+        when( twitterParquetInputSplit.getRowGroupOffsets() ).thenReturn( new long[] { 4 } );
+        when( twitterParquetInputSplit.getPath() ).thenReturn( new Path( parquetFilePath ) );
         pentahoInputSplit = new PentahoInputSplitImpl( twitterParquetInputSplit );
         break;
       default:
