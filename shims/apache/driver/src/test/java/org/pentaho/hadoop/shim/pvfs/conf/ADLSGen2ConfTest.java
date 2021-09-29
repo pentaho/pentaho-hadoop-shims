@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2020 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2020-2021 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -27,7 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.pentaho.di.connections.ConnectionDetails;
 
 import java.util.HashMap;
@@ -69,7 +69,6 @@ public class ADLSGen2ConfTest {
     s3Props.put( "accessKey", "ACCESSKEY" );
     s3Props.put( "secretKey", "SECRETKEY" );
     when( s3Conn.getProperties() ).thenReturn(s3Props);
-    when( s3Conn.getType() ).thenReturn( "s3" );
     s3Conf = new S3Conf( s3Conn );
 
     when( hcpConn.getType() ).thenReturn( "hcp" );
@@ -106,7 +105,6 @@ public class ADLSGen2ConfTest {
     assertEquals(adlsGen2Conf, adlsGen2Conf);
     assertNotEquals(adlsGen2Conf, s3Conf );
     when( otherADLS2Conn.getProperties() ).thenReturn( new HashMap<>(adlsGen2Props) );
-    when( otherADLS2Conn.getType() ).thenReturn( "abfss" );
 
     ADLSGen2Conf otherGcsConf = new ADLSGen2Conf( otherADLS2Conn );
 

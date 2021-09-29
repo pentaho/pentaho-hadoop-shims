@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2019-2020 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019-2021 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -27,7 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.pentaho.di.connections.ConnectionDetails;
 
 import java.util.HashMap;
@@ -108,7 +108,6 @@ public class S3ConfTest {
     assertEquals( s3Conf, s3Conf );
     assertNotEquals( s3Conf, hcpConn );
     when( otherS3Conn.getProperties() ).thenReturn( new HashMap<>( props ) );
-    when( otherS3Conn.getType() ).thenReturn( "s3" );
 
     S3Conf otherS3Conf = new S3Conf( otherS3Conn );
 

@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Pentaho Big Data
  * <p>
- * Copyright (C) 2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019-2021 by Hitachi Vantara : http://www.pentaho.com
  * <p>
  * ******************************************************************************
  * <p>
@@ -16,66 +16,70 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.common;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.api.support.membermodification.MemberModifier;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
+
+import static org.mockito.ArgumentMatchers.anyString;
 
 /**
  * Created by Vasilina_Terehova on 10/3/2017.
  */
-@RunWith( PowerMockRunner.class )
-@PrepareForTest( ShellPrevalidator.class )
+@RunWith( MockitoJUnitRunner.class )
 public class ShellPrevalidatorTest {
+
+  MockedStatic<ShellPrevalidator> shellPrevalidatorMockedStatic;
+
+  @Before
+  public void setup() {
+    shellPrevalidatorMockedStatic = Mockito.mockStatic( ShellPrevalidator.class );
+  }
+
+  @After
+  public void cleanup() {
+    shellPrevalidatorMockedStatic.close();
+  }
 
   @Test
   public void validateReturnTrueIfFileExist() throws IOException {
-    MemberModifier
-      .stub( MemberModifier.method( ShellPrevalidator.class, "doesFileExist", String.class ) )
-      .toReturn( true );
-    MemberModifier
-      .stub( MemberModifier.method( ShellPrevalidator.class, "isWindows" ) )
-      .toReturn( true );
+    shellPrevalidatorMockedStatic.when( () -> ShellPrevalidator.doesFileExist( anyString() ) ).thenReturn( true );
+    shellPrevalidatorMockedStatic.when( ShellPrevalidator::isWindows ).thenReturn( true );
+    shellPrevalidatorMockedStatic.when( ShellPrevalidator::doesWinutilsFileExist ).thenCallRealMethod();
+
     boolean exist = ShellPrevalidator.doesWinutilsFileExist();
     Assert.assertEquals( true, exist );
   }
 
   @Test( expected = IOException.class )
   public void validateThrowIOExceptionWhenNoExist() throws IOException {
-    MemberModifier
-      .stub( MemberModifier.method( ShellPrevalidator.class, "doesFileExist", String.class ) )
-      .toReturn( false );
-    MemberModifier
-      .stub( MemberModifier.method( ShellPrevalidator.class, "isWindows" ) )
-      .toReturn( true );
-    boolean exist = ShellPrevalidator.doesWinutilsFileExist();
-    Assert.assertEquals( false, exist );
-  }
-
-  @Test( expected = IOException.class )
-  public void validateThrowExceptionWhenWindowsAndFileNotExist() throws IOException {
-    MemberModifier
-      .stub( MemberModifier.method( ShellPrevalidator.class, "isWindows" ) )
-      .toReturn( true );
-    MemberModifier
-      .stub( MemberModifier.method( ShellPrevalidator.class, "doesFileExist", String.class ) )
-      .toReturn( false );
+    shellPrevalidatorMockedStatic.when( () -> ShellPrevalidator.doesFileExist( anyString() ) ).thenReturn( false );
+    shellPrevalidatorMockedStatic.when( ShellPrevalidator::isWindows ).thenReturn( true );
+    shellPrevalidatorMockedStatic.when( ShellPrevalidator::doesWinutilsFileExist ).thenCallRealMethod();
     boolean exist = ShellPrevalidator.doesWinutilsFileExist();
     Assert.assertEquals( false, exist );
   }
 
   @Test
+  public void validateThrowExceptionWhenWindowsAndFileNotExist() throws IOException {
+    shellPrevalidatorMockedStatic.when( () -> ShellPrevalidator.doesFileExist( anyString() ) ).thenReturn( true );
+    shellPrevalidatorMockedStatic.when( ShellPrevalidator::isWindows ).thenReturn( false );
+    shellPrevalidatorMockedStatic.when( ShellPrevalidator::doesWinutilsFileExist ).thenCallRealMethod();
+    boolean exist = ShellPrevalidator.doesWinutilsFileExist();
+    Assert.assertEquals( true, exist );
+  }
+
+  @Test
   public void validateReturnTrueIfNotWindows() throws IOException {
-    MemberModifier
-      .stub( MemberModifier.method( ShellPrevalidator.class, "isWindows" ) )
-      .toReturn( false );
-    MemberModifier
-      .stub( MemberModifier.method( ShellPrevalidator.class, "doesFileExist", String.class ) )
-      .toReturn( false );
+    shellPrevalidatorMockedStatic.when( () -> ShellPrevalidator.doesFileExist( anyString() ) ).thenReturn( false );
+    shellPrevalidatorMockedStatic.when( ShellPrevalidator::isWindows ).thenReturn( false );
+    shellPrevalidatorMockedStatic.when( ShellPrevalidator::doesWinutilsFileExist ).thenCallRealMethod();
     boolean exist = ShellPrevalidator.doesWinutilsFileExist();
     Assert.assertEquals( true, exist );
   }

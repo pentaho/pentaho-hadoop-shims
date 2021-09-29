@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2021 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -26,7 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.jdbc.JdbcUrl;
 import org.pentaho.hadoop.shim.api.jdbc.JdbcUrlParser;
@@ -84,7 +84,7 @@ public class HiveDriverTest {
   @Test
   public void testConnectFailParse() throws SQLException, URISyntaxException {
     String url = "fake-url";
-    when( jdbcUrlParser.parse( url ) ).thenThrow( new URISyntaxException( "", "" ) );
+    //when( jdbcUrlParser.parse( url ) ).thenThrow( new URISyntaxException( "", "" ) );
     assertNull( hiveDriver.connect( url, null ) );
   }
 
@@ -96,7 +96,6 @@ public class HiveDriverTest {
 
   @Test
   public void testConnectNamedClusterException() throws SQLException, MetaStoreException {
-    when( delegate.acceptsURL( testUrl ) ).thenReturn( false );
     when( jdbcUrl.getNamedCluster() ).thenThrow( new RuntimeException() );
     assertNull( hiveDriver.connect( testUrl, null ) );
   }
@@ -152,7 +151,6 @@ public class HiveDriverTest {
 
   @Test
   public void testAcceptsUrlExceptionGettingId() throws SQLException {
-    when( delegate.acceptsURL( testUrl ) ).thenReturn( true );
     assertFalse( new HiveDriver( delegate, null, true, jdbcUrlParser ) {
       @Override
       public Driver checkBeforeCallActiveDriver( String url ) throws SQLException {
@@ -163,20 +161,17 @@ public class HiveDriverTest {
 
   @Test
   public void testAcceptsUrlNullDelegate() throws SQLException {
-    when( delegate.acceptsURL( testUrl ) ).thenReturn( true );
     assertFalse( new HiveDriver( null, null, true, jdbcUrlParser ).acceptsURL( testUrl ) );
   }
 
   @Test
   public void testAcceptsUrlNotDefault() throws SQLException {
-    when( delegate.acceptsURL( testUrl ) ).thenReturn( true );
     assertFalse( new HiveDriver( delegate, null, false, jdbcUrlParser ).acceptsURL( testUrl ) );
     assertFalse( new HiveDriver( delegate, "testId", false, jdbcUrlParser ).acceptsURL( testUrl ) );
   }
 
   @Test
   public void testAcceptsUrlNotDefaultWithConfigId() throws SQLException {
-    when( delegate.acceptsURL( testUrl ) ).thenReturn( true );
     String testId = "testId";
     assertFalse( new HiveDriver( delegate, testId, false, jdbcUrlParser ).acceptsURL( testUrl ) );
   }

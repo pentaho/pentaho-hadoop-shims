@@ -27,15 +27,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.pentaho.di.connections.ConnectionDetails;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 @RunWith( MockitoJUnitRunner.class )
@@ -69,7 +70,6 @@ public class ADLSGen1ConfTest {
     s3Props.put( "accessKey", "ACCESSKEY" );
     s3Props.put( "secretKey", "SECRETKEY" );
     when( s3Conn.getProperties() ).thenReturn( s3Props );
-    when( s3Conn.getType() ).thenReturn( "s3" );
     s3Conf = new S3Conf( s3Conn );
 
     when( hcpConn.getType() ).thenReturn( "hcp" );
@@ -104,7 +104,6 @@ public class ADLSGen1ConfTest {
     assertEquals( adlsGen1Conf, adlsGen1Conf );
     assertNotEquals( adlsGen1Conf, s3Conf );
     when( otherADLS1Conn.getProperties() ).thenReturn( new HashMap<>( adlsGen1Props ) );
-    when( otherADLS1Conn.getType() ).thenReturn( "adl" );
 
     ADLSGen1Conf otherGen1Conf = new ADLSGen1Conf( otherADLS1Conn );
 
