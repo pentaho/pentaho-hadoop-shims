@@ -197,31 +197,9 @@ public class NoExitSecurityManager extends SecurityManager {
   }
 
   @Override
-  public boolean checkTopLevelWindow( Object window ) {
-    if ( decorated != null ) {
-      return decorated.checkTopLevelWindow( window );
-    }
-    return true; // Everything is allowed to put up top-level windows
-  }
-
-  @Override
   public void checkPrintJobAccess() {
     if ( decorated != null ) {
       decorated.checkPrintJobAccess();
-    }
-  }
-
-  @Override
-  public void checkSystemClipboardAccess() {
-    if ( decorated != null ) {
-      decorated.checkSystemClipboardAccess();
-    }
-  }
-
-  @Override
-  public void checkAwtEventQueueAccess() {
-    if ( decorated != null ) {
-      decorated.checkAwtEventQueueAccess();
     }
   }
 
@@ -243,13 +221,6 @@ public class NoExitSecurityManager extends SecurityManager {
   public void checkSetFactory() {
     if ( decorated != null ) {
       decorated.checkSetFactory();
-    }
-  }
-
-  @Override
-  public void checkMemberAccess( Class<?> clazz, int which ) {
-    if ( decorated != null ) {
-      decorated.checkMemberAccess( clazz, which );
     }
   }
 

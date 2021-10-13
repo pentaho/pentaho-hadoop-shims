@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2019-2020 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019-2021 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -27,7 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.pentaho.di.connections.ConnectionDetails;
 
 import java.util.HashMap;
@@ -63,7 +63,6 @@ public class GcsConfTest {
     s3Props.put( "accessKey", "ACCESSKEY" );
     s3Props.put( "secretKey", "SECRETKEY" );
     when( s3Conn.getProperties() ).thenReturn(s3Props);
-    when( s3Conn.getType() ).thenReturn( "s3" );
     s3Conf = new S3Conf( s3Conn );
 
     when( hcpConn.getType() ).thenReturn( "hcp" );
@@ -105,7 +104,6 @@ public class GcsConfTest {
     assertEquals(gcsConf, gcsConf);
     assertNotEquals(gcsConf, s3Conf );
     when( otherGcsConn.getProperties() ).thenReturn( new HashMap<>(gcsProps) );
-    when( otherGcsConn.getType() ).thenReturn( "gs" );
 
     GcsConf otherGcsConf = new GcsConf( otherGcsConn );
 

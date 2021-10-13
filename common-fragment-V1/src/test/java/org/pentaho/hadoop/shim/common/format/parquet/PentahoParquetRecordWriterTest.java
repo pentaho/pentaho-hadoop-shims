@@ -30,14 +30,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.mockito.Mockito;
-import org.mockito.internal.util.reflection.Whitebox;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.row.RowMeta;
 import org.pentaho.di.core.row.value.ValueMetaString;
 import org.pentaho.di.core.util.Assert;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
-import org.pentaho.hadoop.shim.api.format.*;
+import org.pentaho.hadoop.shim.api.format.IParquetInputField;
+import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat;
+import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat;
+import org.pentaho.hadoop.shim.api.format.IPentahoParquetInputFormat;
+import org.pentaho.hadoop.shim.api.format.ParquetSpec;
 import org.pentaho.hadoop.shim.common.ConfigurationProxy;
+import org.pentaho.hadoop.shim.common.format.parquet.delegate.apache.PentahoApacheInputFormat;
+import org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter.PentahoTwitterInputFormat;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -45,10 +50,8 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
-import org.pentaho.hadoop.shim.common.format.parquet.delegate.apache.PentahoApacheInputFormat;
-import org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter.PentahoTwitterInputFormat;
-
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith( Parameterized.class )
 public class PentahoParquetRecordWriterTest {
@@ -197,8 +200,8 @@ public class PentahoParquetRecordWriterTest {
 
         org.apache.parquet.hadoop.ParquetInputSplit apacheParquetInputSplit =
           Mockito.spy( org.apache.parquet.hadoop.ParquetInputSplit.class );
-        Whitebox.setInternalState( apacheParquetInputSplit, "rowGroupOffsets", new long[] { 4 } );
-        Whitebox.setInternalState( apacheParquetInputSplit, "file", new org.apache.hadoop.fs.Path( parquetFilePath ) );
+        when( apacheParquetInputSplit.getRowGroupOffsets() ).thenReturn( new long[] { 4 } );
+        when( apacheParquetInputSplit.getPath() ).thenReturn( new org.apache.hadoop.fs.Path( parquetFilePath ) );
         pentahoInputSplit = new PentahoInputSplitImpl( apacheParquetInputSplit );
 
         break;
@@ -207,8 +210,8 @@ public class PentahoParquetRecordWriterTest {
 
         parquet.hadoop.ParquetInputSplit twitterParquetInputSplit =
           Mockito.spy( parquet.hadoop.ParquetInputSplit.class );
-        Whitebox.setInternalState( twitterParquetInputSplit, "rowGroupOffsets", new long[] { 4 } );
-        Whitebox.setInternalState( twitterParquetInputSplit, "file", new org.apache.hadoop.fs.Path( parquetFilePath ) );
+        when( twitterParquetInputSplit.getRowGroupOffsets() ).thenReturn( new long[] { 4 } );
+        when( twitterParquetInputSplit.getPath() ).thenReturn( new org.apache.hadoop.fs.Path( parquetFilePath ) );
         pentahoInputSplit = new PentahoInputSplitImpl( twitterParquetInputSplit );
 
         break;

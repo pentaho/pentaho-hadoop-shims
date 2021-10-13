@@ -130,9 +130,7 @@ public class NamedClusterServiceLocatorImplTest {
   @Test
   public void testGetServiceWithAccessToEmbeddedMetastore() {
     String embeddedMetastoreKey = "theMetastoreKey";
-    when( namedClusterServiceFactory.canHandle( namedCluster ) ).thenReturn( true );
     when( namedClusterServiceFactory2.canHandle( namedCluster ) ).thenReturn( true );
-    when( namedClusterServiceFactory.create( namedCluster ) ).thenReturn( value );
     when( mockMetastoreLocator.getMetastore() ).thenReturn( null );  //disable the normal metastore
     when( mockMetastoreLocator.getExplicitMetastore( embeddedMetastoreKey ) )
       .thenReturn( memoryMetaStore ); // and set to embedded metastore
@@ -166,7 +164,6 @@ public class NamedClusterServiceLocatorImplTest {
     assertEquals( "3", service );
 
     when( namedClusterServiceFactory.canHandle( namedCluster ) ).thenReturn( true );
-    when( namedClusterServiceFactory3.canHandle( namedCluster ) ).thenReturn( false );
 
     service = serviceLocator.getService( namedCluster, Object.class );
     assertEquals( "0", service );
