@@ -121,6 +121,11 @@
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-mapreduce-client-app</artifactId>
+      <version>${org.apache.hadoop.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-mapreduce-client-core</artifactId>
       <version>${org.apache.hadoop.version}</version>
     </dependency>
@@ -250,7 +255,8 @@
           <resolverFilters>
             <resolverFilter>
               <include>
-                *:com.fasterxml.jackson.dataformat,*:hadoop-mapreduce-client-core,*:hadoop-common,*:orc-core,*:avro,
+                *:com.fasterxml.jackson.dataformat,*:hadoop-mapreduce-client-app,*:hadoop-mapreduce-client-core,
+                *:hadoop-common,*:orc-core,*:avro,
                 *:hadoop-aws,
                 *:hadoop-azure,
                 com.amazonaws:*,
