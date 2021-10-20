@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>pentaho-hadoop-shims-cdpdc71-kar</artifactId>
-  <version>9.1.2021.06.00-629</version>
+  <version>9.1.2021.06.00-CUST-255</version>
   <packaging>kar</packaging>
 
   <dependencies>
@@ -27,7 +27,7 @@
     <dependency>
       <groupId>org.pentaho.hadoop.shims</groupId>
       <artifactId>pentaho-hadoop-shims-cdpdc71-driver</artifactId>
-      <version>${project.version}</version>
+      <version>9.1.2021.06.00-CUST-255</version>
     </dependency>
   </dependencies>
 

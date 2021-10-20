@@ -8,7 +8,7 @@
     <version>9.1.2021.06.00-629</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-apache-driver</artifactId>
-  <version>9.1.2021.06.00-629</version>
+  <version>9.1.2021.06.00-CUST-255</version>
   <packaging>bundle</packaging>
   <properties>
     <vendor-driver.version>3.0.0.0.apache</vendor-driver.version>
@@ -118,6 +118,11 @@
       <groupId>org.pentaho</groupId>
       <artifactId>shim-api</artifactId>
       <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-mapreduce-client-app</artifactId>
+      <version>${org.apache.hadoop.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
@@ -250,7 +255,8 @@
           <resolverFilters>
             <resolverFilter>
               <include>
-                *:com.fasterxml.jackson.dataformat,*:hadoop-mapreduce-client-core,*:hadoop-common,*:orc-core,*:avro,
+                *:com.fasterxml.jackson.dataformat,*:hadoop-mapreduce-client-app,*:hadoop-mapreduce-client-core,
+                *:hadoop-common,*:orc-core,*:avro,
                 *:hadoop-aws,
                 *:hadoop-azure,
                 com.amazonaws:*,
