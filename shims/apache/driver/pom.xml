@@ -117,7 +117,7 @@
     <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>shim-api</artifactId>
-      <version>${project.version}</version>
+      <version>9.1.2021.06.00-CUST-253</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
