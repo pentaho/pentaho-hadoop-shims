@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.pentaho.hadoop.shims</groupId>
     <artifactId>pentaho-hadoop-shims-list</artifactId>
-    <version>9.3.0.0-SNAPSHOT</version>
+    <version>9.3.2021.05.00-9</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-hdp26-reactor</artifactId>
   <packaging>pom</packaging>
