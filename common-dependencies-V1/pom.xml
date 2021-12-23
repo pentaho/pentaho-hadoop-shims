@@ -75,11 +75,6 @@
       <classifier>${dependency.pig.classifier}</classifier>
     </dependency>
     <dependency>
-      <groupId>org.pentaho.di.plugins</groupId>
-      <artifactId>kettle-log4j-core</artifactId>
-      <version>${pdi.version}</version>
-    </dependency>
-    <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
     </dependency>

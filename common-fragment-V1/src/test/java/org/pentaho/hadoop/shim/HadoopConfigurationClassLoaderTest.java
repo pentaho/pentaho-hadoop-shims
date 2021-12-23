@@ -46,8 +46,8 @@ public class HadoopConfigurationClassLoaderTest {
     HadoopConfigurationClassLoader hccl =
       new HadoopConfigurationClassLoader( new URL[ 0 ], getClass().getClassLoader() );
     assertTrue( hccl.ignoreClass( "org.apache.commons.log" ) );
-    assertTrue( hccl.ignoreClass( "org.apache.log4j" ) );
-    assertTrue( hccl.ignoreClass( "org.apache.log4j.Logger" ) );
+    assertTrue( hccl.ignoreClass( "org.apache.logging.log4j" ) );
+    assertTrue( hccl.ignoreClass( "org.apache.logging.log4j.Logger" ) );
     assertFalse( hccl.ignoreClass( "bogus" ) );
     assertTrue( hccl.ignoreClass( null ) );
   }

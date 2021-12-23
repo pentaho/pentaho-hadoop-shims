@@ -29,7 +29,8 @@ import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.hadoop.shim.ShimConfigsLoader;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
@@ -66,7 +67,7 @@ import static org.apache.hadoop.mapreduce.lib.input.FileInputFormat.setInputPath
  */
 public class PentahoTwitterInputFormat extends HadoopFormatBase implements IPentahoParquetInputFormat {
 
-  private static final Logger logger = Logger.getLogger( PentahoTwitterInputFormat.class );
+  private static final Logger logger = LogManager.getLogger( PentahoTwitterInputFormat.class );
 
   private ParquetInputFormat<RowMetaAndData> nativeParquetInputFormat;
   private Job job;

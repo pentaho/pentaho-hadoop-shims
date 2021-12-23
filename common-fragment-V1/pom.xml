@@ -118,6 +118,16 @@
           <classifier>${dependency.pig.classifier}</classifier>
           <scope>provided</scope>
         </dependency>
+        <dependency>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-core</artifactId>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-api</artifactId>
+          <scope>provided</scope>
+        </dependency>
       </dependencies>
     </profile>
   </profiles>
@@ -141,12 +151,6 @@
     <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.pentaho.di.plugins</groupId>
-      <artifactId>kettle-log4j-core</artifactId>
-      <version>${pdi.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -176,7 +180,6 @@
       <groupId>pentaho</groupId>
       <artifactId>pentaho-platform-api</artifactId>
       <version>${platform.version}</version>
-      <scope>test</scope>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
