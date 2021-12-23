@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Pentaho Big Data
  * <p>
- * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2022 by Hitachi Vantara : http://www.pentaho.com
  * <p>
  * ******************************************************************************
  * <p>
@@ -54,7 +54,7 @@ import java.util.Properties;
 import java.util.logging.Logger;
 
 public class CommonHadoopShim implements HadoopShim {
-  private org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger( getClass() );
+  private org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger( getClass() );
 
   public static class NotSupportedDriver implements Driver {
     public static SQLException notSupported =

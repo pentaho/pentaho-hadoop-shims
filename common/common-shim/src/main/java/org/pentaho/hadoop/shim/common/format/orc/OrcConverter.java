@@ -31,6 +31,7 @@ import org.apache.hadoop.hive.ql.exec.vector.LongColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.TimestampColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
 import org.apache.hadoop.hive.serde2.io.HiveDecimalWritable;
+import org.apache.logging.log4j.LogManager;
 import org.apache.orc.TypeDescription;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.row.ValueMetaInterface;
@@ -50,14 +51,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Created by tkafalas 11/7/2017
  */
 public class OrcConverter {
   private ValueMetaConverter valueMetaConverter = new ValueMetaConverter();
-  private static final Logger logger = Logger.getLogger( OrcConverter.class );
+  private static final Logger logger = LogManager.getLogger( OrcConverter.class );
 
   public RowMetaAndData convertFromOrc( VectorizedRowBatch batch, int currentBatchRow,
                                         List<? extends IOrcInputField> dialogInputFields,

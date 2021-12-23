@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2018-2022 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -28,7 +28,8 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.PathFilter;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.orc.OrcFile;
 import org.apache.orc.Reader;
 import org.apache.orc.RecordReader;
@@ -50,7 +51,7 @@ import java.util.Map;
  * Created by tkafalas on 11/7/2017.
  */
 public class PentahoOrcRecordReader implements IPentahoOrcInputFormat.IPentahoRecordReader {
-  private static final Logger logger = Logger.getLogger( PentahoOrcRecordReader.class );
+  protected static Logger logger = LogManager.getLogger( PentahoOrcRecordReader.class );
   private final Configuration conf;
   private final List<? extends IOrcInputField> dialogInputFields;  //Comes from Dialog
   private final List<? extends IOrcInputField> orcInputFields;  //Comes from OrcFile combined with custom metadata

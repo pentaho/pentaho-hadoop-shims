@@ -23,7 +23,8 @@
 package org.pentaho.hadoop.shim.common.authentication;
 
 import org.apache.commons.lang.ClassUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.pentaho.di.core.auth.core.AuthenticationManager;
 import org.pentaho.di.core.auth.core.AuthenticationProvider;
 import org.pentaho.di.core.encryption.Encr;
@@ -38,7 +39,7 @@ public class PropertyAuthenticationProviderParser {
     public AuthenticationProvider instantiate( String canonicalName );
   }
 
-  private static final Logger logger = Logger.getLogger( PropertyAuthenticationProviderParser.class );
+  private static final Logger logger = LogManager.getLogger( PropertyAuthenticationProviderParser.class );
   private final Properties properties;
   private final AuthenticationManager manager;
   private final AuthenticationProviderInstantiator authenticationProviderInstantiator;

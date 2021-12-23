@@ -21,7 +21,8 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.common.format.orc;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.orc.Writer;
 import org.pentaho.hadoop.shim.api.format.IOrcMetaData;
 import org.pentaho.hadoop.shim.api.format.IOrcOutputField;
@@ -34,7 +35,7 @@ import java.util.List;
  * Created by tkafalas on 11/21/2017.
  */
 public class OrcMetaDataWriter implements IOrcMetaData.Writer {
-  private static final Logger logger = Logger.getLogger( OrcMetaDataWriter.class );
+  private static final Logger logger = LogManager.getLogger( OrcMetaDataWriter.class );
   private Writer writer;
 
 
