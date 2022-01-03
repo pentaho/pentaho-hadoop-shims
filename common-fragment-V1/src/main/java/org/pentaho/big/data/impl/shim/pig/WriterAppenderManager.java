@@ -74,7 +74,7 @@ public class WriterAppenderManager implements Closeable {
     // Set up an appender that will send all pig log messages to Kettle's log
     // via logBasic().
     KettleLoggingPrintWriter klps = new KettleLoggingPrintWriter( logChannelInterface );
-    pigToKettleAppender =  LogUtil.makeAppender( "pig-kettle-appender",  klps, new Log4jKettleLayout( true ) );
+    pigToKettleAppender =  LogUtil.makeAppender( "pig-kettle-appender",  klps, new Log4jKettleLayout( Charset.forName( "utf-8" ), true ) );
     Logger pigLogger = LogManager.getLogger("org.apache.pig" );
     Level log4jLevel = getLog4jLevel( logLevel );
     LogUtil.setLevel(pigLogger, log4jLevel);
@@ -83,7 +83,7 @@ public class WriterAppenderManager implements Closeable {
       file = KettleVFS.createTempFile( logFileName, ".log", System.getProperty( "java.io.tmpdir" ) );
       appender =  LogUtil.makeAppender( logFileName,
               new OutputStreamWriter( KettleVFS.getOutputStream( file, true ),
-                      Charset.forName( "utf-8" ) ), new Log4jKettleLayout( true ) );
+                      Charset.forName( "utf-8" ) ), new Log4jKettleLayout( Charset.forName( "utf-8" ), true) );
       LogUtil.addAppender( appender, LogManager.getLogger(), log4jLevel );
       LogUtil.addAppender( pigToKettleAppender, LogManager.getLogger(), log4jLevel );
     } catch ( Exception e ) {
@@ -91,7 +91,6 @@ public class WriterAppenderManager implements Closeable {
         .getString( PKG, "JobEntryPigScriptExecutor.FailedToOpenLogFile", logFileName, e.toString() ) ); //$NON-NLS-1$
       logChannelInterface.logError( Const.getStackTracker( e ) );
     }
-    this.appender = appender;
   }
 
   private Level getLog4jLevel( LogLevel level ) {
