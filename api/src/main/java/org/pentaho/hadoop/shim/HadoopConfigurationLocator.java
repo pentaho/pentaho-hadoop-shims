@@ -42,7 +42,8 @@ import org.apache.commons.vfs2.FileSelector;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileType;
 import org.apache.commons.vfs2.impl.DefaultFileSystemManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.util.StringUtil;
 import org.pentaho.di.i18n.BaseMessages;
@@ -86,7 +87,7 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
 
   private static final Class<?> PKG = HadoopConfigurationLocator.class;
 
-  private Logger logger = Logger.getLogger( getClass() );
+  private Logger logger = LogManager.getLogger( getClass() );
 
   /**
    * This is a set of shim classes to load from each Hadoop configuration. TODO Externalize this list so we may

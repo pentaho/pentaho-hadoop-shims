@@ -23,7 +23,6 @@ package org.pentaho.hadoop.shim.common.format.parquet;
 
 //#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_name=="mapr60" || shim_name=="cdh61"
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.parquet.io.api.Binary;
 import org.apache.parquet.io.api.Converter;
 import org.apache.parquet.io.api.GroupConverter;
@@ -45,6 +44,7 @@ import org.apache.parquet.schema.Type;
 //#endif
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.plugins.IValueMetaConverter;
 import org.pentaho.di.core.row.RowMeta;

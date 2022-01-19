@@ -129,6 +129,11 @@
       <artifactId>aws-java-sdk-core</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.powermock</groupId>
       <artifactId>powermock-reflect</artifactId>
       <scope>test</scope>
