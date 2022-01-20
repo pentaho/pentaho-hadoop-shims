@@ -28,7 +28,8 @@ import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.mapreduce.TaskType;
 import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.parquet.column.ParquetProperties;
 import org.apache.parquet.hadoop.ParquetOutputFormat;
 import org.apache.parquet.hadoop.ParquetRecordWriter;
@@ -57,7 +58,7 @@ import static org.apache.hadoop.mapreduce.lib.output.FileOutputFormat.setOutputP
  */
 public class PentahoApacheOutputFormat extends HadoopFormatBase implements IPentahoParquetOutputFormat {
 
-  protected static final Logger logger = Logger.getLogger( PentahoApacheOutputFormat.class );
+  protected static final Logger logger = LogManager.getLogger( PentahoApacheOutputFormat.class );
 
   protected Job job;
   protected Path outputFile;

@@ -72,7 +72,7 @@ public class CommonHadoopShim implements HadoopShim {
   public static final String HADOOPFS_IPC_CLIENT_CONNECT_MAX_RETRIES_ON_TIMEOUTS =
     "hadoopfs.ipc.client.connect.max.retries.on.timeouts";
 
-  private org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger( getClass() );
+  private org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger( getClass() );
 
   public static class NotSupportedDriver implements Driver {
     public static final SQLException notSupported =

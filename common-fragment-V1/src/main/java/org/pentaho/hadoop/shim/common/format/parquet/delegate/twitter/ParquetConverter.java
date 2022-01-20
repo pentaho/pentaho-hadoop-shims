@@ -21,7 +21,8 @@
  ******************************************************************************/
 package org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.plugins.IValueMetaConverter;
@@ -249,7 +250,7 @@ public class ParquetConverter {
     private final Converter[] converters;
     private int count;
     private final IValueMetaConverter valueMetaConverter = new ValueMetaConverter();
-    private static final Logger logger = Logger.getLogger( MyGroupConverter.class );
+    private static final Logger logger = LogManager.getLogger( MyGroupConverter.class );
 
     private Object convertFromSourceToTargetType( IValueMetaConverter valueMetaConverter, Object stagingValue,
                                                   IParquetInputField f ) {
