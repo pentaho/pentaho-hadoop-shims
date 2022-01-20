@@ -31,7 +31,8 @@ import org.apache.hadoop.hive.ql.exec.vector.LongColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.TimestampColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
 import org.apache.hadoop.hive.serde2.io.HiveDecimalWritable;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.orc.OrcFile;
 import org.apache.orc.TypeDescription;
 import org.apache.orc.Writer;
@@ -85,7 +86,7 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
   private SimpleDateFormat datePattern = new SimpleDateFormat( dateFormatString );
   protected RowMeta outputRowMeta = new RowMeta();
   protected RowMetaAndData outputRowMetaAndData;
-  protected static final Logger logger = Logger.getLogger( PentahoOrcRecordWriter.class );
+  protected static final Logger logger = LogManager.getLogger( PentahoOrcRecordWriter.class );
   protected List<? extends IOrcOutputField> fields;
 
   public PentahoOrcRecordWriter( List<? extends IOrcOutputField> fields, TypeDescription schema, String filePath,

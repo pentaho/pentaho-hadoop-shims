@@ -28,7 +28,8 @@ import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.mapreduce.TaskType;
 import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.pentaho.hadoop.shim.api.format.org.pentaho.hadoop.shim.pvfs.api.PvfsHadoopBridgeFileSystemExtension;
 import parquet.column.ParquetProperties;
 import parquet.hadoop.ParquetOutputFormat;
@@ -51,7 +52,7 @@ import java.util.List;
  */
 public class PentahoTwitterOutputFormat extends HadoopFormatBase implements IPentahoParquetOutputFormat {
 
-  private static final Logger logger = Logger.getLogger( PentahoTwitterOutputFormat.class );
+  private static final Logger logger = LogManager.getLogger( PentahoTwitterOutputFormat.class );
 
   private Job job;
   private Path outputFile;
