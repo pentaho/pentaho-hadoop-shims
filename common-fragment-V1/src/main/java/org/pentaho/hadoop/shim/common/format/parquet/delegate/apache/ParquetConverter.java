@@ -22,6 +22,7 @@
 package org.pentaho.hadoop.shim.common.format.parquet.delegate.apache;
 
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.parquet.io.api.Binary;
 import org.apache.parquet.io.api.Converter;
 import org.apache.parquet.io.api.GroupConverter;
@@ -30,7 +31,7 @@ import org.apache.parquet.io.api.RecordMaterializer;
 import org.apache.parquet.schema.MessageType;
 import org.apache.parquet.schema.OriginalType;
 import org.apache.parquet.schema.Type;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.plugins.IValueMetaConverter;
 import org.pentaho.di.core.row.RowMeta;
@@ -248,7 +249,7 @@ public class ParquetConverter {
     private final Converter[] converters;
     private int count;
     private final IValueMetaConverter valueMetaConverter = new ValueMetaConverter();
-    private static final Logger logger = Logger.getLogger( MyGroupConverter.class );
+    private static final Logger logger = LogManager.getLogger( MyGroupConverter.class );
 
     private Object convertFromSourceToTargetType( IValueMetaConverter valueMetaConverter, Object stagingValue,
                                                   IParquetInputField f ) {
