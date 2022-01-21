@@ -11,7 +11,6 @@
   <packaging>jar</packaging>
   <version>8.3.0.0-SNAPSHOT</version>
   <properties>
-    <log4j.version>1.2.15</log4j.version>
     <maprfs.version>5.2.0-mapr</maprfs.version>
     <commons-configuration.version>1.6</commons-configuration.version>
     <shim.type>MAPR</shim.type>
@@ -57,9 +56,8 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>${log4j.version}</version>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
       <scope>provided</scope>
       <exclusions>
         <exclusion>

@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019-2022 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -32,7 +32,8 @@ import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.mapreduce.TaskType;
 import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 //#if shim_type=="HDP" || shim_type=="EMR" || shim_type=="HDI" || shim_name=="mapr60" || shim_name=="cdh61"
 import org.apache.parquet.column.ParquetProperties;
@@ -59,7 +60,7 @@ import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
  */
 public class PentahoParquetOutputFormat extends HadoopFormatBase implements IPentahoParquetOutputFormat {
 
-  private static final Logger logger = Logger.getLogger( PentahoParquetInputFormat.class );
+  private static final Logger logger = LogManager.getLogger( PentahoParquetInputFormat.class );
   private static final String S3SCHEME = "s3";
   private static final String S3NSCHEME = "s3n";
   private static final String S3NROOTBUCKET = S3NSCHEME + "/";

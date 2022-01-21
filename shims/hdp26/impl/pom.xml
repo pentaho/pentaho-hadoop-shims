@@ -57,6 +57,11 @@
       <artifactId>orc-core</artifactId>
       <version>${org.apache.orc.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <scope>compile</scope>
+    </dependency>
     <!--here test dependencies-->
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
