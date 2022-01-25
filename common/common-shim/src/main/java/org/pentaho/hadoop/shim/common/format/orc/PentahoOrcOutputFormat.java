@@ -26,7 +26,8 @@ import java.nio.file.FileAlreadyExistsException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.apache.orc.TypeDescription;
 import org.pentaho.hadoop.shim.api.format.IOrcOutputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoOrcOutputFormat;
@@ -53,7 +54,7 @@ public class PentahoOrcOutputFormat extends HadoopFormatBase implements IPentaho
   private int rowIndexStride = 0;
   private List<? extends IOrcOutputField> fields;
 
-  private static final Logger logger = Logger.getLogger( PentahoOrcOutputFormat.class );
+  private static final Logger logger = LogManager.getLogger( PentahoOrcOutputFormat.class );
 
   public PentahoOrcOutputFormat() throws Exception {
     Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
