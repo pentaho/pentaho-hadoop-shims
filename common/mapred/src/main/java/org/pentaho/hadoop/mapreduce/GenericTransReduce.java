@@ -33,7 +33,6 @@ import org.apache.hadoop.io.WritableComparable;
 import org.apache.hadoop.mapred.OutputCollector;
 import org.apache.hadoop.mapred.Reducer;
 import org.apache.hadoop.mapred.Reporter;
-import org.apache.log4j.Logger;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.row.RowMeta;
 import org.pentaho.di.core.row.RowMetaInterface;
@@ -51,8 +50,6 @@ import org.pentaho.hadoop.mapreduce.converter.spi.ITypeConverter;
 @SuppressWarnings( "deprecation" )
 public class GenericTransReduce<K extends WritableComparable<?>, V extends Iterator<Writable>, K2, V2> extends PentahoMapReduceBase<K2, V2> implements
     Reducer<K, V, K2, V2> {
-
-  private static Logger logger = Logger.getLogger( GenericTransReduce.class );
 
   protected RowProducer rowProducer;
   protected Object value;
