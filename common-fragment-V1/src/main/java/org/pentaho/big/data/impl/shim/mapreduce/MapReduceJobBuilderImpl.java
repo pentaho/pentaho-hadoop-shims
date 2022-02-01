@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2022 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -169,7 +169,7 @@ public class MapReduceJobBuilderImpl implements MapReduceJobBuilder {
 
   protected void configure( Configuration conf ) throws Exception {
     FileSystem fs = hadoopShim.getFileSystem( conf );
-    URL[] urls = new URL[] { resolvedJarUrl };
+    URL[] urls = resolvedJarUrl == null ? new URL[] {} : new URL[] { resolvedJarUrl };
     try ( URLClassLoader loader = new URLClassLoader( urls, hadoopShim.getClass().getClassLoader() ) ) {
       conf.setJobName( hadoopJobName );
 
