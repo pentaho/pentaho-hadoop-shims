@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2022 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -56,7 +56,7 @@ import org.osgi.framework.wiring.BundleWiring;
 import org.pentaho.big.data.impl.shim.oozie.OozieJobInfoDelegate;
 import org.pentaho.big.data.impl.shim.oozie.OozieJobInfoImpl;
 import org.pentaho.big.data.impl.shim.pig.PigResultImpl;
-import org.pentaho.big.data.impl.shim.pig.WriterAppenderManager;
+import org.pentaho.big.data.impl.shim.logging.WriterAppenderManager;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.logging.LogChannelInterface;
 import org.pentaho.di.core.logging.LogLevel;
@@ -143,6 +143,8 @@ public class HadoopClientServicesImpl implements HadoopClientServices {
     }
 
   }
+
+  private String[] PIG_LOGGERS = { "org.apache.pig" };
 
   public HadoopClientServicesImpl( NamedCluster namedCluster, HadoopShim hadoopShim, BundleContext bundleContext ) {
     this.bundleContext = bundleContext;
@@ -373,7 +375,7 @@ public class HadoopClientServicesImpl implements HadoopClientServices {
                            LogLevel logLevel ) {
     FileObject appenderFile = null;
     try ( WriterAppenderManager appenderManager = writerAppenderManagerFactory.create( logChannelInterface, logLevel,
-      name ) ) {
+      name, PIG_LOGGERS ) ) {
       appenderFile = appenderManager.getFile();
       Configuration configuration = hadoopShim.createConfiguration( namedCluster );
       if ( executionMode != PigExecutionMode.LOCAL ) {
