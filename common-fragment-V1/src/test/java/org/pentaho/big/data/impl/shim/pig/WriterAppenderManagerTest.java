@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2022 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.Appender;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.pentaho.big.data.impl.shim.logging.WriterAppenderManager;
 import org.pentaho.di.core.logging.LogChannelInterface;
 import org.pentaho.di.core.logging.LogLevel;
 
@@ -48,7 +49,7 @@ public class WriterAppenderManagerTest {
     logChannelInterface = mock( LogChannelInterface.class );
     logLevel = LogLevel.DETAILED;
     testName = "testName";
-    writerAppenderManager = new WriterAppenderManager( logChannelInterface, logLevel, testName );
+    writerAppenderManager = new WriterAppenderManager( logChannelInterface, logLevel, testName, new String[0] );
   }
 
   @Test
@@ -60,7 +61,7 @@ public class WriterAppenderManagerTest {
   @Test
   public void testError() throws IOException {
     ArgumentCaptor<Appender> captor = ArgumentCaptor.forClass( Appender.class );
-    writerAppenderManager = new WriterAppenderManager( logChannelInterface, logLevel, testName );
+    writerAppenderManager = new WriterAppenderManager( logChannelInterface, logLevel, testName, new String[0] );
     assertNotNull( writerAppenderManager.getFile() );
     writerAppenderManager.close();
   }
@@ -68,7 +69,7 @@ public class WriterAppenderManagerTest {
   @Test
   public void testFactory() throws IOException {
     WriterAppenderManager writerAppenderManager =
-      new WriterAppenderManager.Factory().create( logChannelInterface, logLevel, testName );
+      new WriterAppenderManager.Factory().create( logChannelInterface, logLevel, testName, new String[0] );
     assertNotNull( writerAppenderManager.getFile() );
     writerAppenderManager.close();
   }
