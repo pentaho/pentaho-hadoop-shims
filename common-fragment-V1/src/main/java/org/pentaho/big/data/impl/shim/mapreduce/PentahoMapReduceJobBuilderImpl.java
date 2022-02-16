@@ -305,7 +305,7 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
                                     String defaultValue ) {
     String fromConf = conf.get( propertyName );
     if ( Utils.isEmpty( fromConf ) ) {
-      Object objectValue = properties.getOrDefault( propertyName, null );
+      Object objectValue = properties.get( propertyName );
       if ( objectValue != null ) {
         if ( objectValue instanceof String ) {
           return objectValue.toString();
