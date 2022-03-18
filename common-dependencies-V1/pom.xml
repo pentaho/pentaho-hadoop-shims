@@ -22,7 +22,7 @@
     <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>pentaho-hadoop-shims-common-mapreduce</artifactId>
-      <version>${project.version}</version>
+      <version>9.2.2022.01.26-CUST-261</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
