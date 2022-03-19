@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>pentaho-hadoop-shims</artifactId>
-  <version>9.2.2022.01.26-482</version>
+  <version>9.2.2022.01.26-CUST-261</version>
   <packaging>pom</packaging>
 
   <properties>
@@ -30,7 +30,7 @@
     <org.powermock.version>1.6.2</org.powermock.version>
     <eula-wrap_assign-deps-to-properties-phase></eula-wrap_assign-deps-to-properties-phase>
     <pentaho-osgi-bundles.version>9.2.0.3-482</pentaho-osgi-bundles.version>
-    <big-data-plugin.version>9.2.0.3-482</big-data-plugin.version>
+    <big-data-plugin.version>9.2.0.3-CUST-261</big-data-plugin.version>
     <platform.version>9.2.0.3-482</platform.version>
     <org.apache.orc.version>1.2.3</org.apache.orc.version>
     <org.apache.parquet.version>1.8.1</org.apache.parquet.version>
