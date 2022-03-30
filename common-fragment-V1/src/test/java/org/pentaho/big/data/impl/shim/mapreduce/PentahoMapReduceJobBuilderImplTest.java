@@ -561,11 +561,11 @@ public class PentahoMapReduceJobBuilderImplTest {
     ArrayList<String> values = new ArrayList<>();
     values.add( "value1" );
     values.add( "value2" );
-    when( properties.getOrDefault( "property1", null ) ).thenReturn( values );
+    when( properties.get( "property1" ) ).thenReturn( values );
     assertEquals( "value1,value2",
       pentahoMapReduceJobBuilder.getProperty( configuration, properties, "property1", null ) );
 
-    when( properties.getOrDefault( "property2", null ) ).thenReturn( "value" );
+    when( properties.get( "property2" ) ).thenReturn( "value" );
     assertEquals( "value", pentahoMapReduceJobBuilder.getProperty( configuration, properties, "property2", null ) );
   }
 
