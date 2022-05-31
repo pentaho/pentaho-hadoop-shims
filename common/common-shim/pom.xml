@@ -143,6 +143,12 @@
       <artifactId>log4j-api</artifactId>
       <scope>provided</scope>
     </dependency>
+    <!-- supplied in data-integration/lib at runtime -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-1.2-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.powermock</groupId>
       <artifactId>powermock-reflect</artifactId>
