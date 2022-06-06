@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2021 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2022 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -25,6 +25,7 @@ package org.pentaho.big.data.impl.shim.mapreduce;
 import com.google.common.annotations.VisibleForTesting;
 import com.thoughtworks.xstream.XStream;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemConfigBuilder;
 import org.apache.commons.vfs2.FileSystemException;
@@ -68,6 +69,7 @@ import org.pentaho.hadoop.shim.api.internal.fs.FileSystem;
 import org.pentaho.hadoop.shim.api.internal.fs.Path;
 import org.pentaho.hadoop.shim.api.mapreduce.MapReduceJobAdvanced;
 import org.pentaho.hadoop.shim.api.mapreduce.PentahoMapReduceJobBuilder;
+import org.pentaho.hadoop.shim.common.DistributedCacheUtilImpl;
 import org.pentaho.hadoop.shim.spi.HadoopShim;
 import org.pentaho.metastore.api.IMetaStore;
 import org.pentaho.metastore.api.exceptions.MetaStoreException;
@@ -75,6 +77,7 @@ import org.pentaho.metastore.stores.xml.XmlMetaStore;
 import org.pentaho.metastore.stores.xml.XmlUtil;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -84,6 +87,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -572,13 +576,14 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
     boolean overwrite;
 
     // Create a temp folder on the local file system if it isn't already present in hdfs.
-    localMetaStoreSnapshotDirPath = Files.createTempDirectory(XmlUtil.META_FOLDER_NAME);
+    localMetaStoreSnapshotDirPath = Files.createTempDirectory( XmlUtil.META_FOLDER_NAME );
 
     // Get the newly created metastore directory from the local file system
     localMetaStoreSnapshotDirObject = KettleVFS.getFileObject( localMetaStoreSnapshotDirPath.toString() );
 
     // Determine the folder name to use for hdfs based on the create.unique.metastore.dir property
-    if ( Boolean.parseBoolean( getProperty( conf, pmrProperties, PENTAHO_MAPREDUCE_PROPERTY_CREATE_UNIQUE_METASTORE_DIR, Boolean.toString( true ) ) ) ) {
+    if ( Boolean.parseBoolean( getProperty( conf, pmrProperties, PENTAHO_MAPREDUCE_PROPERTY_CREATE_UNIQUE_METASTORE_DIR,
+      Boolean.toString( true ) ) ) ) {
       hdfsMetaStoreDirForCurrentJobPath =
         fs.asPath( installPath, localMetaStoreSnapshotDirObject.getName().getBaseName() );
       overwrite = false;
@@ -591,7 +596,8 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
     snapshotMetaStore( localMetaStoreSnapshotDirPath.toString() );
 
     // Stage the local metastore to hdfs
-    hadoopShim.getDistributedCacheUtil().stageForCache( localMetaStoreSnapshotDirObject, fs, hdfsMetaStoreDirForCurrentJobPath, "", overwrite, true );
+    hadoopShim.getDistributedCacheUtil()
+      .stageForCache( localMetaStoreSnapshotDirObject, fs, hdfsMetaStoreDirForCurrentJobPath, "", overwrite, true );
     hadoopShim.getDistributedCacheUtil().addCachedFiles( conf, fs, hdfsMetaStoreDirForCurrentJobPath, null );
   }
 
@@ -614,6 +620,8 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
         + getClusterName() );
     ShimConfigsLoader.ClusterConfigNames[] configFilesNames = ShimConfigsLoader.ClusterConfigNames.values();
     Properties configProps = ShimConfigsLoader.loadConfigProperties( getClusterName() );
+    copyConfigProperties( configProps, configFilesStagingLocation );
+
     String keytabAuthFilePath = configProps.getProperty( KEYTAB_AUTHENTICATION_LOCATION, "" );
     if ( !keytabAuthFilePath.isEmpty() ) {
       copyConfigFileToStaging( configFilesStagingLocation, Paths.get( keytabAuthFilePath ).getFileName().toString() );
@@ -759,4 +767,25 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
         + getProperty( conf, pmrProperties, PENTAHO_MAPREDUCE_PROPERTY_PMR_LIBRARIES_ARCHIVE_FILE, null );
     }
   }
+
+  private void copyConfigProperties( Properties configProperties, File destFolder ) {
+    //The config.properties file must be copied to the cluster side.  We found if the file is omitted,
+    //some customers reported errors.  We could not reproduce but this logic fixed the problem.  See
+    // BAD-1931.
+    File configFile = new File( destFolder.toPath().toString() + File.separator + DistributedCacheUtilImpl.CONFIG_PROPERTIES );
+    configFile.getParentFile().mkdirs();
+    try ( FileOutputStream output = new FileOutputStream( configFile ) ) {
+      for ( Map.Entry<Object, Object> e : configProperties.entrySet() ) {
+        String key = (String) e.getKey();
+        String value = (String) e.getValue();
+        IOUtils.write( key + "=" + value, output );
+        IOUtils.write( String.format( "%n" ), output );
+      }
+    } catch ( IOException e ) {
+      //Should not happen
+      throw new ShimRuntimeException( "Error copying modified version of config.properties", e );
+    }
+
+  }
+
 }
