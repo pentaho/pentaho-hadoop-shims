@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2022 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -121,7 +121,7 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
   /**
    * Name of the Shim configuration file
    */
-  private static final String CONFIG_PROPERTIES = "config.properties";
+  public static final String CONFIG_PROPERTIES = "config.properties";
 
   /**
    * Prefix for properties we want to omit when copying to the cluster
