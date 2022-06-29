@@ -24,7 +24,7 @@
     <pig.version>0.17.0-cdh6.1.0</pig.version>
     <parquet-pig.version>1.9.0-cdh6.1.0</parquet-pig.version>
     <sqoop.version>1.4.7-cdh6.1.0</sqoop.version>
-    <zookeeper.version>3.4.5-cdh6.1.0</zookeeper.version>
+    <zookeeper.version>3.4.14</zookeeper.version>
     <vendor-driver.version>6.0.1.0.cdh</vendor-driver.version>
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
     <joda-time.version>2.9.9</joda-time.version>
