@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2022 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -22,12 +22,16 @@
 
 package org.pentaho.big.data.api.jdbc.impl;
 
+import org.pentaho.di.core.service.PluginServiceLoader;
 import org.pentaho.hadoop.shim.api.cluster.NamedClusterService;
 import org.pentaho.hadoop.shim.api.jdbc.JdbcUrl;
 import org.pentaho.hadoop.shim.api.jdbc.JdbcUrlParser;
-import org.pentaho.osgi.metastore.locator.api.MetastoreLocator;
+import org.pentaho.metastore.locator.api.MetastoreLocator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URISyntaxException;
+import java.util.Collection;
 
 /**
  * Created by bryan on 4/4/16.
@@ -35,10 +39,19 @@ import java.net.URISyntaxException;
 public class JdbcUrlParserImpl implements JdbcUrlParser {
   private final NamedClusterService namedClusterService;
   private final MetastoreLocator metastoreLocator;
+  private final Logger logger = LoggerFactory.getLogger( JdbcUrlParserImpl.class );
 
-  public JdbcUrlParserImpl( NamedClusterService namedClusterService, MetastoreLocator metastoreLocator ) {
+  public JdbcUrlParserImpl( NamedClusterService namedClusterService ) {
     this.namedClusterService = namedClusterService;
-    this.metastoreLocator = metastoreLocator;
+    MetastoreLocator metastoreLocator1;
+    try {
+      Collection<MetastoreLocator> metastoreLocators = PluginServiceLoader.loadServices( MetastoreLocator.class );
+      metastoreLocator1 = metastoreLocators.stream().findFirst().get();
+    } catch ( Exception e ) {
+      metastoreLocator1 = null;
+      logger.error( "Error getting metastore locator", e );
+    }
+    metastoreLocator = metastoreLocator1;
   }
 
   @Override public JdbcUrl parse( String url ) throws URISyntaxException {

@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2021 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2022 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -24,16 +24,18 @@ package org.pentaho.big.data.api.cluster.service.locator.impl;
 
 import com.google.common.annotations.VisibleForTesting;
 import org.pentaho.big.data.api.shims.LegacyShimLocator;
+import org.pentaho.di.core.service.PluginServiceLoader;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.cluster.NamedClusterService;
 import org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory;
 import org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceLocator;
-import org.pentaho.osgi.metastore.locator.api.MetastoreLocator;
+import org.pentaho.metastore.locator.api.MetastoreLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,11 +59,18 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
 
   private static final Logger logger = LoggerFactory.getLogger( NamedClusterServiceLocatorImpl.class );
 
-  public NamedClusterServiceLocatorImpl( String internalShim, MetastoreLocator metastoreLocator,
-                                         NamedClusterService namedClusterManager ) {
+  public NamedClusterServiceLocatorImpl( String internalShim, NamedClusterService namedClusterManager ) {
+    MetastoreLocator metastoreLocator1;
     this.internalShim = Objects.requireNonNull(
       internalShim, "Set internal.shim in karaf/etc/pentaho.shim.cfg" );
-    this.metastoreLocator = metastoreLocator;
+    try {
+      Collection<MetastoreLocator> metastoreLocators = PluginServiceLoader.loadServices( MetastoreLocator.class );
+      metastoreLocator1 = metastoreLocators.stream().findFirst().get();
+    } catch ( Exception e ) {
+      metastoreLocator1 = null;
+      logger.error( "Error getting metastore locator", e );
+    }
+    metastoreLocator = metastoreLocator1;
     this.namedClusterManager = namedClusterManager;
     readWriteLock = new ReentrantReadWriteLock();
     serviceVendorTypeMapping = new HashMap<>();
