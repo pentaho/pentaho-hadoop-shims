@@ -16,7 +16,6 @@
 
   <bean id="serviceLocatorImpl" class="org.pentaho.big.data.api.cluster.service.locator.impl.NamedClusterServiceLocatorImpl" scope="singleton">
     <argument value="${internal.shim}"/>
-    <argument ref="metastoreLocator"/>
     <argument ref="namedClusterManager"/>
   </bean>
 
@@ -35,7 +34,6 @@
 
   <bean id="jdbcUrlParserImpl" class="org.pentaho.big.data.api.jdbc.impl.JdbcUrlParserImpl" scope="singleton">
       <argument ref="namedClusterService"/>
-      <argument ref="metastoreLocator"/>
   </bean>
 
   <bean id="driverLocator" class="org.pentaho.big.data.api.jdbc.impl.DriverLocatorImpl" scope="singleton">
@@ -51,7 +49,6 @@
   <service ref="driverLocator" interface="org.pentaho.hadoop.shim.api.jdbc.DriverLocator"/>
   <service ref="jdbcUrlParserImpl" interface="org.pentaho.hadoop.shim.api.jdbc.JdbcUrlParser"/>
   <reference id="namedClusterService" interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterService"/>
-  <reference id="metastoreLocator" interface="org.pentaho.osgi.metastore.locator.api.MetastoreLocator"/>
 
   <bean id="loggingRuntimeTestActionHandlerImpl" class="org.pentaho.runtime.test.action.impl.LoggingRuntimeTestActionHandlerImpl" scope="singleton">
     <argument ref="baseMessagesMessageGetterFactoryImpl"/>
