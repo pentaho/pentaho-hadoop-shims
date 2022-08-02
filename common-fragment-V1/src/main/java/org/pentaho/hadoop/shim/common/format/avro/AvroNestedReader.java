@@ -33,6 +33,7 @@ import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.util.Utf8;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
+import org.codehaus.jackson.node.NullNode;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.logging.LogChannelInterface;
@@ -702,21 +703,32 @@ public class AvroNestedReader {
     }
 
     // what have we got?
-    if ( fieldT == Schema.Type.RECORD ) {
-      return convertToKettleValue( avroInputField, (GenericData.Record) field, fieldSchema, defaultSchema,
-        ignoreMissing );
-    } else if ( fieldT == Schema.Type.ARRAY ) {
-      return convertToKettleValue( avroInputField, (GenericData.Array) field, fieldSchema, defaultSchema,
-        ignoreMissing );
-    } else if ( fieldT == Schema.Type.MAP ) {
-      return convertToKettleValue( avroInputField, (Map<Utf8, Object>) field, fieldSchema, defaultSchema,
-        ignoreMissing );
-    } else if ( fieldT == Schema.Type.BYTES ) {
-      return convertToKettleValue( avroInputField, (ByteBuffer) field, fieldSchema );
-    } else {
-      // assume primitive (covers bytes encapsulated in FIXED type)
-      return getPrimitive( avroInputField, field, fieldSchema );
+    if ( !( field instanceof NullNode) ) {
+      if ( fieldT == Schema.Type.RECORD ) {
+        if ( field instanceof GenericData.Record ) {
+          return convertToKettleValue(avroInputField, (GenericData.Record) field, fieldSchema, defaultSchema,
+                  ignoreMissing);
+        }
+      } else if ( fieldT == Schema.Type.ARRAY ) {
+        if ( field instanceof GenericData.Array ) {
+          return convertToKettleValue(avroInputField, (GenericData.Array) field, fieldSchema, defaultSchema,
+                  ignoreMissing);
+        }
+      } else if ( fieldT == Schema.Type.MAP ) {
+        if ( field instanceof Map ) {
+          return convertToKettleValue(avroInputField, (Map<Utf8, Object>) field, fieldSchema, defaultSchema,
+                  ignoreMissing);
+        }
+      } else if ( fieldT == Schema.Type.BYTES ) {
+        if ( field instanceof ByteBuffer ) {
+          return convertToKettleValue(avroInputField, (ByteBuffer) field, fieldSchema);
+        }
+      } else {
+        // assume primitive (covers bytes encapsulated in FIXED type)
+        return getPrimitive( avroInputField, field, fieldSchema );
+      }
     }
+    return null;
   }
 
   /**
