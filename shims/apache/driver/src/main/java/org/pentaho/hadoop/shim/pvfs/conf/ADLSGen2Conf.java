@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2020 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2020-2022 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -28,11 +28,13 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.azurebfs.SecureAzureBlobFileSystem;
 import org.apache.hadoop.fs.azurebfs.services.AuthType;
 import org.pentaho.di.connections.ConnectionDetails;
+import org.pentaho.di.core.variables.VariableSpace;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -56,17 +58,26 @@ public class ADLSGen2Conf extends PvfsConf {
   public ADLSGen2Conf( ConnectionDetails details ) {
     super( details );
     try ( SecureAzureBlobFileSystem secureAzureBlobFileSystem = new SecureAzureBlobFileSystem() ) {
+      Map<String, String> properties = details.getProperties();
       scheme = secureAzureBlobFileSystem.getScheme();
-      accountName = details.getProperties().get( "accountName" );
-      if ( isSharedKeyAuthentication( details.getProperties().get( "sharedKey" ) ) ) {
-        sharedKey = details.getProperties().get( "sharedKey" );
-      } else if ( isAzureADAuthentication( details.getProperties().get( "clientId" ),
-        details.getProperties().get( "clientSecret" ), details.getProperties().get( "tenantId" ) ) ) {
-        clientId = details.getProperties().get( "clientId" );
-        clientSecret = details.getProperties().get( "clientSecret" );
-        tenantId = details.getProperties().get( "tenantId" );
-      } else if ( isSASTokenAuthentication( details.getProperties().get( "sasToken" ) ) ) {
-        sasToken = details.getProperties().get( "sasToken" );
+      accountName = getVar( properties, "accountName" );
+      String tmpSharedKey = getVar( properties, "sharedKey" );
+      if ( isSharedKeyAuthentication( tmpSharedKey ) ) {
+        sharedKey = tmpSharedKey;
+      } else {
+        String tmpClientId = getVar( properties, "clientId" );
+        String tmpClientSecret = getVar( properties, "clientSecret" );
+        String tmpTenantId = getVar( properties, "tenantId" );
+        if ( isAzureADAuthentication( tmpClientId, tmpClientSecret, tmpTenantId ) ) {
+          clientId = tmpClientId;
+          clientSecret = tmpClientSecret;
+          tenantId = tmpTenantId;
+        } else {
+          String tmpSasToken = getVar( properties, "sasToken");
+          if ( isSASTokenAuthentication( tmpSasToken ) ) {
+            sasToken = tmpSasToken;
+          }
+        }
       }
     } catch ( IOException e ) {
       throw new IllegalStateException( e );

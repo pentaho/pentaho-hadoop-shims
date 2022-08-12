@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2019-2020 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019-2022 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -70,11 +70,11 @@ public class HCPConf extends PvfsConf {
     Configuration conf = new Configuration();
     Map<String, String> props = details.getProperties();
 
-    String port = props.get( "port" );
-    String hostPort = props.get( "host" ) + ( port == null ? "" : ":" + port );
-    String username = props.get( "username" );
-    String proxyHost = props.get( "proxyHost" );
-    String proxyPort = props.get( "proxyPort" );
+    String port = getVar( props, "port" );
+    String hostPort = getVar( props, "host" ) + ( port == null ? "" : ":" + port );
+    String username = getVar( props, "username" );
+    String proxyHost = getVar( props, "proxyHost" );
+    String proxyPort = getVar( props, "proxyPort" );
     boolean acceptSelfSignedCertificates = Boolean.parseBoolean( props.get( "acceptSelfSignedCertificate" ) );
 
     if ( !isEmpty( proxyHost ) ) {
@@ -84,7 +84,7 @@ public class HCPConf extends PvfsConf {
 
     conf.set( "fs.s3a.access.key", Base64.getEncoder().encodeToString( username.getBytes() ) );
     conf.set( "fs.s3a.secret.key", DigestUtils.md5Hex( props.get( "password" ) ) );
-    conf.set( "fs.s3a.endpoint", props.get( "tenant" ) + "." + hostPort );
+    conf.set( "fs.s3a.endpoint", getVar( props,"tenant" ) + "." + hostPort );
     conf.set( "fs.s3a.signing-algorithm", "S3SignerType" );
     conf.set( "fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem" );
     conf.set( "fs.s3a.connection.ssl.enabled", "true" );

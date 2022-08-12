@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2019-2020 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019-2022 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -25,7 +25,9 @@ package org.pentaho.hadoop.shim.pvfs.conf;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.pentaho.di.connections.ConnectionDetails;
+import org.pentaho.di.core.variables.VariableSpace;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -110,5 +112,16 @@ public abstract class PvfsConf {
   @SuppressWarnings( "squid:S1172" )
   public String generateAlias( String pvfsPath ) {
     return null;
+  }
+
+  protected String getVar( String value ) {
+    if ( details.getSpace() != null ) {
+      return details.getSpace().environmentSubstitute( value );
+    }
+    return value;
+  }
+
+  protected String getVar( Map<String, String> properties, String fieldName ) {
+    return getVar( properties.get( fieldName ) );
   }
 }
