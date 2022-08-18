@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019-2022 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -38,6 +38,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.pentaho.di.connections.ConnectionDetails;
 import org.pentaho.di.connections.ConnectionManager;
+import org.pentaho.di.core.Const;
 import org.pentaho.hadoop.shim.pvfs.conf.PvfsConf;
 
 import java.io.File;
@@ -51,6 +52,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeFalse;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -140,6 +142,9 @@ public class PvfsHadoopBridgeTest {
    * the LocalFileSystem impl.
    */
   public void testIOOps() throws IOException {
+    //Windows will fail this test due to winutils not being present. So don't run for windows
+    assumeFalse( Const.isWindows() );
+
     assertTrue( bridge.getFileStatus( new Path( "pvfs", "", tempFile.getPath() ) ).isFile() );
     Path child = bridge.makeQualified( new Path( tempFile.getParent(), "child" ) );
     Path child2 = bridge.makeQualified( new Path( tempFile.getParent(), "child_renamed" ) );

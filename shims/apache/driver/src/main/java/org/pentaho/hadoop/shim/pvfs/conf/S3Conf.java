@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2019-2020 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019-2022 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -54,9 +54,9 @@ public class S3Conf extends PvfsConf {
   public S3Conf( ConnectionDetails details ) {
     super( details );
     Map<String, String> props = details.getProperties();
-    credentialsFilePath = props.get( "credentialsFilePath" );
+    credentialsFilePath = getVar( props, "credentialsFilePath" );
 
-    if ( shouldGetCredsFromFile( props.get( "accessKey" ), props.get( "credentialsFilePath" ) ) ) {
+    if ( shouldGetCredsFromFile( getVar( props, "accessKey" ), getVar( props, "credentialsFilePath" ) ) ) {
       AWSCredentials creds = getCredsFromFile( props, credentialsFilePath );
       accessKey = creds.getAWSAccessKeyId();
       secretKey = creds.getAWSSecretKey();
@@ -66,12 +66,12 @@ public class S3Conf extends PvfsConf {
         sessionToken = null;
       }
     } else {
-      accessKey = props.get( "accessKey" );
-      secretKey = props.get( "secretKey" );
-      sessionToken = props.get( "sessionToken" );
+      accessKey = getVar( props, "accessKey" );
+      secretKey = getVar( props, "secretKey" );
+      sessionToken = getVar( props, "sessionToken" );
       // Use only when VFS is configured for generic S3 connection
-      endpoint = props.get( "endpoint" );
-      pathStyleAccess = props.get( "pathStyleAccess" );
+      endpoint = getVar( props, "endpoint" );
+      pathStyleAccess = getVar( props, "pathStyleAccess" );
     }
   }
 
@@ -166,6 +166,7 @@ public class S3Conf extends PvfsConf {
   }
 
   @Override public int hashCode() {
-    return Objects.hash( super.hashCode(), accessKey, secretKey, sessionToken, endpoint, pathStyleAccess, credentialsFilePath );
+    return Objects.hash( super.hashCode(), accessKey, secretKey, sessionToken, endpoint, pathStyleAccess,
+      credentialsFilePath );
   }
 }

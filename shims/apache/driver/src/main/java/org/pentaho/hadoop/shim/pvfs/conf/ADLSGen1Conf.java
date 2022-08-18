@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2021 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2022 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -28,11 +28,13 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.adl.AdlConfKeys;
 import org.apache.hadoop.fs.adl.AdlFileSystem;
 import org.pentaho.di.connections.ConnectionDetails;
+import org.pentaho.di.core.variables.VariableSpace;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -54,12 +56,15 @@ public class ADLSGen1Conf extends PvfsConf {
     super( details );
     try ( AdlFileSystem adlFileSystem = new AdlFileSystem() ) {
       scheme = adlFileSystem.getScheme();
-      accountFQDN = details.getProperties().get( "accountFQDN" );
-      if ( isServiceToServiceAuthentication( details.getProperties().get( "clientId" ),
-        details.getProperties().get( "clientSecret" ), details.getProperties().get( "authTokenEndpoint" ) ) ) {
-        clientId = details.getProperties().get( "clientId" );
-        clientSecret = details.getProperties().get( "clientSecret" );
-        authTokenEndpoint = details.getProperties().get( "authTokenEndpoint" );
+      Map<String, String> properties = details.getProperties();
+      accountFQDN = getVar( properties, "accountFQDN" );
+      String tmpClientId = getVar( properties, "clientId" );
+      String tmpClientSecret = getVar( properties, "clientSecret" );
+      String tmpAuthTokenEndpoint = getVar( properties, "authTokenEndpoint" );
+      if ( isServiceToServiceAuthentication( tmpClientId, tmpClientSecret, tmpAuthTokenEndpoint ) ) {
+        clientId = tmpClientId;
+        clientSecret = tmpClientSecret;
+        authTokenEndpoint = tmpAuthTokenEndpoint;
       }
     } catch ( IOException e ) {
       throw new IllegalStateException( e );
