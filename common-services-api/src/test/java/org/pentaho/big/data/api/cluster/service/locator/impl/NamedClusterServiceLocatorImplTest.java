@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2022 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -27,14 +27,19 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.pentaho.di.core.service.PluginServiceLoader;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.cluster.NamedClusterService;
 import org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory;
 import org.pentaho.hadoop.shim.api.format.FormatService;
 import org.pentaho.metastore.stores.memory.MemoryMetaStore;
-import org.pentaho.osgi.metastore.locator.api.MetastoreLocator;
+import org.pentaho.metastore.locator.api.MetastoreLocator;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -70,7 +75,12 @@ public class NamedClusterServiceLocatorImplTest {
     memoryMetaStore = new MemoryMetaStore();
     memoryMetaStore.setName( "memoryMetastore" );
     when( mockMetastoreLocator.getMetastore() ).thenReturn( memoryMetaStore );
-    serviceLocator = new NamedClusterServiceLocatorImpl( SHIM_A, mockMetastoreLocator, namedClusterManager );
+    Collection<MetastoreLocator> metastoreLocatorCollection = new ArrayList<>();
+    metastoreLocatorCollection.add( mockMetastoreLocator );
+    try( MockedStatic<PluginServiceLoader> pluginServiceLoaderMockedStatic = Mockito.mockStatic( PluginServiceLoader.class ) ) {
+      pluginServiceLoaderMockedStatic.when( () -> PluginServiceLoader.loadServices( MetastoreLocator.class ) ).thenReturn( metastoreLocatorCollection );
+      serviceLocator = new NamedClusterServiceLocatorImpl( SHIM_A, namedClusterManager );
+    }
     serviceVendorTypeMapping = serviceLocator.serviceVendorTypeMapping;
     when( namedClusterServiceFactory.getServiceClass() ).thenReturn( Object.class );
     when( namedClusterServiceFactory2.getServiceClass() ).thenReturn( String.class );
@@ -89,8 +99,14 @@ public class NamedClusterServiceLocatorImplTest {
 
   @Test
   public void testNoArgConstructor() {
-    assertNull( new NamedClusterServiceLocatorImpl( SHIM_A, mockMetastoreLocator, namedClusterManager )
-      .getService( namedCluster, Object.class ) );
+    Collection<MetastoreLocator> metastoreLocatorCollection = new ArrayList<>();
+    metastoreLocatorCollection.add( mockMetastoreLocator );
+    try( MockedStatic<PluginServiceLoader> pluginServiceLoaderMockedStatic = Mockito.mockStatic( PluginServiceLoader.class ) ) {
+      pluginServiceLoaderMockedStatic.when( () -> PluginServiceLoader.loadServices( MetastoreLocator.class ) )
+        .thenReturn( metastoreLocatorCollection );
+      assertNull( new NamedClusterServiceLocatorImpl( SHIM_A, namedClusterManager )
+        .getService( namedCluster, Object.class ) );
+    }
     assertEquals( SHIM_A, serviceLocator.internalShim );
     serviceLocator.getVendorShimList();
   }

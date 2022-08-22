@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2022 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -23,8 +23,6 @@ package org.pentaho.hadoop.shim.common;
 
 import org.pentaho.hadoop.shim.ShimVersion;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
-import org.pentaho.hadoop.shim.api.format.IPentahoAvroInputFormat;
-import org.pentaho.hadoop.shim.api.format.IPentahoAvroOutputFormat;
 import org.pentaho.hadoop.shim.api.format.IPentahoOrcInputFormat;
 import org.pentaho.hadoop.shim.api.format.IPentahoOrcOutputFormat;
 import org.pentaho.hadoop.shim.api.format.IPentahoParquetInputFormat;
@@ -33,8 +31,6 @@ import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat;
 import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat;
 import org.pentaho.hadoop.shim.common.format.orc.PentahoOrcInputFormat;
 import org.pentaho.hadoop.shim.common.format.orc.PentahoOrcOutputFormat;
-import org.pentaho.hadoop.shim.common.format.avro.PentahoAvroInputFormat;
-import org.pentaho.hadoop.shim.common.format.avro.PentahoAvroOutputFormat;
 import org.pentaho.hadoop.shim.common.format.parquet.delegate.DelegateFormatFactory;
 import org.pentaho.hadoop.shim.spi.FormatShim;
 
@@ -44,8 +40,6 @@ public class CommonFormatShim implements FormatShim {
   public <T extends IPentahoInputFormat> T  createInputFormat( Class<T> type, NamedCluster namedCluster ) {
     if ( type.isAssignableFrom( IPentahoParquetInputFormat.class ) ) {
       return (T) DelegateFormatFactory.getInputFormatInstance( namedCluster );
-    } else if ( type.isAssignableFrom( IPentahoAvroInputFormat.class ) ) {
-      return (T) new PentahoAvroInputFormat( namedCluster );
     } else if ( type.isAssignableFrom( IPentahoOrcInputFormat.class ) ) {
       return (T) new PentahoOrcInputFormat( namedCluster );
     }
@@ -56,8 +50,6 @@ public class CommonFormatShim implements FormatShim {
   public <T extends IPentahoOutputFormat> T createOutputFormat( Class<T> type, NamedCluster namedCluster ) {
     if ( type.isAssignableFrom( IPentahoParquetOutputFormat.class ) ) {
       return (T) DelegateFormatFactory.getOutputFormatInstance( namedCluster );
-    } else if ( type.isAssignableFrom( IPentahoAvroOutputFormat.class ) ) {
-      return (T) new PentahoAvroOutputFormat();
     } else if ( type.isAssignableFrom( IPentahoOrcOutputFormat.class ) ) {
       return (T) new PentahoOrcOutputFormat( namedCluster );
     }
