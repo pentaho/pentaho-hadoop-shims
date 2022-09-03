@@ -5,11 +5,11 @@
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims</artifactId>
-    <version>9.4.0.0-SNAPSHOT</version>
+    <version>9.4.2022.03.00-231</version>
   </parent>
 
   <artifactId>pentaho-hadoop-shims-common-mapreduce</artifactId>
-  <version>9.4.0.0-SNAPSHOT</version>
+  <version>9.4.2022.03.00-231</version>
   <packaging>jar</packaging>
 
   <properties>
