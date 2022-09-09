@@ -34,6 +34,17 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>28.1-jre</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>failureaccess</artifactId>
+        <version>1.0.1</version>
+      </dependency>
+
       <!-- Guarantee the proper version for Jetty artifacts -->
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
