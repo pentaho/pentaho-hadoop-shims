@@ -16,6 +16,8 @@
 
     <shim.name>apache</shim.name>
     <!-- default folder -->
+    <guava.version>31.1-jre</guava.version>
+    <failureaccess.version>1.0.1</failureaccess.version>
     <org.apache.avro.version>1.8.0</org.apache.avro.version>
     <hadoop-aws.version>3.3.0</hadoop-aws.version>
     <!-- client and default folders -->
@@ -207,10 +209,13 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>21.0</version>
-      <scope>provided</scope>
+      <version>${guava.version}</version>
     </dependency>
-
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>failureaccess</artifactId>
+      <version>${failureaccess.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-aws</artifactId>
@@ -272,6 +277,7 @@
                 *:parquet-hadoop-bundle,*:hadoop-hdfs,
                 *:avro-mapred,
                 org.eclipse.jetty:*,
+                com.google.guava:*,
                 <!--Needed for Hive-->
                 *:commons-configuration,*:commons-configuration2,
                 *:gcs-connector
