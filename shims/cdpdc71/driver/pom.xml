@@ -14,7 +14,8 @@
 
   <properties>
     <commons-lang.version>2.6</commons-lang.version>
-
+    <guava.version>31.1-jre</guava.version>
+    <failureaccess.version>1.0.1</failureaccess.version>
     <pentaho-osgi-bundles.version>9.4.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
     <org.apache.avro.version>1.8.2.7.1.4.0-203</org.apache.avro.version>
     <org.apache.orc.version>1.5.1.7.1.4.0-203</org.apache.orc.version>
@@ -417,6 +418,16 @@
       <artifactId>jython</artifactId>
       <version>${jython.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>${guava.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>failureaccess</artifactId>
+      <version>${failureaccess.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -433,7 +444,7 @@
                 *:hive-service,*:orc-core,*:hadoop-common,*:hadoop-hdfs,*:hadoop-mapreduce-*,
                 *:hadoop-yarn-api,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,
                 *:hbase-server,*:oozie-client,*:parquet-hadoop-bundle,*:zookeeper,*:hbase-shaded-miscellaneous,
-                org.eclipse.jetty:*
+                org.eclipse.jetty:*,com.google.guava:*
               </include>
               <exclude>
                 *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool,*:commons-dbcp,
