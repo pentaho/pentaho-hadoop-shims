@@ -262,9 +262,7 @@
       <module>cdh61</module>
       <module>hdp30</module>
       <module>emr521</module>
-      <module>mapr60</module>
       <module>dataproc1421</module>
-      <module>mapr61</module>
       <module>cdpdc71</module>
       <module>apache</module>
       <module>hdi40</module>
