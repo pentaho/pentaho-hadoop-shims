@@ -10,6 +10,5 @@
   <packaging>pom</packaging>
   <modules>
     <module>driver</module>
-    <module>kar</module>
   </modules>
 </project>

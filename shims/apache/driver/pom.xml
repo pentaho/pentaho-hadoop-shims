@@ -9,7 +9,7 @@
   </parent>
   <artifactId>pentaho-hadoop-shims-apache-driver</artifactId>
   <version>9.5.0.0-SNAPSHOT</version>
-  <packaging>bundle</packaging>
+  <packaging>jar</packaging>
   <properties>
     <vendor-driver.version>3.3.0.0.apache</vendor-driver.version>
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
@@ -260,6 +260,7 @@
 
   <build>
     <plugins>
+      <!-- Adds the transitive dependencies to the maven project dependencies -->
       <plugin>
         <groupId>org.pentaho</groupId>
         <artifactId>shim-bundle-plugin</artifactId>
@@ -313,22 +314,22 @@
       </plugin>
 
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Bundle-SymbolicName>pentaho-hadoop-driver-V1</Bundle-SymbolicName>
-            <Bundle-Version>3.0.apache</Bundle-Version>
-            <Pentaho-Code-Version>${pentaho-code.version}</Pentaho-Code-Version>
-            <DynamicImport-Package>*</DynamicImport-Package>
-            <Import-Package>
-            </Import-Package>
-            <_exportcontents>
-            </_exportcontents>
-            <Embed-Dependency>*</Embed-Dependency>
-          </instructions>
-        </configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <appendAssemblyId>false</appendAssemblyId>
+              <descriptors>
+                <descriptor>src/main/assembly/zip.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
     </plugins>

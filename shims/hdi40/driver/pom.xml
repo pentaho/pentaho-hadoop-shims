@@ -10,7 +10,7 @@
 
   <artifactId>pentaho-hadoop-shims-hdi40-driver</artifactId>
   <version>9.5.0.0-SNAPSHOT</version>
-  <packaging>bundle</packaging>
+  <packaging>jar</packaging>
 
   <properties>
     <commons-lang.version>2.6</commons-lang.version>
@@ -458,6 +458,7 @@
 
   <build>
     <plugins>
+      <!-- Adds the transitive dependencies to the maven project dependencies -->
       <plugin>
         <groupId>org.pentaho</groupId>
         <artifactId>shim-bundle-plugin</artifactId>
@@ -498,27 +499,24 @@
       </plugin>
 
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Bundle-SymbolicName>pentaho-hadoop-driver-V1</Bundle-SymbolicName>
-            <Bundle-Version>4.0.hdi</Bundle-Version>
-            <Pentaho-Code-Version>${pentaho-code.version}</Pentaho-Code-Version>
-            <DynamicImport-Package>*</DynamicImport-Package>
-            <excludes>
-              <exclude>**/*tests.jar</exclude>
-            </excludes>
-            <Import-Package>
-            </Import-Package>
-            <_exportcontents>
-            </_exportcontents>
-            <Embed-Dependency>*</Embed-Dependency>
-            <Include-Resource>{maven-resources}</Include-Resource>
-          </instructions>
-        </configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <appendAssemblyId>false</appendAssemblyId>
+              <descriptors>
+                <descriptor>src/main/assembly/zip.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
+
     </plugins>
   </build>
 </project>
