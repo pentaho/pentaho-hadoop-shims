@@ -5,12 +5,12 @@
   <parent>
     <groupId>org.pentaho.hadoop.shims</groupId>
     <artifactId>pentaho-hadoop-shims-hdi40-reactor</artifactId>
-    <version>11.0.0.0-SNAPSHOT</version>
+     <version>11.0.0.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>pentaho-hadoop-shims-hdi40-driver</artifactId>
-  <version>11.0.0.0-SNAPSHOT</version>
-  <packaging>bundle</packaging>
+   <version>11.0.0.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
 
   <properties>
     <commons-lang.version>2.6</commons-lang.version>
@@ -715,15 +715,11 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-configuration2</artifactId>
-      <version>${commons-configuration2.version}</version>
-    </dependency>
   </dependencies>
 
   <build>
     <plugins>
+      <!-- Adds the transitive dependencies to the maven project dependencies -->
       <plugin>
         <groupId>org.pentaho</groupId>
         <artifactId>shim-bundle-plugin</artifactId>
@@ -736,11 +732,10 @@
                 *:hive-service,*:orc-core,*:hadoop-common,*:hadoop-hdfs,*:hadoop-mapreduce-*,
                 *:hadoop-yarn-api,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,*:hbase-zookeeper
                 *:hbase-server,*:oozie-client,*:parquet-hadoop-bundle,*:zookeeper,*:hbase-shaded-miscellaneous,
-                org.eclipse.jetty:*, *:hadoop-azure, *:hadoop-azure-datalake,*:commons-configuration2,*:protobuf-java,
-                *:hadoop-shaded-protobuf_3_25,*:snappy-java
+                org.eclipse.jetty:*, *:hadoop-azure, *:hadoop-azure-datalake
               </include>
               <exclude>
-                *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool2,*:commons-dbcp2,
+                *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool,*:commons-dbcp,
                 *:janino, *:hsqldb,org.apache.velocity:velocity
               </exclude>
               <transitive>true</transitive>
@@ -766,30 +761,24 @@
       </plugin>
 
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Bundle-SymbolicName>pentaho-hadoop-driver-V1</Bundle-SymbolicName>
-            <Bundle-Version>4.0.hdi</Bundle-Version>
-            <Pentaho-Code-Version>${pentaho-code.version}</Pentaho-Code-Version>
-            <DynamicImport-Package>*</DynamicImport-Package>
-            <excludes>
-              <exclude>**/*tests.jar</exclude>
-            </excludes>
-            <Import-Package>
-            </Import-Package>
-            <_exportcontents>
-            </_exportcontents>
-            <Embed-Dependency>*</Embed-Dependency>
-            <Include-Resource>{maven-resources}</Include-Resource>
-            <!-- this is needed because the bundle plugin gets fooled by multi-release jars into thinking the required java
-            version is the highest one in the package, which is not the case -->
-            <Require-Capability>osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=1.8))"</Require-Capability>
-          </instructions>
-        </configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <appendAssemblyId>false</appendAssemblyId>
+              <descriptors>
+                <descriptor>src/main/assembly/zip.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
+
     </plugins>
   </build>
 </project>
