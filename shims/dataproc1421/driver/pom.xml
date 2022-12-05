@@ -5,11 +5,11 @@
   <parent>
     <groupId>org.pentaho.hadoop.shims</groupId>
     <artifactId>pentaho-hadoop-shims-dataproc1421-reactor</artifactId>
-    <version>11.0.0.0-SNAPSHOT</version>
+     <version>11.0.0.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>pentaho-hadoop-shims-dataproc1421-driver</artifactId>
-  <packaging>bundle</packaging>
+  <packaging>jar</packaging>
 
   <properties>
     <!-- setting v1.14.4 so shaded jackson-databind inside parquet-hadoop-bundle's  version approximately matches jackson-databind in driver.jar -->
@@ -42,7 +42,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>${guava.version}</version>
+      <version>${dataproc.guava.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -366,10 +366,6 @@
           <artifactId>slf4j-log4j12</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>org.yaml</groupId>
-          <artifactId>snakeyaml</artifactId>
-        </exclusion>
-        <exclusion>
           <groupId>io.netty</groupId>
           <artifactId>netty</artifactId>
         </exclusion>
@@ -387,7 +383,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-
     <dependency>
       <groupId>org.apache.hive</groupId>
       <artifactId>hive-shims</artifactId>
@@ -792,7 +787,7 @@
                 *:protobuf-java,*:hadoop-shaded-protobuf_3_25
               </include>
               <exclude>
-                *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool2,*:commons-dbcp2,
+                *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool,*:commons-dbcp,
                 *:jersey-guava,*:janino,org.apache.velocity:velocity
               </exclude>
               <transitive>true</transitive>
@@ -818,30 +813,22 @@
       </plugin>
 
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Bundle-SymbolicName>pentaho-hadoop-driver-V1</Bundle-SymbolicName>
-            <Bundle-Version>1.4.21.dataproc</Bundle-Version>
-            <Pentaho-Code-Version>${pentaho-code.version}</Pentaho-Code-Version>
-            <DynamicImport-Package>*</DynamicImport-Package>
-            <excludes>
-              <exclude>**/*tests.jar</exclude>
-            </excludes>
-            <Import-Package>
-            </Import-Package>
-            <_exportcontents>
-            </_exportcontents>
-            <Embed-Dependency>*</Embed-Dependency>
-            <Include-Resource>{maven-resources};${project.build.directory}/extra-resources/jetty-runner-${jetty-hadoop.version}.jar</Include-Resource>
-            <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
-            <!-- this is needed because the bundle plugin gets fooled by multi-release jars into thinking the required java
-            version is the highest one in the package, which is not the case -->
-            <Require-Capability>osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=1.8))"</Require-Capability>
-          </instructions>
-        </configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <appendAssemblyId>false</appendAssemblyId>
+              <descriptors>
+                <descriptor>src/main/assembly/zip.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
     </plugins>
