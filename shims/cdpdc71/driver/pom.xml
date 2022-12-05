@@ -5,15 +5,16 @@
   <parent>
     <groupId>org.pentaho.hadoop.shims</groupId>
     <artifactId>pentaho-hadoop-shims-cdpdc71-reactor</artifactId>
-    <version>11.0.0.0-SNAPSHOT</version>
+     <version>11.0.0.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>pentaho-hadoop-shims-cdpdc71-driver</artifactId>
-  <version>11.0.0.0-SNAPSHOT</version>
-  <packaging>bundle</packaging>
+   <version>11.0.0.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
 
   <properties>
     <commons-lang.version>2.6</commons-lang.version>
+    <guava.version>31.1-jre</guava.version>
     <failureaccess.version>1.0.1</failureaccess.version>
     <pentaho-osgi-bundles.version>11.0.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
     <org.apache.avro.version>1.8.2.7.1.4.0-203</org.apache.avro.version>
@@ -829,11 +830,6 @@
       <artifactId>failureaccess</artifactId>
       <version>${failureaccess.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-configuration2</artifactId>
-      <version>${commons-configuration2.version}</version>
-    </dependency>
   </dependencies>
 
   <build>
@@ -901,14 +897,14 @@
             <resolverFilter>
               <include>
                 *:parquet-hadoop,*:parquet-hadoop-bundle,*:parquet-avro,*:hadoop-yarn-api,*:avro,*:avro-mapred,*:hive-jdbc,
-                *:hive-service,*:hive-storage-api,*:orc-core,*:hadoop-common,*:hadoop-hdfs,*:hadoop-mapreduce-*,*:commons-configuration2,
+                *:hive-service,*:hive-storage-api,*:orc-core,*:hadoop-common,*:hadoop-hdfs,*:hadoop-mapreduce-*,
                 *:hadoop-yarn-api,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,
                 *:hbase-server,*:oozie-client,*:parquet-hadoop-bundle,*:zookeeper,*:hbase-shaded-miscellaneous,
                 org.eclipse.jetty:*,com.google.guava:*,*:hadoop-lzo,*:hadoop-client,*:hadoop-aws,*:hadoop-azure,*:gcs-connector,*:hadoop-hdfs-client,
                 *:google-oauth-client,*:wildfly-openssl,*:httpcore,*:httpclient,*:hadoop-shaded-protobuf-3_25
               </include>
               <exclude>
-                *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool2,*:commons-dbcp2,
+                *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool,*:commons-dbcp,
                 *:janino,org.apache.velocity:velocity,
                 *:grpc-*,*:opencensus*,*:proto*,*:perfmark-api*,*:threetenbp*,
                 *:google-oauth-client-java6
@@ -936,30 +932,22 @@
       </plugin>
 
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Bundle-SymbolicName>pentaho-hadoop-driver-V1</Bundle-SymbolicName>
-            <Bundle-Version>7.1.cdpdc</Bundle-Version>
-            <Pentaho-Code-Version>${pentaho-code.version}</Pentaho-Code-Version>
-            <DynamicImport-Package>*</DynamicImport-Package>
-            <excludes>
-              <exclude>**/*tests.jar</exclude>
-            </excludes>
-            <Import-Package>
-            </Import-Package>
-            <_exportcontents>
-            </_exportcontents>
-            <Embed-Dependency>*</Embed-Dependency>
-            <Include-Resource>{maven-resources};${project.build.directory}/extra-resources/jetty-runner-${jetty.version}.jar</Include-Resource>
-            <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
-            <!-- this is needed because the bundle plugin gets fooled by multi-release jars into thinking the required java
-            version is the highest one in the package, which is not the case -->
-            <Require-Capability>osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=1.8))"</Require-Capability>
-          </instructions>
-        </configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <appendAssemblyId>false</appendAssemblyId>
+              <descriptors>
+                <descriptor>src/main/assembly/zip.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
     </plugins>

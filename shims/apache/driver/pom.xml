@@ -5,18 +5,18 @@
   <parent>
     <groupId>org.pentaho.hadoop.shims</groupId>
     <artifactId>pentaho-hadoop-shims-apache-reactor</artifactId>
-    <version>11.0.0.0-SNAPSHOT</version>
+     <version>11.0.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-apache-driver</artifactId>
-  <version>11.0.0.0-SNAPSHOT</version>
-  <packaging>bundle</packaging>
+   <version>11.0.0.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
   <properties>
     <vendor-driver.version>3.4.0.0.apache</vendor-driver.version>
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
 
     <shim.name>apache</shim.name>
-    <commons-text.version>1.10.0</commons-text.version>
     <!-- default folder -->
+    <guava.version>31.1-jre</guava.version>
     <failureaccess.version>1.0.1</failureaccess.version>
     <org.apache.avro.version>1.12.0</org.apache.avro.version>
     <awssdk.version>2.28.27</awssdk.version>
@@ -243,12 +243,6 @@
     </dependency>
 
     <dependency>
-      <groupId>commons-net</groupId>
-      <artifactId>commons-net</artifactId>
-      <version>${commons-net.version}</version>
-    </dependency>
-
-    <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-common</artifactId>
       <version>${org.apache.hadoop.version}</version>
@@ -272,14 +266,6 @@
         <exclusion>
           <groupId>com.sun.xml.bind</groupId>
           <artifactId>jaxb-impl</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.commons</groupId>
-          <artifactId>commons-text</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>commons-net</groupId>
-          <artifactId>commons-net</artifactId>
         </exclusion>
         <exclusion>
           <groupId>io.netty</groupId>
@@ -369,7 +355,7 @@
     <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-bundle</artifactId>
-      <version>${aws-java-sdk.version}</version>
+      <version>${aws-java-sdk-core.version}</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
@@ -496,12 +482,6 @@
       <groupId>commons-configuration</groupId>
       <artifactId>commons-configuration</artifactId>
       <version>${commons-configuration.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>commons-beanutils</groupId>
-          <artifactId>commons-beanutils-core</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -666,30 +646,22 @@
       </plugin>
 
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Bundle-SymbolicName>pentaho-hadoop-driver-V1</Bundle-SymbolicName>
-            <Bundle-Version>3.4.apache</Bundle-Version>
-            <Pentaho-Code-Version>${pentaho-code.version}</Pentaho-Code-Version>
-            <DynamicImport-Package>*</DynamicImport-Package>
-            <excludes>
-              <exclude>**/*tests.jar</exclude>
-            </excludes>
-            <Import-Package>
-            </Import-Package>
-            <_exportcontents>
-            </_exportcontents>
-            <Embed-Dependency>*</Embed-Dependency>
-            <Include-Resource>{maven-resources};${project.build.directory}/extra-resources/jetty-runner-${jetty.version}.jar</Include-Resource>
-            <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
-            <!-- this is needed because the bundle plugin gets fooled by multi-release jars into thinking the required java
-            version is the highest one in the package, which is not the case -->
-            <Require-Capability>osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=1.8))"</Require-Capability>
-          </instructions>
-        </configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <appendAssemblyId>false</appendAssemblyId>
+              <descriptors>
+                <descriptor>src/main/assembly/zip.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
     </plugins>
