@@ -276,7 +276,7 @@
     <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-bundle</artifactId>
-      <version>${aws-java-sdk.version}</version>
+      <version>${aws-java-sdk-core.version}</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
