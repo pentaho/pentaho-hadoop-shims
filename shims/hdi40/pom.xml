@@ -11,6 +11,5 @@
   <modules>
     <module>driver</module>
     <module>pmr</module>
-    <module>kar</module>
   </modules>
 </project>
