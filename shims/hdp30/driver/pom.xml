@@ -26,7 +26,6 @@
     <org.apache.oozie.version>4.3.1</org.apache.oozie.version>
     <sqoop.version>1.4.7</sqoop.version>
     <hive-jdbc.version>3.1.0.3.0.0.0-1634</hive-jdbc.version>
-    <org.apache.avro.version>1.8.0</org.apache.avro.version>
     <hadoop-aws.version>2.7.3</hadoop-aws.version>
     <!-- client and default folders -->
     <hadoop.version>3.1.0.3.0.0.0-1634</hadoop.version>

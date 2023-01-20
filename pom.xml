@@ -35,7 +35,6 @@
     <jets3t.version>0.9.4</jets3t.version>
     <!-- Added for fragment prototype -->
     <org.apache.hadoop.version>2.7.3.2.6.0.3-8</org.apache.hadoop.version>
-    <org.apache.avro.version>1.8.0</org.apache.avro.version>
     <parquet.version>1.8.1</parquet.version>
     <sqoop.version>1.4.6.2.6.0.3-8</sqoop.version>
     <pig.version>0.16.0.2.6.0.3-8</pig.version>

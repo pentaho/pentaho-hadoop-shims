@@ -13,7 +13,6 @@
   <packaging>bundle</packaging>
   <properties>
     <pentaho-osgi-bundles.version>9.5.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
-    <org.apache.avro.version>1.8.0</org.apache.avro.version>
     <org.apache.hadoop.version>2.7.0-mapr-1710</org.apache.hadoop.version>
     <org.apache.hbase.version>1.4.8</org.apache.hbase.version>
     <vendor.hbase.version>6.0.0-mapr</vendor.hbase.version>
