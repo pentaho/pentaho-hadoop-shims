@@ -132,6 +132,7 @@ public class PentahoMapRunnable<K1, V1, K2, V2> implements MapRunnable<K1, V1, K
       XStream xStream = new XStream();
 
       setDebugStatus( "PentahoMapRunnable(): Setting classes variableSpace property.: " );
+      xStream.allowTypes( new Class[] { Variables.class } );
       variableSpace = (VariableSpace) xStream.fromXML( xmlVariableSpace );
 
       for ( String variableName : variableSpace.listVariables() ) {
