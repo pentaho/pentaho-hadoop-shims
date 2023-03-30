@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2023 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -122,7 +122,7 @@ public class HBaseTableImpl implements HBaseTable {
   }
 
   @Override public ResultScannerBuilder createScannerBuilder( byte[] keyLowerBound, byte[] keyUpperBound ) {
-    return new ResultScannerBuilderImpl( hBaseConnectionPool, hBaseValueMetaInterfaceFactory, hBaseBytesUtilShim, name,
+    return getResultScannerBuilder( hBaseConnectionPool, hBaseValueMetaInterfaceFactory, hBaseBytesUtilShim, name,
       0, keyLowerBound, keyUpperBound );
   }
 
@@ -256,7 +256,7 @@ public class HBaseTableImpl implements HBaseTable {
           .getString( PKG, "HBaseInput.Message.SettingScannerCaching", cacheSize ) );
       }
     }
-    return new ResultScannerBuilderImpl( hBaseConnectionPool, hBaseValueMetaInterfaceFactory, hBaseBytesUtilShim, name,
+    return getResultScannerBuilder( hBaseConnectionPool, hBaseValueMetaInterfaceFactory, hBaseBytesUtilShim, name,
       cacheSize, keyLowerBound, keyUpperBound );
   }
 
@@ -289,5 +289,15 @@ public class HBaseTableImpl implements HBaseTable {
 
   @Override public void close() throws IOException {
 
+  }
+
+  protected ResultScannerBuilder getResultScannerBuilder(HBaseConnectionPool hBaseConnectionPool,
+                                                         HBaseValueMetaInterfaceFactoryImpl hBaseValueMetaInterfaceFactory,
+                                                         HBaseBytesUtilShim hBaseBytesUtilShim, String tableName,
+                                                         final int caching,
+                                                         final byte[] keyLowerBound,
+                                                         final byte[] keyUpperBound) {
+    return new ResultScannerBuilderImpl( hBaseConnectionPool, hBaseValueMetaInterfaceFactory, hBaseBytesUtilShim, name,
+      caching, keyLowerBound, keyUpperBound );
   }
 }

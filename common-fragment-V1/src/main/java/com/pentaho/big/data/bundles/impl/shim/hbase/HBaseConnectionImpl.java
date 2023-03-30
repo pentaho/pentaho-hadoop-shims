@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2023 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -42,8 +42,8 @@ import java.util.Properties;
  * Created by bryan on 1/21/16.
  */
 public class HBaseConnectionImpl implements HBaseConnection {
-  private final HBaseConnectionPool hBaseConnectionPool;
-  private final HBaseBytesUtilShim hBaseBytesUtilShim;
+  protected final HBaseConnectionPool hBaseConnectionPool;
+  protected final HBaseBytesUtilShim hBaseBytesUtilShim;
 
   public HBaseConnectionImpl( HBaseShim hBaseShim, HBaseBytesUtilShim hBaseBytesUtilShim,
                               Properties connectionProps, LogChannelInterface logChannelInterface,

@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2023 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -49,6 +49,11 @@ public class HBaseServiceFactory implements NamedClusterServiceFactory<HBaseServ
   }
 
   @Override public boolean canHandle( NamedCluster namedCluster ) {
+
+    if ( namedCluster.isUseGateway() ) {
+      return false;
+    }
+
     //    if (namedCluster.getName().startsWith( "hdp" ) && hadoopConfiguration.getHadoopConfiguration().getName()
     //    .toLowerCase().contains( "hdp" )) {
     //      return true;
