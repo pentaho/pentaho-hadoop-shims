@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2022 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2023 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -38,23 +38,29 @@ import java.util.Collection;
  */
 public class JdbcUrlParserImpl implements JdbcUrlParser {
   private final NamedClusterService namedClusterService;
-  private final MetastoreLocator metastoreLocator;
+  private MetastoreLocator metastoreLocator;
   private final Logger logger = LoggerFactory.getLogger( JdbcUrlParserImpl.class );
 
   public JdbcUrlParserImpl( NamedClusterService namedClusterService ) {
     this.namedClusterService = namedClusterService;
+  }
+
+  protected MetastoreLocator getMetastoreLocator() {
     MetastoreLocator metastoreLocator1;
-    try {
-      Collection<MetastoreLocator> metastoreLocators = PluginServiceLoader.loadServices( MetastoreLocator.class );
-      metastoreLocator1 = metastoreLocators.stream().findFirst().get();
-    } catch ( Exception e ) {
-      metastoreLocator1 = null;
-      logger.error( "Error getting metastore locator", e );
+    if ( this.metastoreLocator == null ) {
+      try {
+        Collection<MetastoreLocator> metastoreLocators = PluginServiceLoader.loadServices( MetastoreLocator.class );
+        metastoreLocator1 = metastoreLocators.stream().findFirst().get();
+      } catch ( Exception e ) {
+        metastoreLocator1 = null;
+        logger.error( "Error getting metastore locator", e );
+      }
+      metastoreLocator = metastoreLocator1;
     }
-    metastoreLocator = metastoreLocator1;
+    return this.metastoreLocator;
   }
 
   @Override public JdbcUrl parse( String url ) throws URISyntaxException {
-    return new JdbcUrlImpl( url, namedClusterService, metastoreLocator );
+    return new JdbcUrlImpl( url, namedClusterService, getMetastoreLocator() );
   }
 }

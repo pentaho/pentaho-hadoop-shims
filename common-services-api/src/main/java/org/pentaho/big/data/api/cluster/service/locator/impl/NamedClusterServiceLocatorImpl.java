@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2022 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2023 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -54,26 +54,32 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
   @VisibleForTesting final Map<String, Map<Class<?>, List<NamedClusterServiceFactory<?>>>> serviceVendorTypeMapping;
   private final ReadWriteLock readWriteLock;
   @VisibleForTesting final String internalShim;
-  private final MetastoreLocator metastoreLocator;
+  private MetastoreLocator metastoreLocator;
   private final NamedClusterService namedClusterManager;
 
   private static final Logger logger = LoggerFactory.getLogger( NamedClusterServiceLocatorImpl.class );
 
   public NamedClusterServiceLocatorImpl( String internalShim, NamedClusterService namedClusterManager ) {
-    MetastoreLocator metastoreLocator1;
     this.internalShim = Objects.requireNonNull(
       internalShim, "Set internal.shim in karaf/etc/pentaho.shim.cfg" );
-    try {
-      Collection<MetastoreLocator> metastoreLocators = PluginServiceLoader.loadServices( MetastoreLocator.class );
-      metastoreLocator1 = metastoreLocators.stream().findFirst().get();
-    } catch ( Exception e ) {
-      metastoreLocator1 = null;
-      logger.error( "Error getting metastore locator", e );
-    }
-    metastoreLocator = metastoreLocator1;
     this.namedClusterManager = namedClusterManager;
     readWriteLock = new ReentrantReadWriteLock();
     serviceVendorTypeMapping = new HashMap<>();
+  }
+
+  protected MetastoreLocator getMetastoreLocator() {
+    if ( this.metastoreLocator == null ) {
+      MetastoreLocator metastoreLocator1;
+      try {
+        Collection<MetastoreLocator> metastoreLocators = PluginServiceLoader.loadServices( MetastoreLocator.class );
+        metastoreLocator1 = metastoreLocators.stream().findFirst().get();
+      } catch ( Exception e ) {
+        metastoreLocator1 = null;
+        logger.error( "Error getting metastore locator", e );
+      }
+      metastoreLocator = metastoreLocator1;
+    }
+    return this.metastoreLocator;
   }
 
   public void factoryAdded( NamedClusterServiceFactory<?> namedClusterServiceFactory, Map properties ) {
@@ -167,13 +173,13 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
       return shim;
     }
     NamedCluster storedNamedCluster =
-      namedClusterManager.getNamedClusterByName( namedCluster.getName(), metastoreLocator.getMetastore() );
+      namedClusterManager.getNamedClusterByName( namedCluster.getName(), getMetastoreLocator().getMetastore() );
     if ( storedNamedCluster != null ) {
       shim = storedNamedCluster.getShimIdentifier();
     }
     if ( shim == null && storedNamedCluster == null && embeddedMetaStoreProviderKey != null ) {
       storedNamedCluster = namedClusterManager.getNamedClusterByName( namedCluster.getName(),
-        metastoreLocator.getExplicitMetastore( embeddedMetaStoreProviderKey ) );
+        getMetastoreLocator().getExplicitMetastore( embeddedMetaStoreProviderKey ) );
       if ( storedNamedCluster != null ) {
         shim = storedNamedCluster.getShimIdentifier();
       }
