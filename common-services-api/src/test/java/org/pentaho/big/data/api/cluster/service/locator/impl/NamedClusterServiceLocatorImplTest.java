@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2022 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2023 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -78,23 +78,26 @@ public class NamedClusterServiceLocatorImplTest {
     Collection<MetastoreLocator> metastoreLocatorCollection = new ArrayList<>();
     metastoreLocatorCollection.add( mockMetastoreLocator );
     try( MockedStatic<PluginServiceLoader> pluginServiceLoaderMockedStatic = Mockito.mockStatic( PluginServiceLoader.class ) ) {
-      pluginServiceLoaderMockedStatic.when( () -> PluginServiceLoader.loadServices( MetastoreLocator.class ) ).thenReturn( metastoreLocatorCollection );
+      pluginServiceLoaderMockedStatic.when( () -> PluginServiceLoader.loadServices( MetastoreLocator.class ) )
+        .thenReturn( metastoreLocatorCollection );
       serviceLocator = new NamedClusterServiceLocatorImpl( SHIM_A, namedClusterManager );
-    }
-    serviceVendorTypeMapping = serviceLocator.serviceVendorTypeMapping;
-    when( namedClusterServiceFactory.getServiceClass() ).thenReturn( Object.class );
-    when( namedClusterServiceFactory2.getServiceClass() ).thenReturn( String.class );
-    when( namedClusterServiceFactory3.getServiceClass() ).thenReturn( Object.class );
 
-    when( namedClusterServiceFactory.create( namedCluster ) ).thenReturn( "0" );
-    when( namedClusterServiceFactory2.create( namedCluster ) ).thenReturn( "2" );
-    when( namedClusterServiceFactory3.create( namedCluster ) ).thenReturn( "3" );
-    serviceLocator.factoryAdded( namedClusterServiceFactory, ImmutableMap.of( "shim", SHIM_A ) );
-    serviceLocator.factoryAdded( namedClusterServiceFactory, ImmutableMap.of( "shim", SHIM_B ) );
-    serviceLocator.factoryAdded( namedClusterServiceFactory2, ImmutableMap.of( "shim", SHIM_C ) );
-    serviceLocator.factoryAdded( namedClusterServiceFactory3, ImmutableMap.of( "shim", SHIM_A ) );
-    when( namedClusterManager.getNamedClusterByName( namedCluster.getName(), memoryMetaStore ) ).thenReturn( namedCluster2 );
-    when( namedClusterManager.getNamedClusterByName( namedCluster.getName(), null) ).thenReturn( null );
+      serviceVendorTypeMapping = serviceLocator.serviceVendorTypeMapping;
+      when( namedClusterServiceFactory.getServiceClass() ).thenReturn( Object.class );
+      when( namedClusterServiceFactory2.getServiceClass() ).thenReturn( String.class );
+      when( namedClusterServiceFactory3.getServiceClass() ).thenReturn( Object.class );
+
+      when( namedClusterServiceFactory.create( namedCluster ) ).thenReturn( "0" );
+      when( namedClusterServiceFactory2.create( namedCluster ) ).thenReturn( "2" );
+      when( namedClusterServiceFactory3.create( namedCluster ) ).thenReturn( "3" );
+      serviceLocator.factoryAdded( namedClusterServiceFactory, ImmutableMap.of( "shim", SHIM_A ) );
+      serviceLocator.factoryAdded( namedClusterServiceFactory, ImmutableMap.of( "shim", SHIM_B ) );
+      serviceLocator.factoryAdded( namedClusterServiceFactory2, ImmutableMap.of( "shim", SHIM_C ) );
+      serviceLocator.factoryAdded( namedClusterServiceFactory3, ImmutableMap.of( "shim", SHIM_A ) );
+      when( namedClusterManager.getNamedClusterByName( namedCluster.getName(), memoryMetaStore ) ).thenReturn(
+        namedCluster2 );
+      when( namedClusterManager.getNamedClusterByName( namedCluster.getName(), null ) ).thenReturn( null );
+    }
   }
 
   @Test
@@ -138,28 +141,46 @@ public class NamedClusterServiceLocatorImplTest {
 
   @Test
   public void testGetService() {
-    when( namedClusterServiceFactory.canHandle( namedCluster ) ).thenReturn( true );
-    when( namedClusterServiceFactory.create( namedCluster ) ).thenReturn( value );
-    assertEquals( value, serviceLocator.getService( namedCluster, Object.class ) );
+    Collection<MetastoreLocator> metastoreLocatorCollection = new ArrayList<>();
+    metastoreLocatorCollection.add( mockMetastoreLocator );
+    try( MockedStatic<PluginServiceLoader> pluginServiceLoaderMockedStatic = Mockito.mockStatic( PluginServiceLoader.class ) ) {
+      pluginServiceLoaderMockedStatic.when( () -> PluginServiceLoader.loadServices( MetastoreLocator.class ) )
+        .thenReturn( metastoreLocatorCollection );
+      when( namedClusterServiceFactory.canHandle( namedCluster ) ).thenReturn( true );
+      when( namedClusterServiceFactory.create( namedCluster ) ).thenReturn( value );
+      assertEquals( value, serviceLocator.getService( namedCluster, Object.class ) );
+    }
   }
 
   @Test
   public void testGetServiceWithAccessToEmbeddedMetastore() {
-    String embeddedMetastoreKey = "theMetastoreKey";
-    when( namedClusterServiceFactory2.canHandle( namedCluster ) ).thenReturn( true );
-    when( mockMetastoreLocator.getMetastore() ).thenReturn( null );  //disable the normal metastore
-    when( mockMetastoreLocator.getExplicitMetastore( embeddedMetastoreKey ) )
-      .thenReturn( memoryMetaStore ); // and set to embedded metastore
-    when( namedCluster2.getShimIdentifier() ).thenReturn( SHIM_C );
-    assertEquals( "2", serviceLocator.getService( namedCluster, String.class, embeddedMetastoreKey ) );
+    Collection<MetastoreLocator> metastoreLocatorCollection = new ArrayList<>();
+    metastoreLocatorCollection.add( mockMetastoreLocator );
+    try( MockedStatic<PluginServiceLoader> pluginServiceLoaderMockedStatic = Mockito.mockStatic( PluginServiceLoader.class ) ) {
+      pluginServiceLoaderMockedStatic.when( () -> PluginServiceLoader.loadServices( MetastoreLocator.class ) )
+        .thenReturn( metastoreLocatorCollection );
+      String embeddedMetastoreKey = "theMetastoreKey";
+      when( namedClusterServiceFactory2.canHandle( namedCluster ) ).thenReturn( true );
+      when( mockMetastoreLocator.getMetastore() ).thenReturn( null );  //disable the normal metastore
+      when( mockMetastoreLocator.getExplicitMetastore( embeddedMetastoreKey ) )
+        .thenReturn( memoryMetaStore ); // and set to embedded metastore
+      when( namedCluster2.getShimIdentifier() ).thenReturn( SHIM_C );
+      assertEquals( "2", serviceLocator.getService( namedCluster, String.class, embeddedMetastoreKey ) );
+    }
   }
 
   @Test
   public void testGetServiceWithNullNamedCluster() {
-    when( namedClusterServiceFactory.canHandle( null ) ).thenReturn( true );
-    when( namedClusterServiceFactory.create( null ) ).thenReturn( value );
-    Object service = serviceLocator.getService( null, Object.class );
-    assertNotNull( service );
+    Collection<MetastoreLocator> metastoreLocatorCollection = new ArrayList<>();
+    metastoreLocatorCollection.add( mockMetastoreLocator );
+    try( MockedStatic<PluginServiceLoader> pluginServiceLoaderMockedStatic = Mockito.mockStatic( PluginServiceLoader.class ) ) {
+      pluginServiceLoaderMockedStatic.when( () -> PluginServiceLoader.loadServices( MetastoreLocator.class ) )
+        .thenReturn( metastoreLocatorCollection );
+      when( namedClusterServiceFactory.canHandle( null ) ).thenReturn( true );
+      when( namedClusterServiceFactory.create( null ) ).thenReturn( value );
+      Object service = serviceLocator.getService( null, Object.class );
+      assertNotNull( service );
+    }
   }
 
   @Test
@@ -173,16 +194,22 @@ public class NamedClusterServiceLocatorImplTest {
     //When more than one FactoryService is registered under the same shim and class,
     // it is expected that the canHandle will pick the proper service factory for
     // the named cluster.
-    when( namedClusterServiceFactory.canHandle( namedCluster ) ).thenReturn( false );
-    when( namedClusterServiceFactory3.canHandle( namedCluster ) ).thenReturn( true );
+    Collection<MetastoreLocator> metastoreLocatorCollection = new ArrayList<>();
+    metastoreLocatorCollection.add( mockMetastoreLocator );
+    try( MockedStatic<PluginServiceLoader> pluginServiceLoaderMockedStatic = Mockito.mockStatic( PluginServiceLoader.class ) ) {
+      pluginServiceLoaderMockedStatic.when( () -> PluginServiceLoader.loadServices( MetastoreLocator.class ) )
+        .thenReturn( metastoreLocatorCollection );
+      when( namedClusterServiceFactory.canHandle( namedCluster ) ).thenReturn( false );
+      when( namedClusterServiceFactory3.canHandle( namedCluster ) ).thenReturn( true );
 
-    Object service = serviceLocator.getService( namedCluster, Object.class );
-    assertEquals( "3", service );
+      Object service = serviceLocator.getService( namedCluster, Object.class );
+      assertEquals( "3", service );
 
-    when( namedClusterServiceFactory.canHandle( namedCluster ) ).thenReturn( true );
+      when( namedClusterServiceFactory.canHandle( namedCluster ) ).thenReturn( true );
 
-    service = serviceLocator.getService( namedCluster, Object.class );
-    assertEquals( "0", service );
+      service = serviceLocator.getService( namedCluster, Object.class );
+      assertEquals( "0", service );
+    }
   }
 
 }
