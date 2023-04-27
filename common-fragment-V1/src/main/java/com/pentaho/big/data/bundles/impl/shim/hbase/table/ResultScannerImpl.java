@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2023 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -25,6 +25,7 @@ package com.pentaho.big.data.bundles.impl.shim.hbase.table;
 import com.pentaho.big.data.bundles.impl.shim.hbase.HBaseConnectionWrapper;
 import com.pentaho.big.data.bundles.impl.shim.hbase.ResultImpl;
 import com.pentaho.big.data.bundles.impl.shim.hbase.connectionPool.HBaseConnectionHandle;
+import org.apache.hadoop.hbase.client.Result;
 import org.pentaho.hadoop.shim.api.hbase.table.ResultScanner;
 import org.pentaho.hadoop.shim.api.internal.hbase.HBaseBytesUtilShim;
 
@@ -49,7 +50,8 @@ public class ResultScannerImpl implements ResultScanner {
       if ( !hBaseConnectionWrapper.resultSetNextRow() ) {
         return null;
       }
-      return new ResultImpl( hBaseConnectionWrapper.getCurrentResult(), hBaseBytesUtilShim );
+      return new ResultImpl( (Result) hBaseConnectionWrapper.getCurrentResult(),
+        hBaseBytesUtilShim );
     } catch ( Exception e ) {
       throw new IOException( e );
     }

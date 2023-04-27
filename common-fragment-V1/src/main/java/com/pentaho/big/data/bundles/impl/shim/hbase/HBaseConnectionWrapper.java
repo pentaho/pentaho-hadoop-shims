@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2023 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -23,7 +23,6 @@
 package com.pentaho.big.data.bundles.impl.shim.hbase;
 
 import com.google.common.annotations.VisibleForTesting;
-import org.apache.hadoop.hbase.client.Result;
 import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.internal.hbase.ColumnFilter;
@@ -49,8 +48,16 @@ public class HBaseConnectionWrapper implements HBaseConnection {
   public HBaseConnectionWrapper( HBaseConnection delegate ) {
     this.delegate = delegate;
     this.realImpl = findRealImpl( delegate );
-    resultSetRowField = getResultSetRowField( this.realImpl );
-    resultSetRowField.setAccessible( true );
+
+    if ( realImpl != null) {
+      resultSetRowField = getResultSetRowField( this.realImpl );
+    } else {
+      resultSetRowField = null;
+    }
+
+    if ( resultSetRowField != null ) {
+      resultSetRowField.setAccessible( true );
+    }
   }
 
   @Override public HBaseBytesUtilShim getBytesUtil() throws Exception {
@@ -223,9 +230,9 @@ public class HBaseConnectionWrapper implements HBaseConnection {
     delegate.obtainAuthTokenForJob( conf );
   }
 
-  public Result getCurrentResult() {
+  public Object getCurrentResult() {
     try {
-      return (Result) resultSetRowField.get( realImpl );
+      return resultSetRowField.get( realImpl );
     } catch ( IllegalAccessException e ) {
       return null;
     }

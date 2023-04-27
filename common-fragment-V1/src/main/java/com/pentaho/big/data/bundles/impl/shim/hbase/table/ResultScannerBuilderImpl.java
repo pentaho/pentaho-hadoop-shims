@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2023 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -123,7 +123,7 @@ public class ResultScannerBuilderImpl implements ResultScannerBuilder {
     return caching;
   }
 
-  @Override public ResultScanner build() throws IOException {
+  @Override public ResultScanner build() throws  IOException {
     HBaseConnectionHandle connectionHandle = hBaseConnectionPool.getConnectionHandle( tableName );
     batchHBaseConnectionOperation.perform( connectionHandle.getConnection() );
     try {
@@ -131,6 +131,10 @@ public class ResultScannerBuilderImpl implements ResultScannerBuilder {
     } catch ( Exception e ) {
       throw new IOException( e );
     }
+    return getResultScanner( connectionHandle );
+  }
+
+  protected ResultScanner getResultScanner(HBaseConnectionHandle connectionHandle) {
     return new ResultScannerImpl( connectionHandle, hBaseBytesUtilShim );
   }
 }
