@@ -33,6 +33,7 @@
     <joda-time.version>2.10</joda-time.version>
     <jython.version>2.5.3</jython.version>
     <jetty.version>9.3.20.v20170531</jetty.version>
+    <org.apache.knox.version>1.3.0.7.2.16.0-287</org.apache.knox.version>
   </properties>
 
   <dependencyManagement>
@@ -195,6 +196,82 @@
           <artifactId>slf4j-api</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-client</artifactId>
+      <version>${org.apache.hadoop.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-aws</artifactId>
+      <version>${org.apache.hadoop.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-hdfs-client</artifactId>
+      <version>${org.apache.hadoop.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.hadoop.gplcompression</groupId>
+      <artifactId>hadoop-lzo</artifactId>
+      <version>0.4.20</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.knox</groupId>
+      <artifactId>gateway-cloud-bindings</artifactId>
+      <version>${org.apache.knox.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-simple</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.knox</groupId>
+      <artifactId>gateway-util-common</artifactId>
+      <version>${org.apache.knox.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-simple</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>stax</groupId>
+      <artifactId>stax</artifactId>
+      <version>1.2.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.knox</groupId>
+      <artifactId>gateway-shell</artifactId>
+      <version>${org.apache.knox.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-simple</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.knox</groupId>
+      <artifactId>gateway-i18n</artifactId>
+      <version>${org.apache.knox.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hive</groupId>
@@ -444,7 +521,7 @@
                 *:hive-service,*:orc-core,*:hadoop-common,*:hadoop-hdfs,*:hadoop-mapreduce-*,
                 *:hadoop-yarn-api,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,
                 *:hbase-server,*:oozie-client,*:parquet-hadoop-bundle,*:zookeeper,*:hbase-shaded-miscellaneous,
-                org.eclipse.jetty:*,com.google.guava:*
+                org.eclipse.jetty:*,com.google.guava:*,*:hadoop-lzo,*:hadoop-client,*:hadoop-aws,*:hadoop-hdfs-client
               </include>
               <exclude>
                 *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool,*:commons-dbcp,
@@ -455,7 +532,8 @@
             <resolverFilter>
               <include>
                 <!--Needed for Pig-->
-                *:antlr-runtime,*:automaton,*:pig,*:parquet-pig,*:sqoop,*:joda-time,*:jython
+                *:antlr-runtime,*:automaton,*:pig,*:parquet-pig,*:sqoop,*:joda-time,*:jython,*:gateway-cloud-bindings,
+                *:gateway-util-common,*:gateway-shell,*:gateway-i18n
               </include>
               <transitive>false</transitive>
             </resolverFilter>
