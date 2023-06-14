@@ -17,7 +17,7 @@
     <shim.name>apache</shim.name>
     <commons-text.version>1.10.0</commons-text.version>
     <!-- default folder -->
-    <guava.version>31.1-jre</guava.version>
+    <guava.version>32.0.0-jre</guava.version>
     <failureaccess.version>1.0.1</failureaccess.version>
     <org.apache.avro.version>1.8.0</org.apache.avro.version>
     <hadoop-aws.version>3.3.0</hadoop-aws.version>
