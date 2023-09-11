@@ -301,7 +301,7 @@
                 *:zookeeper,*:hadoop-lzo,*:hadoop-client,*:hadoop-aws,*:hadoop-hdfs-client
               </include>
               <exclude>
-                *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool,*:commons-dbcp,
+                *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool,*:commons-dbcp2,
                 *:avatica,*:janino
               </exclude>
               <transitive>true</transitive>
