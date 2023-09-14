@@ -435,7 +435,7 @@
                 org.codehaus.mojo:animal-sniffer-annotations,*:hbase-mapreduce
               </include>
               <exclude>
-                *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool,*:commons-dbcp2,
+                *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool,*:commons-dbcp,
                 *:jersey-guava,*:janino
               </exclude>
               <transitive>true</transitive>
