@@ -472,7 +472,7 @@
               </include>
               <exclude>
                 *:jersey*:jar:2.25.1,*:*log4j*,*:xml-apis,*:xercesImpl,*:tests:*,*:commons-logging,*:commons-math3,
-                *:commons-pool,*:commons-dbcp2,
+                *:commons-pool2,*:commons-dbcp2,
                 <!--Needed for hive-->
                 org.apache.hadoop:hadoop-yarn-registry,*:janino
               </exclude>
