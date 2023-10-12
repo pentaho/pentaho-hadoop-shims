@@ -127,6 +127,7 @@ public class PentahoMapReduceBase<K, V> extends MapReduceBase {
 
       //  deserialize from xml to variable space
       XStream xStream = new XStream();
+      xStream.allowTypes( new Class[] { Variables.class } );
 
       if ( xStream != null ) {
         setDebugStatus( "PentahoMapReduceBase: Setting classes variableSpace property.: " );
