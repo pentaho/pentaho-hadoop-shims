@@ -140,6 +140,12 @@
     </dependency>
 
     <dependency>
+      <groupId>commons-net</groupId>
+      <artifactId>commons-net</artifactId>
+      <version>${commons-net.version}</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-common</artifactId>
       <version>${org.apache.hadoop.version}</version>
@@ -155,6 +161,10 @@
         <exclusion>
           <groupId>org.apache.commons</groupId>
           <artifactId>commons-text</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>commons-net</groupId>
+          <artifactId>commons-net</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -279,7 +289,7 @@
             <resolverFilter>
               <include>
                 *:com.fasterxml.jackson.dataformat,*:hadoop-mapreduce-client-app,*:hadoop-mapreduce-client-core,
-                org.apache.commons:commons-text,
+                org.apache.commons:commons-text,commons-net:commons-net,
                 *:hadoop-common,*:orc-core,*:avro,
                 *:hadoop-aws,
                 *:hadoop-azure,
