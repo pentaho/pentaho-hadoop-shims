@@ -348,6 +348,9 @@
             <Bundle-Version>3.0.apache</Bundle-Version>
             <Pentaho-Code-Version>${pentaho-code.version}</Pentaho-Code-Version>
             <DynamicImport-Package>*</DynamicImport-Package>
+            <!-- this is needed because the bundle plugin gets fooled by multi-release jars into thinking the required java
+            version is the highest one in the package, which is not the case -->
+            <Require-Capability>osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=1.8))"</Require-Capability>
             <Import-Package>
             </Import-Package>
             <_exportcontents>
