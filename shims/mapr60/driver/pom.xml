@@ -17,7 +17,7 @@
     <org.apache.hadoop.version>2.7.0-mapr-1710</org.apache.hadoop.version>
     <org.apache.hbase.version>1.4.8</org.apache.hbase.version>
     <vendor.hbase.version>6.0.0-mapr</vendor.hbase.version>
-    <org.apache.hive.version>2.1.1-mapr-1710</org.apache.hive.version>
+    <org.apache.hive.version>2.3.3</org.apache.hive.version>
     <org.apache.oozie.version>4.3.0-mapr-1710</org.apache.oozie.version>
     <parquet.version>1.8.1</parquet.version>
     <pig.version>0.16.0-mapr-1703</pig.version>
