@@ -22,7 +22,7 @@
     <parquet.version>1.8.1</parquet.version>
     <pig.version>0.16.0-mapr-1901</pig.version>
     <sqoop.version>1.4.7-mapr-2009</sqoop.version>
-    <zookeeper.version>3.4.5-mapr-1710</zookeeper.version>
+    <zookeeper.version>3.4.14</zookeeper.version>
     <vendor-driver.version>6.1.0.0.mapr</vendor-driver.version>
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
     <joda-time.version>2.9.9</joda-time.version>
