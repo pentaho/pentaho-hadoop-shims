@@ -301,12 +301,21 @@
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.yaml</groupId>
+          <artifactId>snakeyaml</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.parquet</groupId>
       <artifactId>parquet-avro</artifactId>
       <version>${parquet.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hitachivantara</groupId>
+      <artifactId>safeyaml</artifactId>
+      <version>${safeyaml.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.orc</groupId>
