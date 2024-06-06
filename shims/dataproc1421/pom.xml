@@ -37,7 +37,7 @@
     <htrace-core.version>2.04</htrace-core.version>
     <protobuf-java.version>2.5.0</protobuf-java.version>
     <commons-configuration.version>1.6</commons-configuration.version>
-    <commons-configuration2.version>2.1.1</commons-configuration2.version>
+    <commons-configuration2.version>2.10.1</commons-configuration2.version>
     <geronimo-servlet_3.0_spec.version>1.0</geronimo-servlet_3.0_spec.version>
     <org.apache.hive.version>2.3.6</org.apache.hive.version>
     <org.apache.hadoop.version>2.9.2</org.apache.hadoop.version>
