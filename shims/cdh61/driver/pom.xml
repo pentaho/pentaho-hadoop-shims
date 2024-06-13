@@ -30,6 +30,7 @@
     <joda-time.version>2.9.9</joda-time.version>
     <jython.version>2.5.3</jython.version>
     <jetty.version>9.3.20.v20170531</jetty.version>
+    <commons-configuration2.version>2.10.1</commons-configuration2.version>
   </properties>
 
   <dependencyManagement>
@@ -270,10 +271,6 @@
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-log4j12</artifactId>
         </exclusion>
-        <exclusion>
-          <groupId>org.apache.commons</groupId>
-          <artifactId>commons-configuration2</artifactId>
-        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -426,6 +423,11 @@
       <artifactId>jython</artifactId>
       <version>${jython.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-configuration2</artifactId>
+      <version>${commons-configuration2.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -442,7 +444,7 @@
                 *:hive-service,*:orc-core,*:hadoop-common,*:hadoop-hdfs,*:hadoop-mapreduce-*,
                 *:hadoop-yarn-api,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,
                 *:hbase-server,*:oozie-client,*:parquet-hadoop-bundle,*:zookeeper,*:hbase-shaded-miscellaneous,
-                org.eclipse.jetty:*
+                org.eclipse.jetty:*,*:commons-configuration2
               </include>
               <exclude>
                 *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool2,*:commons-dbcp2,
