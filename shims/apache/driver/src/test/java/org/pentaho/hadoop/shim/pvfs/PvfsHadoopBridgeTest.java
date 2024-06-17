@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2019-2022 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019-2024 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -53,8 +53,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -80,7 +80,7 @@ public class PvfsHadoopBridgeTest {
     when( pvfsConf.mapPath( any( Path.class ) ) ).thenReturn( new Path( tempFile.toURI() ) );
     when( pvfsConf.supportsConnection() ).thenReturn( true );
     when( pvfsConf.conf( any( Path.class ) ) ).thenReturn( new Configuration() );
-    when( connectionManager.getConnectionDetails( anyString() ) ).thenReturn( details );
+    when( connectionManager.getConnectionDetails( nullable( String.class ) ) ).thenReturn( details );
     when( details.getType() ).thenReturn( "snw" );
 
     bridge = new PvfsHadoopBridge( singletonList( confFactory ), connectionManager );
