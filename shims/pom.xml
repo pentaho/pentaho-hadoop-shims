@@ -266,6 +266,7 @@
       <module>cdpdc71</module>
       <module>apache</module>
       <module>hdi40</module>
+      <module>apachevanilla</module>
     </modules>
   </profile>
 
@@ -359,6 +360,17 @@
     </activation>
     <modules>
       <module>hdi40</module>
+    </modules>
+  </profile>
+  <profile>
+    <id>apachevanilla</id>
+    <activation>
+      <property>
+        <name>!skipDefault</name>
+      </property>
+    </activation>
+    <modules>
+      <module>apachevanilla</module>
     </modules>
   </profile>
 
