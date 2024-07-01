@@ -5,7 +5,7 @@
             http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
 
   <bean id="apachevanillaShimIdentifier" class="org.pentaho.hadoop.shim.api.internal.ShimIdentifier" scope="singleton">
-    <argument value="cdpdc71"/>
+    <argument value="apachevanilla"/>
     <argument value="ApacheVanilla"/>
     <argument value="3.3.0"/>
     <argument value="COMMUNITY"/>
@@ -18,7 +18,7 @@
   <service ref="apachevanillaHadoop" interface="org.pentaho.hadoop.shim.spi.HadoopShim">
     <service-properties>
       <entry key="shim">
-        <value type="java.lang.String">cdpdc71</value>
+        <value type="java.lang.String">apachevanilla</value>
       </entry>
     </service-properties>
   </service>
@@ -35,7 +35,7 @@
   <service ref="apachevanillaFormatShim" auto-export="interfaces">
     <service-properties>
       <entry key="shim">
-        <value type="java.lang.String">cdpdc71</value>
+        <value type="java.lang.String">apachevanilla</value>
       </entry>
       <entry key="service">
         <value type="java.lang.String">format</value>
@@ -51,7 +51,7 @@
            interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
     <service-properties>
       <entry key="shim">
-        <value type="java.lang.String">cdpdc71</value>
+        <value type="java.lang.String">apachevanilla</value>
       </entry>
       <entry key="service">
         <value type="java.lang.String">format</value>
@@ -69,7 +69,7 @@
   <service ref="apachevanillaMapReduceServiceFactory" interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
     <service-properties>
       <entry key="shim">
-        <value type="java.lang.String">cdpdc71</value>
+        <value type="java.lang.String">apachevanilla</value>
       </entry>
       <entry key="service">
         <value type="java.lang.String">mapreduce</value>
@@ -88,7 +88,7 @@
   <service ref="apachevanillaHadoopServicesFactory" interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
     <service-properties>
       <entry key="shim">
-        <value type="java.lang.String">cdpdc71</value>
+        <value type="java.lang.String">apachevanilla</value>
       </entry>
       <entry key="service">
         <value type="java.lang.String">shimservices</value>
@@ -101,7 +101,7 @@
   <bean id="apachevanillaHiveDriver" class="com.pentaho.big.data.bundles.impl.shim.hive.HiveDriver">
     <argument ref="jdbcUrlParser"/>
     <argument value="org.apache.hive.jdbc.HiveDriver"/>
-    <argument value="cdpdc71"/>
+    <argument value="apachevanilla"/>
   </bean>
 
   <service ref="apachevanillaHiveDriver" interface="java.sql.Driver">
@@ -113,19 +113,19 @@
   <bean id="apachevanillaImpalaDriver" class="com.pentaho.big.data.bundles.impl.shim.hive.ImpalaDriver">
     <argument ref="jdbcUrlParser"/>
     <argument value="com.cloudera.impala.jdbc41.Driver"/>
-    <argument value="cdpdc71"/>
+    <argument value="apachevanilla"/>
   </bean>
 
   <bean id="apachevanillaImpalaSimbaDriver" class="com.pentaho.big.data.bundles.impl.shim.hive.ImpalaSimbaDriver">
     <argument ref="jdbcUrlParser"/>
     <argument value="com.cloudera.impala.jdbc41.Driver"/>
-    <argument value="cdpdc71"/>
+    <argument value="apachevanilla"/>
   </bean>
 
   <bean id="apachevanillaSparkSimbaDriver" class="com.pentaho.big.data.bundles.impl.shim.hive.SparkSimbaDriver">
     <argument ref="jdbcUrlParser"/>
     <argument value="org.apache.hive.jdbc.HiveDriver"/>
-    <argument value="cdpdc71"/>
+    <argument value="apachevanilla"/>
   </bean>
 
   <service ref="apachevanillaImpalaDriver" interface="java.sql.Driver">
@@ -155,7 +155,7 @@
   <service ref="hbaseShim" auto-export="interfaces">
     <service-properties>
       <entry key="shim">
-        <value type="java.lang.String">cdpdc71</value>
+        <value type="java.lang.String">apachevanilla</value>
       </entry>
       <entry key="service">
         <value type="java.lang.String">hbase</value>
@@ -170,7 +170,7 @@
   <service ref="apachevanillaHBaseServiceFactory" interface="org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory">
     <service-properties>
       <entry key="shim">
-        <value type="java.lang.String">cdpdc71</value>
+        <value type="java.lang.String">apachevanilla</value>
       </entry>
       <entry key="service">
         <value type="java.lang.String">hbase</value>
