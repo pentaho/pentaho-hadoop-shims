@@ -15,7 +15,6 @@
 
   <properties>
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
-    <aws-java-sdk-core.version>1.11.275</aws-java-sdk-core.version>
     <integration-test.src>src/it/java</integration-test.src>
     <gateway-shell.version>1.0.0.3.0.0.0-1634</gateway-shell.version>
   </properties>
@@ -135,7 +134,7 @@
     <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-core</artifactId>
-      <version>${aws-java-sdk-core.version}</version>
+      <version>${aws-java-sdk.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
