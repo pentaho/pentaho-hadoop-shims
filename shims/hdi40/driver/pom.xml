@@ -565,7 +565,7 @@
               </include>
               <exclude>
                 *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool2,*:commons-dbcp2,
-                *:janino, *:hsqldb
+                *:janino, *:hsqldb,org.apache.velocity:velocity
               </exclude>
               <transitive>true</transitive>
             </resolverFilter>
