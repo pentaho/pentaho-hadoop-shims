@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2020-2021 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2020-2024 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -23,6 +23,8 @@ package org.pentaho.hadoop.shim.pvfs.conf;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,8 +37,10 @@ import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 @RunWith( MockitoJUnitRunner.class )
@@ -56,6 +60,7 @@ public class ADLSGen2ConfTest {
 
   @Before
   public void before() {
+    Logger.getRootLogger().setLevel( Level.OFF );
     adlsGen2Props.put( "accountName", "mockAccountName" );
     adlsGen2Props.put( "sharedKey", "mOckSharedKey==" );
     //adlsGen2Props.put( "accountName", "mockAccountName" );
