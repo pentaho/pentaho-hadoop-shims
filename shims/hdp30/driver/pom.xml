@@ -484,7 +484,7 @@
                 *:jersey*:jar:2.25.1,*:*log4j*,*:xml-apis,*:xercesImpl,*:tests:*,*:commons-logging,*:commons-math3,
                 *:commons-pool2,*:commons-dbcp2,
                 <!--Needed for hive-->
-                org.apache.hadoop:hadoop-yarn-registry,*:janino
+                org.apache.hadoop:hadoop-yarn-registry,*:janino,org.apache.velocity:velocity
               </exclude>
               <transitive>true</transitive>
             </resolverFilter>
