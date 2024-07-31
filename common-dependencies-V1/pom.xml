@@ -11,7 +11,7 @@
   <groupId>org.pentaho.hadoop.shims</groupId>
   <artifactId>pentaho-hadoop-shims-common-dependencies-V1</artifactId>
   <version>10.3.0.0-SNAPSHOT</version>
-  <packaging>bundle</packaging>
+  <packaging>jar</packaging>
 
   <properties>
     <vendor-driver.version>2.6.0.0.hdp</vendor-driver.version>
@@ -135,61 +135,19 @@
     </dependency>
   </dependencies>
   <build>
+    <finalName>${project.artifactId}</finalName>
     <plugins>
-
       <plugin>
-        <groupId>org.pentaho</groupId>
-        <artifactId>shim-bundle-plugin</artifactId>
-        <version>${shim-bundle-plugin.version}</version>
-        <configuration>
-          <resolverFilters>
-            <resolverFilter>
-              <include>
-                *:aws-java-sdk-core,*:jackson-core,*:xstream,*:guava,*:httpclient,
-                *:htrace-core,*:hbase-protocol,*:zookeeper,
-                *:hbase-server,*:protobuf-java
-              </include>
-              <exclude>
-                *:*log4j*,*:xml-apis,*:xercesImpl,*:hadoop*,*:hbase*,*:zookeeper*
-              </exclude>
-              <transitive>true</transitive>
-            </resolverFilter>
-            <resolverFilter>
-              <include>
-                org.pentaho:pentaho-hadoop-shims-common-mapreduce
-              </include>
-              <transitive>false</transitive>
-            </resolverFilter>
-          </resolverFilters>
-        </configuration>
+        <artifactId>maven-jar-plugin</artifactId>
         <executions>
           <execution>
-            <phase>prepare-package</phase>
+            <id>test-jar</id>
+            <phase>package</phase>
             <goals>
-              <goal>resolve</goal>
+              <goal>test-jar</goal>
             </goals>
           </execution>
         </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-            <Bundle-Version>${pentaho-osgi-bundles.version}</Bundle-Version>
-            <Fragment-Host>pentaho-hadoop-driver-V1</Fragment-Host>
-            <Pentaho-Code-Version>${pentaho-code.version}</Pentaho-Code-Version>
-            <!--<DynamicImport-Package>*</DynamicImport-Package>-->
-            <Import-Package>
-            </Import-Package>
-            <_exportcontents>
-            </_exportcontents>
-            <Embed-Dependency>*</Embed-Dependency>
-          </instructions>
-        </configuration>
       </plugin>
     </plugins>
   </build>
