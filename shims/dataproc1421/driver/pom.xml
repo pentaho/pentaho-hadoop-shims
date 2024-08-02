@@ -95,7 +95,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.orc</groupId>
-      <artifactId>orc-core</artifactId>
+      <artifactId>orc-core</artifactId> <!-- TODO must be updated -->
       <version>${org.apache.orc.version}</version>
       <exclusions>
         <exclusion>
