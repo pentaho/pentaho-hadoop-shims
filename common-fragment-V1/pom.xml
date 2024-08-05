@@ -11,7 +11,7 @@
   <groupId>org.pentaho.hadoop.shims</groupId>
   <artifactId>pentaho-hadoop-shims-common-fragment-V1</artifactId>
   <version>11.0.0.0-SNAPSHOT</version>
-  <packaging>bundle</packaging>
+  <packaging>jar</packaging>
 
   <properties>
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
@@ -456,56 +456,19 @@
     </dependency>
   </dependencies>
   <build>
+    <finalName>${project.artifactId}</finalName>
     <plugins>
       <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <executions>
-          <!-- dependencies for IT compile get hosed by shim-bundle-plugin,
-               I'm not sure why that happens, but as workaround disabling
-               IT compile.  All tests are run as part of test phase. -->
-          <execution>
-            <id>test-integration_compile</id>
-            <phase>${test-integration_compile-phase}</phase>
-            <configuration>
-              <skip>true</skip>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.pentaho</groupId>
-        <artifactId>shim-bundle-plugin</artifactId>
-        <version>${shim-bundle-plugin.version}</version>
-        <configuration>
-          <resolverFilters>
-          </resolverFilters>
-        </configuration>
+        <artifactId>maven-jar-plugin</artifactId>
         <executions>
           <execution>
-            <phase>prepare-package</phase>
+            <id>test-jar</id>
+            <phase>package</phase>
             <goals>
-              <goal>resolve</goal>
+              <goal>test-jar</goal>
             </goals>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-            <Bundle-Version>${pentaho-osgi-bundles.version}</Bundle-Version>
-            <Fragment-Host>pentaho-hadoop-driver-V1</Fragment-Host>
-            <Pentaho-Code-Version>${pentaho-code.version}</Pentaho-Code-Version>
-            <Import-Package>
-            </Import-Package>
-            <_exportcontents>
-            </_exportcontents>
-            <Embed-Dependency>*</Embed-Dependency>
-          </instructions>
-        </configuration>
       </plugin>
     </plugins>
   </build>
