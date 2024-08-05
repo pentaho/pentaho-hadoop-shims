@@ -15,7 +15,7 @@
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
 
     <!-- GCP properties -->
-    <gcs-connector.version>hadoop2-1.9.17</gcs-connector.version>
+    <gcs-connector.version>hadoop2-2.2.24</gcs-connector.version>
 
     <!-- default folder -->
     <org.apache.hbase.version>2.2.0</org.apache.hbase.version>
