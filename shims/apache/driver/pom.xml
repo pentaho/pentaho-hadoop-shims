@@ -18,15 +18,19 @@
     <commons-text.version>1.10.0</commons-text.version>
     <!-- default folder -->
     <failureaccess.version>1.0.1</failureaccess.version>
-    <org.apache.avro.version>1.8.0</org.apache.avro.version>
+    <org.apache.avro.version>1.11.3</org.apache.avro.version>
     <hadoop-aws.version>3.3.0</hadoop-aws.version>
+    <hadoop-azure.version>3.4.0</hadoop-azure.version>
+    <hadoop-azure-datalake.version>3.4.0</hadoop-azure-datalake.version>
+    <log4j-over-slf4j.verison>2.0.13</log4j-over-slf4j.verison>
     <!-- client and default folders -->
     <hadoop.version>3.3.0</hadoop.version>
-    <gcs-connector.version>hadoop2-1.9.17</gcs-connector.version>
+    <gcs-connector.version>3.0.1</gcs-connector.version>
+    <gcsio.version>3.0.1</gcsio.version>
     <!-- pmr folder -->
     <commons-configuration.version>1.6</commons-configuration.version>
     <commons-configuration2.version>2.10.1</commons-configuration2.version>
-    <org.apache.hadoop.version>3.3.0</org.apache.hadoop.version>
+    <org.apache.hadoop.version>3.4.0</org.apache.hadoop.version>
     <org.apache.orc.version>1.6.1</org.apache.orc.version>
     <parquet.version>1.11.1</parquet.version>
     <joda-time.version>2.9.9</joda-time.version>
@@ -130,7 +134,9 @@
       <version>${org.apache.hadoop.version}</version>
     </dependency>
 
-  <!-- Dependency for hadoop-common-3.3.0 which causes bundle packaging issues -->
+
+
+    <!-- Dependency for hadoop-common-3.3.0 which causes bundle packaging issues -->
     <dependency>
       <groupId>dnsjava</groupId>
       <artifactId>dnsjava</artifactId>
@@ -207,6 +213,14 @@
       <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-cbor</artifactId>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.slf4j/log4j-over-slf4j -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>log4j-over-slf4j</artifactId>
+      <version>${log4j-over-slf4j.verison}</version>
+    </dependency>
+
+
 
     <!-- Dependencies for GCS connectivity   -->
     <dependency>
@@ -215,14 +229,19 @@
       <version>${gcs-connector.version}</version>
     </dependency>
     <dependency>
+      <groupId>com.google.cloud.bigdataoss</groupId>
+      <artifactId>gcsio</artifactId>
+      <version>${gcsio.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-azure</artifactId>
-      <version>3.3.0</version>
+      <version>${hadoop-azure.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-azure-datalake</artifactId>
-      <version>3.3.0</version>
+      <version>${hadoop-azure-datalake.version}</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
