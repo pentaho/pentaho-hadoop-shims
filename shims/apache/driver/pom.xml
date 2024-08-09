@@ -30,7 +30,8 @@
     <org.apache.orc.version>1.6.1</org.apache.orc.version>
     <parquet.version>1.11.1</parquet.version>
     <joda-time.version>2.9.9</joda-time.version>
-    <org.apache.thrift.version>0.9.3</org.apache.thrift.version>
+    <aws-java-sdk-core.version>1.11.275</aws-java-sdk-core.version>
+    <org.apache.thrift.version>0.20.0</org.apache.thrift.version>
 
     <!-- Guarantee the proper version for Jetty artifacts -->
     <!-- Note the difference between \lib and \lib\client -->
@@ -201,7 +202,7 @@
     <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-bundle</artifactId>
-      <version>${aws-java-sdk.version}</version>
+      <version>${aws-java-sdk-core.version}</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
