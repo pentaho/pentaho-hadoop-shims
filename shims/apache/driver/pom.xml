@@ -27,7 +27,7 @@
     <commons-configuration.version>1.6</commons-configuration.version>
     <commons-configuration2.version>2.10.1</commons-configuration2.version>
     <org.apache.hadoop.version>3.3.0</org.apache.hadoop.version>
-    <org.apache.orc.version>1.6.1</org.apache.orc.version> <!-- TODO update me -->
+    <org.apache.orc.version>1.6.1</org.apache.orc.version>
     <parquet.version>1.11.1</parquet.version>
     <joda-time.version>2.9.9</joda-time.version>
     <org.apache.thrift.version>0.9.3</org.apache.thrift.version>
@@ -168,8 +168,20 @@
     </dependency>
     <dependency>
       <groupId>org.apache.orc</groupId>
-      <artifactId>orc-core</artifactId> <!-- TODO must be updated -->
+      <artifactId>orc-core</artifactId>
       <version>${org.apache.orc.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.airlift</groupId>
+          <artifactId>aircompressor</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <!-- used by org.apache.orc -->
+    <dependency>
+      <groupId>io.airlift</groupId>
+      <artifactId>aircompressor</artifactId>
+      <version>0.27</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
