@@ -338,7 +338,7 @@
             <resolverFilter>
               <include>
                 <!--Needed for Pig-->
-                *:antlr-runtime,*:automaton,*:pig,*:sqoop,*:joda-time,*:jython
+                *:antlr-runtime,*:automaton,*:pig,*:sqoop,*:joda-time,*:jython,*:aircompressor
               </include>
               <transitive>false</transitive>
             </resolverFilter>

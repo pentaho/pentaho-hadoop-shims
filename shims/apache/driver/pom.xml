@@ -330,7 +330,7 @@
             </resolverFilter>
             <resolverFilter>
               <include>
-                *:libthrift,
+                *:libthrift,*:aircompressor
               </include>
               <exclude>
                 *:tests:*
