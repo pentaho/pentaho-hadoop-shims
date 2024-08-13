@@ -144,6 +144,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.apache.thrift</groupId>
+      <artifactId>libthrift</artifactId>
+      <version>${org.apache.thrift.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>shim-api</artifactId>
       <version>${project.version}</version>
@@ -206,6 +211,10 @@
         <exclusion>
           <groupId>org.apache.velocity</groupId>
           <artifactId>velocity</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.thrift</groupId>
+          <artifactId>libthrift</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
