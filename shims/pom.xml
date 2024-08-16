@@ -259,8 +259,6 @@
       </property>
     </activation>
     <modules>
-      <module>cdh61</module>
-      <module>hdp30</module>
       <module>emr521</module>
       <module>dataproc1421</module>
       <module>cdpdc71</module>
@@ -268,30 +266,6 @@
       <module>hdi40</module>
       <module>apachevanilla</module>
       <module>emr700</module>
-    </modules>
-  </profile>
-
-  <profile>
-    <id>cdh61</id>
-    <activation>
-      <property>
-        <name>!skipDefault</name>
-      </property>
-    </activation>
-    <modules>
-      <module>cdh61</module>
-    </modules>
-  </profile>
-
-  <profile>
-    <id>hdp30</id>
-    <activation>
-      <property>
-        <name>!skipDefault</name>
-      </property>
-    </activation>
-    <modules>
-      <module>hdp30</module>
     </modules>
   </profile>
 
@@ -308,18 +282,6 @@
   </profile>
 
   <profile>
-    <id>mapr60</id>
-    <activation>
-      <property>
-        <name>!skipDefault</name>
-      </property>
-    </activation>
-    <modules>
-      <module>mapr60</module>
-    </modules>
-  </profile>
-
-  <profile>
     <id>dataproc1421</id>
     <activation>
       <property>
@@ -330,17 +292,6 @@
       <module>dataproc1421</module>
     </modules>
     </profile>
-  <profile>
-    <id>mapr61</id>
-    <activation>
-      <property>
-        <name>!skipDefault</name>
-      </property>
-    </activation>
-    <modules>
-      <module>mapr61</module>
-    </modules>
-  </profile>
   <profile>
     <id>cdpdc71</id>
     <activation>
