@@ -33,7 +33,6 @@
     <!-- pmr folder -->
     <org.apache.hbase.version>2.0.0.3.0.0.0-1634</org.apache.hbase.version>
     <org.apache.hbase-prefix-tree.version>2.0.0-alpha4</org.apache.hbase-prefix-tree.version>
-    <zookeeper.version>3.4.6.3.0.0.0-1634</zookeeper.version>
     <htrace-core.version>2.04</htrace-core.version>
     <protobuf-java.version>2.5.0</protobuf-java.version>
     <commons-configuration.version>1.6</commons-configuration.version>
@@ -46,7 +45,6 @@
     <org.antlr.version>3.5.2</org.antlr.version>
     <joda-time.version>2.9.9</joda-time.version>
 
-    <org.apache.thrift.version>0.9.3</org.apache.thrift.version>
 
     <!-- Guarantee the proper version for Jetty artifacts -->
     <!-- Note the difference between \lib and \lib\client -->
@@ -229,7 +227,17 @@
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>io.airlift</groupId>
+          <artifactId>aircompressor</artifactId>
+        </exclusion>
       </exclusions>
+    </dependency>
+    <!-- used by org.apache.orc -->
+    <dependency>
+      <groupId>io.airlift</groupId>
+      <artifactId>aircompressor</artifactId>
+      <version>0.27</version>
     </dependency>
     <dependency>
       <groupId>org.apache.avro</groupId>
@@ -491,7 +499,7 @@
             <resolverFilter>
               <include>
                 <!--Needed for Pig-->
-                *:antlr-runtime,*:automaton,*:pig,*:joda-time,
+                *:antlr-runtime,*:automaton,*:pig,*:joda-time,*:aircompressor
                 <!--Needed for Hive-->
                 *:hive-metastore,*:libthrift,*:hive-standalone-metastore
               </include>
