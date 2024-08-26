@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2002-2024 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2022 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -129,6 +129,7 @@ public class HadoopClientServicesImpl implements HadoopClientServices {
     ANTLR( "antlr-runtime" ),
     GUAVA( "guava" ),
     JACKSON_CORE( "jackson-core-asl" ),
+    JACKSON_MAPPER( "jackson-mapper-asl" ),
     JODATIME( "joda-time" );
 
     private final String jarName;
