@@ -21,12 +21,11 @@
     <org.apache.avro.version>1.8.0</org.apache.avro.version>
     <hadoop-aws.version>3.3.0</hadoop-aws.version>
     <!-- client and default folders -->
-    <hadoop.version>3.3.0</hadoop.version>
     <gcs-connector.version>hadoop2-1.9.17</gcs-connector.version>
     <!-- pmr folder -->
     <commons-configuration.version>1.6</commons-configuration.version>
     <commons-configuration2.version>2.10.1</commons-configuration2.version>
-    <org.apache.hadoop.version>3.3.0</org.apache.hadoop.version>
+    <org.apache.hadoop.version>3.4.0</org.apache.hadoop.version>
     <org.apache.orc.version>1.6.1</org.apache.orc.version>
     <parquet.version>1.11.1</parquet.version>
     <joda-time.version>2.9.9</joda-time.version>
