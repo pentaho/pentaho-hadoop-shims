@@ -21,7 +21,7 @@
     <org.apache.avro.version>1.12.0</org.apache.avro.version>
     <hadoop-aws.version>3.3.0</hadoop-aws.version>
     <!-- client and default folders -->
-    <gcs-connector.version>hadoop2-1.9.17</gcs-connector.version>
+    <gcs.version>3.0.2</gcs.version>
     <!-- pmr folder -->
     <commons-configuration.version>1.6</commons-configuration.version>
     <commons-configuration2.version>2.10.1</commons-configuration2.version>
@@ -296,7 +296,12 @@
     <dependency>
       <groupId>com.google.cloud.bigdataoss</groupId>
       <artifactId>gcs-connector</artifactId>
-      <version>${gcs-connector.version}</version>
+      <version>${gcs.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud.bigdataoss</groupId>
+      <artifactId>gcsio</artifactId>
+      <version>${gcs.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
