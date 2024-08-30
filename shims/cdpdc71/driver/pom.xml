@@ -383,6 +383,17 @@
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-hdfs</artifactId>
       <version>${org.apache.hadoop.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-all</artifactId>
+      <version>4.1.100.Final</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
@@ -396,6 +407,10 @@
         <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -412,6 +427,10 @@
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-log4j12</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -426,6 +445,10 @@
         <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -582,7 +605,7 @@
               <include>
                 <!--Needed for Pig-->
                 *:antlr-runtime,*:automaton,*:pig,*:parquet-pig,*:sqoop,*:joda-time,*:jython,*:gateway-cloud-bindings,
-                *:gateway-util-common,*:gateway-shell,*:gateway-i18n,*:aircompressor
+                *:gateway-util-common,*:gateway-shell,*:gateway-i18n,*:aircompressor,*:netty-all
               </include>
               <transitive>false</transitive>
             </resolverFilter>
