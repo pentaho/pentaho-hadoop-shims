@@ -30,7 +30,7 @@
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
     <joda-time.version>2.10</joda-time.version>
     <jython.version>2.5.3</jython.version>
-    <jetty.version>9.3.20.v20170531</jetty.version>
+    <jetty.version>9.4.52.v20230823</jetty.version>
     <org.apache.knox.version>1.3.0.7.2.16.0-287</org.apache.knox.version>
     <gcs-connector.version>hadoop2-1.9.17</gcs-connector.version>
     <commons-configuration2.version>2.10.1</commons-configuration2.version>
@@ -102,7 +102,7 @@
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-server</artifactId>
-        <version>${jetty-server.version}</version>
+        <version>${jetty.version}</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
