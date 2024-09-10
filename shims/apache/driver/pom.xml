@@ -18,15 +18,14 @@
     <commons-text.version>1.10.0</commons-text.version>
     <!-- default folder -->
     <failureaccess.version>1.0.1</failureaccess.version>
-    <org.apache.avro.version>1.8.0</org.apache.avro.version>
+    <org.apache.avro.version>1.12.0</org.apache.avro.version>
     <hadoop-aws.version>3.3.0</hadoop-aws.version>
     <!-- client and default folders -->
-    <hadoop.version>3.3.0</hadoop.version>
     <gcs-connector.version>hadoop2-1.9.17</gcs-connector.version>
     <!-- pmr folder -->
     <commons-configuration.version>1.6</commons-configuration.version>
     <commons-configuration2.version>2.10.1</commons-configuration2.version>
-    <org.apache.hadoop.version>3.3.0</org.apache.hadoop.version>
+    <org.apache.hadoop.version>3.4.0</org.apache.hadoop.version>
     <org.apache.orc.version>1.6.1</org.apache.orc.version>
     <parquet.version>1.11.1</parquet.version>
     <joda-time.version>2.9.9</joda-time.version>
@@ -35,6 +34,7 @@
     <!-- Note the difference between \lib and \lib\client -->
     <jetty.lib-folder.version>9.3.20.v20170531</jetty.lib-folder.version>
     <jetty.client-folder.version>9.3.19.v20170502</jetty.client-folder.version>
+    <zookeeper.version>3.9.2</zookeeper.version>
   </properties>
 
   <dependencies>
@@ -127,7 +127,16 @@
           <groupId>org.codehaus.jettison</groupId>
           <artifactId>jettison</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-all</artifactId>
+      <version>4.1.108.Final</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
@@ -172,6 +181,10 @@
         <exclusion>
           <groupId>commons-net</groupId>
           <artifactId>commons-net</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-transport-native-epoll</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -303,6 +316,26 @@
 
   </dependencies>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.zookeeper</groupId>
+        <artifactId>zookeeper</artifactId>
+        <version>${zookeeper.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <build>
     <plugins>
       <plugin>
@@ -339,7 +372,7 @@
             </resolverFilter>
             <resolverFilter>
               <include>
-                *:libthrift,*:aircompressor
+                *:libthrift,*:aircompressor,*:netty-all
               </include>
               <exclude>
                 *:tests:*
