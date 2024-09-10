@@ -16,24 +16,23 @@
     <commons-lang.version>2.6</commons-lang.version>
     <failureaccess.version>1.0.1</failureaccess.version>
     <pentaho-osgi-bundles.version>10.3.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
-    <org.apache.avro.version>1.8.2.7.1.4.0-203</org.apache.avro.version>
-    <org.apache.orc.version>1.5.1.7.1.4.0-203</org.apache.orc.version>
-    <parquet.version>1.10.99.7.1.4.0-203</parquet.version>
-    <org.apache.hadoop.version>3.1.1.7.1.4.0-203</org.apache.hadoop.version>
-    <org.apache.hbase.version>2.2.3.7.1.4.0-203</org.apache.hbase.version>
+    <org.apache.avro.version>1.12.0</org.apache.avro.version>
+    <org.apache.orc.version>2.0.2</org.apache.orc.version>
+    <parquet.version>1.14.1</parquet.version>
+    <org.apache.hadoop.version>3.4.0</org.apache.hadoop.version>
+    <org.apache.hbase.version>2.6.0</org.apache.hbase.version>
     <org.apache.hive.version>3.1.3000.7.1.4.0-203</org.apache.hive.version>
-    <org.apache.oozie.version>5.1.0.7.1.4.0-203</org.apache.oozie.version>
-    <pig.version>0.16.0.7.1.4.0-203</pig.version>
-    <parquet-pig.version>1.10.99.7.1.4.0-203</parquet-pig.version>
-    <sqoop.version>1.4.7.7.1.4.0-203</sqoop.version>
-    <vendor-driver.version>7.1.4.0-203</vendor-driver.version>
+    <org.apache.oozie.version>5.2.1</org.apache.oozie.version>
+    <pig.version>0.17.0</pig.version>
+    <parquet-pig.version>1.14.1</parquet-pig.version>
+    <sqoop.version>1.4.7</sqoop.version>
+    <vendor-driver.version>3.4.0</vendor-driver.version>
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
-    <joda-time.version>2.10</joda-time.version>
-    <jython.version>2.5.3</jython.version>
-    <jetty.version>9.3.20.v20170531</jetty.version>
-    <org.apache.knox.version>1.3.0.7.2.16.0-287</org.apache.knox.version>
-    <gcs-connector.version>hadoop2-1.9.17</gcs-connector.version>
-    <commons-configuration2.version>2.10.1</commons-configuration2.version>
+    <joda-time.version>2.12.7</joda-time.version>
+    <jython.version>2.7.4</jython.version>
+    <jetty.version>9.4.33.v20201020</jetty.version>
+    <gcs-connector.version>3.0.2</gcs-connector.version>
+    <commons-configuration2.version>2.11.0</commons-configuration2.version>
   </properties>
 
   <dependencyManagement>
@@ -195,6 +194,10 @@
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
         </exclusion>
+        <exclusion>
+          <artifactId>hadoop-common</artifactId>
+          <groupId>org.apache.hadoop</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -206,6 +209,12 @@
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-aws</artifactId>
       <version>${org.apache.hadoop.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>software.amazon.awssdk</groupId>
+          <artifactId>bundle</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
@@ -229,60 +238,14 @@
       <version>0.4.20</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.knox</groupId>
-      <artifactId>gateway-cloud-bindings</artifactId>
-      <version>${org.apache.knox.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-simple</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-api</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.knox</groupId>
-      <artifactId>gateway-util-common</artifactId>
-      <version>${org.apache.knox.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-simple</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-api</artifactId>
-        </exclusion>
-      </exclusions>
+      <groupId>dnsjava</groupId>
+      <artifactId>dnsjava</artifactId>
+      <version>3.6.0</version>
     </dependency>
     <dependency>
       <groupId>stax</groupId>
       <artifactId>stax</artifactId>
       <version>1.2.0</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.knox</groupId>
-      <artifactId>gateway-shell</artifactId>
-      <version>${org.apache.knox.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-simple</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-api</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.knox</groupId>
-      <artifactId>gateway-i18n</artifactId>
-      <version>${org.apache.knox.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hive</groupId>
@@ -302,8 +265,16 @@
           <artifactId>slf4j-api</artifactId>
         </exclusion>
         <exclusion>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>hadoop-common</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>org.yaml</groupId>
           <artifactId>snakeyaml</artifactId>
+        </exclusion>
+        <exclusion>
+          <artifactId>velocity</artifactId>
+          <groupId>org.apache.velocity</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -363,6 +334,10 @@
         <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>dnsjava</groupId>
+          <artifactId>dnsjava</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -448,6 +423,10 @@
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
         </exclusion>
+        <exclusion>
+          <artifactId>hadoop-common</artifactId>
+          <groupId>org.apache.hadoop</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -458,6 +437,10 @@
         <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <artifactId>hadoop-common</artifactId>
+          <groupId>org.apache.hadoop</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -485,6 +468,21 @@
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-mapreduce</artifactId>
+      <version>${org.apache.hbase.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>hadoop-common</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-webapp</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-server</artifactId>
       <version>${org.apache.hbase.version}</version>
       <exclusions>
@@ -499,6 +497,10 @@
         <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <artifactId>hadoop-common</artifactId>
+          <groupId>org.apache.hadoop</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -579,11 +581,12 @@
                 *:hive-service,*:orc-core,*:hadoop-common,*:hadoop-hdfs,*:hadoop-mapreduce-*,
                 *:hadoop-yarn-api,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,
                 *:hbase-server,*:oozie-client,*:parquet-hadoop-bundle,*:zookeeper,*:hbase-shaded-miscellaneous,
-                org.eclipse.jetty:*,com.google.guava:*,*:hadoop-lzo,*:hadoop-client,*:hadoop-aws,*:hadoop-azure,*:gcs-connector,*:hadoop-hdfs-client,*:commons-configuration2
+                org.eclipse.jetty:*,com.google.guava:*,*:hadoop-lzo,*:hadoop-client,*:hadoop-aws,*:hadoop-azure,*:gcs-connector,*:hadoop-hdfs-client,*:commons-configuration2,
+                *:hbase-mapreduce
               </include>
               <exclude>
                 *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool2,*:commons-dbcp2,
-                *:janino,org.apache.velocity:velocity
+                *:janino,org.apache.velocity:velocity,*:dnsjava
               </exclude>
               <transitive>true</transitive>
             </resolverFilter>
@@ -614,7 +617,7 @@
         <configuration>
           <instructions>
             <Bundle-SymbolicName>pentaho-hadoop-driver-V1</Bundle-SymbolicName>
-            <Bundle-Version>3.3.0.apachevanilla</Bundle-Version>
+            <Bundle-Version>3.4.0.apachevanilla</Bundle-Version>
             <Pentaho-Code-Version>${pentaho-code.version}</Pentaho-Code-Version>
             <DynamicImport-Package>*</DynamicImport-Package>
             <excludes>

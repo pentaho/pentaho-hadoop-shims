@@ -7,7 +7,7 @@
   <bean id="apachevanillaShimIdentifier" class="org.pentaho.hadoop.shim.api.internal.ShimIdentifier" scope="singleton">
     <argument value="apachevanilla"/>
     <argument value="ApacheVanilla"/>
-    <argument value="3.3.0"/>
+    <argument value="3.4.0"/>
     <argument value="COMMUNITY"/>
   </bean>
 
