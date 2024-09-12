@@ -31,7 +31,7 @@
     <joda-time.version>2.9.9</joda-time.version>
 
     <!-- jetty -->
-    <jetty.version>9.4.52.v20230823</jetty.version>
+    <jetty.version>9.4.54.v20240208</jetty.version>
 
     <zookeeper.version>3.9.2</zookeeper.version>
   </properties>
