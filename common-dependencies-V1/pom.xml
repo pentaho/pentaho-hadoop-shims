@@ -150,7 +150,7 @@
                 *:hbase-server,*:protobuf-java
               </include>
               <exclude>
-                *:*log4j*,*:xml-apis,*:xercesImpl,*:hadoop*,*:hbase*,*:zookeeper*
+                *:*log4j*,*:xml-apis,*:xercesImpl,*:hadoop*,*:hbase*,*:zookeeper*,com.fasterxml.jackson.core:jackson-databind
               </exclude>
               <transitive>true</transitive>
             </resolverFilter>
