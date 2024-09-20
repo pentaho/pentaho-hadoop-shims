@@ -245,9 +245,6 @@
         <version>${shim-bundle-plugin.version}</version>
         <configuration>
           <resolverFilters>
-            <resolverFilter>
-              <exclude>com.fasterxml.jackson.core:jackson-databind</exclude>
-            </resolverFilter>
           </resolverFilters>
         </configuration>
         <executions>
