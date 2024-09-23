@@ -638,7 +638,8 @@
               </include>
               <exclude>
                 *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool2,*:commons-dbcp2,
-                *:janino
+                *:janino,org.apache.velocity:velocity,
+                *:grpc-*,*:opencensus*,*:proto*,*:perfmark-api*,*:threetenbp*
               </exclude>
               <transitive>true</transitive>
             </resolverFilter>
