@@ -31,6 +31,7 @@
     <joda-time.version>2.9.9</joda-time.version>
     <zookeeper.version>3.9.2</zookeeper.version>
     <netty.version>4.1.108.Final</netty.version>
+    <jetty-runner.version>9.3.20.v20170531</jetty-runner.version>
   </properties>
 
   <dependencies>
@@ -75,7 +76,7 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-rewrite</artifactId>
-      <version>${jetty.version}</version>
+      <version>${jetty-runner.version}</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>

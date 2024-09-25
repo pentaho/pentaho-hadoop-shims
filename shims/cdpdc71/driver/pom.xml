@@ -34,6 +34,7 @@
     <gcs-connector.version>hadoop3-2.2.25</gcs-connector.version>
     <commons-configuration2.version>2.10.1</commons-configuration2.version>
     <netty.version>4.1.108.Final</netty.version>
+    <jetty-runner.version>9.3.20.v20170531</jetty-runner.version>
   </properties>
 
   <dependencyManagement>
@@ -90,7 +91,7 @@
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-runner</artifactId>
-        <version>${jetty.version}</version>
+        <version>${jetty-runner.version}</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
