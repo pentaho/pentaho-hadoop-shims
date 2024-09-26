@@ -76,13 +76,13 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-rewrite</artifactId>
-      <version>${jetty-runner.version}</version>
+      <version>${jetty.version}</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-runner</artifactId>
-      <version>${jetty.version}</version>
+      <version>${jetty-runner.version}</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
