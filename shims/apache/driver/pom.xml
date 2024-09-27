@@ -21,7 +21,8 @@
     <org.apache.avro.version>1.12.0</org.apache.avro.version>
     <hadoop-aws.version>3.3.0</hadoop-aws.version>
     <!-- client and default folders -->
-    <gcs.version>3.0.2</gcs.version>
+    <gcs.version>hadoop2-1.9.17</gcs.version>
+    <google-oauth.version>1.33.3</google-oauth.version>
     <!-- pmr folder -->
     <commons-configuration.version>1.6</commons-configuration.version>
     <commons-configuration2.version>2.10.1</commons-configuration2.version>
@@ -294,14 +295,24 @@
 
     <!-- Dependencies for GCS connectivity   -->
     <dependency>
-      <groupId>com.google.cloud.bigdataoss</groupId>
-      <artifactId>gcs-connector</artifactId>
-      <version>${gcs.version}</version>
+      <groupId>com.google.oauth-client</groupId>
+      <artifactId>google-oauth-client</artifactId>
+      <version>${google-oauth.version}</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud.bigdataoss</groupId>
-      <artifactId>gcsio</artifactId>
+      <artifactId>gcs-connector</artifactId>
       <version>${gcs.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.oauth-client</groupId>
+          <artifactId>google-oauth-client</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.oauth-client</groupId>
+          <artifactId>google-oauth-client-java6</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
@@ -414,7 +425,7 @@
                 com.google.guava:*,
                 <!--Needed for Hive-->
                 *:commons-configuration,*:commons-configuration2,
-                *:gcs-connector
+                *:gcs-connector,*:google-oauth-client
               </include>
               <exclude>
                 org.slf4j:*,
@@ -422,7 +433,8 @@
                 *:*log4j*,*:xml-apis,*:xercesImpl,*:tests:*,
                 <!--Needed for hive-->
                 org.apache.hadoop:hadoop-yarn-registry,org.apache.velocity:velocity,
-                com.fasterxml.jackson.core:jackson-databind
+                com.fasterxml.jackson.core:jackson-databind,
+                *:google-oauth-client-java6
               </exclude>
               <transitive>true</transitive>
             </resolverFilter>
