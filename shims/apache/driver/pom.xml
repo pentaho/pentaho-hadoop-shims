@@ -31,11 +31,7 @@
     <joda-time.version>2.9.9</joda-time.version>
     <aws-java-sdk-core.version>1.11.275</aws-java-sdk-core.version>
     <org.apache.thrift.version>0.9.3</org.apache.thrift.version>
-
-    <!-- Guarantee the proper version for Jetty artifacts -->
-    <!-- Note the difference between \lib and \lib\client -->
-    <jetty.lib-folder.version>9.3.20.v20170531</jetty.lib-folder.version>
-    <jetty.client-folder.version>9.3.19.v20170502</jetty.client-folder.version>
+    <jetty-runner.version>9.3.20.v20170531</jetty-runner.version>
     <zookeeper.version>3.9.2</zookeeper.version>
   </properties>
 
@@ -45,64 +41,70 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-annotations</artifactId>
-      <version>${jetty.lib-folder.version}</version>
+      <version>${jetty.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <version>${jetty.version}</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-client</artifactId>
-      <version>${jetty.lib-folder.version}</version>
+      <version>${jetty.version}</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-jaas</artifactId>
-      <version>${jetty.lib-folder.version}</version>
+      <version>${jetty.version}</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-jndi</artifactId>
-      <version>${jetty.lib-folder.version}</version>
+      <version>${jetty.version}</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-plus</artifactId>
-      <version>${jetty.lib-folder.version}</version>
+      <version>${jetty.version}</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-rewrite</artifactId>
-      <version>${jetty.lib-folder.version}</version>
+      <version>${jetty.version}</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-runner</artifactId>
-      <version>${jetty.lib-folder.version}</version>
+      <version>${jetty-runner.version}</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-security</artifactId>
-      <version>${jetty.client-folder.version}</version>
+      <version>${jetty.version}</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-servlet</artifactId>
-      <version>${jetty.client-folder.version}</version>
+      <version>${jetty.version}</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-webapp</artifactId>
-      <version>${jetty.client-folder.version}</version>
+      <version>${jetty.version}</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-xml</artifactId>
-      <version>${jetty.client-folder.version}</version>
+      <version>${jetty.version}</version>
     </dependency>
 
     <dependency>
