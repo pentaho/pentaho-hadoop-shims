@@ -18,7 +18,7 @@
     <org.apache.oozie.version>5.2.1</org.apache.oozie.version>
     <org.apache.hbase.version>2.4.17</org.apache.hbase.version>
     <org.apache.hadoop.version>3.3.6</org.apache.hadoop.version>
-    <org.apache.orc.version>2.0.0</org.apache.orc.version>
+    <org.apache.orc.version>1.6.1</org.apache.orc.version>
     <sqoop.version>1.4.7</sqoop.version>
     <pig.version>0.17.0</pig.version>
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
