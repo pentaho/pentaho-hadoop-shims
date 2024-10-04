@@ -46,7 +46,7 @@
     <htrace-core.version>3.1.0-incubating</htrace-core.version>
     <zookeeper.version>3.9.2</zookeeper.version>
     <org.apache.hbase.thirdparty.version>2.1.0</org.apache.hbase.thirdparty.version>
-    <safeyaml.version>1.34.1</safeyaml.version>
+    <snakeyaml.version>2.2</snakeyaml.version>
   </properties>
 
   <dependencyManagement>

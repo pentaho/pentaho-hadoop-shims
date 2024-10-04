@@ -345,9 +345,9 @@
       <version>${parquet.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.hitachivantara</groupId>
-      <artifactId>safeyaml</artifactId>
-      <version>${safeyaml.version}</version>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <version>${snakeyaml.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.orc</groupId>
