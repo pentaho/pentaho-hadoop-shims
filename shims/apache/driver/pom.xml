@@ -18,7 +18,7 @@
     <commons-text.version>1.10.0</commons-text.version>
     <!-- default folder -->
     <failureaccess.version>1.0.1</failureaccess.version>
-    <org.apache.avro.version>1.8.0</org.apache.avro.version>
+    <org.apache.avro.version>1.12.0</org.apache.avro.version>
     <hadoop-aws.version>3.3.0</hadoop-aws.version>
     <!-- client and default folders -->
     <gcs-connector.version>hadoop2-1.9.17</gcs-connector.version>
@@ -33,6 +33,7 @@
     <org.apache.thrift.version>0.9.3</org.apache.thrift.version>
     <jetty-runner.version>9.3.20.v20170531</jetty-runner.version>
     <zookeeper.version>3.9.2</zookeeper.version>
+    <netty.version>4.1.108.Final</netty.version>
   </properties>
 
   <dependencies>
@@ -126,11 +127,69 @@
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-mapreduce-client-app</artifactId>
       <version>${org.apache.hadoop.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-buffer</artifactId>
+      <version>${netty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-codec</artifactId>
+      <version>${netty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-codec-http</artifactId>
+      <version>${netty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-codec-http2</artifactId>
+      <version>${netty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-common</artifactId>
+      <version>${netty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-handler</artifactId>
+      <version>${netty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-resolver</artifactId>
+      <version>${netty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-transport</artifactId>
+      <version>${netty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-transport-native-epoll</artifactId>
+      <version>${netty.version}</version>
+      <classifier>linux-x86_64</classifier>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-mapreduce-client-core</artifactId>
       <version>${org.apache.hadoop.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
   <!-- Dependency for hadoop-common-3.3.0 which causes bundle packaging issues -->
@@ -167,6 +226,10 @@
           <groupId>commons-net</groupId>
           <artifactId>commons-net</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-transport-native-epoll</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -199,6 +262,12 @@
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-hdfs</artifactId>
       <version>${org.apache.hadoop.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -341,7 +410,7 @@
             </resolverFilter>
             <resolverFilter>
               <include>
-                *:libthrift,
+                *:libthrift,*:netty-*
               </include>
               <exclude>
                 *:tests:*
