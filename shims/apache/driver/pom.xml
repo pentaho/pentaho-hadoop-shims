@@ -132,6 +132,10 @@
           <groupId>io.netty</groupId>
           <artifactId>netty-all</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-databind</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -186,6 +190,10 @@
       <version>${org.apache.hadoop.version}</version>
       <exclusions>
         <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-databind</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>io.netty</groupId>
           <artifactId>netty-all</artifactId>
         </exclusion>
@@ -229,6 +237,10 @@
         <exclusion>
           <groupId>io.netty</groupId>
           <artifactId>netty-transport-native-epoll</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-databind</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -404,7 +416,8 @@
                 *:jersey*:jar:2.25.1,
                 *:*log4j*,*:xml-apis,*:xercesImpl,*:tests:*,
                 <!--Needed for hive-->
-                org.apache.hadoop:hadoop-yarn-registry
+                org.apache.hadoop:hadoop-yarn-registry,org.apache.velocity:velocity,
+                com.fasterxml.jackson.core:jackson-databind
               </exclude>
               <transitive>true</transitive>
             </resolverFilter>
