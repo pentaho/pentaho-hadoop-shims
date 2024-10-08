@@ -193,8 +193,6 @@
           <groupId>com.fasterxml.jackson.core</groupId>
           <artifactId>jackson-databind</artifactId>
         </exclusion>
-      </exclusions>
-      <exclusions>
         <exclusion>
           <groupId>io.netty</groupId>
           <artifactId>netty-all</artifactId>
@@ -418,7 +416,6 @@
                 *:jersey*:jar:2.25.1,
                 *:*log4j*,*:xml-apis,*:xercesImpl,*:tests:*,
                 <!--Needed for hive-->
-                org.apache.hadoop:hadoop-yarn-registry
                 org.apache.hadoop:hadoop-yarn-registry,org.apache.velocity:velocity,
                 com.fasterxml.jackson.core:jackson-databind
               </exclude>
