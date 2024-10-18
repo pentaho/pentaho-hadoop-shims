@@ -19,7 +19,7 @@
     <!-- default folder -->
     <failureaccess.version>1.0.1</failureaccess.version>
     <org.apache.avro.version>1.12.0</org.apache.avro.version>
-    <hadoop-aws.version>3.3.0</hadoop-aws.version>
+    <hadoop-aws.version>3.4.0</hadoop-aws.version>
     <!-- client and default folders -->
     <gcs.version>hadoop2-1.9.17</gcs.version>
     <google-oauth.version>1.33.3</google-oauth.version>
