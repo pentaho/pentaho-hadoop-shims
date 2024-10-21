@@ -43,14 +43,17 @@ public class SelfSignedS3ClientFactory extends DefaultS3ClientFactory {
   private final HostnameVerifier allowAllHosts = new NoopHostnameVerifier();
   @VisibleForTesting final SSLConnectionSocketFactory connectionFactory = selfSignedSSLConnFactory();
 
-
-  @SuppressWarnings( { "deprecation", "squid:CallToDeprecatedMethod" } )
+  // TODO Orc/Parquet input/output steps are not working with this implementation
+  // TODO Defect BACKLOG-42556 was opened to track this issue
   // the s3a impl (3.1.x) is dependent on a mutable client, so we have to use the
   // deprecated constructor rather than the builder, at least until s3a is updated.
+  /*
+  @SuppressWarnings( { "deprecation", "squid:CallToDeprecatedMethod" } )
   @Override protected AmazonS3 newAmazonS3Client( AWSCredentialsProvider credentials, ClientConfiguration awsConf ) {
     awsConf.getApacheHttpClientConfig().setSslSocketFactory( connectionFactory );
     return new AmazonS3Client( credentials, awsConf );
   }
+  */
 
   private SSLConnectionSocketFactory selfSignedSSLConnFactory() {
     SSLContext sslContext;
