@@ -92,6 +92,7 @@ public class HCPConf extends PvfsConf {
 
     conf.set( "fs.s3a.impl.disable.cache", "true" ); // caching managed by PvfsHadoopBridge
 
+    // TODO Defect BACKLOG-42556 was opened to track this issue
     if ( acceptSelfSignedCertificates ) {
       conf.set( Constants.S3_CLIENT_FACTORY_IMPL, "org.pentaho.hadoop.shim.pvfs.SelfSignedS3ClientFactory" );
     }
