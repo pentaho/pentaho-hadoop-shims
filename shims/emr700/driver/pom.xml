@@ -28,6 +28,7 @@
     <automaton.version>1.11-8</automaton.version>
     <netty.version>4.1.108.Final</netty.version>
     <jetty-runner.version>9.3.20.v20170531</jetty-runner.version>
+    <awssdk.version>2.28.27</awssdk.version>
   </properties>
   <dependencies>
     <dependency>
@@ -286,9 +287,45 @@
       <exclusions>
         <exclusion>
           <groupId>com.amazonaws</groupId>
-          <artifactId>aws-java-sdk-bundle</artifactId>
+          <artifactId>bundle</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <!-- AWS SDK V2 dependencies -->
+    <dependency>
+      <groupId>software.amazon.awssdk</groupId>
+      <artifactId>sdk-core</artifactId>
+      <version>${awssdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>software.amazon.awssdk</groupId>
+      <artifactId>s3-transfer-manager</artifactId>
+      <version>${awssdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>software.amazon.awssdk</groupId>
+      <artifactId>aws-core</artifactId>
+      <version>${awssdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>software.amazon.awssdk</groupId>
+      <artifactId>auth</artifactId>
+      <version>${awssdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>software.amazon.awssdk</groupId>
+      <artifactId>s3</artifactId>
+      <version>${awssdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>software.amazon.awssdk</groupId>
+      <artifactId>apache-client</artifactId>
+      <version>${awssdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>software.amazon.awssdk</groupId>
+      <artifactId>netty-nio-client</artifactId>
+      <version>${awssdk.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
@@ -602,7 +639,7 @@
             <resolverFilter>
               <include>
                 <!--Needed for Pig-->
-                *:antlr-runtime,*:automaton,*:pig,*:sqoop,*:joda-time,*:jython,*:aircompressor,*:netty-*
+                *:antlr-runtime,*:automaton,*:pig,*:sqoop,*:joda-time,*:jython,*:aircompressor,*:netty-*,software.amazon.awssdk:*
               </include>
               <transitive>false</transitive>
             </resolverFilter>
