@@ -259,12 +259,14 @@
       </property>
     </activation>
     <modules>
-      <module>cdh61</module>
-      <module>hdp30</module>
-      <module>cdpdc71</module>
       <module>apache</module>
       <module>apachevanilla</module>
+      <module>cdh61</module>
+      <module>cdpdc71</module>
+      <module>dataproc1421</module>
       <module>emr700</module>
+      <module>hdi40</module>
+      <module>hdp30</module>
     </modules>
   </profile>
 
