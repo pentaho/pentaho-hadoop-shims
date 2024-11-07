@@ -31,6 +31,7 @@
     <zookeeper.version>3.9.3</zookeeper.version>
     <bouncycastle.version>1.78</bouncycastle.version>
     <curator.version>5.6.0</curator.version>
+    <bouncycastle.version>1.78</bouncycastle.version>
   </properties>
 
   <dependencies>
@@ -290,7 +291,16 @@
           <groupId>com.nimbusds</groupId>
           <artifactId>nimbus-jose-jwt</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.bouncycastle</groupId>
+          <artifactId>bcprov-jdk15on</artifactId>
+        </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk18on</artifactId>
+      <version>${bouncycastle.version}</version>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
@@ -645,7 +655,7 @@
             </resolverFilter>
             <resolverFilter>
               <include>
-                *:libthrift,*:aircompressor,*:netty-*,
+               *:libthrift,*:aircompressor,*:netty-*,
                 software.amazon.awssdk:*, *:bcprov-jdk18on
               </include>
               <exclude>
