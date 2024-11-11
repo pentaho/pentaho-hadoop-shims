@@ -455,6 +455,7 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <!-- Needed since we excluded it from hive-service to address io.airlift transitive security issue  -->
     <dependency>
       <groupId>org.apache.hive</groupId>
       <artifactId>hive-exec</artifactId>

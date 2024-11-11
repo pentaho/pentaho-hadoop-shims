@@ -629,7 +629,7 @@
             <resolverFilter>
               <include>
                 *:parquet-hadoop,*:parquet-hadoop-bundle,*:hadoop-yarn-api,*:avro,*:avro-mapred,*:hive-jdbc,
-                *:hive-service,*:hive-exec,*:orc-core,*:hadoop-common,*:hadoop-hdfs,*:hadoop-mapreduce-*,
+                *:hive-service,*:orc-core,*:hadoop-common,*:hadoop-hdfs,*:hadoop-mapreduce-*,
                 *:hadoop-yarn-common,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,
                 *:hbase-server,*:hbase-metrics,*:hbase-metrics-api,*:oozie-client,*:parquet-hadoop-bundle,
                 *:zookeeper,*:hadoop-lzo,*:hadoop-client,*:hadoop-aws,*:hadoop-hdfs-client,org.eclipse.jetty:*
