@@ -45,6 +45,7 @@
     <htrace-core.version>3.1.0-incubating</htrace-core.version>
     <zookeeper.version>3.9.2</zookeeper.version>
     <org.apache.hbase.thirdparty.version>2.1.0</org.apache.hbase.thirdparty.version>
+    <jetty-hadoop.version>9.4.54.v20240208</jetty-hadoop.version>
     <snakeyaml.version>2.2</snakeyaml.version>
   </properties>
 
