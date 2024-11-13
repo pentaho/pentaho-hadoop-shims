@@ -36,61 +36,61 @@
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-annotations</artifactId>
-        <version>${jetty.version}</version>
+        <version>${jetty-hadoop.version}</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-client</artifactId>
-        <version>${jetty.version}</version>
+        <version>${jetty-hadoop.version}</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-http</artifactId>
-        <version>${jetty.version}</version>
+        <version>${jetty-hadoop.version}</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-io</artifactId>
-        <version>${jetty.version}</version>
+        <version>${jetty-hadoop.version}</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-jaas</artifactId>
-        <version>${jetty.version}</version>
+        <version>${jetty-hadoop.version}</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-jndi</artifactId>
-        <version>${jetty.version}</version>
+        <version>${jetty-hadoop.version}</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-plus</artifactId>
-        <version>${jetty.version}</version>
+        <version>${jetty-hadoop.version}</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-rewrite</artifactId>
-        <version>${jetty.version}</version>
+        <version>${jetty-hadoop.version}</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-runner</artifactId>
-        <version>${jetty.version}</version>
+        <version>${jetty-hadoop.version}</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-security</artifactId>
-        <version>${jetty.version}</version>
+        <version>${jetty-hadoop.version}</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
@@ -102,31 +102,31 @@
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-servlet</artifactId>
-        <version>${jetty.version}</version>
+        <version>${jetty-hadoop.version}</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-util</artifactId>
-        <version>${jetty.version}</version>
+        <version>${jetty-hadoop.version}</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-util-ajax</artifactId>
-        <version>${jetty.version}</version>
+        <version>${jetty-hadoop.version}</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-webapp</artifactId>
-        <version>${jetty.version}</version>
+        <version>${jetty-hadoop.version}</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-xml</artifactId>
-        <version>${jetty.version}</version>
+        <version>${jetty-hadoop.version}</version>
         <scope>runtime</scope>
       </dependency>
     </dependencies>
