@@ -33,7 +33,6 @@
 
     <!-- pmr folder -->
     <org.apache.hbase-prefix-tree.version>2.0.0-alpha4</org.apache.hbase-prefix-tree.version>
-    <zookeeper.version>3.4.13</zookeeper.version>
     <htrace-core.version>2.04</htrace-core.version>
     <protobuf-java.version>2.5.0</protobuf-java.version>
     <commons-configuration.version>1.6</commons-configuration.version>
