@@ -29,6 +29,7 @@
     <netty.version>4.1.108.Final</netty.version>
     <jetty-runner.version>9.3.20.v20170531</jetty-runner.version>
     <awssdk.version>2.28.27</awssdk.version>
+    <commons-configuration2.version>2.10.1</commons-configuration2.version>
   </properties>
   <dependencies>
     <dependency>
@@ -338,6 +339,11 @@
       <version>0.4.20</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-configuration2</artifactId>
+      <version>${commons-configuration2.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-common</artifactId>
       <version>${org.apache.hadoop.version}</version>
@@ -361,6 +367,10 @@
         <exclusion>
           <groupId>io.netty</groupId>
           <artifactId>netty-transport-native-epoll</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-configuration2</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -480,9 +490,9 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.hitachivantara</groupId>
-      <artifactId>safeyaml</artifactId>
-      <version>${safeyaml.version}</version>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <version>${snakeyaml.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
@@ -625,10 +635,11 @@
             <resolverFilter>
               <include>
                 *:parquet-hadoop,*:parquet-hadoop-bundle,*:hadoop-yarn-api,*:avro,*:avro-mapred,*:hive-jdbc,
-                *:hive-service,*:hive-exec,*:orc-core,*:hadoop-common,*:hadoop-hdfs,*:hadoop-mapreduce-*,
+                *:hive-service,*:orc-core,*:hadoop-common,*:hadoop-hdfs,*:hadoop-mapreduce-*,
                 *:hadoop-yarn-common,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,
                 *:hbase-server,*:hbase-metrics,*:hbase-metrics-api,*:oozie-client,*:parquet-hadoop-bundle,
-                *:zookeeper,*:hadoop-lzo,*:hadoop-client,*:hadoop-aws,*:hadoop-hdfs-client,org.eclipse.jetty:*
+                *:zookeeper,*:hadoop-lzo,*:hadoop-client,*:hadoop-aws,*:hadoop-hdfs-client,org.eclipse.jetty:*,
+                org.apache.commons:commons-configuration2
               </include>
               <exclude>
                 *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool2,*:commons-dbcp2,

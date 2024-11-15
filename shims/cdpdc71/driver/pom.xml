@@ -144,7 +144,7 @@
     <dependency>
       <groupId>org.apache.thrift</groupId>
       <artifactId>libthrift</artifactId>
-      <version>${org.apache.thrift.version}</version>
+      <version>0.13.0</version>
     </dependency>
     <dependency>
       <groupId>org.pentaho</groupId>
@@ -213,6 +213,10 @@
         <exclusion>
           <groupId>org.apache.thrift</groupId>
           <artifactId>libthrift</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.thrift</groupId>
+          <artifactId>libfb303</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -350,7 +354,24 @@
           <groupId>io.netty</groupId>
           <artifactId>netty</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.thrift</groupId>
+          <artifactId>libthrift</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.thrift</groupId>
+          <artifactId>libfb303</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.hive</groupId>
+          <artifactId>hive-exec</artifactId>
+        </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hive</groupId>
+      <artifactId>hive-exec</artifactId>
+      <version>${org.apache.hive.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.parquet</groupId>
@@ -358,9 +379,9 @@
       <version>${parquet.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.hitachivantara</groupId>
-      <artifactId>safeyaml</artifactId>
-      <version>${safeyaml.version}</version>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <version>${snakeyaml.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.orc</groupId>
@@ -671,7 +692,7 @@
                 *:hadoop-yarn-api,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,
                 *:hbase-server,*:oozie-client,*:parquet-hadoop-bundle,*:zookeeper,*:hbase-shaded-miscellaneous,
                 org.eclipse.jetty:*,com.google.guava:*,*:hadoop-lzo,*:hadoop-client,*:hadoop-aws,*:hadoop-azure,*:gcs-connector,*:hadoop-hdfs-client,
-                org.apache.thrift:libthrift,*:google-oauth-client
+                *:google-oauth-client
               </include>
               <exclude>
                 *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool2,*:commons-dbcp2,
@@ -685,7 +706,7 @@
               <include>
                 <!--Needed for Pig-->
                 *:antlr-runtime,*:automaton,*:pig,*:parquet-pig,*:sqoop,*:joda-time,*:jython,*:gateway-cloud-bindings,
-                *:gateway-util-common,*:gateway-shell,*:gateway-i18n,*:aircompressor,*:netty-*
+                *:gateway-util-common,*:gateway-shell,*:gateway-i18n,*:aircompressor,*:netty-*,*:libthrift
               </include>
               <transitive>false</transitive>
             </resolverFilter>

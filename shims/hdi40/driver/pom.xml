@@ -31,6 +31,7 @@
     <jython.version>2.5.3</jython.version>
     <commons-configuration2.version>2.10.1</commons-configuration2.version>
     <netty.version>4.1.108.Final</netty.version>
+    <bouncycastle.version>1.78</bouncycastle.version>
   </properties>
 
   <dependencyManagement>
@@ -224,7 +225,16 @@
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.bouncycastle</groupId>
+          <artifactId>bcpkix-jdk15on</artifactId>
+        </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcpkix-jdk18on</artifactId>
+      <version>${bouncycastle.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hive</groupId>
@@ -255,12 +265,28 @@
           <groupId>io.netty</groupId>
           <artifactId>netty-all</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.hive</groupId>
+          <artifactId>hive-exec</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <!-- Needed since we excluded it from hive-service to address io.airlift transitive security issue  -->
+    <dependency>
+      <groupId>org.apache.hive</groupId>
+      <artifactId>hive-exec</artifactId>
+      <version>${org.apache.hive.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.airlift</groupId>
+          <artifactId>aircompressor</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.hitachivantara</groupId>
-      <artifactId>safeyaml</artifactId>
-      <version>${safeyaml.version}</version>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <version>${snakeyaml.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.parquet</groupId>
@@ -581,7 +607,8 @@
             <resolverFilter>
               <include>
                 <!--Needed for Pig-->
-                *:antlr-runtime,*:automaton,*:parquet-pig, *:pig, *:sqoop,*:joda-time,*:jython,*:aircompressor,*:netty-*
+                *:antlr-runtime,*:automaton,*:parquet-pig, *:pig, *:sqoop,*:joda-time,*:jython,*:aircompressor,*:netty-*,
+                *:bcprov-jdk18on
               </include>
               <transitive>false</transitive>
             </resolverFilter>
