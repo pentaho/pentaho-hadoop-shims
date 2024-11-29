@@ -129,6 +129,10 @@
       <version>${org.apache.hadoop.version}</version>
       <exclusions>
         <exclusion>
+          <groupId>org.codehaus.jettison</groupId>
+          <artifactId>jettison</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>io.netty</groupId>
           <artifactId>netty-all</artifactId>
         </exclusion>
@@ -200,7 +204,7 @@
       </exclusions>
     </dependency>
 
-  <!-- Dependency for hadoop-common-3.3.0 which causes bundle packaging issues -->
+    <!-- Dependency for hadoop-common-3.3.0 which causes bundle packaging issues -->
     <dependency>
       <groupId>dnsjava</groupId>
       <artifactId>dnsjava</artifactId>
@@ -218,6 +222,10 @@
       <artifactId>hadoop-common</artifactId>
       <version>${org.apache.hadoop.version}</version>
       <exclusions>
+        <exclusion>
+          <groupId>org.codehaus.jettison</groupId>
+          <artifactId>jettison</artifactId>
+        </exclusion>
         <exclusion>
           <groupId>dnsjava</groupId>
           <artifactId>dnsjava</artifactId>
@@ -527,3 +535,4 @@
     </plugins>
   </build>
 </project>
+
