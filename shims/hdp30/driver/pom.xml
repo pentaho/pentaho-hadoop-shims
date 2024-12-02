@@ -50,7 +50,7 @@
     <!-- Note the difference between \lib and \lib\client -->
     <jetty.lib-folder.version>9.3.20.v20170531</jetty.lib-folder.version>
     <jetty.client-folder.version>9.3.19.v20170502</jetty.client-folder.version>
-    <safeyaml.version>1.34.1</safeyaml.version>
+    <snakeyaml.version>2.2</snakeyaml.version>
   </properties>
 
   <dependencyManagement>
@@ -300,9 +300,9 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.hitachivantara</groupId>
-      <artifactId>safeyaml</artifactId>
-      <version>${safeyaml.version}</version>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <version>${snakeyaml.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hive</groupId>
