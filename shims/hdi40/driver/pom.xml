@@ -31,6 +31,7 @@
     <jython.version>2.5.3</jython.version>
     <commons-configuration2.version>2.10.1</commons-configuration2.version>
     <netty.version>4.1.108.Final</netty.version>
+    <bouncycastle.version>1.78</bouncycastle.version>
   </properties>
 
   <dependencyManagement>
@@ -224,7 +225,16 @@
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.bouncycastle</groupId>
+          <artifactId>bcpkix-jdk15on</artifactId>
+        </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcpkix-jdk18on</artifactId>
+      <version>${bouncycastle.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hive</groupId>
@@ -258,9 +268,9 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.hitachivantara</groupId>
-      <artifactId>safeyaml</artifactId>
-      <version>${safeyaml.version}</version>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <version>${snakeyaml.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.parquet</groupId>
@@ -571,7 +581,8 @@
             <resolverFilter>
               <include>
                 <!--Needed for Pig-->
-                *:antlr-runtime,*:automaton,*:parquet-pig, *:pig, *:sqoop,*:joda-time,*:jython,*:netty-*
+                *:antlr-runtime,*:automaton,*:parquet-pig, *:pig, *:sqoop,*:joda-time,*:jython,*:netty-*,
+                *:bcprov-jdk18on
               </include>
               <transitive>false</transitive>
             </resolverFilter>
