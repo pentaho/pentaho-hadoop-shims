@@ -13,7 +13,7 @@
   <packaging>bundle</packaging>
 
   <properties>
-    <org.apache.avro.version>1.8.0</org.apache.avro.version>
+    <org.apache.avro.version>1.12.0</org.apache.avro.version>
     <org.apache.hive.version>3.1.3</org.apache.hive.version>
     <org.apache.oozie.version>5.2.1</org.apache.oozie.version>
     <org.apache.hbase.version>2.4.17</org.apache.hbase.version>
