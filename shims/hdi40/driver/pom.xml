@@ -265,6 +265,22 @@
           <groupId>io.netty</groupId>
           <artifactId>netty-all</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.hive</groupId>
+          <artifactId>hive-exec</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <!-- Needed since we excluded it from hive-service to address io.airlift transitive security issue  -->
+    <dependency>
+      <groupId>org.apache.hive</groupId>
+      <artifactId>hive-exec</artifactId>
+      <version>${org.apache.hive.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.airlift</groupId>
+          <artifactId>aircompressor</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -290,7 +306,17 @@
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>io.airlift</groupId>
+          <artifactId>aircompressor</artifactId>
+        </exclusion>
       </exclusions>
+    </dependency>
+    <!-- used by org.apache.orc -->
+    <dependency>
+      <groupId>io.airlift</groupId>
+      <artifactId>aircompressor</artifactId>
+      <version>0.27</version>
     </dependency>
     <dependency>
       <groupId>org.apache.sqoop</groupId>
@@ -581,8 +607,7 @@
             <resolverFilter>
               <include>
                 <!--Needed for Pig-->
-                *:antlr-runtime,*:automaton,*:parquet-pig, *:pig, *:sqoop,*:joda-time,*:jython,*:netty-*,
-                *:bcprov-jdk18on
+                *:antlr-runtime,*:automaton,*:parquet-pig, *:pig, *:sqoop,*:joda-time,*:jython,*:bcprov-jdk18on,*:aircompressor,*:netty-*,
               </include>
               <transitive>false</transitive>
             </resolverFilter>

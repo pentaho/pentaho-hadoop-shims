@@ -346,7 +346,17 @@
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>io.airlift</groupId>
+          <artifactId>aircompressor</artifactId>
+        </exclusion>
       </exclusions>
+    </dependency>
+    <!-- used by org.apache.orc -->
+    <dependency>
+      <groupId>io.airlift</groupId>
+      <artifactId>aircompressor</artifactId>
+      <version>0.27</version>
     </dependency>
     <dependency>
       <groupId>org.apache.avro</groupId>
@@ -588,7 +598,7 @@
             <resolverFilter>
               <include>
                 *:parquet-hadoop,*:parquet-hadoop-bundle,*:hadoop-yarn-api,*:avro,*:avro-mapred,*:hive-jdbc,
-                *:hive-service,*:hive-exec,*:orc-core,*:hadoop-common,*:hadoop-hdfs,*:hadoop-mapreduce-*,
+                *:hive-service,*:orc-core,*:hadoop-common,*:hadoop-hdfs,*:hadoop-mapreduce-*,
                 *:hadoop-yarn-common,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,
                 *:hbase-server,*:hbase-metrics,*:hbase-metrics-api,*:oozie-client,*:parquet-hadoop-bundle,
                 *:zookeeper,*:hadoop-lzo,*:hadoop-client,*:hadoop-aws,*:hadoop-hdfs-client,org.eclipse.jetty:*,
@@ -603,7 +613,7 @@
             <resolverFilter>
               <include>
                 <!--Needed for Pig-->
-                *:antlr-runtime,*:automaton,*:pig,*:sqoop,*:joda-time,*:jython,*:netty-*
+                *:antlr-runtime,*:automaton,*:pig,*:sqoop,*:joda-time,*:jython,*:aircompressor,*:netty-*
               </include>
               <transitive>false</transitive>
             </resolverFilter>
