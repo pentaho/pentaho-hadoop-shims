@@ -28,6 +28,7 @@
     <commons-configuration.version>1.6</commons-configuration.version>
     <commons-configuration2.version>2.10.1</commons-configuration2.version>
     <org.apache.hadoop.version>3.4.0</org.apache.hadoop.version>
+    <hadoop-azure.version>3.4.0</hadoop-azure.version>
     <org.apache.orc.version>1.6.1</org.apache.orc.version>
     <parquet.version>1.11.1</parquet.version>
     <joda-time.version>2.9.9</joda-time.version>
@@ -346,7 +347,7 @@
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-azure</artifactId>
-      <version>3.3.0</version>
+      <version>${hadoop-azure.version}</version>
       <exclusions>
         <exclusion>
           <groupId>org.codehaus.jackson</groupId>
@@ -357,7 +358,7 @@
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-azure-datalake</artifactId>
-      <version>3.3.0</version>
+      <version>${hadoop-azure.version}</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
