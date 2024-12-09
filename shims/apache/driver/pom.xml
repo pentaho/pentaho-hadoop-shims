@@ -511,7 +511,6 @@
                 *:*log4j*,*:xml-apis,*:xercesImpl,*:tests:*,
                 <!--Needed for hive-->
                 org.apache.hadoop:hadoop-yarn-registry,org.apache.velocity:velocity,
-                com.fasterxml.jackson.core:jackson-databind,
                 *:google-oauth-client-java6
               </exclude>
               <transitive>true</transitive>
