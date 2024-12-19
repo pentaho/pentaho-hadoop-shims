@@ -11,7 +11,7 @@
   <version>10.2.0.0-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <properties>
-    <vendor-driver.version>3.3.0.0.apache</vendor-driver.version>
+    <vendor-driver.version>3.4.0.0.apache</vendor-driver.version>
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
 
     <shim.name>apache</shim.name>
@@ -545,7 +545,7 @@
         <configuration>
           <instructions>
             <Bundle-SymbolicName>pentaho-hadoop-driver-V1</Bundle-SymbolicName>
-            <Bundle-Version>3.0.apache</Bundle-Version>
+            <Bundle-Version>3.4.apache</Bundle-Version>
             <Pentaho-Code-Version>${pentaho-code.version}</Pentaho-Code-Version>
             <DynamicImport-Package>*</DynamicImport-Package>
             <!-- this is needed because the bundle plugin gets fooled by multi-release jars into thinking the required java
