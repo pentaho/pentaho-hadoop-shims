@@ -38,6 +38,12 @@
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-common</artifactId>
       <version>${org.apache.hadoop.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.htrace</groupId>
+          <artifactId>htrace-core</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>pentaho</groupId>
@@ -97,31 +103,50 @@
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-hdfs</artifactId>
       <version>${org.apache.hadoop.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.htrace</groupId>
+          <artifactId>htrace-core</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-server</artifactId>
       <version>${org.apache.hbase.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.htrace</groupId>
+          <artifactId>htrace-core</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-client</artifactId>
       <version>${org.apache.hbase.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.htrace</groupId>
+          <artifactId>htrace-core</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-common</artifactId>
       <version>${org.apache.hbase.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.htrace</groupId>
+          <artifactId>htrace-core</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-protocol</artifactId>
       <version>${org.apache.hbase.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.htrace</groupId>
-      <artifactId>htrace-core</artifactId>
-      <version>${htrace-core.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.zookeeper</groupId>
@@ -146,7 +171,7 @@
             <resolverFilter>
               <include>
                 *:aws-java-sdk-core,*:jackson-core,*:xstream,*:guava,*:httpclient,
-                *:htrace-core,*:hbase-protocol,*:zookeeper,
+                *:hbase-protocol,*:zookeeper,
                 *:hbase-server,*:protobuf-java
               </include>
               <exclude>
