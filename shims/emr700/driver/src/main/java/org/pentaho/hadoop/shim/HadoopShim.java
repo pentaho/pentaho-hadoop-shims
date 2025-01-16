@@ -22,7 +22,6 @@ import org.apache.hadoop.hbase.HConstants;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.mapreduce.TableMapper;
 import org.apache.hadoop.hbase.protobuf.generated.ClientProtos;
-import org.apache.htrace.Trace;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.hadoop.hbase.mapreduce.JobUtil;
 import org.apache.hadoop.hbase.metrics.impl.FastLongHistogram;
@@ -44,7 +43,7 @@ public class HadoopShim extends HadoopShimImpl {
     return new Class[] {
       HConstants.class, ClientProtos.class, Put.class, CompatibilityFactory.class,
       JobUtil.class, TableMapper.class, FastLongHistogram.class, Snapshot.class,
-      ZooKeeper.class, Channel.class, Message.class, Lists.class, Trace.class, MetricsRegistry.class
+      ZooKeeper.class, Channel.class, Message.class, Lists.class, MetricsRegistry.class
     };
   }
 }
