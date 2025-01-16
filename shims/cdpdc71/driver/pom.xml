@@ -19,7 +19,7 @@
     <org.apache.avro.version>1.8.2.7.1.4.0-203</org.apache.avro.version>
     <org.apache.orc.version>1.5.1.7.1.4.0-203</org.apache.orc.version>
     <parquet.version>1.10.99.7.1.4.0-203</parquet.version>
-    <org.apache.hadoop.version>3.1.1.7.1.4.0-203</org.apache.hadoop.version>
+    <org.apache.hadoop.version>3.1.1.7.1.9.0-387</org.apache.hadoop.version>
     <org.apache.hbase.version>2.2.3.7.1.4.0-203</org.apache.hbase.version>
     <org.apache.hive.version>3.1.3000.7.1.4.0-203</org.apache.hive.version>
     <org.apache.oozie.version>5.1.0.7.1.4.0-203</org.apache.oozie.version>
@@ -384,6 +384,10 @@
           <groupId>org.apache.hive</groupId>
           <artifactId>hive-exec</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.htrace</groupId>
+          <artifactId>htrace-core4</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -578,6 +582,10 @@
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.htrace</groupId>
+          <artifactId>htrace-core4</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -588,6 +596,10 @@
         <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.htrace</groupId>
+          <artifactId>htrace-core4</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -629,6 +641,10 @@
         <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.htrace</groupId>
+          <artifactId>htrace-core4</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
