@@ -20,7 +20,6 @@
         <include>org.apache.hbase:hbase-protocol-shaded</include>
         <include>org.apache.hbase:hbase-server</include>
         <include>org.apache.hbase:hbase-thrift</include>
-        <include>org.apache.htrace:htrace-core</include>
         <include>com.codahale.metrics:metrics-core</include>
         <include>org.apache.zookeeper:zookeeper</include>
         <include>org.apache.hbase.thirdparty:hbase-shaded-miscellaneous</include>
