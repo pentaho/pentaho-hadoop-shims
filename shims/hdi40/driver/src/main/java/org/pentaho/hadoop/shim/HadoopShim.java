@@ -32,7 +32,6 @@ import org.apache.hbase.thirdparty.com.google.common.cache.CacheLoader;
 import org.apache.hbase.thirdparty.com.google.common.collect.Lists;
 import org.apache.hbase.thirdparty.com.google.protobuf.UnsafeByteOperations;
 import org.apache.hbase.thirdparty.io.netty.channel.Channel;
-import org.apache.htrace.core.Tracer;
 import org.apache.zookeeper.ZooKeeper;
 import org.pentaho.hadoop.shim.common.HadoopShimImpl;
 
@@ -42,7 +41,7 @@ public class HadoopShim extends HadoopShimImpl {
     return new Class[]{
       HConstants.class, ClientProtos.class, ClientProtos.class, Put.class, RpcServer.class, CompatibilityFactory.class,
       JobUtil.class, TableMapper.class, FastLongHistogram.class, Snapshot.class,
-      ZooKeeper.class, Channel.class, Message.class, UnsafeByteOperations.class, Lists.class, Tracer.class,
+      ZooKeeper.class, Channel.class, Message.class, UnsafeByteOperations.class, Lists.class,
       MetricRegistry.class, ArrayUtils.class, ObjectMapper.class, Versioned.class,
       JsonView.class, ZKWatcher.class, CacheLoader.class };
   }
