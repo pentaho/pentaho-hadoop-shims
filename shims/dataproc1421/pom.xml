@@ -18,7 +18,7 @@
     <gcs-connector.version>hadoop2-2.2.24</gcs-connector.version>
 
     <!-- default folder -->
-    <org.apache.hbase.version>2.2.0</org.apache.hbase.version>
+    <org.apache.hbase.version>2.6.1</org.apache.hbase.version>
     <org.xerial.snappy.version>1.1.1.3</org.xerial.snappy.version>
     <automaton.version>1.11-8</automaton.version>
     <pig.version>0.17.0</pig.version>
@@ -37,7 +37,7 @@
     <commons-configuration.version>1.6</commons-configuration.version>
     <commons-configuration2.version>2.10.1</commons-configuration2.version>
     <geronimo-servlet_3.0_spec.version>1.0</geronimo-servlet_3.0_spec.version>
-    <org.apache.hive.version>2.3.6</org.apache.hive.version>
+    <org.apache.hive.version>3.1.3</org.apache.hive.version>
     <org.apache.hadoop.version>3.4.1</org.apache.hadoop.version>
     <org.apache.orc.version>1.3.4</org.apache.orc.version>
     <parquet.version>1.10.1</parquet.version>

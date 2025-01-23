@@ -20,7 +20,7 @@
     <parquet.version>1.10.99.7.1.4.0-203</parquet.version>
     <org.apache.hadoop.version>3.1.1.7.1.9.0-387</org.apache.hadoop.version>
     <org.apache.hbase.version>2.4.17.7.1.9.0-387</org.apache.hbase.version>
-    <org.apache.hive.version>3.1.3000.7.1.4.0-203</org.apache.hive.version>
+    <org.apache.hive.version>3.1.3000.7.1.9.0-387</org.apache.hive.version>
     <org.apache.oozie.version>5.1.0.7.1.4.0-203</org.apache.oozie.version>
     <pig.version>0.16.0.7.1.4.0-203</pig.version>
     <parquet-pig.version>1.10.99.7.1.4.0-203</parquet-pig.version>
@@ -460,10 +460,6 @@
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
         </exclusion>
-        <exclusion>
-          <groupId>org.apache.htrace</groupId>
-          <artifactId>htrace-core4</artifactId>
-        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -474,10 +470,6 @@
         <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.htrace</groupId>
-          <artifactId>htrace-core4</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -531,11 +523,12 @@
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
         </exclusion>
-        <exclusion>
-          <groupId>org.apache.htrace</groupId>
-          <artifactId>htrace-core4</artifactId>
-        </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-mapreduce</artifactId>
+      <version>${org.apache.hbase.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.oozie</groupId>
@@ -641,7 +634,8 @@
             <resolverFilter>
               <include>
                 <!--Needed for Pig-->
-                *:antlr-runtime,*:automaton,*:parquet-pig, *:pig, *:sqoop,*:joda-time,*:jython,*:bcprov-jdk18on,*:aircompressor,*:netty-*,
+                *:antlr-runtime,*:automaton,*:parquet-pig, *:pig, *:sqoop,*:joda-time,*:jython,*:aircompressor,*:netty-*,
+                *:bcprov-jdk18on,*:hbase-mapreduce
               </include>
               <transitive>false</transitive>
             </resolverFilter>
