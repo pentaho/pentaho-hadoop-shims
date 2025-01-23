@@ -631,6 +631,12 @@
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-runner</artifactId>
       <version>${jetty-runner.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.mina</groupId>
+          <artifactId>mina-core</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
