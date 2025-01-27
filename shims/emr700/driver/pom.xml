@@ -16,7 +16,7 @@
     <org.apache.avro.version>1.12.0</org.apache.avro.version>
     <org.apache.hive.version>3.1.3</org.apache.hive.version>
     <org.apache.oozie.version>5.2.1</org.apache.oozie.version>
-    <org.apache.hbase.version>2.4.17</org.apache.hbase.version>
+    <org.apache.hbase.version>2.6.1</org.apache.hbase.version>
     <org.apache.hadoop.version>3.3.6</org.apache.hadoop.version>
     <org.apache.orc.version>1.6.1</org.apache.orc.version>
     <sqoop.version>1.4.7</sqoop.version>
@@ -476,6 +476,10 @@
           <groupId>org.apache.htrace</groupId>
           <artifactId>htrace-core</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.hbase</groupId>
+          <artifactId>hbase-mapreduce</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -530,10 +534,6 @@
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-log4j12</artifactId>
         </exclusion>
-        <exclusion>
-          <groupId>org.apache.htrace</groupId>
-          <artifactId>htrace-core4</artifactId>
-        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -550,23 +550,16 @@
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-client</artifactId>
       <version>${org.apache.hbase.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.htrace</groupId>
-          <artifactId>htrace-core4</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-common</artifactId>
       <version>${org.apache.hbase.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.htrace</groupId>
-          <artifactId>htrace-core4</artifactId>
-        </exclusion>
-      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-mapreduce</artifactId>
+      <version>${org.apache.hbase.version}</version>
     </dependency>
     <!-- The following added for Pig -->
     <dependency>
@@ -676,7 +669,7 @@
             <resolverFilter>
               <include>
                 <!--Needed for Pig-->
-                *:antlr-runtime,*:automaton,*:pig,*:sqoop,*:joda-time,*:jython,*:aircompressor,*:netty-*,software.amazon.awssdk:*
+                *:antlr-runtime,*:automaton,*:pig,*:sqoop,*:joda-time,*:jython,*:aircompressor,*:netty-*,software.amazon.awssdk:*,*:hbase-mapreduce
               </include>
               <transitive>false</transitive>
             </resolverFilter>

@@ -21,7 +21,7 @@
     <parquet.version>1.10.99.7.1.4.0-203</parquet.version>
     <org.apache.hadoop.version>3.1.1.7.1.9.0-387</org.apache.hadoop.version>
     <org.apache.hbase.version>2.4.17.7.1.9.0-387</org.apache.hbase.version>
-    <org.apache.hive.version>3.1.3000.7.1.4.0-203</org.apache.hive.version>
+    <org.apache.hive.version>3.1.3000.7.1.9.0-387</org.apache.hive.version>
     <org.apache.oozie.version>5.1.0.7.1.4.0-203</org.apache.oozie.version>
     <pig.version>0.16.0.7.1.4.0-203</pig.version>
     <parquet-pig.version>1.10.99.7.1.4.0-203</parquet-pig.version>
@@ -283,6 +283,11 @@
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-hdfs-client</artifactId>
       <version>${org.apache.hadoop.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-mapreduce</artifactId>
+      <version>${org.apache.hbase.version}</version>
     </dependency>
     <dependency>
       <groupId>com.hadoop.gplcompression</groupId>
@@ -588,10 +593,6 @@
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
         </exclusion>
-        <exclusion>
-          <groupId>org.apache.htrace</groupId>
-          <artifactId>htrace-core4</artifactId>
-        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -602,10 +603,6 @@
         <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.htrace</groupId>
-          <artifactId>htrace-core4</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -647,10 +644,6 @@
         <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.htrace</groupId>
-          <artifactId>htrace-core4</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -746,7 +739,7 @@
               <include>
                 <!--Needed for Pig-->
                 *:antlr-runtime,*:automaton,*:pig,*:parquet-pig,*:sqoop,*:joda-time,*:jython,*:gateway-cloud-bindings,
-                *:gateway-util-common,*:gateway-shell,*:gateway-i18n,*:aircompressor,*:netty-*,*:libthrift
+                *:gateway-util-common,*:gateway-shell,*:gateway-i18n,*:aircompressor,*:netty-*,*:libthrift,*:hbase-mapreduce
               </include>
               <transitive>false</transitive>
             </resolverFilter>
