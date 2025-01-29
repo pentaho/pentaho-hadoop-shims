@@ -13,6 +13,8 @@
 
   <properties>
     <netty.version>4.1.108.Final</netty.version>
+    <!-- settting v1.14.4 so shaded jackson-databind inside parquet-hadoop-bundle's  version approximately matches jackson-databind in driver.jar -->
+    <parquet.version>1.14.4</parquet.version>
   </properties>
 
 
