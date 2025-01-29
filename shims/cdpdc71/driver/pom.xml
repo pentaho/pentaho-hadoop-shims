@@ -285,11 +285,6 @@
       <version>${org.apache.hadoop.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.hbase</groupId>
-      <artifactId>hbase-mapreduce</artifactId>
-      <version>${org.apache.hbase.version}</version>
-    </dependency>
-    <dependency>
       <groupId>com.hadoop.gplcompression</groupId>
       <artifactId>hadoop-lzo</artifactId>
       <version>0.4.20</version>
@@ -646,6 +641,11 @@
           <artifactId>slf4j-api</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-mapreduce</artifactId>
+      <version>${org.apache.hbase.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.oozie</groupId>
