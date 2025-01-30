@@ -18,13 +18,15 @@
     <pentaho-osgi-bundles.version>10.3.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
     <org.apache.avro.version>1.12.0</org.apache.avro.version>
     <org.apache.orc.version>1.5.1.7.2.17.0-334</org.apache.orc.version>
-    <parquet.version>1.11.1</parquet.version>
+    <!-- settting v1.14.4 so shaded jackson-databind inside parquet-hadoop-bundle's  version approximately matches jackson-databind in driver.jar -->
+    <parquet.version>1.14.4</parquet.version>
     <org.apache.hadoop.version>3.4.0</org.apache.hadoop.version>
     <org.apache.hbase.version>2.6.0</org.apache.hbase.version>
     <org.apache.hive.version>3.1.3000.7.1.4.0-203</org.apache.hive.version>
     <org.apache.oozie.version>5.2.1</org.apache.oozie.version>
     <pig.version>0.17.0</pig.version>
-    <parquet-pig.version>1.11.1</parquet-pig.version>
+    <!-- parquet v1.14.4 is build on pig v0.16.0 -->
+    <parquet-pig.version>${parquet.version}</parquet-pig.version>
     <sqoop.version>1.4.7</sqoop.version>
     <vendor-driver.version>3.4.0</vendor-driver.version>
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
