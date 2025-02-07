@@ -17,13 +17,15 @@
     <pentaho-osgi-bundles.version>10.2.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
     <org.apache.avro.version>1.12.0</org.apache.avro.version>
     <org.apache.orc.version>1.5.1.7.1.4.0-203</org.apache.orc.version>
-    <parquet.version>1.10.99.7.1.4.0-203</parquet.version>
-    <org.apache.hadoop.version>3.1.1.7.1.4.0-203</org.apache.hadoop.version>
-    <org.apache.hbase.version>2.2.3.7.1.4.0-203</org.apache.hbase.version>
-    <org.apache.hive.version>3.1.3000.7.1.4.0-203</org.apache.hive.version>
+    <!-- settting v1.14.4 so shaded jackson-databind inside parquet-hadoop-bundle's  version approximately matches jackson-databind in driver.jar -->
+    <parquet.version>1.14.4</parquet.version>
+    <org.apache.hadoop.version>3.1.1.7.1.9.0-387</org.apache.hadoop.version>
+    <org.apache.hbase.version>2.4.17.7.1.9.0-387</org.apache.hbase.version>
+    <org.apache.hive.version>3.1.3000.7.1.9.0-387</org.apache.hive.version>
     <org.apache.oozie.version>5.1.0.7.1.4.0-203</org.apache.oozie.version>
     <pig.version>0.16.0.7.1.4.0-203</pig.version>
-    <parquet-pig.version>1.10.99.7.1.4.0-203</parquet-pig.version>
+    <!-- parquet v1.14.4 is build on pig v0.16.0 -->
+    <parquet-pig.version>${parquet.version}</parquet-pig.version>
     <sqoop.version>1.4.7.7.1.4.0-203</sqoop.version>
     <vendor-driver.version>7.1.4.0-203</vendor-driver.version>
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
@@ -275,6 +277,10 @@
           <groupId>org.apache.hive</groupId>
           <artifactId>hive-exec</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.htrace</groupId>
+          <artifactId>htrace-core4</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <!-- Needed since we excluded it from hive-service to address io.airlift transitive security issue  -->
@@ -522,6 +528,11 @@
       </exclusions>
     </dependency>
     <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-mapreduce</artifactId>
+      <version>${org.apache.hbase.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.oozie</groupId>
       <artifactId>oozie-client</artifactId>
       <version>${org.apache.oozie.version}</version>
@@ -625,7 +636,8 @@
             <resolverFilter>
               <include>
                 <!--Needed for Pig-->
-                *:antlr-runtime,*:automaton,*:parquet-pig, *:pig, *:sqoop,*:joda-time,*:jython,*:bcprov-jdk18on,*:aircompressor,*:netty-*,
+                *:antlr-runtime,*:automaton,*:parquet-pig, *:pig, *:sqoop,*:joda-time,*:jython,*:aircompressor,*:netty-*,
+                *:bcprov-jdk18on,*:hbase-mapreduce
               </include>
               <transitive>false</transitive>
             </resolverFilter>
