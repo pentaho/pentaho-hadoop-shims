@@ -30,7 +30,7 @@
     <org.apache.hadoop.version>3.4.0</org.apache.hadoop.version>
     <hadoop-azure.version>3.4.0</hadoop-azure.version>
     <org.apache.orc.version>1.6.1</org.apache.orc.version>
-    <parquet.version>1.11.1</parquet.version>
+    <parquet.version>1.14.4</parquet.version>
     <joda-time.version>2.9.9</joda-time.version>
     <zookeeper.version>3.9.3</zookeeper.version>
     <netty.version>4.1.108.Final</netty.version>
