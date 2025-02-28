@@ -36,6 +36,7 @@
     <netty.version>4.1.108.Final</netty.version>
     <jetty-runner.version>9.3.20.v20170531</jetty-runner.version>
     <bouncycastle.version>1.78</bouncycastle.version>
+    <curator.version>5.6.0</curator.version>
   </properties>
 
   <dependencies>
@@ -262,6 +263,14 @@
           <groupId>org.bouncycastle</groupId>
           <artifactId>bcprov-jdk15on</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.curator</groupId>
+          <artifactId>curator-client</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.curator</groupId>
+          <artifactId>curator-recipes</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -465,6 +474,16 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.curator</groupId>
+      <artifactId>curator-client</artifactId>
+      <version>${curator.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.curator</groupId>
+      <artifactId>curator-recipes</artifactId>
+      <version>${curator.version}</version>
+    </dependency>
   </dependencies>
 
   <dependencyManagement>
@@ -498,6 +517,7 @@
             <resolverFilter>
               <include>
                 *:com.fasterxml.jackson.dataformat,*:hadoop-mapreduce-client-app,*:hadoop-mapreduce-client-core,
+                org.apache.curator:*,
                 org.apache.commons:commons-text,commons-net:commons-net,
                 *:hadoop-common,*:orc-core,*:avro,
                 *:hadoop-aws,
