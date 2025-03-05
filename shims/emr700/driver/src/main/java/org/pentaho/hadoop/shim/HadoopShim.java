@@ -1,24 +1,15 @@
-/*******************************************************************************
+/*! ******************************************************************************
  *
- * Pentaho Big Data
+ * Pentaho
  *
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2024 by Hitachi Vantara, LLC : http://www.pentaho.com
  *
- *******************************************************************************
+ * Use of this software is governed by the Business Source License included
+ * in the LICENSE.TXT file.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
+ * Change Date: 2029-07-20
  ******************************************************************************/
+
 
 package org.pentaho.hadoop.shim;
 
@@ -31,7 +22,6 @@ import org.apache.hadoop.hbase.HConstants;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.mapreduce.TableMapper;
 import org.apache.hadoop.hbase.protobuf.generated.ClientProtos;
-import org.apache.htrace.Trace;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.hadoop.hbase.mapreduce.JobUtil;
 import org.apache.hadoop.hbase.metrics.impl.FastLongHistogram;
@@ -53,7 +43,7 @@ public class HadoopShim extends HadoopShimImpl {
     return new Class[] {
       HConstants.class, ClientProtos.class, Put.class, CompatibilityFactory.class,
       JobUtil.class, TableMapper.class, FastLongHistogram.class, Snapshot.class,
-      ZooKeeper.class, Channel.class, Message.class, Lists.class, Trace.class, MetricsRegistry.class
+      ZooKeeper.class, Channel.class, Message.class, Lists.class, MetricsRegistry.class
     };
   }
 }

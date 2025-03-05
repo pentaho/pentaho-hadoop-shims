@@ -18,22 +18,27 @@
     <pentaho-osgi-bundles.version>10.3.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
     <org.apache.avro.version>1.8.2.7.1.4.0-203</org.apache.avro.version>
     <org.apache.orc.version>1.5.1.7.1.4.0-203</org.apache.orc.version>
-    <parquet.version>1.10.99.7.1.4.0-203</parquet.version>
-    <org.apache.hadoop.version>3.1.1.7.1.4.0-203</org.apache.hadoop.version>
-    <org.apache.hbase.version>2.2.3.7.1.4.0-203</org.apache.hbase.version>
-    <org.apache.hive.version>3.1.3000.7.1.4.0-203</org.apache.hive.version>
+    <!-- settting v1.14.4 so shaded jackson-databind inside parquet-hadoop-bundle's  version approximately matches jackson-databind in driver.jar -->
+    <parquet.version>1.14.4</parquet.version>
+    <org.apache.hadoop.version>3.1.1.7.1.9.0-387</org.apache.hadoop.version>
+    <org.apache.hbase.version>2.4.17.7.1.9.0-387</org.apache.hbase.version>
+    <org.apache.hive.version>3.1.3000.7.1.9.0-387</org.apache.hive.version>
     <org.apache.oozie.version>5.1.0.7.1.4.0-203</org.apache.oozie.version>
     <pig.version>0.16.0.7.1.4.0-203</pig.version>
-    <parquet-pig.version>1.10.99.7.1.4.0-203</parquet-pig.version>
+    <!-- parquet v1.14.4 is build on pig v0.16.0 -->
+    <parquet-pig.version>${parquet.version}</parquet-pig.version>
     <sqoop.version>1.4.7.7.1.4.0-203</sqoop.version>
     <vendor-driver.version>7.1.4.0-203</vendor-driver.version>
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
     <joda-time.version>2.10</joda-time.version>
     <jython.version>2.5.3</jython.version>
-    <jetty.version>9.4.52.v20230823</jetty.version>
     <org.apache.knox.version>1.3.0.7.2.16.0-287</org.apache.knox.version>
     <gcs-connector.version>hadoop2-1.9.17</gcs-connector.version>
+    <google-oauth.version>1.33.3</google-oauth.version>
     <commons-configuration2.version>2.10.1</commons-configuration2.version>
+    <netty.version>4.1.108.Final</netty.version>
+    <jetty-runner.version>9.3.20.v20170531</jetty-runner.version>
+    <wildfly-openssl.version>1.1.3.Final</wildfly-openssl.version>
   </properties>
 
   <dependencyManagement>
@@ -68,6 +73,12 @@
         <artifactId>jetty-jaas</artifactId>
         <version>${jetty.version}</version>
         <scope>runtime</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>org.apache.mina</groupId>
+            <artifactId>mina-core</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
@@ -90,7 +101,7 @@
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-runner</artifactId>
-        <version>${jetty.version}</version>
+        <version>${jetty-runner.version}</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
@@ -142,7 +153,7 @@
     <dependency>
       <groupId>org.apache.thrift</groupId>
       <artifactId>libthrift</artifactId>
-      <version>${org.apache.thrift.version}</version>
+      <version>0.13.0</version>
     </dependency>
     <dependency>
       <groupId>org.pentaho</groupId>
@@ -185,6 +196,10 @@
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -208,6 +223,10 @@
           <groupId>org.apache.thrift</groupId>
           <artifactId>libthrift</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.thrift</groupId>
+          <artifactId>libfb303</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -219,17 +238,48 @@
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-aws</artifactId>
       <version>${org.apache.hadoop.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.wildfly.openssl</groupId>
+          <artifactId>wildfly-openssl</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-azure</artifactId>
       <version>${org.apache.hadoop.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.wildfly.openssl</groupId>
+          <artifactId>wildfly-openssl</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/com.google.cloud.bigdataoss/gcs-connector -->
+    <dependency>
+      <groupId>org.wildfly.openssl</groupId>
+      <artifactId>wildfly-openssl</artifactId>
+      <version>${wildfly-openssl.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.oauth-client</groupId>
+      <artifactId>google-oauth-client</artifactId>
+      <version>${google-oauth.version}</version>
+    </dependency>
     <dependency>
       <groupId>com.google.cloud.bigdataoss</groupId>
       <artifactId>gcs-connector</artifactId>
       <version>${gcs-connector.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.oauth-client</groupId>
+          <artifactId>google-oauth-client</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.oauth-client</groupId>
+          <artifactId>google-oauth-client-java6</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
@@ -253,6 +303,10 @@
         <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -318,7 +372,36 @@
           <groupId>org.yaml</groupId>
           <artifactId>snakeyaml</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.thrift</groupId>
+          <artifactId>libthrift</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.thrift</groupId>
+          <artifactId>libfb303</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.hive</groupId>
+          <artifactId>hive-exec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.htrace</groupId>
+          <artifactId>htrace-core4</artifactId>
+        </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hive</groupId>
+      <artifactId>hive-exec</artifactId>
+      <version>${org.apache.hive.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.parquet</groupId>
@@ -326,9 +409,9 @@
       <version>${parquet.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.hitachivantara</groupId>
-      <artifactId>safeyaml</artifactId>
-      <version>${safeyaml.version}</version>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <version>${snakeyaml.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.orc</groupId>
@@ -386,15 +469,61 @@
       <exclusions>
         <exclusion>
           <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
           <artifactId>netty</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
-      <artifactId>netty-all</artifactId>
-      <version>4.1.108.Final</version>
+      <artifactId>netty-buffer</artifactId>
+      <version>${netty.version}</version>
     </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-codec</artifactId>
+      <version>${netty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-codec-http</artifactId>
+      <version>${netty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-codec-http2</artifactId>
+      <version>${netty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-common</artifactId>
+      <version>${netty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-handler</artifactId>
+      <version>${netty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-resolver</artifactId>
+      <version>${netty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-transport</artifactId>
+      <version>${netty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-transport-native-epoll</artifactId>
+      <version>${netty.version}</version>
+      <classifier>linux-x86_64</classifier>
+    </dependency>
+
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-mapreduce-client-app</artifactId>
@@ -516,6 +645,11 @@
       </exclusions>
     </dependency>
     <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-mapreduce</artifactId>
+      <version>${org.apache.hbase.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.oozie</groupId>
       <artifactId>oozie-client</artifactId>
       <version>${org.apache.oozie.version}</version>
@@ -593,11 +727,13 @@
                 *:hadoop-yarn-api,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,
                 *:hbase-server,*:oozie-client,*:parquet-hadoop-bundle,*:zookeeper,*:hbase-shaded-miscellaneous,
                 org.eclipse.jetty:*,com.google.guava:*,*:hadoop-lzo,*:hadoop-client,*:hadoop-aws,*:hadoop-azure,*:gcs-connector,*:hadoop-hdfs-client,
-                org.apache.thrift:libthrift
+                *:google-oauth-client,*:wildfly-openssl
               </include>
               <exclude>
                 *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool2,*:commons-dbcp2,
-                *:janino,org.apache.velocity:velocity
+                *:janino,org.apache.velocity:velocity,
+                *:grpc-*,*:opencensus*,*:proto*,*:perfmark-api*,*:threetenbp*,
+                *:google-oauth-client-java6
               </exclude>
               <transitive>true</transitive>
             </resolverFilter>
@@ -605,7 +741,7 @@
               <include>
                 <!--Needed for Pig-->
                 *:antlr-runtime,*:automaton,*:pig,*:parquet-pig,*:sqoop,*:joda-time,*:jython,*:gateway-cloud-bindings,
-                *:gateway-util-common,*:gateway-shell,*:gateway-i18n,*:aircompressor,*:netty-all
+                *:gateway-util-common,*:gateway-shell,*:gateway-i18n,*:aircompressor,*:netty-*,*:libthrift,*:hbase-mapreduce
               </include>
               <transitive>false</transitive>
             </resolverFilter>

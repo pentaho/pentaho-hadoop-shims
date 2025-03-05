@@ -11,7 +11,7 @@
   <version>10.3.0.0-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <properties>
-    <vendor-driver.version>3.3.0.0.apache</vendor-driver.version>
+    <vendor-driver.version>3.4.0.0.apache</vendor-driver.version>
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
 
     <shim.name>apache</shim.name>
@@ -19,21 +19,23 @@
     <!-- default folder -->
     <failureaccess.version>1.0.1</failureaccess.version>
     <org.apache.avro.version>1.12.0</org.apache.avro.version>
-    <hadoop-aws.version>3.3.0</hadoop-aws.version>
+    <hadoop-aws.version>3.4.0</hadoop-aws.version>
+    <awssdk.version>2.28.27</awssdk.version>
     <!-- client and default folders -->
-    <gcs-connector.version>hadoop2-1.9.17</gcs-connector.version>
+    <gcs.version>hadoop2-1.9.17</gcs.version>
+    <google-oauth.version>1.33.3</google-oauth.version>
     <!-- pmr folder -->
     <commons-configuration.version>1.6</commons-configuration.version>
     <commons-configuration2.version>2.10.1</commons-configuration2.version>
     <org.apache.hadoop.version>3.4.0</org.apache.hadoop.version>
+    <hadoop-azure.version>3.4.0</hadoop-azure.version>
     <org.apache.orc.version>1.6.1</org.apache.orc.version>
-    <parquet.version>1.11.1</parquet.version>
+    <parquet.version>1.14.4</parquet.version>
     <joda-time.version>2.9.9</joda-time.version>
-
-    <!-- jetty -->
-    <jetty.version>9.4.52.v20230823</jetty.version>
-
-    <zookeeper.version>3.9.2</zookeeper.version>
+    <zookeeper.version>3.9.3</zookeeper.version>
+    <netty.version>4.1.108.Final</netty.version>
+    <jetty-runner.version>9.3.20.v20170531</jetty-runner.version>
+    <bouncycastle.version>1.78</bouncycastle.version>
   </properties>
 
   <dependencies>
@@ -62,6 +64,12 @@
       <artifactId>jetty-jaas</artifactId>
       <version>${jetty.version}</version>
       <scope>runtime</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.mina</groupId>
+          <artifactId>mina-core</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
@@ -84,7 +92,7 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-runner</artifactId>
-      <version>${jetty.version}</version>
+      <version>${jetty-runner.version}</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
@@ -136,17 +144,72 @@
           <groupId>io.netty</groupId>
           <artifactId>netty-all</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-databind</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
-      <artifactId>netty-all</artifactId>
-      <version>4.1.108.Final</version>
+      <artifactId>netty-buffer</artifactId>
+      <version>${netty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-codec</artifactId>
+      <version>${netty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-codec-http</artifactId>
+      <version>${netty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-codec-http2</artifactId>
+      <version>${netty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-common</artifactId>
+      <version>${netty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-handler</artifactId>
+      <version>${netty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-resolver</artifactId>
+      <version>${netty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-transport</artifactId>
+      <version>${netty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-transport-native-epoll</artifactId>
+      <version>${netty.version}</version>
+      <classifier>linux-x86_64</classifier>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-mapreduce-client-core</artifactId>
       <version>${org.apache.hadoop.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-databind</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- Dependency for hadoop-common-3.3.0 which causes bundle packaging issues -->
@@ -191,7 +254,20 @@
           <groupId>io.netty</groupId>
           <artifactId>netty-transport-native-epoll</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-databind</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.bouncycastle</groupId>
+          <artifactId>bcprov-jdk15on</artifactId>
+        </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk18on</artifactId>
+      <version>${bouncycastle.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.orc</groupId>
@@ -235,6 +311,12 @@
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-hdfs</artifactId>
       <version>${org.apache.hadoop.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -249,19 +331,40 @@
 
     <!-- Dependencies for GCS connectivity   -->
     <dependency>
+      <groupId>com.google.oauth-client</groupId>
+      <artifactId>google-oauth-client</artifactId>
+      <version>${google-oauth.version}</version>
+    </dependency>
+    <dependency>
       <groupId>com.google.cloud.bigdataoss</groupId>
       <artifactId>gcs-connector</artifactId>
-      <version>${gcs-connector.version}</version>
+      <version>${gcs.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.oauth-client</groupId>
+          <artifactId>google-oauth-client</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.oauth-client</groupId>
+          <artifactId>google-oauth-client-java6</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-azure</artifactId>
-      <version>3.3.0</version>
+      <version>${hadoop-azure.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.codehaus.jackson</groupId>
+          <artifactId>jackson-mapper-asl</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-azure-datalake</artifactId>
-      <version>3.3.0</version>
+      <version>${hadoop-azure.version}</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -277,7 +380,50 @@
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-aws</artifactId>
       <version>${hadoop-aws.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>software.amazon.awssdk</groupId>
+          <artifactId>bundle</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
+    <!-- AWS SDK V2 dependencies -->
+    <dependency>
+      <groupId>software.amazon.awssdk</groupId>
+      <artifactId>sdk-core</artifactId>
+      <version>${awssdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>software.amazon.awssdk</groupId>
+      <artifactId>s3-transfer-manager</artifactId>
+      <version>${awssdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>software.amazon.awssdk</groupId>
+      <artifactId>aws-core</artifactId>
+      <version>${awssdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>software.amazon.awssdk</groupId>
+      <artifactId>auth</artifactId>
+      <version>${awssdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>software.amazon.awssdk</groupId>
+      <artifactId>s3</artifactId>
+      <version>${awssdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>software.amazon.awssdk</groupId>
+      <artifactId>apache-client</artifactId>
+      <version>${awssdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>software.amazon.awssdk</groupId>
+      <artifactId>netty-nio-client</artifactId>
+      <version>${awssdk.version}</version>
+    </dependency>
+
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
@@ -364,20 +510,22 @@
                 com.google.guava:*,
                 <!--Needed for Hive-->
                 *:commons-configuration,*:commons-configuration2,
-                *:gcs-connector
+                *:gcs-connector,*:google-oauth-client
               </include>
               <exclude>
                 org.slf4j:*,
                 *:jersey*:jar:2.25.1,
                 *:*log4j*,*:xml-apis,*:xercesImpl,*:tests:*,
                 <!--Needed for hive-->
-                org.apache.hadoop:hadoop-yarn-registry,org.apache.velocity:velocity
+                org.apache.hadoop:hadoop-yarn-registry,org.apache.velocity:velocity,
+                *:google-oauth-client-java6
               </exclude>
               <transitive>true</transitive>
             </resolverFilter>
             <resolverFilter>
               <include>
-                *:libthrift,*:aircompressor,*:netty-all
+                *:libthrift,*:aircompressor,*:netty-*,
+                software.amazon.awssdk:*, *:bcprov-jdk18on
               </include>
               <exclude>
                 *:tests:*
@@ -403,7 +551,7 @@
         <configuration>
           <instructions>
             <Bundle-SymbolicName>pentaho-hadoop-driver-V1</Bundle-SymbolicName>
-            <Bundle-Version>3.0.apache</Bundle-Version>
+            <Bundle-Version>3.4.apache</Bundle-Version>
             <Pentaho-Code-Version>${pentaho-code.version}</Pentaho-Code-Version>
             <DynamicImport-Package>*</DynamicImport-Package>
             <!-- this is needed because the bundle plugin gets fooled by multi-release jars into thinking the required java

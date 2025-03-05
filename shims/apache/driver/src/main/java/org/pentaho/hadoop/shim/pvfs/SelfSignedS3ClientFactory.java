@@ -1,24 +1,15 @@
-/*******************************************************************************
+/*! ******************************************************************************
  *
- * Pentaho Big Data
+ * Pentaho
  *
- * Copyright (C) 2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2024 by Hitachi Vantara, LLC : http://www.pentaho.com
  *
- *******************************************************************************
+ * Use of this software is governed by the Business Source License included
+ * in the LICENSE.TXT file.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
+ * Change Date: 2029-07-20
  ******************************************************************************/
+
 
 package org.pentaho.hadoop.shim.pvfs;
 
@@ -43,14 +34,17 @@ public class SelfSignedS3ClientFactory extends DefaultS3ClientFactory {
   private final HostnameVerifier allowAllHosts = new NoopHostnameVerifier();
   @VisibleForTesting final SSLConnectionSocketFactory connectionFactory = selfSignedSSLConnFactory();
 
-
-  @SuppressWarnings( { "deprecation", "squid:CallToDeprecatedMethod" } )
+  // TODO Orc/Parquet input/output steps are not working with this implementation
+  // TODO Defect BACKLOG-42556 was opened to track this issue
   // the s3a impl (3.1.x) is dependent on a mutable client, so we have to use the
   // deprecated constructor rather than the builder, at least until s3a is updated.
+  /*
+  @SuppressWarnings( { "deprecation", "squid:CallToDeprecatedMethod" } )
   @Override protected AmazonS3 newAmazonS3Client( AWSCredentialsProvider credentials, ClientConfiguration awsConf ) {
     awsConf.getApacheHttpClientConfig().setSslSocketFactory( connectionFactory );
     return new AmazonS3Client( credentials, awsConf );
   }
+  */
 
   private SSLConnectionSocketFactory selfSignedSSLConnFactory() {
     SSLContext sslContext;
