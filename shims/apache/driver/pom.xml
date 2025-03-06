@@ -7,7 +7,7 @@
     <artifactId>pentaho-hadoop-shims-apache-reactor</artifactId>
      <version>11.0.0.0-SNAPSHOT</version>
   </parent>
-  <artifactId>pentaho-hadoop-shims-apache-driver</artifactId>
+  <artifactId>pentaho-hadoop-shims-apache</artifactId>
    <version>11.0.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
   <properties>
