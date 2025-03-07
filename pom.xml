@@ -42,7 +42,7 @@
     <org.apache.hive.version>1.2.1000.2.6.0.3-8</org.apache.hive.version>
     <org.apache.hbase.version>1.4.8</org.apache.hbase.version>
     <shim-bundle-plugin.version>1.1</shim-bundle-plugin.version>
-    <zookeeper.version>3.9.2</zookeeper.version>
+    <zookeeper.version>3.9.3</zookeeper.version>
     <org.apache.hbase.thirdparty.version>2.1.0</org.apache.hbase.thirdparty.version>
     <snakeyaml.version>2.2</snakeyaml.version>
   </properties>

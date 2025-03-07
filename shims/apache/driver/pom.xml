@@ -33,7 +33,7 @@
     <parquet.version>1.14.4</parquet.version>
     <joda-time.version>2.9.9</joda-time.version>
     <jetty-runner.version>9.3.20.v20170531</jetty-runner.version>
-    <zookeeper.version>3.9.2</zookeeper.version>
+    <zookeeper.version>3.9.3</zookeeper.version>
     <netty.version>4.1.108.Final</netty.version>
     <bouncycastle.version>1.78</bouncycastle.version>
   </properties>
