@@ -38,7 +38,7 @@
     </dependency>
     <dependency>
       <groupId>org.pentaho.hadoop.shims</groupId>
-      <artifactId>pentaho-hadoop-shims-apache-driver</artifactId>
+      <artifactId>pentaho-hadoop-shims-apache</artifactId>
       <version>${project.version}</version>
       <exclusions>
         <exclusion>

@@ -25,7 +25,7 @@
     </dependency>
     <dependency>
       <groupId>org.pentaho.hadoop.shims</groupId>
-      <artifactId>pentaho-hadoop-shims-dataproc1421-driver</artifactId>
+      <artifactId>pentaho-hadoop-shims-dataproc1421</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>

@@ -8,7 +8,7 @@
      <version>10.3.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>pentaho-hadoop-shims-hdi40-driver</artifactId>
+  <artifactId>pentaho-hadoop-shims-hdi40</artifactId>
    <version>10.3.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
