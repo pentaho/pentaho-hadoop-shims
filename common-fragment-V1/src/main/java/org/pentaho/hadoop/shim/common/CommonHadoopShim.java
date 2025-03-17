@@ -13,6 +13,7 @@
 
 package org.pentaho.hadoop.shim.common;
 
+import org.apache.commons.vfs2.provider.hdfs.HdfsFileProvider;
 import org.apache.hadoop.io.BooleanWritable;
 import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.io.DoubleWritable;
@@ -25,6 +26,9 @@ import org.apache.hadoop.util.VersionInfo;
 import org.pentaho.big.data.api.shims.LegacyShimLocator;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.i18n.BaseMessages;
+import org.pentaho.hadoop.shim.HadoopConfiguration;
+import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
+import org.pentaho.hadoop.shim.ShimVersion;
 import org.pentaho.hadoop.shim.api.ConfigurationException;
 import org.pentaho.hadoop.shim.ShimRuntimeException;
 import org.pentaho.hadoop.shim.api.internal.Configuration;
@@ -141,6 +145,11 @@ public class CommonHadoopShim implements HadoopShim {
   }
 
   @Override
+  public ShimVersion getVersion() {
+    return new ShimVersion( 1, 0 );
+  }
+
+  @Override
   public String getHadoopVersion() {
     ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
     try {
@@ -149,6 +158,13 @@ public class CommonHadoopShim implements HadoopShim {
     } finally {
       Thread.currentThread().setContextClassLoader( originalClassLoader );
     }
+  }
+
+  @Override
+  public void onLoad( HadoopConfiguration config, HadoopConfigurationFileSystemManager fsm ) throws Exception {
+    validateHadoopHomeWithWinutils();
+    fsm.addProvider( config, "hdfs", config.getIdentifier(), new HdfsFileProvider() );
+    setDistributedCacheUtil( new DistributedCacheUtilImpl() );
   }
 
   @Override
