@@ -18,6 +18,8 @@ import java.sql.Driver;
 import java.util.List;
 
 import org.pentaho.di.core.row.ValueMetaInterface;
+import org.pentaho.hadoop.shim.HadoopConfiguration;
+import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
 import org.pentaho.hadoop.shim.api.ConfigurationException;
 import org.pentaho.hadoop.shim.api.internal.Configuration;
 import org.pentaho.hadoop.shim.api.internal.DistributedCacheUtil;
@@ -34,7 +36,7 @@ import java.net.URI;
  * @author Jordan Ganoff (jganoff@pentaho.com)
  */
 @Required
-public interface HadoopShim {
+public interface HadoopShim extends PentahoHadoopShim {
 
   /**
    * Retrieve a JDBC driver capable of querying Hive for the version of Hadoop this shim abstracts.
@@ -51,6 +53,16 @@ public interface HadoopShim {
    */
   Driver getJdbcDriver( String driverType );
 
+  /**
+   * This is executed once the shim has been loaded. It provides a way for the shim implementation to register a VFS
+   * file provider.
+   *
+   * @param config Hadoop configuration this shim belongs to
+   * @param fsm    The current File System Manager
+   * @throws Exception when an error was encountered during shim loading. This will prevent the Hadoop configuration
+   *                   from being available.
+   */
+  void onLoad( HadoopConfiguration config, HadoopConfigurationFileSystemManager fsm ) throws Exception;
 
   /**
    * Get the namenode connection information, if applicable, for the Hadoop configuration.
