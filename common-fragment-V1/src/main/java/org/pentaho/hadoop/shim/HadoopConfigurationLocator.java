@@ -438,6 +438,8 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
    */
   protected HadoopConfiguration loadHadoopConfiguration( FileObject folder ) throws ConfigurationException {
     ShimProperties configurationProperties = new ShimProperties();
+    String activeNamedCluster = System.getProperty( "ACTIVE_NAMED_CLUSTER" );
+    configurationProperties.putAll(  ShimConfigsLoader.loadConfigProperties( activeNamedCluster ) );
 
     try {
       FileObject configFile = folder.getChild( CONFIG_PROPERTIES_FILE );
