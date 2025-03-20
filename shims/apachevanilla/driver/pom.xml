@@ -38,6 +38,7 @@
     <netty.version>4.1.108.Final</netty.version>
     <jetty-runner.version>9.3.20.v20170531</jetty-runner.version>
     <awssdk.version>2.28.27</awssdk.version>
+    <curator.version>5.6.0</curator.version>
   </properties>
 
   <dependencyManagement>
@@ -916,6 +917,21 @@
       <artifactId>commons-configuration2</artifactId>
       <version>${commons-configuration2.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.curator</groupId>
+      <artifactId>curator-client</artifactId>
+      <version>${curator.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.curator</groupId>
+      <artifactId>curator-framework</artifactId>
+      <version>${curator.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.curator</groupId>
+      <artifactId>curator-recipes</artifactId>
+      <version>${curator.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -933,7 +949,7 @@
                 *:hadoop-yarn-api,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,
                 *:hbase-server,*:oozie-client,*:parquet-hadoop-bundle,*:zookeeper,*:hbase-shaded-miscellaneous,
                 org.eclipse.jetty:*,com.google.guava:*,*:hadoop-lzo,*:hadoop-client,*:hadoop-aws,*:hadoop-azure,*:gcs-connector,*:hadoop-hdfs-client,*:commons-configuration2,
-                *:google-oauth-client,*:hbase-mapreduce,*:commons-codec
+                *:google-oauth-client,*:hbase-mapreduce,*:commons-codec,org.apache.curator:*
               </include>
               <exclude>
                 *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool2,*:commons-dbcp2,
