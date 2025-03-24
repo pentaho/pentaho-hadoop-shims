@@ -634,7 +634,7 @@
             </_exportcontents>
             <Embed-Dependency>*</Embed-Dependency>
             <Include-Resource>{maven-resources};${project.build.directory}/extra-resources/jetty-runner-${jetty.version}.jar</Include-Resource>
-            <Bundle-ClassPath>{maven-dependencies},jetty-runner-${jetty.version}.jar</Bundle-ClassPath>
+            <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
             <!-- this is needed because the bundle plugin gets fooled by multi-release jars into thinking the required java
             version is the highest one in the package, which is not the case -->
             <Require-Capability>osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=1.8))"</Require-Capability>
