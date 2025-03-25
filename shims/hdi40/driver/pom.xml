@@ -5,16 +5,16 @@
   <parent>
     <groupId>org.pentaho.hadoop.shims</groupId>
     <artifactId>pentaho-hadoop-shims-hdi40-reactor</artifactId>
-    <version>10.3.0.0-SNAPSHOT</version>
+    <version>10.3.0.0-296</version>
   </parent>
 
   <artifactId>pentaho-hadoop-shims-hdi40-driver</artifactId>
-  <version>10.3.0.0-SNAPSHOT</version>
+  <version>10.3.0.0-296</version>
   <packaging>bundle</packaging>
 
   <properties>
     <commons-lang.version>2.6</commons-lang.version>
-    <pentaho-osgi-bundles.version>10.3.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
+    <pentaho-osgi-bundles.version>10.3.0.0-296</pentaho-osgi-bundles.version>
     <org.apache.avro.version>1.12.0</org.apache.avro.version>
     <org.apache.orc.version>1.5.1.7.1.4.0-203</org.apache.orc.version>
     <!-- settting v1.14.4 so shaded jackson-databind inside parquet-hadoop-bundle's  version approximately matches jackson-databind in driver.jar -->
@@ -25,7 +25,7 @@
     <org.apache.oozie.version>5.1.0.7.1.4.0-203</org.apache.oozie.version>
     <pig.version>0.16.0.7.1.4.0-203</pig.version>
     <!-- parquet v1.14.4 is build on pig v0.16.0 -->
-    <parquet-pig.version>${parquet.version}</parquet-pig.version>
+    <parquet-pig.version>1.14.4</parquet-pig.version>
     <sqoop.version>1.4.7.7.1.4.0-203</sqoop.version>
     <vendor-driver.version>7.1.4.0-203</vendor-driver.version>
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
