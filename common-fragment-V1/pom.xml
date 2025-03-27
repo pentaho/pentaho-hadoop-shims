@@ -72,6 +72,12 @@
           <artifactId>hive-jdbc</artifactId>
           <version>${org.apache.hive.version}</version>
           <scope>provided</scope>
+          <exclusions>
+            <exclusion>
+              <groupId>com.nimbusds</groupId>
+              <artifactId>nimbus-jose-jwt</artifactId>
+            </exclusion>
+          </exclusions>
         </dependency>
         <dependency>
           <groupId>org.apache.orc</groupId>
@@ -102,6 +108,12 @@
           <artifactId>oozie-client</artifactId>
           <version>${org.apache.oozie.version}</version>
           <scope>provided</scope>
+          <exclusions>
+            <exclusion>
+              <groupId>com.nimbusds</groupId>
+              <artifactId>nimbus-jose-jwt</artifactId>
+            </exclusion>
+          </exclusions>
         </dependency>
         <dependency>
           <groupId>org.apache.hadoop</groupId>
@@ -109,6 +121,12 @@
           <!--todo: ask if this is a good idea -->
           <version>${org.apache.hadoop.version-hdp26}</version>
           <scope>provided</scope>
+          <exclusions>
+            <exclusion>
+              <groupId>com.nimbusds</groupId>
+              <artifactId>nimbus-jose-jwt</artifactId>
+            </exclusion>
+          </exclusions>
         </dependency>
         <dependency>
           <groupId>org.apache.pig</groupId>
