@@ -149,6 +149,10 @@
           <groupId>com.fasterxml.jackson.core</groupId>
           <artifactId>jackson-databind</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>com.nimbusds</groupId>
+          <artifactId>nimbus-jose-jwt</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -210,6 +214,10 @@
           <groupId>com.fasterxml.jackson.core</groupId>
           <artifactId>jackson-databind</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>com.nimbusds</groupId>
+          <artifactId>nimbus-jose-jwt</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
 
@@ -270,6 +278,10 @@
         <exclusion>
           <groupId>org.apache.curator</groupId>
           <artifactId>curator-recipes</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.nimbusds</groupId>
+          <artifactId>nimbus-jose-jwt</artifactId>
         </exclusion>
       </exclusions>
     </dependency>

@@ -266,6 +266,10 @@
           <groupId>org.apache.hive</groupId>
           <artifactId>hive-storage-api</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>com.nimbusds</groupId>
+          <artifactId>nimbus-jose-jwt</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -474,6 +478,10 @@
           <groupId>io.airlift</groupId>
           <artifactId>aircompressor</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>com.nimbusds</groupId>
+          <artifactId>nimbus-jose-jwt</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -554,6 +562,10 @@
         <exclusion>
           <groupId>ch.qos.reload4j</groupId>
           <artifactId>reload4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.nimbusds</groupId>
+          <artifactId>nimbus-jose-jwt</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -647,6 +659,10 @@
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>com.nimbusds</groupId>
+          <artifactId>nimbus-jose-jwt</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -670,6 +686,10 @@
           <groupId>org.apache.avro</groupId>
           <artifactId>avro</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>com.nimbusds</groupId>
+          <artifactId>nimbus-jose-jwt</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -692,6 +712,10 @@
         <exclusion>
           <groupId>org.apache.avro</groupId>
           <artifactId>avro</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.nimbusds</groupId>
+          <artifactId>nimbus-jose-jwt</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
