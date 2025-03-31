@@ -312,7 +312,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.parquet</groupId>
-      <artifactId>parquet-hadoop</artifactId>
+      <artifactId>parquet-hadoop-bundle</artifactId>
       <version>${parquet.version}</version>
     </dependency>
 
@@ -524,7 +524,7 @@
                 *:hadoop-azure,
                 *:hadoop-azure-datalake,
                 com.amazonaws:*,
-                *:parquet-hadoop,*:hadoop-hdfs,
+                *:parquet-hadoop-bundle,*:hadoop-hdfs,
                 *:avro-mapred,
                 org.eclipse.jetty:*,
                 com.google.guava:*,
