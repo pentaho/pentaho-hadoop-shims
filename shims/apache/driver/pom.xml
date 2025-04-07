@@ -114,6 +114,11 @@
       <artifactId>jetty-xml</artifactId>
       <version>${jetty.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty.websocket</groupId>
+      <artifactId>javax-websocket-server-impl</artifactId>
+      <version>${jetty.version}</version>
+    </dependency>
 
     <dependency>
       <groupId>org.pentaho.hadoop.shims</groupId>
@@ -150,6 +155,10 @@
         <exclusion>
           <groupId>com.nimbusds</groupId>
           <artifactId>nimbus-jose-jwt</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.jetty.websocket</groupId>
+          <artifactId>*</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -595,7 +604,7 @@
                 com.amazonaws:*,
                 *:parquet-hadoop,*:hadoop-hdfs,
                 *:avro-mapred,
-                org.eclipse.jetty:*,
+                org.eclipse.jetty:*,org.eclipse.jetty.websocket:*,
                 com.google.guava:*,
                 <!--Needed for Hive-->
                 *:commons-configuration,*:commons-configuration2,
