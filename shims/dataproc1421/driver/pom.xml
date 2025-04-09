@@ -79,6 +79,10 @@
           <groupId>com.nimbusds</groupId>
           <artifactId>nimbus-jose-jwt</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.jetty.websocket</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -533,6 +537,11 @@
       <version>${jetty.version}</version>
       <scope>runtime</scope>
     </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty.websocket</groupId>
+      <artifactId>websocket-client</artifactId>
+      <version>${jetty.version}</version>
+    </dependency>
 
     <!-- The following added for Pig -->
     <dependency>
@@ -680,7 +689,8 @@
                 *:hive-service,*:orc-core,*:hadoop-common,*:hadoop-hdfs,*:hadoop-mapreduce-*,
                 *:hadoop-yarn-*,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,
                 *:hbase-server,*:oozie-client,*:parquet-hadoop-bundle,*:zookeeper,*:hbase-shaded-miscellaneous,
-                org.eclipse.jetty:*,*:gcs-connector,com.google.*:*,org.checkerframework:checker-qual,
+                org.eclipse.jetty:*,org.eclipse.jetty.websocket:*,
+                *:gcs-connector,com.google.*:*,org.checkerframework:checker-qual,
                 org.codehaus.mojo:animal-sniffer-annotations,*:hbase-mapreduce,org.apache.curator:*
               </include>
               <exclude>
