@@ -487,6 +487,12 @@
       <artifactId>jetty-server</artifactId>
       <version>${jetty.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-runner</artifactId>
+      <version>${jetty.version}</version>
+      <scope>runtime</scope>
+    </dependency>
 
     <!-- The following added for Pig -->
     <dependency>
@@ -569,6 +575,58 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack-common-sources</id>
+            <phase>none</phase>
+          </execution>
+          <execution>
+            <id>unpack-jetty-runner-jar</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.eclipse.jetty</groupId>
+                  <artifactId>jetty-runner</artifactId>
+                  <version>${jetty.version}</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/jetty-runner-jar</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>repack-jetty-runner-jar</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <zip destfile="${project.build.directory}/extra-resources/jetty-runner-${jetty.version}.jar"
+                      basedir="${project.build.directory}/jetty-runner-jar">
+                  <exclude name="org/slf4j/**"/>
+                </zip>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
 
       <plugin>
         <groupId>org.pentaho</groupId>
@@ -628,7 +686,8 @@
             <_exportcontents>
             </_exportcontents>
             <Embed-Dependency>*</Embed-Dependency>
-            <Include-Resource>{maven-resources}</Include-Resource>
+            <Include-Resource>{maven-resources};${project.build.directory}/extra-resources/jetty-runner-${jetty.version}.jar</Include-Resource>
+            <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
             <!-- this is needed because the bundle plugin gets fooled by multi-release jars into thinking the required java
             version is the highest one in the package, which is not the case -->
             <Require-Capability>osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=1.8))"</Require-Capability>
