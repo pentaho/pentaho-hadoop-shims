@@ -32,7 +32,6 @@
     <org.apache.orc.version>1.6.1</org.apache.orc.version>
     <parquet.version>1.14.4</parquet.version>
     <joda-time.version>2.9.9</joda-time.version>
-    <jetty-runner.version>9.3.20.v20170531</jetty-runner.version>
     <zookeeper.version>3.9.3</zookeeper.version>
     <netty.version>4.1.108.Final</netty.version>
     <bouncycastle.version>1.78</bouncycastle.version>
@@ -40,7 +39,6 @@
   </properties>
 
   <dependencies>
-
     <!-- Guarantee the proper version for Jetty artifacts -->
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
@@ -93,7 +91,7 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-runner</artifactId>
-      <version>${jetty-runner.version}</version>
+      <version>${jetty.version}</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
@@ -114,6 +112,11 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-xml</artifactId>
+      <version>${jetty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty.websocket</groupId>
+      <artifactId>javax-websocket-server-impl</artifactId>
       <version>${jetty.version}</version>
     </dependency>
 
@@ -148,6 +151,10 @@
         <exclusion>
           <groupId>com.fasterxml.jackson.core</groupId>
           <artifactId>jackson-databind</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.jetty.websocket</groupId>
+          <artifactId>*</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -473,6 +480,12 @@
       <version>${org.mockito.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>${slf4j.version}</version>
+      <scope>test</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.apache.curator</groupId>
@@ -509,6 +522,59 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack-common-sources</id>
+            <phase>none</phase>
+          </execution>
+          <execution>
+            <id>unpack-jetty-runner-jar</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.eclipse.jetty</groupId>
+                  <artifactId>jetty-runner</artifactId>
+                  <version>${jetty.version}</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/jetty-runner-jar</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>repack-jetty-runner-jar</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <zip destfile="${project.build.directory}/extra-resources/jetty-runner-${jetty.version}.jar"
+                      basedir="${project.build.directory}/jetty-runner-jar">
+                  <exclude name="org/slf4j/**"/>
+                </zip>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
         <groupId>org.pentaho</groupId>
         <artifactId>shim-bundle-plugin</artifactId>
         <version>${shim-bundle-plugin.version}</version>
@@ -526,7 +592,7 @@
                 com.amazonaws:*,
                 *:parquet-hadoop,*:hadoop-hdfs,
                 *:avro-mapred,
-                org.eclipse.jetty:*,
+                org.eclipse.jetty:*,org.eclipse.jetty.websocket:*,
                 com.google.guava:*,
                 <!--Needed for Hive-->
                 *:commons-configuration,*:commons-configuration2,
@@ -574,14 +640,19 @@
             <Bundle-Version>3.4.apache</Bundle-Version>
             <Pentaho-Code-Version>${pentaho-code.version}</Pentaho-Code-Version>
             <DynamicImport-Package>*</DynamicImport-Package>
-            <!-- this is needed because the bundle plugin gets fooled by multi-release jars into thinking the required java
-            version is the highest one in the package, which is not the case -->
-            <Require-Capability>osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=1.8))"</Require-Capability>
+            <excludes>
+              <exclude>**/*tests.jar</exclude>
+            </excludes>
             <Import-Package>
             </Import-Package>
             <_exportcontents>
             </_exportcontents>
             <Embed-Dependency>*</Embed-Dependency>
+            <Include-Resource>{maven-resources};${project.build.directory}/extra-resources/jetty-runner-${jetty.version}.jar</Include-Resource>
+            <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
+            <!-- this is needed because the bundle plugin gets fooled by multi-release jars into thinking the required java
+            version is the highest one in the package, which is not the case -->
+            <Require-Capability>osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=1.8))"</Require-Capability>
           </instructions>
         </configuration>
       </plugin>
