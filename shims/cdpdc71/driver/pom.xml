@@ -824,7 +824,7 @@
                 *:hadoop-yarn-api,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,
                 *:hbase-server,*:oozie-client,*:parquet-hadoop-bundle,*:zookeeper,*:hbase-shaded-miscellaneous,
                 org.eclipse.jetty:*,com.google.guava:*,*:hadoop-lzo,*:hadoop-client,*:hadoop-aws,*:hadoop-azure,*:gcs-connector,*:hadoop-hdfs-client,
-                *:google-oauth-client,*:wildfly-openssl
+                *:google-oauth-client,*:wildfly-openssl,*:httpcore,*:httpclient
               </include>
               <exclude>
                 *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool2,*:commons-dbcp2,
