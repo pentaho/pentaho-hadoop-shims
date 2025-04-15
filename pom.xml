@@ -205,7 +205,6 @@
       <modules>
         <module>mapreduce</module>
         <module>common-services-api</module>
-        <module>common-fragment-V1</module>
         <module>common-dependencies-V1</module>
       </modules>
     </profile>
@@ -220,6 +219,7 @@
       <modules>
         <module>shim-api-core</module>
         <module>shim-api</module>
+        <module>common-fragment-V1</module>
       </modules>
     </profile>
 
