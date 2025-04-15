@@ -13,11 +13,17 @@
 
   <properties>
     <netty.version>4.1.108.Final</netty.version>
+    <htrace-core.version>3.2.0-incubating</htrace-core.version>
   </properties>
 
 
 
   <dependencies>
+    <dependency>
+      <groupId>org.apache.htrace</groupId>
+      <artifactId>htrace-core</artifactId>
+      <version>${htrace-core.version}</version>
+    </dependency>
     <dependency>
       <groupId>com.google.cloud.bigdataoss</groupId>
       <artifactId>gcs-connector</artifactId>
