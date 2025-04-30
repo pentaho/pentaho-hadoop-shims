@@ -703,7 +703,7 @@
               <include>
                 <!--Needed for Pig-->
                 *:antlr-runtime,*:automaton,*:pig,*:parquet-pig,*:sqoop,*:joda-time,*:jython,*:aircompressor,*:netty-*,
-                *:jackson-databind,*:jackson-core
+                *:jackson-databind,*:jackson-core,*:libthrift
               </include>
               <transitive>false</transitive>
             </resolverFilter>
