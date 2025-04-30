@@ -35,6 +35,11 @@
   </properties>
   <dependencies>
     <dependency>
+      <groupId>org.apache.thrift</groupId>
+      <artifactId>libthrift</artifactId>
+      <version>${org.apache.thrift.version}</version>
+    </dependency>  
+    <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>shim-bundle-plugin</artifactId>
       <version>${shim-bundle-plugin.version}</version>
@@ -779,7 +784,7 @@
             <resolverFilter>
               <include>
                 <!--Needed for Pig-->
-                *:antlr-runtime,*:automaton,*:pig,*:sqoop,*:joda-time,*:jython,*:aircompressor,*:netty-*,software.amazon.awssdk:*,*:hbase-mapreduce
+                *:antlr-runtime,*:automaton,*:pig,*:sqoop,*:joda-time,*:jython,*:aircompressor,*:netty-*,software.amazon.awssdk:*,*:hbase-mapreduce,*:libthrift
               </include>
               <transitive>false</transitive>
             </resolverFilter>
