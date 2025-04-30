@@ -44,6 +44,11 @@
     <dependencies>
       <!-- Guarantee the proper version for Jetty artifacts -->
       <dependency>
+        <groupId>org.apache.thrift</groupId>
+        <artifactId>libthrift</artifactId>
+        <version>${org.apache.thrift.version}</version>
+	  </dependency>
+      <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-annotations</artifactId>
         <version>${jetty.version}</version>
@@ -1052,7 +1057,7 @@
                 *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool2,*:commons-dbcp2,
                 *:janino,org.apache.velocity:velocity,
                 *:grpc-*,*:opencensus*,*:proto*,*:perfmark-api*,*:threetenbp*,
-                *:google-oauth-client-java6,*:dnsjava
+                *:google-oauth-client-java6,*:dnsjava,*:libfb303
               </exclude>
               <transitive>true</transitive>
             </resolverFilter>
@@ -1060,7 +1065,7 @@
               <include>
                 <!--Needed for Pig-->
                 *:antlr-runtime,*:automaton,*:pig,*:parquet-pig,*:sqoop,*:joda-time,*:jython,
-                *:aircompressor,*:netty-*,software.amazon.awssdk:*
+                *:aircompressor,*:netty-*,software.amazon.awssdk:*,*:libthrift
               </include>
               <transitive>false</transitive>
             </resolverFilter>
