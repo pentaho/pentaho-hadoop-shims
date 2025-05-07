@@ -14,7 +14,7 @@
 
   <properties>
     <org.apache.avro.version>1.12.0</org.apache.avro.version>
-    <org.apache.hive.version>3.1.3</org.apache.hive.version>
+    <org.apache.hive.version>4.0.1</org.apache.hive.version>
     <org.apache.oozie.version>5.2.1</org.apache.oozie.version>
     <org.apache.hbase.version>2.6.1</org.apache.hbase.version>
     <!-- setting v1.14.4 so shaded jackson-databind inside parquet-hadoop-bundle's  version approximately matches jackson-databind in driver.jar -->
@@ -37,7 +37,7 @@
     <dependency>
       <groupId>org.apache.thrift</groupId>
       <artifactId>libthrift</artifactId>
-      <version>0.13.0</version>
+      <version>${org.apache.thrift.version}</version>
     </dependency>  
     <dependency>
       <groupId>org.pentaho</groupId>
@@ -529,6 +529,16 @@
       </exclusions>
     </dependency>
     <dependency>
+      <groupId>org.apache.hive</groupId>
+      <artifactId>hive-service</artifactId>
+      <version>${org.apache.hive.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hive.shims</groupId>
+      <artifactId>hive-shims-common</artifactId>
+      <version>${org.apache.hive.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.yaml</groupId>
       <artifactId>snakeyaml</artifactId>
       <version>${snakeyaml.version}</version>
@@ -784,7 +794,8 @@
             <resolverFilter>
               <include>
                 <!--Needed for Pig-->
-                *:antlr-runtime,*:automaton,*:pig,*:sqoop,*:joda-time,*:jython,*:aircompressor,*:netty-*,software.amazon.awssdk:*,*:hbase-mapreduce,*:libthrift
+                *:antlr-runtime,*:automaton,*:pig,*:sqoop,*:joda-time,*:jython,*:aircompressor,*:netty-*,software.amazon.awssdk:*,*:hbase-mapreduce,*:libthrift,
+                *:hive-service-rpc,*:hive-shims-common
               </include>
               <transitive>false</transitive>
             </resolverFilter>
