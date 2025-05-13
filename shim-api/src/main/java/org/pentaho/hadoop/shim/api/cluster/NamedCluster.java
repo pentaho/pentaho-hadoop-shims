@@ -40,6 +40,14 @@ public interface NamedCluster extends Cloneable, VariableSpace {
 
   String getShimIdentifier();
 
+  String getShimVendor();
+
+  void setShimVendor( String shimVendor );
+
+  String getShimVersion();
+
+  void setShimVersion( String shimVersion );
+
   void setShimIdentifier( String shimIdentifier );
 
   String getStorageScheme();
