@@ -37,9 +37,17 @@ import org.apache.hadoop.hbase.mapreduce.JobUtil;
 import org.apache.hadoop.hbase.metrics.impl.FastLongHistogram;
 import org.apache.hadoop.hbase.metrics.Snapshot;
 
+import org.pentaho.hadoop.shim.api.core.ShimIdentifierInterface;
+import org.pentaho.hadoop.shim.api.internal.ShimIdentifier;
 import org.pentaho.hadoop.shim.common.HadoopShimImpl;
 
 public class HadoopShim extends HadoopShimImpl {
+
+  private static final String ID = "emr700";
+  private static final String VENDOR = "EMR";
+  private static final String VERSION = "7.0";
+  private static final ShimIdentifierInterface.ShimType TYPE = ShimIdentifierInterface.ShimType.COMMUNITY;
+  private static final ShimIdentifier SHIM_IDENTIFIER = new ShimIdentifier( ID, VENDOR, VERSION, TYPE );
 
   public HadoopShim() {
     super();
@@ -56,4 +64,10 @@ public class HadoopShim extends HadoopShimImpl {
       ZooKeeper.class, Channel.class, Message.class, Lists.class, Trace.class, MetricsRegistry.class
     };
   }
+
+  @Override
+  public ShimIdentifier getShimIdentifier() {
+    return SHIM_IDENTIFIER;
+  }
+
 }
