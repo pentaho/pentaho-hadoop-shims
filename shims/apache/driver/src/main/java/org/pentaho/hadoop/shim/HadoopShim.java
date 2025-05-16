@@ -22,11 +22,19 @@
 
 package org.pentaho.hadoop.shim;
 
+import org.pentaho.hadoop.shim.api.core.ShimIdentifierInterface;
+import org.pentaho.hadoop.shim.api.internal.ShimIdentifier;
 import org.pentaho.hadoop.shim.common.ConfigurationProxyV2;
 import org.pentaho.hadoop.shim.common.HadoopShimImpl;
 import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
 
 public class HadoopShim extends HadoopShimImpl {
+
+  private static final String ID = "apache";
+  private static final String VENDOR = "Apache";
+  private static final String VERSION = "3.4";
+  private static final ShimIdentifierInterface.ShimType TYPE = ShimIdentifierInterface.ShimType.COMMUNITY;
+  private static final ShimIdentifier SHIM_IDENTIFIER = new ShimIdentifier( ID, VENDOR, VERSION, TYPE );
 
   public HadoopShim() {
     super();
@@ -43,6 +51,11 @@ public class HadoopShim extends HadoopShimImpl {
     ConfigurationProxyV2 conf = (ConfigurationProxyV2) super.createConfiguration( namedClusterConfigId );
     conf.getJob().getConfiguration().setRestrictSystemProperties( false );
     return conf;
+  }
+
+  @Override
+  public ShimIdentifier getShimIdentifier() {
+    return SHIM_IDENTIFIER;
   }
 
 }
