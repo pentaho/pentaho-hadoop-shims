@@ -35,11 +35,19 @@ import org.apache.hbase.thirdparty.io.netty.channel.Channel;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.hbase.thirdparty.com.google.common.cache.CacheLoader;
 import org.pentaho.di.core.exception.KettlePluginException;
+import org.pentaho.hadoop.shim.api.core.ShimIdentifierInterface;
+import org.pentaho.hadoop.shim.api.internal.ShimIdentifier;
 import org.pentaho.hadoop.shim.common.HadoopShimImpl;
 
 import java.util.Properties;
 
 public class HadoopShim extends HadoopShimImpl {
+
+  private static final String ID = "apachevanilla";
+  private static final String VENDOR = "ApacheVanilla";
+  private static final String VERSION = "3.4.0";
+  private static final ShimIdentifierInterface.ShimType TYPE = ShimIdentifierInterface.ShimType.COMMUNITY;
+  private static final ShimIdentifier SHIM_IDENTIFIER = new ShimIdentifier( ID, VENDOR, VERSION, TYPE );
 
   public HadoopShim() {
     super();
@@ -62,6 +70,11 @@ public class HadoopShim extends HadoopShimImpl {
       MetricRegistry.class, ArrayUtils.class, ObjectMapper.class, Versioned.class,
       JsonView.class, ZKWatcher.class, CacheLoader.class
     };
+  }
+
+  @Override
+  public ShimIdentifier getShimIdentifier() {
+    return SHIM_IDENTIFIER;
   }
 
 }
