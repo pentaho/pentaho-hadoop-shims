@@ -38,11 +38,19 @@ import org.apache.hbase.thirdparty.io.netty.channel.Channel;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.hbase.thirdparty.com.google.common.cache.CacheLoader;
 import org.pentaho.di.core.exception.KettlePluginException;
+import org.pentaho.hadoop.shim.api.core.ShimIdentifierInterface;
+import org.pentaho.hadoop.shim.api.internal.ShimIdentifier;
 import org.pentaho.hadoop.shim.common.HadoopShimImpl;
 
 import java.util.Properties;
 
 public class HadoopShim extends HadoopShimImpl {
+
+  private static final String ID = "cdpdc71";
+  private static final String VENDOR = "Cloudera";
+  private static final String VERSION = "7.1";
+  private static final ShimIdentifierInterface.ShimType TYPE = ShimIdentifierInterface.ShimType.COMMUNITY;
+  private static final ShimIdentifier SHIM_IDENTIFIER = new ShimIdentifier( ID, VENDOR, VERSION, TYPE );
 
   public HadoopShim() {
     super();
@@ -66,6 +74,11 @@ public class HadoopShim extends HadoopShimImpl {
       JsonView.class, ZKWatcher.class, CacheLoader.class, HBasePlatformDependent.class, Span.class,
       ImplicitContextKeyed.class
     };
+  }
+
+  @Override
+  public ShimIdentifier getShimIdentifier() {
+    return SHIM_IDENTIFIER;
   }
 
 }

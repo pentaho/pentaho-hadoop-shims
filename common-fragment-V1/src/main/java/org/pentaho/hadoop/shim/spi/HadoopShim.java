@@ -21,10 +21,12 @@ import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.hadoop.shim.HadoopConfiguration;
 import org.pentaho.hadoop.shim.HadoopConfigurationFileSystemManager;
 import org.pentaho.hadoop.shim.api.ConfigurationException;
+import org.pentaho.hadoop.shim.api.core.ShimIdentifierInterface;
 import org.pentaho.hadoop.shim.api.internal.Configuration;
 import org.pentaho.hadoop.shim.api.internal.DistributedCacheUtil;
 import org.pentaho.hadoop.shim.api.internal.Required;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
+import org.pentaho.hadoop.shim.api.internal.ShimIdentifier;
 import org.pentaho.hadoop.shim.api.internal.fs.FileSystem;
 import org.pentaho.hadoop.shim.api.internal.mapred.RunningJob;
 
@@ -210,4 +212,17 @@ public interface HadoopShim extends PentahoHadoopShim {
    * @deprecated To be replaced with a cleaner API for executing Pentaho MapReduce. Use with care.
    */
   @Deprecated String getPentahoMapReduceMapRunnerClass();
+
+  /**
+   * Get the {@link Class} containing general shim information to be used by the platform.
+   * @return the ShimIdentifier containing the shim information
+   */
+  default ShimIdentifier getShimIdentifier() {
+    return new ShimIdentifier(
+            "",
+            "",
+            "",
+            ShimIdentifierInterface.ShimType.COMMUNITY
+    );
+  }
 }
