@@ -40,7 +40,9 @@ import org.apache.hbase.thirdparty.com.google.protobuf.UnsafeByteOperations;
 import org.apache.hbase.thirdparty.io.netty.channel.Channel;
 import org.apache.htrace.core.Tracer;
 import org.apache.zookeeper.ZooKeeper;
+import org.pentaho.hadoop.shim.api.core.ShimIdentifierInterface;
 import org.pentaho.hadoop.shim.api.internal.Configuration;
+import org.pentaho.hadoop.shim.api.internal.ShimIdentifier;
 import org.pentaho.hadoop.shim.api.internal.mapred.RunningJob;
 import org.pentaho.hadoop.shim.common.ConfigurationProxyV2;
 import org.pentaho.hadoop.shim.common.HadoopShimImpl;
@@ -52,6 +54,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.protobuf.Message;
 
 public class HadoopShim extends HadoopShimImpl {
+
+  private static final String ID = "dataproc1421";
+  private static final String VENDOR = "Google Dataproc";
+  private static final String VERSION = "1.4";
+  private static final ShimIdentifierInterface.ShimType TYPE = ShimIdentifierInterface.ShimType.COMMUNITY;
+  private static final ShimIdentifier SHIM_IDENTIFIER = new ShimIdentifier( ID, VENDOR, VERSION, TYPE );
 
   public HadoopShim() {
     super();
@@ -68,4 +76,10 @@ public class HadoopShim extends HadoopShimImpl {
       ZKWatcher.class
     };
   }
+
+  @Override
+  public ShimIdentifier getShimIdentifier() {
+    return SHIM_IDENTIFIER;
+  }
+
 }
