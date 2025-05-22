@@ -96,7 +96,7 @@
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-server</artifactId>
-        <version>${jetty-server.version}</version>
+        <version>${jetty-hadoop.version}</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
