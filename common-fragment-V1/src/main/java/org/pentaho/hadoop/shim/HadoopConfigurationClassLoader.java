@@ -13,10 +13,10 @@
 
 package org.pentaho.hadoop.shim;
 
+import org.pentaho.di.core.plugins.KettleURLClassLoader;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -26,7 +26,7 @@ import java.util.Set;
  * Loads classes for a Hadoop configuration by looking for resources in the configuration directory first before
  * checking its parent class loader.
  */
-public class HadoopConfigurationClassLoader extends URLClassLoader {
+public class HadoopConfigurationClassLoader extends KettleURLClassLoader {
 
   private Set<String> loadClassesFromParent;
 
