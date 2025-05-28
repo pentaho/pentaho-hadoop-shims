@@ -24,7 +24,10 @@ package org.pentaho.big.data.api.cluster.service.locator.impl;
 
 import com.google.common.annotations.VisibleForTesting;
 import org.pentaho.big.data.api.shims.LegacyShimLocator;
+import org.pentaho.big.data.impl.cluster.NamedClusterManager;
+import org.pentaho.di.core.hadoop.HadoopConfigurationBootstrap;
 import org.pentaho.di.core.service.PluginServiceLoader;
+import org.pentaho.hadoop.shim.api.ConfigurationException;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.cluster.NamedClusterService;
 import org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory;
@@ -56,15 +59,31 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
   @VisibleForTesting final String internalShim;
   private MetastoreLocator metastoreLocator;
   private final NamedClusterService namedClusterManager;
+  private static NamedClusterServiceLocatorImpl namedClusterServiceLocator = null;
 
   private static final Logger logger = LoggerFactory.getLogger( NamedClusterServiceLocatorImpl.class );
 
-  public NamedClusterServiceLocatorImpl( String internalShim, NamedClusterService namedClusterManager ) {
+  protected NamedClusterServiceLocatorImpl( String internalShim, NamedClusterService namedClusterManager ) {
     this.internalShim = Objects.requireNonNull(
       internalShim, "Set internal.shim in karaf/etc/pentaho.shim.cfg" );
     this.namedClusterManager = namedClusterManager;
     readWriteLock = new ReentrantReadWriteLock();
     serviceVendorTypeMapping = new HashMap<>();
+  }
+
+  public static synchronized NamedClusterServiceLocatorImpl getInstance() {
+    try {
+      if (namedClusterServiceLocator == null) {
+        namedClusterServiceLocator = new NamedClusterServiceLocatorImpl(
+                HadoopConfigurationBootstrap.getInstance().getProvider().getActiveConfiguration().getIdentifier(),
+                NamedClusterManager.getInstance()
+        );
+      }
+    } catch (ConfigurationException e) {
+      // TODO: Handle runtime exception better
+        throw new RuntimeException(e);
+    }
+      return namedClusterServiceLocator;
   }
 
   protected synchronized MetastoreLocator getMetastoreLocator() {

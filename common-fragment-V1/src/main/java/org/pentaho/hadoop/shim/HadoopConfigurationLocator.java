@@ -344,7 +344,7 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
       }
 
       // Find all jar files in the configuration, at most 2 folders deep
-      List<URL> jars = findJarsIn( root, 3, configurationProperties.getConfigSet( SHIM_CLASSPATH_IGNORE ) );
+      List<URL> jars = findJarsIn( root, 0, configurationProperties.getConfigSet( SHIM_CLASSPATH_IGNORE ) );
 
       // Add the root of the configuration
       jars.add( 0, new URL( root.getURL().toExternalForm() + "/" ) );
@@ -438,10 +438,8 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
    */
   protected HadoopConfiguration loadHadoopConfiguration( FileObject folder ) throws ConfigurationException {
     ShimProperties configurationProperties = new ShimProperties();
-    String activeNamedCluster = System.getProperty( "ACTIVE_NAMED_CLUSTER" );
-    configurationProperties.putAll(  ShimConfigsLoader.loadConfigProperties( activeNamedCluster ) );
 
-    /*try {
+    try {
       FileObject configFile = folder.getChild( CONFIG_PROPERTIES_FILE );
       if ( configFile != null ) {
         configurationProperties.putAll( loadProperties( configFile ) );
@@ -449,7 +447,7 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
     } catch ( Exception ex ) {
       throw new ConfigurationException(
         BaseMessages.getString( PKG, "Error.UnableToLoadConfigurationProperties", CONFIG_PROPERTIES_FILE ) );
-    }*/
+    }
 
     for ( Entry<String, String> entry : configurationProperties.getPrefixedProperties( "java.system" ).entrySet() ) {
       System.setProperty( entry.getKey(), entry.getValue() );
