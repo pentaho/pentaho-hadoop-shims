@@ -352,6 +352,11 @@
   </profiles>
   <dependencies>
     <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-vfs2-hdfs</artifactId>
+      <version>${commons-vfs2.version}</version>
+    </dependency>
+    <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-core</artifactId>
       <version>${aws-java-sdk.version}</version>
