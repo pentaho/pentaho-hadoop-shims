@@ -185,10 +185,11 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
 
     stageForCache( extracted, fs, destination, "", true, false );
 
-    java.nio.file.Path shimDriverInstallationDirectory =
-      Paths.get( Const.getShimDriverDeploymentLocation() );
+    // The big data plugin was moved out of OSGI and no drivers are needed
+//    java.nio.file.Path shimDriverInstallationDirectory =
+//      Paths.get( Const.getShimDriverDeploymentLocation() );
+//    stagePentahoHadoopShims( fs, destination, shimDriverInstallationDirectory );
 
-    stagePentahoHadoopShims( fs, destination, shimDriverInstallationDirectory );
     stageBigDataPlugin( fs, destination, bigDataPlugin, shimIdentifier );
 
     if ( StringUtils.isNotEmpty( additionalPlugins ) ) {
