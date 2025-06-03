@@ -19,6 +19,7 @@
             <excludes>
                 <exclude>${project.groupId}:${project.artifactId}:jar:*</exclude>
                 <exclude>xml-apis:xml-apis:jar:*</exclude>
+                <exclude>stax:stax-api:jar:*</exclude>
                 <exclude>pentaho:metastore:jar:*</exclude>
                 <exclude>org.pentaho.di.plugins:pentaho-metastore-locator-api:jar:*</exclude>
                 <exclude>org.pentaho:pentaho-hadoop-shims-common-services-api:jar:*</exclude>
