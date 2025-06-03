@@ -74,8 +74,13 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
   public static synchronized NamedClusterServiceLocatorImpl getInstance() {
     try {
       if (namedClusterServiceLocator == null) {
+        String shimIdentifier = "NONE";
+        if ( HadoopConfigurationBootstrap.getInstance().getProvider() != null ) {
+          shimIdentifier = HadoopConfigurationBootstrap.getInstance().getProvider()
+                  .getActiveConfiguration().getIdentifier();
+        }
         namedClusterServiceLocator = new NamedClusterServiceLocatorImpl(
-                HadoopConfigurationBootstrap.getInstance().getProvider().getActiveConfiguration().getIdentifier(),
+                shimIdentifier,
                 NamedClusterManager.getInstance()
         );
       }
