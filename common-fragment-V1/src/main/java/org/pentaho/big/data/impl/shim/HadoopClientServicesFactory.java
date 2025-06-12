@@ -1,6 +1,5 @@
 package org.pentaho.big.data.impl.shim;
 
-import org.osgi.framework.BundleContext;
 import org.pentaho.hadoop.shim.api.HadoopClientServices;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory;
@@ -8,11 +7,9 @@ import org.pentaho.hadoop.shim.spi.HadoopShim;
 
 public class HadoopClientServicesFactory implements NamedClusterServiceFactory<HadoopClientServices> {
   protected final HadoopShim hadoopShim;
-  private BundleContext bundleContext;
 
-  public HadoopClientServicesFactory( HadoopShim hadoopShim, BundleContext bundleContext ) {
+  public HadoopClientServicesFactory( HadoopShim hadoopShim ) {
     this.hadoopShim = hadoopShim;
-    this.bundleContext = bundleContext;
   }
 
   @Override
@@ -27,6 +24,6 @@ public class HadoopClientServicesFactory implements NamedClusterServiceFactory<H
 
   @Override
   public HadoopClientServices create( NamedCluster namedCluster ) {
-    return new HadoopClientServicesImpl( namedCluster, hadoopShim, bundleContext );
+    return new HadoopClientServicesImpl( namedCluster, hadoopShim );
   }
 }

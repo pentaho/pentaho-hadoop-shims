@@ -117,7 +117,6 @@ public class HadoopClientServicesImpl implements HadoopClientServices {
   protected NamedCluster namedCluster;
   protected final OozieClient oozieClient;
   protected final HadoopShim hadoopShim;
-  private BundleContext bundleContext;
   private List<String> sqoopBundleFileLocations = new ArrayList<>();
   private final WriterAppenderManager.Factory writerAppenderManagerFactory;
   protected final HBaseBytesUtilShim bytesUtil;
@@ -146,8 +145,7 @@ public class HadoopClientServicesImpl implements HadoopClientServices {
 
   private String[] PIG_LOGGERS = { "org.apache.pig" };
 
-  public HadoopClientServicesImpl( NamedCluster namedCluster, HadoopShim hadoopShim, BundleContext bundleContext ) {
-    this.bundleContext = bundleContext;
+  public HadoopClientServicesImpl( NamedCluster namedCluster, HadoopShim hadoopShim ) {
     this.hadoopShim = hadoopShim;
     this.namedCluster = namedCluster;
     this.oozieClient = namedCluster.getOozieUrl() != null ? new OozieClient( namedCluster.getOozieUrl() ) : null;
@@ -201,9 +199,12 @@ public class HadoopClientServicesImpl implements HadoopClientServices {
       ClassLoader cl = Thread.currentThread().getContextClassLoader();
       Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
       String tmpPropertyHolder = System.getProperty( ALT_CLASSPATH );
+      String tempCurrentClassPath = System.getProperty("java.class.path");
       try {
         loadBundleFilesLocations();
-        System.setProperty( ALT_CLASSPATH, createHadoopAltClasspath() );
+        String altHadoopClasspath = createHadoopAltClasspath();
+        System.setProperty( ALT_CLASSPATH, altHadoopClasspath );
+        System.setProperty( "java.class.path", tempCurrentClassPath + File.pathSeparator + altHadoopClasspath );
         c.set( TMPJARS, getSqoopJarLocation( c ) );
         if ( args.length > 0
           && ( Arrays.asList( args ).contains( "--as-avrodatafile" )
@@ -211,12 +212,7 @@ public class HadoopClientServicesImpl implements HadoopClientServices {
           addDependencyJars( c, Conversion.class, AvroWrapper.class );
         }
         if ( args.length > 0 && Arrays.asList( args ).contains( "--hbase-table" ) ) {
-          Filter serviceFilter = bundleContext.createFilter( "(shim=" + namedCluster.getShimIdentifier() + ")" );
-          ServiceReference serviceReference =
-            (ServiceReference) bundleContext.getServiceReferences( HadoopShim.class, serviceFilter.toString() )
-              .toArray()[ 0 ];
-          Object service = bundleContext.getService( serviceReference );
-          Class[] depClasses = (Class[]) service.getClass().getMethod( "getHbaseDependencyClasses" ).invoke( service );
+          Class[] depClasses = hadoopShim.getHbaseDependencyClasses();
           addDependencyJars( c, depClasses );
         }
         return Sqoop.runTool( args, ShimUtils.asConfiguration( c ) );
@@ -225,6 +221,7 @@ public class HadoopClientServicesImpl implements HadoopClientServices {
         return -1;
       } finally {
         Thread.currentThread().setContextClassLoader( cl );
+        System.setProperty( "java.class.path", tempCurrentClassPath );
         if ( tmpPropertyHolder == null ) {
           System.clearProperty( ALT_CLASSPATH );
         } else {
@@ -335,15 +332,15 @@ public class HadoopClientServicesImpl implements HadoopClientServices {
 
   private void loadBundleFilesLocations() {
     sqoopBundleFileLocations.clear();
-    String bundleLocation = bundleContext.getBundle().getDataFile( "" ).getParent();
-    sqoopBundleFileLocations.add( bundleLocation );
-    BundleWiring wiring = bundleContext.getBundle().adapt( BundleWiring.class );
-    List<BundleWire> fragments = wiring.getProvidedWires( "osgi.wiring.host" );
-    for ( BundleWire fragment : fragments ) {
-      Bundle fragmentBundle = fragment.getRequirerWiring().getBundle();
-      String fragmentBundleLocation = fragmentBundle.getDataFile( "" ).getParent();
-      sqoopBundleFileLocations.add( fragmentBundleLocation );
-    }
+    // Getting big data plugin's lib folder
+    String thisClassJar = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+    File tempJarFile = new File( thisClassJar );
+    String bigDataPluginLibFolder = tempJarFile.getParent();
+    sqoopBundleFileLocations.add( bigDataPluginLibFolder );
+    // Getting the configured hadoop lib folder
+    String bigDataPluginFolder= tempJarFile.getParentFile().getParent();
+    String currentHadoopLibFolder = bigDataPluginFolder + "/hadoop-configurations/" + hadoopShim.getShimIdentifier().getId() + "/lib";
+    sqoopBundleFileLocations.add( currentHadoopLibFolder );
   }
 
   private String createHadoopAltClasspath() {
@@ -420,7 +417,13 @@ public class HadoopClientServicesImpl implements HadoopClientServices {
   }
 
   private void addExternalJarsToPigContext( PigContext pigContext ) throws MalformedURLException {
-    File filesInsideBundle = new File( bundleContext.getBundle().getDataFile( "" ).getParent() );
+    // Getting the configured hadoop lib folder
+    String thisClassJar = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+    File tempJarFile = new File( thisClassJar );
+    String bigDataPluginFolder= tempJarFile.getParentFile().getParent();
+    String currentHadoopLibFolder = bigDataPluginFolder + "/hadoop-configurations/" + hadoopShim.getShimIdentifier().getId() + "/lib";
+
+    File filesInsideBundle = new File( currentHadoopLibFolder );
     Iterator<File> filesIterator = FileUtils.iterateFiles( filesInsideBundle, new String[] { "jar" }, true );
     while ( filesIterator.hasNext() ) {
       File file = filesIterator.next();
