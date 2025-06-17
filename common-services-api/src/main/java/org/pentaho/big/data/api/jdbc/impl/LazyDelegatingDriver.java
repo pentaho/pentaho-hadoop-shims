@@ -83,11 +83,9 @@ public class LazyDelegatingDriver implements Driver {
                                              T defaultVal )
     throws SQLException {
     if ( delegate == null ) {
-      Iterator<Map.Entry<ServiceReference<Driver>, Driver>> drivers = driverLocator.getDrivers();
+      Iterator<Driver> drivers = driverLocator.getDrivers();
       while ( drivers.hasNext() ) {
-        Map.Entry<ServiceReference<Driver>, Driver> driverEntry = drivers.next();
-        ServiceReference<Driver> serviceReference = driverEntry.getKey();
-        Driver driver = driverEntry.getValue();
+        Driver driver = drivers.next();
         T result = attempt.apply( driver );
         if ( success.test( result ) ) {
           delegate = driver;
@@ -95,7 +93,7 @@ public class LazyDelegatingDriver implements Driver {
           // why do we need this LazyDelegatingDriver? keeping reference to deregister it later
           lazyDelegatingDriver = new LazyDelegatingDriver( driverLocator, hasRegisterDriver, hasDeregisterDriver );
 
-          driverLocator.registerDriverServiceReferencePair( serviceReference, delegatingDriver, false );
+          driverLocator.registerDriverServiceReferencePair( delegatingDriver, false );
           return result;
         }
       }
