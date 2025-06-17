@@ -17,6 +17,7 @@
 
 package org.pentaho.hadoop.shim.common;
 
+import org.pentaho.big.data.impl.shim.ShimServicesReader;
 import org.pentaho.hadoop.shim.ShimException;
 import org.pentaho.hadoop.shim.ShimRuntimeException;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
@@ -27,6 +28,7 @@ import java.util.List;
 
 public class HadoopShimImpl extends CommonHadoopShim {
   private static final String UNABLE_TO_CREATE_MESSAGE = "Unable to create configuration for new mapreduce api: ";
+  private static final ShimServicesReader shimServicesReader = new ShimServicesReader();
 
   @Override
   protected String getDefaultNamenodePort() {
@@ -137,5 +139,21 @@ public class HadoopShimImpl extends CommonHadoopShim {
 
     conf.set( "fs.default.name", runtimeFsDefaultName );
     conf.set( "mapred.job.tracker", runtimeJobTracker );
+  }
+
+  public List<String> getAvailableServices() {
+    return shimServicesReader.getServiceNames();
+  }
+
+  public List<String> getAvailableHdfsSchemas() {
+    return shimServicesReader.getHdfsSchemas();
+  }
+
+  public List<String> getAvailableHiveDrivers() {
+    return shimServicesReader.getHiveDrivers();
+  }
+
+  public List<String> getServiceOptions( String serviceName ) {
+    return shimServicesReader.getServiceOptions( serviceName );
   }
 }

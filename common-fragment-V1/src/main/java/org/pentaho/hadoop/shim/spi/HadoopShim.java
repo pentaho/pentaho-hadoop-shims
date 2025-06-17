@@ -19,6 +19,7 @@ package org.pentaho.hadoop.shim.spi;
 
 import java.io.IOException;
 import java.sql.Driver;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.pentaho.di.core.row.ValueMetaInterface;
@@ -228,5 +229,21 @@ public interface HadoopShim extends PentahoHadoopShim {
             "",
             ShimIdentifierInterface.ShimType.COMMUNITY
     );
+  }
+
+  default List<String> getAvailableServices() {
+    return new ArrayList<>();
+  }
+
+  default List<String> getAvailableHdfsSchemas() {
+    return new ArrayList<>();
+  }
+
+  default List<String> getAvailableHiveDrivers() {
+    return new ArrayList<>();
+  }
+
+  default List<String> getServiceOptions( String serviceName ) {
+    return new ArrayList<>();
   }
 }
