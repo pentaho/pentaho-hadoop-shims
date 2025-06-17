@@ -36,67 +36,42 @@ import java.util.Map;
 public class DriverLocatorImpl implements DriverLocator {
   private static final Logger logger = LoggerFactory.getLogger( DriverLocatorImpl.class );
   public static final String DATA_SOURCE_TYPE_BIGDATA = "(dataSourceType=bigdata)";
-  private final BundleContext bundleContext;
   private final HasRegisterDriver hasRegisterDriver;
   private final HasDeregisterDriver hasDeregisterDriver;
-  private final Map<ServiceReference<Driver>, List<Driver>> registeredDrivers;
+  private final List<Driver> registeredDrivers;
+  private static DriverLocatorImpl instance;
 
-  public DriverLocatorImpl( BundleContext bundleContext ) {
-    this( bundleContext, DriverManager::registerDriver, DriverManager::deregisterDriver, new HashMap<>() );
+  public static DriverLocatorImpl getInstance() {
+    if ( instance == null ) {
+      instance = new DriverLocatorImpl();
+    }
+    return instance;
   }
 
-  public DriverLocatorImpl( BundleContext bundleContext, HasRegisterDriver hasRegisterDriver,
+  public DriverLocatorImpl() {
+    this( DriverManager::registerDriver, DriverManager::deregisterDriver, new ArrayList<>() );
+  }
+
+  public DriverLocatorImpl( HasRegisterDriver hasRegisterDriver,
                             HasDeregisterDriver hasDeregisterDriver,
-                            Map<ServiceReference<Driver>, List<Driver>> registeredDrivers ) {
-    this.bundleContext = bundleContext;
+                            List<Driver> registeredDrivers ) {
     this.hasRegisterDriver = hasRegisterDriver;
     this.hasDeregisterDriver = hasDeregisterDriver;
     this.registeredDrivers = registeredDrivers;
-    this.bundleContext.addServiceListener( event -> {
-      ServiceReference<?> serviceReference = event.getServiceReference();
-      if ( serviceReference != null ) {
-        List<Driver> drivers = registeredDrivers.remove( serviceReference );
-        if ( drivers != null ) {
-          for ( Driver driver : drivers ) {
-            try {
-              hasDeregisterDriver.deregisterDriver( driver );
-            } catch ( SQLException e ) {
-              logger.error( "Unable to deregister driver " + driver, e );
-            }
-          }
-        }
-      }
-    } );
   }
 
-  public Iterator<Map.Entry<ServiceReference<Driver>, Driver>> getDrivers() {
-    try {
-      return bundleContext.getServiceReferences( Driver.class, DATA_SOURCE_TYPE_BIGDATA ).stream()
-        .<Map.Entry<ServiceReference<Driver>, Driver>>map(
-          driverServiceReference -> new Map.Entry<ServiceReference<Driver>, Driver>() {
-            @Override public ServiceReference<Driver> getKey() {
-              return driverServiceReference;
-            }
+  public void registerDriver( Driver driver ){
+    registeredDrivers.add( driver );
+  }
 
-            @Override public Driver getValue() {
-              return bundleContext.getService( driverServiceReference );
-            }
-
-            @Override public Driver setValue( Driver value ) {
-              throw new UnsupportedOperationException();
-            }
-          } ).iterator();
-    } catch ( InvalidSyntaxException e ) {
-      // Shouldn't happen with null filter
-      logger.error( e.getFilter(), e );
-      return Collections.<Map.Entry<ServiceReference<Driver>, Driver>>emptyList().iterator();
-    }
+  public Iterator<Driver> getDrivers() {
+    return registeredDrivers.iterator();
   }
 
   @Override public Driver getDriver( String url ) {
-    Iterator<Map.Entry<ServiceReference<Driver>, Driver>> drivers = getDrivers();
+    Iterator<Driver> drivers = getDrivers();
     while ( drivers.hasNext() ) {
-      Driver driver = drivers.next().getValue();
+      Driver driver = drivers.next();
       try {
         if ( driver.acceptsURL( url ) ) {
           return driver;
@@ -108,7 +83,7 @@ public class DriverLocatorImpl implements DriverLocator {
     return null;
   }
 
-  public synchronized void registerDriverServiceReferencePair( ServiceReference<Driver> serviceReference, Driver driver,
+  public synchronized void registerDriverServiceReferencePair( Driver driver,
                                                                boolean shouldRegisterExternally ) {
     try {
       // this registerDriverServiceReferencePair method is currently only called in LazyDelegatingDriver.findAndProcess
@@ -116,15 +91,7 @@ public class DriverLocatorImpl implements DriverLocator {
       if ( shouldRegisterExternally ) {
         hasRegisterDriver.registerDriver( driver );
       }
-      registeredDrivers.compute( serviceReference, ( serviceReference1, drivers ) -> {
-        if ( drivers == null ) {
-          return Collections.singletonList( driver );
-        } else {
-          List<Driver> result = new ArrayList<>( drivers );
-          result.add( driver );
-          return Collections.unmodifiableList( result );
-        }
-      } );
+      registeredDrivers.add( driver );
     } catch ( SQLException e ) {
       logger.error( "Unable to register driver " + driver, e );
     }
