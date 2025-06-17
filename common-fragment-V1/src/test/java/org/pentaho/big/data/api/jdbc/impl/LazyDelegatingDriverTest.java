@@ -53,7 +53,7 @@ public class LazyDelegatingDriverTest {
   @Mock Connection connection;
   @Mock DriverPropertyInfo driverPropertyInfo;
   @Mock Logger logger;
-  List<Map.Entry<ServiceReference<Driver>, Driver>> drivers;
+  List<Driver> drivers;
   LazyDelegatingDriver lazyDelegatingDriver;
   String testUrl;
   int majorVersion;
@@ -74,15 +74,15 @@ public class LazyDelegatingDriverTest {
     minorVersion = 11;
     lazyDelegatingDriver = new LazyDelegatingDriver( driverRegistry, hasRegisterDriver, hasDeregisterDriver );
     drivers = new ArrayList<>();
-    drivers.add( makeEntry( badDriverServiceReference, badDriver ) );
-    drivers.add( makeEntry( goodDriverServiceReference, driver ) );
+    drivers.add( badDriver );
+    drivers.add( driver );
     when( driver.connect( testUrl, null ) ).thenReturn( connection );
     when( driver.acceptsURL( testUrl ) ).thenReturn( true );
     when( driver.getPropertyInfo( testUrl, null ) ).thenReturn( new DriverPropertyInfo[] { driverPropertyInfo } );
     when( driver.getMajorVersion() ).thenReturn( majorVersion );
     when( driver.getMinorVersion() ).thenReturn( minorVersion );
     when( driver.getParentLogger() ).thenReturn( logger );
-    when( driverRegistry.getDrivers() ).thenReturn( drivers.iterator() );
+//    when( driverRegistry.getDrivers() ).thenReturn( drivers.iterator() );
   }
 
   @Test
