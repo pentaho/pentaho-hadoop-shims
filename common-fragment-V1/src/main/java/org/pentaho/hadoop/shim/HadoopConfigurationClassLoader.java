@@ -88,7 +88,11 @@ public class HadoopConfigurationClassLoader extends KettleURLClassLoader {
         c = findClass( name );
       } catch ( ClassNotFoundException ex ) {
         // If we can't find the class check the parent class loader
-        c = Class.forName( name, false, getParent() );
+        try {
+          c = Class.forName(name, false, getParent());
+        } catch ( ClassCircularityError e ) {
+          // Ignore circularity errors, they are expected in some cases
+        }
       }
     }
     // Resolve the class as needed
