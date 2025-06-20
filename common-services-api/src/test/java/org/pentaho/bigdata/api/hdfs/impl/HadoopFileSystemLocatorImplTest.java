@@ -52,7 +52,8 @@ public class HadoopFileSystemLocatorImplTest {
     hadoopFileSystemFactories = new ArrayList<>();
     hadoopFileSystemFactory = mock( HadoopFileSystemFactory.class );
     hadoopFileSystemFactories.add( hadoopFileSystemFactory );
-    hadoopFileSystemLocator = new HadoopFileSystemLocatorImpl( hadoopFileSystemFactories );
+    hadoopFileSystemLocator = HadoopFileSystemLocatorImpl.getInstance();
+    hadoopFileSystemLocator.setHadoopFileSystemFactories( hadoopFileSystemFactories );
   }
 
   @Test
