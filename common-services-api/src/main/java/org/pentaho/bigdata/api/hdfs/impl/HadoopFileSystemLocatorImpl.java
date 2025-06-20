@@ -30,9 +30,20 @@ import java.util.List;
  */
 public class HadoopFileSystemLocatorImpl implements HadoopFileSystemLocator {
   private static final Logger LOGGER = LoggerFactory.getLogger( HadoopFileSystemLocatorImpl.class );
-  private final List<HadoopFileSystemFactory> hadoopFileSystemFactories;
+  private List<HadoopFileSystemFactory> hadoopFileSystemFactories;
+  private static HadoopFileSystemLocatorImpl instance;
 
-  public HadoopFileSystemLocatorImpl( List<HadoopFileSystemFactory> hadoopFileSystemFactories ) {
+  public HadoopFileSystemLocatorImpl() {
+  }
+
+  public static HadoopFileSystemLocatorImpl getInstance() {
+    if ( instance == null ) {
+      instance = new HadoopFileSystemLocatorImpl();
+    }
+    return instance;
+  }
+
+  public void setHadoopFileSystemFactories( List<HadoopFileSystemFactory> hadoopFileSystemFactories ) {
     this.hadoopFileSystemFactories = hadoopFileSystemFactories;
   }
 
