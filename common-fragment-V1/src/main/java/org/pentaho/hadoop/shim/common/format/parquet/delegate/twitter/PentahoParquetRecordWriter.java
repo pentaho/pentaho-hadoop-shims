@@ -13,7 +13,7 @@
 package org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter;
 
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
-import parquet.hadoop.ParquetRecordWriter;
+import org.apache.parquet.hadoop.ParquetRecordWriter;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat.IPentahoRecordWriter;
 

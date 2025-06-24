@@ -13,6 +13,10 @@
 package org.pentaho.hadoop.shim.common.format.parquet;
 
 import org.apache.hadoop.fs.Path;
+import org.apache.parquet.format.converter.ParquetMetadataConverter;
+import org.apache.parquet.hadoop.ParquetFileReader;
+import org.apache.parquet.hadoop.metadata.ParquetMetadata;
+import org.apache.parquet.schema.MessageType;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -65,10 +69,10 @@ public class ParquetConverterTest {
           .buildInputFields( apacheSchema );
         break;
       case "TWITTER":
-        parquet.hadoop.metadata.ParquetMetadata twitterMeta = parquet.hadoop.ParquetFileReader
+        ParquetMetadata twitterMeta = ParquetFileReader
           .readFooter( conf, new Path( Paths.get( urlTestResources.toURI() ).toString() ),
-            parquet.format.converter.ParquetMetadataConverter.NO_FILTER );
-        parquet.schema.MessageType twitterSchema = twitterMeta.getFileMetaData().getSchema();
+            ParquetMetadataConverter.NO_FILTER );
+        MessageType twitterSchema = twitterMeta.getFileMetaData().getSchema();
         kettleSchema = org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter.ParquetConverter
           .buildInputFields( twitterSchema );
         break;

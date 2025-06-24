@@ -13,6 +13,7 @@
 package org.pentaho.hadoop.shim.common.format.parquet;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.parquet.hadoop.api.WriteSupport;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.pentaho.di.core.util.Assert;
@@ -73,7 +74,7 @@ public class PentahoParquetWriteSupportTest {
         org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter.PentahoParquetWriteSupport twitterWriteSupport =
           new org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter.PentahoParquetWriteSupport(
             ParquetUtils.createOutputFields( ParquetSpec.DataType.UTF8, false, ParquetSpec.DataType.INT_64, false ) );
-        parquet.hadoop.api.WriteSupport.WriteContext twitterWriteContext = twitterWriteSupport.init( conf );
+        WriteSupport.WriteContext twitterWriteContext = twitterWriteSupport.init( conf );
         Assert.assertNotNull( twitterWriteContext );
         break;
       default:

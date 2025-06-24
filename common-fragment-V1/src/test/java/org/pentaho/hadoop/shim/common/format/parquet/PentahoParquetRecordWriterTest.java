@@ -16,6 +16,9 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.mapreduce.TaskType;
 import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
+import org.apache.parquet.hadoop.ParquetOutputFormat;
+import org.apache.parquet.hadoop.ParquetRecordWriter;
+import org.apache.parquet.hadoop.api.WriteSupport;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -77,7 +80,7 @@ public class PentahoParquetRecordWriterTest {
         org.apache.parquet.hadoop.ParquetOutputFormat.setOutputPath( job, outputFile.getParent() );
         break;
       case "TWITTER":
-        parquet.hadoop.ParquetOutputFormat.setOutputPath( job, outputFile.getParent() );
+        ParquetOutputFormat.setOutputPath( job, outputFile.getParent() );
         break;
       default:
         org.junit.Assert.fail( "Invalid provider name used." );
@@ -108,13 +111,13 @@ public class PentahoParquetRecordWriterTest {
           apacheRecordWriter, task );
         break;
       case "TWITTER":
-        parquet.hadoop.api.WriteSupport twitterSupport =
+        WriteSupport twitterSupport =
           new org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter.PentahoParquetWriteSupport(
             ParquetUtils.createOutputFields( ParquetSpec.DataType.INT_64 ) );
-        parquet.hadoop.ParquetOutputFormat twitterNativeParquetOutputFormat =
-          new parquet.hadoop.ParquetOutputFormat<>( twitterSupport );
-        parquet.hadoop.ParquetRecordWriter<RowMetaAndData> twitterRecordWriter =
-          (parquet.hadoop.ParquetRecordWriter<RowMetaAndData>) twitterNativeParquetOutputFormat.getRecordWriter( task );
+        ParquetOutputFormat twitterNativeParquetOutputFormat =
+          new ParquetOutputFormat<>( twitterSupport );
+        ParquetRecordWriter<RowMetaAndData> twitterRecordWriter =
+          (ParquetRecordWriter<RowMetaAndData>) twitterNativeParquetOutputFormat.getRecordWriter( task );
         recordWriterObject = twitterRecordWriter;
         writer = new org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter.PentahoParquetRecordWriter(
           twitterRecordWriter, task );
@@ -147,7 +150,7 @@ public class PentahoParquetRecordWriterTest {
         ( (org.apache.parquet.hadoop.ParquetRecordWriter<RowMetaAndData>) recordWriterObject ).close( task );
         break;
       case "TWITTER":
-        ( (parquet.hadoop.ParquetRecordWriter<RowMetaAndData>) recordWriterObject ).close( task );
+        ( (ParquetRecordWriter<RowMetaAndData>) recordWriterObject ).close( task );
         break;
       default:
         org.junit.Assert.fail( "Invalid provider name used." );
@@ -189,21 +192,17 @@ public class PentahoParquetRecordWriterTest {
       case "APACHE":
         pentahoParquetInputFormat = new PentahoApacheInputFormat( mock( NamedCluster.class ) );
 
-        org.apache.parquet.hadoop.ParquetInputSplit apacheParquetInputSplit =
-          Mockito.spy( org.apache.parquet.hadoop.ParquetInputSplit.class );
-        when( apacheParquetInputSplit.getRowGroupOffsets() ).thenReturn( new long[] { 4 } );
-        when( apacheParquetInputSplit.getPath() ).thenReturn( new org.apache.hadoop.fs.Path( parquetFilePath ) );
-        pentahoInputSplit = new PentahoInputSplitImpl( apacheParquetInputSplit );
+        org.apache.hadoop.mapreduce.lib.input.FileSplit apacheFileSplit = Mockito.mock(org.apache.hadoop.mapreduce.lib.input.FileSplit.class);
+        when( apacheFileSplit.getPath() ).thenReturn( new org.apache.hadoop.fs.Path( parquetFilePath ) );
+        pentahoInputSplit = new PentahoInputSplitImpl( apacheFileSplit );
 
         break;
       case "TWITTER":
         pentahoParquetInputFormat = new PentahoTwitterInputFormat( mock( NamedCluster.class ) );
 
-        parquet.hadoop.ParquetInputSplit twitterParquetInputSplit =
-          Mockito.spy( parquet.hadoop.ParquetInputSplit.class );
-        when( twitterParquetInputSplit.getRowGroupOffsets() ).thenReturn( new long[] { 4 } );
-        when( twitterParquetInputSplit.getPath() ).thenReturn( new org.apache.hadoop.fs.Path( parquetFilePath ) );
-        pentahoInputSplit = new PentahoInputSplitImpl( twitterParquetInputSplit );
+        org.apache.hadoop.mapreduce.lib.input.FileSplit twitterFileSplit = Mockito.mock(org.apache.hadoop.mapreduce.lib.input.FileSplit.class);
+        when( twitterFileSplit.getPath() ).thenReturn( new org.apache.hadoop.fs.Path( parquetFilePath ) );
+        pentahoInputSplit = new PentahoInputSplitImpl( twitterFileSplit );
 
         break;
       default:
