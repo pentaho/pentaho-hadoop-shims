@@ -13,6 +13,7 @@
 package org.pentaho.hadoop.shim.common.format.parquet;
 
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -100,18 +101,14 @@ public class PentahoParquetInputFormatTest {
     PentahoInputSplitImpl pentahoInputSplit = null;
     switch ( provider ) {
       case "APACHE":
-        org.apache.parquet.hadoop.ParquetInputSplit apacheParquetInputSplit =
-          Mockito.spy( org.apache.parquet.hadoop.ParquetInputSplit.class );
-        when( apacheParquetInputSplit.getRowGroupOffsets() ).thenReturn( new long[] { 4 } );
-        when( apacheParquetInputSplit.getPath() ).thenReturn( new Path( parquetFilePath ) );
-        pentahoInputSplit = new PentahoInputSplitImpl( apacheParquetInputSplit );
+        FileSplit apacheFileSplit = Mockito.mock(FileSplit.class);
+        when(apacheFileSplit.getPath()).thenReturn(new Path(parquetFilePath));
+        pentahoInputSplit = new PentahoInputSplitImpl(apacheFileSplit);
         break;
       case "TWITTER":
-        parquet.hadoop.ParquetInputSplit twitterParquetInputSplit =
-          Mockito.spy( parquet.hadoop.ParquetInputSplit.class );
-        when( twitterParquetInputSplit.getRowGroupOffsets() ).thenReturn( new long[] { 4 } );
-        when( twitterParquetInputSplit.getPath() ).thenReturn( new Path( parquetFilePath ) );
-        pentahoInputSplit = new PentahoInputSplitImpl( twitterParquetInputSplit );
+        FileSplit twitterFileSplit = Mockito.mock(FileSplit.class);
+        when(twitterFileSplit.getPath()).thenReturn(new Path(parquetFilePath));
+        pentahoInputSplit = new PentahoInputSplitImpl(twitterFileSplit);
         break;
       default:
         fail( "Invalid provider name used." );

@@ -19,7 +19,6 @@
     <!-- default folder -->
     <failureaccess.version>1.0.1</failureaccess.version>
     <org.apache.avro.version>1.12.0</org.apache.avro.version>
-    <hadoop-aws.version>3.4.0</hadoop-aws.version>
     <awssdk.version>2.28.27</awssdk.version>
     <!-- client and default folders -->
     <gcs.version>hadoop2-1.9.17</gcs.version>
@@ -27,9 +26,6 @@
     <!-- pmr folder -->
     <commons-configuration.version>1.6</commons-configuration.version>
     <commons-configuration2.version>2.10.1</commons-configuration2.version>
-    <org.apache.hadoop.version>3.4.0</org.apache.hadoop.version>
-    <hadoop-azure.version>3.4.0</hadoop-azure.version>
-    <org.apache.orc.version>1.6.1</org.apache.orc.version>
     <parquet.version>1.14.4</parquet.version>
     <joda-time.version>2.9.9</joda-time.version>
     <zookeeper.version>3.9.3</zookeeper.version>
@@ -141,6 +137,10 @@
       <version>${org.apache.hadoop.version}</version>
       <exclusions>
         <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>org.codehaus.jettison</groupId>
           <artifactId>jettison</artifactId>
         </exclusion>
@@ -159,6 +159,14 @@
         <exclusion>
           <groupId>org.eclipse.jetty.websocket</groupId>
           <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <artifactId>hadoop-shaded-protobuf_3_21</artifactId>
+          <groupId>org.apache.hadoop.thirdparty</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>dnsjava</artifactId>
+          <groupId>dnsjava</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -228,11 +236,10 @@
       </exclusions>
     </dependency>
 
-    <!-- Dependency for hadoop-common-3.3.0 which causes bundle packaging issues -->
     <dependency>
       <groupId>dnsjava</groupId>
       <artifactId>dnsjava</artifactId>
-      <version>3.3.1</version>
+      <version>${dnsjava.version}</version>
     </dependency>
 
     <dependency>
@@ -246,6 +253,14 @@
       <artifactId>hadoop-common</artifactId>
       <version>${org.apache.hadoop.version}</version>
       <exclusions>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.hadoop.thirdparty</groupId>
+          <artifactId>hadoop-shaded-protobuf_3_21</artifactId>
+        </exclusion>
         <exclusion>
           <groupId>org.codehaus.jettison</groupId>
           <artifactId>jettison</artifactId>
@@ -341,6 +356,10 @@
       <version>${org.apache.hadoop.version}</version>
       <exclusions>
         <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>io.netty</groupId>
           <artifactId>netty-all</artifactId>
         </exclusion>
@@ -369,6 +388,10 @@
       <version>${gcs.version}</version>
       <exclusions>
         <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>com.google.oauth-client</groupId>
           <artifactId>google-oauth-client</artifactId>
         </exclusion>
@@ -381,7 +404,7 @@
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-azure</artifactId>
-      <version>${hadoop-azure.version}</version>
+      <version>${org.apache.hadoop.version}</version>
       <exclusions>
         <exclusion>
           <groupId>org.codehaus.jackson</groupId>
@@ -392,7 +415,7 @@
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-azure-datalake</artifactId>
-      <version>${hadoop-azure.version}</version>
+      <version>${org.apache.hadoop.version}</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -407,7 +430,7 @@
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-aws</artifactId>
-      <version>${hadoop-aws.version}</version>
+      <version>${org.apache.hadoop.version}</version>
       <exclusions>
         <exclusion>
           <groupId>software.amazon.awssdk</groupId>

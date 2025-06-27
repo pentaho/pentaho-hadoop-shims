@@ -17,6 +17,9 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
+import org.apache.parquet.hadoop.ParquetInputFormat;
+import org.apache.parquet.hadoop.ParquetRecordReader;
+import org.apache.parquet.hadoop.api.ReadSupport;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -112,13 +115,13 @@ public class PentahoParquetRecordReaderTest {
         job.getConfiguration()
           .set( org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter.ParquetConverter.PARQUET_SCHEMA_CONF_KEY,
             marshallStr );
-        parquet.hadoop.api.ReadSupport<RowMetaAndData> twitterReadSupport =
+        ReadSupport<RowMetaAndData> twitterReadSupport =
           new org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter.PentahoParquetReadSupport();
-        parquet.hadoop.ParquetRecordReader<RowMetaAndData> twitterNativeRecordReader =
-          new parquet.hadoop.ParquetRecordReader<>( twitterReadSupport,
-            parquet.hadoop.ParquetInputFormat.getFilter( job.getConfiguration() ) );
-        parquet.hadoop.ParquetInputFormat<RowMetaAndData> twitterNativeParquetInputFormat =
-          new parquet.hadoop.ParquetInputFormat<>();
+        ParquetRecordReader<RowMetaAndData> twitterNativeRecordReader =
+          new ParquetRecordReader<>( twitterReadSupport,
+            ParquetInputFormat.getFilter( job.getConfiguration() ) );
+        ParquetInputFormat<RowMetaAndData> twitterNativeParquetInputFormat =
+          new ParquetInputFormat<>();
         FileInputFormat.setInputPaths( job, getClass().getClassLoader().getResource( testFile ).toExternalForm() );
         InputSplit twitterInputSplit = twitterNativeParquetInputFormat.getSplits( job ).get( 0 );
         TaskAttemptContextImpl twitterTask = new TaskAttemptContextImpl( job.getConfiguration(), new TaskAttemptID() );
