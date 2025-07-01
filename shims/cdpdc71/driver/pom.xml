@@ -916,50 +916,6 @@
       </plugin>
 
       <plugin>
-        <groupId>org.pentaho</groupId>
-        <artifactId>shim-bundle-plugin</artifactId>
-        <version>${shim-bundle-plugin.version}</version>
-        <configuration>
-          <resolverFilters>
-            <resolverFilter>
-              <include>
-                *:parquet-hadoop,*:parquet-hadoop-bundle,*:parquet-avro,*:hadoop-yarn-api,*:avro,*:avro-mapred,*:hive-jdbc,
-                *:hive-service,*:hive-storage-api,*:orc-core,*:hadoop-common,*:hadoop-hdfs,*:hadoop-mapreduce-*,
-                *:hadoop-yarn-api,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,
-                *:hbase-server,*:oozie-client,*:parquet-hadoop-bundle,*:zookeeper,*:hbase-shaded-miscellaneous,
-                org.eclipse.jetty:*,com.google.guava:*,*:hadoop-lzo,*:hadoop-client,*:hadoop-aws,*:hadoop-azure,*:gcs-connector,*:hadoop-hdfs-client,
-                *:google-oauth-client,*:wildfly-openssl,*:httpcore,*:httpclient,*:hadoop-shaded-protobuf_3_25,*:protobuf-java,
-                *:snappy-java
-              </include>
-              <exclude>
-                *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool,*:commons-dbcp,
-                *:janino,org.apache.velocity:velocity,
-                *:grpc-*,*:opencensus*,*:perfmark-api*,*:threetenbp*,
-                *:google-oauth-client-java6
-              </exclude>
-              <transitive>true</transitive>
-            </resolverFilter>
-            <resolverFilter>
-              <include>
-                <!--Needed for Pig-->
-                *:antlr-runtime,*:automaton,*:pig,*:parquet-pig,*:sqoop,*:joda-time,*:jython,*:gateway-cloud-bindings,
-                *:gateway-util-common,*:gateway-shell,*:gateway-i18n,*:aircompressor,*:netty-*,*:libthrift,*:hbase-mapreduce
-              </include>
-              <transitive>false</transitive>
-            </resolverFilter>
-          </resolverFilters>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>resolve</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
         <executions>
