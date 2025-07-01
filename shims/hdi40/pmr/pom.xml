@@ -63,6 +63,10 @@
           <groupId>com.google.protobuf</groupId>
           <artifactId>protobuf-java</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-protobuf</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
