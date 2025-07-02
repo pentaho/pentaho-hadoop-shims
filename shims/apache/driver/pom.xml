@@ -560,6 +560,7 @@
               <goal>single</goal>
             </goals>
             <configuration>
+              <finalName>apache</finalName>
               <appendAssemblyId>false</appendAssemblyId>
               <descriptors>
                 <descriptor>src/main/assembly/zip.xml</descriptor>
