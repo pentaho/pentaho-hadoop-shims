@@ -20,11 +20,11 @@
 
 
   <dependencies>
-    <dependency>
-      <groupId>org.apache.htrace</groupId>
-      <artifactId>htrace-core</artifactId>
-      <version>${htrace-core.version}</version>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.apache.htrace</groupId>-->
+<!--      <artifactId>htrace-core</artifactId>-->
+<!--      <version>${htrace-core.version}</version>-->
+<!--    </dependency>-->
     <dependency>
       <groupId>com.google.cloud.bigdataoss</groupId>
       <artifactId>gcs-connector</artifactId>
