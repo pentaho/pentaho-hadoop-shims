@@ -834,6 +834,11 @@
       <artifactId>commons-configuration2</artifactId>
       <version>${commons-configuration2.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+      <version>${protobuf-java.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -905,12 +910,13 @@
                 *:hadoop-yarn-api,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,
                 *:hbase-server,*:oozie-client,*:parquet-hadoop-bundle,*:zookeeper,*:hbase-shaded-miscellaneous,
                 org.eclipse.jetty:*,com.google.guava:*,*:hadoop-lzo,*:hadoop-client,*:hadoop-aws,*:hadoop-azure,*:gcs-connector,*:hadoop-hdfs-client,
-                *:google-oauth-client,*:wildfly-openssl,*:httpcore,*:httpclient,*:hadoop-shaded-protobuf-3_25
+                *:google-oauth-client,*:wildfly-openssl,*:httpcore,*:httpclient,*:hadoop-shaded-protobuf-3_25,*:protobuf-java,
+                *:snappy-java
               </include>
               <exclude>
                 *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool2,*:commons-dbcp2,
                 *:janino,org.apache.velocity:velocity,
-                *:grpc-*,*:opencensus*,*:proto*,*:perfmark-api*,*:threetenbp*,
+                *:grpc-*,*:opencensus*,*:perfmark-api*,*:threetenbp*,
                 *:google-oauth-client-java6
               </exclude>
               <transitive>true</transitive>

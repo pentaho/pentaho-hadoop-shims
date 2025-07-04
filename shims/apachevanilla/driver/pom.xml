@@ -1137,12 +1137,12 @@
                 org.eclipse.jetty:*,org.eclipse.jetty.websocket:*,
                 com.google.guava:*,*:hadoop-lzo,*:hadoop-client,*:hadoop-aws,*:hadoop-azure,*:gcs-connector,*:hadoop-hdfs-client,*:commons-configuration2,
                 *:google-oauth-client,*:hbase-mapreduce,*:commons-codec,org.apache.curator:*,*:hadoop-shaded-protobuf_3_25,
-                *:snappy-java
+                *:snappy-java,*:protobuf-java
               </include>
               <exclude>
                 *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool2,*:commons-dbcp2,
                 *:janino,org.apache.velocity:velocity,
-                *:grpc-*,*:opencensus*,*:proto*,*:perfmark-api*,*:threetenbp*,
+                *:grpc-*,*:opencensus*,*:perfmark-api*,*:threetenbp*,
                 *:google-oauth-client-java6,*:dnsjava,*:libfb303
               </exclude>
               <transitive>true</transitive>

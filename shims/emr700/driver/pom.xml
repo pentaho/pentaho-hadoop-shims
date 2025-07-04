@@ -866,6 +866,11 @@
       <artifactId>curator-recipes</artifactId>
       <version>${curator.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+      <version>${protobuf-java.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -936,7 +941,8 @@
                 *:hadoop-yarn-common,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,
                 *:hbase-server,*:hbase-metrics,*:hbase-metrics-api,*:oozie-client,*:parquet-hadoop-bundle,
                 *:zookeeper,*:hadoop-lzo,*:hadoop-client,*:hadoop-aws,*:hadoop-hdfs-client,org.eclipse.jetty:*,
-                org.apache.commons:commons-configuration2,org.apache.curator:*,*:hadoop-shaded-protobuf_3_25
+                org.apache.commons:commons-configuration2,org.apache.curator:*,*:hadoop-shaded-protobuf_3_25,
+                *:snappy-java,*:protobuf-java
               </include>
               <exclude>
                 *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool2,*:commons-dbcp2,
