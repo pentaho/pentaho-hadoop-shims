@@ -184,9 +184,24 @@
       </exclusions>
     </dependency>
     <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+      <version>${protobuf-java.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-yarn-api</artifactId>
       <version>${org.apache.hadoop.version}</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>hadoop-shaded-protobuf_3_21</artifactId>
+          <groupId>org.apache.hadoop.thirdparty</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>protobuf-java</artifactId>
+          <groupId>com.google.protobuf</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.avro</groupId>
@@ -381,6 +396,10 @@
         <exclusion>
           <groupId>com.nimbusds</groupId>
           <artifactId>nimbus-jose-jwt</artifactId>
+        </exclusion>
+        <exclusion>
+          <artifactId>hadoop-shaded-protobuf_3_21</artifactId>
+          <groupId>org.apache.hadoop.thirdparty</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -717,7 +736,8 @@
                 *:hive-service,*:orc-core,*:hadoop-common,*:hadoop-hdfs,*:hadoop-mapreduce-*,
                 *:hadoop-yarn-api,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,*:hbase-zookeeper
                 *:hbase-server,*:oozie-client,*:parquet-hadoop-bundle,*:zookeeper,*:hbase-shaded-miscellaneous,
-                org.eclipse.jetty:*, *:hadoop-azure, *:hadoop-azure-datalake,*:commons-configuration2
+                org.eclipse.jetty:*, *:hadoop-azure, *:hadoop-azure-datalake,*:commons-configuration2,*:protobuf-java,
+                *:hadoop-shaded-protobuf-3_25,*:snappy-java
               </include>
               <exclude>
                 *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool2,*:commons-dbcp2,
