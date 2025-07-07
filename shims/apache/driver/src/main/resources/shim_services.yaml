@@ -1,0 +1,14 @@
+  services:
+  - auth_manager
+  - hdfs:
+      options:
+          - hdfs
+      schemas:
+          - hdfs
+          - maprfs
+          - escalefs
+          - wasb
+          - wasbs
+          - abfs
+          - hc
+  - common_formats
