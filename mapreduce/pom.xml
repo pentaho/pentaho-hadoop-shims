@@ -13,7 +13,8 @@
   <packaging>jar</packaging>
 
   <properties>
-    <org.apache.hbase.version>1.4.8</org.apache.hbase.version>
+    <org.apache.hbase.version>2.6.2</org.apache.hbase.version>
+    <netty.version>4.1.118.Final</netty.version>
   </properties>
 
   <dependencies>
@@ -26,8 +27,30 @@
           <groupId>org.apache.hadoop</groupId>
           <artifactId>hadoop-auth</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-handler</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-common</artifactId>
+        </exclusion>
       </exclusions>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-handler</artifactId>
+      <version>${netty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-common</artifactId>
+      <version>${netty.version}</version>
     </dependency>
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>

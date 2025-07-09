@@ -12,7 +12,7 @@
 
 package org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter;
 
-import parquet.hadoop.ParquetRecordReader;
+import org.apache.parquet.hadoop.ParquetRecordReader;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.hadoop.shim.api.format.IPentahoInputFormat.IPentahoRecordReader;
 

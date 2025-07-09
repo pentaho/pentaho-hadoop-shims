@@ -149,6 +149,8 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
   private static final String KEYTAB_AUTHENTICATION_LOCATION = "pentaho.authentication.default.kerberos.keytabLocation";
   private static final String KEYTAB_IMPERSONATION_LOCATION =
     "pentaho.authentication.default.mapping.server.credentials.kerberos.keytabLocation";
+  private static final String MAPRED_MAP_JAVA_OPTS = "mapreduce.map.java.opts";
+  private static final String MAPRED_REDUCE_JAVA_OPTS = "mapreduce.reduce.java.opts";
   public static final String VARIABLE_SPACE = "variableSpace";
   private final HadoopShim hadoopShim;
   private final LogChannelInterface log;
@@ -656,6 +658,10 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
 
     // set a string in the job configuration as the serialized variablespace
     conf.setStrings( VARIABLE_SPACE, xmlVariableSpace );
+
+    //For allowing protobuf compatibility
+    conf.set( MAPRED_MAP_JAVA_OPTS, "-Dcom.google.protobuf.use_unsafe_pre22_gencode=true" );
+    conf.set( MAPRED_REDUCE_JAVA_OPTS, "-Dcom.google.protobuf.use_unsafe_pre22_gencode=true" );
   }
 
   @VisibleForTesting

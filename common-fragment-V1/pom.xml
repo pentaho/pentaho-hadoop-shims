@@ -28,15 +28,15 @@
       </activation>
       <properties>
         <org.apache.avro.version>1.8.0</org.apache.avro.version>
-        <org.apache.hbase.version>1.4.8</org.apache.hbase.version>
+        <org.apache.hbase.version>2.6.2</org.apache.hbase.version>
         <org.apache.hadoop.version-hdp26>2.7.3.2.6.0.3-8</org.apache.hadoop.version-hdp26>
-        <org.apache.hive.version>1.2.1000.2.6.0.3-8</org.apache.hive.version>
         <org.apache.oozie.version>4.2.0.2.6.0.3-8</org.apache.oozie.version>
-        <parquet.version>1.8.1</parquet.version>
         <parquet.cloudera.version>1.5.0-cdh5.14.0</parquet.cloudera.version>
         <pig.version>0.16.0.2.6.0.3-8</pig.version>
         <sqoop.version>1.4.6.2.6.0.3-8</sqoop.version>
         <dependency.pig.classifier>h2</dependency.pig.classifier>
+        <commons.configuration2.version>2.10.1</commons.configuration2.version>
+        <netty.version>4.1.118.Final</netty.version>
       </properties>
       <dependencies>
         <dependency>
@@ -50,10 +50,39 @@
           <scope>compile</scope>
         </dependency>
         <dependency>
-          <groupId>com.twitter</groupId>
+          <groupId>org.apache.parquet</groupId>
           <artifactId>parquet-hadoop-bundle</artifactId>
-          <version>${parquet.cloudera.version}</version>
-          <scope>provided</scope>
+          <version>${parquet.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.parquet</groupId>
+          <artifactId>parquet-column</artifactId>
+          <version>${parquet.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.parquet</groupId>
+          <artifactId>parquet-common</artifactId>
+          <version>${parquet.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.parquet</groupId>
+          <artifactId>parquet-avro</artifactId>
+          <version>${parquet.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.parquet</groupId>
+          <artifactId>parquet-hadoop</artifactId>
+          <version>${parquet.version}</version> <!-- Use latest compatible version -->
+        </dependency>
+        <dependency>
+          <groupId>org.apache.parquet</groupId>
+        <artifactId>parquet-avro</artifactId>
+        <version>${parquet.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.parquet</groupId>
+          <artifactId>parquet-avro</artifactId>
+          <version>${parquet.version}</version>
         </dependency>
         <dependency>
           <groupId>org.apache.avro</groupId>
@@ -74,8 +103,28 @@
           <scope>provided</scope>
           <exclusions>
             <exclusion>
+              <groupId>org.apache.hadoop</groupId>
+              <artifactId>*</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>com.google.protobuf</groupId>
+              <artifactId>protobuf-java</artifactId>
+            </exclusion>
+            <exclusion>
               <groupId>com.nimbusds</groupId>
               <artifactId>nimbus-jose-jwt</artifactId>
+            </exclusion>
+          </exclusions>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.hive</groupId>
+          <artifactId>hive-exec</artifactId>
+          <version>${org.apache.hive.version}</version>
+          <scope>provided</scope>
+          <exclusions>
+            <exclusion>
+              <groupId>*</groupId>
+              <artifactId>*</artifactId>
             </exclusion>
           </exclusions>
         </dependency>
@@ -83,7 +132,12 @@
           <groupId>org.apache.orc</groupId>
           <artifactId>orc-core</artifactId>
           <version>${org.apache.orc.version}</version>
-          <scope>provided</scope>
+          <exclusions>
+            <exclusion>
+              <groupId>org.apache.hadoop</groupId>
+              <artifactId>hadoop-client-api</artifactId>
+            </exclusion>
+          </exclusions>
         </dependency>
         <dependency>
           <groupId>org.apache.sqoop</groupId>
@@ -101,7 +155,63 @@
               <groupId>org.apache.hadoop</groupId>
               <artifactId>hadoop-auth</artifactId>
             </exclusion>
+            <exclusion>
+              <groupId>org.apache.hadoop</groupId>
+              <artifactId>hadoop-annotations</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>org.apache.hadoop</groupId>
+              <artifactId>hadoop-common</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>org.apache.hadoop</groupId>
+              <artifactId>hadoop-client</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>org.apache.hadoop</groupId>
+              <artifactId>hadoop-yarn-common</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>org.apache.hadoop</groupId>
+              <artifactId>hadoop-mapreduce-client-common</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>org.apache.hadoop</groupId>
+              <artifactId>hadoop-mapreduce-client-core</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>org.apache.hadoop</groupId>
+              <artifactId>hadoop-hdfs</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>com.google.protobuf</groupId>
+              <artifactId>protobuf-java</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>io.netty</groupId>
+              <artifactId>netty-handler</artifactId>
+            </exclusion>
           </exclusions>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.hbase</groupId>
+          <artifactId>hbase-mapreduce</artifactId>
+          <version>${org.apache.hbase.version}</version>
+          <exclusions>
+            <exclusion>
+              <groupId>org.apache.hadoop</groupId>
+              <artifactId>hadoop-yarn-common</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>org.apache.hadoop</groupId>
+              <artifactId>hadoop-mapreduce-client-core</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>com.google.protobuf</groupId>
+              <artifactId>protobuf-java</artifactId>
+            </exclusion>
+          </exclusions>
+          <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.oozie</groupId>
@@ -113,20 +223,119 @@
               <groupId>com.nimbusds</groupId>
               <artifactId>nimbus-jose-jwt</artifactId>
             </exclusion>
+            <exclusion>
+              <groupId>org.apache.hadoop</groupId>
+              <artifactId>hadoop-auth</artifactId>
+            </exclusion>
           </exclusions>
         </dependency>
         <dependency>
           <groupId>org.apache.hadoop</groupId>
           <artifactId>hadoop-common</artifactId>
           <!--todo: ask if this is a good idea -->
-          <version>${org.apache.hadoop.version-hdp26}</version>
+          <version>${org.apache.hadoop.version}</version>
           <scope>provided</scope>
           <exclusions>
             <exclusion>
               <groupId>com.nimbusds</groupId>
               <artifactId>nimbus-jose-jwt</artifactId>
             </exclusion>
+            <exclusion>
+              <groupId>org.apache.hadoop.thirdparty</groupId>
+              <artifactId>hadoop-shaded-protobuf_3_21</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>com.google.protobuf</groupId>
+              <artifactId>protobuf-java</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>io.netty</groupId>
+              <artifactId>netty-common</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>org.apache.commons</groupId>
+              <artifactId>commons-configuration2</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>io.netty</groupId>
+              <artifactId>netty-handler</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>dnsjava</groupId>
+              <artifactId>dnsjava</artifactId>
+            </exclusion>
           </exclusions>
+        </dependency>
+        <dependency>
+          <groupId>dnsjava</groupId>
+          <artifactId>dnsjava</artifactId>
+          <version>${dnsjava.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-handler</artifactId>
+          <version>${netty.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-configuration2</artifactId>
+          <version>${commons.configuration2.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.hadoop.thirdparty</groupId>
+          <artifactId>hadoop-shaded-protobuf_3_25</artifactId>
+          <version>${hadoop-shaded-protobuf_3_25.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>  hadoop-hdfs</artifactId>
+          <version>${org.apache.hadoop.version}</version>
+          <scope>provided</scope>
+          <exclusions>
+            <exclusion>
+              <groupId>io.netty</groupId>
+              <artifactId>netty-handler</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>io.netty</groupId>
+              <artifactId>netty-codec-http</artifactId>
+            </exclusion>
+          </exclusions>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>hadoop-client</artifactId>
+          <version>${org.apache.hadoop.version}</version>
+          <exclusions>
+            <exclusion>
+              <groupId>com.google.protobuf</groupId>
+              <artifactId>protobuf-java</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>org.apache.hadoop.thirdparty</groupId>
+              <artifactId>hadoop-shaded-protobuf_3_21</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>io.netty</groupId>
+              <artifactId>netty-handler</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>io.netty</groupId>
+              <artifactId>netty-codec-http</artifactId>
+            </exclusion>
+          </exclusions>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-codec-http</artifactId>
+          <version>${netty.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>hadoop-client-api</artifactId>
+          <version>${org.apache.hadoop.version}</version>
+          <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.pig</groupId>

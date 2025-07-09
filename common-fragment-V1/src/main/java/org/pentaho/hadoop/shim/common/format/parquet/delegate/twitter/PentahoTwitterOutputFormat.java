@@ -21,11 +21,12 @@ import org.apache.hadoop.mapreduce.TaskType;
 import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.parquet.column.ParquetProperties;
+import org.apache.parquet.hadoop.ParquetOutputFormat;
+import org.apache.parquet.hadoop.ParquetRecordWriter;
+import org.apache.parquet.hadoop.metadata.CompressionCodecName;
 import org.pentaho.hadoop.shim.api.format.org.pentaho.hadoop.shim.pvfs.api.PvfsHadoopBridgeFileSystemExtension;
-import parquet.column.ParquetProperties;
-import parquet.hadoop.ParquetOutputFormat;
-import parquet.hadoop.ParquetRecordWriter;
-import parquet.hadoop.metadata.CompressionCodecName;
+
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.hadoop.shim.api.format.IParquetOutputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoParquetOutputFormat;

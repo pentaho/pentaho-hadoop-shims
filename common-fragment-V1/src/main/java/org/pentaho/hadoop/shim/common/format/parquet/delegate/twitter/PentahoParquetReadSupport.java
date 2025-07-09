@@ -13,11 +13,11 @@
 package org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter;
 
 import org.apache.hadoop.conf.Configuration;
-import parquet.hadoop.api.InitContext;
-import parquet.hadoop.api.ReadSupport;
-import parquet.io.api.RecordMaterializer;
-import parquet.schema.MessageType;
-import parquet.schema.Type;
+import org.apache.parquet.hadoop.api.InitContext;
+import org.apache.parquet.hadoop.api.ReadSupport;
+import org.apache.parquet.io.api.RecordMaterializer;
+import org.apache.parquet.schema.MessageType;
+import org.apache.parquet.schema.Type;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.hadoop.shim.api.format.IParquetInputField;
 import org.pentaho.hadoop.shim.common.format.parquet.ParquetInputFieldList;

@@ -14,7 +14,6 @@
   <properties>
     <pentaho-osgi-bundles.version>10.2.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
     <org.apache.avro.version>1.8.0</org.apache.avro.version>
-    <org.apache.hadoop.version>2.7.0-mapr-1710</org.apache.hadoop.version>
     <org.apache.hbase.version>1.4.8</org.apache.hbase.version>
     <vendor.hbase.version>6.0.0-mapr</vendor.hbase.version>
     <org.apache.hive.version>2.1.1-mapr-1710</org.apache.hive.version>
@@ -83,6 +82,10 @@
       <version>${org.apache.hive.version}</version>
       <exclusions>
         <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>com.nimbusds</groupId>
           <artifactId>nimbus-jose-jwt</artifactId>
         </exclusion>
@@ -92,6 +95,12 @@
       <groupId>org.apache.hive</groupId>
       <artifactId>hive-service</artifactId>
       <version>${org.apache.hive.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.sqoop</groupId>
@@ -104,6 +113,10 @@
       <version>${org.apache.hadoop.version}</version>
       <exclusions>
         <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>com.sun.xml.bind</groupId>
           <artifactId>jaxb-impl</artifactId>
         </exclusion>
@@ -111,12 +124,22 @@
           <groupId>org.apache.hadoop</groupId>
           <artifactId>hadoop-auth</artifactId>
         </exclusion>
+        <exclusion>
+          <artifactId>dnsjava</artifactId>
+          <groupId>dnsjava</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-hdfs</artifactId>
       <version>${org.apache.hadoop.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
@@ -127,6 +150,12 @@
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-mapreduce-client-jobclient</artifactId>
       <version>${org.apache.hadoop.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
@@ -139,6 +168,10 @@
       <version>${org.apache.hbase.version}</version>
       <exclusions>
         <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>org.apache.hadoop</groupId>
           <artifactId>hadoop-auth</artifactId>
         </exclusion>
@@ -148,6 +181,12 @@
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-common</artifactId>
       <version>${org.apache.hbase.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
@@ -158,12 +197,22 @@
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-protocol</artifactId>
       <version>${org.apache.hbase.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-server</artifactId>
       <version>${org.apache.hbase.version}</version>
       <exclusions>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
         <exclusion>
           <groupId>org.apache.hadoop</groupId>
           <artifactId>hadoop-hdfs</artifactId>

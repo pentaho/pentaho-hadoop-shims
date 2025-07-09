@@ -30,6 +30,14 @@
           <groupId>com.google.guava</groupId>
           <artifactId>guava</artifactId>
         </exclusion>
+        <exclusion>
+          <artifactId>protobuf-java-util</artifactId>
+          <groupId>com.google.protobuf</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>protobuf-java</artifactId>
+          <groupId>com.google.protobuf</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -135,6 +143,16 @@
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-yarn-api</artifactId>
       <version>${org.apache.hadoop.version}</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>protobuf-java</artifactId>
+          <groupId>com.google.protobuf</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>hadoop-shaded-protobuf_3_21</artifactId>
+          <groupId>org.apache.hadoop.thirdparty</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
@@ -156,6 +174,10 @@
         <exclusion>
           <groupId>com.nimbusds</groupId>
           <artifactId>nimbus-jose-jwt</artifactId>
+        </exclusion>
+        <exclusion>
+          <artifactId>zookeeper</artifactId>
+          <groupId>org.apache.zookeeper</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -184,7 +206,24 @@
           <groupId>com.nimbusds</groupId>
           <artifactId>nimbus-jose-jwt</artifactId>
         </exclusion>
+        <exclusion>
+          <artifactId>zookeeper</artifactId>
+          <groupId>org.apache.zookeeper</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>dnsjava</artifactId>
+          <groupId>dnsjava</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>hadoop-shaded-protobuf_3_21</artifactId>
+          <groupId>org.apache.hadoop.thirdparty</groupId>
+        </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>dnsjava</groupId>
+      <artifactId>dnsjava</artifactId>
+      <version>${dnsjava.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.orc</groupId>
@@ -299,6 +338,14 @@
           <groupId>com.nimbusds</groupId>
           <artifactId>nimbus-jose-jwt</artifactId>
         </exclusion>
+        <exclusion>
+          <artifactId>zookeeper</artifactId>
+          <groupId>org.apache.zookeeper</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>dnsjava</artifactId>
+          <groupId>dnsjava</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -331,6 +378,14 @@
           <groupId>org.codehaus.jackson</groupId>
           <artifactId>jackson-mapper-asl</artifactId>
         </exclusion>
+        <exclusion>
+          <artifactId>zookeeper</artifactId>
+          <groupId>org.apache.zookeeper</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>protobuf-java</artifactId>
+          <groupId>com.google.protobuf</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
 
@@ -350,6 +405,14 @@
         <exclusion>
           <groupId>org.codehaus.jackson</groupId>
           <artifactId>jackson-mapper-asl</artifactId>
+        </exclusion>
+        <exclusion>
+          <artifactId>zookeeper</artifactId>
+          <groupId>org.apache.zookeeper</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>protobuf-java</artifactId>
+          <groupId>com.google.protobuf</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -373,6 +436,10 @@
         <exclusion>
           <groupId>com.nimbusds</groupId>
           <artifactId>nimbus-jose-jwt</artifactId>
+        </exclusion>
+        <exclusion>
+          <artifactId>zookeeper</artifactId>
+          <groupId>org.apache.zookeeper</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -449,6 +516,10 @@
           <groupId>com.nimbusds</groupId>
           <artifactId>nimbus-jose-jwt</artifactId>
         </exclusion>
+        <exclusion>
+          <artifactId>protobuf-java</artifactId>
+          <groupId>com.google.protobuf</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -459,6 +530,10 @@
         <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <artifactId>protobuf-java</artifactId>
+          <groupId>com.google.protobuf</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -486,7 +561,16 @@
           <groupId>com.nimbusds</groupId>
           <artifactId>nimbus-jose-jwt</artifactId>
         </exclusion>
+        <exclusion>
+          <artifactId>protobuf-java</artifactId>
+          <groupId>com.google.protobuf</groupId>
+        </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+      <version>${protobuf-java.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
@@ -496,6 +580,10 @@
         <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <artifactId>protobuf-java</artifactId>
+          <groupId>com.google.protobuf</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -523,6 +611,10 @@
         <exclusion>
           <groupId>com.nimbusds</groupId>
           <artifactId>nimbus-jose-jwt</artifactId>
+        </exclusion>
+        <exclusion>
+          <artifactId>protobuf-java</artifactId>
+          <groupId>com.google.protobuf</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -609,6 +701,12 @@
       <groupId>org.apache.curator</groupId>
       <artifactId>curator-client</artifactId>
       <version>${curator.version}</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>zookeeper</artifactId>
+          <groupId>org.apache.zookeeper</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.curator</groupId>
@@ -691,7 +789,8 @@
                 *:hbase-server,*:oozie-client,*:parquet-hadoop-bundle,*:zookeeper,*:hbase-shaded-miscellaneous,
                 org.eclipse.jetty:*,org.eclipse.jetty.websocket:*,
                 *:gcs-connector,com.google.*:*,org.checkerframework:checker-qual,
-                org.codehaus.mojo:animal-sniffer-annotations,*:hbase-mapreduce,org.apache.curator:*
+                org.codehaus.mojo:animal-sniffer-annotations,*:hbase-mapreduce,org.apache.curator:*,*:snappy-java,
+                *:protobuf-java,*:hadoop-shaded-protobuf_3_25
               </include>
               <exclude>
                 *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool2,*:commons-dbcp2,
@@ -702,7 +801,8 @@
             <resolverFilter>
               <include>
                 <!--Needed for Pig-->
-                *:antlr-runtime,*:automaton,*:pig,*:parquet-pig,*:sqoop,*:joda-time,*:jython,*:netty-*,*:jackson-databind,*:jackson-core,*:aircompressor,*:libthrift
+                *:antlr-runtime,*:automaton,*:pig,*:parquet-pig,*:sqoop,*:joda-time,*:jython,*:aircompressor,*:netty-*,
+                *:jackson-databind,*:jackson-core,*:libthrift
               </include>
               <transitive>false</transitive>
             </resolverFilter>
