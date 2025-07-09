@@ -16,8 +16,6 @@
     <commons-lang.version>2.6</commons-lang.version>
     <pentaho-osgi-bundles.version>10.2.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
     <org.apache.avro.version>1.8.0</org.apache.avro.version>
-    <org.apache.orc.version>1.2.3</org.apache.orc.version>
-    <org.apache.hadoop.version>3.0.0-cdh6.1.0</org.apache.hadoop.version>
     <org.apache.hbase.version>2.1.0-cdh6.1.0</org.apache.hbase.version>
     <org.apache.hive.version>2.1.1-cdh6.1.0</org.apache.hive.version>
     <org.apache.oozie.version>5.0.0-cdh6.1.0</org.apache.oozie.version>
@@ -155,6 +153,16 @@
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-yarn-api</artifactId>
       <version>${org.apache.hadoop.version}</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>protobuf-java</artifactId>
+          <groupId>com.google.protobuf</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>hadoop-shaded-protobuf_3_21</artifactId>
+          <groupId>org.apache.hadoop.thirdparty</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.avro</groupId>
@@ -184,6 +192,10 @@
       <version>${org.apache.hive.version}</version>
       <exclusions>
         <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-simple</artifactId>
         </exclusion>
@@ -207,6 +219,10 @@
       <version>${org.apache.hive.version}</version>
       <exclusions>
         <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
         </exclusion>
@@ -222,6 +238,10 @@
           <groupId>org.apache.hive</groupId>
           <artifactId>hive-exec</artifactId>
         </exclusion>
+        <exclusion>
+          <artifactId>hbase-shaded-protobuf</artifactId>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -229,6 +249,10 @@
       <artifactId>hive-exec</artifactId>
       <version>${org.apache.hive.version}</version>
       <exclusions>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
         <exclusion>
           <groupId>org.apache.calcite.avatica</groupId>
           <artifactId>avatica</artifactId>
@@ -269,6 +293,10 @@
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-log4j12</artifactId>
         </exclusion>
+        <exclusion>
+          <artifactId>protobuf-java</artifactId>
+          <groupId>com.google.protobuf</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -276,6 +304,10 @@
       <artifactId>hadoop-common</artifactId>
       <version>${org.apache.hadoop.version}</version>
       <exclusions>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
         <exclusion>
           <groupId>com.sun.xml.bind</groupId>
           <artifactId>jaxb-impl</artifactId>
@@ -292,12 +324,31 @@
           <groupId>com.nimbusds</groupId>
           <artifactId>nimbus-jose-jwt</artifactId>
         </exclusion>
+        <exclusion>
+          <artifactId>hadoop-shaded-protobuf_3_21</artifactId>
+          <groupId>org.apache.hadoop.thirdparty</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>dnsjava</artifactId>
+          <groupId>dnsjava</groupId>
+        </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>dnsjava</groupId>
+      <artifactId>dnsjava</artifactId>
+      <version>${dnsjava.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-hdfs</artifactId>
       <version>${org.apache.hadoop.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
@@ -324,6 +375,10 @@
       <version>${org.apache.hadoop.version}</version>
       <exclusions>
         <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
         </exclusion>
@@ -339,12 +394,20 @@
       <version>${org.apache.hbase.version}</version>
       <exclusions>
         <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
         </exclusion>
         <exclusion>
           <groupId>com.nimbusds</groupId>
           <artifactId>nimbus-jose-jwt</artifactId>
+        </exclusion>
+        <exclusion>
+          <artifactId>hbase-shaded-protobuf</artifactId>
+          <groupId>org.apache.hbase.thirdparty</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -353,6 +416,10 @@
       <artifactId>hbase-common</artifactId>
       <version>${org.apache.hbase.version}</version>
       <exclusions>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
         <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
@@ -376,6 +443,10 @@
       <version>${org.apache.hbase.version}</version>
       <exclusions>
         <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
         </exclusion>
@@ -386,6 +457,10 @@
       <artifactId>hbase-server</artifactId>
       <version>${org.apache.hbase.version}</version>
       <exclusions>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
         <exclusion>
           <groupId>org.apache.hadoop</groupId>
           <artifactId>hadoop-hdfs</artifactId>
@@ -401,6 +476,10 @@
         <exclusion>
           <groupId>com.nimbusds</groupId>
           <artifactId>nimbus-jose-jwt</artifactId>
+        </exclusion>
+        <exclusion>
+          <artifactId>hbase-shaded-protobuf</artifactId>
+          <groupId>org.apache.hbase.thirdparty</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -432,6 +511,14 @@
         <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+        <exclusion>
+          <artifactId>protobuf-java</artifactId>
+          <groupId>com.google.protobuf</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>hbase-shaded-protobuf</artifactId>
+          <groupId>org.apache.hbase.thirdparty</groupId>
         </exclusion>
       </exclusions>
     </dependency>

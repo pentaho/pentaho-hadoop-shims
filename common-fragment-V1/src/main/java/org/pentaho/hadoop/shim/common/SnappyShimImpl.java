@@ -13,7 +13,7 @@
 
 package org.pentaho.hadoop.shim.common;
 
-import org.apache.hadoop.io.compress.SnappyCodec;
+import org.apache.hadoop.util.NativeCodeLoader;
 
 public class SnappyShimImpl extends CommonSnappyShim {
   /**
@@ -26,7 +26,7 @@ public class SnappyShimImpl extends CommonSnappyShim {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
     try {
-      return SnappyCodec.isNativeCodeLoaded();
+      return  NativeCodeLoader.isNativeCodeLoaded() ;
     } catch ( Throwable t ) {
       return false;
     } finally {

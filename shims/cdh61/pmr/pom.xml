@@ -59,6 +59,14 @@
           <groupId>com.nimbusds</groupId>
           <artifactId>nimbus-jose-jwt</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <artifactId>hbase-shaded-protobuf</artifactId>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>

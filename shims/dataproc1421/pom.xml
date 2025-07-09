@@ -33,13 +33,10 @@
 
     <!-- pmr folder -->
     <org.apache.hbase-prefix-tree.version>2.0.0-alpha4</org.apache.hbase-prefix-tree.version>
-    <protobuf-java.version>2.5.0</protobuf-java.version>
     <commons-configuration.version>1.6</commons-configuration.version>
     <commons-configuration2.version>2.10.1</commons-configuration2.version>
     <geronimo-servlet_3.0_spec.version>1.0</geronimo-servlet_3.0_spec.version>
     <org.apache.hive.version>3.1.3</org.apache.hive.version>
-    <org.apache.hadoop.version>3.4.1</org.apache.hadoop.version>
-    <org.apache.orc.version>1.3.4</org.apache.orc.version>
     <parquet.version>1.10.1</parquet.version>
     <org.antlr.version>3.5.2</org.antlr.version>
     <joda-time.version>2.9.9</joda-time.version>

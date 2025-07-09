@@ -15,6 +15,10 @@ package org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import org.apache.parquet.io.api.*;
+import org.apache.parquet.schema.MessageType;
+import org.apache.parquet.schema.OriginalType;
+import org.apache.parquet.schema.Type;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.plugins.IValueMetaConverter;
 import org.pentaho.di.core.row.RowMeta;
@@ -49,14 +53,6 @@ import java.util.List;
 
 import static java.lang.Math.pow;
 
-import parquet.io.api.Binary;
-import parquet.io.api.Converter;
-import parquet.io.api.GroupConverter;
-import parquet.io.api.PrimitiveConverter;
-import parquet.io.api.RecordMaterializer;
-import parquet.schema.MessageType;
-import parquet.schema.OriginalType;
-import parquet.schema.Type;
 
 /**
  * Converter for read/write Hitachi Vantara row from/into Parquet files.
