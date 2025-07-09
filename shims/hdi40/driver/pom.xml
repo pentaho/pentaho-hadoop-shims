@@ -737,7 +737,7 @@
                 *:hadoop-yarn-api,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,*:hbase-zookeeper
                 *:hbase-server,*:oozie-client,*:parquet-hadoop-bundle,*:zookeeper,*:hbase-shaded-miscellaneous,
                 org.eclipse.jetty:*, *:hadoop-azure, *:hadoop-azure-datalake,*:commons-configuration2,*:protobuf-java,
-                *:hadoop-shaded-protobuf-3_25,*:snappy-java
+                *:hadoop-shaded-protobuf_3_25,*:snappy-java
               </include>
               <exclude>
                 *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool2,*:commons-dbcp2,
