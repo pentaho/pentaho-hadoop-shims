@@ -790,7 +790,7 @@
                 org.eclipse.jetty:*,org.eclipse.jetty.websocket:*,
                 *:gcs-connector,com.google.*:*,org.checkerframework:checker-qual,
                 org.codehaus.mojo:animal-sniffer-annotations,*:hbase-mapreduce,org.apache.curator:*,*:snappy-java,
-                *:protobuf-java,*:hadoop-shaded-protobuf-3_25
+                *:protobuf-java,*:hadoop-shaded-protobuf_3_25
               </include>
               <exclude>
                 *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool2,*:commons-dbcp2,
