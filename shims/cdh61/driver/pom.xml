@@ -17,7 +17,7 @@
     <pentaho-osgi-bundles.version>11.0.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
     <org.apache.avro.version>1.8.0</org.apache.avro.version>
     <org.apache.hbase.version>2.1.0-cdh6.1.0</org.apache.hbase.version>
-    <org.apache.hive.version>2.1.1-cdh6.1.0</org.apache.hive.version>
+    <org.apache.hive.version>4.0.0</org.apache.hive.version>
     <org.apache.oozie.version>5.0.0-cdh6.1.0</org.apache.oozie.version>
     <pig.version>0.17.0-cdh6.1.0</pig.version>
     <parquet-pig.version>1.9.0-cdh6.1.0</parquet-pig.version>
