@@ -321,6 +321,10 @@
           <groupId>io.airlift</groupId>
           <artifactId>aircompressor</artifactId>
         </exclusion>
+        <exclusion>
+          <artifactId>hadoop-client-api</artifactId>
+          <groupId>org.apache.hadoop</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <!-- used by org.apache.orc -->
@@ -532,6 +536,22 @@
       <artifactId>curator-recipes</artifactId>
       <version>${curator.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+      <version>${protobuf-java.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hive</groupId>
+      <artifactId>hive-storage-api</artifactId>
+      <version>${org.apache.hive.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
   </dependencies>
 
   <dependencyManagement>
@@ -624,14 +644,15 @@
                 *:hadoop-aws,
                 *:hadoop-azure,
                 *:hadoop-azure-datalake,
+                *:hadoop-client,*:hadoop-hdfs-client,
                 com.amazonaws:*,
-                *:parquet-hadoop,*:hadoop-hdfs,
-                *:avro-mapred,
+                *:parquet-hadoop,*:parquet-hadoop-bundle,*:hadoop-hdfs,
+                *:avro-mapred,*:protobuf-java,*:hadoop-shaded-protobuf_3_25,
                 org.eclipse.jetty:*,org.eclipse.jetty.websocket:*,
                 com.google.guava:*,
                 <!--Needed for Hive-->
                 *:commons-configuration,*:commons-configuration2,
-                *:gcs-connector,*:google-oauth-client
+                *:gcs-connector,*:google-oauth-client,*:hive-storage-api
               </include>
               <exclude>
                 org.slf4j:*,
