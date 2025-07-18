@@ -265,6 +265,7 @@
       <module>hdi40</module>
       <module>apachevanilla</module>
       <module>emr700</module>
+      <module>emr770</module>
     </modules>
   </profile>
   <profile>
@@ -320,6 +321,17 @@
     </activation>
     <modules>
       <module>emr700</module>
+    </modules>
+  </profile>
+  <profile>
+    <id>emr770</id>
+    <activation>
+      <property>
+        <name>!skipDefault</name>
+      </property>
+    </activation>
+    <modules>
+      <module>emr770</module>
     </modules>
   </profile>
 
