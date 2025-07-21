@@ -653,6 +653,10 @@
           <artifactId>orc-core</artifactId>
           <groupId>org.apache.orc</groupId>
         </exclusion>
+        <exclusion>
+          <artifactId>nimbus-jose-jwt</artifactId>
+          <groupId>com.nimbusds</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
