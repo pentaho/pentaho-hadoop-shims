@@ -13,17 +13,11 @@
 
   <properties>
     <netty.version>4.1.108.Final</netty.version>
-    <!-- setting v1.14.4 so shaded jackson-databind inside parquet-hadoop-bundle's  version approximately matches jackson-databind in driver.jar -->
     <parquet.version>1.14.4</parquet.version>
     <curator.version>5.6.0</curator.version>
   </properties>
 
   <dependencies>
-<!--    <dependency>-->
-<!--      <groupId>org.apache.htrace</groupId>-->
-<!--      <artifactId>htrace-core</artifactId>-->
-<!--      <version>${htrace-core.version}</version>-->
-<!--    </dependency>-->
     <dependency>
       <groupId>com.google.cloud.bigdataoss</groupId>
       <artifactId>gcs-connector</artifactId>
@@ -73,12 +67,6 @@
       <artifactId>shim-api-core</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>

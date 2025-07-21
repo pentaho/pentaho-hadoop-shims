@@ -16,6 +16,7 @@
 
     <!-- GCP properties -->
     <gcs-connector.version>hadoop2-2.2.24</gcs-connector.version>
+    <dataproc.guava.version>32.1.2-jre</dataproc.guava.version>
 
     <!-- default folder -->
     <org.apache.hbase.version>2.6.1</org.apache.hbase.version>
