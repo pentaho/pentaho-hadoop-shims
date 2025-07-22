@@ -264,6 +264,7 @@
       <module>cdpdc71</module>
       <module>dataproc1421</module>
       <module>emr700</module>
+      <module>emr770</module>
       <module>hdi40</module>
     </modules>
   </profile>
@@ -298,6 +299,17 @@
     </activation>
     <modules>
       <module>emr700</module>
+    </modules>
+  </profile>
+  <profile>
+    <id>emr770</id>
+    <activation>
+      <property>
+        <name>!skipDefault</name>
+      </property>
+    </activation>
+    <modules>
+      <module>emr770</module>
     </modules>
   </profile>
 

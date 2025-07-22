@@ -4,11 +4,11 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.pentaho.hadoop.shims</groupId>
-    <artifactId>pentaho-hadoop-shims-emr700-reactor</artifactId>
+    <artifactId>pentaho-hadoop-shims-emr770-reactor</artifactId>
     <version>10.2.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>pentaho-hadoop-shims-emr700-driver</artifactId>
+  <artifactId>pentaho-hadoop-shims-emr770-driver</artifactId>
   <version>10.2.0.0-SNAPSHOT</version>
   <packaging>bundle</packaging>
 
@@ -36,7 +36,7 @@
       <groupId>org.apache.thrift</groupId>
       <artifactId>libthrift</artifactId>
       <version>${org.apache.thrift.version}</version>
-    </dependency>  
+    </dependency>
     <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>shim-bundle-plugin</artifactId>
@@ -294,6 +294,21 @@
         <exclusion>
           <artifactId>zookeeper</artifactId>
           <groupId>org.apache.zookeeper</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.zookeeper</groupId>
+      <artifactId>zookeeper</artifactId>
+      <version>${zookeeper.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -635,8 +650,12 @@
           <groupId>org.apache.zookeeper</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>nimbus-jose-jwt</artifactId>
+          <artifactId>orc-core</artifactId>
+          <groupId>org.apache.orc</groupId>
+        </exclusion>
+        <exclusion>
           <groupId>com.nimbusds</groupId>
+          <artifactId>nimbus-jose-jwt</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -704,6 +723,14 @@
           <artifactId>hadoop-mapreduce-client-core</artifactId>
           <groupId>org.apache.hadoop</groupId>
         </exclusion>
+        <exclusion>
+          <artifactId>zookeeper</artifactId>
+          <groupId>org.apache.zookeeper</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>zookeeper-jute</artifactId>
+          <groupId>org.apache.zookeeper</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -728,6 +755,10 @@
         <exclusion>
           <artifactId>protobuf-java</artifactId>
           <groupId>com.google.protobuf</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>zookeeper</artifactId>
+          <groupId>org.apache.zookeeper</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -762,6 +793,10 @@
         <exclusion>
           <artifactId>hadoop-mapreduce-client-core</artifactId>
           <groupId>org.apache.hadoop</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>zookeeper</artifactId>
+          <groupId>org.apache.zookeeper</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -977,7 +1012,7 @@
         <configuration>
           <instructions>
             <Bundle-SymbolicName>pentaho-hadoop-driver-V1</Bundle-SymbolicName>
-            <Bundle-Version>7.0.emr</Bundle-Version>
+            <Bundle-Version>7.7.emr</Bundle-Version>
             <Pentaho-Code-Version>${pentaho-code.version}</Pentaho-Code-Version>
             <DynamicImport-Package>*</DynamicImport-Package>
             <excludes>
