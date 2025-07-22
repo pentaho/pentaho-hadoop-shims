@@ -520,6 +520,10 @@
           <groupId>org.apache.hive</groupId>
           <artifactId>hive-exec</artifactId>
         </exclusion>
+        <exclusion>
+          <artifactId>nimbus-jose-jwt</artifactId>
+          <groupId>com.nimbusds</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <!-- Needed since we excluded it from hive-service to address io.airlift transitive security issue  -->
