@@ -263,7 +263,6 @@
       <module>apachevanilla</module>
       <module>cdpdc71</module>
       <module>dataproc1421</module>
-      <module>emr700</module>
       <module>emr770</module>
       <module>hdi40</module>
     </modules>
@@ -288,17 +287,6 @@
     </activation>
     <modules>
       <module>apachevanilla</module>
-    </modules>
-  </profile>
-  <profile>
-    <id>emr700</id>
-    <activation>
-      <property>
-        <name>!skipDefault</name>
-      </property>
-    </activation>
-    <modules>
-      <module>emr700</module>
     </modules>
   </profile>
   <profile>
