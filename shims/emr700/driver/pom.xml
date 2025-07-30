@@ -817,17 +817,17 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
-      <version>${jetty.version}</version>
+      <version>${jetty-hadoop.version}</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-util-ajax</artifactId>
-      <version>${jetty.version}</version>
+      <version>${jetty-hadoop.version}</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-runner</artifactId>
-      <version>${jetty.version}</version>
+      <version>${jetty-hadoop.version}</version>
       <exclusions>
         <exclusion>
           <groupId>org.apache.mina</groupId>
@@ -838,12 +838,12 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-util</artifactId>
-      <version>${jetty.version}</version>
+      <version>${jetty-hadoop.version}</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty.websocket</groupId>
       <artifactId>websocket-client</artifactId>
-      <version>${jetty.version}</version>
+      <version>${jetty-hadoop.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.curator</groupId>
@@ -894,7 +894,7 @@
                 <artifactItem>
                   <groupId>org.eclipse.jetty</groupId>
                   <artifactId>jetty-runner</artifactId>
-                  <version>${jetty.version}</version>
+                  <version>${jetty-hadoop.version}</version>
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.directory}/jetty-runner-jar</outputDirectory>
@@ -918,7 +918,7 @@
             </goals>
             <configuration>
               <target>
-                <zip destfile="${project.build.directory}/extra-resources/jetty-runner-${jetty.version}.jar"
+                <zip destfile="${project.build.directory}/extra-resources/jetty-runner-${jetty-hadoop.version}.jar"
                       basedir="${project.build.directory}/jetty-runner-jar">
                   <exclude name="org/slf4j/**"/>
                 </zip>
@@ -988,7 +988,7 @@
             <_exportcontents>
             </_exportcontents>
             <Embed-Dependency>*</Embed-Dependency>
-            <Include-Resource>{maven-resources};${project.build.directory}/extra-resources/jetty-runner-${jetty.version}.jar</Include-Resource>
+            <Include-Resource>{maven-resources};${project.build.directory}/extra-resources/jetty-runner-${jetty-hadoop.version}.jar</Include-Resource>
             <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
             <!-- this is needed because the bundle plugin gets fooled by multi-release jars into thinking the required java
             version is the highest one in the package, which is not the case -->
