@@ -190,6 +190,10 @@
           <groupId>*</groupId>
           <artifactId>netty-transport-classes-epoll</artifactId>
         </exclusion>
+        <exclusion>
+          <artifactId>hadoop-shaded-protobuf_3_21</artifactId>
+          <groupId>org.apache.hadoop.thirdparty</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -329,6 +333,10 @@
           <groupId>*</groupId>
           <artifactId>protobuf-java</artifactId>
         </exclusion>
+        <exclusion>
+          <artifactId>protobuf-java</artifactId>
+          <groupId>com.google.protobuf</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -339,6 +347,10 @@
         <exclusion>
           <groupId>*</groupId>
           <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <artifactId>protobuf-java</artifactId>
+          <groupId>com.google.protobuf</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -356,6 +368,10 @@
           <groupId>*</groupId>
           <artifactId>protobuf-java</artifactId>
         </exclusion>
+        <exclusion>
+          <artifactId>protobuf-java</artifactId>
+          <groupId>com.google.protobuf</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -372,6 +388,10 @@
           <groupId>*</groupId>
           <artifactId>protobuf-java</artifactId>
         </exclusion>
+        <exclusion>
+          <artifactId>protobuf-java</artifactId>
+          <groupId>com.google.protobuf</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -383,23 +403,27 @@
           <groupId>*</groupId>
           <artifactId>protobuf-java</artifactId>
         </exclusion>
+        <exclusion>
+          <artifactId>protobuf-java</artifactId>
+          <groupId>com.google.protobuf</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
-      <version>${jetty.version}</version>
+      <version>${jetty-hadoop.version}</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-runner</artifactId>
-      <version>${jetty.version}</version>
+      <version>${jetty-hadoop.version}</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty.websocket</groupId>
       <artifactId>websocket-client</artifactId>
-      <version>${jetty.version}</version>
+      <version>${jetty-hadoop.version}</version>
     </dependency>
 
     <!-- The following added for Pig -->
@@ -507,7 +531,7 @@
                 <artifactItem>
                   <groupId>org.eclipse.jetty</groupId>
                   <artifactId>jetty-runner</artifactId>
-                  <version>${jetty.version}</version>
+                  <version>${jetty-hadoop.version}</version>
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.directory}/jetty-runner-jar</outputDirectory>
@@ -531,7 +555,7 @@
             </goals>
             <configuration>
               <target>
-                <zip destfile="${project.build.directory}/extra-resources/jetty-runner-${jetty.version}.jar"
+                <zip destfile="${project.build.directory}/extra-resources/jetty-runner-${jetty-hadoop.version}.jar"
                       basedir="${project.build.directory}/jetty-runner-jar">
                   <exclude name="org/slf4j/**"/>
                 </zip>
