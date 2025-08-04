@@ -61,7 +61,7 @@
                 <exclude>*:json-path:*</exclude>
                 <exclude>*:json-smart:*</exclude>
                 <exclude>*:log4j:*</exclude>
-                <exclude>*:metastore-11.0.0.0-20250727.112353:*</exclude>
+                <exclude>*:metastore:*</exclude>
                 <exclude>*:mina-core:*</exclude>
                 <exclude>*:netty-all:*</exclude>
                 <exclude>*:netty-codec-dns:*</exclude>
@@ -92,13 +92,13 @@
                 <exclude>*:parquet-column:*</exclude>
                 <exclude>*:parquet-common:*</exclude>
                 <exclude>*:parquet-encoding:*</exclude>
-                <exclude>*:pentaho-hadoop-shims-apache-11.0.0.0:*</exclude>
-                <exclude>*:pentaho-hadoop-shims-common-fragment-V1-11.0.0.0:*</exclude>
-                <exclude>*:pentaho-hadoop-shims-common-services-api-11.0.0.0-20250727.114758:*</exclude>
-                <exclude>*:pentaho-metastore-locator-api-11.0.0.0-20250727.113347:*</exclude>
-                <exclude>*:pentaho-platform-api-11.0.0.0-20250728.133703:*</exclude>
+                <exclude>*:pentaho-hadoop-shims-apache:*</exclude>
+                <exclude>*:pentaho-hadoop-shims-common-fragment-V1:*</exclude>
+                <exclude>*:pentaho-hadoop-shims-common-services-api:*</exclude>
+                <exclude>*:pentaho-metastore-locator-api:*</exclude>
+                <exclude>*:pentaho-platform-api:*</exclude>
                 <exclude>*:reactive-streams:*</exclude>
-                <exclude>*:shim-api-11.0.0.0-20250727.114529:*</exclude>
+                <exclude>*:shim-api:*</exclude>
                 <exclude>*:slf4j-api:*</exclude>
                 <exclude>*:snakeyaml:*</exclude>
                 <exclude>*:velocity-engine-core:*</exclude>
@@ -134,23 +134,23 @@
                 <exclude>*:jcifs:*</exclude>
                 <exclude>*:jcip-annotations-1.0:*</exclude>
                 <exclude>*:jug-lgpl:*</exclude>
-                <exclude>*:kettle-core-11.0.0.0:*</exclude>
-                <exclude>*:kettle-engine-11.0.0.0-20250727.113347:*</exclude>
-                <exclude>*:metastore-11.0.0.0-20250727.112353:*</exclude>
+                <exclude>*:kettle-core:*</exclude>
+                <exclude>*:kettle-engine:*</exclude>
+                <exclude>*:metastore:*</exclude>
                 <exclude>*:netty-resolver-dns-native-macos-4.1.100.Final-osx:*</exclude>
                 <exclude>*:netty-resolver-dns-native-macos-4.1.100.Final-osx:*</exclude>
                 <exclude>*:netty-transport-native-kqueue-4.1.100.Final-osx:*</exclude>
                 <exclude>*:netty-transport-native-kqueue-4.1.100.Final-osx:*</exclude>
                 <exclude>*:ognl:*</exclude>
-                <exclude>*:pentaho-encryption-support-11.0.0.0-20250727.112458:*</exclude>
-                <exclude>*:pentaho-hadoop-shims-apache-11.0.0.0:*</exclude>
-                <exclude>*:pentaho-hadoop-shims-common-fragment-V1-11.0.0.0:*</exclude>
-                <exclude>*:pentaho-hadoop-shims-common-services-api-11.0.0.0-20250727.114758:*</exclude>
-                <exclude>*:pentaho-metastore-locator-api-11.0.0.0-20250727.113347:*</exclude>
-                <exclude>*:pentaho-platform-api-11.0.0.0-20250728.133703:*</exclude>
+                <exclude>*:pentaho-encryption-support:*</exclude>
+                <exclude>*:pentaho-hadoop-shims-apache:*</exclude>
+                <exclude>*:pentaho-hadoop-shims-common-fragment-V1:*</exclude>
+                <exclude>*:pentaho-hadoop-shims-common-services-api:*</exclude>
+                <exclude>*:pentaho-metastore-locator-api:*</exclude>
+                <exclude>*:pentaho-platform-api:*</exclude>
                 <exclude>*:scannotation:*</exclude>
-                <exclude>*:shim-api-11.0.0.0-20250727.114529:*</exclude>
-                <exclude>*:shim-api-core-11.0.0.0-20250727.114529:*</exclude>
+                <exclude>*:shim-api:*</exclude>
+                <exclude>*:shim-api-core:*</exclude>
                 <exclude>*:simple-jndi:*</exclude>
                 <exclude>*:spring-core:*</exclude>
                 <exclude>*:spring-expression:*</exclude>
@@ -208,7 +208,7 @@
                 <exclude>*:json-path:*</exclude>
                 <exclude>*:json-smart:*</exclude>
                 <exclude>*:log4j:*</exclude>
-                <exclude>*:metastore-11.0.0.0-20250727.112353:*</exclude>
+                <exclude>*:metastore:*</exclude>
                 <exclude>*:mina-core:*</exclude>
                 <exclude>*:netty-all:*</exclude>
                 <exclude>*:netty-codec-dns:*</exclude>
@@ -239,13 +239,13 @@
                 <exclude>*:parquet-column:*</exclude>
                 <exclude>*:parquet-common:*</exclude>
                 <exclude>*:parquet-encoding:*</exclude>
-                <exclude>*:pentaho-hadoop-shims-apache-11.0.0.0:*</exclude>
-                <exclude>*:pentaho-hadoop-shims-common-fragment-V1-11.0.0.0:*</exclude>
-                <exclude>*:pentaho-hadoop-shims-common-services-api-11.0.0.0-20250727.114758:*</exclude>
-                <exclude>*:pentaho-metastore-locator-api-11.0.0.0-20250727.113347:*</exclude>
-                <exclude>*:pentaho-platform-api-11.0.0.0-20250728.133703:*</exclude>
+                <exclude>*:pentaho-hadoop-shims-apache:*</exclude>
+                <exclude>*:pentaho-hadoop-shims-common-fragment-V1:*</exclude>
+                <exclude>*:pentaho-hadoop-shims-common-services-api:*</exclude>
+                <exclude>*:pentaho-metastore-locator-api:*</exclude>
+                <exclude>*:pentaho-platform-api:*</exclude>
                 <exclude>*:reactive-streams:*</exclude>
-                <exclude>*:shim-api-11.0.0.0-20250727.114529:*</exclude>
+                <exclude>*:shim-api:*</exclude>
                 <exclude>*:slf4j-api:*</exclude>
                 <exclude>*:snakeyaml:*</exclude>
                 <exclude>*:velocity-engine-core:*</exclude>
@@ -281,23 +281,23 @@
                 <exclude>*:jcifs:*</exclude>
                 <exclude>*:jcip-annotations-1.0:*</exclude>
                 <exclude>*:jug-lgpl:*</exclude>
-                <exclude>*:kettle-core-11.0.0.0:*</exclude>
-                <exclude>*:kettle-engine-11.0.0.0-20250727.113347:*</exclude>
-                <exclude>*:metastore-11.0.0.0-20250727.112353:*</exclude>
+                <exclude>*:kettle-core:*</exclude>
+                <exclude>*:kettle-engine:*</exclude>
+                <exclude>*:metastore:*</exclude>
                 <exclude>*:netty-resolver-dns-native-macos-4.1.100.Final-osx:*</exclude>
                 <exclude>*:netty-resolver-dns-native-macos-4.1.100.Final-osx:*</exclude>
                 <exclude>*:netty-transport-native-kqueue-4.1.100.Final-osx:*</exclude>
                 <exclude>*:netty-transport-native-kqueue-4.1.100.Final-osx:*</exclude>
                 <exclude>*:ognl:*</exclude>
-                <exclude>*:pentaho-encryption-support-11.0.0.0-20250727.112458:*</exclude>
-                <exclude>*:pentaho-hadoop-shims-apache-11.0.0.0:*</exclude>
-                <exclude>*:pentaho-hadoop-shims-common-fragment-V1-11.0.0.0:*</exclude>
-                <exclude>*:pentaho-hadoop-shims-common-services-api-11.0.0.0-20250727.114758:*</exclude>
-                <exclude>*:pentaho-metastore-locator-api-11.0.0.0-20250727.113347:*</exclude>
-                <exclude>*:pentaho-platform-api-11.0.0.0-20250728.133703:*</exclude>
+                <exclude>*:pentaho-encryption-support:*</exclude>
+                <exclude>*:pentaho-hadoop-shims-apache:*</exclude>
+                <exclude>*:pentaho-hadoop-shims-common-fragment-V1:*</exclude>
+                <exclude>*:pentaho-hadoop-shims-common-services-api:*</exclude>
+                <exclude>*:pentaho-metastore-locator-api:*</exclude>
+                <exclude>*:pentaho-platform-api:*</exclude>
                 <exclude>*:scannotation:*</exclude>
-                <exclude>*:shim-api-11.0.0.0-20250727.114529:*</exclude>
-                <exclude>*:shim-api-core-11.0.0.0-20250727.114529:*</exclude>
+                <exclude>*:shim-api:*</exclude>
+                <exclude>*:shim-api-core:*</exclude>
                 <exclude>*:simple-jndi:*</exclude>
                 <exclude>*:spring-core:*</exclude>
                 <exclude>*:spring-expression:*</exclude>
