@@ -357,7 +357,6 @@ public class HadoopConfigurationLocator implements HadoopConfigurationProvider {
 
       ClassLoader cl = new HadoopConfigurationClassLoader( jars.toArray( EMPTY_URL_ARRAY ),
         parent, ignoredClasses );
-      ( ( KettleURLClassLoader ) parent).setChild( cl );
       return cl;
     } catch ( Exception ex ) {
       throw new ConfigurationException( BaseMessages.getString( PKG, "Error.CreatingClassLoader" ), ex );
