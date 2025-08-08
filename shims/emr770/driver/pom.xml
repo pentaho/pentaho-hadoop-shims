@@ -13,6 +13,7 @@
   <packaging>bundle</packaging>
 
   <properties>
+    <jsr311-api.version>1.1.1</jsr311-api.version>
     <org.apache.avro.version>1.12.0</org.apache.avro.version>
     <org.apache.hive.version>4.0.1</org.apache.hive.version>
     <org.apache.oozie.version>5.2.1</org.apache.oozie.version>
@@ -856,6 +857,51 @@
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-security</artifactId>
+      <version>${jetty-hadoop.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-http</artifactId>
+      <version>${jetty-hadoop.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-io</artifactId>
+      <version>${jetty-hadoop.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-plus</artifactId>
+      <version>${jetty-hadoop.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-rewrite</artifactId>
+      <version>${jetty-hadoop.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-servlet</artifactId>
+      <version>${jetty-hadoop.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-webapp</artifactId>
+      <version>${jetty-hadoop.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-xml</artifactId>
+      <version>${jetty-hadoop.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <version>${jetty-hadoop.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-util-ajax</artifactId>
       <version>${jetty-hadoop.version}</version>
     </dependency>
@@ -890,6 +936,12 @@
           <groupId>org.apache.zookeeper</groupId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>javax.ws.rs</groupId>
+      <artifactId>jsr311-api</artifactId>
+      <version>${jsr311-api.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.curator</groupId>
@@ -1022,7 +1074,7 @@
             </Import-Package>
             <_exportcontents>
             </_exportcontents>
-            <Embed-Dependency>*</Embed-Dependency>
+            <Embed-Dependency>*;!javax.ws.rs:jsr311-api</Embed-Dependency>
             <Include-Resource>{maven-resources};${project.build.directory}/extra-resources/jetty-runner-${jetty-hadoop.version}.jar</Include-Resource>
             <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
             <!-- this is needed because the bundle plugin gets fooled by multi-release jars into thinking the required java
