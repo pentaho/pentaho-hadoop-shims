@@ -33,9 +33,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -291,7 +291,7 @@ public class MappingTest {
         return null;
       }
     } ).when( rep )
-      .saveStepAttribute( (ObjectId) anyObject(), (ObjectId) anyObject(), anyInt(), anyString(), anyString() );
+      .saveStepAttribute( (ObjectId) any(), (ObjectId) any(), anyInt(), anyString(), anyString() );
     mapping.saveRep( rep, mock( ObjectId.class ), mock( ObjectId.class ) );
   }
 
@@ -359,9 +359,9 @@ public class MappingTest {
         }
         return null;
       }
-    } ).when( rep ).getStepAttributeString( (ObjectId) anyObject(), anyInt(), anyString() );
-    doReturn( true ).when( rep ).getStepAttributeBoolean( (ObjectId) anyObject(), anyInt(), anyString() );
-    doReturn( 2 ).when( rep ).countNrStepAttributes( (ObjectId) anyObject(), anyString() );
+    } ).when( rep ).getStepAttributeString( (ObjectId) any(), anyInt(), anyString() );
+    doReturn( true ).when( rep ).getStepAttributeBoolean( (ObjectId) any(), anyInt(), anyString() );
+    doReturn( 2 ).when( rep ).countNrStepAttributes( (ObjectId) any(), anyString() );
     assertTrue( loadMapping.readRep( rep, mock( ObjectId.class ) ) );
     assertEquals( mapping.toString(), loadMapping.toString() );
   }
