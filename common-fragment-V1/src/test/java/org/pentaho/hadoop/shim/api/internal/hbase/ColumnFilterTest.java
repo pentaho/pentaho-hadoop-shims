@@ -23,9 +23,9 @@ import org.pentaho.di.repository.Repository;
 
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -213,7 +213,7 @@ public class ColumnFilterTest extends ColumnFilter {
         return null;
       }
     } ).when( rep )
-      .saveStepAttribute( (ObjectId) anyObject(), (ObjectId) anyObject(), anyInt(), anyString(), anyString() );
+      .saveStepAttribute( (ObjectId) any(), (ObjectId) any(), anyInt(), anyString(), anyString() );
     cf.saveRep( rep, mock( ObjectId.class ), mock( ObjectId.class ), 0 );
   }
 
@@ -246,8 +246,8 @@ public class ColumnFilterTest extends ColumnFilter {
         }
         return null;
       }
-    } ).when( rep ).getStepAttributeString( (ObjectId) anyObject(), anyInt(), anyString() );
-    doReturn( true ).when( rep ).getStepAttributeBoolean( (ObjectId) anyObject(), anyInt(), anyString() );
+    } ).when( rep ).getStepAttributeString( (ObjectId) any(), anyInt(), anyString() );
+    doReturn( true ).when( rep ).getStepAttributeBoolean( (ObjectId) any(), anyInt(), anyString() );
     assertTrue( equalsCF( cf, getFilter( rep, 0, mock( ObjectId.class ) ) ) );
   }
 

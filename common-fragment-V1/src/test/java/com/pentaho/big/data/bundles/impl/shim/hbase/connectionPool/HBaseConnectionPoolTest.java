@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Properties;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyList;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
 /**
