@@ -16,8 +16,8 @@ package org.pentaho.big.data.api.jdbc.impl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.ArgumentMatchers;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.pentaho.di.core.database.DelegatingDriver;
 
 import java.sql.SQLException;
@@ -48,7 +48,7 @@ public class LazyDelegatingDriverTest {
     driver.destroy();
 
     // assert
-    verify( deregisterDriverFunction, times( 1 ) ).deregisterDriver( Matchers.eq( registeredDelegatingDriver )  );
+    verify( deregisterDriverFunction, times( 1 ) ).deregisterDriver( ArgumentMatchers.eq( registeredDelegatingDriver )  );
     assertNull( driver.delegatingDriver );
 
   }
