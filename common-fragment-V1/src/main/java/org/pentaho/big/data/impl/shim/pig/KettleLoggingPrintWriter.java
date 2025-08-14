@@ -15,8 +15,10 @@ package org.pentaho.big.data.impl.shim.pig;
 
 import org.pentaho.di.core.logging.LogChannelInterface;
 
+import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
 
 /**
  * An extended PrintWriter that sends output to Kettle's logging
@@ -31,7 +33,7 @@ public class KettleLoggingPrintWriter extends PrintWriter {
   }
 
   public KettleLoggingPrintWriter( LogChannelInterface logChannelInterface, PrintStream printStream ) {
-    super( printStream );
+    super( new OutputStreamWriter( printStream, Charset.defaultCharset() ), true );
     this.logChannelInterface = logChannelInterface;
   }
 
