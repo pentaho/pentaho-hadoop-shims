@@ -453,6 +453,19 @@
       <version>${jakarta.servlet.version}</version>
       <scope>test</scope>
     </dependency>
+
+    <!-- These may not be needed in the future if this is moved out of karaf (BAD-1967) -->
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpcore</artifactId>
+      <version>4.4.11</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>4.5.14</version>
+    </dependency>
+
   </dependencies>
   <build>
     <plugins>
@@ -477,6 +490,12 @@
         <version>${shim-bundle-plugin.version}</version>
         <configuration>
           <resolverFilters>
+            <resolverFilter>
+              <include>
+                *:httpcore,*:httpclient
+              </include>
+              <transitive>true</transitive>
+            </resolverFilter>
           </resolverFilters>
         </configuration>
         <executions>
