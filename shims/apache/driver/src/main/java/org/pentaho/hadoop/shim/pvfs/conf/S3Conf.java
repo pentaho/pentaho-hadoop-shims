@@ -108,7 +108,7 @@ public class S3Conf extends PvfsConf {
     conf.set( "fs.s3a.impl.disable.cache", "true" ); // caching managed by PvfsHadoopBridge
 
     conf.set( "fs.s3a.buffer.dir", System.getProperty( "java.io.tmpdir" ) );
-    conf.set( "fs.s3a.fast.upload.buffer", "array" ); // To avoid Windows native IO issues (BAD-1967)
+    conf.set( "fs.s3a.fast.upload.buffer", "array" ); // To avoid native IO issues (BAD-1967)
 
     // Use only when VFS is configured for generic S3 connection
     if ( !isNullOrEmpty( endpoint ) ) {
