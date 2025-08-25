@@ -14,7 +14,6 @@
 
   <properties>
     <org.apache.hbase.version>2.6.2</org.apache.hbase.version>
-    <netty.version>4.1.118.Final</netty.version>
   </properties>
 
   <dependencies>
