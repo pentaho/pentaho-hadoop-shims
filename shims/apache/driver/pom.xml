@@ -29,7 +29,6 @@
     <parquet.version>1.14.4</parquet.version>
     <joda-time.version>2.9.9</joda-time.version>
     <zookeeper.version>3.9.3</zookeeper.version>
-    <netty.version>4.1.108.Final</netty.version>
     <bouncycastle.version>1.78</bouncycastle.version>
     <curator.version>5.6.0</curator.version>
     <bouncycastle.version>1.78</bouncycastle.version>
