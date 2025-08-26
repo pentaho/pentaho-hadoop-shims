@@ -13,7 +13,6 @@
 
 package org.pentaho.big.data.impl.shim.mapreduce;
 
-import org.pentaho.di.job.entries.hadoopjobexecutor.NoExitSecurityManager;
 import org.pentaho.di.job.entries.hadoopjobexecutor.SecurityManagerStack;
 import org.pentaho.hadoop.shim.api.mapreduce.MapReduceExecutionException;
 
@@ -45,26 +44,12 @@ public class FutureMapReduceJobSimpleRunnable implements Runnable {
   }
 
   @Override public void run() {
-    final NoExitSecurityManager nesm = new NoExitSecurityManager( System.getSecurityManager() );
-    securityManagerStack.setSecurityManager( nesm );
     try {
-      nesm.addBlockedThread( Thread.currentThread() );
-      try {
         executeMainMethod( mainClass, commandLineArgs );
         updateWithStatus( 0, null );
-      } finally {
-        nesm.removeBlockedThread( Thread.currentThread() );
-        securityManagerStack.removeSecurityManager( nesm );
-      }
+
     } catch ( Throwable ex ) {
-      if ( ex instanceof InvocationTargetException ) {
-        ex = ( (InvocationTargetException) ex ).getTargetException();
-      }
-      if ( ex instanceof NoExitSecurityManager.NoExitSecurityException ) {
-        updateWithStatus( ( (NoExitSecurityManager.NoExitSecurityException) ex ).getStatus(), null );
-      } else {
-        updateWithStatus( -1, new MapReduceExecutionException( ex ) );
-      }
+      if ( ex instanceof InvocationTargetException ) updateWithStatus(-1, new MapReduceExecutionException(ex));
     }
   }
 
