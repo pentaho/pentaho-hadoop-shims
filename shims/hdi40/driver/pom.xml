@@ -31,7 +31,6 @@
     <joda-time.version>2.9.3</joda-time.version>
     <jython.version>2.5.3</jython.version>
     <commons-configuration2.version>2.10.1</commons-configuration2.version>
-    <netty.version>4.1.108.Final</netty.version>
     <bouncycastle.version>1.78</bouncycastle.version>
     <websocket.version>9.4.53.v20231009</websocket.version>
   </properties>

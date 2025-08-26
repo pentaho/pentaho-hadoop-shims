@@ -107,7 +107,7 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-handler</artifactId>
-      <version>${netty-handler.version}</version>
+      <version>${netty.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
