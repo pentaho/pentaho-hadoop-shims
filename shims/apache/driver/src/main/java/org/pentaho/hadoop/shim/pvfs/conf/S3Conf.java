@@ -17,6 +17,7 @@ import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicSessionCredentials;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.google.common.base.Preconditions;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.pentaho.di.connections.ConnectionDetails;
@@ -108,6 +109,12 @@ public class S3Conf extends PvfsConf {
     conf.set( "fs.s3a.impl.disable.cache", "true" ); // caching managed by PvfsHadoopBridge
 
     conf.set( "fs.s3a.buffer.dir", System.getProperty( "java.io.tmpdir" ) );
+
+    // If we are in Windows, add this config to avoid Windows native IO issues (BAD-1967)
+    String os = System.getProperty( "os.name" ).toLowerCase();
+    if ( SystemUtils.IS_OS_WINDOWS || os.contains( "win" )  ) {
+      conf.set( "fs.s3a.fast.upload.buffer", "array" );
+    }
 
     // Use only when VFS is configured for generic S3 connection
     if ( !isNullOrEmpty( endpoint ) ) {
