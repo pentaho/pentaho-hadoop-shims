@@ -36,7 +36,6 @@
         <sqoop.version>1.4.6.2.6.0.3-8</sqoop.version>
         <dependency.pig.classifier>h2</dependency.pig.classifier>
         <commons.configuration2.version>2.10.1</commons.configuration2.version>
-        <netty.version>4.1.118.Final</netty.version>
       </properties>
       <dependencies>
         <dependency>
