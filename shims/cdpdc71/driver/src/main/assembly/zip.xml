@@ -81,7 +81,6 @@
                 <exclude>*:groovy-templates:*</exclude>
                 <exclude>*:groovy-xml:*</exclude>
                 <exclude>*:gson:*</exclude>
-                <exclude>*:hadoop-shaded-protobuf_3_25:*</exclude>
                 <exclude>*:hadoop-yarn-registry:*</exclude>
                 <exclude>*:hive-exec:*</exclude>
                 <exclude>*:hive-llap-tez:*</exclude>
@@ -156,6 +155,9 @@
                 <exclude>*:tomcat-jdbc:*</exclude>
                 <exclude>*:tomcat-juli:*</exclude>
                 <exclude>*:xmlenc:*</exclude>
+                <exclude>*:aws-java-sdk-bundle:*</exclude>
+                <exclude>*:micrometer-commons:*</exclude>
+                <exclude>*:micrometer-observation:*</exclude>
             </excludes>
         </dependencySet>
         <dependencySet>
@@ -227,7 +229,6 @@
                 <exclude>*:groovy-templates:*</exclude>
                 <exclude>*:groovy-xml:*</exclude>
                 <exclude>*:gson:*</exclude>
-                <exclude>*:hadoop-shaded-protobuf_3_25:*</exclude>
                 <exclude>*:hadoop-yarn-registry:*</exclude>
                 <exclude>*:hive-exec:*</exclude>
                 <exclude>*:hive-llap-tez:*</exclude>
@@ -302,6 +303,9 @@
                 <exclude>*:tomcat-jdbc:*</exclude>
                 <exclude>*:tomcat-juli:*</exclude>
                 <exclude>*:xmlenc:*</exclude>
+                <exclude>*:aws-java-sdk-bundle:*</exclude>
+                <exclude>*:micrometer-commons:*</exclude>
+                <exclude>*:micrometer-observation:*</exclude>
             </excludes>
         </dependencySet>
     </dependencySets>
