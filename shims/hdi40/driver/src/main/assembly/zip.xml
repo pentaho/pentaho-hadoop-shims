@@ -5,15 +5,16 @@
     <formats>
         <format>zip</format>
     </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
     <files>
         <file>
             <source> ${project.build.directory}/${project.artifactId}-${project.version}.jar</source>
-            <outputDirectory>/</outputDirectory>
+            <outputDirectory>/hdi40</outputDirectory>
         </file>
     </files>
     <dependencySets>
         <dependencySet>
-            <outputDirectory>/lib</outputDirectory>
+            <outputDirectory>/hdi40/lib</outputDirectory>
             <useProjectArtifact>true</useProjectArtifact>
             <scope>compile</scope>
             <excludes>
@@ -147,7 +148,7 @@
             </excludes>
         </dependencySet>
         <dependencySet>
-            <outputDirectory>/lib</outputDirectory>
+            <outputDirectory>/hdi40/lib</outputDirectory>
             <useProjectArtifact>true</useProjectArtifact>
             <scope>runtime</scope>
             <excludes>
