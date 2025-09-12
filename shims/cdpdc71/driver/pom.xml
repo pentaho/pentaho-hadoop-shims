@@ -587,6 +587,11 @@
       <version>${commons-configuration2.version}</version>
     </dependency>
     <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+      <version>${protobuf-java.version}</version>
+    </dependency>
+    <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-bundle</artifactId>
       <version>${aws-java-sdk.version}</version>
