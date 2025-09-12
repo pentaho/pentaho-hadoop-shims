@@ -5,15 +5,16 @@
     <formats>
         <format>zip</format>
     </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
     <files>
         <file>
             <source> ${project.build.directory}/${project.artifactId}-${project.version}.jar</source>
-            <outputDirectory>/</outputDirectory>
+            <outputDirectory>/apache33</outputDirectory>
         </file>
     </files>
     <dependencySets>
         <dependencySet>
-            <outputDirectory>/lib</outputDirectory>
+            <outputDirectory>/apache33/lib</outputDirectory>
             <useProjectArtifact>true</useProjectArtifact>
             <scope>runtime</scope>
             <excludes>
@@ -160,7 +161,7 @@
             </excludes>
         </dependencySet>
         <dependencySet>
-            <outputDirectory>/lib</outputDirectory>
+            <outputDirectory>/apache33/lib</outputDirectory>
             <useProjectArtifact>true</useProjectArtifact>
             <scope>compile</scope>
             <excludes>
