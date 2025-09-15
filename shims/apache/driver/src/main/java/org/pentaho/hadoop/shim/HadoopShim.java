@@ -21,7 +21,7 @@ import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
 
 public class HadoopShim extends HadoopShimImpl {
 
-  private static final String ID = "apache";
+  private static final String ID = "apache34";
   private static final String VENDOR = "Apache";
   private static final String VERSION = "3.4";
   private static final ShimIdentifierInterface.ShimType TYPE = ShimIdentifierInterface.ShimType.COMMUNITY;

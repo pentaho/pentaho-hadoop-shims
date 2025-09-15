@@ -13,6 +13,7 @@
   <packaging>jar</packaging>
 
   <properties>
+    <shim.id>emr770</shim.id>
     <jsr311-api.version>1.1.1</jsr311-api.version>
     <org.apache.avro.version>1.12.0</org.apache.avro.version>
     <org.apache.hive.version>4.0.1</org.apache.hive.version>

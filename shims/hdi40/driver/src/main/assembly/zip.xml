@@ -9,12 +9,12 @@
     <files>
         <file>
             <source> ${project.build.directory}/${project.artifactId}-${project.version}.jar</source>
-            <outputDirectory>/hdi40</outputDirectory>
+            <outputDirectory>/${shim.id}</outputDirectory>
         </file>
     </files>
     <dependencySets>
         <dependencySet>
-            <outputDirectory>/hdi40/lib</outputDirectory>
+            <outputDirectory>/${shim.id}/lib</outputDirectory>
             <useProjectArtifact>true</useProjectArtifact>
             <scope>compile</scope>
             <excludes>
@@ -148,7 +148,7 @@
             </excludes>
         </dependencySet>
         <dependencySet>
-            <outputDirectory>/hdi40/lib</outputDirectory>
+            <outputDirectory>/${shim.id}/lib</outputDirectory>
             <useProjectArtifact>true</useProjectArtifact>
             <scope>runtime</scope>
             <excludes>

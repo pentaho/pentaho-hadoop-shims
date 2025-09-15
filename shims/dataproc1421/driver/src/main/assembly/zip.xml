@@ -9,12 +9,12 @@
     <files>
         <file>
             <source> ${project.build.directory}/${project.artifactId}-${project.version}.jar</source>
-            <outputDirectory>/dataproc1421</outputDirectory>
+            <outputDirectory>/${shim.id}</outputDirectory>
         </file>
     </files>
     <dependencySets>
         <dependencySet>
-            <outputDirectory>/dataproc1421/lib</outputDirectory>
+            <outputDirectory>/${shim.id}/lib</outputDirectory>
             <useProjectArtifact>true</useProjectArtifact>
             <scope>compile</scope>
             <excludes>
@@ -149,7 +149,7 @@
             </excludes>
         </dependencySet>
         <dependencySet>
-            <outputDirectory>/dataproc1421/lib</outputDirectory>
+            <outputDirectory>/${shim.id}/lib</outputDirectory>
             <useProjectArtifact>true</useProjectArtifact>
             <scope>runtime</scope>
             <excludes>

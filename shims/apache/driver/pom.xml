@@ -13,6 +13,7 @@
   <properties>
     <vendor-driver.version>3.4.0.0.apache</vendor-driver.version>
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
+    <shim.id>apache34</shim.id>
 
     <shim.name>apache</shim.name>
     <!-- default folder -->
