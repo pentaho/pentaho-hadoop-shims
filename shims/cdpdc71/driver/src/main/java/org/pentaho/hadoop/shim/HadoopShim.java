@@ -46,7 +46,7 @@ import java.util.Properties;
 
 public class HadoopShim extends HadoopShimImpl {
 
-  private static final String ID = "cdpdc71";
+  private static final String ID = "cdp71";
   private static final String VENDOR = "Cloudera";
   private static final String VERSION = "7.1";
   private static final ShimIdentifierInterface.ShimType TYPE = ShimIdentifierInterface.ShimType.COMMUNITY;
