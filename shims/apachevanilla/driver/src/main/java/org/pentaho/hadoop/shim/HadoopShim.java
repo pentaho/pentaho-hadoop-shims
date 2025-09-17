@@ -43,7 +43,7 @@ import java.util.Properties;
 
 public class HadoopShim extends HadoopShimImpl {
 
-  private static final String ID = "apachevanilla34";
+  private static final String ID = "apachevanilla";
   private static final String VENDOR = "ApacheVanilla";
   private static final String VERSION = "3.4.0";
   private static final ShimIdentifierInterface.ShimType TYPE = ShimIdentifierInterface.ShimType.COMMUNITY;
