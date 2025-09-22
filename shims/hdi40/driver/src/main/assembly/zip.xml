@@ -12,6 +12,15 @@
             <outputDirectory>/${shim.id}</outputDirectory>
         </file>
     </files>
+    <fileSets>
+        <fileSet>
+            <directory>${project.parent.basedir}/pmr/target/pmr</directory>
+            <outputDirectory>/${shim.id}/lib/pmr</outputDirectory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+        </fileSet>
+    </fileSets>
     <dependencySets>
         <dependencySet>
             <outputDirectory>/${shim.id}/lib</outputDirectory>
