@@ -76,8 +76,7 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
         );
       }
     } catch (ConfigurationException e) {
-      // TODO: Handle runtime exception better
-        throw new RuntimeException(e);
+      logger.error( "Error getting active hadoop configuration", e );
     }
       return namedClusterServiceLocator;
   }
