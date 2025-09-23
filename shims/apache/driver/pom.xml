@@ -13,8 +13,7 @@
   <properties>
     <vendor-driver.version>3.4.0.0.apache</vendor-driver.version>
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
-    <shim.id>apache34</shim.id>
-
+    <shim.id>apache</shim.id>
     <shim.name>apache</shim.name>
     <!-- default folder -->
     <guava.version>32.1.2-jre</guava.version>
