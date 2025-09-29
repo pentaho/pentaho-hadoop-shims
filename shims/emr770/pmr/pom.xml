@@ -144,6 +144,7 @@
             <configuration>
               <outputDirectory>${project.build.directory}/pmr</outputDirectory>
               <includeScope>runtime</includeScope>
+              <excludeTransitive>true</excludeTransitive>
             </configuration>
           </execution>
         </executions>
