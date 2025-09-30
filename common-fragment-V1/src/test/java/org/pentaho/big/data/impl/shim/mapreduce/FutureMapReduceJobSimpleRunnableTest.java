@@ -17,7 +17,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.pentaho.hadoop.shim.api.mapreduce.MapReduceExecutionException;
-import org.pentaho.di.job.entries.hadoopjobexecutor.NoExitSecurityManager;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -57,8 +56,6 @@ public class FutureMapReduceJobSimpleRunnableTest {
       case EXIT_1:
         System.exit( 1 );
         break;
-      case THROW_NO_EXIT_255:
-        throw new NoExitSecurityManager.NoExitSecurityException( 255, null );
       case THROW:
         throw runtimeException;
       default:
