@@ -158,6 +158,7 @@
                 <exclude>*:tomcat-jdbc:*</exclude>
                 <exclude>*:tomcat-juli:*</exclude>
                 <exclude>*:xml-apis-ext:*</exclude>
+                <exclude>*:aws-java-sdk-bundle:*</exclude>
             </excludes>
         </dependencySet>
         <dependencySet>
@@ -250,6 +251,7 @@
                 <exclude>*:slf4j-api:*</exclude>
                 <exclude>*:snakeyaml:*</exclude>
                 <exclude>*:velocity-engine-core:*</exclude>
+                <exclude>*:aws-java-sdk-bundle:*</exclude>
 
                 <!-- GENERATED 2 -->
                 <exclude>*:apacheds-i18n-2.0.0:*</exclude>
@@ -302,6 +304,7 @@
                 <exclude>*:simple-jndi:*</exclude>
                 <exclude>*:spring-core:*</exclude>
                 <exclude>*:spring-expression:*</exclude>
+                <exclude>*:aws-java-sdk-bundle:*</exclude>
                 <exclude>*:tomcat-jdbc:*</exclude>
                 <exclude>*:tomcat-juli:*</exclude>
                 <exclude>*:xml-apis-ext:*</exclude>
