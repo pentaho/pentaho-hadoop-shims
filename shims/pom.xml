@@ -134,7 +134,7 @@
               <artifactItems>
                 <artifactItem>
                   <groupId>org.pentaho.hadoop.shims</groupId>
-                  <artifactId>pentaho-hadoop-shims-common-fragment-V1</artifactId>
+                  <artifactId>pentaho-hadoop-shims-common-base</artifactId>
                   <classifier>sources</classifier>
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}/src</outputDirectory>

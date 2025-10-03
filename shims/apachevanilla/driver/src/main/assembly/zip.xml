@@ -153,7 +153,7 @@
                 <exclude>*:parquet-jackson:*</exclude>
                 <exclude>*:pentaho-encryption-support:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-apachevanilla:*</exclude>
-                <exclude>*:pentaho-hadoop-shims-common-fragment-V1:*</exclude>
+                <exclude>*:pentaho-hadoop-shims-common-base:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-common-services-api:*</exclude>
                 <exclude>*:pentaho-metastore-locator-api:*</exclude>
                 <exclude>*:pentaho-platform-api:*</exclude>
@@ -314,7 +314,7 @@
                 <exclude>*:parquet-jackson:*</exclude>
                 <exclude>*:pentaho-encryption-support:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-apachevanilla:*</exclude>
-                <exclude>*:pentaho-hadoop-shims-common-fragment-V1:*</exclude>
+                <exclude>*:pentaho-hadoop-shims-common-base:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-common-services-api:*</exclude>
                 <exclude>*:pentaho-metastore-locator-api:*</exclude>
                 <exclude>*:pentaho-platform-api:*</exclude>

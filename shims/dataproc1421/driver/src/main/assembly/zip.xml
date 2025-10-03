@@ -133,7 +133,7 @@
                 <exclude>*:parquet-encoding:*</exclude>
                 <exclude>*:parquet-format-structures:*</exclude>
                 <exclude>*:pentaho-encryption-support:*</exclude>
-                <exclude>*:pentaho-hadoop-shims-common-fragment-V1:*</exclude>
+                <exclude>*:pentaho-hadoop-shims-common-base:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-common-services-api:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-dataproc1421:*</exclude>
                 <exclude>*:pentaho-metastore-locator-api:*</exclude>
@@ -268,7 +268,7 @@
                 <exclude>*:parquet-encoding:*</exclude>
                 <exclude>*:parquet-format-structures:*</exclude>
                 <exclude>*:pentaho-encryption-support:*</exclude>
-                <exclude>*:pentaho-hadoop-shims-common-fragment-V1:*</exclude>
+                <exclude>*:pentaho-hadoop-shims-common-base:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-common-services-api:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-dataproc1421:*</exclude>
                 <exclude>*:pentaho-metastore-locator-api:*</exclude>

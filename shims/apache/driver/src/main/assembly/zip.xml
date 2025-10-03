@@ -94,7 +94,7 @@
                 <exclude>*:parquet-common:*</exclude>
                 <exclude>*:parquet-encoding:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-apache:*</exclude>
-                <exclude>*:pentaho-hadoop-shims-common-fragment-V1:*</exclude>
+                <exclude>*:pentaho-hadoop-shims-common-base:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-common-services-api:*</exclude>
                 <exclude>*:pentaho-metastore-locator-api:*</exclude>
                 <exclude>*:pentaho-platform-api:*</exclude>
@@ -145,7 +145,7 @@
                 <exclude>*:ognl:*</exclude>
                 <exclude>*:pentaho-encryption-support:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-apache:*</exclude>
-                <exclude>*:pentaho-hadoop-shims-common-fragment-V1:*</exclude>
+                <exclude>*:pentaho-hadoop-shims-common-base:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-common-services-api:*</exclude>
                 <exclude>*:pentaho-metastore-locator-api:*</exclude>
                 <exclude>*:pentaho-platform-api:*</exclude>
@@ -241,7 +241,7 @@
                 <exclude>*:parquet-common:*</exclude>
                 <exclude>*:parquet-encoding:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-apache:*</exclude>
-                <exclude>*:pentaho-hadoop-shims-common-fragment-V1:*</exclude>
+                <exclude>*:pentaho-hadoop-shims-common-base:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-common-services-api:*</exclude>
                 <exclude>*:pentaho-metastore-locator-api:*</exclude>
                 <exclude>*:pentaho-platform-api:*</exclude>
@@ -292,7 +292,7 @@
                 <exclude>*:ognl:*</exclude>
                 <exclude>*:pentaho-encryption-support:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-apache:*</exclude>
-                <exclude>*:pentaho-hadoop-shims-common-fragment-V1:*</exclude>
+                <exclude>*:pentaho-hadoop-shims-common-base:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-common-services-api:*</exclude>
                 <exclude>*:pentaho-metastore-locator-api:*</exclude>
                 <exclude>*:pentaho-platform-api:*</exclude>
