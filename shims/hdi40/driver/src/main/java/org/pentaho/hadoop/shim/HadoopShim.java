@@ -40,8 +40,8 @@ import org.pentaho.hadoop.shim.common.HadoopShimImpl;
 public class HadoopShim extends HadoopShimImpl {
 
   private static final String ID = "hdi40";
-  private static final String VENDOR = "Cloudera";
-  private static final String VERSION = "7.1";
+  private static final String VENDOR = "Azure HDI";
+  private static final String VERSION = "4.0";
   private static final ShimIdentifierInterface.ShimType TYPE = ShimIdentifierInterface.ShimType.COMMUNITY;
   private static final ShimIdentifier SHIM_IDENTIFIER = new ShimIdentifier( ID, VENDOR, VERSION, TYPE );
 
