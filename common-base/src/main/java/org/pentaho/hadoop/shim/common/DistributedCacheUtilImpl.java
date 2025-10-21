@@ -75,6 +75,11 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
   private static final String PATH_LIB = "lib";
 
   /**
+   * Pentaho MapReduce library path within a Hadoop configuration
+   */
+  private static final String PATH_PMR = "pmr";
+
+  /**
    * Path within the installation directory to deploy plugins
    */
   private static final String PATH_PLUGINS = "plugins";
@@ -248,15 +253,35 @@ public class DistributedCacheUtilImpl implements org.pentaho.hadoop.shim.api.int
     if ( hadoopConfigurationsDir != null ) {
       FileObject shimDir = hadoopConfigurationsDir.getChild( shimIdentifier );
       if ( shimDir != null ) {
-        FileObject shimLibsDir = shimDir.getChild( "lib" );
+        FileObject shimLibsDir = shimDir.getChild( PATH_LIB );
         if ( shimLibsDir != null ) {
-          pmrLibsDir = shimLibsDir.getChild( "pmr" );
+          pmrLibsDir = shimLibsDir.getChild( PATH_PMR );
         }
+        // Stage the current Hadoop configuration without its client-only or pmr libraries (these will be copied into the
+        // lib dir)
+        for ( FileObject f : shimDir.findFiles( new FileSelector() {
+          @Override
+          public boolean includeFile( FileSelectInfo info ) throws Exception {
+            return FileType.FILE.equals( info.getFile().getType() );
+          }
+
+          @Override
+          public boolean traverseDescendents( FileSelectInfo info ) throws Exception {
+            String name = info.getFile().getName().getBaseName();
+            return !( ( PATH_PMR.equals( name ) )
+                    && PATH_LIB.equals( info.getFile().getParent().getName().getBaseName() ) );
+          }
+        } ) ) {
+          // Create relative path to write to
+          String relPath = shimDir.getName().getRelativeName( f.getName() );
+          stageForCache( f, fs, new Path( bigDataPluginDir + "/hadoop-configurations/" + shimIdentifier, relPath ), "", true, false );
+        }
+
       }
     }
 
-    Path pdiLib = new Path( dest, "lib" );
-
+    // Stage all pmr libraries for the Hadoop configuration into the root library path for the Kettle environment
+    Path pdiLib = new Path( dest, PATH_LIB );
     if ( pmrLibsDir != null ) {
       for ( FileObject f : pmrLibsDir.getChildren() ) {
         stageForCache( f, fs, new Path( pdiLib, f.getName().getBaseName() ), "", true, false );
