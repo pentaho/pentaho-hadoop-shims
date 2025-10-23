@@ -14,9 +14,12 @@ package org.pentaho.hadoop.shim.api.services;
 
 import org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceLocator;
 import org.pentaho.hadoop.shim.api.hdfs.HadoopFileSystemLocator;
+import java.util.Map;
 
 public interface BigDataServicesProxy {
     NamedClusterServiceLocator getNamedClusterServiceLocator();
 
     HadoopFileSystemLocator getHadoopFileSystemLocator();
+
+    Map<String, String> getShimIdentifier();
 }
