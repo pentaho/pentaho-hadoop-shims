@@ -51,6 +51,10 @@ public class LegacyShimLocator {
     return instance;
   }
 
+  public void setRegisteredShims( List<ShimIdentifierInterface> registeredShims ) {
+    this.registeredShims = registeredShims;
+  }
+
   public List<ShimIdentifierInterface> getRegisteredShims() {
     return registeredShims;
   }
