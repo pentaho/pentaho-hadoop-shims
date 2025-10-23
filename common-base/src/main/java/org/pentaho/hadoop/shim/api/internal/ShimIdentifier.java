@@ -16,6 +16,11 @@ package org.pentaho.hadoop.shim.api.internal;
 import org.pentaho.hadoop.shim.api.core.ShimIdentifierInterface;
 
 public class ShimIdentifier implements ShimIdentifierInterface {
+
+  public static final String SHIM_ID = "SHIM_ID";
+  public static final String SHIM_VENDOR = "SHIM_VENDOR";
+  public static final String SHIM_VERSION = "SHIM_VERSION";
+
   private String id;
 
   private String vendor;
