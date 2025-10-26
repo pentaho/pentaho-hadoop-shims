@@ -40,14 +40,6 @@ public interface NamedCluster extends Cloneable, VariableSpace {
 
   String getShimIdentifier();
 
-  String getShimVendor();
-
-  void setShimVendor( String shimVendor );
-
-  String getShimVersion();
-
-  void setShimVersion( String shimVersion );
-
   void setShimIdentifier( String shimIdentifier );
 
   String getStorageScheme();
@@ -155,7 +147,6 @@ public interface NamedCluster extends Cloneable, VariableSpace {
   default void setSiteFiles( List<NamedClusterSiteFile> siteFiles ) {
     //default here just for compile purposes
   }
-
 
   /*
   @deprecated As of version 9.3.  Use the {@link #addSiteFile( NamedClusterSiteFile namedClusterSiteFile ) method
