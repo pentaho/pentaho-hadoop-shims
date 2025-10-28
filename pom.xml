@@ -199,6 +199,7 @@
       <modules>
         <module>mapreduce</module>
         <module>common-services-api</module>
+        <module>common-base</module>
         <module>common-dependencies</module>
       </modules>
     </profile>
@@ -213,7 +214,6 @@
       <modules>
         <module>shim-api-core</module>
         <module>shim-api</module>
-        <module>common-base</module>
       </modules>
     </profile>
 
