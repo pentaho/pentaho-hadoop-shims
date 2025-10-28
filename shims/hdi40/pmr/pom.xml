@@ -120,7 +120,7 @@
     </dependency>
     <dependency>
       <groupId>org.pentaho.hadoop.shims</groupId>
-      <artifactId>pentaho-hadoop-shims-common-fragment-V1</artifactId>
+      <artifactId>pentaho-hadoop-shims-common-base</artifactId>
       <version>${project.version}</version>
       <exclusions>
         <exclusion>
@@ -149,6 +149,23 @@
           </descriptors>
           <appendAssemblyId>false</appendAssemblyId>
         </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/pmr</outputDirectory>
+              <includeScope>runtime</includeScope>
+              <excludeTransitive>true</excludeTransitive>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

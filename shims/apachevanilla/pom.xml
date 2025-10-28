@@ -9,8 +9,7 @@
   <artifactId>pentaho-hadoop-shims-apachevanilla-reactor</artifactId>
   <packaging>pom</packaging>
   <modules>
-    <module>driver</module>
     <module>pmr</module>
-    <module>kar</module>
+    <module>driver</module>
   </modules>
 </project>

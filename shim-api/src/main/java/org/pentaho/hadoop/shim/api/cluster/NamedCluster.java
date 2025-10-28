@@ -148,7 +148,6 @@ public interface NamedCluster extends Cloneable, VariableSpace {
     //default here just for compile purposes
   }
 
-
   /*
   @deprecated As of version 9.3.  Use the {@link #addSiteFile( NamedClusterSiteFile namedClusterSiteFile ) method
    */

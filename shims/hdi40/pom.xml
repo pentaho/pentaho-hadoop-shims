@@ -9,8 +9,7 @@
   <artifactId>pentaho-hadoop-shims-hdi40-reactor</artifactId>
   <packaging>pom</packaging>
   <modules>
-    <module>driver</module>
     <module>pmr</module>
-    <module>kar</module>
+    <module>driver</module>
   </modules>
 </project>
