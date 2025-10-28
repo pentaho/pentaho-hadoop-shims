@@ -16,9 +16,7 @@ package org.pentaho.big.data.api.cluster.service.locator.impl;
 import com.google.common.annotations.VisibleForTesting;
 import org.pentaho.big.data.api.shims.LegacyShimLocator;
 import org.pentaho.big.data.impl.cluster.NamedClusterManager;
-import org.pentaho.di.core.hadoop.HadoopConfigurationBootstrap;
 import org.pentaho.di.core.service.PluginServiceLoader;
-import org.pentaho.hadoop.shim.api.ConfigurationException;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.cluster.NamedClusterService;
 import org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceFactory;
@@ -62,23 +60,14 @@ public class NamedClusterServiceLocatorImpl implements NamedClusterServiceLocato
     serviceVendorTypeMapping = new HashMap<>();
   }
 
-  public static synchronized NamedClusterServiceLocatorImpl getInstance() {
-    try {
-      if (namedClusterServiceLocator == null) {
-        String shimIdentifier = "NONE";
-        if ( HadoopConfigurationBootstrap.getInstance().getProvider() != null ) {
-          shimIdentifier = HadoopConfigurationBootstrap.getInstance().getProvider()
-                  .getActiveConfiguration().getIdentifier();
-        }
-        namedClusterServiceLocator = new NamedClusterServiceLocatorImpl(
-                shimIdentifier,
-                NamedClusterManager.getInstance()
-        );
-      }
-    } catch (ConfigurationException e) {
-      logger.error( "Error getting active hadoop configuration", e );
+  public static synchronized NamedClusterServiceLocatorImpl getInstance( String shimIdentifier) {
+    if (namedClusterServiceLocator == null) {
+      namedClusterServiceLocator = new NamedClusterServiceLocatorImpl(
+              shimIdentifier,
+              NamedClusterManager.getInstance()
+      );
     }
-      return namedClusterServiceLocator;
+    return namedClusterServiceLocator;
   }
 
   protected synchronized MetastoreLocator getMetastoreLocator() {
