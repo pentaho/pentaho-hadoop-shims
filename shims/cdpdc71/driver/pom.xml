@@ -18,7 +18,8 @@
     <failureaccess.version>1.0.1</failureaccess.version>
     <pentaho-osgi-bundles.version>11.0.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
     <org.apache.avro.version>1.11.1.7.3.1.0-197</org.apache.avro.version>
-    <org.apache.orc.version>1.8.3.7.3.1.0-197</org.apache.orc.version>
+<!--    <org.apache.orc.version>1.8.3.7.3.1.0-197</org.apache.orc.version>-->
+    <org.apache.orc.version>1.5.1.7.1.4.0-203</org.apache.orc.version>
     <!-- settting v1.14.4 so shaded jackson-databind inside parquet-hadoop-bundle's  version approximately matches jackson-databind in driver.jar -->
     <parquet.version>1.14.4</parquet.version>
     <org.apache.hadoop.version>3.1.1.7.3.1.0-197</org.apache.hadoop.version>
@@ -396,11 +397,11 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <dependency>
-      <groupId>org.apache.hadoop</groupId>
-      <artifactId>hadoop-client-api</artifactId>
-      <version>${org.apache.hadoop.version}</version>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.apache.hadoop</groupId>-->
+<!--      <artifactId>hadoop-client-api</artifactId>-->
+<!--      <version>${org.apache.hadoop.version}</version>-->
+<!--    </dependency>-->
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-mapreduce-client-app</artifactId>
