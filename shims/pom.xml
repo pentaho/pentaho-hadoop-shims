@@ -259,15 +259,15 @@
       </property>
     </activation>
     <modules>
-      <module>dataproc1421</module>
+      <!--<module>dataproc1421</module>-->
       <module>cdpdc71</module>
       <module>apache</module>
-      <module>hdi40</module>
-      <module>apachevanilla</module>
+      <!--<module>hdi40</module>-->
+      <!--<module>apachevanilla</module>-->
       <module>emr770</module>
     </modules>
   </profile>
-  <profile>
+  <!--<profile>
     <id>dataproc1421</id>
     <activation>
       <property>
@@ -277,7 +277,7 @@
     <modules>
       <module>dataproc1421</module>
     </modules>
-    </profile>
+    </profile>-->
   <profile>
     <id>cdpdc71</id>
     <activation>
@@ -289,7 +289,7 @@
       <module>cdpdc71</module>
     </modules>
   </profile>
-  <profile>
+  <!--<profile>
     <id>hdi40</id>
     <activation>
       <property>
@@ -310,7 +310,7 @@
     <modules>
       <module>apachevanilla</module>
     </modules>
-  </profile>
+  </profile>-->
   <profile>
     <id>emr770</id>
     <activation>
