@@ -5,18 +5,18 @@
   <parent>
     <groupId>org.pentaho.hadoop.shims</groupId>
     <artifactId>pentaho-hadoop-shims-cdpdc71-reactor</artifactId>
-     <version>11.0.0.0-196</version>
+     <version>11.0.0.0-latest</version>
   </parent>
 
   <artifactId>pentaho-hadoop-shims-cdpdc71</artifactId>
-   <version>11.0.0.0-196</version>
+   <version>11.0.0.0-latest</version>
   <packaging>jar</packaging>
 
   <properties>
     <shim.id>cdpdc71</shim.id>
     <commons-lang.version>2.6</commons-lang.version>
     <failureaccess.version>1.0.1</failureaccess.version>
-    <pentaho-osgi-bundles.version>11.0.0.0-196</pentaho-osgi-bundles.version>
+    <pentaho-osgi-bundles.version>11.0.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
     <org.apache.avro.version>1.11.1.7.3.1.0-197</org.apache.avro.version>
 <!--    <org.apache.orc.version>1.5.1.7.1.4.0-203</org.apache.orc.version>-->
     <org.apache.orc.version>1.5.1.7.1.4.0-203</org.apache.orc.version>
