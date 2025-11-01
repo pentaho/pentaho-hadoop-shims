@@ -108,7 +108,7 @@ public class DistributedCacheUtilImplTest {
     DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl();
 
     FileObject archive =
-      KettleVFS.getFileObject( getClass().getResource( "/pentaho-mapreduce-sample.jar" ).toURI().getPath() );
+      KettleVFS.getFileObject( DistributedCacheUtilImplTest.class.getResource( "/pentaho-mapreduce-sample.jar" ).toURI().getPath() );
 
     try {
       ch.extract( archive, KettleVFS.getFileObject( "." ) );
@@ -122,7 +122,7 @@ public class DistributedCacheUtilImplTest {
     DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl();
 
     FileObject archive =
-      KettleVFS.getFileObject( getClass().getResource( "/pentaho-mapreduce-sample.jar" ).toURI().getPath() );
+      KettleVFS.getFileObject( DistributedCacheUtilImplTest.class.getResource( "/pentaho-mapreduce-sample.jar" ).toURI().getPath() );
     FileObject extracted = ch.extractToTemp( archive );
 
     assertNotNull( extracted );

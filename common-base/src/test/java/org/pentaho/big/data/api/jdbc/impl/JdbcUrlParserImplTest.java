@@ -34,13 +34,15 @@ import static org.junit.Assert.assertTrue;
 /**
  * Created by bryan on 4/14/16.
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith( MockitoJUnitRunner.class )
 public class JdbcUrlParserImplTest {
   @Mock
   NamedClusterService namedClusterService;
   @Mock
   MetastoreLocator metastoreLocator;
   JdbcUrlParserImpl jdbcUrlParser;
+  JdbcUrlParserImpl jdbcUrlParserWithGetInstance;
+
   MockedStatic<PluginServiceLoader> pluginServiceLoaderMockedStatic;
 
   @Before
@@ -50,6 +52,12 @@ public class JdbcUrlParserImplTest {
     pluginServiceLoaderMockedStatic = Mockito.mockStatic( PluginServiceLoader.class );
     pluginServiceLoaderMockedStatic.when( () -> PluginServiceLoader.loadServices( MetastoreLocator.class ) )
       .thenReturn( metastoreLocatorCollection );
+
+    Collection<NamedClusterService> namedClusterServicesCollection = new ArrayList<>();
+    namedClusterServicesCollection.add( namedClusterService );
+    pluginServiceLoaderMockedStatic.when( () -> PluginServiceLoader.loadServices( NamedClusterService.class ) )
+      .thenReturn( namedClusterServicesCollection );
+    jdbcUrlParserWithGetInstance = JdbcUrlParserImpl.getInstance();
     jdbcUrlParser = new JdbcUrlParserImpl( namedClusterService );
   }
 
@@ -63,5 +71,10 @@ public class JdbcUrlParserImplTest {
   @Test
   public void testParse() throws URISyntaxException {
     assertTrue( jdbcUrlParser.parse( "jdbc:hive2://host:80/default" ) instanceof JdbcUrlImpl );
+  }
+
+  @Test
+  public void testParseWithGetInstance() throws URISyntaxException {
+    assertTrue( jdbcUrlParserWithGetInstance.parse( "jdbc:hive2://host:80/default" ) instanceof JdbcUrlImpl );
   }
 }
