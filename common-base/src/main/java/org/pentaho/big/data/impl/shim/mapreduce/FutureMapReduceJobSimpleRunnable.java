@@ -9,8 +9,6 @@
  *
  * Change Date: 2029-07-20
  ******************************************************************************/
-
-
 package org.pentaho.big.data.impl.shim.mapreduce;
 
 import org.pentaho.di.job.entries.hadoopjobexecutor.SecurityManagerStack;
@@ -26,6 +24,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * Created by bryan on 12/7/15.
  */
 public class FutureMapReduceJobSimpleRunnable implements Runnable {
+
   private static final SecurityManagerStack securityManagerStack = SecurityManagerStack.getInstance();
   private final Class<?> mainClass;
   private final String commandLineArgs;
@@ -43,18 +42,25 @@ public class FutureMapReduceJobSimpleRunnable implements Runnable {
     this.exceptionAtomicReference = exceptionAtomicReference;
   }
 
-  @Override public void run() {
+  @Override
+  public void run() {
     try {
-        executeMainMethod( mainClass, commandLineArgs );
-        updateWithStatus( 0, null );
+      executeMainMethod( mainClass, commandLineArgs );
+      updateWithStatus( 0, null );
 
     } catch ( Throwable ex ) {
-      if ( ex instanceof InvocationTargetException ) updateWithStatus(-1, new MapReduceExecutionException(ex));
+      if ( ex instanceof InvocationTargetException ) {
+        updateWithStatus( -1, new MapReduceExecutionException( ex ) );
+      } else {
+        // Handle other exceptions (like NoSuchMethodException)
+        updateWithStatus( -1, new MapReduceExecutionException( ex ) );
+      }
     }
   }
 
   /**
-   * Execute the main method of the provided class with the current command line arguments.
+   * Execute the main method of the provided class with the current command
+   * line arguments.
    *
    * @param clazz Class with main method to execute
    * @throws NoSuchMethodException
@@ -67,9 +73,9 @@ public class FutureMapReduceJobSimpleRunnable implements Runnable {
     final ClassLoader cl = Thread.currentThread().getContextClassLoader();
     try {
       Thread.currentThread().setContextClassLoader( clazz.getClassLoader() );
-      Method mainMethod = clazz.getMethod( "main", new Class[] { String[].class } );
-      Object[] args =
-        ( commandLineArgs != null ) ? new Object[] { commandLineArgs.split( " " ) } : new Object[] { new String[ 0 ] };
+      Method mainMethod = clazz.getMethod( "main", new Class[] {String[].class} );
+      Object[] args
+        = ( commandLineArgs != null ) ? new Object[] {commandLineArgs.split( " " )} : new Object[] {new String[0]};
       mainMethod.invoke( null, args );
     } finally {
       Thread.currentThread().setContextClassLoader( cl );

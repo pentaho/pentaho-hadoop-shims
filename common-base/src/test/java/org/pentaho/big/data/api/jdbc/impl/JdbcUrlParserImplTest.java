@@ -13,6 +13,7 @@
 
 package org.pentaho.big.data.api.jdbc.impl;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,20 +34,29 @@ import static org.junit.Assert.assertTrue;
 /**
  * Created by bryan on 4/14/16.
  */
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class JdbcUrlParserImplTest {
-  @Mock NamedClusterService namedClusterService;
-  @Mock MetastoreLocator metastoreLocator;
+  @Mock
+  NamedClusterService namedClusterService;
+  @Mock
+  MetastoreLocator metastoreLocator;
   JdbcUrlParserImpl jdbcUrlParser;
+  MockedStatic<PluginServiceLoader> pluginServiceLoaderMockedStatic;
 
   @Before
   public void setup() {
     Collection<MetastoreLocator> metastoreLocatorCollection = new ArrayList<>();
     metastoreLocatorCollection.add( metastoreLocator );
-    try( MockedStatic<PluginServiceLoader> pluginServiceLoaderMockedStatic = Mockito.mockStatic( PluginServiceLoader.class ) ) {
-      pluginServiceLoaderMockedStatic.when( () -> PluginServiceLoader.loadServices( MetastoreLocator.class ) )
-        .thenReturn( metastoreLocatorCollection );
-      jdbcUrlParser = new JdbcUrlParserImpl( namedClusterService );
+    pluginServiceLoaderMockedStatic = Mockito.mockStatic( PluginServiceLoader.class );
+    pluginServiceLoaderMockedStatic.when( () -> PluginServiceLoader.loadServices( MetastoreLocator.class ) )
+      .thenReturn( metastoreLocatorCollection );
+    jdbcUrlParser = new JdbcUrlParserImpl( namedClusterService );
+  }
+
+  @After
+  public void tearDown() {
+    if ( pluginServiceLoaderMockedStatic != null ) {
+      pluginServiceLoaderMockedStatic.close();
     }
   }
 
