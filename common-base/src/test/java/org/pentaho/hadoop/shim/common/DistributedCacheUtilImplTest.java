@@ -9,8 +9,6 @@
  *
  * Change Date: 2029-07-20
  ******************************************************************************/
-
-
 package org.pentaho.hadoop.shim.common;
 
 import org.apache.commons.vfs2.AllFileSelector;
@@ -107,8 +105,11 @@ public class DistributedCacheUtilImplTest {
   public void extract_destination_exists() throws Exception {
     DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl();
 
-    FileObject archive =
-      KettleVFS.getFileObject( DistributedCacheUtilImplTest.class.getResource( "/pentaho-mapreduce-sample.jar" ).toURI().getPath() );
+    URL resourceUrl = DistributedCacheUtilImplTest.class.getResource( "/pentaho-mapreduce-sample.jar" );
+    if ( resourceUrl == null ) {
+      fail( "Test resource not found: /pentaho-mapreduce-sample.jar" );
+    }
+    FileObject archive = KettleVFS.getFileObject( resourceUrl.toURI().getPath() );
 
     try {
       ch.extract( archive, KettleVFS.getFileObject( "." ) );
@@ -121,8 +122,11 @@ public class DistributedCacheUtilImplTest {
   public void extractToTemp() throws Exception {
     DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl();
 
-    FileObject archive =
-      KettleVFS.getFileObject( DistributedCacheUtilImplTest.class.getResource( "/pentaho-mapreduce-sample.jar" ).toURI().getPath() );
+    URL resourceUrl = DistributedCacheUtilImplTest.class.getResource( "/pentaho-mapreduce-sample.jar" );
+    if ( resourceUrl == null ) {
+      fail( "Test resource not found: /pentaho-mapreduce-sample.jar" );
+    }
+    FileObject archive = KettleVFS.getFileObject( resourceUrl.toURI().getPath() );
     FileObject extracted = ch.extractToTemp( archive );
 
     assertNotNull( extracted );
