@@ -13,6 +13,7 @@
 
 package org.pentaho.big.data.api.jdbc.impl;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,23 +36,45 @@ import static org.junit.Assert.assertTrue;
  */
 @RunWith( MockitoJUnitRunner.class )
 public class JdbcUrlParserImplTest {
-  @Mock NamedClusterService namedClusterService;
-  @Mock MetastoreLocator metastoreLocator;
+  @Mock
+  NamedClusterService namedClusterService;
+  @Mock
+  MetastoreLocator metastoreLocator;
   JdbcUrlParserImpl jdbcUrlParser;
+  JdbcUrlParserImpl jdbcUrlParserWithGetInstance;
+
+  MockedStatic<PluginServiceLoader> pluginServiceLoaderMockedStatic;
 
   @Before
   public void setup() {
     Collection<MetastoreLocator> metastoreLocatorCollection = new ArrayList<>();
     metastoreLocatorCollection.add( metastoreLocator );
-    try( MockedStatic<PluginServiceLoader> pluginServiceLoaderMockedStatic = Mockito.mockStatic( PluginServiceLoader.class ) ) {
-      pluginServiceLoaderMockedStatic.when( () -> PluginServiceLoader.loadServices( MetastoreLocator.class ) )
-        .thenReturn( metastoreLocatorCollection );
-      jdbcUrlParser = new JdbcUrlParserImpl( namedClusterService );
+    pluginServiceLoaderMockedStatic = Mockito.mockStatic( PluginServiceLoader.class );
+    pluginServiceLoaderMockedStatic.when( () -> PluginServiceLoader.loadServices( MetastoreLocator.class ) )
+      .thenReturn( metastoreLocatorCollection );
+
+    Collection<NamedClusterService> namedClusterServicesCollection = new ArrayList<>();
+    namedClusterServicesCollection.add( namedClusterService );
+    pluginServiceLoaderMockedStatic.when( () -> PluginServiceLoader.loadServices( NamedClusterService.class ) )
+      .thenReturn( namedClusterServicesCollection );
+    jdbcUrlParserWithGetInstance = JdbcUrlParserImpl.getInstance();
+    jdbcUrlParser = new JdbcUrlParserImpl( namedClusterService );
+  }
+
+  @After
+  public void tearDown() {
+    if ( pluginServiceLoaderMockedStatic != null ) {
+      pluginServiceLoaderMockedStatic.close();
     }
   }
 
   @Test
   public void testParse() throws URISyntaxException {
     assertTrue( jdbcUrlParser.parse( "jdbc:hive2://host:80/default" ) instanceof JdbcUrlImpl );
+  }
+
+  @Test
+  public void testParseWithGetInstance() throws URISyntaxException {
+    assertTrue( jdbcUrlParserWithGetInstance.parse( "jdbc:hive2://host:80/default" ) instanceof JdbcUrlImpl );
   }
 }
