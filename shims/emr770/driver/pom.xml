@@ -19,8 +19,6 @@
     <org.apache.hive.version>4.0.1</org.apache.hive.version>
     <org.apache.oozie.version>5.2.1</org.apache.oozie.version>
     <org.apache.hbase.version>2.6.1</org.apache.hbase.version>
-    <!-- setting v1.14.4 so shaded jackson-databind inside parquet-hadoop-bundle's  version approximately matches jackson-databind in driver.jar -->
-    <parquet.version>1.14.4</parquet.version>
     <sqoop.version>1.4.7</sqoop.version>
     <pig.version>0.17.0</pig.version>
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
@@ -633,6 +631,10 @@
         <exclusion>
           <artifactId>protobuf-java</artifactId>
           <groupId>com.google.protobuf</groupId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.parquet</groupId>
+          <artifactId>parquet-hadoop-bundle</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
