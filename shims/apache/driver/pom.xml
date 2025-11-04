@@ -26,7 +26,6 @@
     <!-- pmr folder -->
     <commons-configuration.version>1.6</commons-configuration.version>
     <commons-configuration2.version>2.10.1</commons-configuration2.version>
-    <parquet.version>1.14.4</parquet.version>
     <joda-time.version>2.9.9</joda-time.version>
     <zookeeper.version>3.9.3</zookeeper.version>
     <bouncycastle.version>1.78</bouncycastle.version>
