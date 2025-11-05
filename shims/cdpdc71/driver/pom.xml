@@ -20,15 +20,11 @@
     <org.apache.avro.version>1.11.1.7.3.1.0-197</org.apache.avro.version>
 <!--    <org.apache.orc.version>1.5.1.7.1.4.0-203</org.apache.orc.version>-->
     <org.apache.orc.version>1.5.1.7.1.4.0-203</org.apache.orc.version>
-    <!-- settting v1.14.4 so shaded jackson-databind inside parquet-hadoop-bundle's  version approximately matches jackson-databind in driver.jar -->
-    <parquet.version>1.14.4</parquet.version>
     <org.apache.hadoop.version>3.1.1.7.3.1.0-197</org.apache.hadoop.version>
     <org.apache.hbase.version>2.4.17.7.3.1.0-197</org.apache.hbase.version>
     <org.apache.hive.version>3.1.3000.7.3.1.0-197</org.apache.hive.version>
     <org.apache.oozie.version>5.1.0.7.3.1.0-197</org.apache.oozie.version>
     <pig.version>0.16.0.7.1.4.0-203</pig.version>
-    <!-- parquet v1.14.4 is build on pig v0.16.0 -->
-    <parquet-pig.version>1.14.4</parquet-pig.version>
     <sqoop.version>1.4.7.7.3.1.0-197</sqoop.version>
     <vendor-driver.version>7.3.1.0-197</vendor-driver.version>
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
@@ -166,6 +162,12 @@
       <groupId>org.apache.hive</groupId>
       <artifactId>hive-jdbc</artifactId>
       <version>${org.apache.hive.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.parquet</groupId>
+          <artifactId>parquet-hadoop-bundle</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
@@ -482,7 +484,7 @@
     <dependency>
       <groupId>org.apache.parquet</groupId>
       <artifactId>parquet-pig</artifactId>
-      <version>${parquet-pig.version}</version>
+      <version>${parquet.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.zookeeper</groupId>
