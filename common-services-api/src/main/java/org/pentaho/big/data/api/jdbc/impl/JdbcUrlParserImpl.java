@@ -18,6 +18,8 @@ import org.pentaho.hadoop.shim.api.cluster.NamedClusterService;
 import org.pentaho.hadoop.shim.api.jdbc.JdbcUrl;
 import org.pentaho.hadoop.shim.api.jdbc.JdbcUrlParser;
 import org.pentaho.metastore.locator.api.MetastoreLocator;
+import org.pentaho.big.data.impl.cluster.NamedClusterManager;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +33,7 @@ public class JdbcUrlParserImpl implements JdbcUrlParser {
   private NamedClusterService namedClusterService;
   private MetastoreLocator metastoreLocator;
   private final Logger logger = LoggerFactory.getLogger( JdbcUrlParserImpl.class );
-  private static JdbcUrlParserImpl instance;
+  private static final JdbcUrlParserImpl instance = new JdbcUrlParserImpl( NamedClusterManager.getInstance() );
 
   public JdbcUrlParserImpl( NamedClusterService namedClusterService ) {
     this.namedClusterService = namedClusterService;
@@ -57,15 +59,6 @@ public class JdbcUrlParserImpl implements JdbcUrlParser {
   }
 
   public static JdbcUrlParserImpl getInstance() {
-    if ( instance == null ) {
-        try {
-          Collection<NamedClusterService> namedClusterServices = PluginServiceLoader.loadServices( NamedClusterService.class );
-          NamedClusterService service  = namedClusterServices.stream().findFirst().get();
-          instance = new JdbcUrlParserImpl( service );
-        } catch ( Exception e ) {
-
-        }
-    }
     return instance;
   }
 }
