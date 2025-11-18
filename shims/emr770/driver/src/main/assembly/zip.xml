@@ -38,7 +38,11 @@
                 <exclude>*:janino</exclude>
                 <exclude>*:dnsjava</exclude>
                 <exclude>*:slf4j-log4j12</exclude>
-                <exclude>*:slf4j-api</exclude>
+                <exclude>*:*slf4j-api*:*</exclude>
+                <exclude>*:*slf4j-simple*:*</exclude>
+                <exclude>*:*jcl-over-slf4j*:*</exclude>
+                <exclude>*:*jul-to-slf4j*:*</exclude>
+                <exclude>*:reload4j*:*</exclude>
 
                 <!-- GENERATED excluedes -->
                 <exclude>*:HikariCP-java7:*</exclude>
@@ -195,7 +199,6 @@
                 <exclude>*:xmlenc:*</exclude>
                 <exclude>*:hive-llap-common:*</exclude>
                 <exclude>com.yammer.metrics:metrics-core:*</exclude>
-                <exclude>*:*slf4j*:*</exclude>
             </excludes>
         </dependencySet>
         <dependencySet>
@@ -213,7 +216,11 @@
                 <exclude>*:commons-dbcp2</exclude>
                 <exclude>*:dnsjava</exclude>
                 <exclude>*:slf4j-log4j12</exclude>
-                <exclude>*:slf4j-api</exclude>
+                <exclude>*:*slf4j-api*:*</exclude>
+                <exclude>*:*slf4j-simple*:*</exclude>
+                <exclude>*:*jcl-over-slf4j*:*</exclude>
+                <exclude>*:*jul-to-slf4j*:*</exclude>
+                <exclude>*:reload4j*:*</exclude>
 
                 <!-- GENERATED excluedes -->
                 <exclude>*:HikariCP-java7:*</exclude>
@@ -370,7 +377,6 @@
                 <exclude>*:xmlenc:*</exclude>
                 <exclude>*:hive-llap-common:*</exclude>
                 <exclude>com.yammer.metrics:metrics-core:*</exclude>
-                <exclude>*:*slf4j*:*</exclude>
             </excludes>
         </dependencySet>
     </dependencySets>
