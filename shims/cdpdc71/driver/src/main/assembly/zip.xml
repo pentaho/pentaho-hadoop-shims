@@ -48,7 +48,11 @@
                 <exclude>*:perfmark-api*:*</exclude>
                 <exclude>*:threetenbp*:*</exclude>
                 <exclude>*:google-oauth-client-java6</exclude>
-                <exclude>*:*slf4j*:*</exclude>
+                <exclude>*:*slf4j-api*:*</exclude>
+                <exclude>*:*slf4j-simple*:*</exclude>
+                <exclude>*:*jcl-over-slf4j*:*</exclude>
+                <exclude>*:*jul-to-slf4j*:*</exclude>
+                <exclude>*:reload4j*:*</exclude>
                 <exclude>*:ST4:*</exclude>
                 <exclude>*:accessors-smart:*</exclude>
                 <exclude>*:annotations:*</exclude>
@@ -196,7 +200,11 @@
                 <exclude>*:perfmark-api*:*</exclude>
                 <exclude>*:threetenbp*:*</exclude>
                 <exclude>*:google-oauth-client-java6</exclude>
-                <exclude>*:*slf4j*:*</exclude>
+                <exclude>*:*slf4j-api*:*</exclude>
+                <exclude>*:*slf4j-simple*:*</exclude>
+                <exclude>*:*jcl-over-slf4j*:*</exclude>
+                <exclude>*:*jul-to-slf4j*:*</exclude>
+                <exclude>*:reload4j*:*</exclude>
                 <exclude>*:ST4:*</exclude>
                 <exclude>*:accessors-smart:*</exclude>
                 <exclude>*:annotations:*</exclude>
