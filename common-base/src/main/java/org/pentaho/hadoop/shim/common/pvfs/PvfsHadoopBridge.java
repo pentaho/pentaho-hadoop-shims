@@ -11,7 +11,7 @@
  ******************************************************************************/
 
 
-package org.pentaho.hadoop.shim.pvfs;
+package org.pentaho.hadoop.shim.common.pvfs;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.cache.Cache;
@@ -31,15 +31,16 @@ import org.pentaho.di.connections.vfs.provider.ConnectionFileName;
 import org.pentaho.di.connections.vfs.provider.ConnectionFileNameParser;
 import org.pentaho.hadoop.shim.api.format.org.pentaho.hadoop.shim.pvfs.api.PvfsHadoopBridgeFileSystemExtension;
 
-import org.pentaho.hadoop.shim.pvfs.conf.ADLSGen2Conf;
-import org.pentaho.hadoop.shim.pvfs.conf.ADLSGen1Conf;
-import org.pentaho.hadoop.shim.pvfs.conf.GcsConf;
-import org.pentaho.hadoop.shim.pvfs.conf.HCPConf;
-import org.pentaho.hadoop.shim.pvfs.conf.PvfsConf;
-import org.pentaho.hadoop.shim.pvfs.conf.S3Conf;
-import org.pentaho.hadoop.shim.pvfs.conf.SnwConf;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.pentaho.hadoop.shim.common.pvfs.conf.ADLSGen2Conf;
+import org.pentaho.hadoop.shim.common.pvfs.conf.ADLSGen1Conf;
+import org.pentaho.hadoop.shim.common.pvfs.conf.GcsConf;
+import org.pentaho.hadoop.shim.common.pvfs.conf.HCPConf;
+import org.pentaho.hadoop.shim.common.pvfs.conf.PvfsConf;
+import org.pentaho.hadoop.shim.common.pvfs.conf.S3Conf;
+import org.pentaho.hadoop.shim.common.pvfs.conf.SnwConf;
+import org.pentaho.hadoop.shim.common.fs.FileSystemRegistry;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.io.IOException;
 import java.net.URI;
@@ -56,7 +57,7 @@ public class PvfsHadoopBridge extends FileSystem implements PvfsHadoopBridgeFile
 
   private final List<PvfsConf.ConfFactory> confFactories;
   private final ConnectionManager connMgr;
-  private static final Logger LOGGER = LoggerFactory.getLogger( PvfsHadoopBridge.class );
+  private static final Logger LOGGER = LogManager.getLogger( PvfsHadoopBridge.class );
 
   @SuppressWarnings( "UnstableApiUsage" )
   // Cache was beta in version 11, which is the version hadoop 3.1 uses.

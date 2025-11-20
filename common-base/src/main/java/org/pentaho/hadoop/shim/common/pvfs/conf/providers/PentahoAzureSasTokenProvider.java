@@ -10,7 +10,7 @@
  * Change Date: 2029-07-20
  ******************************************************************************/
 
-package org.pentaho.hadoop.shim.pvfs.conf.providers;
+package org.pentaho.hadoop.shim.common.pvfs.conf.providers;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.azurebfs.extensions.SASTokenProvider;
