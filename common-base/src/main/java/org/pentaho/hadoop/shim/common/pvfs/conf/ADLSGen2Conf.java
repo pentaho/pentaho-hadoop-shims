@@ -11,7 +11,7 @@
  ******************************************************************************/
 
 
-package org.pentaho.hadoop.shim.pvfs.conf;
+package org.pentaho.hadoop.shim.common.pvfs.conf;
 
 import com.google.common.base.Preconditions;
 import org.apache.hadoop.conf.Configuration;
@@ -19,7 +19,6 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.azurebfs.SecureAzureBlobFileSystem;
 import org.apache.hadoop.fs.azurebfs.services.AuthType;
 import org.pentaho.di.connections.ConnectionDetails;
-import org.pentaho.di.core.variables.VariableSpace;
 
 import java.io.IOException;
 import java.net.URI;
@@ -31,7 +30,7 @@ import java.util.stream.Collectors;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.apache.hadoop.fs.Path.SEPARATOR;
-import static org.pentaho.hadoop.shim.pvfs.PvfsHadoopBridge.getConnectionName;
+import static org.pentaho.hadoop.shim.common.pvfs.PvfsHadoopBridge.getConnectionName;
 
 public class ADLSGen2Conf extends PvfsConf {
 
@@ -64,7 +63,7 @@ public class ADLSGen2Conf extends PvfsConf {
           clientSecret = tmpClientSecret;
           tenantId = tmpTenantId;
         } else {
-          String tmpSasToken = getVar( properties, "sasToken");
+          String tmpSasToken = getVar( properties, "sasToken" );
           if ( isSASTokenAuthentication( tmpSasToken ) ) {
             sasToken = tmpSasToken;
           }
@@ -86,7 +85,7 @@ public class ADLSGen2Conf extends PvfsConf {
     String[] splitPath = pvfsPath.toUri().getPath().split( "/" );
 
     Preconditions.checkArgument( splitPath.length > 0 );
-    String bucket = splitPath[ 1 ] + "@" + accountName + DFS_CORE_WINDOWS_NET;
+    String bucket = splitPath[1] + "@" + accountName + DFS_CORE_WINDOWS_NET;
     String path = SEPARATOR + Arrays.stream( splitPath ).skip( 2 ).collect( Collectors.joining( SEPARATOR ) );
     try {
       return new Path( new URI( scheme, bucket, path, null ) );
@@ -105,6 +104,7 @@ public class ADLSGen2Conf extends PvfsConf {
   @Override
   public Configuration conf( Path pvfsPath ) {
     Configuration config = new Configuration();
+    config.setClassLoader( getClass().getClassLoader() );
     /**
      * Azure Connector configurations can be found here :
      * https://github.com/apache/hadoop/blob/51598d8b1be20726b744ce29928684784061f8cf/hadoop-tools/hadoop-azure/src
@@ -162,7 +162,7 @@ public class ADLSGen2Conf extends PvfsConf {
     if ( !super.equals( o ) ) {
       return false;
     }
-    ADLSGen2Conf adlsConf = (ADLSGen2Conf) o;
+    ADLSGen2Conf adlsConf = ( ADLSGen2Conf ) o;
     return Objects.equals( accountName, adlsConf.accountName );
   }
 

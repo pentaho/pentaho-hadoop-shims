@@ -9,7 +9,6 @@
  *
  * Change Date: 2029-07-20
  ******************************************************************************/
-
 package org.pentaho.hadoop.shim.common.format.parquet.delegate.apache;
 
 import org.apache.hadoop.conf.Configuration;
@@ -42,11 +41,9 @@ import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
 import org.pentaho.hadoop.shim.common.format.parquet.ParquetInputFieldList;
 import org.pentaho.hadoop.shim.common.format.parquet.PentahoInputSplitImpl;
 
-import java.io.InputStream;
 import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 import static org.apache.hadoop.mapreduce.lib.input.FileInputFormat.setInputDirRecursive;
@@ -66,13 +63,7 @@ public class PentahoApacheInputFormat extends HadoopFormatBase implements IPenta
     logger.logBasic( "We are initializing parquet input format" );
 
     inClassloader( () -> {
-      ConfigurationProxy conf = new ConfigurationProxy();
-
-      if ( namedCluster != null ) {
-        // if named cluster is not defined, no need to add cluster resource configs
-        BiConsumer<InputStream, String> consumer = ( is, filename ) -> conf.addResource( is, filename );
-        ShimConfigsLoader.addConfigsAsResources( namedCluster, consumer );
-      }
+      Configuration conf = createConfigurationWithClassLoader( namedCluster, getClass().getClassLoader() );
       job = Job.getInstance( conf );
 
       nativeParquetInputFormat = new ParquetInputFormat<>();
@@ -145,19 +136,23 @@ public class PentahoApacheInputFormat extends HadoopFormatBase implements IPenta
     } );
   }
 
-  @Override @SuppressWarnings( "squid:CommentedOutCodeLine" ) public void setSplitSize( long blockSize )
-      throws Exception {
-    inClassloader( () ->
-        /**
-         * TODO Files splitting is temporary disabled. We need some UI checkbox for allow it, because some parquet files
-         * can't be splitted by errors in previous implementation or other things. Parquet reports source of problem
-         * only
-         * to logs, not to exception. See CorruptDeltaByteArrays.requiresSequentialReads().
-         *
-         * mapr510 and mapr520 doesn't support SPLIT_FILES property
-         */
-        // ParquetInputFormat.setMaxInputSplitSize( job, blockSize );
-        job.getConfiguration().setBoolean( ParquetInputFormat.SPLIT_FILES, false ) );
+  @Override
+  @SuppressWarnings("squid:CommentedOutCodeLine")
+  public void setSplitSize( long blockSize )
+    throws Exception {
+    inClassloader( ()
+      -> /**
+     * TODO Files splitting is temporary disabled. We need some UI
+     * checkbox for allow it, because some parquet files can't be
+     * splitted by errors in previous implementation or other
+     * things. Parquet reports source of problem only to logs, not
+     * to exception. See
+     * CorruptDeltaByteArrays.requiresSequentialReads().
+     *
+     * mapr510 and mapr520 doesn't support SPLIT_FILES property
+     */
+      // ParquetInputFormat.setMaxInputSplitSize( job, blockSize );
+      job.getConfiguration().setBoolean( ParquetInputFormat.SPLIT_FILES, false ) );
   }
 
   @Override public List<IPentahoInputSplit> getSplits() {
@@ -170,14 +165,13 @@ public class PentahoApacheInputFormat extends HadoopFormatBase implements IPenta
   // for parquet not actual to point split
   @Override public IPentahoRecordReader createRecordReader( IPentahoInputSplit split ) throws Exception {
     return inClassloader( () -> {
-      PentahoInputSplitImpl pentahoInputSplit = (PentahoInputSplitImpl) split;
+      PentahoInputSplitImpl pentahoInputSplit = ( PentahoInputSplitImpl ) split;
       InputSplit inputSplit = pentahoInputSplit.getInputSplit();
 
       ReadSupport<RowMetaAndData> readSupport = new PentahoParquetReadSupport();
 
-      ParquetRecordReader<RowMetaAndData>
-          nativeRecordReader =
-          new ParquetRecordReader<>( readSupport, ParquetInputFormat.getFilter( job.getConfiguration() ) );
+      ParquetRecordReader<RowMetaAndData> nativeRecordReader
+        = new ParquetRecordReader<>( readSupport, ParquetInputFormat.getFilter( job.getConfiguration() ) );
       TaskAttemptContextImpl task = new TaskAttemptContextImpl( job.getConfiguration(), new TaskAttemptID() );
       nativeRecordReader.initialize( inputSplit, task );
 

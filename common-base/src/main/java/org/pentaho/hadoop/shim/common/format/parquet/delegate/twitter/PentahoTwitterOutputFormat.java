@@ -12,6 +12,7 @@
 
 package org.pentaho.hadoop.shim.common.format.parquet.delegate.twitter;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.Job;
@@ -30,7 +31,6 @@ import org.pentaho.hadoop.shim.api.format.org.pentaho.hadoop.shim.pvfs.api.PvfsH
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.hadoop.shim.api.format.IParquetOutputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoParquetOutputFormat;
-import org.pentaho.hadoop.shim.common.ConfigurationProxy;
 import org.pentaho.hadoop.shim.common.format.HadoopFormatBase;
 import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
 
@@ -50,12 +50,11 @@ public class PentahoTwitterOutputFormat extends HadoopFormatBase implements IPen
   private Path outputFile;
   private List<? extends IParquetOutputField> outputFields;
 
-  public PentahoTwitterOutputFormat()  {
+  public PentahoTwitterOutputFormat() {
     logger.info( "We are initializing parquet output format" );
 
     inClassloader( () -> {
-      ConfigurationProxy conf = new ConfigurationProxy();
-
+      Configuration conf = createConfigurationWithClassLoader( null, getClass().getClassLoader() );
       job = Job.getInstance( conf );
 
       job.getConfiguration().set( ParquetOutputFormat.ENABLE_JOB_SUMMARY, "false" );
@@ -157,15 +156,15 @@ public class PentahoTwitterOutputFormat extends HadoopFormatBase implements IPen
     }
 
     return inClassloader( () -> {
-      FixedParquetOutputFormat nativeParquetOutputFormat =
-        new FixedParquetOutputFormat( new PentahoParquetWriteSupport( outputFields ) );
+      FixedParquetOutputFormat nativeParquetOutputFormat
+        = new FixedParquetOutputFormat( new PentahoParquetWriteSupport( outputFields ) );
 
       TaskAttemptID taskAttemptID = new TaskAttemptID( "qq", 111, TaskType.MAP, 11, 11 );
       TaskAttemptContextImpl task = new TaskAttemptContextImpl( job.getConfiguration(), taskAttemptID );
       try {
 
-        ParquetRecordWriter<RowMetaAndData> recordWriter =
-          (ParquetRecordWriter<RowMetaAndData>) nativeParquetOutputFormat.getRecordWriter( task );
+        ParquetRecordWriter<RowMetaAndData> recordWriter
+          = ( ParquetRecordWriter<RowMetaAndData> ) nativeParquetOutputFormat.getRecordWriter( task );
         return new PentahoParquetRecordWriter( recordWriter, task );
       } catch ( IOException e ) {
         throw new IllegalStateException( "Some error accessing parquet files", e );
@@ -192,7 +191,7 @@ public class PentahoTwitterOutputFormat extends HadoopFormatBase implements IPen
     return inClassloader( () -> {
         FileSystem fs = FileSystem.get( new URI( pvfsPath ), job.getConfiguration() );
         if ( fs instanceof PvfsHadoopBridgeFileSystemExtension ) {
-          return ( (PvfsHadoopBridgeFileSystemExtension) fs ).generateAlias( pvfsPath );
+          return ( ( PvfsHadoopBridgeFileSystemExtension ) fs ).generateAlias( pvfsPath );
         } else {
           return null;
         }

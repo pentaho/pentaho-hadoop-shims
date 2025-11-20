@@ -11,7 +11,7 @@
  ******************************************************************************/
 
 
-package org.pentaho.hadoop.shim.pvfs;
+package org.pentaho.hadoop.shim.common.pvfs;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.conf.Configuration;
@@ -30,7 +30,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.pentaho.di.connections.ConnectionDetails;
 import org.pentaho.di.connections.ConnectionManager;
 import org.pentaho.di.core.Const;
-import org.pentaho.hadoop.shim.pvfs.conf.PvfsConf;
+import org.pentaho.hadoop.shim.common.pvfs.conf.PvfsConf;
 
 import java.io.File;
 import java.io.IOException;

@@ -11,7 +11,7 @@
  ******************************************************************************/
 
 
-package org.pentaho.hadoop.shim.pvfs.conf;
+package org.pentaho.hadoop.shim.common.pvfs.conf;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.hadoop.conf.Configuration;
@@ -25,7 +25,7 @@ import java.util.Base64;
 import java.util.Map;
 
 import static org.pentaho.di.core.util.Utils.isEmpty;
-import static org.pentaho.hadoop.shim.pvfs.PvfsHadoopBridge.getConnectionName;
+import static org.pentaho.hadoop.shim.common.pvfs.PvfsHadoopBridge.getConnectionName;
 
 
 public class HCPConf extends PvfsConf {
@@ -59,6 +59,7 @@ public class HCPConf extends PvfsConf {
   @Override public Configuration conf( Path pvfsPath ) {
     validatePath( pvfsPath );
     Configuration conf = new Configuration();
+    conf.setClassLoader( getClass().getClassLoader() );
     Map<String, String> props = details.getProperties();
 
     String port = getVar( props, "port" );
