@@ -11,7 +11,7 @@
  ******************************************************************************/
 
 
-package org.pentaho.hadoop.shim.pvfs.conf;
+package org.pentaho.hadoop.shim.common.pvfs.conf;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicSessionCredentials;
@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.apache.hadoop.fs.Path.SEPARATOR;
-import static org.pentaho.hadoop.shim.pvfs.PvfsHadoopBridge.getConnectionName;
+import static org.pentaho.hadoop.shim.common.pvfs.PvfsHadoopBridge.getConnectionName;
 
 
 public class S3Conf extends PvfsConf {
@@ -94,6 +94,7 @@ public class S3Conf extends PvfsConf {
   @Override public Configuration conf( Path pvfsPath ) {
     validatePath( pvfsPath );
     Configuration conf = new Configuration();
+    conf.setClassLoader( getClass().getClassLoader() );
     conf.set( "fs.s3a.access.key", accessKey );
     conf.set( "fs.s3a.secret.key", secretKey );
     if ( !isNullOrEmpty( sessionToken ) ) {

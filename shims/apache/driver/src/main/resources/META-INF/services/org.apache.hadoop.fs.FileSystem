@@ -1,4 +1,4 @@
-org.pentaho.hadoop.shim.pvfs.PvfsHadoopBridge
+org.pentaho.hadoop.shim.common.pvfs.PvfsHadoopBridge
 org.apache.hadoop.fs.azurebfs.AzureBlobFileSystem
 org.apache.hadoop.fs.azurebfs.SecureAzureBlobFileSystem
 org.apache.hadoop.fs.adl.AdlFileSystem

@@ -15,18 +15,13 @@ package org.pentaho.hadoop.shim.common.format.orc;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.orc.Reader;
 import org.apache.orc.TypeDescription;
-import org.pentaho.hadoop.shim.ShimConfigsLoader;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.format.IOrcInputField;
 import org.pentaho.hadoop.shim.api.format.IOrcMetaData;
 import org.pentaho.hadoop.shim.api.format.IPentahoOrcInputFormat;
-import org.pentaho.hadoop.shim.common.ConfigurationProxy;
 import org.pentaho.hadoop.shim.common.format.HadoopFormatBase;
 import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
-
-import java.io.InputStream;
 import java.util.List;
-import java.util.function.BiConsumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -42,17 +37,7 @@ public class PentahoOrcInputFormat extends HadoopFormatBase implements IPentahoO
   protected Configuration conf;
 
   public PentahoOrcInputFormat( NamedCluster namedCluster ) {
-    if ( namedCluster == null ) {
-      conf = new Configuration();
-    } else {
-      conf = inClassloader( () -> {
-        Configuration confProxy = new ConfigurationProxy();
-        confProxy.addResource( "hive-site.xml" );
-        BiConsumer<InputStream, String> consumer = ( is, filename ) -> confProxy.addResource( is, filename );
-        ShimConfigsLoader.addConfigsAsResources( namedCluster, consumer );
-        return confProxy;
-      } );
-    }
+    conf = inClassloader( () -> createConfigurationWithClassLoader( namedCluster, getClass().getClassLoader() ) );
   }
 
   @Override

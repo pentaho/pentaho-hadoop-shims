@@ -17,6 +17,13 @@
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
     <integration-test.src>src/it/java</integration-test.src>
     <gateway-shell.version>1.0.0.3.0.0.0-1634</gateway-shell.version>
+    <guava.version>32.1.2-jre</guava.version>
+    <failureaccess.version>1.0.1</failureaccess.version>
+    <org.apache.avro.version>1.12.0</org.apache.avro.version>
+    <awssdk.version>2.28.27</awssdk.version>
+    <!-- client and default folders -->
+    <gcs.version>hadoop2-1.9.17</gcs.version>
+    <google-oauth.version>1.33.3</google-oauth.version>
   </properties>
 
   <profiles>
@@ -39,9 +46,88 @@
       </properties>
       <dependencies>
         <dependency>
-          <groupId>org.apache.karaf.jaas</groupId>
-          <artifactId>org.apache.karaf.jaas.config</artifactId>
+          <groupId>com.amazonaws</groupId>
+          <artifactId>aws-java-sdk-bundle</artifactId>
+          <version>${aws-java-sdk.version}</version>
         </dependency>
+        <dependency>
+          <groupId>com.fasterxml.jackson.dataformat</groupId>
+          <artifactId>jackson-dataformat-cbor</artifactId>
+        </dependency>
+
+        <!-- Dependencies for GCS connectivity   -->
+        <dependency>
+          <groupId>com.google.oauth-client</groupId>
+          <artifactId>google-oauth-client</artifactId>
+          <version>${google-oauth.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>com.google.cloud.bigdataoss</groupId>
+          <artifactId>gcs-connector</artifactId>
+          <version>${gcs.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>hadoop-azure</artifactId>
+          <version>${org.apache.hadoop.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>hadoop-azure-datalake</artifactId>
+          <version>${org.apache.hadoop.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+          <version>${guava.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>com.google.guava</groupId>
+          <artifactId>failureaccess</artifactId>
+          <version>${failureaccess.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>hadoop-aws</artifactId>
+          <version>${org.apache.hadoop.version}</version>
+        </dependency>
+        <!-- AWS SDK V2 dependencies -->
+        <dependency>
+          <groupId>software.amazon.awssdk</groupId>
+          <artifactId>sdk-core</artifactId>
+          <version>${awssdk.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>software.amazon.awssdk</groupId>
+          <artifactId>s3-transfer-manager</artifactId>
+          <version>${awssdk.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>software.amazon.awssdk</groupId>
+          <artifactId>aws-core</artifactId>
+          <version>${awssdk.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>software.amazon.awssdk</groupId>
+          <artifactId>auth</artifactId>
+          <version>${awssdk.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>software.amazon.awssdk</groupId>
+          <artifactId>s3</artifactId>
+          <version>${awssdk.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>software.amazon.awssdk</groupId>
+          <artifactId>apache-client</artifactId>
+          <version>${awssdk.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>software.amazon.awssdk</groupId>
+          <artifactId>netty-nio-client</artifactId>
+          <version>${awssdk.version}</version>
+        </dependency>
+
         <dependency>
           <groupId>org.apache.parquet</groupId>
           <artifactId>parquet-hadoop-bundle</artifactId>
