@@ -11,7 +11,7 @@
  ******************************************************************************/
 
 
-package org.pentaho.hadoop.shim.pvfs.conf;
+package org.pentaho.hadoop.shim.common.pvfs.conf;
 
 import com.google.cloud.hadoop.gcsio.GoogleCloudStorageFileSystem;
 import com.google.common.base.Preconditions;
@@ -26,7 +26,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.apache.hadoop.fs.Path.SEPARATOR;
-import static org.pentaho.hadoop.shim.pvfs.PvfsHadoopBridge.getConnectionName;
+import static org.pentaho.hadoop.shim.common.pvfs.PvfsHadoopBridge.getConnectionName;
 
 public class GcsConf extends PvfsConf {
 
@@ -67,6 +67,7 @@ public class GcsConf extends PvfsConf {
      * https://github.com/GoogleCloudDataproc/hadoop-connectors/blob/master/gcs/conf/gcs-core-default.xml
      */
     Configuration config = new Configuration();
+    config.setClassLoader( getClass().getClassLoader() );
     config.set( "fs.gs.impl", "com.google.cloud.hadoop.fs.gcs.GoogleHadoopFileSystem" );
     config.set( "fs.AbstractFileSystem.gs.impl", "com.google.cloud.hadoop.fs.gcs.GoogleHadoopFS" );
     config.set( "google.cloud.auth.service.account.enable", "true" );

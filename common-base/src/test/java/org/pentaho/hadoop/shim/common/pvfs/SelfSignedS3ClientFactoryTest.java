@@ -11,7 +11,7 @@
  ******************************************************************************/
 
 
-package org.pentaho.hadoop.shim.pvfs;
+package org.pentaho.hadoop.shim.common.pvfs;
 
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.AWSCredentialsProvider;
@@ -24,7 +24,6 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertFalse;
 
 @RunWith( MockitoJUnitRunner.class )

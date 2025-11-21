@@ -30,11 +30,9 @@ import org.apache.parquet.hadoop.api.ReadSupport;
 import org.apache.parquet.hadoop.metadata.ParquetMetadata;
 import org.apache.parquet.schema.MessageType;
 import org.pentaho.di.core.RowMetaAndData;
-import org.pentaho.hadoop.shim.ShimConfigsLoader;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.format.IParquetInputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoParquetInputFormat;
-import org.pentaho.hadoop.shim.common.ConfigurationProxy;
 import org.pentaho.hadoop.shim.common.format.HadoopFormatBase;
 import org.pentaho.hadoop.shim.common.format.ReadFileFilter;
 import org.pentaho.hadoop.shim.common.format.ReadFilesFilter;
@@ -42,12 +40,9 @@ import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
 import org.pentaho.hadoop.shim.common.format.parquet.ParquetInputFieldList;
 import org.pentaho.hadoop.shim.common.format.parquet.PentahoInputSplitImpl;
 
-
-import java.io.InputStream;
 import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 import static org.apache.hadoop.mapreduce.lib.input.FileInputFormat.setInputDirRecursive;
@@ -68,9 +63,7 @@ public class PentahoTwitterInputFormat extends HadoopFormatBase implements IPent
     logger.info( "We are initializing parquet input format" );
 
     inClassloader( () -> {
-      ConfigurationProxy conf = new ConfigurationProxy();
-      BiConsumer<InputStream, String> consumer = ( is, filename ) -> conf.addResource( is, filename );
-      ShimConfigsLoader.addConfigsAsResources( namedCluster, consumer );
+      Configuration conf = createConfigurationWithClassLoader( namedCluster, getClass().getClassLoader() );
       job = Job.getInstance( conf );
 
       nativeParquetInputFormat = new ParquetInputFormat<>();
@@ -140,13 +133,16 @@ public class PentahoTwitterInputFormat extends HadoopFormatBase implements IPent
     } );
   }
 
-  @Override @SuppressWarnings( "squid:CommentedOutCodeLine" ) public void setSplitSize( long blockSize )
-      throws Exception {
+  @Override @SuppressWarnings("squid:CommentedOutCodeLine")
+  public void setSplitSize( long blockSize )
+    throws Exception {
     inClassloader( () -> {
       /**
-       * TODO Files splitting is temporary disabled. We need some UI checkbox for allow it, because some parquet files
-       * can't be splitted by errors in previous implementation or other things. Parquet reports source of problem only
-       * to logs, not to exception. See CorruptDeltaByteArrays.requiresSequentialReads().
+       * TODO Files splitting is temporary disabled. We need some UI
+       * checkbox for allow it, because some parquet files can't be
+       * splitted by errors in previous implementation or other things.
+       * Parquet reports source of problem only to logs, not to exception.
+       * See CorruptDeltaByteArrays.requiresSequentialReads().
        *
        * mapr510 and mapr520 doesn't support SPLIT_FILES property
        */
@@ -165,14 +161,13 @@ public class PentahoTwitterInputFormat extends HadoopFormatBase implements IPent
   // for parquet not actual to point split
   @Override public IPentahoRecordReader createRecordReader( IPentahoInputSplit split ) throws Exception {
     return inClassloader( () -> {
-      PentahoInputSplitImpl pentahoInputSplit = (PentahoInputSplitImpl) split;
+      PentahoInputSplitImpl pentahoInputSplit = ( PentahoInputSplitImpl ) split;
       InputSplit inputSplit = pentahoInputSplit.getInputSplit();
 
       ReadSupport<RowMetaAndData> readSupport = new PentahoParquetReadSupport();
 
-      ParquetRecordReader<RowMetaAndData>
-          nativeRecordReader =
-          new ParquetRecordReader<>( readSupport, ParquetInputFormat.getFilter( job.getConfiguration() ) );
+      ParquetRecordReader<RowMetaAndData> nativeRecordReader
+        = new ParquetRecordReader<>( readSupport, ParquetInputFormat.getFilter( job.getConfiguration() ) );
       TaskAttemptContextImpl task = new TaskAttemptContextImpl( job.getConfiguration(), new TaskAttemptID() );
       nativeRecordReader.initialize( inputSplit, task );
 

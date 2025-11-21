@@ -10,7 +10,7 @@
  * Change Date: 2029-07-20
  ******************************************************************************/
 
-package org.pentaho.hadoop.shim.pvfs.conf;
+package org.pentaho.hadoop.shim.common.pvfs.conf;
 
 import org.apache.hadoop.fs.Path;
 import org.junit.Before;

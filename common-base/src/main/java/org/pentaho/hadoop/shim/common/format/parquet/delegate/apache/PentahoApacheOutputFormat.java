@@ -12,6 +12,7 @@
 
 package org.pentaho.hadoop.shim.common.format.parquet.delegate.apache;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.Job;
@@ -27,20 +28,16 @@ import org.apache.parquet.hadoop.ParquetRecordWriter;
 import org.apache.parquet.hadoop.metadata.CompressionCodecName;
 import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.util.StringUtil;
-import org.pentaho.hadoop.shim.ShimConfigsLoader;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.format.IParquetOutputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoParquetOutputFormat;
 import org.pentaho.hadoop.shim.api.format.org.pentaho.hadoop.shim.pvfs.api.PvfsHadoopBridgeFileSystemExtension;
-import org.pentaho.hadoop.shim.common.ConfigurationProxy;
 import org.pentaho.hadoop.shim.common.format.HadoopFormatBase;
 import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.List;
-import java.util.function.BiConsumer;
 
 import static org.apache.hadoop.mapreduce.lib.output.FileOutputFormat.setOutputPath;
 
@@ -63,14 +60,7 @@ public class PentahoApacheOutputFormat extends HadoopFormatBase implements IPent
     logger.info( "We are initializing parquet output format" );
 
     inClassloader( () -> {
-      ConfigurationProxy conf = new ConfigurationProxy();
-
-      if ( namedCluster != null ) {
-        // if named cluster is not defined, no need to add cluster resource configs
-        BiConsumer<InputStream, String> consumer = ( is, filename ) -> conf.addResource( is, filename );
-        ShimConfigsLoader.addConfigsAsResources( namedCluster, consumer );
-      }
-
+      Configuration conf = createConfigurationWithClassLoader( namedCluster, getClass().getClassLoader() );
       job = Job.getInstance( conf );
 
       job.getConfiguration().set( ParquetOutputFormat.ENABLE_JOB_SUMMARY, "false" );
@@ -172,15 +162,15 @@ public class PentahoApacheOutputFormat extends HadoopFormatBase implements IPent
     }
 
     return inClassloader( () -> {
-      FixedParquetOutputFormat nativeParquetOutputFormat =
-        new FixedParquetOutputFormat( new PentahoParquetWriteSupport( outputFields ) );
+      FixedParquetOutputFormat nativeParquetOutputFormat
+        = new FixedParquetOutputFormat( new PentahoParquetWriteSupport( outputFields ) );
 
       TaskAttemptID taskAttemptID = new TaskAttemptID( "qq", 111, TaskType.MAP, 11, 11 );
       TaskAttemptContextImpl task = new TaskAttemptContextImpl( job.getConfiguration(), taskAttemptID );
       try {
 
-        ParquetRecordWriter<RowMetaAndData> recordWriter =
-          (ParquetRecordWriter<RowMetaAndData>) nativeParquetOutputFormat.getRecordWriter( task );
+        ParquetRecordWriter<RowMetaAndData> recordWriter
+          = ( ParquetRecordWriter<RowMetaAndData> ) nativeParquetOutputFormat.getRecordWriter( task );
         return new PentahoParquetRecordWriter( recordWriter, task );
       } catch ( IOException e ) {
         throw new IllegalStateException( "Some error accessing parquet files", e );
@@ -203,7 +193,7 @@ public class PentahoApacheOutputFormat extends HadoopFormatBase implements IPent
 
         FileSystem fs = FileSystem.get( StringUtil.toUri( pvfsPath ), job.getConfiguration() );
         if ( fs instanceof PvfsHadoopBridgeFileSystemExtension ) {
-          return ( (PvfsHadoopBridgeFileSystemExtension) fs ).generateAlias( pvfsPath );
+          return ( ( PvfsHadoopBridgeFileSystemExtension ) fs ).generateAlias( pvfsPath );
         } else {
           return null;
         }

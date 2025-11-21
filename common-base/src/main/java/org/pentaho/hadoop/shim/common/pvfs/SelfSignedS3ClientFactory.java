@@ -11,7 +11,7 @@
  ******************************************************************************/
 
 
-package org.pentaho.hadoop.shim.pvfs;
+package org.pentaho.hadoop.shim.common.pvfs;
 
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.AWSCredentialsProvider;

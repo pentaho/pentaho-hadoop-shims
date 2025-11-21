@@ -11,7 +11,7 @@
  ******************************************************************************/
 
 
-package org.pentaho.hadoop.shim.pvfs.conf;
+package org.pentaho.hadoop.shim.common.pvfs.conf;
 
 import com.google.common.base.Preconditions;
 import org.apache.hadoop.conf.Configuration;
@@ -19,7 +19,6 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.adl.AdlConfKeys;
 import org.apache.hadoop.fs.adl.AdlFileSystem;
 import org.pentaho.di.connections.ConnectionDetails;
-import org.pentaho.di.core.variables.VariableSpace;
 
 import java.io.IOException;
 import java.net.URI;
@@ -31,7 +30,7 @@ import java.util.stream.Collectors;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.apache.hadoop.fs.Path.SEPARATOR;
-import static org.pentaho.hadoop.shim.pvfs.PvfsHadoopBridge.getConnectionName;
+import static org.pentaho.hadoop.shim.common.pvfs.PvfsHadoopBridge.getConnectionName;
 
 public class ADLSGen1Conf extends PvfsConf {
 
@@ -96,6 +95,7 @@ public class ADLSGen1Conf extends PvfsConf {
   @Override
   public Configuration conf( Path pvfsPath ) {
     Configuration config = new Configuration();
+    config.setClassLoader( getClass().getClassLoader() );
     /**
      * Azure Connector configurations can be found here :
      * https://hadoop.apache.org/docs/r2.8.0/hadoop-azure-datalake/index.html

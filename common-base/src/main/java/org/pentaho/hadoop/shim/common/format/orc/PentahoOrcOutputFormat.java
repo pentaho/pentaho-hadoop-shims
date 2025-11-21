@@ -9,7 +9,6 @@
  *
  * Change Date: 2029-07-20
  ******************************************************************************/
-
 package org.pentaho.hadoop.shim.common.format.orc;
 
 import org.apache.hadoop.conf.Configuration;
@@ -19,20 +18,15 @@ import org.apache.orc.TypeDescription;
 import org.pentaho.di.core.logging.LogChannel;
 import org.pentaho.di.core.logging.LogChannelInterface;
 import org.pentaho.di.core.util.StringUtil;
-import org.pentaho.hadoop.shim.ShimConfigsLoader;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.format.IOrcOutputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoOrcOutputFormat;
 import org.pentaho.hadoop.shim.api.format.org.pentaho.hadoop.shim.pvfs.api.PvfsHadoopBridgeFileSystemExtension;
-import org.pentaho.hadoop.shim.common.ConfigurationProxy;
 import org.pentaho.hadoop.shim.common.format.HadoopFormatBase;
 import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
 
-import java.io.InputStream;
-import java.net.URI;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.List;
-import java.util.function.BiConsumer;
 
 /**
  * Created by tkafalas on 11/3/2017.
@@ -52,16 +46,7 @@ public class PentahoOrcOutputFormat extends HadoopFormatBase implements IPentaho
   }
 
   public PentahoOrcOutputFormat( NamedCluster namedCluster ) {
-    Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
-    conf = new ConfigurationProxy();
-
-    if ( namedCluster != null ) {
-      // if named cluster is not defined, no need to add cluster resource configs
-      BiConsumer<InputStream, String> consumer = ( is, filename ) -> conf.addResource( is, filename );
-      ShimConfigsLoader.addConfigsAsResources( namedCluster, consumer );
-    } else {
-      conf.addResource( "hive-site.xml" );
-    }
+    conf = inClassloader( () -> createConfigurationWithClassLoader( namedCluster, getClass().getClassLoader() ) );
   }
 
   @Override public IPentahoRecordWriter createRecordWriter() {
@@ -83,7 +68,8 @@ public class PentahoOrcOutputFormat extends HadoopFormatBase implements IPentaho
     this.fields = fields;
   }
 
-  @Override public void setOutputFile( String file, boolean override ) throws Exception {
+  @Override
+  public void setOutputFile( String file, boolean override ) throws Exception {
     this.outputFilename = S3NCredentialUtils.scrubFilePathIfNecessary( file );
     S3NCredentialUtils util = new S3NCredentialUtils();
     util.applyS3CredentialsToHadoopConfigurationIfNecessary( file, conf );
@@ -97,10 +83,10 @@ public class PentahoOrcOutputFormat extends HadoopFormatBase implements IPentaho
       }
     }
 
-
   }
 
-  @Override public void setCompression( COMPRESSION compression ) {
+  @Override
+  public void setCompression( COMPRESSION compression ) {
     this.compression = compression;
     conf.set( COMPRESSION_KEY, compression.toString() );
     if ( compression == COMPRESSION.NONE ) {
@@ -112,7 +98,8 @@ public class PentahoOrcOutputFormat extends HadoopFormatBase implements IPentaho
     }
   }
 
-  @Override public void setStripeSize( int megabytes ) {
+  @Override
+  public void setStripeSize( int megabytes ) {
     if ( stripeSize > 0 ) {
       stripeSize = megabytes;
       conf.set( STRIPE_SIZE_KEY, Integer.toString( 1024 * 1024 * stripeSize ) );
@@ -147,7 +134,7 @@ public class PentahoOrcOutputFormat extends HadoopFormatBase implements IPentaho
     return inClassloader( () -> {
         FileSystem fs = FileSystem.get( StringUtil.toUri( pvfsPath ), conf );
         if ( fs instanceof PvfsHadoopBridgeFileSystemExtension ) {
-          return ( (PvfsHadoopBridgeFileSystemExtension) fs ).generateAlias( pvfsPath );
+          return ( ( PvfsHadoopBridgeFileSystemExtension ) fs ).generateAlias( pvfsPath );
         } else {
           return null;
         }
