@@ -204,6 +204,7 @@
                 <exclude>*:xmlenc:*</exclude>
                 <exclude>*:hive-llap-common:*</exclude>
                 <exclude>com.yammer.metrics:metrics-core:*</exclude>
+                <exclude>*:aws-java-sdk-bundle:*</exclude>
             </excludes>
         </dependencySet>
         <dependencySet>
@@ -383,6 +384,7 @@
                 <exclude>*:xmlenc:*</exclude>
                 <exclude>*:hive-llap-common:*</exclude>
                 <exclude>com.yammer.metrics:metrics-core:*</exclude>
+                <exclude>*:aws-java-sdk-bundle:*</exclude>
             </excludes>
         </dependencySet>
     </dependencySets>
