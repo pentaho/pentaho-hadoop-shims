@@ -11,6 +11,10 @@
             <source> ${project.build.directory}/${project.artifactId}-${project.version}.jar</source>
             <outputDirectory>/${shim.id}</outputDirectory>
         </file>
+        <file>
+            <source>${project.build.directory}/extra-resources/jetty-runner-${jetty-hadoop.version}.jar</source>
+            <outputDirectory>/${shim.id}/lib</outputDirectory>
+        </file>
     </files>
     <fileSets>
         <fileSet>
@@ -125,6 +129,7 @@
                 <exclude>*:jersey-multipart:*</exclude>
                 <exclude>*:jets3t:*</exclude>
                 <exclude>*:jetty:*</exclude>
+                <exclude>*:jetty-runner:*</exclude>
                 <exclude>org.mortbay.jetty:jetty-util:*</exclude>
                 <exclude>*:jjwt-api:*</exclude>
                 <exclude>*:jjwt-impl:*</exclude>
@@ -199,6 +204,7 @@
                 <exclude>*:xmlenc:*</exclude>
                 <exclude>*:hive-llap-common:*</exclude>
                 <exclude>com.yammer.metrics:metrics-core:*</exclude>
+                <exclude>*:aws-java-sdk-bundle:*</exclude>
             </excludes>
         </dependencySet>
         <dependencySet>
@@ -303,6 +309,7 @@
                 <exclude>*:jersey-multipart:*</exclude>
                 <exclude>*:jets3t:*</exclude>
                 <exclude>*:jetty:*</exclude>
+                <exclude>*:jetty-runner:*</exclude>
                 <exclude>org.mortbay.jetty:jetty-util:*</exclude>
                 <exclude>*:jjwt-api:*</exclude>
                 <exclude>*:jjwt-impl:*</exclude>
@@ -377,6 +384,7 @@
                 <exclude>*:xmlenc:*</exclude>
                 <exclude>*:hive-llap-common:*</exclude>
                 <exclude>com.yammer.metrics:metrics-core:*</exclude>
+                <exclude>*:aws-java-sdk-bundle:*</exclude>
             </excludes>
         </dependencySet>
     </dependencySets>
