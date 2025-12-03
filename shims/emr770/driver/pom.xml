@@ -18,7 +18,7 @@
     <org.apache.avro.version>1.12.0</org.apache.avro.version>
     <org.apache.hive.version>4.0.1</org.apache.hive.version>
     <org.apache.oozie.version>5.2.1</org.apache.oozie.version>
-    <org.apache.hbase.version>2.6.1</org.apache.hbase.version>
+    <org.apache.hbase.version>2.6.2</org.apache.hbase.version>
     <sqoop.version>1.4.7</sqoop.version>
     <pig.version>0.17.0</pig.version>
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
