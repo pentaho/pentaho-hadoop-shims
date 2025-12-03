@@ -13,7 +13,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <org.apache.hbase.version>2.6.1</org.apache.hbase.version>
+    <org.apache.hbase.version>2.6.2</org.apache.hbase.version>
     <org.apache.hbase.thirdparty.version>4.1.9</org.apache.hbase.thirdparty.version>
     <io.opentelemetry.version>1.15.0</io.opentelemetry.version>
     <io.opentelemetry-semconv.version>1.15.0-alpha</io.opentelemetry-semconv.version>
