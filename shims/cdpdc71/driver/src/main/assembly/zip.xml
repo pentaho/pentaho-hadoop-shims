@@ -1,6 +1,5 @@
 <assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
     <id>bin</id>
     <formats>
         <format>zip</format>
@@ -51,7 +50,6 @@
                 <exclude>*:opencensus*:*</exclude>
                 <exclude>*:perfmark-api*:*</exclude>
                 <exclude>*:threetenbp*:*</exclude>
-                <exclude>*:google-oauth-client-java6</exclude>
                 <exclude>*:*slf4j-api*:*</exclude>
                 <exclude>*:*slf4j-simple*:*</exclude>
                 <exclude>*:*jcl-over-slf4j*:*</exclude>
@@ -74,6 +72,7 @@
                 <exclude>*:calcite-druid:*</exclude>
                 <exclude>*:calcite-linq4j:*</exclude>
                 <exclude>*:cglib:*</exclude>
+                <exclude>*:checker-compat-qual:*</exclude>
                 <exclude>*:com.wcohen.secondstring:*</exclude>
                 <exclude>*:commons-compiler:*</exclude>
                 <exclude>*:commons-configuration:*</exclude>
@@ -83,6 +82,7 @@
                 <exclude>*:commons-io:*</exclude>
                 <exclude>*:commons-lang3:*</exclude>
                 <exclude>*:commons-validator:*</exclude>
+                <exclude>*:conscrypt-openjdk-uber:*</exclude>
                 <exclude>*:datanucleus-core:*</exclude>
                 <exclude>*:dnsjava:*</exclude>
                 <exclude>*:dom4j:*</exclude>
@@ -90,6 +90,10 @@
                 <exclude>*:esri-geometry-api:*</exclude>
                 <exclude>*:flogger-log4j-backend:*</exclude>
                 <exclude>*:forbiddenapis:*</exclude>
+                <exclude>*:google-api-services-iamcredentials:*</exclude>
+                <exclude>*:google-cloud-monitoring:*</exclude>
+                <exclude>*:google-cloud-storage-control:*</exclude>
+                <exclude>*:google-http-client-appengine:*</exclude>
                 <exclude>*:groovy:*</exclude>
                 <exclude>*:groovy-all:*</exclude>
                 <exclude>*:groovy-console:*</exclude>
@@ -108,6 +112,7 @@
                 <exclude>*:httpcore5:*</exclude>
                 <exclude>*:httpcore5-h2:*</exclude>
                 <exclude>*:ivy:*</exclude>
+                <exclude>*:j2v8_macosx_x86_64:*</exclude>
                 <exclude>*:jackson-core:*</exclude>
                 <exclude>*:jackson-dataformat-yaml:*</exclude>
                 <exclude>*:jackson-jaxrs-base:*</exclude>
@@ -155,6 +160,8 @@
                 <exclude>*:pentaho-encryption-support:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-common-base:*</exclude>
                 <exclude>*:pentaho-platform-api:*</exclude>
+                <exclude>*:proto-google-cloud-monitoring-v3:*</exclude>
+                <exclude>*:proto-google-cloud-storage-control-v2:*</exclude>
                 <exclude>*:reflections:*</exclude>
                 <exclude>*:scannotation:*</exclude>
                 <exclude>*:servlet-api-2.5:*</exclude>
@@ -204,7 +211,6 @@
                 <exclude>*:opencensus*:*</exclude>
                 <exclude>*:perfmark-api*:*</exclude>
                 <exclude>*:threetenbp*:*</exclude>
-                <exclude>*:google-oauth-client-java6</exclude>
                 <exclude>*:*slf4j-api*:*</exclude>
                 <exclude>*:*slf4j-simple*:*</exclude>
                 <exclude>*:*jcl-over-slf4j*:*</exclude>
@@ -227,6 +233,7 @@
                 <exclude>*:calcite-druid:*</exclude>
                 <exclude>*:calcite-linq4j:*</exclude>
                 <exclude>*:cglib:*</exclude>
+                <exclude>*:checker-compat-qual:*</exclude>
                 <exclude>*:com.wcohen.secondstring:*</exclude>
                 <exclude>*:commons-compiler:*</exclude>
                 <exclude>*:commons-configuration:*</exclude>
@@ -236,6 +243,7 @@
                 <exclude>*:commons-io:*</exclude>
                 <exclude>*:commons-lang3:*</exclude>
                 <exclude>*:commons-validator:*</exclude>
+                <exclude>*:conscrypt-openjdk-uber:*</exclude>
                 <exclude>*:datanucleus-core:*</exclude>
                 <exclude>*:dnsjava:*</exclude>
                 <exclude>*:dom4j:*</exclude>
@@ -243,6 +251,10 @@
                 <exclude>*:esri-geometry-api:*</exclude>
                 <exclude>*:flogger-log4j-backend:*</exclude>
                 <exclude>*:forbiddenapis:*</exclude>
+                <exclude>*:google-api-services-iamcredentials:*</exclude>
+                <exclude>*:google-cloud-monitoring:*</exclude>
+                <exclude>*:google-cloud-storage-control:*</exclude>
+                <exclude>*:google-http-client-appengine:*</exclude>
                 <exclude>*:groovy:*</exclude>
                 <exclude>*:groovy-all:*</exclude>
                 <exclude>*:groovy-console:*</exclude>
@@ -261,6 +273,7 @@
                 <exclude>*:httpcore5:*</exclude>
                 <exclude>*:httpcore5-h2:*</exclude>
                 <exclude>*:ivy:*</exclude>
+                <exclude>*:j2v8_macosx_x86_64:*</exclude>
                 <exclude>*:jackson-core:*</exclude>
                 <exclude>*:jackson-dataformat-yaml:*</exclude>
                 <exclude>*:jackson-jaxrs-base:*</exclude>
@@ -308,6 +321,8 @@
                 <exclude>*:pentaho-encryption-support:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-common-base:*</exclude>
                 <exclude>*:pentaho-platform-api:*</exclude>
+                <exclude>*:proto-google-cloud-monitoring-v3:*</exclude>
+                <exclude>*:proto-google-cloud-storage-control-v2:*</exclude>
                 <exclude>*:reflections:*</exclude>
                 <exclude>*:scannotation:*</exclude>
                 <exclude>*:servlet-api-2.5:*</exclude>
