@@ -105,9 +105,9 @@ public class DistributedCacheUtilImplTest {
   public void extract_destination_exists() throws Exception {
     DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl();
 
-    URL resourceUrl = DistributedCacheUtilImplTest.class.getResource( "/samples/jobs/hadoop/pentaho-mapreduce-sample.jar" );
+    URL resourceUrl = DistributedCacheUtilImplTest.class.getResource( "/pentaho-mapreduce-sample.jar" );
     if ( resourceUrl == null ) {
-      fail( "Test resource not found: /samples/jobs/hadoop/pentaho-mapreduce-sample.jar" );
+      fail( "Test resource not found: /pentaho-mapreduce-sample.jar" );
     }
     FileObject archive = KettleVFS.getFileObject( resourceUrl.toURI().getPath() );
 
@@ -122,9 +122,9 @@ public class DistributedCacheUtilImplTest {
   public void extractToTemp() throws Exception {
     DistributedCacheUtilImpl ch = new DistributedCacheUtilImpl();
 
-    URL resourceUrl = DistributedCacheUtilImplTest.class.getResource( "/samples/jobs/hadoop/pentaho-mapreduce-sample.jar" );
+    URL resourceUrl = DistributedCacheUtilImplTest.class.getResource( "/pentaho-mapreduce-sample.jar" );
     if ( resourceUrl == null ) {
-      fail( "Test resource not found: /samples/jobs/hadoop/pentaho-mapreduce-sample.jar" );
+      fail( "Test resource not found: /pentaho-mapreduce-sample.jar" );
     }
     FileObject archive = KettleVFS.getFileObject( resourceUrl.toURI().getPath() );
     FileObject extracted = ch.extractToTemp( archive );
@@ -133,7 +133,7 @@ public class DistributedCacheUtilImplTest {
     assertTrue( extracted.exists() );
     try {
       // There should be 3 files and 5 directories inside the root folder (which is the 9th entry)
-      assertTrue( extracted.findFiles( new AllFileSelector() ).length == 11 );
+      assertTrue( extracted.findFiles( new AllFileSelector() ).length == 9 );
     } finally {
       // clean up after ourself
       ch.deleteDirectory( extracted );
