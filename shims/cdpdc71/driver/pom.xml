@@ -17,7 +17,6 @@
     <commons-lang.version>2.6</commons-lang.version>
     <failureaccess.version>1.0.1</failureaccess.version>
     <pentaho-osgi-bundles.version>11.1.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
-    <org.apache.avro.version>1.11.1.7.3.1.0-197</org.apache.avro.version>
     <!--    <org.apache.orc.version>1.5.1.7.1.4.0-203</org.apache.orc.version>-->
     <org.apache.orc.version>1.5.1.7.1.4.0-203</org.apache.orc.version>
     <org.apache.hadoop.version>3.1.1.7.3.1.0-197</org.apache.hadoop.version>
@@ -169,16 +168,6 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.apache.avro</groupId>
-      <artifactId>avro</artifactId>
-      <version>${org.apache.avro.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.avro</groupId>
-      <artifactId>avro-mapred</artifactId>
-      <version>${org.apache.avro.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.apache.hive</groupId>
       <artifactId>hive-jdbc</artifactId>
       <version>${org.apache.hive.version}</version>
@@ -194,6 +183,23 @@
         <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-reload4j</artifactId>
+        </exclusion>
+        <!-- PPP-6071: Exclude Avro transitive dependencies (CVE-2024-47561) -->
+        <exclusion>
+          <groupId>org.apache.avro</groupId>
+          <artifactId>avro</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.avro</groupId>
+          <artifactId>avro-mapred</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.avro</groupId>
+          <artifactId>avro-ipc</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.avro</groupId>
+          <artifactId>avro-ipc-jetty</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
