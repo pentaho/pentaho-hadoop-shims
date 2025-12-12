@@ -166,6 +166,10 @@
           <artifactId>dnsjava</artifactId>
           <groupId>dnsjava</groupId>
         </exclusion>
+        <exclusion>
+          <groupId>com.microsoft.sqlserver</groupId>
+          <artifactId>mssql-jdbc</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>

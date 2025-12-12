@@ -764,6 +764,10 @@
           <groupId>org.eclipse.jetty.websocket</groupId>
           <artifactId>*</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>com.microsoft.sqlserver</groupId>
+          <artifactId>mssql-jdbc</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
