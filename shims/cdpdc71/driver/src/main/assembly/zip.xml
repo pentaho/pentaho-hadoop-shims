@@ -184,6 +184,11 @@
                 <exclude>*:aws-java-sdk-bundle:*</exclude>
                 <exclude>*:micrometer-commons:*</exclude>
                 <exclude>*:micrometer-observation:*</exclude>
+                <exclude>*:hadoop-yarn-server-nodemanager:*</exclude>
+                <exclude>*:hadoop-yarn-server-applicationhistoryservice:*</exclude>
+                <exclude>*:hadoop-yarn-server-common:*</exclude>
+                <exclude>*:hadoop-yarn-server-resourcemanager:*</exclude>
+                <exclude>*:hadoop-yarn-server-web-proxy:*</exclude>
             </excludes>
         </dependencySet>
         <dependencySet>
@@ -345,6 +350,11 @@
                 <exclude>*:aws-java-sdk-bundle:*</exclude>
                 <exclude>*:micrometer-commons:*</exclude>
                 <exclude>*:micrometer-observation:*</exclude>
+                <exclude>*:hadoop-yarn-server-nodemanager:*</exclude>
+                <exclude>*:hadoop-yarn-server-applicationhistoryservice:*</exclude>
+                <exclude>*:hadoop-yarn-server-common:*</exclude>
+                <exclude>*:hadoop-yarn-server-resourcemanager:*</exclude>
+                <exclude>*:hadoop-yarn-server-web-proxy:*</exclude>
             </excludes>
         </dependencySet>
     </dependencySets>
