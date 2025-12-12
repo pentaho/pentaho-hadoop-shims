@@ -646,6 +646,10 @@
           <groupId>*</groupId>
           <artifactId>batik-parser</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.xmlgraphics</groupId>
+          <artifactId>xmlgraphics-commons</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
