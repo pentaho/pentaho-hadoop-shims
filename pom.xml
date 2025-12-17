@@ -27,12 +27,11 @@
     <eula-wrap_assign-deps-to-properties-phase></eula-wrap_assign-deps-to-properties-phase>
     <pentaho-osgi-bundles.version>10.2.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
     <big-data-plugin.version>10.2.0.0-SNAPSHOT</big-data-plugin.version>
-    <org.apache.parquet.version>1.8.1</org.apache.parquet.version>
     <twitter.parquet.version>1.5.0-cdh5.13.0</twitter.parquet.version>
     <jets3t.version>0.9.4</jets3t.version>
     <!-- Added for fragment prototype -->
     <org.apache.avro.version>1.8.0</org.apache.avro.version>
-    <parquet.version>1.14.4</parquet.version>
+    <parquet.version>1.15.2</parquet.version>
     <sqoop.version>1.4.6.2.6.0.3-8</sqoop.version>
     <pig.version>0.16.0.2.6.0.3-8</pig.version>
     <dependency.pig.classifier>h2</dependency.pig.classifier>
