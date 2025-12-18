@@ -211,6 +211,7 @@
           <groupId>org.apache.orc</groupId>
           <artifactId>orc-core</artifactId>
           <version>${org.apache.orc.version}</version>
+          <scope>provided</scope>
           <exclusions>
             <exclusion>
               <groupId>org.apache.hadoop</groupId>

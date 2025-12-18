@@ -12,6 +12,7 @@
 
 package org.pentaho.hadoop.shim.common.format.orc;
 
+import org.apache.orc.CompressionKind;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -238,9 +239,12 @@ public class PentahoOrcReadWriteTest {
 
   @Test
   public void testOrcFileWriteAndRead() throws Exception {
-    doReadWrite( IPentahoOrcOutputFormat.COMPRESSION.NONE, "orcOutputNone.orc", false );
-    doReadWrite( IPentahoOrcOutputFormat.COMPRESSION.SNAPPY, "orcOutputSnappy.orc", false );
-    doReadWrite( IPentahoOrcOutputFormat.COMPRESSION.ZLIB, "orcOutputZlib.orc", false );
+    doReadWrite( CompressionKind.NONE, "orcOutputNone.orc", false );
+    doReadWrite( CompressionKind.SNAPPY, "orcOutputSnappy.orc", false );
+    doReadWrite( CompressionKind.ZLIB, "orcOutputZlib.orc", false );
+    doReadWrite( CompressionKind.LZO, "orcOutputLzo.orc", false );
+    doReadWrite( CompressionKind.LZ4, "orcOutputLz4.orc", false );
+    doReadWrite( CompressionKind.ZSTD, "orcOutputZstd.orc", false );
     //Next line to be used in EMR shim build test
     //doReadWrite( IPentahoOrcOutputFormat.COMPRESSION.LZO, "orcOutputLzo.orc", false );
 
@@ -248,17 +252,17 @@ public class PentahoOrcReadWriteTest {
 
   @Test( expected = FileAlreadyExistsException.class )
   public void testOverwriteFileIsFalse() throws Exception {
-    doReadWrite( IPentahoOrcOutputFormat.COMPRESSION.NONE, "orcOutputNone.orc", false );
-    doReadWrite( IPentahoOrcOutputFormat.COMPRESSION.NONE, "orcOutputNone.orc", false );
+    doReadWrite( CompressionKind.NONE, "orcOutputNone.orc", false );
+    doReadWrite( CompressionKind.NONE, "orcOutputNone.orc", false );
   }
 
   @Test
   public void testOverwriteFileIsTrue() throws Exception {
-    doReadWrite( IPentahoOrcOutputFormat.COMPRESSION.NONE, "orcOutputNone.orc", false );
-    doReadWrite( IPentahoOrcOutputFormat.COMPRESSION.NONE, "orcOutputNone.orc", true );
+    doReadWrite( CompressionKind.NONE, "orcOutputNone.orc", false );
+    doReadWrite( CompressionKind.NONE, "orcOutputNone.orc", true );
   }
 
-  private void doReadWrite( IPentahoOrcOutputFormat.COMPRESSION compressionType, String outputFileName,
+  private void doReadWrite( CompressionKind compressionType, String outputFileName,
                             boolean overwriteFile )
     throws Exception {
     orcOutputFormat.setCompression( compressionType );

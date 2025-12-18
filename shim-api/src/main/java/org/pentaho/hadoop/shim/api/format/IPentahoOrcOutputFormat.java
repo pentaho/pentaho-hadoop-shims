@@ -12,6 +12,8 @@
 
 package org.pentaho.hadoop.shim.api.format;
 
+import org.apache.orc.CompressionKind;
+
 import java.util.List;
 
 public interface IPentahoOrcOutputFormat extends IPentahoOutputFormat, IPvfsAliasGenerator {
@@ -25,15 +27,11 @@ public interface IPentahoOrcOutputFormat extends IPentahoOutputFormat, IPvfsAlia
   String ROW_INDEX_STRIDE_KEY = "orc.row.index.stride";
   String CREATE_INDEX_KEY = "orc.create.index";
 
-  enum COMPRESSION {
-    NONE, SNAPPY, ZLIB, LZO
-  }
-
   void setFields( List<? extends IOrcOutputField> fields ) throws Exception;
 
   void setOutputFile( String file, boolean override ) throws Exception;
 
-  void setCompression( COMPRESSION compression );
+  void setCompression( CompressionKind compression );
 
   void setStripeSize( int megabytes );
 
