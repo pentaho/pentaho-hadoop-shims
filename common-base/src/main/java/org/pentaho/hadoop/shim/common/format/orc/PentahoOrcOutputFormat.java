@@ -14,6 +14,7 @@ package org.pentaho.hadoop.shim.common.format.orc;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.orc.CompressionKind;
 import org.apache.orc.TypeDescription;
 import org.pentaho.di.core.logging.LogChannel;
 import org.pentaho.di.core.logging.LogChannelInterface;
@@ -36,7 +37,7 @@ public class PentahoOrcOutputFormat extends HadoopFormatBase implements IPentaho
   protected static final LogChannelInterface logger = LogChannel.GENERAL;
   protected String outputFilename;
   protected Configuration conf;
-  protected COMPRESSION compression = COMPRESSION.NONE;
+  protected CompressionKind compression = CompressionKind.NONE;
   protected int compressSize = 0;
   protected int stripeSize = DEFAULT_STRIPE_SIZE;
   protected List<? extends IOrcOutputField> fields;
@@ -86,10 +87,10 @@ public class PentahoOrcOutputFormat extends HadoopFormatBase implements IPentaho
   }
 
   @Override
-  public void setCompression( COMPRESSION compression ) {
+  public void setCompression( CompressionKind compression ) {
     this.compression = compression;
     conf.set( COMPRESSION_KEY, compression.toString() );
-    if ( compression == COMPRESSION.NONE ) {
+    if ( compression == CompressionKind.NONE ) {
       compressSize = 0;
       conf.unset( COMPRESS_SIZE_KEY );
     } else if ( compressSize == 0 ) {
@@ -124,7 +125,7 @@ public class PentahoOrcOutputFormat extends HadoopFormatBase implements IPentaho
       conf.set( COMPRESS_SIZE_KEY, Integer.toString( 1024 * compressSize ) );
     } else if ( kilobytes == 0 ) {
       compressSize = kilobytes;
-      compression = COMPRESSION.NONE;
+      compression = CompressionKind.NONE;
       conf.unset( COMPRESS_SIZE_KEY );
       conf.set( COMPRESSION_KEY, compression.toString() );
     }
