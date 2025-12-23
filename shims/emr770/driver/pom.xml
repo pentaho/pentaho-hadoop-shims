@@ -31,6 +31,7 @@
     <curator.version>5.6.0</curator.version>
     <slf4j.version>1.7.36</slf4j.version>
   </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -928,6 +929,11 @@
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java</artifactId>
       <version>${protobuf-java.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>at.yawk.lz4</groupId>
+      <artifactId>lz4-java</artifactId>
+      <version>${lz4-java.version}</version>
     </dependency>
   </dependencies>
 

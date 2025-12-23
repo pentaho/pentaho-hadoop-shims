@@ -455,6 +455,11 @@
       <artifactId>hive-storage-api</artifactId>
       <version>4.0.1</version>
     </dependency>
+    <dependency>
+      <groupId>at.yawk.lz4</groupId>
+      <artifactId>lz4-java</artifactId>
+      <version>${lz4-java.version}</version>
+    </dependency>
   </dependencies>
 
   <dependencyManagement>
