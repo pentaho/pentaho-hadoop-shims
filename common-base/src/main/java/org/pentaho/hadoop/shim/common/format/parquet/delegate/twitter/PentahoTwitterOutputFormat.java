@@ -105,25 +105,8 @@ public class PentahoTwitterOutputFormat extends HadoopFormatBase implements IPen
   }
 
   @Override
-  public void setCompression( COMPRESSION comp ) throws Exception {
-    inClassloader( () -> {
-      CompressionCodecName codec;
-      switch ( comp ) {
-        case SNAPPY:
-          codec = CompressionCodecName.SNAPPY;
-          break;
-        case GZIP:
-          codec = CompressionCodecName.GZIP;
-          break;
-        case LZO:
-          codec = CompressionCodecName.LZO;
-          break;
-        default:
-          codec = CompressionCodecName.UNCOMPRESSED;
-          break;
-      }
-      ParquetOutputFormat.setCompression( job, codec );
-    } );
+  public void setCompression( CompressionCodecName codec ) {
+    inClassloader( () -> ParquetOutputFormat.setCompression( job, codec ) );
   }
 
   @Override
