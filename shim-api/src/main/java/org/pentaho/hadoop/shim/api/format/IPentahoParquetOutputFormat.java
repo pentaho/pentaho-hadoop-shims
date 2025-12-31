@@ -12,15 +12,13 @@
 
 package org.pentaho.hadoop.shim.api.format;
 
+import org.apache.parquet.hadoop.metadata.CompressionCodecName;
+
 import java.util.List;
 
 public interface IPentahoParquetOutputFormat extends IPentahoOutputFormat, IPvfsAliasGenerator {
   enum VERSION {
     VERSION_1_0, VERSION_2_0
-  }
-
-  enum COMPRESSION {
-    UNCOMPRESSED, SNAPPY, GZIP, LZO
   }
 
   void setFields( List<? extends IParquetOutputField> fields ) throws Exception;
@@ -31,7 +29,7 @@ public interface IPentahoParquetOutputFormat extends IPentahoOutputFormat, IPvfs
 
   void enableDictionary( boolean useDictionary ) throws Exception;
 
-  void setCompression( COMPRESSION comp ) throws Exception;
+  void setCompression( CompressionCodecName comp ) ;
 
   /**
    * Sets row group size
