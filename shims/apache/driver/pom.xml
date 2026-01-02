@@ -5,10 +5,10 @@
   <parent>
     <groupId>org.pentaho.hadoop.shims</groupId>
     <artifactId>pentaho-hadoop-shims-apache-reactor</artifactId>
-    <version>11.1.0.0-SNAPSHOT</version>
+    <version>11.1.0.0-86</version>
   </parent>
   <artifactId>pentaho-hadoop-shims-apache</artifactId>
-  <version>11.1.0.0-SNAPSHOT</version>
+  <version>11.1.0.0-86</version>
   <packaging>jar</packaging>
   <properties>
     <vendor-driver.version>3.4.0.0.apache</vendor-driver.version>
