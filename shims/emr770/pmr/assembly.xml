@@ -12,12 +12,14 @@
       <useTransitiveFiltering>false</useTransitiveFiltering>
       <includes>
         <include>org.apache.hbase.*:*</include>
+        <include>org.pentaho.hadoop.shims:pentaho-shaded-netty</include>
         <include>com.yammer.metrics:metrics-core</include>
         <include>org.apache.zookeeper:zookeeper</include>
         <include>org.pentaho.hadoop.shims:pentaho-hadoop-shims-common-base</include>
       </includes>
       <excludes>
         <exclude>*:tests:*</exclude>
+        <exclude>org.apache.hbase.thirdparty:hbase-shaded-netty</exclude>
       </excludes>
     </dependencySet>
   </dependencySets>
