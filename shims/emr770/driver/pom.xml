@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -587,7 +588,7 @@
         </exclusion>
         <exclusion>
           <groupId>org.bouncycastle</groupId>
-        <artifactId>bcprov-jdk15on</artifactId>
+          <artifactId>bcprov-jdk15on</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -741,6 +742,11 @@
           <artifactId>protobuf-java</artifactId>
           <groupId>com.google.protobuf</groupId>
         </exclusion>
+        <!-- EXCLUDE: Vulnerable hbase-shaded-netty (4.1.10 with Netty 4.1.116) - CVE-2025-59419 -->
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-netty</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -762,7 +768,20 @@
           <artifactId>protobuf-java</artifactId>
           <groupId>com.google.protobuf</groupId>
         </exclusion>
+        <!-- EXCLUDE: Vulnerable hbase-shaded-netty (4.1.10 with Netty 4.1.116) - CVE-2025-59419 -->
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-netty</artifactId>
+        </exclusion>
       </exclusions>
+    </dependency>
+    <!-- ADD: Custom shaded Netty fixing CVE-2025-59419 (SMTP injection vulnerability) -->
+    <!-- This replaces Apache's hbase-shaded-netty:4.1.10 (Netty 4.1.116 - vulnerable) -->
+    <!-- with pentaho-shaded-netty containing Netty 4.1.128.Final (patched) -->
+    <dependency>
+      <groupId>org.pentaho.hadoop.shims</groupId>
+      <artifactId>pentaho-shaded-netty</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
@@ -772,6 +791,11 @@
         <exclusion>
           <artifactId>protobuf-java</artifactId>
           <groupId>com.google.protobuf</groupId>
+        </exclusion>
+        <!-- EXCLUDE: Vulnerable hbase-shaded-netty (4.1.10 with Netty 4.1.116) - CVE-2025-59419 -->
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-netty</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -783,6 +807,11 @@
         <exclusion>
           <artifactId>protobuf-java</artifactId>
           <groupId>com.google.protobuf</groupId>
+        </exclusion>
+        <!-- EXCLUDE: Vulnerable hbase-shaded-netty (4.1.10 with Netty 4.1.116) - CVE-2025-59419 -->
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-netty</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -983,7 +1012,7 @@
             <configuration>
               <target>
                 <zip destfile="${project.build.directory}/extra-resources/jetty-runner-${jetty-hadoop.version}.jar"
-                      basedir="${project.build.directory}/jetty-runner-jar">
+                     basedir="${project.build.directory}/jetty-runner-jar">
                   <exclude name="org/slf4j/**"/>
                 </zip>
               </target>

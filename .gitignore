@@ -34,3 +34,6 @@ pom.xml.releaseBackup
 checkstyle/
 .vscode
 .factorypath
+
+# Maven Shade Plugin generates this during build - should not be committed
+dependency-reduced-pom.xml

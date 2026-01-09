@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.pentaho.hadoop.shims</groupId>
@@ -240,10 +239,12 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <!-- REPLACED: Apache hbase-shaded-netty (4.1.10 with vulnerable Netty 4.1.116) -->
+    <!-- WITH: Pentaho custom shaded Netty 4.1.128.Final for CVE-2025-59419 fix -->
     <dependency>
-      <groupId>org.apache.hbase.thirdparty</groupId>
-      <artifactId>hbase-shaded-netty</artifactId>
-      <version>${org.apache.hbase.thirdparty.version}</version>
+      <groupId>org.pentaho.hadoop.shims</groupId>
+      <artifactId>pentaho-shaded-netty</artifactId>
+      <version>${project.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -251,6 +252,14 @@
         </exclusion>
       </exclusions>
     </dependency>
+    
+    <!-- NOTE: Other 6 HBase ThirdParty JARs remain at 4.1.10 - they are independent -->
+    <!-- - hbase-shaded-gson (Gson library) -->
+    <!-- - hbase-shaded-jersey (Jersey REST framework) -->
+    <!-- - hbase-shaded-jetty (Jetty web server) -->
+    <!-- - hbase-shaded-miscellaneous (Guava, commons-cli) -->
+    <!-- - hbase-shaded-protobuf (Protocol Buffers) -->
+    <!-- - hbase-unsafe (JVM unsafe operations) -->
     <dependency>
       <groupId>org.apache.hbase.thirdparty</groupId>
       <artifactId>hbase-shaded-protobuf</artifactId>
