@@ -72,6 +72,10 @@
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-reload4j</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-netty</artifactId>
+        </exclusion>
         <!-- PPP-6071: Exclude Avro transitive dependencies (CVE-2024-47561) -->
         <exclusion>
           <groupId>org.apache.avro</groupId>
@@ -268,15 +272,9 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.apache.hbase.thirdparty</groupId>
-      <artifactId>hbase-shaded-netty</artifactId>
-      <version>${org.apache.hbase.thirdparty.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
+      <groupId>org.pentaho.hadoop.shims</groupId>
+      <artifactId>pentaho-shaded-netty</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase.thirdparty</groupId>

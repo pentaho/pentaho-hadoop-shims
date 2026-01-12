@@ -67,6 +67,10 @@
           <groupId>org.apache.hbase.thirdparty</groupId>
           <artifactId>hbase-shaded-protobuf</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-netty</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
