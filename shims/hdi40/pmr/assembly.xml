@@ -24,10 +24,11 @@
         <include>org.apache.zookeeper:zookeeper</include>
         <include>org.apache.hbase.thirdparty:hbase-shaded-miscellaneous</include>
         <include>org.apache.hbase.thirdparty:hbase-shaded-protobuf</include>
-        <include>org.apache.hbase.thirdparty:hbase-shaded-netty</include>
+        <include>org.pentaho.hadoop.shims:pentaho-shaded-netty</include>
       </includes>
       <excludes>
         <exclude>*:tests:*</exclude>
+        <exclude>org.apache.hbase.thirdparty:hbase-shaded-netty</exclude>
       </excludes>
     </dependencySet>
   </dependencySets>
