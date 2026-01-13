@@ -650,6 +650,10 @@
       <version>${org.apache.hbase.version}</version>
       <exclusions>
         <exclusion>
+          <groupId>org.apache.tomcat</groupId>
+          <artifactId>tomcat-jasper</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>org.apache.hbase.thirdparty</groupId>
           <artifactId>hbase-shaded-netty</artifactId>
         </exclusion>
