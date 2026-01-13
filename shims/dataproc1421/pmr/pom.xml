@@ -63,6 +63,10 @@
           <groupId>org.apache.hbase.thirdparty</groupId>
           <artifactId>hbase-shaded-netty</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
