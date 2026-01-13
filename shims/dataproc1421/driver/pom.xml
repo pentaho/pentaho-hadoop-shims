@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.pentaho.hadoop.shims</groupId>
     <artifactId>pentaho-hadoop-shims-dataproc1421-reactor</artifactId>
-     <version>11.1.0.0-SNAPSHOT</version>
+    <version>11.1.0.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>pentaho-hadoop-shims-dataproc1421</artifactId>
@@ -13,7 +13,7 @@
 
   <properties>
     <shim.id>dataproc1421</shim.id>
-    <netty.version>4.1.108.Final</netty.version>
+    <netty.version>4.1.128.Final</netty.version>
     <!-- setting v1.14.4 so shaded jackson-databind inside parquet-hadoop-bundle's  version approximately matches jackson-databind in driver.jar -->
     <parquet.version>1.14.4</parquet.version>
     <curator.version>5.6.0</curator.version>
@@ -73,6 +73,10 @@
           <groupId>*</groupId>
           <artifactId>netty-transport-classes-epoll</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -111,6 +115,17 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-http2</artifactId>
+      <version>${netty.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-codec-smtp</artifactId>
       <version>${netty.version}</version>
       <exclusions>
         <exclusion>
@@ -288,7 +303,7 @@
       <artifactId>snakeyaml</artifactId>
       <version>${snakeyaml.version}</version>
     </dependency>
-	  <dependency>
+    <dependency>
       <groupId>org.apache.hive</groupId>
       <artifactId>hive-service</artifactId>
       <version>${org.apache.hive.version}</version>
@@ -296,6 +311,10 @@
         <exclusion>
           <groupId>*</groupId>
           <artifactId>commons-pool</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -320,6 +339,12 @@
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-hdfs</artifactId>
       <version>${org.apache.hadoop.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
@@ -330,6 +355,12 @@
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-mapreduce-client-jobclient</artifactId>
       <version>${org.apache.hadoop.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -386,7 +417,7 @@
         </exclusion>
       </exclusions>
     </dependency>
-	  <dependency>
+    <dependency>
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-mapreduce</artifactId>
       <version>${org.apache.hbase.version}</version>
@@ -594,8 +625,7 @@
             </goals>
             <configuration>
               <target>
-                <zip destfile="${project.build.directory}/extra-resources/jetty-runner-${jetty-hadoop.version}.jar"
-                      basedir="${project.build.directory}/jetty-runner-jar">
+                <zip destfile="${project.build.directory}/extra-resources/jetty-runner-${jetty-hadoop.version}.jar" basedir="${project.build.directory}/jetty-runner-jar">
                   <exclude name="org/slf4j/**"/>
                 </zip>
               </target>

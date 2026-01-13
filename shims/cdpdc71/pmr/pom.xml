@@ -76,6 +76,11 @@
           <groupId>org.apache.hbase.thirdparty</groupId>
           <artifactId>hbase-shaded-netty</artifactId>
         </exclusion>
+        <!-- PPP-6022: Exclude netty-all from ALL transitive paths (CVE-2025-59419) -->
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
         <!-- PPP-6071: Exclude Avro transitive dependencies (CVE-2024-47561) -->
         <exclusion>
           <groupId>org.apache.avro</groupId>

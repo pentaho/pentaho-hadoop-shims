@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.pentaho.hadoop.shims</groupId>
@@ -31,6 +30,7 @@
     <commons-configuration2.version>2.10.1</commons-configuration2.version>
     <curator.version>5.6.0</curator.version>
     <slf4j.version>1.7.36</slf4j.version>
+    <netty.version>4.1.128.Final</netty.version>
   </properties>
 
   <dependencies>
@@ -84,6 +84,10 @@
         <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-reload4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -511,6 +515,10 @@
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-reload4j</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -700,6 +708,10 @@
           <groupId>org.apache.parquet</groupId>
           <artifactId>parquet-hadoop-bundle</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -730,6 +742,10 @@
         <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-reload4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -1015,8 +1031,7 @@
             </goals>
             <configuration>
               <target>
-                <zip destfile="${project.build.directory}/extra-resources/jetty-runner-${jetty-hadoop.version}.jar"
-                     basedir="${project.build.directory}/jetty-runner-jar">
+                <zip destfile="${project.build.directory}/extra-resources/jetty-runner-${jetty-hadoop.version}.jar" basedir="${project.build.directory}/jetty-runner-jar">
                   <exclude name="org/slf4j/**"/>
                 </zip>
               </target>
