@@ -300,7 +300,7 @@
     <modules>
       <module>hdi40</module>
     </modules>
-  </profile>
+  </profile-->
   <profile>
     <id>apachevanilla</id>
     <activation>
@@ -311,7 +311,7 @@
     <modules>
       <module>apachevanilla</module>
     </modules>
-  </profile>-->
+  </profile>
   <profile>
     <id>emr770</id>
     <activation>
