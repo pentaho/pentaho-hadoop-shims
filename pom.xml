@@ -228,6 +228,18 @@
       </modules>
     </profile>
 
+    <profile>
+      <id>shaded-netty</id>
+      <activation>
+        <property>
+          <name>!skipDefault</name>
+        </property>
+      </activation>
+      <modules>
+        <module>pentaho-shaded-netty</module>
+      </modules>
+    </profile>
+
   </profiles>
 
 
