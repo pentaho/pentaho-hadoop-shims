@@ -206,6 +206,7 @@
                 <exclude>com.yammer.metrics:metrics-core:*</exclude>
                 <exclude>*:aws-java-sdk-bundle:*</exclude>
                 <exclude>*:derby:*</exclude>
+                <exclude>*:batik-bridge:*</exclude>
             </excludes>
         </dependencySet>
         <dependencySet>
@@ -387,6 +388,7 @@
                 <exclude>com.yammer.metrics:metrics-core:*</exclude>
                 <exclude>*:aws-java-sdk-bundle:*</exclude>
                 <exclude>*:derby:*</exclude>
+                <exclude>*:batik-bridge:*</exclude>
                 <!-- CVE-2025-59419 fix: Exclude vulnerable hbase-shaded-netty, replaced by pentaho-shaded-netty -->
                 <exclude>org.apache.hbase.thirdparty:hbase-shaded-netty:*</exclude>
             </excludes>
