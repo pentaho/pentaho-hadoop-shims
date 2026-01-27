@@ -45,6 +45,7 @@
     <slf4j.version>1.7.36</slf4j.version>
     <!-- Libthrift version must match the version used by Cloudera to support http based Hive Connection -->
     <org.apache.thrift.version>0.16.0</org.apache.thrift.version>
+    <velocity-engine-core.version>2.4.1</velocity-engine-core.version>
   </properties>
 
   <dependencyManagement>
@@ -874,6 +875,11 @@
       <groupId>org.apache.hadoop.thirdparty</groupId>
       <artifactId>hadoop-shaded-guava</artifactId>
       <version>${hadoop-shaded-guava.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.velocity</groupId>
+      <artifactId>velocity-engine-core</artifactId>
+      <version>${velocity-engine-core.version}</version>
     </dependency>
   </dependencies>
 
