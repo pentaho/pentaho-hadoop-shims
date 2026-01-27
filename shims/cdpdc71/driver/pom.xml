@@ -22,6 +22,7 @@
     <org.apache.orc.version>1.5.1.7.1.4.0-203</org.apache.orc.version>
     <org.apache.hadoop.version>3.1.1.7.3.1.0-197</org.apache.hadoop.version>
     <org.apache.hbase.version>2.4.17.7.3.1.0-197</org.apache.hbase.version>
+    <org.apache.hbase.thirdparty.version>4.1.10</org.apache.hbase.thirdparty.version>
     <org.apache.hive.version>3.1.3000.7.3.1.0-197</org.apache.hive.version>
     <org.apache.oozie.version>5.1.0.7.3.1.0-197</org.apache.oozie.version>
     <pig.version>0.16.0.7.1.4.0-203</pig.version>
@@ -638,6 +639,17 @@
         <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-reload4j</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hbase.thirdparty</groupId>
+      <artifactId>hbase-shaded-jersey</artifactId>
+      <version>${org.apache.hbase.thirdparty.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
