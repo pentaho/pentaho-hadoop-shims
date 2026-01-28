@@ -23,6 +23,7 @@
     <org.apache.hbase.version>2.6.2</org.apache.hbase.version>
     <org.apache.oozie.version>5.2.1</org.apache.oozie.version>
     <pig.version>0.17.0</pig.version>
+    <hibernate.version>5.3.20.Final</hibernate.version>
     <!-- parquet v1.15.2 (CVE-2025-46762 fix) -->
     <parquet-pig.version>1.15.2</parquet-pig.version>
     <sqoop.version>1.4.7</sqoop.version>
@@ -811,6 +812,22 @@
       <groupId>org.apache.parquet</groupId>
       <artifactId>parquet-hadoop</artifactId>
       <version>${parquet.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <version>${hibernate.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.hibernate</groupId>
+          <artifactId>hibernate-core</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>${hibernate.version}</version>
     </dependency>
   </dependencies>
 

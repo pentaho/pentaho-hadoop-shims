@@ -32,6 +32,7 @@
     <slf4j.version>1.7.36</slf4j.version>
     <netty.version>4.1.128.Final</netty.version>
     <xalan.version>2.7.3</xalan.version>
+    <hibernate.version>5.3.20.Final</hibernate.version>
   </properties>
 
   <dependencies>
@@ -999,6 +1000,23 @@
       <artifactId>xalan</artifactId>
       <version>${xalan.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <version>${hibernate.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.hibernate</groupId>
+          <artifactId>hibernate-core</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>${hibernate.version}</version>
+    </dependency>
+
   </dependencies>
 
   <build>
