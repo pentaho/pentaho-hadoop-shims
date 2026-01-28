@@ -189,6 +189,7 @@
                 <exclude>*:hadoop-yarn-server-common:*</exclude>
                 <exclude>*:hadoop-yarn-server-resourcemanager:*</exclude>
                 <exclude>*:hadoop-yarn-server-web-proxy:*</exclude>
+                <exclude>*:velocity-engine-core-2.3:*</exclude>
             </excludes>
         </dependencySet>
         <dependencySet>
@@ -355,6 +356,7 @@
                 <exclude>*:hadoop-yarn-server-common:*</exclude>
                 <exclude>*:hadoop-yarn-server-resourcemanager:*</exclude>
                 <exclude>*:hadoop-yarn-server-web-proxy:*</exclude>
+                <exclude>*:velocity-engine-core-2.3:*</exclude>
                 <!-- CVE-2025-59419 fix: Exclude vulnerable hbase-shaded-netty, replaced by pentaho-shaded-netty -->
                 <exclude>org.apache.hbase.thirdparty:hbase-shaded-netty:*</exclude>
             </excludes>
