@@ -614,6 +614,12 @@
       <version>1.2.22</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>at.yawk.lz4</groupId>
+      <artifactId>lz4-java</artifactId>
+      <version>${lz4-java.version}</version>
+      <scope>test</scope>
+    </dependency>
 
   </dependencies>
   <build>
