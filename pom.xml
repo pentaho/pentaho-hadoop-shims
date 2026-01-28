@@ -199,7 +199,6 @@
         <module>common-services-api</module>
         <module>common-base</module>
         <module>common-dependencies</module>
-        <module>pentaho-shaded-netty</module>
       </modules>
     </profile>
 
@@ -228,17 +227,7 @@
       </modules>
     </profile>
 
-    <profile>
-      <id>shaded-netty</id>
-      <activation>
-        <property>
-          <name>!skipDefault</name>
-        </property>
-      </activation>
-      <modules>
-        <module>pentaho-shaded-netty</module>
-      </modules>
-    </profile>
+
 
   </profiles>
 

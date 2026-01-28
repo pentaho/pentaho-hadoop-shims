@@ -242,9 +242,9 @@
     <!-- REPLACED: Apache hbase-shaded-netty (4.1.10 with vulnerable Netty 4.1.116) -->
     <!-- WITH: Pentaho custom shaded Netty 4.1.128.Final for CVE-2025-59419 fix -->
     <dependency>
-      <groupId>org.pentaho.hadoop.shims</groupId>
+      <groupId>org.pentaho.hadoop</groupId>
       <artifactId>pentaho-shaded-netty</artifactId>
-      <version>${project.version}</version>
+      <version>1.0.0</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
