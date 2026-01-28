@@ -5,16 +5,16 @@
 <parent>
   <groupId>org.pentaho</groupId>
   <artifactId>pentaho-hadoop-shims</artifactId>
-  <version>11.1.0.0-SNAPSHOT</version>
+  <version>11.1.0.0-122</version>
 </parent>
 
 <groupId>org.pentaho.hadoop.shims</groupId>
 <artifactId>pentaho-hadoop-shims-list</artifactId>
-<version>11.1.0.0-SNAPSHOT</version>
+<version>11.1.0.0-122</version>
 <packaging>pom</packaging>
 
 <properties>
-  <pentaho-hadoop-shims.version>11.1.0.0-SNAPSHOT</pentaho-hadoop-shims.version>
+  <pentaho-hadoop-shims.version>11.1.0.0-122</pentaho-hadoop-shims.version>
   <oss.license.directory>${project.build.directory}/oss_license</oss.license.directory>
   <xerces.version>2.8.1</xerces.version>
   <com.yammer.metrics.version>2.2.0</com.yammer.metrics.version>
