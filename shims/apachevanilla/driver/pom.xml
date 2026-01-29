@@ -660,9 +660,9 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.pentaho.hadoop.shims</groupId>
+      <groupId>org.pentaho.hadoop</groupId>
       <artifactId>pentaho-shaded-netty</artifactId>
-      <version>${project.version}</version>
+      <version>1.0.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>

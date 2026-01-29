@@ -639,9 +639,9 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.pentaho.hadoop.shims</groupId>
+      <groupId>org.pentaho.hadoop</groupId>
       <artifactId>pentaho-shaded-netty</artifactId>
-      <version>${project.version}</version>
+      <version>1.0.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
@@ -750,6 +750,10 @@
         <exclusion>
           <groupId>org.apache.hbase.thirdparty</groupId>
           <artifactId>hbase-shaded-netty</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
         </exclusion>
       </exclusions>
     </dependency>

@@ -810,9 +810,9 @@
     <!-- This replaces Apache's hbase-shaded-netty:4.1.10 (Netty 4.1.116 - vulnerable) -->
     <!-- with pentaho-shaded-netty containing Netty 4.1.128.Final (patched) -->
     <dependency>
-      <groupId>org.pentaho.hadoop.shims</groupId>
+      <groupId>org.pentaho.hadoop</groupId>
       <artifactId>pentaho-shaded-netty</artifactId>
-      <version>${project.version}</version>
+      <version>1.0.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
