@@ -498,17 +498,6 @@
 
     <!-- The following added for Pig -->
     <dependency>
-      <groupId>org.python</groupId>
-      <artifactId>jython</artifactId>
-      <version>${jython.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
       <groupId>org.antlr</groupId>
       <artifactId>antlr-runtime</artifactId>
       <version>${org.antlr.version}</version>

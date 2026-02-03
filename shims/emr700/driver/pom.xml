@@ -24,7 +24,6 @@
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
     <joda-time.version>2.9.2</joda-time.version>
     <org.antlr.version>3.5.2</org.antlr.version>
-    <jython.version>2.5.3</jython.version>
     <automaton.version>1.11-8</automaton.version>
     <awssdk.version>2.28.27</awssdk.version>
     <commons-configuration2.version>2.10.1</commons-configuration2.version>
@@ -735,11 +734,6 @@
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
       <version>${joda-time.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.python</groupId>
-      <artifactId>jython</artifactId>
-      <version>${jython.version}</version>
     </dependency>
     <!--- End dependencies for Pig -->
     <dependency>
