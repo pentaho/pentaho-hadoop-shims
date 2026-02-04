@@ -102,7 +102,6 @@
                 <exclude>*:hive-llap-tez:*</exclude>
                 <exclude>*:hive-shims-0.23:*</exclude>
                 <exclude>*:hive-shims:*</exclude>
-                <exclude>*:hive-shims-common:*</exclude>
                 <exclude>*:hive-vector-code-gen:*</exclude>
                 <exclude>*:hsqldb:*</exclude>
                 <exclude>*:httpclient:*</exclude>
