@@ -297,6 +297,19 @@
       <groupId>org.apache.hive</groupId>
       <artifactId>hive-jdbc</artifactId>
       <version>${org.apache.hive.version}</version>
+      <exclusions>
+        <!-- CVE-2022-34169: Exclude vulnerable xalan 2.7.2 from transitive dependencies (pac4j-saml-opensamlv3) -->
+        <exclusion>
+          <groupId>xalan</groupId>
+          <artifactId>xalan</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <!-- CVE-2022-34169: Explicitly add safe xalan version to replace excluded vulnerable 2.7.2 -->
+    <dependency>
+      <groupId>xalan</groupId>
+      <artifactId>xalan</artifactId>
+      <version>2.7.3</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
