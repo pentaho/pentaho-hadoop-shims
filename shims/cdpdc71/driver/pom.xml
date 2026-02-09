@@ -14,7 +14,7 @@
 
   <properties>
     <shim.id>cdpdc71</shim.id>
-    <netty.version>4.1.128.Final</netty.version>
+    <netty.version>4.1.129.Final</netty.version>
     <commons-lang.version>2.6</commons-lang.version>
     <failureaccess.version>1.0.1</failureaccess.version>
     <pentaho-osgi-bundles.version>11.1.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
