@@ -18,6 +18,7 @@
     <commons-lang.version>2.6</commons-lang.version>
     <failureaccess.version>1.0.1</failureaccess.version>
     <pentaho-osgi-bundles.version>11.1.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
+    <org.apache.avro.version>1.12.0</org.apache.avro.version>
     <!--    <org.apache.orc.version>1.5.1.7.1.4.0-203</org.apache.orc.version>-->
     <org.apache.orc.version>1.5.1.7.1.4.0-203</org.apache.orc.version>
     <org.apache.hadoop.version>3.1.1.7.3.1.600-337</org.apache.hadoop.version>
@@ -169,6 +170,16 @@
           <artifactId>slf4j-reload4j</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.avro</groupId>
+      <artifactId>avro</artifactId>
+      <version>${org.apache.avro.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.avro</groupId>
+      <artifactId>avro-mapred</artifactId>
+      <version>${org.apache.avro.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hive</groupId>
