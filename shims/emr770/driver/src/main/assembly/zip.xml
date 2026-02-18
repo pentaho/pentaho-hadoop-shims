@@ -209,6 +209,7 @@
                 <exclude>*:batik-bridge:*</exclude>
                 <exclude>*:batik-transcoder:*</exclude>
                 <exclude>*:batik-svgrasterizer:*</exclude>
+                <exclude>*:nimbus-jose-jwt-9.31:*</exclude>
             </excludes>
         </dependencySet>
         <dependencySet>
@@ -393,6 +394,7 @@
                 <exclude>*:batik-bridge:*</exclude>
                 <exclude>*:batik-transcoder:*</exclude>
                 <exclude>*:batik-svgrasterizer:*</exclude>
+                <exclude>*:nimbus-jose-jwt-9.31:*</exclude>
                 <!-- CVE-2025-59419 fix: Exclude vulnerable hbase-shaded-netty, replaced by pentaho-shaded-netty -->
                 <exclude>org.apache.hbase.thirdparty:hbase-shaded-netty:*</exclude>
             </excludes>

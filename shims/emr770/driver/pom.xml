@@ -31,6 +31,7 @@
     <slf4j.version>1.7.36</slf4j.version>
     <xalan.version>2.7.3</xalan.version>
     <hibernate.version>5.6.15.Final</hibernate.version>
+    <nimbus-jose-jwt.version>9.37.4</nimbus-jose-jwt.version>
   </properties>
 
   <dependencies>
@@ -1009,7 +1010,11 @@
       <artifactId>hibernate-core</artifactId>
       <version>${hibernate.version}</version>
     </dependency>
-
+    <dependency>
+      <groupId>com.nimbusds</groupId>
+      <artifactId>nimbus-jose-jwt</artifactId>
+      <version>${nimbus-jose-jwt.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
