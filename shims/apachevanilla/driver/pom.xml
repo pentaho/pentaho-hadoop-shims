@@ -252,12 +252,6 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.pentaho</groupId>
-      <artifactId>shim-api-core</artifactId>
-      <version>${pentaho-hadoop-shims.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>org.pentaho.hadoop.shims</groupId>
       <artifactId>pentaho-hadoop-shims-common-base</artifactId>
       <version>${pentaho-hadoop-shims.version}</version>
@@ -282,11 +276,6 @@
       <groupId>org.apache.avro</groupId>
       <artifactId>avro-mapred</artifactId>
       <version>${org.apache.avro.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.protobuf</groupId>
-      <artifactId>protobuf-java</artifactId>
-      <version>${protobuf-java.version}</version>
     </dependency>
     <dependency>
       <groupId>com.google.protobuf</groupId>
@@ -519,10 +508,10 @@
           <groupId>io.netty</groupId>
           <artifactId>netty-transport-native-unix-common</artifactId>
         </exclusion>
-          <exclusion>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-          </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
