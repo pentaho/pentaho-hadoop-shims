@@ -23,7 +23,7 @@
     <org.apache.hadoop.version>3.1.1.7.3.1.600-337</org.apache.hadoop.version>
     <org.apache.hbase.version>2.4.17.7.3.1.0-197</org.apache.hbase.version>
     <org.apache.hbase.thirdparty.version>4.1.10</org.apache.hbase.thirdparty.version>
-    <org.apache.hive.version>3.1.3000.7.3.1.0-197</org.apache.hive.version>
+    <org.apache.hive.version>4.0.0</org.apache.hive.version>
     <org.apache.oozie.version>5.1.0.7.3.1.0-197</org.apache.oozie.version>
     <pig.version>0.16.0.7.1.4.0-203</pig.version>
     <sqoop.version>1.4.7.7.3.1.0-197</sqoop.version>
