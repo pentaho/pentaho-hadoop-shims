@@ -36,6 +36,7 @@
     <curator.version>5.6.0</curator.version>
     <org.apache.orc.version>1.9.6</org.apache.orc.version>
     <lz4-java.version>1.10.3</lz4-java.version>
+    <nimbus-jose-jwt.version>9.37.4</nimbus-jose-jwt.version>
   </properties>
 
   <dependencyManagement>
@@ -824,6 +825,11 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
       <version>${hibernate.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.nimbusds</groupId>
+      <artifactId>nimbus-jose-jwt</artifactId>
+      <version>${nimbus-jose-jwt.version}</version>
     </dependency>
   </dependencies>
 
