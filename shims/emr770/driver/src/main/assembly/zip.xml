@@ -202,7 +202,6 @@
                 <exclude>*:websocket-common:*</exclude>
                 <exclude>*:wildfly-openssl:*</exclude>
                 <exclude>*:xmlenc:*</exclude>
-                <exclude>*:hive-llap-common:*</exclude>
                 <exclude>com.yammer.metrics:metrics-core:*</exclude>
                 <exclude>*:aws-java-sdk-bundle:*</exclude>
                 <exclude>*:derby:*</exclude>
@@ -387,7 +386,6 @@
                 <exclude>*:websocket-common:*</exclude>
                 <exclude>*:wildfly-openssl:*</exclude>
                 <exclude>*:xmlenc:*</exclude>
-                <exclude>*:hive-llap-common:*</exclude>
                 <exclude>com.yammer.metrics:metrics-core:*</exclude>
                 <exclude>*:aws-java-sdk-bundle:*</exclude>
                 <exclude>*:derby:*</exclude>
