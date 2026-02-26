@@ -14,7 +14,7 @@
 
   <properties>
     <org.apache.avro.version>1.8.0</org.apache.avro.version>
-    <org.apache.hive.version>2.3.4</org.apache.hive.version>
+    <org.apache.hive.version>4.0.1</org.apache.hive.version>
     <org.apache.oozie.version>5.0.0</org.apache.oozie.version>
     <org.apache.hbase.version>1.4.8</org.apache.hbase.version>
     <org.apache.hadoop.version>2.8.5</org.apache.hadoop.version>
