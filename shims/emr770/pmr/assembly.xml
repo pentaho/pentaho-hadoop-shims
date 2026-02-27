@@ -23,7 +23,7 @@
         <include>org.apache.zookeeper:zookeeper</include>
         <include>org.apache.hbase.thirdparty:hbase-shaded-miscellaneous</include>
         <include>org.apache.hbase.thirdparty:hbase-shaded-protobuf</include>
-        <include>org.apache.hbase.thirdparty:hbase-shaded-netty</include>
+        <include>org.pentaho.hadoop:pentaho-shaded-netty</include>
         <include>org.pentaho.hadoop.shims:pentaho-hadoop-shims-common-fragment-V1</include>
       </includes>
       <excludes>
