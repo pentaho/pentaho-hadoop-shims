@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>pentaho-hadoop-shims-apachevanilla-pmr-libs</artifactId>
-  <version>10.2.0.6-378</version>
+  <version>10.2.0.6-CUST-308</version>
   <packaging>pom</packaging>
 
   <properties>
@@ -117,7 +117,7 @@
     <dependency>
       <groupId>org.pentaho.hadoop.shims</groupId>
       <artifactId>pentaho-hadoop-shims-common-fragment-V1</artifactId>
-      <version>${project.version}</version>
+      <version>10.2.0.6-378</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>

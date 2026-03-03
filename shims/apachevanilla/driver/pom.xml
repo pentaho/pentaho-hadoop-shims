@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>pentaho-hadoop-shims-apachevanilla-driver</artifactId>
-  <version>10.2.0.6-378</version>
+  <version>10.2.0.6-CUST-308</version>
   <packaging>bundle</packaging>
 
   <properties>
@@ -169,12 +169,12 @@
     <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>shim-api</artifactId>
-      <version>${project.version}</version>
+      <version>10.2.0.6-378</version>
     </dependency>
     <dependency>
       <groupId>org.pentaho.hadoop.shims</groupId>
       <artifactId>pentaho-hadoop-shims-common-fragment-V1</artifactId>
-      <version>${project.version}</version>
+      <version>10.2.0.6-378</version>
       <exclusions>
         <exclusion>
           <groupId>org.slf4j</groupId>
