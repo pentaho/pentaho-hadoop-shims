@@ -190,6 +190,14 @@
               <groupId>io.netty</groupId>
               <artifactId>netty-handler</artifactId>
             </exclusion>
+            <exclusion>
+              <groupId>io.netty</groupId>
+              <artifactId>netty-all</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>org.apache.hbase.thirdparty</groupId>
+              <artifactId>hbase-shaded-netty</artifactId>
+            </exclusion>
           </exclusions>
         </dependency>
         <dependency>
