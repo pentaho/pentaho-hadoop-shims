@@ -460,6 +460,11 @@
       <artifactId>lz4-java</artifactId>
       <version>${lz4-java.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.fasterxml.woodstox</groupId>
+      <artifactId>woodstox-core</artifactId>
+      <version>${woodstox-core.version}</version>
+    </dependency>
   </dependencies>
 
   <dependencyManagement>
