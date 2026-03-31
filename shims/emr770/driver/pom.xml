@@ -251,11 +251,6 @@
       <artifactId>netty-transport-udt</artifactId>
       <version>${netty.version}</version>
     </dependency>
-    <dependency>
-      <groupId>io.grpc</groupId>
-      <artifactId>grpc-netty-shaded</artifactId>
-      <version>${grpc-netty.version}</version>
-    </dependency>
 
     <dependency>
       <groupId>org.apache.hadoop</groupId>
