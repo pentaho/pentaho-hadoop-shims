@@ -262,7 +262,6 @@
     <modules>
       <!--<module>dataproc1421</module>-->
       <module>cdpdc71</module>
-      <module>apache</module>
       <!--<module>hdi40</module>-->
       <module>apachevanilla</module>
       <module>emr770</module>
