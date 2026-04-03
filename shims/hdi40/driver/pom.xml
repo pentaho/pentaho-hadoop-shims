@@ -20,7 +20,7 @@
     <!-- settting v1.14.4 so shaded jackson-databind inside parquet-hadoop-bundle's  version approximately matches jackson-databind in driver.jar -->
     <parquet.version>1.14.4</parquet.version>
     <org.apache.hbase.version>2.4.17.7.1.9.0-387</org.apache.hbase.version>
-    <org.apache.hive.version>3.1.3000.7.1.9.0-387</org.apache.hive.version>
+    <org.apache.hive.version>4.0.0</org.apache.hive.version>
     <org.apache.oozie.version>5.1.0.7.1.4.0-203</org.apache.oozie.version>
     <pig.version>0.16.0.7.1.4.0-203</pig.version>
     <!-- parquet v1.14.4 is build on pig v0.16.0 -->
