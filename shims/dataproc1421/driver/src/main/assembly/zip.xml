@@ -92,6 +92,7 @@
                 <exclude>*:groovy-templates:*</exclude>
                 <exclude>*:groovy-xml:*</exclude>
                 <exclude>*:hadoop-client:*</exclude>
+                <exclude>*:hadoop-client-api:*</exclude>
                 <exclude>*:hadoop-shaded-protobuf_3_21:*</exclude>
                 <exclude>*:hadoop-yarn-server-common:*</exclude>
                 <exclude>*:hive-llap-client:*</exclude>
@@ -227,6 +228,7 @@
                 <exclude>*:groovy-templates:*</exclude>
                 <exclude>*:groovy-xml:*</exclude>
                 <exclude>*:hadoop-client:*</exclude>
+                <exclude>*:hadoop-client-api:*</exclude>
                 <exclude>*:hadoop-shaded-protobuf_3_21:*</exclude>
                 <exclude>*:hadoop-yarn-server-common:*</exclude>
                 <exclude>*:hive-llap-client:*</exclude>
