@@ -16,7 +16,7 @@
     <shim.id>emr770</shim.id>
     <jsr311-api.version>1.1.1</jsr311-api.version>
     <org.apache.avro.version>1.12.0</org.apache.avro.version>
-    <org.apache.hive.version>4.0.1</org.apache.hive.version>
+    <org.apache.hive.version>4.2.0</org.apache.hive.version>
     <org.apache.oozie.version>5.2.1</org.apache.oozie.version>
     <org.apache.hbase.version>2.6.2</org.apache.hbase.version>
     <sqoop.version>1.4.7</sqoop.version>
@@ -717,7 +717,18 @@
           <groupId>xalan</groupId>
           <artifactId>xalan</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-netty-shaded</artifactId>
+        </exclusion>
       </exclusions>
+    </dependency>
+    <!-- In the future, if hive-service is bumped to a version that includes a safe version of grpc-netty-shaded -->
+    <!-- we should remove the explicit grpc-netty-shaded dependency below, as well as the exclusion above-->
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-netty-shaded</artifactId>
+      <version>1.76.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hive.shims</groupId>
