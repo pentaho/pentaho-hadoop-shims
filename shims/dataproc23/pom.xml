@@ -10,7 +10,7 @@
   <packaging>pom</packaging>
   <properties>
     <!-- shim properties -->
-    <shim.name>dataproc1421</shim.name>
+    <shim.name>dataproc23</shim.name>
     <vendor-driver.version>2.3</vendor-driver.version>
     <pentaho-code.version>11.1.0.0</pentaho-code.version>
 
