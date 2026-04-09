@@ -136,7 +136,7 @@
                 <exclude>*:pentaho-encryption-support:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-common-base:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-common-services-api:*</exclude>
-                <exclude>*:pentaho-hadoop-shims-dataproc1421:*</exclude>
+                <exclude>*:pentaho-hadoop-shims-dataproc23:*</exclude>
                 <exclude>*:pentaho-metastore-locator-api:*</exclude>
                 <exclude>*:pentaho-platform-api:*</exclude>
                 <exclude>*:protobuf-java-util:*</exclude>
@@ -272,7 +272,7 @@
                 <exclude>*:pentaho-encryption-support:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-common-base:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-common-services-api:*</exclude>
-                <exclude>*:pentaho-hadoop-shims-dataproc1421:*</exclude>
+                <exclude>*:pentaho-hadoop-shims-dataproc23:*</exclude>
                 <exclude>*:pentaho-metastore-locator-api:*</exclude>
                 <exclude>*:pentaho-platform-api:*</exclude>
                 <exclude>*:protobuf-java-util:*</exclude>
