@@ -1,0 +1,29 @@
+services:
+  - auth_manager
+  - hdfs:
+      options:
+          - hdfs
+      schemas:
+          - hdfs
+          - maprfs
+          - escalefs
+          - wasb
+          - wasbs
+          - abfs
+          - hc
+  - common_formats
+  - mapreduce:
+        options:
+            - mapreduce
+  - sqoop:
+        options:
+            - sqoop
+  - hive:
+      drivers:
+          - hive
+          - impala
+          - impala_simba
+          - spark_simba
+  - hbase:
+        options:
+            - hbase
