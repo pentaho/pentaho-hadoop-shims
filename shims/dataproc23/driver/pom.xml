@@ -380,10 +380,6 @@
           <artifactId>protobuf-java</artifactId>
         </exclusion>
         <exclusion>
-          <artifactId>protobuf-java</artifactId>
-          <groupId>com.google.protobuf</groupId>
-        </exclusion>
-        <exclusion>
           <groupId>org.apache.hbase.thirdparty</groupId>
           <artifactId>hbase-shaded-netty</artifactId>
         </exclusion>
@@ -410,10 +406,6 @@
         <exclusion>
           <groupId>*</groupId>
           <artifactId>protobuf-java</artifactId>
-        </exclusion>
-        <exclusion>
-          <artifactId>protobuf-java</artifactId>
-          <groupId>com.google.protobuf</groupId>
         </exclusion>
         <exclusion>
           <groupId>org.apache.hbase.thirdparty</groupId>
@@ -458,10 +450,6 @@
           <artifactId>protobuf-java</artifactId>
         </exclusion>
         <exclusion>
-          <artifactId>protobuf-java</artifactId>
-          <groupId>com.google.protobuf</groupId>
-        </exclusion>
-        <exclusion>
           <groupId>org.apache.hbase.thirdparty</groupId>
           <artifactId>hbase-shaded-netty</artifactId>
         </exclusion>
@@ -490,10 +478,6 @@
           <artifactId>protobuf-java</artifactId>
         </exclusion>
         <exclusion>
-          <artifactId>protobuf-java</artifactId>
-          <groupId>com.google.protobuf</groupId>
-        </exclusion>
-        <exclusion>
           <groupId>org.apache.hbase.thirdparty</groupId>
           <artifactId>hbase-shaded-netty</artifactId>
         </exclusion>
@@ -515,10 +499,6 @@
         <exclusion>
           <groupId>*</groupId>
           <artifactId>protobuf-java</artifactId>
-        </exclusion>
-        <exclusion>
-          <artifactId>protobuf-java</artifactId>
-          <groupId>com.google.protobuf</groupId>
         </exclusion>
         <exclusion>
           <groupId>org.apache.hbase.thirdparty</groupId>
