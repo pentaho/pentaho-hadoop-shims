@@ -382,12 +382,16 @@
           <artifactId>protobuf-java</artifactId>
         </exclusion>
         <exclusion>
-          <artifactId>protobuf-java</artifactId>
-          <groupId>com.google.protobuf</groupId>
-        </exclusion>
-        <exclusion>
           <groupId>org.apache.hbase.thirdparty</groupId>
           <artifactId>hbase-shaded-netty</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.zookeeper</groupId>
+          <artifactId>zookeeper</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.zookeeper</groupId>
+          <artifactId>zookeeper-jute</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -406,12 +410,16 @@
           <artifactId>protobuf-java</artifactId>
         </exclusion>
         <exclusion>
-          <artifactId>protobuf-java</artifactId>
-          <groupId>com.google.protobuf</groupId>
-        </exclusion>
-        <exclusion>
           <groupId>org.apache.hbase.thirdparty</groupId>
           <artifactId>hbase-shaded-netty</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.zookeeper</groupId>
+          <artifactId>zookeeper</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.zookeeper</groupId>
+          <artifactId>zookeeper-jute</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -423,6 +431,14 @@
         <exclusion>
           <groupId>org.apache.hbase.thirdparty</groupId>
           <artifactId>hbase-shaded-netty</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.zookeeper</groupId>
+          <artifactId>zookeeper</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.zookeeper</groupId>
+          <artifactId>zookeeper-jute</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -436,12 +452,16 @@
           <artifactId>protobuf-java</artifactId>
         </exclusion>
         <exclusion>
-          <artifactId>protobuf-java</artifactId>
-          <groupId>com.google.protobuf</groupId>
-        </exclusion>
-        <exclusion>
           <groupId>org.apache.hbase.thirdparty</groupId>
           <artifactId>hbase-shaded-netty</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.zookeeper</groupId>
+          <artifactId>zookeeper</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.zookeeper</groupId>
+          <artifactId>zookeeper-jute</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -460,12 +480,16 @@
           <artifactId>protobuf-java</artifactId>
         </exclusion>
         <exclusion>
-          <artifactId>protobuf-java</artifactId>
-          <groupId>com.google.protobuf</groupId>
-        </exclusion>
-        <exclusion>
           <groupId>org.apache.hbase.thirdparty</groupId>
           <artifactId>hbase-shaded-netty</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.zookeeper</groupId>
+          <artifactId>zookeeper</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.zookeeper</groupId>
+          <artifactId>zookeeper-jute</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -479,12 +503,16 @@
           <artifactId>protobuf-java</artifactId>
         </exclusion>
         <exclusion>
-          <artifactId>protobuf-java</artifactId>
-          <groupId>com.google.protobuf</groupId>
-        </exclusion>
-        <exclusion>
           <groupId>org.apache.hbase.thirdparty</groupId>
           <artifactId>hbase-shaded-netty</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.zookeeper</groupId>
+          <artifactId>zookeeper</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.zookeeper</groupId>
+          <artifactId>zookeeper-jute</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -575,6 +603,11 @@
       <groupId>io.netty</groupId>
       <artifactId>netty-transport-classes-epoll</artifactId>
       <version>${netty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.zookeeper</groupId>
+      <artifactId>zookeeper</artifactId>
+      <version>${zookeeper.version}</version>
     </dependency>
   </dependencies>
 
