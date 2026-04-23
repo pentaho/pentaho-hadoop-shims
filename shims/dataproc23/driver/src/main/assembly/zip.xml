@@ -61,6 +61,8 @@
                 <exclude>*:batik-transcoder:*</exclude>
                 <exclude>*:batik-util:*</exclude>
                 <exclude>*:batik-xml:*</exclude>
+                <exclude>*:batik-rasterizer:*</exclude>
+                <exclude>*:batik-svgrasterizer:*</exclude>
                 <exclude>*:calcite-core:*</exclude>
                 <exclude>*:calcite-druid:*</exclude>
                 <exclude>*:calcite-linq4j:*</exclude>
@@ -197,6 +199,8 @@
                 <exclude>*:batik-transcoder:*</exclude>
                 <exclude>*:batik-util:*</exclude>
                 <exclude>*:batik-xml:*</exclude>
+                <exclude>*:batik-rasterizer:*</exclude>
+                <exclude>*:batik-svgrasterizer:*</exclude>
                 <exclude>*:calcite-core:*</exclude>
                 <exclude>*:calcite-druid:*</exclude>
                 <exclude>*:calcite-linq4j:*</exclude>
