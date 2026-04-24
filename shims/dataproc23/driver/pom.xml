@@ -14,6 +14,7 @@
   <properties>
     <shim.id>dataproc23</shim.id>
     <curator.version>5.6.0</curator.version>
+    <grpc-netty-shaded.version>1.80.0</grpc-netty-shaded.version>
   </properties>
 
   <dependencies>
@@ -529,6 +530,11 @@
       <groupId>org.eclipse.jetty.websocket</groupId>
       <artifactId>websocket-client</artifactId>
       <version>${jetty-hadoop.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-netty-shaded</artifactId>
+      <version>${grpc-netty-shaded.version}</version>
     </dependency>
 
     <!-- The following added for Pig -->
