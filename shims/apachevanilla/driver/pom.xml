@@ -5,18 +5,18 @@
   <parent>
     <groupId>org.pentaho.hadoop.shims</groupId>
     <artifactId>pentaho-hadoop-shims-apachevanilla-reactor</artifactId>
-    <version>11.1.0.0-SNAPSHOT</version>
+    <version>11.1.0.0-217</version>
   </parent>
 
   <artifactId>pentaho-hadoop-shims-apachevanilla</artifactId>
-  <version>11.1.0.0-SNAPSHOT</version>
+  <version>11.1.0.0-217</version>
   <packaging>jar</packaging>
 
   <properties>
     <shim.id>apachevanilla</shim.id>
     <commons-lang.version>2.6</commons-lang.version>
     <failureaccess.version>1.0.1</failureaccess.version>
-    <pentaho-osgi-bundles.version>11.1.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
+    <pentaho-osgi-bundles.version>11.1.0.0-217</pentaho-osgi-bundles.version>
     <org.apache.avro.version>1.12.0</org.apache.avro.version>
     <!-- PPP-6324: Override to 1.16.0 (scoped to apachevanilla only) to fix CVE-2026-29062
          jackson-core shaded inside parquet-jackson/parquet-hadoop-bundle is safe (2.19.2) at 1.16.0+ -->
@@ -25,7 +25,7 @@
     <org.apache.oozie.version>5.2.1</org.apache.oozie.version>
     <pig.version>0.17.0</pig.version>
     <hibernate.version>5.6.15.Final</hibernate.version>
-    <parquet-pig.version>1.15.2</parquet-pig.version>    <!-- PPP-6324: parquet-pig not released at 1.16.0 — keep at 1.15.2 (last available) -->
+    <parquet-pig.version>1.15.2</parquet-pig.version>    <!-- PPP-6324: parquet-pig not released at 1.16.0 ??? keep at 1.15.2 (last available) -->
     <sqoop.version>1.4.7</sqoop.version>
     <vendor-driver.version>3.4.0</vendor-driver.version>
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
