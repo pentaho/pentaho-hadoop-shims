@@ -13,6 +13,7 @@
     <shim.name>dataproc23</shim.name>
     <vendor-driver.version>2.3</vendor-driver.version>
     <pentaho-code.version>11.1.0.0</pentaho-code.version>
+    <org.apache.orc.version>1.5.13</org.apache.orc.version>
 
     <!-- GCP properties -->
     <gcs-connector.version>hadoop3-2.2.32</gcs-connector.version>
