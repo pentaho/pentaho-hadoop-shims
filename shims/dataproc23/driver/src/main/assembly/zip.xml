@@ -97,6 +97,7 @@
                 <exclude>*:hadoop-client-api:*</exclude>
                 <exclude>*:hadoop-shaded-protobuf_3_21:*</exclude>
                 <exclude>*:hadoop-yarn-server-common:*</exclude>
+                <exclude>*:hive-exec:*</exclude>
                 <exclude>*:hive-llap-client:*</exclude>
                 <exclude>*:hive-llap-tez:*</exclude>
                 <exclude>*:hive-shims-0.23:*</exclude>
@@ -235,6 +236,7 @@
                 <exclude>*:hadoop-client-api:*</exclude>
                 <exclude>*:hadoop-shaded-protobuf_3_21:*</exclude>
                 <exclude>*:hadoop-yarn-server-common:*</exclude>
+                <exclude>*:hive-exec:*</exclude>
                 <exclude>*:hive-llap-client:*</exclude>
                 <exclude>*:hive-llap-tez:*</exclude>
                 <exclude>*:hive-shims-0.23:*</exclude>
