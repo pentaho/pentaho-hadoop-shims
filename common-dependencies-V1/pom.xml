@@ -35,12 +35,16 @@
           <artifactId>nimbus-jose-jwt</artifactId>
         </exclusion>
         <exclusion>
-          <artifactId>netty-handler</artifactId>
           <groupId>io.netty</groupId>
+          <artifactId>netty-handler</artifactId>
         </exclusion>
         <exclusion>
-          <artifactId>netty-common</artifactId>
           <groupId>io.netty</groupId>
+          <artifactId>netty-common</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -226,6 +230,10 @@
         <exclusion>
           <groupId>com.google.protobuf</groupId>
           <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-netty</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
