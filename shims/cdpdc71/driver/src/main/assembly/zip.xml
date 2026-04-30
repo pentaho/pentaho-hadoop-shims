@@ -152,11 +152,11 @@
                 <exclude>*:nimbus-jose-jwt:*</exclude>
                 <exclude>*:ognl:*</exclude>
                 <exclude>*:org.apache.karaf.jaas.config:*</exclude>
-                <exclude>*:parquet-column:*</exclude>
-                <exclude>*:parquet-common:*</exclude>
-                <exclude>*:parquet-encoding:*</exclude>
-                <exclude>*:parquet-format-structures:*</exclude>
-                <exclude>*:parquet-jackson:*</exclude>
+                <!-- PPP-6326: Removed parquet-column, parquet-common, parquet-encoding,
+                     parquet-format-structures, parquet-jackson exclusions.
+                     These were excluded because parquet-hadoop-bundle (fat JAR) already
+                     contained them. Now that the bundle is replaced by individual modules,
+                     these JARs must be included in the assembly. -->
                 <exclude>*:pentaho-encryption-support:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-common-base:*</exclude>
                 <exclude>*:pentaho-platform-api:*</exclude>
@@ -321,11 +321,7 @@
                 <exclude>*:nimbus-jose-jwt:*</exclude>
                 <exclude>*:ognl:*</exclude>
                 <exclude>*:org.apache.karaf.jaas.config:*</exclude>
-                <exclude>*:parquet-column:*</exclude>
-                <exclude>*:parquet-common:*</exclude>
-                <exclude>*:parquet-encoding:*</exclude>
-                <exclude>*:parquet-format-structures:*</exclude>
-                <exclude>*:parquet-jackson:*</exclude>
+                <!-- PPP-6326: parquet exclusions removed (see compile dependencySet above) -->
                 <exclude>*:pentaho-encryption-support:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-common-base:*</exclude>
                 <exclude>*:pentaho-platform-api:*</exclude>

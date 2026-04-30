@@ -24,6 +24,10 @@
     <org.apache.hbase.version>2.4.17.7.3.1.0-197</org.apache.hbase.version>
     <org.apache.hbase.thirdparty.version>4.1.10</org.apache.hbase.thirdparty.version>
     <org.apache.hive.version>3.1.3000.7.3.1.0-197</org.apache.hive.version>
+    <!-- PPP-6326: Override to 1.16.0 (scoped to cdpdc71 only) to fix CVE-2025-52999
+         jackson-core shaded inside parquet-jackson/parquet-hadoop-bundle is safe (2.19.2) at 1.16.0+ -->
+    <parquet.version>1.16.0</parquet.version>
+    <parquet-pig.version>1.15.2</parquet-pig.version>    <!-- PPP-6326: parquet-pig not released at 1.16.0 — keep at 1.15.2 (last available) -->
     <org.apache.oozie.version>5.1.0.7.3.1.0-197</org.apache.oozie.version>
     <pig.version>0.16.0.7.1.4.0-203</pig.version>
     <sqoop.version>1.4.7.7.3.1.0-197</sqoop.version>
@@ -819,11 +823,8 @@
       <artifactId>oozie-client</artifactId>
       <version>${org.apache.oozie.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.apache.parquet</groupId>
-      <artifactId>parquet-hadoop-bundle</artifactId>
-      <version>${parquet.version}</version>
-    </dependency>
+    <!-- PPP-6326: Removed parquet-hadoop-bundle (redundant fat/shaded JAR; individual parquet modules
+         already declared in common-base and parquet-hadoop brings parquet-jackson transitively) -->
     <dependency>
       <groupId>org.apache.pig</groupId>
       <artifactId>pig</artifactId>
@@ -838,6 +839,35 @@
     <dependency>
       <groupId>org.apache.parquet</groupId>
       <artifactId>parquet-pig</artifactId>
+      <version>${parquet-pig.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-hadoop</artifactId>
+      <version>${parquet.version}</version>
+    </dependency>
+    <!-- PPP-6326: Explicit parquet modules needed after removing parquet-hadoop-bundle.
+         Without the bundle (fat JAR), these individual JARs must be present at runtime.
+         Version pinned to ${parquet.version} (1.16.0) to override hive-exec mediation (1.15.2). -->
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-column</artifactId>
+      <version>${parquet.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-common</artifactId>
+      <version>${parquet.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-encoding</artifactId>
       <version>${parquet.version}</version>
     </dependency>
     <dependency>
