@@ -5,18 +5,18 @@
   <parent>
     <groupId>org.pentaho.hadoop.shims</groupId>
     <artifactId>pentaho-hadoop-shims-cdpdc71-reactor</artifactId>
-    <version>11.1.0.0-SNAPSHOT</version>
+    <version>11.1.0.0-222</version>
   </parent>
 
   <artifactId>pentaho-hadoop-shims-cdpdc71</artifactId>
-  <version>11.1.0.0-SNAPSHOT</version>
+  <version>11.1.0.0-222</version>
   <packaging>jar</packaging>
 
   <properties>
     <shim.id>cdpdc71</shim.id>
     <commons-lang.version>2.6</commons-lang.version>
     <failureaccess.version>1.0.1</failureaccess.version>
-    <pentaho-osgi-bundles.version>11.1.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
+    <pentaho-osgi-bundles.version>11.1.0.0-222</pentaho-osgi-bundles.version>
     <org.apache.avro.version>1.12.0</org.apache.avro.version>
     <!--    <org.apache.orc.version>1.5.1.7.1.4.0-203</org.apache.orc.version>-->
     <org.apache.orc.version>1.5.1.7.1.4.0-203</org.apache.orc.version>
@@ -27,7 +27,7 @@
     <!-- PPP-6326: Override to 1.16.0 (scoped to cdpdc71 only) to fix CVE-2025-52999
          jackson-core shaded inside parquet-jackson/parquet-hadoop-bundle is safe (2.19.2) at 1.16.0+ -->
     <parquet.version>1.16.0</parquet.version>
-    <parquet-pig.version>1.15.2</parquet-pig.version>    <!-- PPP-6326: parquet-pig not released at 1.16.0 — keep at 1.15.2 (last available) -->
+    <parquet-pig.version>1.15.2</parquet-pig.version>    <!-- PPP-6326: parquet-pig not released at 1.16.0 ??? keep at 1.15.2 (last available) -->
     <org.apache.oozie.version>5.1.0.7.3.1.0-197</org.apache.oozie.version>
     <pig.version>0.16.0.7.1.4.0-203</pig.version>
     <sqoop.version>1.4.7.7.3.1.0-197</sqoop.version>
