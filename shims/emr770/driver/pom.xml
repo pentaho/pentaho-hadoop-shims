@@ -692,10 +692,6 @@
         </exclusion>
         <exclusion>
           <groupId>org.bouncycastle</groupId>
-          <artifactId>bcprov-jdk15on</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.bouncycastle</groupId>
           <artifactId>bcprov-jdk18on</artifactId>
         </exclusion>
         <exclusion>
