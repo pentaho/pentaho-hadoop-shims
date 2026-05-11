@@ -34,6 +34,7 @@ import org.pentaho.hadoop.shim.api.format.IPentahoParquetOutputFormat;
 import org.pentaho.hadoop.shim.api.format.org.pentaho.hadoop.shim.pvfs.api.PvfsHadoopBridgeFileSystemExtension;
 import org.pentaho.hadoop.shim.common.format.HadoopFormatBase;
 import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
+import org.pentaho.hadoop.shim.common.format.SensitiveLoggingUtils;
 
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
@@ -75,20 +76,27 @@ public class PentahoApacheOutputFormat extends HadoopFormatBase implements IPent
 
   @Override
   public void setOutputFile( String file, boolean override ) throws Exception {
-    inClassloader( () -> {
-      S3NCredentialUtils util = new S3NCredentialUtils();
-      util.applyS3CredentialsToHadoopConfigurationIfNecessary( file, job.getConfiguration() );
-      outputFile = new Path( S3NCredentialUtils.scrubFilePathIfNecessary( file ) );
-      FileSystem fs = FileSystem.get( outputFile.toUri(), job.getConfiguration() );
-      if ( fs.exists( outputFile ) ) {
-        if ( override ) {
-          fs.delete( outputFile, true );
-        } else {
-          throw new FileAlreadyExistsException( file );
+    try {
+      inClassloader( () -> {
+        S3NCredentialUtils util = new S3NCredentialUtils();
+        util.applyS3CredentialsToHadoopConfigurationIfNecessary( file, job.getConfiguration() );
+        outputFile = new Path( S3NCredentialUtils.scrubFilePathIfNecessary( file ) );
+        FileSystem fs = FileSystem.get( outputFile.toUri(), job.getConfiguration() );
+        if ( fs.exists( outputFile ) ) {
+          if ( override ) {
+            fs.delete( outputFile, true );
+          } else {
+            throw new FileAlreadyExistsException( file );
+          }
         }
-      }
-      setOutputPath( job, outputFile.getParent() );
-    } );
+        setOutputPath( job, outputFile.getParent() );
+      } );
+    } catch ( Exception e ) {
+      SensitiveLoggingUtils.logSanitizedInitializationError( "Error preparing Parquet output file", file, e );
+      throw new IllegalStateException(
+        "Invalid Parquet output file path or connection settings. Check the host/path and authentication configuration.",
+        e );
+    }
   }
 
   @Override
@@ -158,7 +166,6 @@ public class PentahoApacheOutputFormat extends HadoopFormatBase implements IPent
       } catch ( IOException e ) {
         throw new IllegalStateException( "Some error accessing parquet files", e );
       } catch ( InterruptedException e ) {
-        // logging here
         Thread.currentThread().interrupt();
         logger.error( e.getMessage(), e );
         throw new IllegalStateException( "This should never happen " + e );

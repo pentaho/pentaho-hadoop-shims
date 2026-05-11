@@ -18,6 +18,7 @@ import org.apache.orc.TypeDescription;
 import org.pentaho.hadoop.shim.HadoopShim;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
+import org.pentaho.hadoop.shim.common.format.SensitiveLoggingUtils;
 import org.pentaho.hadoop.shim.common.format.orc.OrcSchemaConverter;
 import org.pentaho.hadoop.shim.common.format.orc.PentahoOrcOutputFormat;
 
@@ -50,7 +51,7 @@ public class HDIOrcOutputFormat extends PentahoOrcOutputFormat {
 
     try {
       return new HDIOrcRecordWriter( fields, schema, outputFilename, conf,
-              (FileSystem) shim.getFileSystem( pentahoConf ) );
+        (FileSystem) shim.getFileSystem( pentahoConf ) );
     } catch ( IOException e ) {
       throw new IllegalStateException( e );
     }
@@ -58,17 +59,24 @@ public class HDIOrcOutputFormat extends PentahoOrcOutputFormat {
 
   @Override
   public void setOutputFile( String file, boolean override ) throws Exception {
-    this.outputFilename = S3NCredentialUtils.scrubFilePathIfNecessary( file );
-    S3NCredentialUtils util = new S3NCredentialUtils();
-    util.applyS3CredentialsToHadoopConfigurationIfNecessary( file, conf );
-    Path outputFile = new Path( outputFilename );
-    FileSystem fs = (FileSystem) shim.getFileSystem( pentahoConf ).getDelegate();
-    if ( fs.exists( outputFile ) ) {
-      if ( override ) {
-        fs.delete( outputFile, true );
-      } else {
-        throw new FileAlreadyExistsException( file );
+    try {
+      this.outputFilename = S3NCredentialUtils.scrubFilePathIfNecessary( file );
+      S3NCredentialUtils util = new S3NCredentialUtils();
+      util.applyS3CredentialsToHadoopConfigurationIfNecessary( file, conf );
+      Path outputFile = new Path( outputFilename );
+      FileSystem fs = (FileSystem) shim.getFileSystem( pentahoConf ).getDelegate();
+      if ( fs.exists( outputFile ) ) {
+        if ( override ) {
+          fs.delete( outputFile, true );
+        } else {
+          throw new FileAlreadyExistsException( file );
+        }
       }
+    } catch ( FileAlreadyExistsException e ) {
+      throw e;
+    } catch ( Exception e ) {
+      SensitiveLoggingUtils.logSanitizedInitializationError( "Error preparing HDI ORC output file", file, e );
+      throw new IllegalStateException( INVALID_OUTPUT_FILE_MESSAGE, e );
     }
   }
 }
