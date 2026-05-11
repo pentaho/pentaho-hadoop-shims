@@ -17,6 +17,7 @@ import org.apache.hadoop.fs.Path;
 import org.pentaho.hadoop.shim.HadoopShim;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
+import org.pentaho.hadoop.shim.common.format.SensitiveLoggingUtils;
 import org.pentaho.hadoop.shim.common.format.parquet.delegate.apache.PentahoApacheOutputFormat;
 
 import java.nio.file.FileAlreadyExistsException;
@@ -39,21 +40,35 @@ public class HDIApacheOutputFormat extends PentahoApacheOutputFormat {
 
   @Override
   public void setOutputFile( String file, boolean override ) throws Exception {
-    inClassloader( () -> {
-      S3NCredentialUtils util = new S3NCredentialUtils();
-      util.applyS3CredentialsToHadoopConfigurationIfNecessary( file, job.getConfiguration() );
-      outputFile = new Path( S3NCredentialUtils.scrubFilePathIfNecessary( file ) );
-      FileSystem fs = (FileSystem) shim.getFileSystem( pentahoConf ).getDelegate();
-      if ( fs.exists( outputFile ) ) {
-        if ( override ) {
-          fs.delete( outputFile, true );
-        } else {
-          throw new FileAlreadyExistsException( file );
+    try {
+      inClassloader( () -> {
+        S3NCredentialUtils util = new S3NCredentialUtils();
+        util.applyS3CredentialsToHadoopConfigurationIfNecessary( file, job.getConfiguration() );
+        outputFile = new Path( S3NCredentialUtils.scrubFilePathIfNecessary( file ) );
+        FileSystem fs = (FileSystem) shim.getFileSystem( pentahoConf ).getDelegate();
+        if ( fs.exists( outputFile ) ) {
+          if ( override ) {
+            fs.delete( outputFile, true );
+          } else {
+            throw new FileAlreadyExistsException( file );
+          }
         }
+        this.outputFile = new Path( fs.getUri().toString() + this.outputFile.toUri().getPath() );
+        this.outputFile = fs.makeQualified( this.outputFile );
+        this.job.getConfiguration().set( "mapreduce.output.fileoutputformat.outputdir", this.outputFile.toString() );
+      } );
+    } catch ( Exception e ) {
+      if ( e instanceof FileAlreadyExistsException ) {
+        throw e;
       }
-      this.outputFile = new Path( fs.getUri().toString() + this.outputFile.toUri().getPath() );
-      this.outputFile = fs.makeQualified( this.outputFile );
-      this.job.getConfiguration().set( "mapreduce.output.fileoutputformat.outputdir", this.outputFile.toString() );
-    } );
+      if ( e.getCause() instanceof FileAlreadyExistsException ) {
+        throw (FileAlreadyExistsException) e.getCause();
+      }
+      SensitiveLoggingUtils.logSanitizedInitializationError(
+        "Error preparing HDI Parquet output file", file, e );
+      throw new IllegalStateException(
+        "Invalid Parquet output file path or connection settings. Check the host/path and authentication configuration.",
+        e );
+    }
   }
 }

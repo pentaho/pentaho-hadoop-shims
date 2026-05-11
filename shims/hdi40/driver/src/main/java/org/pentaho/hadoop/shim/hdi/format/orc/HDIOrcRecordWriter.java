@@ -19,9 +19,9 @@ import org.apache.orc.OrcFile;
 import org.apache.orc.TypeDescription;
 import org.pentaho.hadoop.shim.api.format.IOrcOutputField;
 import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
+import org.pentaho.hadoop.shim.common.format.SensitiveLoggingUtils;
 import org.pentaho.hadoop.shim.common.format.orc.PentahoOrcRecordWriter;
 
-import java.io.IOException;
 import java.util.List;
 
 public class HDIOrcRecordWriter extends PentahoOrcRecordWriter {
@@ -32,11 +32,12 @@ public class HDIOrcRecordWriter extends PentahoOrcRecordWriter {
     try {
       Path outputFile = new Path( S3NCredentialUtils.scrubFilePathIfNecessary( filePath ) );
       writer = OrcFile.createWriter( outputFile,
-              OrcFile.writerOptions( conf ).fileSystem( fileSystem )
-                      .setSchema( schema ) );
+        OrcFile.writerOptions( conf ).fileSystem( fileSystem )
+          .setSchema( schema ) );
       batch = schema.createRowBatch();
-    } catch ( IOException e ) {
-      logger.error( e );
+    } catch ( Exception e ) {
+      SensitiveLoggingUtils.logSanitizedInitializationError( "Error creating HDI ORC writer", filePath, e );
+      throw new IllegalStateException( "Unable to create HDI ORC writer.", e );
     }
   }
 }
