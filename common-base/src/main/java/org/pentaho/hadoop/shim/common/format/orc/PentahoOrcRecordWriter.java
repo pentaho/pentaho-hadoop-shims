@@ -48,6 +48,7 @@ import org.pentaho.di.core.row.value.ValueMetaTimestamp;
 import org.pentaho.hadoop.shim.api.format.IOrcOutputField;
 import org.pentaho.hadoop.shim.api.format.IPentahoOutputFormat;
 import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
+import org.pentaho.hadoop.shim.common.format.SensitiveLoggingUtils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -96,8 +97,9 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
         OrcFile.writerOptions( conf )
           .setSchema( schema ) );
       batch = schema.createRowBatch();
-    } catch ( IOException e ) {
-      logger.error( e );
+    } catch ( Exception e ) {
+      SensitiveLoggingUtils.logSanitizedInitializationError( "Error creating ORC writer", filePath, e );
+      throw new IllegalStateException( "Unable to create ORC writer.", e );
     }
 
     //Write the addition metadata for the fields
@@ -235,7 +237,7 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
           DateFormat dateFormat = new SimpleDateFormat( conversionMask );
           ( (TimestampColumnVector) columnVector ).set( batchRowNumber,
             new Timestamp( rowMetaAndData.getDate( field.getPentahoFieldName(),
-              field.getDefaultValue() != null ? ( dateFormat.parse( field.getDefaultValue() ) ) : new Date( 0 ) )
+                field.getDefaultValue() != null ? ( dateFormat.parse( field.getDefaultValue() ) ) : new Date( 0 ) )
               .getTime() ) );
         } catch ( KettleValueException | ParseException e ) {
           logger.error( e );

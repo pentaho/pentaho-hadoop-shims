@@ -25,6 +25,7 @@ import org.pentaho.hadoop.shim.api.format.IPentahoOrcOutputFormat;
 import org.pentaho.hadoop.shim.api.format.org.pentaho.hadoop.shim.pvfs.api.PvfsHadoopBridgeFileSystemExtension;
 import org.pentaho.hadoop.shim.common.format.HadoopFormatBase;
 import org.pentaho.hadoop.shim.common.format.S3NCredentialUtils;
+import org.pentaho.hadoop.shim.common.format.SensitiveLoggingUtils;
 
 import java.nio.file.FileAlreadyExistsException;
 import java.util.List;
@@ -35,6 +36,9 @@ import java.util.List;
 public class PentahoOrcOutputFormat extends HadoopFormatBase implements IPentahoOrcOutputFormat {
 
   protected static final LogChannelInterface logger = LogChannel.GENERAL;
+  protected static final String INVALID_OUTPUT_FILE_MESSAGE =
+    "Invalid ORC output file path or connection settings. Check the host/path and authentication configuration.";
+
   protected String outputFilename;
   protected Configuration conf;
   protected CompressionKind compression = CompressionKind.NONE;
@@ -71,19 +75,25 @@ public class PentahoOrcOutputFormat extends HadoopFormatBase implements IPentaho
 
   @Override
   public void setOutputFile( String file, boolean override ) throws Exception {
-    this.outputFilename = S3NCredentialUtils.scrubFilePathIfNecessary( file );
-    S3NCredentialUtils util = new S3NCredentialUtils();
-    util.applyS3CredentialsToHadoopConfigurationIfNecessary( file, conf );
-    Path outputFile = new Path( outputFilename );
-    FileSystem fs = FileSystem.get( outputFile.toUri(), conf );
-    if ( fs.exists( outputFile ) ) {
-      if ( override ) {
-        fs.delete( outputFile, true );
-      } else {
-        throw new FileAlreadyExistsException( file );
+    try {
+      this.outputFilename = S3NCredentialUtils.scrubFilePathIfNecessary( file );
+      S3NCredentialUtils util = new S3NCredentialUtils();
+      util.applyS3CredentialsToHadoopConfigurationIfNecessary( file, conf );
+      Path outputFile = new Path( outputFilename );
+      FileSystem fs = FileSystem.get( outputFile.toUri(), conf );
+      if ( fs.exists( outputFile ) ) {
+        if ( override ) {
+          fs.delete( outputFile, true );
+        } else {
+          throw new FileAlreadyExistsException( file );
+        }
       }
+    } catch ( FileAlreadyExistsException e ) {
+      throw e;
+    } catch ( Exception e ) {
+      SensitiveLoggingUtils.logSanitizedInitializationError( "Error preparing ORC output file", file, e );
+      throw new IllegalStateException( INVALID_OUTPUT_FILE_MESSAGE, e );
     }
-
   }
 
   @Override
