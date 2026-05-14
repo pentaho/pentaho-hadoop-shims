@@ -72,6 +72,52 @@
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-reload4j</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-netty</artifactId>
+        </exclusion>
+        <!-- PPP-6022: Exclude netty-all from ALL transitive paths (CVE-2025-59419) -->
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
+        <!-- PPP-6022: Exclude individual Netty modules from hadoop-common (CVE-2025-59419) -->
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-handler</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-codec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-common</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-buffer</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-transport</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-resolver</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-transport-native-unix-common</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-transport-native-epoll</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-transport-classes-epoll</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -251,15 +297,9 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.apache.hbase.thirdparty</groupId>
-      <artifactId>hbase-shaded-netty</artifactId>
-      <version>${org.apache.hbase.thirdparty.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
+      <groupId>org.pentaho.hadoop</groupId>
+      <artifactId>pentaho-shaded-netty</artifactId>
+      <version>1.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase.thirdparty</groupId>

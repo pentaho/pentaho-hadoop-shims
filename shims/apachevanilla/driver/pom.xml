@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.pentaho.hadoop.shims</groupId>
@@ -51,7 +51,7 @@
             <artifactId>*</artifactId>
           </exclusion>
         </exclusions>
-	  </dependency>
+      </dependency>
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-annotations</artifactId>
@@ -368,6 +368,12 @@
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-hdfs-client</artifactId>
       <version>${org.apache.hadoop.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.hadoop.gplcompression</groupId>
@@ -389,6 +395,10 @@
       <artifactId>hive-service</artifactId>
       <version>${org.apache.hive.version}</version>
       <exclusions>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
         <exclusion>
           <groupId>org.bouncycastle</groupId>
           <artifactId>bcprov-jdk18on</artifactId>
@@ -487,6 +497,10 @@
           <groupId>io.netty</groupId>
           <artifactId>netty-transport-native-unix-common</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -501,6 +515,10 @@
         <exclusion>
           <groupId>io.netty</groupId>
           <artifactId>netty-transport-native-unix-common</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -540,6 +558,17 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-http2</artifactId>
+      <version>${netty.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-codec-smtp</artifactId>
       <version>${netty.version}</version>
       <exclusions>
         <exclusion>
@@ -607,17 +636,33 @@
           <groupId>com.microsoft.sqlserver</groupId>
           <artifactId>mssql-jdbc</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-mapreduce-client-core</artifactId>
       <version>${org.apache.hadoop.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-mapreduce-client-jobclient</artifactId>
       <version>${org.apache.hadoop.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
@@ -632,7 +677,16 @@
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper-jute</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-netty</artifactId>
+        </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.pentaho.hadoop</groupId>
+      <artifactId>pentaho-shaded-netty</artifactId>
+      <version>1.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
@@ -646,6 +700,10 @@
         <exclusion>
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper-jute</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-netty</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -662,6 +720,10 @@
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper-jute</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-netty</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -676,6 +738,10 @@
         <exclusion>
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper-jute</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-netty</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -692,6 +758,10 @@
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper-jute</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-netty</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -699,6 +769,10 @@
       <artifactId>hbase-server</artifactId>
       <version>${org.apache.hbase.version}</version>
       <exclusions>
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-netty</artifactId>
+        </exclusion>
         <exclusion>
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper</artifactId>

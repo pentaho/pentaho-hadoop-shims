@@ -83,6 +83,10 @@
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-reload4j</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <!-- Buffer -->
@@ -514,6 +518,10 @@
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-reload4j</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -723,6 +731,10 @@
           <groupId>org.bouncycastle</groupId>
           <artifactId>bcmail-jdk18on</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <!-- Keep the Bouncy Castle line aligned with the rest of the product until jdk18on is adopted everywhere. -->
@@ -771,6 +783,10 @@
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-reload4j</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -781,6 +797,11 @@
         <exclusion>
           <artifactId>protobuf-java</artifactId>
           <groupId>com.google.protobuf</groupId>
+        </exclusion>
+        <!-- EXCLUDE: Vulnerable hbase-shaded-netty (4.1.10 with Netty 4.1.116) - CVE-2025-59419 -->
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-netty</artifactId>
         </exclusion>
         <exclusion>
           <groupId>org.apache.zookeeper</groupId>
@@ -811,6 +832,11 @@
           <artifactId>protobuf-java</artifactId>
           <groupId>com.google.protobuf</groupId>
         </exclusion>
+        <!-- EXCLUDE: Vulnerable hbase-shaded-netty (4.1.10 with Netty 4.1.116) - CVE-2025-59419 -->
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-netty</artifactId>
+        </exclusion>
         <exclusion>
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper</artifactId>
@@ -820,6 +846,14 @@
           <artifactId>zookeeper-jute</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <!-- ADD: Custom shaded Netty fixing CVE-2025-59419 (SMTP injection vulnerability) -->
+    <!-- This replaces Apache's hbase-shaded-netty:4.1.10 (Netty 4.1.116 - vulnerable) -->
+    <!-- with pentaho-shaded-netty containing Netty 4.1.128.Final (patched) -->
+    <dependency>
+      <groupId>org.pentaho.hadoop</groupId>
+      <artifactId>pentaho-shaded-netty</artifactId>
+      <version>1.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
@@ -837,6 +871,11 @@
         <exclusion>
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper-jute</artifactId>
+        </exclusion>
+        <!-- EXCLUDE: Vulnerable hbase-shaded-netty (4.1.10 with Netty 4.1.116) - CVE-2025-59419 -->
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-netty</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -856,6 +895,11 @@
         <exclusion>
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper-jute</artifactId>
+        </exclusion>
+        <!-- EXCLUDE: Vulnerable hbase-shaded-netty (4.1.10 with Netty 4.1.116) - CVE-2025-59419 -->
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-netty</artifactId>
         </exclusion>
       </exclusions>
     </dependency>

@@ -290,6 +290,8 @@
                 <exclude>*:velocity-engine-core:*</exclude>
                 <exclude>*:xml-apis-ext:*</exclude>
                 <exclude>*:*slf4j*:*</exclude>
+                <!-- CVE-2025-59419 fix: Exclude vulnerable hbase-shaded-netty, replaced by pentaho-shaded-netty -->
+                <exclude>org.apache.hbase.thirdparty:hbase-shaded-netty:*</exclude>
             </excludes>
         </dependencySet>
     </dependencySets>

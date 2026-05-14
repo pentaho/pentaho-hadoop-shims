@@ -5,11 +5,11 @@
   <parent>
     <groupId>org.pentaho.hadoop.shims</groupId>
     <artifactId>pentaho-hadoop-shims-hdi40-reactor</artifactId>
-     <version>11.0.0.0-SNAPSHOT</version>
+    <version>11.0.0.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>pentaho-hadoop-shims-hdi40</artifactId>
-   <version>11.0.0.0-SNAPSHOT</version>
+  <version>11.0.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <properties>
@@ -228,6 +228,10 @@
           <groupId>*</groupId>
           <artifactId>websocket-api</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <!-- Needed since we excluded it from hive-service to address io.airlift transitive security issue  -->
@@ -309,10 +313,14 @@
       <artifactId>hadoop-hdfs</artifactId>
       <version>${org.apache.hadoop.version}</version>
       <exclusions>
-      <exclusion>
-        <groupId>*</groupId>
-        <artifactId>netty-transport-classes-epoll</artifactId>
-      </exclusion>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>netty-transport-classes-epoll</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -351,6 +359,17 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-http2</artifactId>
+      <version>${netty.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-codec-smtp</artifactId>
       <version>${netty.version}</version>
       <exclusions>
         <exclusion>
@@ -413,11 +432,23 @@
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-mapreduce-client-core</artifactId>
       <version>${org.apache.hadoop.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-mapreduce-client-jobclient</artifactId>
       <version>${org.apache.hadoop.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
@@ -436,7 +467,16 @@
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper-jute</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-netty</artifactId>
+        </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.pentaho.hadoop</groupId>
+      <artifactId>pentaho-shaded-netty</artifactId>
+      <version>1.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
@@ -455,6 +495,10 @@
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper-jute</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-netty</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -470,6 +514,10 @@
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper-jute</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-netty</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -484,6 +532,10 @@
         <exclusion>
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper-jute</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-netty</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -504,6 +556,10 @@
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper-jute</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-netty</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -523,6 +579,10 @@
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper-jute</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-netty</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -533,6 +593,10 @@
         <exclusion>
           <groupId>*</groupId>
           <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-netty</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -606,15 +670,15 @@
       </exclusions>
     </dependency>
     <dependency>
-    <groupId>joda-time</groupId>
-    <artifactId>joda-time</artifactId>
-    <version>${joda-time.version}</version>
-    <exclusions>
-      <exclusion>
-        <groupId>*</groupId>
-        <artifactId>*</artifactId>
-      </exclusion>
-    </exclusions>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>${joda-time.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.google.protobuf</groupId>
