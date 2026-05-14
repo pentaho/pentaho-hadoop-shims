@@ -347,7 +347,7 @@
         <exclusion>
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper-jute</artifactId>
-		</exclusion>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -366,7 +366,7 @@
         <exclusion>
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper-jute</artifactId>
-		</exclusion>
+		    </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -382,7 +382,8 @@
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper-jute</artifactId>
         </exclusion>
-      </exclusions>    </dependency>
+      </exclusions>
+    </dependency>
 	  <dependency>
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-mapreduce</artifactId>
@@ -399,7 +400,7 @@
         <exclusion>
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper-jute</artifactId>
-		</exclusion>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -422,8 +423,8 @@
         </exclusion>
         <exclusion>
           <groupId>org.apache.zookeeper</groupId>
-          <artifactId>zookeeper-jute</artifactId>
-		</exclusion>
+          <artifactId>zookeeper-jute</artifactId>        
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -442,7 +443,7 @@
         <exclusion>
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper-jute</artifactId>
-		</exclusion>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>

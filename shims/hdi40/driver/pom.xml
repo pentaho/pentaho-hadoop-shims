@@ -435,7 +435,6 @@
           <groupId>*</groupId>
           <artifactId>protobuf-java</artifactId>
         </exclusion>
-      <exclusions>
         <exclusion>
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper</artifactId>
@@ -444,7 +443,7 @@
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper-jute</artifactId>
         </exclusion>
-      </exclusions>      </exclusions>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
@@ -455,7 +454,6 @@
           <groupId>*</groupId>
           <artifactId>protobuf-java</artifactId>
         </exclusion>
-      <exclusions>
         <exclusion>
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper</artifactId>
@@ -464,7 +462,7 @@
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper-jute</artifactId>
         </exclusion>
-      </exclusions>      </exclusions>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
@@ -479,7 +477,8 @@
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper-jute</artifactId>
         </exclusion>
-      </exclusions>    </dependency>
+      </exclusions>
+    </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-hadoop-compat</artifactId>
@@ -493,7 +492,8 @@
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper-jute</artifactId>
         </exclusion>
-      </exclusions>    </dependency>
+      </exclusions>
+    </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-protocol</artifactId>
@@ -503,7 +503,6 @@
           <groupId>*</groupId>
           <artifactId>protobuf-java</artifactId>
         </exclusion>
-      <exclusions>
         <exclusion>
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper</artifactId>
@@ -512,7 +511,7 @@
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper-jute</artifactId>
         </exclusion>
-      </exclusions>      </exclusions>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
@@ -523,7 +522,6 @@
           <groupId>*</groupId>
           <artifactId>protobuf-java</artifactId>
         </exclusion>
-      <exclusions>
         <exclusion>
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper</artifactId>
@@ -532,7 +530,7 @@
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper-jute</artifactId>
         </exclusion>
-      </exclusions>      </exclusions>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
