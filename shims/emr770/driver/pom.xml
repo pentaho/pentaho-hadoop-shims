@@ -708,18 +708,6 @@
           <artifactId>parquet-hadoop-bundle</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>io.netty</groupId>
-          <artifactId>netty-all</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>xalan</groupId>
-          <artifactId>xalan</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>io.grpc</groupId>
-          <artifactId>grpc-netty-shaded</artifactId>
-        </exclusion>
-        <exclusion>
           <groupId>org.bouncycastle</groupId>
           <artifactId>bcprov-jdk18on</artifactId>
         </exclusion>
@@ -736,13 +724,6 @@
           <artifactId>bcmail-jdk18on</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-    <!-- In the future, if hive-service is bumped to a version that includes a safe version of grpc-netty-shaded -->
-    <!-- we should remove the explicit grpc-netty-shaded dependency below, as well as the exclusion above-->
-    <dependency>
-      <groupId>io.grpc</groupId>
-      <artifactId>grpc-netty-shaded</artifactId>
-      <version>1.76.0</version>
     </dependency>
     <!-- Keep the Bouncy Castle line aligned with the rest of the product until jdk18on is adopted everywhere. -->
     <dependency>
