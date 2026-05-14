@@ -346,7 +346,8 @@
         </exclusion>
         <exclusion>
           <groupId>org.apache.zookeeper</groupId>
-          <artifactId>zookeeper-jute</artifactId>        </exclusion>
+          <artifactId>zookeeper-jute</artifactId>
+		</exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -364,7 +365,8 @@
         </exclusion>
         <exclusion>
           <groupId>org.apache.zookeeper</groupId>
-          <artifactId>zookeeper-jute</artifactId>        </exclusion>
+          <artifactId>zookeeper-jute</artifactId>
+		</exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -396,7 +398,8 @@
         </exclusion>
         <exclusion>
           <groupId>org.apache.zookeeper</groupId>
-          <artifactId>zookeeper-jute</artifactId>        </exclusion>
+          <artifactId>zookeeper-jute</artifactId>
+		</exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -419,7 +422,8 @@
         </exclusion>
         <exclusion>
           <groupId>org.apache.zookeeper</groupId>
-          <artifactId>zookeeper-jute</artifactId>        </exclusion>
+          <artifactId>zookeeper-jute</artifactId>
+		</exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -437,7 +441,8 @@
         </exclusion>
         <exclusion>
           <groupId>org.apache.zookeeper</groupId>
-          <artifactId>zookeeper-jute</artifactId>        </exclusion>
+          <artifactId>zookeeper-jute</artifactId>
+		</exclusion>
       </exclusions>
     </dependency>
     <dependency>
