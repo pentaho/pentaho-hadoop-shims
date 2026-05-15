@@ -60,7 +60,7 @@
     <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>shim-api</artifactId>
-      <version>${project.version}</version>
+      <version>${pentaho-hadoop-shims.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -71,7 +71,7 @@
     <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>shim-api-core</artifactId>
-      <version>${project.version}</version>
+      <version>${pentaho-hadoop-shims.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -949,7 +949,7 @@
     <dependency>
       <groupId>org.pentaho.hadoop.shims</groupId>
       <artifactId>pentaho-hadoop-shims-common-base</artifactId>
-      <version>${project.version}</version>
+      <version>${pentaho-hadoop-shims.version}</version>
     </dependency>
     <dependency>
       <groupId>com.yammer.metrics</groupId>
