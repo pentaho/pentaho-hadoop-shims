@@ -12,5 +12,6 @@
     <module>driver</module>
     <module>pmr</module>
     <module>kar</module>
+    <module>zip-distro</module>
   </modules>
 </project>
