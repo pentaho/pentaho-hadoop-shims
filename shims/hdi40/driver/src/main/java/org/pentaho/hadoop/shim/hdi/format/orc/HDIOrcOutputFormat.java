@@ -75,8 +75,8 @@ public class HDIOrcOutputFormat extends PentahoOrcOutputFormat {
     } catch ( FileAlreadyExistsException e ) {
       throw e;
     } catch ( Exception e ) {
-      SensitiveLoggingUtils.logSanitizedInitializationError( "Error preparing HDI ORC output file", file, e );
-      throw new IllegalStateException( INVALID_OUTPUT_FILE_MESSAGE, e );
+      SensitiveLoggingUtils.logSanitizedInitializationError( NVALID_OUTPUT_FILE_MESSAGE, file, e );
+      throw SensitiveLoggingUtils.sanitizedIllegalStateException( INVALID_OUTPUT_FILE_MESSAGE, e );
     }
   }
 }

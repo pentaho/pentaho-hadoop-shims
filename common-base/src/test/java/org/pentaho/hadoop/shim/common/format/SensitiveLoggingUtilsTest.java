@@ -31,6 +31,36 @@ public class SensitiveLoggingUtilsTest {
   }
 
   @Test
+  public void sanitizeForLog_usernameContainingAtInAuthority() {
+    String value = "user.name@example.com:fakePassword123@cluster-host";
+
+    assertEquals(
+      "user.name@example.com:***@cluster-host",
+      SensitiveLoggingUtils.sanitizeForLog( value ) );
+  }
+
+  @Test
+  public void sanitizeForLog_usernameContainingAtInUri() {
+    String value = "gs://user.name@example.com:fakePassword123@cluster-host/path";
+
+    assertEquals(
+      "gs://user.name@example.com:***@cluster-host/path",
+      SensitiveLoggingUtils.sanitizeForLog( value ) );
+  }
+
+  @Test
+  public void sanitizeForLog_exceptionMessageShape() {
+    String value =
+      "java.lang.IllegalArgumentException: Does not contain a valid host:port authority: "
+        + "user.name@example.com:fakePassword123@cluster-host";
+
+    assertEquals(
+      "java.lang.IllegalArgumentException: Does not contain a valid host:port authority: "
+        + "user.name@example.com:***@cluster-host",
+      SensitiveLoggingUtils.sanitizeForLog( value ) );
+  }
+
+  @Test
   public void sanitizeForLog_withoutCredentials() {
     String value = "s3n://host/path";
 
@@ -40,5 +70,32 @@ public class SensitiveLoggingUtilsTest {
   @Test
   public void sanitizeForLog_nullInput() {
     assertNull( SensitiveLoggingUtils.sanitizeForLog( null ) );
+  }
+
+  @Test
+  public void sanitizedIllegalStateException_redactsCredentialBearingCauseMessage() {
+    Exception cause = new IllegalArgumentException(
+      "Does not contain a valid host:port authority: "
+        + "user.name@example.com:fakePassword123@cluster-host" );
+
+    IllegalStateException ex =
+      SensitiveLoggingUtils.sanitizedIllegalStateException( "Unable to create ORC writer.", cause );
+
+    assertEquals(
+      "Unable to create ORC writer. Cause: IllegalArgumentException: "
+        + "Does not contain a valid host:port authority: user.name@example.com:***@cluster-host",
+      ex.getMessage() );
+  }
+
+  @Test
+  public void sanitizedIllegalStateException_handlesNullCauseMessage() {
+    Exception cause = new IllegalArgumentException();
+
+    IllegalStateException ex =
+      SensitiveLoggingUtils.sanitizedIllegalStateException( "Unable to create ORC writer.", cause );
+
+    assertEquals(
+      "Unable to create ORC writer. Cause: IllegalArgumentException",
+      ex.getMessage() );
   }
 }
