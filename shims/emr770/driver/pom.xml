@@ -16,7 +16,7 @@
     <shim.id>emr770</shim.id>
     <jsr311-api.version>1.1.1</jsr311-api.version>
     <org.apache.avro.version>1.12.0</org.apache.avro.version>
-    <org.apache.hive.version>4.2.0</org.apache.hive.version>
+    <org.apache.hive.version>4.1.0</org.apache.hive.version>
     <org.apache.oozie.version>5.2.1</org.apache.oozie.version>
     <org.apache.hbase.version>2.6.2</org.apache.hbase.version>
     <sqoop.version>1.4.7</sqoop.version>
@@ -28,6 +28,7 @@
     <awssdk.version>2.28.27</awssdk.version>
     <commons-configuration2.version>2.10.1</commons-configuration2.version>
     <curator.version>5.6.0</curator.version>
+    <org.apache.thrift.version>0.16.0</org.apache.thrift.version>
     <slf4j.version>1.7.36</slf4j.version>
     <xalan.version>2.7.3</xalan.version>
     <hibernate.version>5.6.15.Final</hibernate.version>
@@ -878,7 +879,7 @@
     <dependency>
       <groupId>org.pentaho.hadoop</groupId>
       <artifactId>pentaho-shaded-netty</artifactId>
-      <version>1.0.0</version>
+      <version>1.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
