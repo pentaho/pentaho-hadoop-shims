@@ -64,11 +64,8 @@ public class HDIApacheOutputFormat extends PentahoApacheOutputFormat {
       if ( e.getCause() instanceof FileAlreadyExistsException ) {
         throw (FileAlreadyExistsException) e.getCause();
       }
-      SensitiveLoggingUtils.logSanitizedInitializationError(
-        "Error preparing HDI Parquet output file", file, e );
-      throw new IllegalStateException(
-        "Invalid Parquet output file path or connection settings. Check the host/path and authentication configuration.",
-        e );
+      SensitiveLoggingUtils.logSanitizedInitializationError( "Invalid Parquet output file path or connection settings. Check the host/path and authentication configuration.", file, e );
+      throw SensitiveLoggingUtils.sanitizedIllegalStateException( "Invalid Parquet output file path or connection settings. Check the host/path and authentication configuration.", e );
     }
   }
 }
