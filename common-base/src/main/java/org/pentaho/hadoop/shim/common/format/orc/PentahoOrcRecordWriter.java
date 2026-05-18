@@ -99,7 +99,7 @@ public class PentahoOrcRecordWriter implements IPentahoOutputFormat.IPentahoReco
       batch = schema.createRowBatch();
     } catch ( Exception e ) {
       SensitiveLoggingUtils.logSanitizedInitializationError( "Error creating ORC writer", filePath, e );
-      throw new IllegalStateException( "Unable to create ORC writer.", e );
+      throw SensitiveLoggingUtils.sanitizedIllegalStateException( "Unable to create ORC writer.", e );
     }
 
     //Write the addition metadata for the fields

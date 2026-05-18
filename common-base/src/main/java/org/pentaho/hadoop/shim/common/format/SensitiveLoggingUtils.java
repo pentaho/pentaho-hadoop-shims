@@ -92,4 +92,17 @@ public final class SensitiveLoggingUtils {
       }
     }
   }
+  public static IllegalStateException sanitizedIllegalStateException( String message, Exception e ) {
+    if ( e == null ) {
+      return new IllegalStateException( message );
+    }
+
+    String exceptionMessage = e.getMessage();
+    if ( exceptionMessage == null ) {
+      return new IllegalStateException( message + " Cause: " + e.getClass().getSimpleName() );
+    }
+
+    return new IllegalStateException(
+      message + " Cause: " + e.getClass().getSimpleName() + ": " + sanitizeForLog( exceptionMessage ) );
+  }
 }
