@@ -36,7 +36,6 @@ public class HDIOrcRecordWriter extends PentahoOrcRecordWriter {
           .setSchema( schema ) );
       batch = schema.createRowBatch();
     } catch ( Exception e ) {
-      throw new IllegalStateException( "Unable to create HDI ORC writer.", e );
       throw SensitiveLoggingUtils.sanitizedIllegalStateException( "Unable to create ORC writer.", e );
     }
   }
