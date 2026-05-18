@@ -67,6 +67,26 @@
           <groupId>org.apache.hbase.thirdparty</groupId>
           <artifactId>hbase-shaded-protobuf</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-netty</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <!-- CVE-2025-59419: Replace vulnerable hbase-shaded-netty with patched Pentaho shaded Netty -->
+    <dependency>
+      <groupId>org.pentaho.hadoop</groupId>
+      <artifactId>pentaho-shaded-netty</artifactId>
+      <version>1.0.1</version>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
