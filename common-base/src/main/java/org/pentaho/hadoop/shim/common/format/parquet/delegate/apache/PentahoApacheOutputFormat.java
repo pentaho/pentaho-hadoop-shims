@@ -93,9 +93,7 @@ public class PentahoApacheOutputFormat extends HadoopFormatBase implements IPent
       } );
     } catch ( Exception e ) {
       SensitiveLoggingUtils.logSanitizedInitializationError( "Error preparing Parquet output file", file, e );
-      throw new IllegalStateException(
-        "Invalid Parquet output file path or connection settings. Check the host/path and authentication configuration.",
-        e );
+      throw SensitiveLoggingUtils.sanitizedIllegalStateException( "Unable to create ORC writer.", e );
     }
   }
 

@@ -92,7 +92,7 @@ public class PentahoOrcOutputFormat extends HadoopFormatBase implements IPentaho
       throw e;
     } catch ( Exception e ) {
       SensitiveLoggingUtils.logSanitizedInitializationError( "Error preparing ORC output file", file, e );
-      throw new IllegalStateException( INVALID_OUTPUT_FILE_MESSAGE, e );
+      throw SensitiveLoggingUtils.sanitizedIllegalStateException( "Unable to create ORC writer.", e );
     }
   }
 
