@@ -225,6 +225,10 @@
           <artifactId>hadoop-shaded-protobuf_3_21</artifactId>
           <groupId>org.apache.hadoop.thirdparty</groupId>
         </exclusion>
+        <exclusion>
+          <groupId>org.bouncycastle</groupId>
+          <artifactId>bcprov-jdk15on</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
