@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <assembly>
   <id>plugin</id>
-  <baseDirectory>/data-integration</baseDirectory>
+  <baseDirectory>/</baseDirectory>
   <formats>
     <format>zip</format>
   </formats>
@@ -14,14 +14,14 @@
 <!--      </includes>-->
 <!--    </dependencySet>-->
     <dependencySet>
-        <outputDirectory>drivers</outputDirectory>
+        <outputDirectory>/</outputDirectory>
         <useTransitiveDependencies>false</useTransitiveDependencies>
         <includes>
           <include>org.pentaho.hadoop.shims:pentaho-hadoop-shims-cdpdc71-kar</include>
         </includes>
     </dependencySet>
     <dependencySet>
-      <outputDirectory>drivers/lib</outputDirectory>
+      <outputDirectory>/lib</outputDirectory>
       <useTransitiveDependencies>false</useTransitiveDependencies>
       <unpack>true</unpack>
       <includes>
