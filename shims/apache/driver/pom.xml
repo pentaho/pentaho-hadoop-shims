@@ -30,7 +30,6 @@
     <zookeeper.version>3.9.3</zookeeper.version>
     <bouncycastle.version>1.78</bouncycastle.version>
     <curator.version>5.6.0</curator.version>
-    <bouncycastle.version>1.78</bouncycastle.version>
   </properties>
 
   <dependencies>
