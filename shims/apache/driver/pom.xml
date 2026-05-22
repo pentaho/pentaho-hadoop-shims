@@ -28,7 +28,6 @@
     <commons-configuration2.version>2.10.1</commons-configuration2.version>
     <joda-time.version>2.9.9</joda-time.version>
     <zookeeper.version>3.9.3</zookeeper.version>
-    <bouncycastle.version>1.78</bouncycastle.version>
     <curator.version>5.6.0</curator.version>
   </properties>
 
