@@ -16,7 +16,7 @@
   <properties>
     <vendor-driver.version>2.6.0.0.hdp</vendor-driver.version>
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
-    <commons-configuration2.version>2.10.1</commons-configuration2.version>
+    <commons-configuration2.version>2.15.0</commons-configuration2.version>
   </properties>
   <dependencies>
 
