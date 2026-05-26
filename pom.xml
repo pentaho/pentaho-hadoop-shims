@@ -46,6 +46,7 @@
     <zookeeper.version>3.9.5</zookeeper.version>
     <snakeyaml.version>2.2</snakeyaml.version>
     <dnsjava.version>3.6.0</dnsjava.version>
+    <bouncycastle.version>1.84</bouncycastle.version>
   </properties>
 
   <dependencyManagement>
