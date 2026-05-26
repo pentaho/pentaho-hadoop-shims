@@ -454,11 +454,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <!-- Explicit modern Bouncy Castle to override old transitive from hadoop-common -->
-    <dependency>
-      <groupId>org.bouncycastle</groupId>
-      <artifactId>bcprov-jdk15to18</artifactId>
-    </dependency>
     <dependency>
       <groupId>dnsjava</groupId>
       <artifactId>dnsjava</artifactId>
@@ -1090,9 +1085,9 @@
             </resolverFilter>
             <resolverFilter>
               <include>
-                <!--Needed for Pig-->
+                <!-- Direct non-transitive runtime dependencies -->
                 *:antlr-runtime,*:automaton,*:pig,*:sqoop,*:joda-time,*:jython,*:aircompressor,*:netty-*,*:pentaho-shaded-netty,software.amazon.awssdk:*,*:hbase-mapreduce,*:libthrift,
-                *:hive-service-rpc,*:hive-shims-common
+                *:hive-service-rpc,*:hive-shims-common,org.bouncycastle:*
               </include>
               <transitive>false</transitive>
             </resolverFilter>
