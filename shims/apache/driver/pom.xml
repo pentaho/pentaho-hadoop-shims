@@ -385,15 +385,6 @@
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-bundle</artifactId>
       <version>${aws-java-sdk.version}</version>
-      <exclusions>
-        <exclusion>
-          <!-- I'm adding this exclusion since the highest version of aws-java-sdk-bundle 1.12 has netty-codec-http 4.1.130.Final (unsafe) -->
-          <!-- Instead, we will use the parent pom version (4.1.133.Final), which should not break any compatibility since the jump from patch 130.Final to 133.Final is small -->
-          <!-- When aws-java-sdk-bundle releases a version updated with the safe netty-codec-http, update ${aws-java-sdk.version} to point to that and delete this exclusion -->
-          <groupId>io.netty</groupId>
-          <artifactId>netty-codec-http</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
