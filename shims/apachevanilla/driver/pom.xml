@@ -437,6 +437,10 @@
           <groupId>org.bouncycastle</groupId>
           <artifactId>bcmail-jdk18on</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.parquet</groupId>
+          <artifactId>parquet-hadoop-bundle</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <!-- Needed since we excluded it from hive-service to address io.airlift transitive security issue  -->
@@ -887,6 +891,23 @@
     <dependency>
       <groupId>org.apache.parquet</groupId>
       <artifactId>parquet-hadoop</artifactId>
+      <version>${parquet.version}</version>
+    </dependency>
+    <!-- BACKLOG-49729: Explicit parquet modules needed after removing parquet-hadoop-bundle (PPP-6324);
+         pins versions to 1.16.0 to override mediation from hive-exec/common-base which would resolve 1.15.2 -->
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-column</artifactId>
+      <version>${parquet.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-common</artifactId>
+      <version>${parquet.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-encoding</artifactId>
       <version>${parquet.version}</version>
     </dependency>
     <dependency>
