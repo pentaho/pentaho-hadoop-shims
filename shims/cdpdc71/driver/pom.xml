@@ -690,6 +690,14 @@
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper-jute</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-miscellaneous</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-protobuf</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -722,6 +730,18 @@
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper-jute</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-gson</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-unsafe</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-miscellaneous</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -748,6 +768,10 @@
         <exclusion>
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper-jute</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-miscellaneous</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -807,6 +831,18 @@
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper-jute</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-miscellaneous</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-protobuf</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-jetty</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -820,6 +856,63 @@
         </exclusion>
       </exclusions>
     </dependency>
+
+    <dependency>
+      <groupId>org.apache.hbase.thirdparty</groupId>
+      <artifactId>hbase-shaded-gson</artifactId>
+      <version>${org.apache.hbase.thirdparty.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hbase.thirdparty</groupId>
+      <artifactId>hbase-unsafe</artifactId>
+      <version>${org.apache.hbase.thirdparty.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hbase.thirdparty</groupId>
+      <artifactId>hbase-shaded-miscellaneous</artifactId>
+      <version>${org.apache.hbase.thirdparty.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hbase.thirdparty</groupId>
+      <artifactId>hbase-shaded-protobuf</artifactId>
+      <version>${org.apache.hbase.thirdparty.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hbase.thirdparty</groupId>
+      <artifactId>hbase-shaded-jetty</artifactId>
+      <version>${org.apache.hbase.thirdparty.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
     <dependency>
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-mapreduce</artifactId>
@@ -848,6 +941,14 @@
         <exclusion>
           <groupId>org.apache.zookeeper</groupId>
           <artifactId>zookeeper-jute</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-miscellaneous</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.hbase.thirdparty</groupId>
+          <artifactId>hbase-shaded-protobuf</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
