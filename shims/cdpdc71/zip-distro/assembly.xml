@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly>
+  <id>plugin</id>
+  <baseDirectory>/</baseDirectory>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <dependencySets>
+<!--    <dependencySet>-->
+<!--      <outputDirectory>lib</outputDirectory>-->
+<!--      <useTransitiveDependencies>false</useTransitiveDependencies>-->
+<!--      <includes>-->
+<!--        <include>com.fasterxml.woodstox:woodstox-core</include>-->
+<!--      </includes>-->
+<!--    </dependencySet>-->
+    <dependencySet>
+        <outputDirectory>/</outputDirectory>
+        <useTransitiveDependencies>false</useTransitiveDependencies>
+        <includes>
+          <include>org.pentaho.hadoop.shims:pentaho-hadoop-shims-cdpdc71-kar</include>
+        </includes>
+    </dependencySet>
+    <dependencySet>
+      <outputDirectory>/lib</outputDirectory>
+      <useTransitiveDependencies>false</useTransitiveDependencies>
+      <unpack>true</unpack>
+      <includes>
+        <include>org.pentaho.hadoop.shims:pentaho-hadoop-shims-cdpdc71-driver</include>
+      </includes>
+    </dependencySet>
+    <!-- Updated Webservices libraries -->
+<!--    <dependencySet>-->
+<!--      <outputDirectory>lib</outputDirectory>-->
+<!--      <useTransitiveDependencies>false</useTransitiveDependencies>-->
+<!--      <includes>-->
+<!--        <include>org.glassfish.metro:webservices-api</include>-->
+<!--        <include>org.glassfish.metro:webservices-rt</include>-->
+<!--      </includes>-->
+<!--    </dependencySet>-->
+  </dependencySets>
+  <!-- Spoon configuration files -->
+<!--  <files>-->
+<!--    <file>-->
+<!--      <source>src/main/resources/custom.properties</source>-->
+<!--      <outputDirectory>system/karaf/etc</outputDirectory>-->
+<!--    </file>-->
+<!--    <file>-->
+<!--      <source>src/main/resources/launcher.properties</source>-->
+<!--      <outputDirectory>launcher</outputDirectory>-->
+<!--    </file>-->
+<!--    <file>-->
+<!--      <source>src/main/resources/org.pentaho.features.cfg</source>-->
+<!--      <outputDirectory>system/karaf/etc-spoon</outputDirectory>-->
+<!--    </file>-->
+<!--    <file>-->
+<!--      <source>src/main/resources/spoon.sh</source>-->
+<!--      <outputDirectory>.</outputDirectory>-->
+<!--    </file>-->
+<!--    <file>-->
+<!--      <source>src/main/resources/Spoon.bat</source>-->
+<!--      <outputDirectory>.</outputDirectory>-->
+<!--    </file>-->
+<!--  </files>-->
+</assembly>
