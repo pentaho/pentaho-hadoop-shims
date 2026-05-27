@@ -132,10 +132,6 @@
                 <exclude>*:ognl:*</exclude>
                 <exclude>*:org.apache.karaf.jaas.config:*</exclude>
                 <exclude>*:parquet-avro:*</exclude>
-                <exclude>*:parquet-column:*</exclude>
-                <exclude>*:parquet-common:*</exclude>
-                <exclude>*:parquet-encoding:*</exclude>
-                <exclude>*:parquet-format-structures:*</exclude>
                 <exclude>*:pentaho-encryption-support:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-common-base:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-common-services-api:*</exclude>
