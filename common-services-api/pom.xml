@@ -5,11 +5,11 @@
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-hadoop-shims</artifactId>
-    <version>10.2.0.4-354</version>
+    <version>10.2.0.4-354-CUST-311</version>
   </parent>
 
   <artifactId>pentaho-hadoop-shims-common-services-api</artifactId>
-  <version>10.2.0.4-354</version>
+  <version>10.2.0.4-354-CUST-311</version>
   <packaging>bundle</packaging>
 
   <dependencies>
@@ -21,13 +21,13 @@
     <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>shim-api-core</artifactId>
-      <version>${project.version}</version>
+      <version>10.2.0.4-354</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>shim-api</artifactId>
-      <version>${project.version}</version>
+      <version>10.2.0.4-354</version>
       <scope>provided</scope>
     </dependency>
     <dependency>

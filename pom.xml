@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>pentaho-hadoop-shims</artifactId>
-  <version>10.2.0.4-354</version>
+  <version>10.2.0.4-354-CUST-311</version>
   <packaging>pom</packaging>
 
   <properties>
