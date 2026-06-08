@@ -1,0 +1,10 @@
+com.google.cloud.hadoop.fs.gcs.GoogleHadoopFileSystem
+org.apache.hadoop.fs.HarFileSystem
+org.apache.hadoop.fs.LocalFileSystem
+org.apache.hadoop.fs.http.HttpFileSystem
+org.apache.hadoop.fs.http.HttpsFileSystem
+org.apache.hadoop.fs.s3native.NativeS3FileSystem
+org.apache.hadoop.fs.viewfs.ViewFileSystem
+org.apache.hadoop.hdfs.DistributedFileSystem
+org.apache.hadoop.hdfs.web.SWebHdfsFileSystem
+org.apache.hadoop.hdfs.web.WebHdfsFileSystem

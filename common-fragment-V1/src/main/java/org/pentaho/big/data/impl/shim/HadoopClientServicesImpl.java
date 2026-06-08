@@ -455,7 +455,16 @@ public class HadoopClientServicesImpl implements HadoopClientServices {
         "Grunt Parser is null in " + getClass().getName() );
     }
     grunt.setInteractive( false );
-    int[] retValues = grunt.parseStopOnError( false );
+    // Change classpath to execute with Jars from main classloader instead of bundle
+    int[] retValues = null;
+    Thread currentThread = Thread.currentThread();
+    ClassLoader contextClassLoader = currentThread.getContextClassLoader();
+    try {
+      currentThread.setContextClassLoader( grunt.getClass().getClassLoader() );
+      retValues = grunt.parseStopOnError( false );
+    } finally {
+      currentThread.setContextClassLoader( contextClassLoader );
+    }
     return retValues;
   }
 
