@@ -547,7 +547,7 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
 
         String mapreduceClasspath =
           conf.get( MAPREDUCE_APPLICATION_CLASSPATH, DEFAULT_MAPREDUCE_APPLICATION_CLASSPATH );
-        conf.set( MAPREDUCE_APPLICATION_CLASSPATH, CLASSES + mapreduceClasspath );
+        conf.set( MAPREDUCE_APPLICATION_CLASSPATH, CLASSES + "drivers/lib/*," + mapreduceClasspath );
 
         hadoopShim.getDistributedCacheUtil().configureWithKettleEnvironment( conf, fs, kettleEnvInstallDir );
         log.logBasic( MAPREDUCE_APPLICATION_CLASSPATH + ": " + conf.get( MAPREDUCE_APPLICATION_CLASSPATH ) );

@@ -19,11 +19,11 @@
       <artifactId>pentaho-hadoop-shims-common-dependencies-V1</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.pentaho.hadoop.shims</groupId>
-      <artifactId>pentaho-hadoop-shims-common-fragment-V1</artifactId>
-      <version>10.2.0.4-354-CUST-311</version>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.pentaho.hadoop.shims</groupId>-->
+<!--      <artifactId>pentaho-hadoop-shims-common-fragment-V1</artifactId>-->
+<!--      <version>10.2.0.4-354-CUST-311</version>-->
+<!--    </dependency>-->
     <dependency>
       <groupId>org.pentaho.hadoop.shims</groupId>
       <artifactId>pentaho-hadoop-shims-cdpdc71-driver</artifactId>

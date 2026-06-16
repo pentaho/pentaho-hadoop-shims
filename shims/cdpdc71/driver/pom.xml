@@ -16,6 +16,7 @@
     <commons-lang.version>2.6</commons-lang.version>
     <failureaccess.version>1.0.1</failureaccess.version>
     <pentaho-osgi-bundles.version>10.2.0.4-354</pentaho-osgi-bundles.version>
+    <protobuf-java.version>3.25.9</protobuf-java.version>
     <org.apache.avro.version>1.8.2.7.1.4.0-203</org.apache.avro.version>
     <org.apache.orc.version>1.5.1.7.1.4.0-203</org.apache.orc.version>
     <!-- settting v1.14.4 so shaded jackson-databind inside parquet-hadoop-bundle's  version approximately matches jackson-databind in driver.jar -->
@@ -157,7 +158,7 @@
     <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>shim-api</artifactId>
-      <version>10.2.0.4-354</version>
+      <version>10.2.0.4-354-CUST-311</version>
       <exclusions>
         <exclusion>
           <groupId>org.apache.xmlgraphics</groupId>

@@ -27,7 +27,7 @@
     <dependency>
       <groupId>org.pentaho</groupId>
       <artifactId>shim-api</artifactId>
-      <version>10.2.0.4-354</version>
+      <version>10.2.0.4-354-CUST-311</version>
       <scope>provided</scope>
     </dependency>
     <dependency>

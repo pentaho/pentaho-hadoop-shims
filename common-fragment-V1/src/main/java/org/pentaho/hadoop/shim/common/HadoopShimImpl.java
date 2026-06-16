@@ -37,7 +37,7 @@ public class HadoopShimImpl extends CommonHadoopShim {
   @Override
   public RunningJob submitJob( org.pentaho.hadoop.shim.api.internal.Configuration c ) throws IOException {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
-    Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
+    Thread.currentThread().setContextClassLoader( c.getClass().getClassLoader() );
     try {
       return c.submit();
     } catch ( InterruptedException e ) {

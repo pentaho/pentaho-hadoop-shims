@@ -154,14 +154,14 @@
                 <exclude>*:parquet-jackson:*</exclude>
                 <exclude>*:pentaho-big-data-impl-shim-common:*</exclude>
                 <exclude>*:pentaho-encryption-support:*</exclude>
-                <exclude>*:pentaho-hadoop-shims-common-fragment-V1:*</exclude>
+<!--                <exclude>*:pentaho-hadoop-shims-common-fragment-V1:*</exclude>-->
                 <exclude>*:pentaho-hadoop-shims-common-services-api:*</exclude>
                 <exclude>*:pentaho-metastore-locator-api:*</exclude>
                 <exclude>*:pentaho-platform-api:*</exclude>
                 <exclude>*:reflections:*</exclude>
                 <exclude>*:scannotation:*</exclude>
                 <exclude>*:servlet-api:*</exclude>
-                <exclude>*:shim-api:*</exclude>
+<!--                <exclude>*:shim-api:*</exclude>-->
                 <exclude>*:simple-jndi:*</exclude>
                 <exclude>*:sketches-core:*</exclude>
                 <exclude>*:slf4j-api:*</exclude>
@@ -311,14 +311,14 @@
                 <exclude>*:parquet-jackson:*</exclude>
                 <exclude>*:pentaho-big-data-impl-shim-common:*</exclude>
                 <exclude>*:pentaho-encryption-support:*</exclude>
-                <exclude>*:pentaho-hadoop-shims-common-fragment-V1:*</exclude>
+<!--                <exclude>*:pentaho-hadoop-shims-common-fragment-V1:*</exclude>-->
                 <exclude>*:pentaho-hadoop-shims-common-services-api:*</exclude>
                 <exclude>*:pentaho-metastore-locator-api:*</exclude>
                 <exclude>*:pentaho-platform-api:*</exclude>
                 <exclude>*:reflections:*</exclude>
                 <exclude>*:scannotation:*</exclude>
                 <exclude>*:servlet-api:*</exclude>
-                <exclude>*:shim-api:*</exclude>
+<!--                <exclude>*:shim-api:*</exclude>-->
                 <exclude>*:simple-jndi:*</exclude>
                 <exclude>*:sketches-core:*</exclude>
                 <exclude>*:slf4j-api:*</exclude>
