@@ -151,6 +151,8 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
     "pentaho.authentication.default.mapping.server.credentials.kerberos.keytabLocation";
   private static final String MAPRED_MAP_JAVA_OPTS = "mapreduce.map.java.opts";
   private static final String MAPRED_REDUCE_JAVA_OPTS = "mapreduce.reduce.java.opts";
+  @VisibleForTesting
+  static final String PROTOBUF_GENCODE_FLAG = "-Dcom.google.protobuf.use_unsafe_pre22_gencode=true";
   public static final String VARIABLE_SPACE = "variableSpace";
   private final HadoopShim hadoopShim;
   private final LogChannelInterface log;
@@ -483,6 +485,7 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
     conf.set( LOG_LEVEL, logLevel.toString() );
     configureVariableSpace( conf );
     super.configure( conf );
+    appendProtobufGencodeFlag( conf );
   }
 
   @Override
@@ -658,10 +661,30 @@ public class PentahoMapReduceJobBuilderImpl extends MapReduceJobBuilderImpl impl
 
     // set a string in the job configuration as the serialized variablespace
     conf.setStrings( VARIABLE_SPACE, xmlVariableSpace );
+  }
 
-    //For allowing protobuf compatibility
-    conf.set( MAPRED_MAP_JAVA_OPTS, "-Dcom.google.protobuf.use_unsafe_pre22_gencode=true" );
-    conf.set( MAPRED_REDUCE_JAVA_OPTS, "-Dcom.google.protobuf.use_unsafe_pre22_gencode=true" );
+  /**
+   * Appends the protobuf gencode compatibility flag to the map and reduce JVM opts in {@code conf}.
+   * <p>
+   * This method is intentionally called <em>after</em> {@code super.configure(conf)} so that the flag is applied after
+   * the user-defined property loop in {@link MapReduceJobBuilderImpl#configure(Configuration)} (which can overwrite
+   * earlier {@code conf.set(...)} values). The logic is additive: if the flag is already present (e.g. set via
+   * mapred-site.xml or provided by the user) it is not duplicated.
+   * </p>
+   *
+   * @param conf the Hadoop {@link Configuration} to update
+   */
+  @VisibleForTesting
+  void appendProtobufGencodeFlag( Configuration conf ) {
+    for ( String optKey : new String[] { MAPRED_MAP_JAVA_OPTS, MAPRED_REDUCE_JAVA_OPTS } ) {
+      String existing = conf.get( optKey );
+      if ( existing == null || existing.trim().isEmpty() ) {
+        conf.set( optKey, PROTOBUF_GENCODE_FLAG );
+      } else if ( !existing.contains( PROTOBUF_GENCODE_FLAG ) ) {
+        conf.set( optKey, existing.trim() + " " + PROTOBUF_GENCODE_FLAG );
+      }
+      // flag already present – leave as-is (idempotent)
+    }
   }
 
   @VisibleForTesting

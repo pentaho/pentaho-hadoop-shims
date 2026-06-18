@@ -96,6 +96,7 @@ import static org.mockito.Mockito.when;
 /**
  * Created by bryan on 1/12/16.
  */
+@SuppressWarnings( "deprecation" )
 @FixMethodOrder( MethodSorters.NAME_ASCENDING )
 @RunWith( MockitoJUnitRunner.class )
 public class PentahoMapReduceJobBuilderImplTest {
@@ -938,5 +939,91 @@ public class PentahoMapReduceJobBuilderImplTest {
     verify( conf ).set( PentahoMapReduceJobBuilderImpl.MAPREDUCE_APPLICATION_CLASSPATH,
       PentahoMapReduceJobBuilderImpl.CLASSES + mapreduceClasspath );
     verify( distributedCacheUtil ).configureWithKettleEnvironment( conf, fileSystem, kettleEnvInstallDir );
+  }
+
+  // -------------------------------------------------------------------------
+  // Tests for appendProtobufGencodeFlag / protobuf regression fix
+  // -------------------------------------------------------------------------
+
+  @Test
+  public void testAppendProtobufGencodeFlagWhenNoExistingOpts() {
+    // When no JVM opts are configured, the flag must be set on its own.
+    Configuration configuration = mock( Configuration.class );
+    when( configuration.get( "mapreduce.map.java.opts" ) ).thenReturn( null );
+    when( configuration.get( "mapreduce.reduce.java.opts" ) ).thenReturn( null );
+
+    pentahoMapReduceJobBuilder.appendProtobufGencodeFlag( configuration );
+
+    verify( configuration ).set( "mapreduce.map.java.opts",
+      PentahoMapReduceJobBuilderImpl.PROTOBUF_GENCODE_FLAG );
+    verify( configuration ).set( "mapreduce.reduce.java.opts",
+      PentahoMapReduceJobBuilderImpl.PROTOBUF_GENCODE_FLAG );
+  }
+
+  @Test
+  public void testAppendProtobufGencodeFlagAppendsToExistingOpts() {
+    // When user-defined JVM opts already exist the flag must be appended, not replace them.
+    Configuration configuration = mock( Configuration.class );
+    String existingMapOpts = "-Xmx1024m";
+    String existingReduceOpts = "-Xmx2048m -XX:+UseG1GC";
+    when( configuration.get( "mapreduce.map.java.opts" ) ).thenReturn( existingMapOpts );
+    when( configuration.get( "mapreduce.reduce.java.opts" ) ).thenReturn( existingReduceOpts );
+
+    pentahoMapReduceJobBuilder.appendProtobufGencodeFlag( configuration );
+
+    verify( configuration ).set( "mapreduce.map.java.opts",
+      existingMapOpts + " " + PentahoMapReduceJobBuilderImpl.PROTOBUF_GENCODE_FLAG );
+    verify( configuration ).set( "mapreduce.reduce.java.opts",
+      existingReduceOpts + " " + PentahoMapReduceJobBuilderImpl.PROTOBUF_GENCODE_FLAG );
+  }
+
+  @Test
+  public void testAppendProtobufGencodeFlagIsIdempotentWhenFlagAlreadyPresent() {
+    // When the flag is already present in the opts it must not be duplicated.
+    Configuration configuration = mock( Configuration.class );
+    String optsWithFlag = "-Xmx1024m " + PentahoMapReduceJobBuilderImpl.PROTOBUF_GENCODE_FLAG;
+    when( configuration.get( "mapreduce.map.java.opts" ) ).thenReturn( optsWithFlag );
+    when( configuration.get( "mapreduce.reduce.java.opts" ) ).thenReturn( optsWithFlag );
+
+    pentahoMapReduceJobBuilder.appendProtobufGencodeFlag( configuration );
+
+    // conf.set must NOT be called because the flag is already present.
+    verify( configuration, never() ).set( eq( "mapreduce.map.java.opts" ), anyString() );
+    verify( configuration, never() ).set( eq( "mapreduce.reduce.java.opts" ), anyString() );
+  }
+
+  @Test
+  public void testConfigureAppendsProtobufFlagAfterUserDefinedProps() throws Exception {
+    // End-to-end regression test: user-defined mapreduce.map.java.opts must NOT suppress the protobuf flag.
+    when( hadoopShim.getPentahoMapReduceMapRunnerClass() ).thenReturn( "" );
+    pentahoMapReduceJobBuilder.setLogLevel( LogLevel.BASIC );
+    pentahoMapReduceJobBuilder.setInputPaths( new String[ 0 ] );
+    pentahoMapReduceJobBuilder.setOutputPath( "test" );
+    pentahoMapReduceJobBuilder.setResolvedJarUrl( new URL( "file:///" ) );
+
+    // Simulate user setting custom JVM opts in the MR job step.
+    String userMapOpts = "-Xmx1024m";
+    pentahoMapReduceJobBuilder.set( "mapreduce.map.java.opts", userMapOpts );
+
+    // Use a real map to track conf.set() calls so we can inspect the final value.
+    java.util.Map<String, String> confStore = new java.util.HashMap<>();
+    Configuration configuration = mock( Configuration.class );
+    doAnswer( invocation -> {
+      confStore.put( invocation.getArgument( 0 ), invocation.getArgument( 1 ) );
+      return null;
+    } ).when( configuration ).set( anyString(), anyString() );
+    when( configuration.get( anyString() ) ).thenAnswer(
+      invocation -> confStore.get( invocation.getArgument( 0 ) ) );
+
+    when( hadoopShim.getFileSystem( configuration ) ).thenReturn( mock( FileSystem.class ) );
+    pentahoMapReduceJobBuilder.setMapperInfo( transXml, "testMrInput", "testMrOutput" );
+
+    pentahoMapReduceJobBuilder.configure( configuration );
+
+    String finalMapOpts = confStore.get( "mapreduce.map.java.opts" );
+    assertNotNull( "mapreduce.map.java.opts must be set", finalMapOpts );
+    assertTrue( "user opts must be preserved", finalMapOpts.contains( userMapOpts ) );
+    assertTrue( "protobuf flag must be present even when user opts exist",
+      finalMapOpts.contains( PentahoMapReduceJobBuilderImpl.PROTOBUF_GENCODE_FLAG ) );
   }
 }
