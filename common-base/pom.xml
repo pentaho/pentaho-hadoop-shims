@@ -46,6 +46,10 @@
       </properties>
       <dependencies>
         <dependency>
+          <groupId>commons-lang</groupId>
+          <artifactId>commons-lang</artifactId>
+        </dependency>
+        <dependency>
           <groupId>com.amazonaws</groupId>
           <artifactId>aws-java-sdk-bundle</artifactId>
           <version>${aws-java-sdk.version}</version>
