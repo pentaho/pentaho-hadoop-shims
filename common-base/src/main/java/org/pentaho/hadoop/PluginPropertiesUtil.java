@@ -13,7 +13,6 @@
 
 package org.pentaho.hadoop;
 
-import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.vfs2.FileObject;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.exception.KettleFileException;
@@ -72,11 +71,11 @@ public class PluginPropertiesUtil {
     if ( !propFile.exists() ) {
       throw new FileNotFoundException( propFile.toString() );
     }
-    try {
-      return new PropertiesConfigurationProperties( propFile );
-    } catch ( ConfigurationException e ) {
-      throw new IOException( e );
+    Properties properties = new Properties();
+    try ( InputStream inputStream = propFile.getContent().getInputStream() ) {
+      properties.load( inputStream );
     }
+    return properties;
   }
 
   /**

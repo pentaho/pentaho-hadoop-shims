@@ -473,6 +473,10 @@
       <version>${commons-vfs2.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-configuration2</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-core</artifactId>
       <version>${aws-java-sdk.version}</version>
@@ -637,4 +641,3 @@
     </plugins>
   </build>
 </project>
-
