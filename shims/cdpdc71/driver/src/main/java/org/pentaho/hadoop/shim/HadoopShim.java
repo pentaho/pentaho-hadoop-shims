@@ -14,29 +14,6 @@
 package org.pentaho.hadoop.shim;
 
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.core.Versioned;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.protobuf.Message;
-import io.opentelemetry.api.trace.Span;
-import io.opentelemetry.context.ImplicitContextKeyed;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.hadoop.hbase.CompatibilityFactory;
-import org.apache.hadoop.hbase.HConstants;
-import org.apache.hadoop.hbase.client.Put;
-import org.apache.hadoop.hbase.ipc.RpcServer;
-import org.apache.hadoop.hbase.mapreduce.JobUtil;
-import org.apache.hadoop.hbase.mapreduce.TableMapper;
-import org.apache.hadoop.hbase.metrics.MetricRegistry;
-import org.apache.hadoop.hbase.metrics.Snapshot;
-import org.apache.hadoop.hbase.metrics.impl.FastLongHistogram;
-import org.apache.hadoop.hbase.unsafe.HBasePlatformDependent;
-import org.apache.hadoop.hbase.zookeeper.ZKWatcher;
-import org.apache.hbase.thirdparty.com.google.common.collect.Lists;
-import org.apache.hbase.thirdparty.com.google.protobuf.UnsafeByteOperations;
-import org.apache.hbase.thirdparty.io.netty.channel.Channel;
-import org.apache.zookeeper.ZooKeeper;
-import org.apache.hbase.thirdparty.com.google.common.cache.CacheLoader;
 import org.pentaho.di.core.exception.KettlePluginException;
 import org.pentaho.hadoop.shim.common.HadoopShimImpl;
 
@@ -57,14 +34,49 @@ public class HadoopShim extends HadoopShimImpl {
 
   @Override
   public Class[] getHbaseDependencyClasses() {
-    return new Class[] {
-      HConstants.class, org.apache.hadoop.hbase.protobuf.generated.ClientProtos.class,
-      org.apache.hadoop.hbase.shaded.protobuf.generated.ClientProtos.class, Put.class,
-      RpcServer.class, CompatibilityFactory.class, JobUtil.class, TableMapper.class, FastLongHistogram.class,
-      Snapshot.class, ZooKeeper.class, Channel.class, Message.class, UnsafeByteOperations.class, Lists.class,
-      MetricRegistry.class, ArrayUtils.class, ObjectMapper.class, Versioned.class,
-      JsonView.class, ZKWatcher.class, CacheLoader.class, HBasePlatformDependent.class, Span.class,
-      ImplicitContextKeyed.class
+      String[] classNames = getHbaseDependencyClassesNames();
+
+      try {
+        Class[] classes = new Class[classNames.length];
+        for (int i = 0; i < classNames.length; i++) {
+          classes[i] = Class.forName(classNames[i]);
+        }
+        return classes;
+      } catch (ClassNotFoundException e) {
+        return null;
+      }
+    }
+
+  public String[] getHbaseDependencyClassesNames() {
+    return new String[] {
+
+            "org.apache.hadoop.io.BytesWritable",
+
+            "org.apache.hadoop.hbase.HConstants",
+            "org.apache.hadoop.hbase.protobuf.generated.ClientProtos",
+            "org.apache.hadoop.hbase.shaded.protobuf.generated.ClientProtos",
+            "org.apache.hadoop.hbase.client.Put",
+            "org.apache.hadoop.hbase.ipc.RpcServer",
+            "org.apache.hadoop.hbase.CompatibilityFactory",
+            "org.apache.hadoop.hbase.mapreduce.JobUtil",
+            "org.apache.hadoop.hbase.mapreduce.TableMapper",
+            "org.apache.hadoop.hbase.metrics.impl.FastLongHistogram",
+            "org.apache.hadoop.hbase.metrics.Snapshot",
+            "org.apache.zookeeper.ZooKeeper",
+            "org.apache.hbase.thirdparty.io.netty.channel.Channel",
+            "com.google.protobuf.Message",
+            "org.apache.hbase.thirdparty.com.google.protobuf.UnsafeByteOperations",
+            "org.apache.hbase.thirdparty.com.google.common.collect.Lists",
+            "org.apache.hadoop.hbase.metrics.MetricRegistry",
+            "org.apache.commons.lang3.ArrayUtils",
+            "com.fasterxml.jackson.databind.ObjectMapper",
+            "com.fasterxml.jackson.core.Versioned",
+            "com.fasterxml.jackson.annotation.JsonView",
+            "org.apache.hadoop.hbase.zookeeper.ZKWatcher",
+            "org.apache.hbase.thirdparty.com.google.common.cache.CacheLoader",
+            "org.apache.hadoop.hbase.unsafe.HBasePlatformDependent",
+            "io.opentelemetry.api.trace.Span",
+            "io.opentelemetry.context.ImplicitContextKeyed"
     };
   }
 

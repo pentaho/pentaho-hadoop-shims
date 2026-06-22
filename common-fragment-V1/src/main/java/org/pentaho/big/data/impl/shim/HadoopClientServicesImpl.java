@@ -103,6 +103,7 @@ public class HadoopClientServicesImpl implements HadoopClientServices {
   private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger( HadoopClientServicesImpl.class );
   public static final String SQOOP_THROW_ON_ERROR = "sqoop.throwOnError";
   private static final String ALT_CLASSPATH = "hadoop.alt.classpath";
+  private static final String JAVA_CLASSPATH = "java.class.path";
   private static final String TMPJARS = "tmpjars";
 
   protected NamedCluster namedCluster;
@@ -190,11 +191,15 @@ public class HadoopClientServicesImpl implements HadoopClientServices {
       String[] args = argsList.toArray( new String[ argsList.size() ] );
       Configuration c = configuration;
       ClassLoader cl = Thread.currentThread().getContextClassLoader();
-      Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
+      Thread.currentThread().setContextClassLoader( Configuration.class.getClassLoader() );
       String tmpPropertyHolder = System.getProperty( ALT_CLASSPATH );
+      String tmpClassPathPropertyHolder = System.getProperty( JAVA_CLASSPATH );
+
       try {
         loadBundleFilesLocations();
-        System.setProperty( ALT_CLASSPATH, createHadoopAltClasspath() );
+        String altHadoopClasspath = createHadoopAltClasspath();
+        System.setProperty( ALT_CLASSPATH, altHadoopClasspath );
+        System.setProperty( JAVA_CLASSPATH, altHadoopClasspath );
         c.set( TMPJARS, getSqoopJarLocation( c ) );
         if ( args.length > 0
           && ( Arrays.asList( args ).contains( "--as-avrodatafile" )
@@ -207,7 +212,11 @@ public class HadoopClientServicesImpl implements HadoopClientServices {
             (ServiceReference) bundleContext.getServiceReferences( HadoopShim.class, serviceFilter.toString() )
               .toArray()[ 0 ];
           Object service = bundleContext.getService( serviceReference );
-          Class[] depClasses = (Class[]) service.getClass().getMethod( "getHbaseDependencyClasses" ).invoke( service );
+          String[] depClassesNames = (String[]) service.getClass().getMethod( "getHbaseDependencyClassesNames" ).invoke( service );
+          Class[] depClasses = new Class[depClassesNames.length];
+          for (int i = 0; i < depClassesNames.length; i++) {
+            depClasses[i] = Class.forName(depClassesNames[i]);
+          }
           addDependencyJars( c, depClasses );
         }
         return Sqoop.runTool( args, ShimUtils.asConfiguration( c ) );
@@ -216,6 +225,7 @@ public class HadoopClientServicesImpl implements HadoopClientServices {
         return -1;
       } finally {
         Thread.currentThread().setContextClassLoader( cl );
+        System.setProperty( JAVA_CLASSPATH, tmpClassPathPropertyHolder );
         if ( tmpPropertyHolder == null ) {
           System.clearProperty( ALT_CLASSPATH );
         } else {
@@ -335,6 +345,9 @@ public class HadoopClientServicesImpl implements HadoopClientServices {
       String fragmentBundleLocation = fragmentBundle.getDataFile( "" ).getParent();
       sqoopBundleFileLocations.add( fragmentBundleLocation );
     }
+    sqoopBundleFileLocations.add(
+            Const.getShimDriverDeploymentLocation()
+    );
   }
 
   private String createHadoopAltClasspath() {

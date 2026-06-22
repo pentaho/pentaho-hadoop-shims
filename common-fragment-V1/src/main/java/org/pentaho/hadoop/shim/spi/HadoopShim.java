@@ -167,6 +167,16 @@ public interface HadoopShim {
   Class[] getHbaseDependencyClasses();
 
   /**
+   * Returns the dependency classes names nedeed by Sqoop to perform HBase operations as dictated in the
+   * TableMapReduceUtil.addHBaseDependencyJars() method in the HBase distribution used by the shim.
+   *
+   * @retuen A string array containing the dependency classes names needed
+   */
+  default String[] getHbaseDependencyClassesNames() {
+    return new String[] {};
+  };
+
+  /**
    * Determine the Hadoop writable type to pass Kettle type back to Hadoop as.
    *
    * @param kettleType Value meta to look up compatible Hadoop Writable class.
