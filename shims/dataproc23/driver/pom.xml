@@ -407,7 +407,7 @@
     <dependency>
       <groupId>org.pentaho.hadoop</groupId>
       <artifactId>pentaho-shaded-netty</artifactId>
-      <version>1.0.1</version>
+      <version>1.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
