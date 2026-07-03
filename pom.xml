@@ -233,6 +233,11 @@
       </dependency>
       <dependency>
         <groupId>org.apache.xmlgraphics</groupId>
+        <artifactId>batik-parser</artifactId>
+        <version>${batik.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.xmlgraphics</groupId>
         <artifactId>batik-rasterizer</artifactId>
         <version>${batik.version}</version>
       </dependency>
