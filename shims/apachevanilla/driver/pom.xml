@@ -5,18 +5,18 @@
   <parent>
     <groupId>org.pentaho.hadoop.shims</groupId>
     <artifactId>pentaho-hadoop-shims-apachevanilla-reactor</artifactId>
-    <version>11.1.0.0-SNAPSHOT</version>
+    <version>11.1.0.0-326</version>
   </parent>
 
   <artifactId>pentaho-hadoop-shims-apachevanilla</artifactId>
-  <version>11.1.0.0-SNAPSHOT</version>
+  <version>11.1.0.0-326</version>
   <packaging>jar</packaging>
 
   <properties>
     <shim.id>apachevanilla</shim.id>
     <commons-lang.version>2.6</commons-lang.version>
     <failureaccess.version>1.0.1</failureaccess.version>
-    <pentaho-osgi-bundles.version>11.1.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
+    <pentaho-osgi-bundles.version>11.1.0.0-326</pentaho-osgi-bundles.version>
     <org.apache.avro.version>1.12.0</org.apache.avro.version>
     <!-- PPP-6324: Override to 1.16.0 (scoped to apachevanilla only) to fix CVE-2026-29062
          jackson-core shaded inside parquet-jackson/parquet-hadoop-bundle is safe (2.19.2) at 1.16.0+ -->
