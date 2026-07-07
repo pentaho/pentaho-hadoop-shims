@@ -42,7 +42,6 @@
         <pig.version>0.16.0.2.6.0.3-8</pig.version>
         <sqoop.version>1.4.6.2.6.0.3-8</sqoop.version>
         <dependency.pig.classifier>h2</dependency.pig.classifier>
-        <commons.configuration2.version>2.10.1</commons.configuration2.version>
       </properties>
       <dependencies>
         <dependency>
@@ -366,7 +365,7 @@
         <dependency>
           <groupId>org.apache.commons</groupId>
           <artifactId>commons-configuration2</artifactId>
-          <version>${commons.configuration2.version}</version>
+          <version>${commons-configuration2.version}</version>
         </dependency>
         <dependency>
           <groupId>org.apache.hadoop.thirdparty</groupId>
