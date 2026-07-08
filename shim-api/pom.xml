@@ -34,6 +34,15 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <!-- CVE-2025-67721: pin io.airlift:aircompressor (transitive via orc-core) to the
+         fixed 2.0.3. orc-core ${org.apache.orc.version} still pulls the vulnerable 0.27;
+         this explicit direct pin overrides it here and, via nearest-wins, in downstream
+         consumers of shim-api (e.g. pentaho-war). Remove once orc-core ships aircompressor >= 2.0.3. -->
+    <dependency>
+      <groupId>io.airlift</groupId>
+      <artifactId>aircompressor</artifactId>
+      <version>2.0.3</version>
+    </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
