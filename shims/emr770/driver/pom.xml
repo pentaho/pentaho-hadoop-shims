@@ -758,6 +758,11 @@
       <artifactId>grpc-netty-shaded</artifactId>
       <version>1.76.0</version>
     </dependency>
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-core</artifactId>
+      <version>1.15.12</version>
+    </dependency>
     <!-- Keep the Bouncy Castle line aligned with the rest of the product until jdk18on is adopted everywhere. -->
     <dependency>
       <groupId>org.bouncycastle</groupId>
