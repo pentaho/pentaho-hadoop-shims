@@ -673,6 +673,12 @@
       <artifactId>hive-jdbc</artifactId>
       <version>${org.apache.hive.version}</version>
     </dependency>
+    <!-- Temporary override; delete once hive-jdbc releases a version without these vulnerabilities. -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${fasterxml-jackson-databind.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.apache.hive</groupId>
       <artifactId>hive-exec</artifactId>
