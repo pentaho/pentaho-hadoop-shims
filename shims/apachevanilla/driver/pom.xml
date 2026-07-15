@@ -300,6 +300,12 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <!-- Temporary override; delete once hive-jdbc releases a version without these vulnerabilities. -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${fasterxml-jackson-databind.version}</version>
+    </dependency>
     <!-- CVE-2022-34169: Explicitly add safe xalan version to replace excluded vulnerable 2.7.2 -->
     <dependency>
       <groupId>xalan</groupId>
