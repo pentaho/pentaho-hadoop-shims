@@ -12,7 +12,7 @@
 
 package org.pentaho.hadoop.mapreduce;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.mapreduce.QueueAclsInfo;
 import org.junit.Test;
 import org.pentaho.hadoop.shim.common.YarnQueueAclsVerifier;

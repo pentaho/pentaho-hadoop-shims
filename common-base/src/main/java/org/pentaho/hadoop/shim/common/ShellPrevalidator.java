@@ -12,7 +12,7 @@
 
 package org.pentaho.hadoop.shim.common;
 
-import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
 import java.io.IOException;
