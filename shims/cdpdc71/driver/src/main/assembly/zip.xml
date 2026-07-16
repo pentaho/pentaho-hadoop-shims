@@ -80,6 +80,8 @@
                 <exclude>*:commons-el:*</exclude>
                 <exclude>*:commons-httpclient:*</exclude>
                 <exclude>*:commons-io:*</exclude>
+                <!-- CVE-2025-48924 remediation: Exclude commons-lang 2.6 (security vulnerability - uncontrolled recursion) -->
+                <exclude>*:commons-lang:*</exclude>
                 <exclude>*:commons-lang3:*</exclude>
                 <exclude>*:commons-validator:*</exclude>
                 <exclude>*:conscrypt-openjdk-uber:*</exclude>
@@ -249,6 +251,8 @@
                 <exclude>*:commons-el:*</exclude>
                 <exclude>*:commons-httpclient:*</exclude>
                 <exclude>*:commons-io:*</exclude>
+                <!-- CVE-2025-48924 remediation: Exclude commons-lang 2.6 (security vulnerability - uncontrolled recursion) -->
+                <exclude>*:commons-lang:*</exclude>
                 <exclude>*:commons-lang3:*</exclude>
                 <exclude>*:commons-validator:*</exclude>
                 <exclude>*:conscrypt-openjdk-uber:*</exclude>

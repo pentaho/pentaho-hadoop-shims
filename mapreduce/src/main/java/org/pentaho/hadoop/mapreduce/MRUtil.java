@@ -13,7 +13,7 @@
 
 package org.pentaho.hadoop.mapreduce;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapred.JobConf;
 import org.pentaho.di.core.Const;
