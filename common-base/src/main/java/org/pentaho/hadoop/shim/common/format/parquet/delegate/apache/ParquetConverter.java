@@ -2,13 +2,14 @@
  *
  * Pentaho
  *
- * Copyright (C) 2024 by Hitachi Vantara, LLC : http://www.pentaho.com
+ * Copyright (C) 2024 - 2026 by Pentaho Canada Inc. : http://www.pentaho.com
  *
  * Use of this software is governed by the Business Source License included
  * in the LICENSE.TXT file.
  *
- * Change Date: 2029-07-20
+ * Change Date: 2030-06-15
  ******************************************************************************/
+
 
 package org.pentaho.hadoop.shim.common.format.parquet.delegate.apache;
 
@@ -58,7 +59,7 @@ import java.util.List;
 import static java.lang.Math.pow;
 
 /**
- * Converter for read/write Hitachi Vantara row from/into Parquet files.
+ * Converter for read/write Pentaho row from/into Parquet files.
  * <p>
  * TYPE_DATE and TYPE_TIMESTAMP should be processed via Parquet's TIMESTAMP_MILLIS because Kettle's Date supports time
  * also. TIMESTAMP_MICROS is defined not in all Parquet implementations.
