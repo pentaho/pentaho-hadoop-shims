@@ -32,7 +32,6 @@
     <hadoop.version>3.3.6</hadoop.version>
 
     <!-- pmr folder -->
-    <commons-configuration.version>1.6</commons-configuration.version>
     <org.apache.hive.version>3.1.3</org.apache.hive.version>
     <!-- setting v1.14.4 so shaded jackson-databind inside parquet-hadoop-bundle's  version approximately matches jackson-databind in driver.jar -->
     <parquet.version>1.14.4</parquet.version>

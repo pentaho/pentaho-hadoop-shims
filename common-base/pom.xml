@@ -568,6 +568,11 @@
       <artifactId>gateway-shell</artifactId>
       <version>${gateway-shell.version}</version>
       <exclusions>
+        <!-- Exclude vulnerable commons-configuration 1.x (CVE); code migrated to commons-configuration2 -->
+        <exclusion>
+          <groupId>commons-configuration</groupId>
+          <artifactId>commons-configuration</artifactId>
+        </exclusion>
         <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-log4j12</artifactId>
