@@ -180,6 +180,10 @@
           <scope>provided</scope>
           <exclusions>
             <exclusion>
+              <groupId>com.github.pjfanning</groupId>
+              <artifactId>jersey-json</artifactId>
+            </exclusion>
+            <exclusion>
               <groupId>org.apache.hadoop</groupId>
               <artifactId>*</artifactId>
             </exclusion>
@@ -314,6 +318,10 @@
           <version>${org.apache.hadoop.version}</version>
           <scope>provided</scope>
           <exclusions>
+            <exclusion>
+              <groupId>com.github.pjfanning</groupId>
+              <artifactId>jersey-json</artifactId>
+            </exclusion>
             <exclusion>
               <groupId>com.nimbusds</groupId>
               <artifactId>nimbus-jose-jwt</artifactId>

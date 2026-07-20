@@ -494,6 +494,10 @@
       <version>${org.apache.hadoop.version}</version>
       <exclusions>
         <exclusion>
+          <groupId>com.github.pjfanning</groupId>
+          <artifactId>jersey-json</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>ch.qos.reload4j</groupId>
           <artifactId>reload4j</artifactId>
         </exclusion>
@@ -672,6 +676,12 @@
       <groupId>org.apache.hive</groupId>
       <artifactId>hive-jdbc</artifactId>
       <version>${org.apache.hive.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.github.pjfanning</groupId>
+          <artifactId>jersey-json</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <!-- Temporary override; delete once hive-jdbc releases a version without these vulnerabilities. -->
     <dependency>
@@ -719,6 +729,10 @@
       <artifactId>hive-service</artifactId>
       <version>${org.apache.hive.version}</version>
       <exclusions>
+        <exclusion>
+          <groupId>com.github.pjfanning</groupId>
+          <artifactId>jersey-json</artifactId>
+        </exclusion>
         <exclusion>
           <artifactId>protobuf-java</artifactId>
           <groupId>com.google.protobuf</groupId>
