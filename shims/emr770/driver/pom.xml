@@ -38,7 +38,7 @@
     <automaton.version>1.11-8</automaton.version>
     <awssdk.version>2.28.27</awssdk.version>
     <curator.version>5.6.0</curator.version>
-    <org.apache.thrift.version>0.16.0</org.apache.thrift.version>
+    <org.apache.thrift.version>0.23.0</org.apache.thrift.version>
     <slf4j.version>1.7.36</slf4j.version>
     <xalan.version>2.7.3</xalan.version>
     <hibernate.version>5.6.15.Final</hibernate.version>
