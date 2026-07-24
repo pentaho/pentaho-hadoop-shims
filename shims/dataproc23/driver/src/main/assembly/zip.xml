@@ -28,6 +28,15 @@
             <scope>compile</scope>
             <excludes>
                 <exclude>${project.groupId}:${project.artifactId}:jar:*</exclude>
+                <!-- PPP-6777 / CVE-2023-34610: strip the orphaned server-side YARN serialization
+                     chain (hive-shims -> yarn-server-* -> fst -> java-util -> json-io) that is
+                     not used by the client shim, matching the apachevanilla/emr shim assemblies.
+                     Removes the vulnerable com.cedarsoftware:json-io 2.5.1 jar. -->
+                <exclude>*:hadoop-yarn-server-applicationhistoryservice:*</exclude>
+                <exclude>*:hadoop-yarn-server-resourcemanager:*</exclude>
+                <exclude>*:fst:*</exclude>
+                <exclude>*:java-util:*</exclude>
+                <exclude>*:json-io:*</exclude>
                 <exclude>*:*log4j*</exclude>
                 <exclude>*:xml-apis</exclude>
                 <exclude>*:xercesImpl</exclude>
@@ -163,6 +172,15 @@
             <scope>runtime</scope>
             <excludes>
                 <exclude>${project.groupId}:${project.artifactId}:jar:*</exclude>
+                <!-- PPP-6777 / CVE-2023-34610: strip the orphaned server-side YARN serialization
+                     chain (hive-shims -> yarn-server-* -> fst -> java-util -> json-io) that is
+                     not used by the client shim, matching the apachevanilla/emr shim assemblies.
+                     Removes the vulnerable com.cedarsoftware:json-io 2.5.1 jar. -->
+                <exclude>*:hadoop-yarn-server-applicationhistoryservice:*</exclude>
+                <exclude>*:hadoop-yarn-server-resourcemanager:*</exclude>
+                <exclude>*:fst:*</exclude>
+                <exclude>*:java-util:*</exclude>
+                <exclude>*:json-io:*</exclude>
                 <exclude>*:*log4j*</exclude>
                 <exclude>*:xml-apis</exclude>
                 <exclude>*:xercesImpl</exclude>
