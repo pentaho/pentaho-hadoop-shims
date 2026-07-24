@@ -204,6 +204,22 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <!-- CVE-2026-45536: pin the main (no-classifier) netty-transport-native-epoll to
+         ${netty.version}. It otherwise leaks in transitively from the hadoop client
+         stack at an older, vulnerable netty line (< 4.1.135.Final). The BOM-aligned
+         netty-transport-classes-epoll companion is already pinned below. Remove once
+         that stack ships netty >= 4.1.135. -->
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-transport-native-epoll</artifactId>
+      <version>${netty.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-yarn-api</artifactId>

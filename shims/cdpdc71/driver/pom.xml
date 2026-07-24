@@ -640,6 +640,33 @@
       <version>${netty.version}</version>
       <classifier>linux-x86_64</classifier>
     </dependency>
+    <!-- CVE-2026-45536: pin the main (no-classifier) netty-transport-native-epoll and its
+         BOM-aligned netty-transport-classes-epoll companion to ${netty.version}. They
+         otherwise leak in transitively from the hadoop client stack at an older,
+         vulnerable netty line (< 4.1.135.Final). Remove once that stack ships
+         netty >= 4.1.135. -->
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-transport-native-epoll</artifactId>
+      <version>${netty.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-transport-classes-epoll</artifactId>
+      <version>${netty.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
     <dependency>
       <groupId>org.apache.ranger</groupId>
       <artifactId>ranger-raz-hook-s3</artifactId>
