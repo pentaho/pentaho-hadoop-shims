@@ -234,6 +234,19 @@
           <groupId>org.apache.avro</groupId>
           <artifactId>avro-ipc-jetty</artifactId>
         </exclusion>
+        <!-- PPP-6534 / CVE-2025-3588: exclude jsonschema2pojo-core + its only child codemodel.
+             Transitive-only (runtime) via hive-shims -> hadoop-yarn-server-resourcemanager, which is
+             itself already stripped from the shim assembly; the client shim never invokes this codegen
+             library, so excluding it removes the vulnerable jar from the shipped lib/ (and the build tree)
+             without shipping a heavier jsonschema2pojo 1.3.x closure (Jackson 3, etc.). -->
+        <exclusion>
+          <groupId>org.jsonschema2pojo</groupId>
+          <artifactId>jsonschema2pojo-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.codemodel</groupId>
+          <artifactId>codemodel</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <!-- Temporary override; delete once hive-jdbc releases a version without these vulnerabilities. -->
