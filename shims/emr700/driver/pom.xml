@@ -873,6 +873,8 @@
                 <zip destfile="${project.build.directory}/extra-resources/jetty-runner-${jetty-hadoop.version}.jar"
                       basedir="${project.build.directory}/jetty-runner-jar">
                   <exclude name="org/slf4j/**"/>
+                  <!-- Strip shaded commons-lang3 bundled in jetty-runner; rely on commons-lang3 from the application/shim classpath (required by commons-configuration2). -->
+                  <exclude name="org/apache/commons/lang3/**"/>
                 </zip>
               </target>
             </configuration>
