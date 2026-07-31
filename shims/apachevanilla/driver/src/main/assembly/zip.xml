@@ -19,6 +19,13 @@
                 <include>**/*</include>
             </includes>
         </fileSet>
+        <fileSet>
+            <directory>${project.build.directory}/extra-resources</directory>
+            <outputDirectory>/${shim.id}/lib</outputDirectory>
+            <includes>
+                <include>jetty-runner-${jetty-hadoop.version}.jar</include>
+            </includes>
+        </fileSet>
     </fileSets>
     <dependencySets>
         <dependencySet>
@@ -119,6 +126,7 @@
                 <exclude>*:java-util:*</exclude>
                 <exclude>*:java-xmlbuilder:*</exclude>
                 <exclude>*:javassist:*</exclude>
+                <exclude>*:jetty-runner:*</exclude>
                 <exclude>*:javax-websocket-client-impl:*</exclude>
                 <exclude>*:javax-websocket-server-impl:*</exclude>
                 <exclude>*:javax.inject:*</exclude>
@@ -283,6 +291,7 @@
                 <exclude>*:java-util:*</exclude>
                 <exclude>*:java-xmlbuilder:*</exclude>
                 <exclude>*:javassist:*</exclude>
+                <exclude>*:jetty-runner:*</exclude>
                 <exclude>*:javax-websocket-client-impl:*</exclude>
                 <exclude>*:javax-websocket-server-impl:*</exclude>
                 <exclude>*:javax.inject:*</exclude>
