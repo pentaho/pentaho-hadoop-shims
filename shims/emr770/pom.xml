@@ -23,6 +23,8 @@
 
   <properties>
     <pentaho-hadoop-shims.version>${project.version}</pentaho-hadoop-shims.version>
+    <!-- PPP-6766: Override to 1.17.1 in the bundle-backed emr770 shim to use a safe shaded jackson-databind line. -->
+    <parquet.version>1.17.1</parquet.version>
   </properties>
 
   <modules>
