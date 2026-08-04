@@ -15,14 +15,14 @@
   <parent>
     <groupId>org.pentaho.hadoop.shims</groupId>
     <artifactId>pentaho-hadoop-shims-list</artifactId>
-    <version>11.1.0.0-SNAPSHOT</version>
+    <version>11.1.0.0-363</version>
   </parent>
 
   <artifactId>pentaho-hadoop-shims-emr770-reactor</artifactId>
   <packaging>pom</packaging>
 
   <properties>
-    <pentaho-hadoop-shims.version>${project.version}</pentaho-hadoop-shims.version>
+    <pentaho-hadoop-shims.version>11.1.0.0-363</pentaho-hadoop-shims.version>
     <!-- PPP-6766: Override to 1.17.1 in the bundle-backed emr770 shim to use a safe shaded jackson-databind line. -->
     <parquet.version>1.17.1</parquet.version>
   </properties>
