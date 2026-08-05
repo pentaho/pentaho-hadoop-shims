@@ -850,13 +850,10 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <!-- ADD: Custom shaded Netty fixing CVE-2025-59419 (SMTP injection vulnerability) -->
-    <!-- This replaces Apache's hbase-shaded-netty:4.1.10 (Netty 4.1.116 - vulnerable) -->
-    <!-- with pentaho-shaded-netty containing Netty 4.1.128.Final (patched) -->
     <dependency>
       <groupId>org.pentaho.hadoop</groupId>
       <artifactId>pentaho-shaded-netty</artifactId>
-      <version>1.0.1</version>
+      <version>1.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
