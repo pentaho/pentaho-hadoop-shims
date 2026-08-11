@@ -65,6 +65,7 @@ public class PentahoParquetOutputFormatTest {
   @Before
   public void resetInputFormatBeforeEachTest() throws Exception {
     KettleLogStore.init();
+    Files.createDirectories( new File( "testparquet" ).toPath() );
     switch ( provider ) {
       case "APACHE":
         pentahoParquetOutputFormat = new PentahoApacheOutputFormat();
@@ -170,6 +171,7 @@ public class PentahoParquetOutputFormatTest {
     pentahoParquetOutputFormat.setVersion( ver );
     pentahoParquetOutputFormat.setCompression( compr );
     pentahoParquetOutputFormat.enableDictionary( dictionary );
+    File outputFile = new File( "testparquet", file ).getAbsoluteFile();
 
     List<ParquetOutputField> fields = new ArrayList<>();
 
@@ -233,7 +235,7 @@ public class PentahoParquetOutputFormatTest {
     fields.add( outputField );
 
     pentahoParquetOutputFormat.setFields( fields );
-    pentahoParquetOutputFormat.setOutputFile( "testparquet/" + file, true );
+    pentahoParquetOutputFormat.setOutputFile( outputFile.getPath(), true );
     IPentahoRecordWriter wr = pentahoParquetOutputFormat.createRecordWriter();
     RowMeta rowMeta = new RowMeta();
     rowMeta.addValueMeta( new ValueMetaNumber( "fnum" ) );
@@ -262,10 +264,9 @@ public class PentahoParquetOutputFormatTest {
       new Timestamp( df.parse( "2018-05-01 13:00:00" ).getTime() ) ) );
     wr.close();
 
-    File f = new File( "testparquet/" + file );
-    long sz = f.length();
+    long sz = outputFile.length();
     if ( sz == 0 ) {
-      throw new Exception( "File " + f.getAbsolutePath() + " is empty" );
+      throw new Exception( "File " + outputFile.getAbsolutePath() + " is empty" );
     }
     return sz;
   }
