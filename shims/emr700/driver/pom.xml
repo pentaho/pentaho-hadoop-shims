@@ -88,7 +88,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-buffer</artifactId>
-      <version>${netty.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -100,7 +99,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec</artifactId>
-      <version>${netty.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -111,7 +109,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-dns</artifactId>
-      <version>${netty.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -122,7 +119,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-haproxy</artifactId>
-      <version>${netty.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -133,7 +129,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-http2</artifactId>
-      <version>${netty.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -144,7 +139,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-http</artifactId>
-      <version>${netty.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -155,7 +149,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-memcache</artifactId>
-      <version>${netty.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -166,7 +159,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-mqtt</artifactId>
-      <version>${netty.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -177,7 +169,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-redis</artifactId>
-      <version>${netty.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -188,7 +179,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-smtp</artifactId>
-      <version>${netty.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -199,7 +189,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-socks</artifactId>
-      <version>${netty.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -210,7 +199,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-stomp</artifactId>
-      <version>${netty.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -221,7 +209,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-xml</artifactId>
-      <version>${netty.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -233,7 +220,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-common</artifactId>
-      <version>${netty.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -245,7 +231,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-handler</artifactId>
-      <version>${netty.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -256,7 +241,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-handler-proxy</artifactId>
-      <version>${netty.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -267,7 +251,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-handler-ssl-ocsp</artifactId>
-      <version>${netty.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -279,7 +262,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-resolver</artifactId>
-      <version>${netty.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -290,7 +272,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-resolver-dns</artifactId>
-      <version>${netty.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -301,7 +282,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-resolver-dns-classes-macos</artifactId>
-      <version>${netty.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -312,7 +292,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-resolver-dns-native-macos</artifactId>
-      <version>${netty.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -324,7 +303,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport</artifactId>
-      <version>${netty.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -335,7 +313,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport-classes-epoll</artifactId>
-      <version>${netty.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -346,7 +323,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport-classes-kqueue</artifactId>
-      <version>${netty.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -357,7 +333,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport-native-epoll</artifactId>
-      <version>${netty.version}</version>
       <classifier>linux-aarch_64</classifier>
       <exclusions>
         <exclusion>
@@ -369,7 +344,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport-native-epoll</artifactId>
-      <version>${netty.version}</version>
       <classifier>linux-x86_64</classifier>
       <exclusions>
         <exclusion>
@@ -381,7 +355,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport-native-epoll</artifactId>
-      <version>${netty.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -392,7 +365,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport-native-kqueue</artifactId>
-      <version>${netty.version}</version>
       <classifier>osx-aarch_64</classifier>
       <exclusions>
         <exclusion>
@@ -404,7 +376,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport-native-kqueue</artifactId>
-      <version>${netty.version}</version>
       <classifier>osx-x86_64</classifier>
       <exclusions>
         <exclusion>
@@ -416,7 +387,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport-native-kqueue</artifactId>
-      <version>${netty.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -427,7 +397,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport-native-unix-common</artifactId>
-      <version>${netty.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -438,7 +407,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport-rxtx</artifactId>
-      <version>${netty.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -449,7 +417,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport-sctp</artifactId>
-      <version>${netty.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -460,7 +427,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport-udt</artifactId>
-      <version>${netty.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
