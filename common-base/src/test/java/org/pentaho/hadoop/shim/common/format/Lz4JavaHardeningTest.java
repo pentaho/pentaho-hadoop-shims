@@ -20,6 +20,7 @@ import net.jpountz.lz4.LZ4BlockInputStream;
 import net.jpountz.xxhash.StreamingXXHash32;
 import net.jpountz.xxhash.StreamingXXHash64;
 import net.jpountz.xxhash.XXHashFactory;
+import org.junit.Assume;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -43,9 +44,23 @@ public class Lz4JavaHardeningTest {
 
   private static final byte[] EIGHT_BYTES = new byte[ 8 ];
 
+  /**
+   * The JNI implementation is what the range validation was missing, so these guards only mean
+   * something where it can actually load. On a platform with no bundled native binary the factory
+   * throws, and the test is skipped rather than reported as a hardening failure.
+   */
+  private static XXHashFactory nativeFactoryOrSkip() {
+    try {
+      return XXHashFactory.nativeInstance();
+    } catch ( Throwable unavailable ) {
+      Assume.assumeNoException( "no native lz4-java binary for this platform", unavailable );
+      throw new AssertionError( "unreachable" );
+    }
+  }
+
   @Test
   public void nativeStreamingHash32RejectsAnOutOfBoundsRange() {
-    StreamingXXHash32 hash = XXHashFactory.nativeInstance().newStreamingHash32( 0x9747b28c );
+    StreamingXXHash32 hash = nativeFactoryOrSkip().newStreamingHash32( 0x9747b28c );
     try {
       hash.update( EIGHT_BYTES, 100, 100 );
       fail( "native streaming XXHash32 accepted a range outside the array instead of rejecting it" );
@@ -56,7 +71,7 @@ public class Lz4JavaHardeningTest {
 
   @Test
   public void nativeStreamingHash64RejectsAnOutOfBoundsRange() {
-    StreamingXXHash64 hash = XXHashFactory.nativeInstance().newStreamingHash64( 0x9747b28cL );
+    StreamingXXHash64 hash = nativeFactoryOrSkip().newStreamingHash64( 0x9747b28cL );
     try {
       hash.update( EIGHT_BYTES, 100, 100 );
       fail( "native streaming XXHash64 accepted a range outside the array instead of rejecting it" );
@@ -67,7 +82,7 @@ public class Lz4JavaHardeningTest {
 
   @Test
   public void nativeStreamingHash32RejectsANegativeOffset() {
-    StreamingXXHash32 hash = XXHashFactory.nativeInstance().newStreamingHash32( 0 );
+    StreamingXXHash32 hash = nativeFactoryOrSkip().newStreamingHash32( 0 );
     try {
       hash.update( EIGHT_BYTES, -1, 4 );
       fail( "native streaming XXHash32 accepted a negative offset" );
@@ -80,13 +95,13 @@ public class Lz4JavaHardeningTest {
   public void safeAndNativeStreamingHash32AgreeOnValidInput() {
     byte[] data = payload( 512 );
     assertEquals( streamingHash32( XXHashFactory.safeInstance(), data ),
-      streamingHash32( XXHashFactory.nativeInstance(), data ) );
+      streamingHash32( nativeFactoryOrSkip(), data ) );
   }
 
   @Test
   public void oneShotHashRejectsAnOutOfBoundsRange() {
     try {
-      XXHashFactory.nativeInstance().hash32().hash( EIGHT_BYTES, 100, 100, 0 );
+      nativeFactoryOrSkip().hash32().hash( EIGHT_BYTES, 100, 100, 0 );
       fail( "one-shot XXHash32 accepted a range outside the array" );
     } catch ( ArrayIndexOutOfBoundsException expected ) {
       // expected
