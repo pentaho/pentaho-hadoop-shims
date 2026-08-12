@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly>
+  <id>plugin</id>
+  <baseDirectory>cdpdc732</baseDirectory>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory>lib/pmr</outputDirectory>
+      <useTransitiveDependencies>true</useTransitiveDependencies>
+      <useTransitiveFiltering>false</useTransitiveFiltering>
+      <includes>
+        <include>org.apache.hbase.*:*</include>
+        <include>org.pentaho.hadoop.shims:pentaho-shaded-netty</include>
+        <include>com.codahale.metrics:metrics-core</include>
+        <include>org.apache.zookeeper:zookeeper</include>
+      </includes>
+      <excludes>
+        <exclude>*:tests:*</exclude>
+        <exclude>org.apache.hbase.thirdparty:hbase-shaded-netty</exclude>
+      </excludes>
+    </dependencySet>
+  </dependencySets>
+</assembly>

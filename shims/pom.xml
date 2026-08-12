@@ -250,6 +250,7 @@
       <module>dataproc23</module>
       <module>dataproc1421</module>
       <module>cdpdc71</module>
+      <module>cdpdc732</module>
       <!--<module>hdi40</module>-->
       <module>apachevanilla</module>
       <module>emr770</module>
@@ -286,6 +287,17 @@
     </activation>
     <modules>
       <module>cdpdc71</module>
+    </modules>
+  </profile>
+  <profile>
+    <id>cdpdc732</id>
+    <activation>
+      <property>
+        <name>!skipDefault</name>
+      </property>
+    </activation>
+    <modules>
+      <module>cdpdc732</module>
     </modules>
   </profile>
   <!--<profile>
