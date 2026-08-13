@@ -414,6 +414,10 @@
       <version>${org.apache.hive.version}</version>
       <exclusions>
         <exclusion>
+          <groupId>org.apache.atlas</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
           <artifactId>libthrift</artifactId>
           <groupId>org.apache.thrift</groupId>
         </exclusion>
@@ -443,6 +447,12 @@
       <groupId>org.apache.hive</groupId>
       <artifactId>hive-exec</artifactId>
       <version>${org.apache.hive.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.atlas</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <!-- Keep the Bouncy Castle line aligned with the rest of the product until jdk18on is adopted everywhere. -->
     <dependency>
