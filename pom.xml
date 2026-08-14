@@ -62,11 +62,6 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.pentaho.hadoop</groupId>
-        <artifactId>pentaho-shaded-netty</artifactId>
-        <version>${netty.version}-pentaho-1</version>
-      </dependency>
-      <dependency>
         <groupId>pentaho</groupId>
         <artifactId>pentaho-hdfs-vfs</artifactId>
         <version>${pentaho-hdfs-vfs.version}</version>
