@@ -19,6 +19,8 @@
   <xerces.version>2.8.1</xerces.version>
   <com.yammer.metrics.version>2.2.0</com.yammer.metrics.version>
   <org.safehaus.jug.version>2.0.0</org.safehaus.jug.version>
+  <parquet.version>1.18.0</parquet.version>
+  <parquet-pig.version>1.15.2</parquet-pig.version>  <!-- PPP-6324: parquet-pig not released at 1.18.0 — keep at 1.15.2 (last available) -->
   <com.codahale.metrics.version>3.0.1</com.codahale.metrics.version>
   <com.igormaznitsa.jcp.version>6.1.2</com.igormaznitsa.jcp.version>
   <bundle.export.version>8.0.513.cdh</bundle.export.version>

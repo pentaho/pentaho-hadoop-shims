@@ -26,7 +26,6 @@
     <shim.id>dataproc23</shim.id>
     <curator.version>5.6.0</curator.version>
     <grpc-netty-shaded.version>1.80.0</grpc-netty-shaded.version>
-    <parquet-pig.version>1.15.2</parquet-pig.version>    <!-- parquet-pig not released at 1.17.1 — keep at 1.15.2 (last available) -->
   </properties>
 
   <dependencies>

@@ -23,7 +23,6 @@
 
   <properties>
     <pentaho-hadoop-shims.version>${project.version}</pentaho-hadoop-shims.version>
-    <parquet.version>1.17.1</parquet.version>
   </properties>
 
   <modules>
