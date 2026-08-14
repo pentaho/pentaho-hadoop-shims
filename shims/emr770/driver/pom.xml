@@ -43,7 +43,6 @@
     <xalan.version>2.7.3</xalan.version>
     <hibernate.version>5.6.15.Final</hibernate.version>
     <nimbus-jose-jwt.version>9.37.4</nimbus-jose-jwt.version>
-    <parquet-pig.version>1.15.2</parquet-pig.version>    <!-- parquet-pig not released at 1.17.1 — keep at 1.15.2 (last available) -->
   </properties>
 
   <dependencies>
