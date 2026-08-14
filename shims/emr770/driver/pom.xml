@@ -31,7 +31,6 @@
     <curator.version>5.6.0</curator.version>
     <org.apache.thrift.version>0.16.0</org.apache.thrift.version>
     <slf4j.version>1.7.36</slf4j.version>
-    <parquet-pig.version>1.15.2</parquet-pig.version>    <!-- parquet-pig not released at 1.17.1 — keep at 1.15.2 (last available) -->
   </properties>
   <dependencies>
     <dependency>
