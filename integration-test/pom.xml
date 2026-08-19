@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ******************************************************************************
+ *
+ * Pentaho
+ *
+ * Copyright (C) 2026 by Pentaho Canada Inc. : http://www.pentaho.com
+ *
+ * Use of this software is governed by the Business Source License included
+ * in the LICENSE.txt file.
+ *
+ * Change Date: 2030-06-15
+ ******************************************************************************* -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.pentaho</groupId>
+    <artifactId>pentaho-hadoop-shims</artifactId>
+    <version>11.1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>pentaho-hadoop-shims-integration-test</artifactId>
+  <packaging>jar</packaging>
+  <name>Pentaho Hadoop Shims Integration Tests</name>
+
+  <properties>
+    <maven.compiler.release>11</maven.compiler.release>
+    <maven-failsafe-plugin.version>3.5.4</maven-failsafe-plugin.version>
+    <docker-maven-plugin.version>0.48.1</docker-maven-plugin.version>
+    <pdi-it.docker-pull-host>one.hitachivantara.com/pnt-docker/</pdi-it.docker-pull-host>
+    <pdi-it.pdi-11-platform-version>${pdi.version}</pdi-it.pdi-11-platform-version>
+    <pdi-it.pdi-11-image-version>11.1</pdi-it.pdi-11-image-version>
+    <pdi-it.pdi-102-platform-version>10.2.0.0-SNAPSHOT</pdi-it.pdi-102-platform-version>
+    <pdi-it.pdi-102-image-version>10.2.0.9</pdi-it.pdi-102-image-version>
+    <pdi-it.network-name>pentaho-hadoop-shims-it</pdi-it.network-name>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>5.10.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.pentaho.di.plugins</groupId>
+      <artifactId>automation-utils</artifactId>
+      <version>${pdi-it.automation-utils-version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>pentaho-kettle</groupId>
+      <artifactId>kettle-core</artifactId>
+      <version>${pdi-it.platform-version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <testResources>
+      <testResource>
+        <directory>${project.basedir}/src/test/resources</directory>
+      </testResource>
+    </testResources>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>pentaho-11</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <pdi-it.platform-version>${pdi-it.pdi-11-platform-version}</pdi-it.platform-version>
+        <pdi-it.automation-utils-version>${pdi-it.pdi-11-platform-version}</pdi-it.automation-utils-version>
+        <pdi-it.pdi-version>${pdi-it.pdi-11-image-version}</pdi-it.pdi-version>
+        <pdi-it.test-class>**/Pentaho11KtrIT.java</pdi-it.test-class>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>pentaho-10.2</id>
+      <properties>
+        <pdi-it.platform-version>${pdi-it.pdi-102-platform-version}</pdi-it.platform-version>
+        <pdi-it.automation-utils-version>${pdi-it.pdi-102-platform-version}</pdi-it.automation-utils-version>
+        <pdi-it.pdi-version>${pdi-it.pdi-102-image-version}</pdi-it.pdi-version>
+        <pdi-it.test-class>**/Pentaho102KtrIT.java</pdi-it.test-class>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>run-pentaho-ktr-integration-tests</id>
+      <activation>
+        <property>
+          <name>runIntegrationTests</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <version>${maven-failsafe-plugin.version}</version>
+            <configuration>
+              <includes>
+                <include>${pdi-it.test-class}</include>
+              </includes>
+              <systemPropertyVariables>
+                <pdiContainerId>${docker.container.pdi.id}</pdiContainerId>
+                <pdiTestNetworkName>${pdi-it.network-name}</pdiTestNetworkName>
+              </systemPropertyVariables>
+            </configuration>
+            <executions>
+              <execution>
+                <id>run-pentaho-ktr-integration-tests</id>
+                <goals>
+                  <goal>integration-test</goal>
+                  <goal>verify</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>io.fabric8</groupId>
+            <artifactId>docker-maven-plugin</artifactId>
+            <version>${docker-maven-plugin.version}</version>
+            <configuration>
+              <autoCreateCustomNetworks>true</autoCreateCustomNetworks>
+              <images>
+                <image>
+                  <name>pentaho-hadoop-shims-ktr-it:${pdi-it.pdi-version}</name>
+                  <alias>pdi</alias>
+                  <build>
+                    <imagePullPolicy>Always</imagePullPolicy>
+                    <from>${pdi-it.docker-pull-host}automation/pdi-client:${pdi-it.pdi-version}</from>
+                    <assemblies>
+                      <assembly>
+                        <name>test-resources</name>
+                        <targetDir>/home/devuser/pentaho/design-tools/data-integration</targetDir>
+                        <inline>
+                          <fileSets>
+                            <fileSet>
+                              <directory>${project.build.testOutputDirectory}</directory>
+                              <outputDirectory>.</outputDirectory>
+                            </fileSet>
+                          </fileSets>
+                        </inline>
+                      </assembly>
+                    </assemblies>
+                  </build>
+                  <run>
+                    <platform>linux/amd64</platform>
+                    <containerNamePattern>pentaho-hadoop-shims-ktr-it-%t</containerNamePattern>
+                    <network>
+                      <mode>custom</mode>
+                      <name>${pdi-it.network-name}</name>
+                    </network>
+                    <cmd>
+                      <exec>
+                        <arg>tail</arg>
+                        <arg>-f</arg>
+                        <arg>/dev/null</arg>
+                      </exec>
+                    </cmd>
+                  </run>
+                </image>
+              </images>
+            </configuration>
+            <executions>
+              <execution>
+                <id>setup-pentaho-ktr-container</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>build</goal>
+                  <goal>start</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>teardown-pentaho-ktr-container</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>stop</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

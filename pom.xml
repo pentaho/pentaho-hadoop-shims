@@ -248,6 +248,17 @@
       </modules>
     </profile>
 
+    <profile>
+      <id>integration-tests</id>
+      <activation>
+        <property>
+          <name>runIntegrationTests</name>
+        </property>
+      </activation>
+      <modules>
+        <module>integration-test</module>
+      </modules>
+    </profile>
 
 
   </profiles>
