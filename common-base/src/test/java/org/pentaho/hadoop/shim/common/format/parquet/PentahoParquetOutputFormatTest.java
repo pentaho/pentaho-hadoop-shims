@@ -115,12 +115,17 @@ public class PentahoParquetOutputFormatTest {
 
   @Test
   public void testFileOutput() throws Exception {
-    long sz1un = writeData( "1_uncompressed_nodict.par", VERSION.VERSION_1_0, CompressionCodecName.UNCOMPRESSED, true );
-    long sz1gn = writeData( "1_gzip_nodict.par", VERSION.VERSION_1_0, CompressionCodecName.GZIP, true );
-    long sz1sn = writeData( "1_snappy_nodict.par", VERSION.VERSION_1_0, CompressionCodecName.SNAPPY, true );
-    long sz1lz4 = writeData( "1_lz4_nodict.par", VERSION.VERSION_1_0, CompressionCodecName.LZ4, true );
-    long sz1zstd = writeData( "1_zstd_nodict.par", VERSION.VERSION_1_0, CompressionCodecName.ZSTD, true );
-    long sz1lz4raw = writeData( "1_lz4raw_nodict.par", VERSION.VERSION_1_0, CompressionCodecName.LZ4_RAW, true );
+    File outputDir = Files.createTempDirectory( "testparquet-" + provider + "-" ).toFile();
+    outputDir.deleteOnExit();
+
+    long sz1un = writeData( outputDir, "1_uncompressed_nodict.par", VERSION.VERSION_1_0,
+      CompressionCodecName.UNCOMPRESSED, true );
+    long sz1gn = writeData( outputDir, "1_gzip_nodict.par", VERSION.VERSION_1_0, CompressionCodecName.GZIP, true );
+    long sz1sn = writeData( outputDir, "1_snappy_nodict.par", VERSION.VERSION_1_0, CompressionCodecName.SNAPPY, true );
+    long sz1lz4 = writeData( outputDir, "1_lz4_nodict.par", VERSION.VERSION_1_0, CompressionCodecName.LZ4, true );
+    long sz1zstd = writeData( outputDir, "1_zstd_nodict.par", VERSION.VERSION_1_0, CompressionCodecName.ZSTD, true );
+    long sz1lz4raw = writeData( outputDir, "1_lz4raw_nodict.par", VERSION.VERSION_1_0,
+      CompressionCodecName.LZ4_RAW, true );
     if ( sz1un == sz1gn ) {
       throw new Exception( "GZipped file should have different length than uncompressed" );
     }
@@ -140,12 +145,14 @@ public class PentahoParquetOutputFormatTest {
     }
 
 
-    long sz2un = writeData( "2_uncompressed_nodict.par", VERSION.VERSION_2_0, CompressionCodecName.UNCOMPRESSED, true );
-    long sz2gn = writeData( "2_gzip_nodict.par", VERSION.VERSION_2_0, CompressionCodecName.GZIP, true );
-    long sz2sn = writeData( "2_snappy_nodict.par", VERSION.VERSION_2_0, CompressionCodecName.SNAPPY, true );
-    long sz2lz4 = writeData( "2_lz4_nodict.par", VERSION.VERSION_2_0, CompressionCodecName.LZ4, true );
-    long sz2zstd = writeData( "2_zstd_nodict.par", VERSION.VERSION_2_0, CompressionCodecName.ZSTD, true );
-    long sz2lz4raw = writeData( "2_lz4raw_nodict.par", VERSION.VERSION_2_0, CompressionCodecName.LZ4_RAW, true );
+    long sz2un = writeData( outputDir, "2_uncompressed_nodict.par", VERSION.VERSION_2_0,
+      CompressionCodecName.UNCOMPRESSED, true );
+    long sz2gn = writeData( outputDir, "2_gzip_nodict.par", VERSION.VERSION_2_0, CompressionCodecName.GZIP, true );
+    long sz2sn = writeData( outputDir, "2_snappy_nodict.par", VERSION.VERSION_2_0, CompressionCodecName.SNAPPY, true );
+    long sz2lz4 = writeData( outputDir, "2_lz4_nodict.par", VERSION.VERSION_2_0, CompressionCodecName.LZ4, true );
+    long sz2zstd = writeData( outputDir, "2_zstd_nodict.par", VERSION.VERSION_2_0, CompressionCodecName.ZSTD, true );
+    long sz2lz4raw = writeData( outputDir, "2_lz4raw_nodict.par", VERSION.VERSION_2_0,
+      CompressionCodecName.LZ4_RAW, true );
 
     assertNotEquals( "GZipped file should have different length than uncompressed", sz2un, sz2gn );
     assertNotEquals( "Snapped file should have different length than uncompressed", sz2un, sz2sn );
@@ -166,7 +173,8 @@ public class PentahoParquetOutputFormatTest {
     Assert.assertNull( exception );
   }
 
-  private long writeData( String file, VERSION ver, CompressionCodecName compr, boolean dictionary ) throws Exception {
+  private long writeData( File outputDir, String file, VERSION ver, CompressionCodecName compr,
+                          boolean dictionary ) throws Exception {
     pentahoParquetOutputFormat.setVersion( ver );
     pentahoParquetOutputFormat.setCompression( compr );
     pentahoParquetOutputFormat.enableDictionary( dictionary );
@@ -233,7 +241,8 @@ public class PentahoParquetOutputFormatTest {
     fields.add( outputField );
 
     pentahoParquetOutputFormat.setFields( fields );
-    pentahoParquetOutputFormat.setOutputFile( "testparquet/" + file, true );
+    File outputFile = new File( outputDir, file );
+    pentahoParquetOutputFormat.setOutputFile( outputFile.getPath(), true );
     IPentahoRecordWriter wr = pentahoParquetOutputFormat.createRecordWriter();
     RowMeta rowMeta = new RowMeta();
     rowMeta.addValueMeta( new ValueMetaNumber( "fnum" ) );
@@ -262,7 +271,7 @@ public class PentahoParquetOutputFormatTest {
       new Timestamp( df.parse( "2018-05-01 13:00:00" ).getTime() ) ) );
     wr.close();
 
-    File f = new File( "testparquet/" + file );
+    File f = new File( outputDir, file );
     long sz = f.length();
     if ( sz == 0 ) {
       throw new Exception( "File " + f.getAbsolutePath() + " is empty" );
