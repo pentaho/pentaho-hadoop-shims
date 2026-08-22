@@ -133,6 +133,7 @@
                 <exclude>*:jackson-mapper-asl:*</exclude>
                 <exclude>*:jakarta.activation:*</exclude>
                 <exclude>*:jakarta.servlet-api:*</exclude>
+                <exclude>*:jansi:*</exclude>
                 <exclude>*:java-util:*</exclude>
                 <exclude>*:java-xmlbuilder:*</exclude>
                 <exclude>*:javassist:*</exclude>
@@ -313,6 +314,7 @@
                 <exclude>*:jackson-mapper-asl:*</exclude>
                 <exclude>*:jakarta.activation:*</exclude>
                 <exclude>*:jakarta.servlet-api:*</exclude>
+                <exclude>*:jansi:*</exclude>
                 <exclude>*:java-util:*</exclude>
                 <exclude>*:java-xmlbuilder:*</exclude>
                 <exclude>*:javassist:*</exclude>
