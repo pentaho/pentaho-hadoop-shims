@@ -156,6 +156,8 @@
                 <exclude>*:velocity-engine-core:*</exclude>
                 <exclude>*:xml-apis-ext:*</exclude>
                 <exclude>*:*slf4j*:*</exclude>
+                <!-- CVE-2018-1313 fix: derby is an unused Hive metastore embedded DB transitive (via hive-exec/hive-service); exclude it as sibling shims apachevanilla and emr770 already do -->
+                <exclude>*:derby:*</exclude>
             </excludes>
         </dependencySet>
         <dependencySet>
@@ -294,6 +296,8 @@
                 <exclude>*:*slf4j*:*</exclude>
                 <!-- CVE-2025-59419 fix: Exclude vulnerable hbase-shaded-netty, replaced by pentaho-shaded-netty -->
                 <exclude>org.apache.hbase.thirdparty:hbase-shaded-netty:*</exclude>
+                <!-- CVE-2018-1313 fix: derby is an unused Hive metastore embedded DB transitive (via hive-exec/hive-service); exclude it as sibling shims apachevanilla and emr770 already do -->
+                <exclude>*:derby:*</exclude>
             </excludes>
         </dependencySet>
     </dependencySets>
