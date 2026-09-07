@@ -13,13 +13,14 @@ package org.pentaho.hadoop.shims.integration;
 
 import com.pentaho.di.automation.PluginTestDockerUtils;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-abstract class PentahoKtrIT {
+class PentahoKtrIT {
 
   private static final String TRANSFORMATION_PATH = "transformations/pdi-it/output.ktr";
   private static final String OUTPUT_PATH = "/tmp/pentaho-ktr-it/output.txt";
@@ -31,7 +32,8 @@ abstract class PentahoKtrIT {
     dockerUtils = new PluginTestDockerUtils();
   }
 
-  protected final void assertTransformationOutput() throws Exception {
+  @Test
+  void executesKtrAndAssertsOutput() throws Exception {
     String containerId = dockerUtils.getPdiContainerId();
     dockerUtils.runDockerExecCmd( containerId, true, null,
       "rm -f /tmp/pentaho-ktr-it/output /tmp/pentaho-ktr-it/output.txt" );

@@ -76,7 +76,7 @@
         <pdi-it.platform-version>${pdi-it.pdi-11-platform-version}</pdi-it.platform-version>
         <pdi-it.automation-utils-version>${pdi-it.pdi-11-platform-version}</pdi-it.automation-utils-version>
         <pdi-it.pdi-version>${pdi-it.pdi-11-image-version}</pdi-it.pdi-version>
-        <pdi-it.test-class>**/Pentaho11KtrIT.java</pdi-it.test-class>
+        <pdi-it.test-class>**/PentahoKtrIT.java</pdi-it.test-class>
       </properties>
     </profile>
 
@@ -86,7 +86,7 @@
         <pdi-it.platform-version>${pdi-it.pdi-102-platform-version}</pdi-it.platform-version>
         <pdi-it.automation-utils-version>${pdi-it.pdi-102-platform-version}</pdi-it.automation-utils-version>
         <pdi-it.pdi-version>${pdi-it.pdi-102-image-version}</pdi-it.pdi-version>
-        <pdi-it.test-class>**/Pentaho102KtrIT.java</pdi-it.test-class>
+        <pdi-it.test-class>**/PentahoKtrIT.java</pdi-it.test-class>
       </properties>
     </profile>
 
