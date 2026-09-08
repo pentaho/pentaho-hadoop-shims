@@ -34,6 +34,15 @@
             <scope>compile</scope>
             <excludes>
                 <exclude>${project.groupId}:${project.artifactId}:jar:*</exclude>
+                <!-- PPP-6777 / CVE-2023-34610: strip the orphaned server-side YARN serialization
+                     chain (hive-shims -> yarn-server-* -> fst -> java-util -> json-io) that is
+                     not used by the client shim, matching the apachevanilla/emr shim assemblies.
+                     Removes the vulnerable com.cedarsoftware:json-io 2.5.1 jar. -->
+                <exclude>*:hadoop-yarn-server-applicationhistoryservice:*</exclude>
+                <exclude>*:hadoop-yarn-server-resourcemanager:*</exclude>
+                <exclude>*:fst:*</exclude>
+                <exclude>*:java-util:*</exclude>
+                <exclude>*:json-io:*</exclude>
                 <exclude>*:*log4j*</exclude>
                 <exclude>*:xml-apis</exclude>
                 <exclude>*:xercesImpl</exclude>
@@ -62,7 +71,6 @@
                 <exclude>*:arrow-memory-core:*</exclude>
                 <exclude>*:arrow-memory-netty:*</exclude>
                 <exclude>*:asm:*</exclude>
-                <exclude>*:asm:*</exclude>
                 <exclude>*:atlas-client-common:*</exclude>
                 <exclude>*:atlas-client-v2:*</exclude>
                 <exclude>*:atlas-intg:*</exclude>
@@ -86,7 +94,6 @@
                 <exclude>org.dom4j:dom4j:*</exclude>
                 <exclude>*:encoder:*</exclude>
                 <exclude>*:eventstream:*</exclude>
-                <exclude>*:fst:*</exclude>
                 <exclude>*:gateway-i18n:*</exclude>
                 <exclude>*:gateway-shell:*</exclude>
                 <exclude>*:gateway-util-common:*</exclude>
@@ -103,8 +110,6 @@
                 <exclude>*:hadoop-registry:*</exclude>
                 <exclude>*:hadoop-shaded-protobuf_3_21:*</exclude>
                 <exclude>*:hadoop-yarn-registry:*</exclude>
-                <exclude>*:hadoop-yarn-server-applicationhistoryservice:*</exclude>
-                <exclude>*:hadoop-yarn-server-resourcemanager:*</exclude>
                 <exclude>*:hive-exec:*</exclude>
                 <exclude>*:hive-llap-tez:*</exclude>
                 <exclude>*:hive-shims-0.23:*</exclude>
@@ -123,7 +128,6 @@
                 <exclude>*:jackson-mapper-asl:*</exclude>
                 <exclude>*:jakarta.activation:*</exclude>
                 <exclude>*:jansi:*</exclude>
-                <exclude>*:java-util:*</exclude>
                 <exclude>*:java-xmlbuilder:*</exclude>
                 <exclude>*:javassist:*</exclude>
                 <exclude>*:jetty-runner:*</exclude>
@@ -140,7 +144,6 @@
                 <exclude>org.mortbay.jetty:jetty-util:*</exclude>
                 <exclude>jline:jline:*</exclude>
                 <exclude>com.github.mwiede:jsch:*</exclude>
-                <exclude>*:json-io:*</exclude>
                 <exclude>*:json-path:*</exclude>
                 <exclude>*:json-smart:*</exclude>
                 <exclude>*:jsp-2.1:*</exclude>
@@ -198,6 +201,15 @@
             <scope>runtime</scope>
             <excludes>
                 <exclude>${project.groupId}:${project.artifactId}:jar:*</exclude>
+                <!-- PPP-6777 / CVE-2023-34610: strip the orphaned server-side YARN serialization
+                     chain (hive-shims -> yarn-server-* -> fst -> java-util -> json-io) that is
+                     not used by the client shim, matching the apachevanilla/emr shim assemblies.
+                     Removes the vulnerable com.cedarsoftware:json-io 2.5.1 jar. -->
+                <exclude>*:hadoop-yarn-server-applicationhistoryservice:*</exclude>
+                <exclude>*:hadoop-yarn-server-resourcemanager:*</exclude>
+                <exclude>*:fst:*</exclude>
+                <exclude>*:java-util:*</exclude>
+                <exclude>*:json-io:*</exclude>
                 <exclude>*:*log4j*</exclude>
                 <exclude>*:xml-apis</exclude>
                 <exclude>*:xercesImpl</exclude>
@@ -226,7 +238,6 @@
                 <exclude>*:arrow-memory-core:*</exclude>
                 <exclude>*:arrow-memory-netty:*</exclude>
                 <exclude>*:asm:*</exclude>
-                <exclude>*:asm:*</exclude>
                 <exclude>*:atlas-client-common:*</exclude>
                 <exclude>*:atlas-client-v2:*</exclude>
                 <exclude>*:atlas-intg:*</exclude>
@@ -250,7 +261,6 @@
                 <exclude>org.dom4j:dom4j:*</exclude>
                 <exclude>*:encoder:*</exclude>
                 <exclude>*:eventstream:*</exclude>
-                <exclude>*:fst:*</exclude>
                 <exclude>*:gateway-i18n:*</exclude>
                 <exclude>*:gateway-shell:*</exclude>
                 <exclude>*:gateway-util-common:*</exclude>
@@ -267,8 +277,6 @@
                 <exclude>*:hadoop-registry:*</exclude>
                 <exclude>*:hadoop-shaded-protobuf_3_21:*</exclude>
                 <exclude>*:hadoop-yarn-registry:*</exclude>
-                <exclude>*:hadoop-yarn-server-applicationhistoryservice:*</exclude>
-                <exclude>*:hadoop-yarn-server-resourcemanager:*</exclude>
                 <exclude>*:hive-exec:*</exclude>
                 <exclude>*:hive-llap-tez:*</exclude>
                 <exclude>*:hive-shims-0.23:*</exclude>
@@ -288,7 +296,6 @@
                 <exclude>*:jackson-mapper-asl:*</exclude>
                 <exclude>*:jakarta.activation:*</exclude>
                 <exclude>*:jansi:*</exclude>
-                <exclude>*:java-util:*</exclude>
                 <exclude>*:java-xmlbuilder:*</exclude>
                 <exclude>*:javassist:*</exclude>
                 <exclude>*:jetty-runner:*</exclude>
@@ -305,7 +312,6 @@
                 <exclude>org.mortbay.jetty:jetty-util:*</exclude>
                 <exclude>jline:jline:*</exclude>
                 <exclude>com.github.mwiede:jsch:*</exclude>
-                <exclude>*:json-io:*</exclude>
                 <exclude>*:json-path:*</exclude>
                 <exclude>*:json-smart:*</exclude>
                 <exclude>*:jsp-2.1:*</exclude>

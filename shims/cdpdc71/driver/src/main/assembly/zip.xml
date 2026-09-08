@@ -63,7 +63,6 @@
                 <exclude>*:apacheds-i18n:*</exclude>
                 <exclude>*:apacheds-jdbm:*</exclude>
                 <exclude>*:asm:*</exclude>
-                <exclude>*:asm:*</exclude>
                 <exclude>*:atlas-client-common:*</exclude>
                 <exclude>*:atlas-client-v2:*</exclude>
                 <exclude>*:atlas-intg:*</exclude>
@@ -233,7 +232,6 @@
                 <exclude>*:ant-launcher:*</exclude>
                 <exclude>*:apacheds-i18n:*</exclude>
                 <exclude>*:apacheds-jdbm:*</exclude>
-                <exclude>*:asm:*</exclude>
                 <exclude>*:asm:*</exclude>
                 <exclude>*:atlas-client-common:*</exclude>
                 <exclude>*:atlas-client-v2:*</exclude>
