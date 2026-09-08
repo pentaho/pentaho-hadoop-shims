@@ -36,7 +36,13 @@
     <pig.version>0.17.0</pig.version>
     <org.apache.oozie.version>4.3.1</org.apache.oozie.version>
     <sqoop.version>1.4.7</sqoop.version>
-    <hive-jdbc.version>2.3.6</hive-jdbc.version>
+    <!-- PPP-7168: [CVE-2026-55976] Shared Hive property kept on 4.2.0 because hive-service/hive-jdbc are not published on 4.2.1.
+         Use fine-grained overrides so only published artifacts are bumped to 4.2.1.
+         hive-serde v4.2.1 is needed for a security fix for SSRF in Avro SerDe schema.  -->
+    <hive-exec.version>4.2.1</hive-exec.version>
+    <hive-service.version>4.2.0</hive-service.version>
+    <hive-jdbc.version>4.2.0</hive-jdbc.version>
+    <hive-serde.version>4.2.1</hive-serde.version>
     <org.apache.avro.version>1.12.1</org.apache.avro.version>
     <hadoop-aws.version>2.9.2</hadoop-aws.version>
 
@@ -46,7 +52,7 @@
     <!-- pmr folder -->
     <org.apache.hbase-prefix-tree.version>2.0.0-alpha4</org.apache.hbase-prefix-tree.version>
     <geronimo-servlet_3.0_spec.version>1.0</geronimo-servlet_3.0_spec.version>
-    <org.apache.hive.version>3.1.3</org.apache.hive.version>
+    <org.apache.hive.version>4.2.0</org.apache.hive.version>
     <parquet.version>1.10.1</parquet.version>
     <org.antlr.version>3.5.2</org.antlr.version>
     <joda-time.version>2.9.9</joda-time.version>
