@@ -56,10 +56,16 @@
     <dnsjava.version>3.6.0</dnsjava.version>
     <!-- Added in the scope of fix for CVE-2025-67721, can be removed once orc-core ships aircompressor >= 2.0.3. -->
     <aircompressor.version>2.0.3</aircompressor.version>
+    <zstd-jni.version>1.5.7-14</zstd-jni.version>
   </properties>
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>com.github.luben</groupId>
+        <artifactId>zstd-jni</artifactId>
+        <version>${zstd-jni.version}</version>
+      </dependency>
       <dependency>
         <groupId>pentaho</groupId>
         <artifactId>pentaho-hdfs-vfs</artifactId>
