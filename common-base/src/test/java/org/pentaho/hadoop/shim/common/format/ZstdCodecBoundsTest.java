@@ -136,9 +136,9 @@ public class ZstdCodecBoundsTest {
    */
   @Test
   public void refusesToCloseDictionaryStillLoadedInAContext() {
-    byte[] dict = sampleDictionary();
-    ZstdDictCompress dictCompress = new ZstdDictCompress( dict, 3 );
-    try ( ZstdCompressCtx ctx = new ZstdCompressCtx() ) {
+    // declared first so try-with-resources closes it last, after the context has released it
+    try ( ZstdDictCompress dictCompress = new ZstdDictCompress( sampleDictionary(), 3 );
+          ZstdCompressCtx ctx = new ZstdCompressCtx() ) {
       ctx.loadDict( dictCompress );
       try {
         dictCompress.close();
