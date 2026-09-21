@@ -56,7 +56,7 @@
     <dnsjava.version>3.6.0</dnsjava.version>
     <!-- Added in the scope of fix for CVE-2025-67721, can be removed once orc-core ships aircompressor >= 2.0.3. -->
     <aircompressor.version>2.0.3</aircompressor.version>
-    <zstd-jni.version>1.5.7-14</zstd-jni.version>
+    <zstd-jni.version>1.5.7-17</zstd-jni.version>
   </properties>
 
   <dependencyManagement>
