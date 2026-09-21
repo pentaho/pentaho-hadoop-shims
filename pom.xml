@@ -57,7 +57,7 @@
     <zookeeper.version>3.9.5</zookeeper.version>
     <snakeyaml.version>2.2</snakeyaml.version>
     <dnsjava.version>3.6.0</dnsjava.version>
-    <zstd-jni.version>1.5.7-14</zstd-jni.version>
+    <zstd-jni.version>1.5.7-17</zstd-jni.version>
   </properties>
 
   <dependencyManagement>
