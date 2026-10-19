@@ -979,6 +979,12 @@
       <groupId>org.pentaho.hadoop.shims</groupId>
       <artifactId>pentaho-hadoop-shims-common-fragment-V1</artifactId>
       <version>${project.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.parquet</groupId>
+          <artifactId>parquet-hadoop-bundle</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.yammer.metrics</groupId>
@@ -1115,7 +1121,8 @@
               </include>
               <exclude>
                 *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool2,*:commons-dbcp2,
-                *:avatica,*:janino,*:dnsjava,*:slf4j-log4j12,*:slf4j-api,org.apache.velocity:velocity
+                *:avatica,*:janino,*:dnsjava,*:slf4j-log4j12,*:slf4j-api,org.apache.velocity:velocity,
+                org.apache.parquet:parquet-hadoop-bundle
               </exclude>
               <transitive>true</transitive>
             </resolverFilter>
