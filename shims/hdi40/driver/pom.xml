@@ -27,14 +27,10 @@
     <shim.id>hdi40</shim.id>
     <pentaho-osgi-bundles.version>11.1.0.0-SNAPSHOT</pentaho-osgi-bundles.version>
     <org.apache.avro.version>1.12.1</org.apache.avro.version>
-    <!-- setting v1.14.4 so shaded jackson-databind inside parquet-hadoop-bundle's  version approximately matches jackson-databind in driver.jar -->
-    <parquet.version>1.14.4</parquet.version>
     <org.apache.hbase.version>2.4.17.7.1.9.0-387</org.apache.hbase.version>
     <org.apache.hive.version>3.1.3000.7.1.9.0-387</org.apache.hive.version>
     <org.apache.oozie.version>5.1.0.7.1.4.0-203</org.apache.oozie.version>
     <pig.version>0.16.0.7.1.4.0-203</pig.version>
-    <!-- parquet v1.14.4 is build on pig v0.16.0 -->
-    <parquet-pig.version>1.14.4</parquet-pig.version>
     <sqoop.version>1.4.7.7.1.4.0-203</sqoop.version>
     <vendor-driver.version>7.1.4.0-203</vendor-driver.version>
     <pentaho-code.version>11.0.0.0</pentaho-code.version>
@@ -226,6 +222,10 @@
           <groupId>*</groupId>
           <artifactId>protobuf-java</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.parquet</groupId>
+          <artifactId>parquet-hadoop-bundle</artifactId>
+        </exclusion>
       </exclusions>
       <version>${org.apache.hive.version}</version>
     </dependency>
@@ -245,6 +245,10 @@
       <version>${org.apache.hive.version}</version>
       <exclusions>
         <exclusion>
+          <groupId>org.apache.parquet</groupId>
+          <artifactId>parquet-hadoop-bundle</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>*</groupId>
           <artifactId>websocket-api</artifactId>
         </exclusion>
@@ -261,6 +265,10 @@
       <version>${org.apache.hive.version}</version>
       <exclusions>
         <exclusion>
+          <groupId>org.apache.parquet</groupId>
+          <artifactId>parquet-hadoop-bundle</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>*</groupId>
           <artifactId>commons-dbcp2</artifactId>
         </exclusion>
@@ -274,7 +282,6 @@
     <dependency>
       <groupId>org.apache.parquet</groupId>
       <artifactId>parquet-avro</artifactId>
-      <version>${parquet.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.orc</groupId>
@@ -615,8 +622,19 @@
     </dependency>
     <dependency>
       <groupId>org.apache.parquet</groupId>
-      <artifactId>parquet-hadoop-bundle</artifactId>
-      <version>${parquet.version}</version>
+      <artifactId>parquet-hadoop</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-column</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-encoding</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.pig</groupId>
@@ -632,7 +650,6 @@
     <dependency>
       <groupId>org.apache.parquet</groupId>
       <artifactId>parquet-pig</artifactId>
-      <version>${parquet-pig.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>

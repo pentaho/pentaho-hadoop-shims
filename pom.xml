@@ -39,6 +39,8 @@
     <!-- Added for fragment prototype -->
     <org.apache.avro.version>1.8.0</org.apache.avro.version>
     <parquet.version>1.18.1</parquet.version>
+    <!-- PPP-6324: parquet-pig not released at 1.18.1 — keep at 1.15.2 (last available) -->
+    <parquet-pig.version>1.15.2</parquet-pig.version>
     <sqoop.version>1.4.6.2.6.0.3-8</sqoop.version>
     <pig.version>0.16.0.2.6.0.3-8</pig.version>
     <dependency.pig.classifier>h2</dependency.pig.classifier>
@@ -61,6 +63,57 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>org.apache.parquet</groupId>
+        <artifactId>parquet-hadoop</artifactId>
+        <version>${parquet.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.parquet</groupId>
+        <artifactId>parquet-column</artifactId>
+        <version>${parquet.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.parquet</groupId>
+        <artifactId>parquet-common</artifactId>
+        <version>${parquet.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.parquet</groupId>
+        <artifactId>parquet-encoding</artifactId>
+        <version>${parquet.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.parquet</groupId>
+        <artifactId>parquet-format-structures</artifactId>
+        <version>${parquet.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.parquet</groupId>
+        <artifactId>parquet-jackson</artifactId>
+        <version>${parquet.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.parquet</groupId>
+        <artifactId>parquet-variant</artifactId>
+        <version>${parquet.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.parquet</groupId>
+        <artifactId>parquet-avro</artifactId>
+        <version>${parquet.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.parquet</groupId>
+        <artifactId>parquet-pig</artifactId>
+        <version>${parquet-pig.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>*</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
       <dependency>
         <groupId>com.github.luben</groupId>
         <artifactId>zstd-jni</artifactId>

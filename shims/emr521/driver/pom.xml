@@ -212,8 +212,19 @@
     </dependency>
     <dependency>
       <groupId>org.apache.parquet</groupId>
-      <artifactId>parquet-hadoop-bundle</artifactId>
-      <version>${parquet.version}</version>
+      <artifactId>parquet-hadoop</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-column</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-encoding</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.sqoop</groupId>
@@ -250,6 +261,10 @@
       <version>${org.apache.hive.version}</version>
       <exclusions>
         <exclusion>
+          <groupId>org.apache.parquet</groupId>
+          <artifactId>parquet-hadoop-bundle</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>com.google.protobuf</groupId>
           <artifactId>protobuf-java</artifactId>
         </exclusion>
@@ -272,6 +287,10 @@
       <artifactId>hive-exec</artifactId>
       <version>${org.apache.hive.version}</version>
       <exclusions>
+        <exclusion>
+          <groupId>org.apache.parquet</groupId>
+          <artifactId>parquet-hadoop-bundle</artifactId>
+        </exclusion>
         <exclusion>
           <groupId>com.google.protobuf</groupId>
           <artifactId>protobuf-java</artifactId>
@@ -472,13 +491,14 @@
           <resolverFilters>
             <resolverFilter>
               <include>
-                *:parquet-hadoop,*:parquet-hadoop-bundle,*:hadoop-yarn-api,*:avro,*:avro-mapred,*:hive-jdbc,
+                *:parquet-hadoop,*:parquet-column,*:parquet-common,*:parquet-encoding,*:parquet-format-structures,*:parquet-jackson,*:hadoop-yarn-api,*:avro,*:avro-mapred,*:hive-jdbc,
                 *:hive-service,*:hive-exec,*:orc-core,*:hadoop-common,*:hadoop-hdfs,*:hadoop-mapreduce-*,
                 *:hadoop-yarn-common,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,
-                *:hbase-server,*:hbase-metrics,*:hbase-metrics-api,*:oozie-client,*:parquet-hadoop-bundle,
+                *:hbase-server,*:hbase-metrics,*:hbase-metrics-api,*:oozie-client,
                 *:zookeeper
               </include>
               <exclude>
+                *:parquet-hadoop-bundle,
                 *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool,*:commons-dbcp,
                 *:avatica,*:janino,org.apache.velocity:velocity
               </exclude>
