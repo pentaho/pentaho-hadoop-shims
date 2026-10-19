@@ -54,6 +54,8 @@
     <zookeeper.version>3.9.5</zookeeper.version>
     <snakeyaml.version>2.2</snakeyaml.version>
     <dnsjava.version>3.6.0</dnsjava.version>
+    <!-- Added in the scope of fix for CVE-2025-67721, can be removed once orc-core ships aircompressor >= 2.0.3. -->
+    <aircompressor.version>2.0.3</aircompressor.version>
   </properties>
 
   <dependencyManagement>
