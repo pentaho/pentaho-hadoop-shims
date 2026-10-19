@@ -23,6 +23,7 @@ import java.nio.ByteBuffer;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -71,7 +72,7 @@ public class ZstdCodecBoundsTest {
           ZstdCompressCtx ctx = new ZstdCompressCtx() ) {
       ctx.loadDict( dictCompress );
       byte[] compressed = ctx.compress( payload );
-      assertEquals( payload.length, Zstd.decompressedSize( compressed ) );
+      assertEquals( payload.length, Zstd.getFrameContentSize( compressed ) );
     }
   }
 
@@ -151,13 +152,13 @@ public class ZstdCodecBoundsTest {
 
       byte[] payload = samplePayload();
       byte[] compressed = ctx.compress( payload );
-      assertEquals( payload.length, Zstd.decompressedSize( compressed ) );
+      assertEquals( payload.length, Zstd.getFrameContentSize( compressed ) );
     }
   }
 
   /** The frame-size helpers must still report the real size for an in-range window. */
   @Test
-  @SuppressWarnings( "deprecation" )
+  @SuppressWarnings( { "deprecation", "squid:S1874" } )
   public void reportsFrameContentSizeForInRangeWindow() {
     byte[] payload = samplePayload();
     byte[] compressed = Zstd.compress( payload, 3 );
@@ -170,7 +171,7 @@ public class ZstdCodecBoundsTest {
   @Test
   public void acceptsInRangeDecompressionDictionaryWindow() {
     try ( ZstdDictDecompress dictDecompress = new ZstdDictDecompress( sampleDictionary(), 8, 32 ) ) {
-      assertTrue( "expected an in-range decompression dictionary to be constructed", dictDecompress != null );
+      assertNotNull( "expected an in-range decompression dictionary to be constructed", dictDecompress );
     }
   }
 
@@ -242,7 +243,7 @@ public class ZstdCodecBoundsTest {
    * native frame parser. Guarded from zstd-jni 1.5.7-17.
    */
   @Test
-  @SuppressWarnings( "deprecation" )
+  @SuppressWarnings( { "deprecation", "squid:S1874" } )
   public void rejectsNegativeDecompressedSizePosition() {
     byte[] compressed = Zstd.compress( samplePayload(), 3 );
     try {
@@ -255,7 +256,7 @@ public class ZstdCodecBoundsTest {
 
   /** XRAY-1081810: the same overload must also reject an int-overflowing window. */
   @Test
-  @SuppressWarnings( "deprecation" )
+  @SuppressWarnings( { "deprecation", "squid:S1874" } )
   public void rejectsOverflowingDecompressedSizeWindow() {
     byte[] compressed = Zstd.compress( samplePayload(), 3 );
     try {
