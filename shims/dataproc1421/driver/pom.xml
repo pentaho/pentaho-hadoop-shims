@@ -24,8 +24,6 @@
 
   <properties>
     <shim.id>dataproc1421</shim.id>
-    <!-- setting v1.14.4 so shaded jackson-databind inside parquet-hadoop-bundle's  version approximately matches jackson-databind in driver.jar -->
-    <parquet.version>1.14.4</parquet.version>
     <curator.version>5.6.0</curator.version>
   </properties>
 
@@ -263,8 +261,19 @@
     </dependency>
     <dependency>
       <groupId>org.apache.parquet</groupId>
-      <artifactId>parquet-hadoop-bundle</artifactId>
-      <version>${parquet.version}</version>
+      <artifactId>parquet-hadoop</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-column</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-encoding</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.sqoop</groupId>
@@ -299,6 +308,10 @@
       <version>${org.apache.hive.version}</version>
       <exclusions>
         <exclusion>
+          <groupId>org.apache.parquet</groupId>
+          <artifactId>parquet-hadoop-bundle</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>*</groupId>
           <artifactId>commons-pool</artifactId>
         </exclusion>
@@ -318,6 +331,10 @@
       <artifactId>hive-service</artifactId>
       <version>${org.apache.hive.version}</version>
       <exclusions>
+        <exclusion>
+          <groupId>org.apache.parquet</groupId>
+          <artifactId>parquet-hadoop-bundle</artifactId>
+        </exclusion>
         <exclusion>
           <groupId>*</groupId>
           <artifactId>commons-pool</artifactId>
@@ -371,6 +388,10 @@
       <artifactId>hive-jdbc</artifactId>
       <version>${hive-jdbc.version}</version>
       <exclusions>
+        <exclusion>
+          <groupId>org.apache.parquet</groupId>
+          <artifactId>parquet-hadoop-bundle</artifactId>
+        </exclusion>
         <exclusion>
           <groupId>*</groupId>
           <artifactId>zookeeper</artifactId>
