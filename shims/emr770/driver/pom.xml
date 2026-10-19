@@ -967,6 +967,12 @@
       <groupId>org.pentaho.hadoop.shims</groupId>
       <artifactId>pentaho-hadoop-shims-common-base</artifactId>
       <version>${pentaho-hadoop-shims.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.parquet</groupId>
+          <artifactId>parquet-hadoop-bundle</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.yammer.metrics</groupId>
