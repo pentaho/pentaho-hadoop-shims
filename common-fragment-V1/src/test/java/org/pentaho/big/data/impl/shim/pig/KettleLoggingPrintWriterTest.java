@@ -17,10 +17,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.pentaho.di.core.logging.LogChannelInterface;
 
+import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -37,7 +39,7 @@ public class KettleLoggingPrintWriterTest {
   @Before
   public void setup() {
     logChannelInterface = mock( LogChannelInterface.class );
-    printStream = mock( PrintStream.class );
+    printStream = spy( new PrintStream( new ByteArrayOutputStream() ) );
     kettleLoggingPrintWriter = new KettleLoggingPrintWriter( logChannelInterface, printStream );
     test = "test";
     toStringObject = mock( LogChannelInterface.class );
