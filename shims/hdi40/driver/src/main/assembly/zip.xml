@@ -44,7 +44,6 @@
                 <exclude>*:apacheds-i18n:*</exclude>
                 <exclude>*:apacheds-jdbm:*</exclude>
                 <exclude>*:asm:*</exclude>
-                <exclude>*:asm:*</exclude>
                 <exclude>*:asm-commons:*</exclude>
                 <exclude>*:asm-tree:*</exclude>
                 <exclude>*:atlas-client-common:*</exclude>
@@ -128,11 +127,6 @@
                 <exclude>*:mina-core:*</exclude>
                 <exclude>*:nimbus-jose-jwt:*</exclude>
                 <exclude>*:org.apache.karaf.jaas.config:*</exclude>
-                <exclude>*:parquet-column:*</exclude>
-                <exclude>*:parquet-common:*</exclude>
-                <exclude>*:parquet-encoding:*</exclude>
-                <exclude>*:parquet-format-structures:*</exclude>
-                <exclude>*:parquet-jackson:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-common-base:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-common-services-api:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-hdi40:*</exclude>
@@ -178,7 +172,6 @@
                 <exclude>*:apacheds-i18n:*</exclude>
                 <exclude>*:apacheds-jdbm:*</exclude>
                 <exclude>*:asm:*</exclude>
-                <exclude>*:asm:*</exclude>
                 <exclude>*:asm-commons:*</exclude>
                 <exclude>*:asm-tree:*</exclude>
                 <exclude>*:atlas-client-common:*</exclude>
@@ -262,11 +255,6 @@
                 <exclude>*:mina-core:*</exclude>
                 <exclude>*:nimbus-jose-jwt:*</exclude>
                 <exclude>*:org.apache.karaf.jaas.config:*</exclude>
-                <exclude>*:parquet-column:*</exclude>
-                <exclude>*:parquet-common:*</exclude>
-                <exclude>*:parquet-encoding:*</exclude>
-                <exclude>*:parquet-format-structures:*</exclude>
-                <exclude>*:parquet-jackson:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-common-base:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-common-services-api:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-hdi40:*</exclude>
