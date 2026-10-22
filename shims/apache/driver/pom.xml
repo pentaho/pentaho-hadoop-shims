@@ -370,7 +370,18 @@
     <dependency>
       <groupId>org.apache.parquet</groupId>
       <artifactId>parquet-hadoop</artifactId>
-      <version>${parquet.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-column</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-encoding</artifactId>
     </dependency>
 
     <dependency>
@@ -676,7 +687,7 @@
                 *:hadoop-azure-datalake,
                 *:hadoop-client,*:hadoop-hdfs-client,
                 com.amazonaws:*,
-                *:parquet-hadoop,*:parquet-hadoop-bundle,*:hadoop-hdfs,
+                *:parquet-hadoop,*:parquet-column,*:parquet-common,*:parquet-encoding,*:parquet-format-structures,*:parquet-jackson,*:hadoop-hdfs,
                 *:avro-mapred,*:protobuf-java,*:hadoop-shaded-protobuf_3_25,
                 org.eclipse.jetty:*,org.eclipse.jetty.websocket:*,
                 com.google.guava:*,
@@ -687,7 +698,7 @@
               <exclude>
                 org.slf4j:*,
                 *:jersey*:jar:2.25.1,
-                *:*log4j*,*:xml-apis,*:xercesImpl,*:tests:*,
+                *:parquet-hadoop-bundle,*:*log4j*,*:xml-apis,*:xercesImpl,*:tests:*,
                 <!--Needed for hive-->
                 org.apache.hadoop:hadoop-yarn-registry,org.apache.velocity:velocity,
                 *:google-oauth-client-java6

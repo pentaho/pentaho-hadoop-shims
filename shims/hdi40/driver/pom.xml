@@ -252,6 +252,10 @@
           <groupId>com.nimbusds</groupId>
           <artifactId>nimbus-jose-jwt</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.parquet</groupId>
+          <artifactId>parquet-hadoop-bundle</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <!-- Temporary override; delete once hive-jdbc releases a version without these vulnerabilities. -->
@@ -294,6 +298,10 @@
           <artifactId>netty</artifactId>
         </exclusion>
         <exclusion>
+          <groupId>org.apache.parquet</groupId>
+          <artifactId>parquet-hadoop-bundle</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>io.netty</groupId>
           <artifactId>netty-all</artifactId>
         </exclusion>
@@ -329,6 +337,10 @@
           <artifactId>dnsjava</artifactId>
           <groupId>dnsjava</groupId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.parquet</groupId>
+          <artifactId>parquet-hadoop-bundle</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -339,7 +351,6 @@
     <dependency>
       <groupId>org.apache.parquet</groupId>
       <artifactId>parquet-avro</artifactId>
-      <version>${parquet.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.orc</groupId>
@@ -707,8 +718,19 @@
     </dependency>
     <dependency>
       <groupId>org.apache.parquet</groupId>
-      <artifactId>parquet-hadoop-bundle</artifactId>
-      <version>${parquet.version}</version>
+      <artifactId>parquet-hadoop</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-column</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-encoding</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.pig</groupId>
@@ -718,7 +740,12 @@
     <dependency>
       <groupId>org.apache.parquet</groupId>
       <artifactId>parquet-pig</artifactId>
-      <version>${parquet-pig.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.zookeeper</groupId>
@@ -783,15 +810,15 @@
           <resolverFilters>
             <resolverFilter>
               <include>
-                *:parquet-hadoop,*:parquet-hadoop-bundle,*:parquet-avro,*:hadoop-yarn-api,*:avro,*:avro-mapred,*:hive-jdbc,
+                *:parquet-hadoop,*:parquet-column,*:parquet-common,*:parquet-encoding,*:parquet-format-structures,*:parquet-jackson,*:parquet-avro,*:hadoop-yarn-api,*:avro,*:avro-mapred,*:hive-jdbc,
                 *:hive-service,*:orc-core,*:hadoop-common,*:hadoop-hdfs,*:hadoop-mapreduce-*,
                 *:hadoop-yarn-api,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,*:hbase-zookeeper
-                *:hbase-server,*:oozie-client,*:parquet-hadoop-bundle,*:zookeeper,*:hbase-shaded-miscellaneous,
+                *:hbase-server,*:oozie-client,*:zookeeper,*:hbase-shaded-miscellaneous,
                 org.eclipse.jetty:*, *:hadoop-azure, *:hadoop-azure-datalake,*:commons-configuration2,*:protobuf-java,
                 *:hadoop-shaded-protobuf_3_25,*:snappy-java
               </include>
               <exclude>
-                *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool2,*:commons-dbcp2,
+                *:parquet-hadoop-bundle,*:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool2,*:commons-dbcp2,
                 *:janino, *:hsqldb,org.apache.velocity:velocity
               </exclude>
               <transitive>true</transitive>

@@ -19,7 +19,6 @@
     <org.apache.hbase.version>1.2.0-cdh5.14.0</org.apache.hbase.version>
     <org.apache.hive.version>1.1.0-cdh5.14.0</org.apache.hive.version>
     <org.apache.oozie.version>4.1.0-cdh5.14.0</org.apache.oozie.version>
-    <parquet.version>1.8.1</parquet.version>
     <parquet.cloudera.version>1.5.0-cdh5.14.0</parquet.cloudera.version>
     <pig.version>0.12.0-cdh5.14.0</pig.version>
     <sqoop.version>1.4.6-cdh5.14.0</sqoop.version>
@@ -239,8 +238,19 @@
     </dependency>
     <dependency>
       <groupId>org.apache.parquet</groupId>
-      <artifactId>parquet-hadoop-bundle</artifactId>
-      <version>${parquet.version}</version>
+      <artifactId>parquet-hadoop</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-column</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-encoding</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.pig</groupId>
@@ -275,13 +285,13 @@
           <resolverFilters>
             <resolverFilter>
               <include>
-                *:parquet-hadoop,*:parquet-hadoop-bundle,*:hadoop-yarn-api,*:avro,*:avro-mapred,*:hive-jdbc,
+                *:parquet-hadoop,*:parquet-column,*:parquet-common,*:parquet-encoding,*:parquet-format-structures,*:parquet-jackson,*:hadoop-yarn-api,*:avro,*:avro-mapred,*:hive-jdbc,
                 *:hive-service,*:orc-core,*:hadoop-common,*:hadoop-hdfs,*:hadoop-mapreduce-*,
                 *:hadoop-yarn-api,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,
-                *:hbase-server,*:oozie-client,*:parquet-hadoop-bundle,*:zookeeper
+                *:hbase-server,*:oozie-client,*:zookeeper
               </include>
               <exclude>
-                *:*log4j*,*:xml-apis,*:xercesImpl
+                *:parquet-hadoop-bundle,*:*log4j*,*:xml-apis,*:xercesImpl
               </exclude>
               <transitive>true</transitive>
             </resolverFilter>
