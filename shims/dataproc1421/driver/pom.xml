@@ -15,8 +15,6 @@
     <curator.version>5.6.0</curator.version>
   </properties>
 
-
-
   <dependencies>
     <dependency>
       <groupId>com.google.cloud.bigdataoss</groupId>
@@ -294,8 +292,19 @@
     </dependency>
     <dependency>
       <groupId>org.apache.parquet</groupId>
-      <artifactId>parquet-hadoop-bundle</artifactId>
-      <version>${parquet.version}</version>
+      <artifactId>parquet-hadoop</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-column</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-encoding</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.sqoop</groupId>
@@ -351,6 +360,10 @@
           <artifactId>nimbus-jose-jwt</artifactId>
         </exclusion>
         <exclusion>
+          <groupId>org.apache.parquet</groupId>
+          <artifactId>parquet-hadoop-bundle</artifactId>
+        </exclusion>
+        <exclusion>
           <artifactId>zookeeper</artifactId>
           <groupId>org.apache.zookeeper</groupId>
         </exclusion>
@@ -397,6 +410,10 @@
         <exclusion>
           <artifactId>protobuf-java</artifactId>
           <groupId>com.google.protobuf</groupId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.parquet</groupId>
+          <artifactId>parquet-hadoop-bundle</artifactId>
         </exclusion>
         <exclusion>
           <groupId>io.netty</groupId>
@@ -484,6 +501,10 @@
         <exclusion>
           <groupId>com.nimbusds</groupId>
           <artifactId>nimbus-jose-jwt</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.parquet</groupId>
+          <artifactId>parquet-hadoop-bundle</artifactId>
         </exclusion>
         <exclusion>
           <artifactId>zookeeper</artifactId>
@@ -863,17 +884,17 @@
           <resolverFilters>
             <resolverFilter>
               <include>
-                *:parquet-hadoop,*:parquet-hadoop-bundle,*:hadoop-yarn-api,*:avro,*:avro-mapred,*:hive-jdbc,
+                *:parquet-hadoop,*:parquet-column,*:parquet-common,*:parquet-encoding,*:parquet-format-structures,*:parquet-jackson,*:hadoop-yarn-api,*:avro,*:avro-mapred,*:hive-jdbc,
                 *:hive-service,*:orc-core,*:hadoop-common,*:hadoop-hdfs,*:hadoop-mapreduce-*,
                 *:hadoop-yarn-*,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,
-                *:hbase-server,*:oozie-client,*:parquet-hadoop-bundle,*:zookeeper,*:hbase-shaded-miscellaneous,
+                *:hbase-server,*:oozie-client,*:zookeeper,*:hbase-shaded-miscellaneous,
                 org.eclipse.jetty:*,org.eclipse.jetty.websocket:*,
                 *:gcs-connector,com.google.*:*,org.checkerframework:checker-qual,
                 org.codehaus.mojo:animal-sniffer-annotations,*:hbase-mapreduce,org.apache.curator:*,*:snappy-java,
                 *:protobuf-java,*:hadoop-shaded-protobuf_3_25
               </include>
               <exclude>
-                *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool2,*:commons-dbcp2,
+                *:parquet-hadoop-bundle,*:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool2,*:commons-dbcp2,
                 *:jersey-guava,*:janino,org.apache.velocity:velocity
               </exclude>
               <transitive>true</transitive>

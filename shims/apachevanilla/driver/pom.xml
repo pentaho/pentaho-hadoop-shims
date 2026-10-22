@@ -601,7 +601,6 @@
     <dependency>
       <groupId>org.apache.parquet</groupId>
       <artifactId>parquet-avro</artifactId>
-      <version>${parquet.version}</version>
       <exclusions>
         <exclusion>
           <groupId>org.apache.avro</groupId>
@@ -1099,11 +1098,6 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.apache.parquet</groupId>
-      <artifactId>parquet-hadoop-bundle</artifactId>
-      <version>${parquet.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.apache.pig</groupId>
       <artifactId>pig</artifactId>
       <version>${pig.version}</version>
@@ -1121,7 +1115,12 @@
     <dependency>
       <groupId>org.apache.parquet</groupId>
       <artifactId>parquet-pig</artifactId>
-      <version>${parquet-pig.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.zookeeper</groupId>
@@ -1172,6 +1171,22 @@
       <groupId>org.apache.curator</groupId>
       <artifactId>curator-recipes</artifactId>
       <version>${curator.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-hadoop</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-column</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-encoding</artifactId>
     </dependency>
   </dependencies>
 
@@ -1237,17 +1252,17 @@
           <resolverFilters>
             <resolverFilter>
               <include>
-                *:parquet-hadoop,*:parquet-hadoop-bundle,*:parquet-avro,*:hadoop-yarn-api,*:avro,*:avro-mapred,*:hive-jdbc,
+                *:parquet-hadoop,*:parquet-column,*:parquet-common,*:parquet-encoding,*:parquet-format-structures,*:parquet-jackson,*:parquet-avro,*:hadoop-yarn-api,*:avro,*:avro-mapred,*:hive-jdbc,
                 *:hive-service,*:hive-common,*:hive-storage-api,*:orc-core,*:hadoop-common,*:hadoop-hdfs,*:hadoop-mapreduce-*,
                 *:hadoop-yarn-api,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,
-                *:hbase-server,*:oozie-client,*:parquet-hadoop-bundle,*:zookeeper,*:hbase-shaded-miscellaneous,
+                *:hbase-server,*:oozie-client,*:zookeeper,*:hbase-shaded-miscellaneous,
                 org.eclipse.jetty:*,org.eclipse.jetty.websocket:*,
                 com.google.guava:*,*:hadoop-lzo,*:hadoop-client,*:hadoop-aws,*:hadoop-azure,*:gcs-connector,*:hadoop-hdfs-client,*:commons-configuration2,
                 *:google-oauth-client,*:hbase-mapreduce,*:commons-codec,org.apache.curator:*,*:hadoop-shaded-protobuf_3_25,
                 *:snappy-java,*:protobuf-java
               </include>
               <exclude>
-                *:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool2,*:commons-dbcp2,
+                *:parquet-hadoop-bundle,*:*log4j*,*:xml-apis,*:xercesImpl,*:commons-logging,*:commons-math3,*:commons-pool2,*:commons-dbcp2,
                 *:janino,org.apache.velocity:velocity,
                 *:grpc-*,*:opencensus*,*:perfmark-api*,*:threetenbp*,
                 *:google-oauth-client-java6,*:dnsjava,*:libfb303

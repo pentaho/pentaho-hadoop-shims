@@ -18,7 +18,6 @@
     <vendor.hbase.version>6.0.0-mapr</vendor.hbase.version>
     <org.apache.hive.version>2.1.1-mapr-1710</org.apache.hive.version>
     <org.apache.oozie.version>4.3.0-mapr-1710</org.apache.oozie.version>
-    <parquet.version>1.8.1</parquet.version>
     <pig.version>0.16.0-mapr-1703</pig.version>
     <sqoop.version>1.4.6-mapr-1710</sqoop.version>
     <zookeeper.version>3.4.5-mapr-1710</zookeeper.version>
@@ -82,6 +81,10 @@
       <version>${org.apache.hive.version}</version>
       <exclusions>
         <exclusion>
+          <groupId>org.apache.parquet</groupId>
+          <artifactId>parquet-hadoop-bundle</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>com.google.protobuf</groupId>
           <artifactId>protobuf-java</artifactId>
         </exclusion>
@@ -96,6 +99,10 @@
       <artifactId>hive-service</artifactId>
       <version>${org.apache.hive.version}</version>
       <exclusions>
+        <exclusion>
+          <groupId>org.apache.parquet</groupId>
+          <artifactId>parquet-hadoop-bundle</artifactId>
+        </exclusion>
         <exclusion>
           <groupId>com.google.protobuf</groupId>
           <artifactId>protobuf-java</artifactId>
@@ -236,8 +243,19 @@
     </dependency>
     <dependency>
       <groupId>org.apache.parquet</groupId>
-      <artifactId>parquet-hadoop-bundle</artifactId>
-      <version>${parquet.version}</version>
+      <artifactId>parquet-hadoop</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-column</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-encoding</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.pig</groupId>
@@ -266,14 +284,14 @@
           <resolverFilters>
             <resolverFilter>
               <include>
-                *:parquet-hadoop,*:parquet-hadoop-bundle,*:hadoop-yarn-api,*:avro,*:avro-mapred,*:hive-jdbc,
+                *:parquet-hadoop,*:parquet-column,*:parquet-common,*:parquet-encoding,*:parquet-format-structures,*:parquet-jackson,*:hadoop-yarn-api,*:avro,*:avro-mapred,*:hive-jdbc,
                 *:hive-service,*:orc-core,*:hadoop-common,*:hadoop-hdfs,*:hadoop-mapreduce-*,
                 *:hadoop-yarn-api,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,
-                *:hbase-server,*:oozie-client,*:parquet-hadoop-bundle,*:zookeeper,*:hbase-shaded-miscellaneous,
+                *:hbase-server,*:oozie-client,*:zookeeper,*:hbase-shaded-miscellaneous,
                 *:maprfs,*:mapr-hbase*
               </include>
               <exclude>
-                *:*log4j*,*:xml-apis,*:xercesImpl
+                *:parquet-hadoop-bundle,*:*log4j*,*:xml-apis,*:xercesImpl
               </exclude>
               <transitive>true</transitive>
             </resolverFilter>
