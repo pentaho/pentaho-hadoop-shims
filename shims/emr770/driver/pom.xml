@@ -644,7 +644,6 @@
     <dependency>
       <groupId>org.apache.parquet</groupId>
       <artifactId>parquet-pig</artifactId>
-      <version>${parquet-pig.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -666,22 +665,18 @@
     <dependency>
       <groupId>org.apache.parquet</groupId>
       <artifactId>parquet-hadoop</artifactId>
-      <version>${parquet.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.parquet</groupId>
       <artifactId>parquet-column</artifactId>
-      <version>${parquet.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.parquet</groupId>
       <artifactId>parquet-common</artifactId>
-      <version>${parquet.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.parquet</groupId>
       <artifactId>parquet-encoding</artifactId>
-      <version>${parquet.version}</version>
     </dependency>
     <dependency>
       <groupId>com.google.protobuf</groupId>
@@ -971,12 +966,6 @@
       <groupId>org.pentaho.hadoop.shims</groupId>
       <artifactId>pentaho-hadoop-shims-common-base</artifactId>
       <version>${pentaho-hadoop-shims.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.parquet</groupId>
-          <artifactId>parquet-hadoop-bundle</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.yammer.metrics</groupId>
