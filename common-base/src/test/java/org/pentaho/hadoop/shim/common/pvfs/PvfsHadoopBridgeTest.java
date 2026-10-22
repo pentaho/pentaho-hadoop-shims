@@ -162,6 +162,10 @@ public class PvfsHadoopBridgeTest {
   public void setGetWorkingDirectory() {
     Path pvfsPath = new Path( "pvfs", "", folder.getRoot().toURI().getPath() );
     Path newWd = new Path( folder.getRoot().toURI() );
+    // Use a non-cached local fs so the working directory change does not leak to other tests
+    Configuration conf = new Configuration();
+    conf.setBoolean( "fs.file.impl.disable.cache", true );
+    when( pvfsConf.conf( any( Path.class ) ) ).thenReturn( conf );
     when( pvfsConf.mapPath( any( Path.class ) ) ).thenReturn( newWd );
     bridge.setWorkingDirectory( pvfsPath );
     assertThat( bridge.getWorkingDirectory(), equalTo( newWd ) );
