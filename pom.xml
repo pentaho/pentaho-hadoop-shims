@@ -53,6 +53,8 @@
     <!-- Added in the scope of fix for CVE-2025-67721, can be removed once orc-core ships aircompressor >= 2.0.3. -->
     <aircompressor.version>2.0.3</aircompressor.version>
     <zstd-jni.version>1.5.7-17</zstd-jni.version>
+    <!-- Cloudera-patched Jackson 1.x; no cloudera build exists for jackson-jaxrs/jackson-xc -->
+    <jackson-asl.version>1.9.13-cloudera.4</jackson-asl.version>
   </properties>
 
   <dependencyManagement>
@@ -239,6 +241,16 @@
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
         <version>${commons-io.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.jackson</groupId>
+        <artifactId>jackson-core-asl</artifactId>
+        <version>${jackson-asl.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.jackson</groupId>
+        <artifactId>jackson-mapper-asl</artifactId>
+        <version>${jackson-asl.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
