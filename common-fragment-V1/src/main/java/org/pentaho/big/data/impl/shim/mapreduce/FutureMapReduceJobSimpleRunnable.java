@@ -13,12 +13,14 @@
 
 package org.pentaho.big.data.impl.shim.mapreduce;
 
+import org.apache.logging.log4j.ThreadContext;
 import org.pentaho.di.job.entries.hadoopjobexecutor.NoExitSecurityManager;
 import org.pentaho.di.job.entries.hadoopjobexecutor.SecurityManagerStack;
 import org.pentaho.hadoop.shim.api.mapreduce.MapReduceExecutionException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -33,6 +35,8 @@ public class FutureMapReduceJobSimpleRunnable implements Runnable {
   private final AtomicBoolean complete;
   private final AtomicInteger status;
   private final AtomicReference<MapReduceExecutionException> exceptionAtomicReference;
+  // Captured on the submitting thread, which Hadoop execution logging tags with the Kettle log channel id.
+  private final Map<String, String> submitterContext = ThreadContext.getImmutableContext();
 
   public FutureMapReduceJobSimpleRunnable( Class<?> mainClass, String commandLineArgs, AtomicBoolean complete,
                                            AtomicInteger status,
@@ -45,6 +49,18 @@ public class FutureMapReduceJobSimpleRunnable implements Runnable {
   }
 
   @Override public void run() {
+    final Map<String, String> workerContext = ThreadContext.getContext();
+    ThreadContext.clearMap();
+    ThreadContext.putAll( submitterContext );
+    try {
+      runDriver();
+    } finally {
+      ThreadContext.clearMap();
+      ThreadContext.putAll( workerContext );
+    }
+  }
+
+  private void runDriver() {
     final NoExitSecurityManager nesm = new NoExitSecurityManager( System.getSecurityManager() );
     securityManagerStack.setSecurityManager( nesm );
     try {

@@ -13,12 +13,17 @@
 
 package org.pentaho.big.data.impl.shim.mapreduce;
 
+import org.apache.logging.log4j.ThreadContext;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.pentaho.hadoop.shim.api.mapreduce.MapReduceExecutionException;
 import org.pentaho.di.job.entries.hadoopjobexecutor.NoExitSecurityManager;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -34,8 +39,10 @@ import static org.junit.Assert.assertTrue;
 public class FutureMapReduceJobSimpleRunnableTest {
   private static final RuntimeException runtimeException = new RuntimeException();
   private static final SecurityManager initialSecurityManager = System.getSecurityManager();
+  private static final String LOG_CHANNEL_ID = "logChannelId";
   private static MainBehavior mainBehavior;
   private static String commandLineArgs;
+  private static String logChannelIdSeenByMain;
   private Class<? extends FutureMapReduceJobSimpleRunnableTest> mainClass;
   private AtomicBoolean complete;
   private AtomicInteger status;
@@ -50,6 +57,9 @@ public class FutureMapReduceJobSimpleRunnableTest {
     }
     switch ( mainBehavior ) {
       case NO_EXIT:
+        return;
+      case READ_CONTEXT:
+        logChannelIdSeenByMain = ThreadContext.get( LOG_CHANNEL_ID );
         return;
       case EXIT_0:
         System.exit( 0 );
@@ -68,6 +78,7 @@ public class FutureMapReduceJobSimpleRunnableTest {
 
   @Before
   public void setup() {
+    ThreadContext.clearMap();
     mainClass = getClass();
     commandLineArgs = "cli args";
     complete = new AtomicBoolean( false );
@@ -80,8 +91,10 @@ public class FutureMapReduceJobSimpleRunnableTest {
 
   @After
   public void teardown() {
+    ThreadContext.clearMap();
     mainBehavior = null;
     commandLineArgs = null;
+    logChannelIdSeenByMain = null;
     assertEquals( initialSecurityManager, System.getSecurityManager() );
   }
 
@@ -157,6 +170,45 @@ public class FutureMapReduceJobSimpleRunnableTest {
     assertEquals( runtimeException, exceptionAtomicReference.get().getCause() );
   }
 
+  @Test
+  public void testRunSeesContextOfTheThreadThatCreatedIt() throws Exception {
+    mainBehavior = MainBehavior.READ_CONTEXT;
+    ThreadContext.put( LOG_CHANNEL_ID, "channel-A" );
+    futureMapReduceJobSimpleRunnable =
+      new FutureMapReduceJobSimpleRunnable( mainClass, commandLineArgs, complete, status, exceptionAtomicReference );
+    ThreadContext.clearMap();
+
+    ExecutorService worker = Executors.newSingleThreadExecutor();
+    try {
+      worker.submit( futureMapReduceJobSimpleRunnable ).get( 10, TimeUnit.SECONDS );
+    } finally {
+      worker.shutdownNow();
+    }
+
+    assertEquals( "channel-A", logChannelIdSeenByMain );
+    assertEquals( 0, status.get() );
+  }
+
+  @Test
+  public void testRunRestoresTheWorkerThreadContext() throws Exception {
+    mainBehavior = MainBehavior.NO_EXIT;
+    ThreadContext.put( LOG_CHANNEL_ID, "channel-A" );
+    futureMapReduceJobSimpleRunnable =
+      new FutureMapReduceJobSimpleRunnable( mainClass, commandLineArgs, complete, status, exceptionAtomicReference );
+    ThreadContext.clearMap();
+
+    ExecutorService worker = Executors.newSingleThreadExecutor();
+    try {
+      worker.submit( () -> ThreadContext.put( "workerOnly", "w" ) ).get( 10, TimeUnit.SECONDS );
+      worker.submit( futureMapReduceJobSimpleRunnable ).get( 10, TimeUnit.SECONDS );
+
+      Callable<String> readBoth = () -> ThreadContext.get( "workerOnly" ) + "/" + ThreadContext.get( LOG_CHANNEL_ID );
+      assertEquals( "w/null", worker.submit( readBoth ).get( 10, TimeUnit.SECONDS ) );
+    } finally {
+      worker.shutdownNow();
+    }
+  }
+
   @Test( expected = NoSuchMethodException.class )
   public void testBadMain() throws Throwable {
     futureMapReduceJobSimpleRunnable =
@@ -168,6 +220,6 @@ public class FutureMapReduceJobSimpleRunnableTest {
   }
 
   private enum MainBehavior {
-    NO_EXIT, EXIT_0, EXIT_1, THROW_NO_EXIT_255, THROW
+    NO_EXIT, READ_CONTEXT, EXIT_0, EXIT_1, THROW_NO_EXIT_255, THROW
   }
 }
