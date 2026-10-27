@@ -152,7 +152,11 @@
                 <exclude>*:nimbus-jose-jwt:*</exclude>
                 <exclude>*:ognl:*</exclude>
                 <exclude>*:org.apache.karaf.jaas.config:*</exclude>
-                <!-- PPP-7161: parquet-hadoop-bundle replaced by individual modules; package parquet-column/common/encoding/format-structures/jackson -->
+                <exclude>*:parquet-column:*</exclude>
+                <exclude>*:parquet-common:*</exclude>
+                <exclude>*:parquet-encoding:*</exclude>
+                <exclude>*:parquet-format-structures:*</exclude>
+                <exclude>*:parquet-jackson:*</exclude>
                 <exclude>*:pentaho-encryption-support:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-common-base:*</exclude>
                 <exclude>*:pentaho-platform-api:*</exclude>
@@ -309,7 +313,11 @@
                 <exclude>*:nimbus-jose-jwt:*</exclude>
                 <exclude>*:ognl:*</exclude>
                 <exclude>*:org.apache.karaf.jaas.config:*</exclude>
-                <!-- PPP-7161: parquet-hadoop-bundle replaced by individual modules; package parquet-column/common/encoding/format-structures/jackson -->
+                <exclude>*:parquet-column:*</exclude>
+                <exclude>*:parquet-common:*</exclude>
+                <exclude>*:parquet-encoding:*</exclude>
+                <exclude>*:parquet-format-structures:*</exclude>
+                <exclude>*:parquet-jackson:*</exclude>
                 <exclude>*:pentaho-encryption-support:*</exclude>
                 <exclude>*:pentaho-hadoop-shims-common-base:*</exclude>
                 <exclude>*:pentaho-platform-api:*</exclude>
