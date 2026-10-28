@@ -1086,6 +1086,8 @@
             </Import-Package>
             <_exportcontents>
             </_exportcontents>
+            <!-- Do not register embedded Ehcache classes as this driver's OSGi DS services. -->
+            <_dsannotations>!org.ehcache.*,*</_dsannotations>
             <Embed-Dependency>*</Embed-Dependency>
             <Include-Resource>{maven-resources};${project.build.directory}/extra-resources/jetty-runner-${jetty.version}.jar</Include-Resource>
             <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
