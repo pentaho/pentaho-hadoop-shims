@@ -1245,7 +1245,7 @@
                 *:hive-service,*:hive-common,*:hive-storage-api,*:orc-core,*:hadoop-common,*:hadoop-hdfs,*:hadoop-mapreduce-*,
                 *:hadoop-yarn-api,*:hbase-client,*:hbase-common,*:hbase-hadoop-compat,*:hbase-protocol,
                 *:hbase-server,*:oozie-client,*:zookeeper,*:hbase-shaded-miscellaneous,
-                org.eclipse.jetty:*,org.eclipse.jetty.websocket:*,
+                org.eclipse.jetty:*,org.eclipse.jetty.websocket:*,com.fasterxml.jackson.core:jackson-databind,
                 com.google.guava:*,*:hadoop-lzo,*:hadoop-client,*:hadoop-aws,*:hadoop-azure,*:gcs-connector,*:hadoop-hdfs-client,*:commons-configuration2,
                 *:google-oauth-client,*:hbase-mapreduce,*:commons-codec,org.apache.curator:*,*:hadoop-shaded-protobuf_3_25,
                 *:snappy-java,*:protobuf-java
