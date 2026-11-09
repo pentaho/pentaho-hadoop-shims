@@ -20,6 +20,13 @@
                 <include>**/*</include>
             </includes>
         </fileSet>
+        <fileSet>
+            <directory>${project.build.directory}/extra-resources</directory>
+            <outputDirectory>/${shim.id}/lib</outputDirectory>
+            <includes>
+                <include>jetty-runner-${jetty-hadoop.version}.jar</include>
+            </includes>
+        </fileSet>
     </fileSets>
     <dependencySets>
         <dependencySet>
@@ -28,6 +35,7 @@
             <scope>compile</scope>
             <excludes>
                 <exclude>${project.groupId}:${project.artifactId}:jar:*</exclude>
+                <exclude>*:jetty-runner:*</exclude>
                 <!-- PPP-6777 / CVE-2023-34610: strip the orphaned server-side YARN serialization
                      chain (hive-shims -> yarn-server-* -> fst -> java-util -> json-io) that is
                      not used by the client shim, matching the apachevanilla/emr shim assemblies.
@@ -172,6 +180,7 @@
             <scope>runtime</scope>
             <excludes>
                 <exclude>${project.groupId}:${project.artifactId}:jar:*</exclude>
+                <exclude>*:jetty-runner:*</exclude>
                 <!-- PPP-6777 / CVE-2023-34610: strip the orphaned server-side YARN serialization
                      chain (hive-shims -> yarn-server-* -> fst -> java-util -> json-io) that is
                      not used by the client shim, matching the apachevanilla/emr shim assemblies.
