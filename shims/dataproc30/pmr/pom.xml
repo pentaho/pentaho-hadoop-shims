@@ -140,6 +140,17 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <!-- Replaces hbase-shaded-netty (excluded above) with Pentaho's patched shaded Netty for HBase code in lib/pmr -->
+    <dependency>
+      <groupId>org.pentaho.hadoop</groupId>
+      <artifactId>pentaho-shaded-netty</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
   </dependencies>
 
   <build>
