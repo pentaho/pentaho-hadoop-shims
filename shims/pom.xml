@@ -247,12 +247,24 @@
       </property>
     </activation>
     <modules>
+      <module>dataproc30</module>
       <module>dataproc23</module>
       <module>dataproc1421</module>
       <module>cdpdc71</module>
       <!--<module>hdi40</module>-->
       <module>apachevanilla</module>
       <module>emr770</module>
+    </modules>
+  </profile>
+  <profile>
+    <id>dataproc30</id>
+    <activation>
+      <property>
+        <name>!skipDefault</name>
+      </property>
+    </activation>
+    <modules>
+      <module>dataproc30</module>
     </modules>
   </profile>
   <profile>
