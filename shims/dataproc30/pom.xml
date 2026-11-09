@@ -27,7 +27,8 @@
 
     <!-- GCP properties -->
     <gcs-connector.version>4.0.4</gcs-connector.version>
-    <dataproc.guava.version>32.1.2-jre</dataproc.guava.version>
+    <dataproc.guava.version>33.7.2-jre</dataproc.guava.version>
+    <dataproc.failureaccess.version>1.0.3</dataproc.failureaccess.version>
 
     <!-- default folder -->
     <org.apache.hbase.version>2.6.2</org.apache.hbase.version>
