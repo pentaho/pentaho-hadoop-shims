@@ -91,6 +91,11 @@ public class GcsConfTest {
       equalTo( "/home/ubuntu/gcs/credentials.json" ) );
   }
 
+  @Test public void testConfSetsGcsConnector3AuthType() {
+    Configuration conf = gcsConf.conf( path );
+    assertThat( conf.get( "fs.gs.auth.type" ), equalTo( "SERVICE_ACCOUNT_JSON_KEYFILE" ) );
+  }
+
   @Test public void testEquals() {
     assertNotEquals( null, gcsConf);
     assertEquals(gcsConf, gcsConf);

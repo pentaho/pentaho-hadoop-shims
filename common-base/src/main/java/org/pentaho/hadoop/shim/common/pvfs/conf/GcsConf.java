@@ -65,7 +65,7 @@ public class GcsConf extends PvfsConf {
   @Override public Configuration conf( Path pvfsPath ) {
     /**
      * GCS Connector configurations can be found here :
-     * https://github.com/GoogleCloudDataproc/hadoop-connectors/blob/master/gcs/conf/gcs-core-default.xml
+     * https://github.com/GoogleCloudDataproc/hadoop-connectors/blob/master/gcs/CONFIGURATION.md
      */
     Configuration config = new Configuration();
     config.setClassLoader( getClass().getClassLoader() );
@@ -73,6 +73,9 @@ public class GcsConf extends PvfsConf {
     config.set( "fs.AbstractFileSystem.gs.impl", "com.google.cloud.hadoop.fs.gcs.GoogleHadoopFS" );
     config.set( "google.cloud.auth.service.account.enable", "true" );
     config.set( "google.cloud.auth.service.account.json.keyfile", credentialsKeyPath );
+    // GCS connector 3.x+ replaced auth.service.account.enable with auth.type (default COMPUTE_ENGINE);
+    // older connectors ignore it.
+    config.set( "fs.gs.auth.type", "SERVICE_ACCOUNT_JSON_KEYFILE" );
     config.set( "fs.gs.http.max.retry", "10" );
     config.set( "fs.gs.http.connect-timeout", "20000" );
     config.set( "fs.gs.performance.cache.enable", "false" ); // caching managed by PvfsHadoopBridge

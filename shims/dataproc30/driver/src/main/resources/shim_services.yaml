@@ -1,0 +1,40 @@
+# ******************************************************************************
+#
+# Pentaho
+#
+# Copyright (C) 2026 by Pentaho Canada Inc. : http://www.pentaho.com
+#
+# Use of this software is governed by the Business Source License included
+# in the LICENSE.TXT file.
+#
+# Change Date: 2030-06-15
+# ******************************************************************************
+services:
+  - auth_manager
+  - hdfs:
+      options:
+          - hdfs
+      schemas:
+          - hdfs
+          - maprfs
+          - escalefs
+          - wasb
+          - wasbs
+          - abfs
+          - hc
+  - common_formats
+  - mapreduce:
+        options:
+            - mapreduce
+  - sqoop:
+        options:
+            - sqoop
+  - hive:
+      drivers:
+          - hive
+          - impala
+          - impala_simba
+          - spark_simba
+  - hbase:
+        options:
+            - hbase

@@ -1,0 +1,52 @@
+<!-- ******************************************************************************
+ *
+ * Pentaho
+ *
+ * Copyright (C) 2026 by Pentaho Canada Inc. : http://www.pentaho.com
+ *
+ * Use of this software is governed by the Business Source License included
+ * in the LICENSE.TXT file.
+ *
+ * Change Date: 2030-06-15
+ ******************************************************************************* -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.pentaho.hadoop.shims</groupId>
+    <artifactId>pentaho-hadoop-shims-list</artifactId>
+    <version>11.1.0.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>pentaho-hadoop-shims-dataproc30-reactor</artifactId>
+  <packaging>pom</packaging>
+  <properties>
+    <!-- shim properties -->
+    <shim.name>dataproc30</shim.name>
+    <vendor-driver.version>3.0</vendor-driver.version>
+    <pentaho-code.version>11.1.0.0</pentaho-code.version>
+
+    <!-- GCP properties -->
+    <gcs-connector.version>4.0.4</gcs-connector.version>
+    <dataproc.guava.version>33.7.2-jre</dataproc.guava.version>
+    <dataproc.failureaccess.version>1.0.3</dataproc.failureaccess.version>
+
+    <!-- default folder -->
+    <org.apache.hbase.version>2.6.2</org.apache.hbase.version>
+    <automaton.version>1.11-8</automaton.version>
+    <pig.version>0.18.0</pig.version>
+    <org.apache.oozie.version>5.2.1</org.apache.oozie.version>
+    <sqoop.version>1.4.7</sqoop.version>
+    <hive-jdbc.version>${org.apache.hive.version}</hive-jdbc.version>
+    <org.apache.avro.version>1.12.1</org.apache.avro.version>
+
+    <!-- pmr folder -->
+    <!-- Hive inherits the root org.apache.hive.version (4.2.1); Dataproc 3.0 clusters run Hive 4.2.0. -->
+    <org.antlr.version>3.5.2</org.antlr.version>
+    <joda-time.version>2.9.9</joda-time.version>
+
+  </properties>
+  <modules>
+    <module>pmr</module>
+    <module>driver</module>
+  </modules>
+</project>
