@@ -238,6 +238,11 @@
           <groupId>io.airlift</groupId>
           <artifactId>aircompressor</artifactId>
         </exclusion>
+        <!-- orc-shims java17 profile pulls shaded hadoop-client-api 3.3.5 without hadoop-client-runtime -->
+        <exclusion>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>hadoop-client-api</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <!-- used by org.apache.orc -->
