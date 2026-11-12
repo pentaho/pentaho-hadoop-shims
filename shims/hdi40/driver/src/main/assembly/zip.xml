@@ -81,6 +81,7 @@
                 <exclude>*:groovy-templates:*</exclude>
                 <exclude>*:groovy-xml:*</exclude>
                 <exclude>*:gson:*</exclude>
+                <exclude>*:hadoop-client-api:*</exclude>
                 <exclude>*:hadoop-distcp:*</exclude>
                 <exclude>*:hadoop-yarn-registry:*</exclude>
                 <exclude>*:hbase-asyncfs:*</exclude>
@@ -209,6 +210,7 @@
                 <exclude>*:groovy-templates:*</exclude>
                 <exclude>*:groovy-xml:*</exclude>
                 <exclude>*:gson:*</exclude>
+                <exclude>*:hadoop-client-api:*</exclude>
                 <exclude>*:hadoop-distcp:*</exclude>
                 <exclude>*:hadoop-yarn-registry:*</exclude>
                 <exclude>*:hbase-asyncfs:*</exclude>

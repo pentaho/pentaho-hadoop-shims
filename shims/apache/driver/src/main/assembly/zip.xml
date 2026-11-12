@@ -44,6 +44,7 @@
                 <exclude>*:groovy-swing:*</exclude>
                 <exclude>*:groovy-templates:*</exclude>
                 <exclude>*:groovy-xml:*</exclude>
+                <exclude>*:hadoop-client-api:*</exclude>
                 <exclude>*:hadoop-shaded-protobuf_3_21:*</exclude>
                 <exclude>*:httpclient5:*</exclude>
                 <exclude>*:httpcore:*</exclude>
@@ -189,6 +190,7 @@
                 <exclude>*:groovy-swing:*</exclude>
                 <exclude>*:groovy-templates:*</exclude>
                 <exclude>*:groovy-xml:*</exclude>
+                <exclude>*:hadoop-client-api:*</exclude>
                 <exclude>*:hadoop-shaded-protobuf_3_21:*</exclude>
                 <exclude>*:httpclient5:*</exclude>
                 <exclude>*:httpcore:*</exclude>

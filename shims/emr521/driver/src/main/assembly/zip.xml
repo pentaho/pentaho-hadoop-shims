@@ -18,6 +18,7 @@
             <scope>runtime</scope>
             <excludes>
                 <exclude>${project.groupId}:${project.artifactId}:jar:*</exclude>
+                <exclude>*:hadoop-client-api:*</exclude>
             </excludes>
         </dependencySet>
     </dependencySets>
