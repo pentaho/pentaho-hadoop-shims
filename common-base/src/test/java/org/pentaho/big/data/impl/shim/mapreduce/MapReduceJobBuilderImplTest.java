@@ -19,6 +19,9 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
+import org.pentaho.hadoop.shim.api.core.ShimIdentifierInterface;
+import org.pentaho.hadoop.shim.api.internal.ShimIdentifier;
+import org.pentaho.hadoop.shim.api.mapreduce.MapReduceJobAdvanced;
 import org.pentaho.di.core.logging.LogChannelInterface;
 import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.hadoop.shim.api.internal.Configuration;
@@ -35,6 +38,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -117,6 +121,47 @@ public class MapReduceJobBuilderImplTest {
     numMapTasks = 3;
     numReduceTasks = 1;
     logMeBasic = "log me basic";
+  }
+
+  @Test
+  public void testSubmitPassesNamedClusterShimIdentifier() throws Exception {
+    when( namedCluster.getShimIdentifier() ).thenReturn( "clusterShim" );
+    when( hadoopShim.getShimIdentifier() ).thenReturn(
+      new ShimIdentifier( "activeShim", "vendor", "1.0", ShimIdentifierInterface.ShimType.COMMUNITY ) );
+
+    assertEquals( "clusterShim", getSubmittedShimIdentifier() );
+  }
+
+  @Test
+  public void testSubmitFallsBackToHadoopShimIdentifierWhenClusterShimIsNull() throws Exception {
+    when( namedCluster.getShimIdentifier() ).thenReturn( null );
+    when( hadoopShim.getShimIdentifier() ).thenReturn(
+      new ShimIdentifier( "activeShim", "vendor", "1.0", ShimIdentifierInterface.ShimType.COMMUNITY ) );
+
+    assertEquals( "activeShim", getSubmittedShimIdentifier() );
+  }
+
+  @Test
+  public void testSubmitWithNullClusterShimAndNullHadoopShimIdentifier() throws Exception {
+    when( namedCluster.getShimIdentifier() ).thenReturn( null );
+    when( hadoopShim.getShimIdentifier() ).thenReturn( null );
+
+    assertNull( getSubmittedShimIdentifier() );
+  }
+
+  private String getSubmittedShimIdentifier() throws Exception {
+    String[] submittedShimIdentifier = new String[ 1 ];
+    MapReduceJobBuilderImpl builder =
+      new MapReduceJobBuilderImpl( namedCluster, hadoopShim, logChannelInterface, variableSpace ) {
+        @Override
+        protected MapReduceJobAdvanced submit( Configuration conf, String shimIdentifier ) {
+          submittedShimIdentifier[ 0 ] = shimIdentifier;
+          return null;
+        }
+      };
+    builder.setInputPaths( inputPaths );
+    builder.submit();
+    return submittedShimIdentifier[ 0 ];
   }
 
   @Test

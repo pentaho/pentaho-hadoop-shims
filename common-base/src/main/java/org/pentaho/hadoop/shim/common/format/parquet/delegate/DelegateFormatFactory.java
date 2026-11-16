@@ -45,7 +45,8 @@ public class DelegateFormatFactory {
   }
 
   private static boolean shimUsesTwitterLibs( NamedCluster namedCluster ) {
-    String shimIdentifier = namedCluster == null ? "" : namedCluster.getShimIdentifier();
+    String shimIdentifier = namedCluster == null || namedCluster.getShimIdentifier() == null
+      ? "" : namedCluster.getShimIdentifier();
     return ( shimIdentifier.startsWith( "cdh" ) && !shimIdentifier.startsWith( "cdh6" ) )
       || ( shimIdentifier.startsWith( "mapr" ) && !shimIdentifier.equals( "mapr60" ) );
   }

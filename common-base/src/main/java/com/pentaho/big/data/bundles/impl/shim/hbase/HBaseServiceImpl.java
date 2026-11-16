@@ -61,7 +61,12 @@ public class HBaseServiceImpl implements HBaseService {
       zooKeeperHost = variableSpace.environmentSubstitute( namedCluster.getZooKeeperHost() );
       zooKeeperPort = variableSpace.environmentSubstitute( namedCluster.getZooKeeperPort() );
       connProps.setProperty( HBaseConnection.NAMED_CLUSTER, namedCluster.getName() );
-      connProps.setProperty( HBaseConnection.SHIM_IDENTIFIER, namedCluster.getShimIdentifier() );
+      String shimIdentifier = namedCluster.getShimIdentifier();
+
+      if ( shimIdentifier != null ) {
+        connProps.setProperty( HBaseConnection.SHIM_IDENTIFIER, shimIdentifier );
+      }
+
       connProps.setProperty( HBaseConnection.SHIM_IS_MAPR, String.valueOf( namedCluster.isMapr() ) );
     }
     if ( !Const.isEmpty( zooKeeperHost ) ) {
