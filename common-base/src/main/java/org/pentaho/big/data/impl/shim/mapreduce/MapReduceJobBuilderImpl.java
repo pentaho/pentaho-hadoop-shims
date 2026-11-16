@@ -266,7 +266,14 @@ public class MapReduceJobBuilderImpl implements MapReduceJobBuilder {
   public final MapReduceJobAdvanced submit() throws Exception {
     Configuration conf = hadoopShim.createConfiguration( namedCluster );
     configure( conf );
-    return submit( conf, namedCluster.getShimIdentifier() );
+    String shimIdentifier = namedCluster.getShimIdentifier();
+
+    if ( shimIdentifier == null && hadoopShim.getShimIdentifier() != null ) {
+      // A null shim identifier means the cluster uses the default shim, which is the one backing this builder
+      shimIdentifier = hadoopShim.getShimIdentifier().getId();
+    }
+
+    return submit( conf, shimIdentifier );
   }
 
   protected String getClusterName() {

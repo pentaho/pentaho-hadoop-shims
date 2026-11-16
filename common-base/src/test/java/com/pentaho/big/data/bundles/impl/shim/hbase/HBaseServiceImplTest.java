@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -108,6 +109,25 @@ public class HBaseServiceImplTest {
       .configureConnection( propertiesArgumentCaptor.capture(), eq( namedCluster ), eq( new ArrayList <String>() ) );
     Properties properties = propertiesArgumentCaptor.getValue();
     assertEquals( 3, properties.size() );
+  }
+
+  @Test
+  public void testGetHBaseConnectionNullShimIdentifier() throws Exception {
+    when( namedCluster.getShimIdentifier() ).thenReturn( null );
+    VariableSpace variableSpace = mock( VariableSpace.class );
+    LogChannelInterface logChannelInterface = mock( LogChannelInterface.class );
+
+    try ( HBaseConnectionImpl hBaseConnection = hBaseService
+      .getHBaseConnection( variableSpace, null, null, logChannelInterface ) ) {
+      hBaseConnection.checkHBaseAvailable();
+    }
+
+    ArgumentCaptor<Properties> propertiesArgumentCaptor = ArgumentCaptor.forClass( Properties.class );
+    verify( hBaseConnection )
+      .configureConnection( propertiesArgumentCaptor.capture(), eq( namedCluster ), eq( new ArrayList<String>() ) );
+    Properties properties = propertiesArgumentCaptor.getValue();
+    assertEquals( "namedClusterName", properties.get( HBaseConnection.NAMED_CLUSTER ) );
+    assertFalse( properties.containsKey( HBaseConnection.SHIM_IDENTIFIER ) );
   }
 
   @Test
