@@ -43,9 +43,11 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.AbstractMap;
 import org.apache.commons.vfs2.FileSystemException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -61,7 +63,8 @@ public class PvfsHadoopBridge extends FileSystem implements PvfsHadoopBridgeFile
   @SuppressWarnings( "UnstableApiUsage" )
   // Cache was beta in version 11, which is the version hadoop 3.1 uses.
   // the Cache api we use is unchanged with guava 19+, no longer beta.
-  private final Cache<PvfsConf, FileSystem> fsCache = CacheBuilder.newBuilder()
+  // Keyed by connection conf and target authority (e.g. S3 bucket): a FileSystem instance is bound to one authority.
+  private final Cache<Map.Entry<PvfsConf, String>, FileSystem> fsCache = CacheBuilder.newBuilder()
     .expireAfterAccess( 1, TimeUnit.HOURS )
     .build();
 
@@ -191,7 +194,9 @@ public class PvfsHadoopBridge extends FileSystem implements PvfsHadoopBridgeFile
   private FileSystem getCachedFs( Path path ) {
     PvfsConf pvfsConf = getPvfsConf( path );
     try {
-      fs = fsCache.get( pvfsConf, () -> getRealFileSystem( path, pvfsConf ) );
+      String authority = pvfsConf.mapPath( path ).toUri().getAuthority();
+      fs = fsCache.get( new AbstractMap.SimpleImmutableEntry<>( pvfsConf, authority ),
+        () -> getRealFileSystem( path, pvfsConf ) );
       return fs;
     } catch ( ExecutionException e ) {
       throw new IllegalStateException( e );
